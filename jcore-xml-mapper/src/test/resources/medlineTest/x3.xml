@@ -1,0 +1,154 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+	<PMID>19754890</PMID>
+	<DateCreated>
+		<Year>2009</Year>
+		<Month>09</Month>
+		<Day>16</Day>
+	</DateCreated>
+	<DateCompleted>
+		<Year>2009</Year>
+		<Month>11</Month>
+		<Day>04</Day>
+	</DateCompleted>
+	<Article PubModel="Print">
+		<Journal>
+			<ISSN IssnType="Electronic">1600-065X</ISSN>
+			<JournalIssue CitedMedium="Internet">
+				<Volume>231</Volume>
+				<Issue>1</Issue>
+				<PubDate>
+					<Year>2009</Year>
+					<Month>Sep</Month>
+				</PubDate>
+			</JournalIssue>
+			<Title>Immunological reviews</Title>
+			<ISOAbbreviation>Immunol. Rev.</ISOAbbreviation>
+		</Journal>
+		<ArticleTitle>The functional network of ion channels in T lymphocytes.
+		</ArticleTitle>
+		<Pagination>
+			<MedlinePgn>59-87</MedlinePgn>
+		</Pagination>
+		<Abstract>
+			<AbstractText>For more than 25 years, it has been widely appreciated
+				that Ca2+ influx is essential to trigger T-lymphocyte activation.
+				Patch clamp analysis, molecular identification, and functional
+				studies using blockers and genetic manipulation have shown that a
+				unique contingent of ion channels orchestrates the initiation,
+				intensity, and duration of the Ca2+ signal. Five distinct types of
+				ion channels--Kv1.3, KCa3.1, Orai1+ stromal interacting molecule 1
+				(STIM1) [Ca2+-release activating Ca2+ (CRAC) channel], TRPM7, and
+				Cl(swell)--comprise a network that performs functions vital for
+				ongoing cellular homeostasis and for T-cell activation, offering
+				potential targets for immunomodulation. Most recently, the roles of
+				STIM1 and Orai1 have been revealed in triggering and forming the
+				CRAC channel following T-cell receptor engagement. Kv1.3, KCa3.1,
+				STIM1, and Orai1 have been found to cluster at the immunological
+				synapse following contact with an antigen-presenting cell; we
+				discuss how channels at the synapse might function to modulate local
+				signaling. Immuno-imaging approaches are beginning to shed light on
+				ion channel function in vivo. Importantly, the expression pattern of
+				Ca2+ and K+ channels and hence the functional network can adapt
+				depending upon the state of differentiation and activation, and this
+				allows for different stages of an immune response to be targeted
+				specifically.</AbstractText>
+		</Abstract>
+		<Affiliation>Department of Physiology and Biophysics, and the
+			Institute for Immunology, University of California, Irvine, Irvine,
+			CA 92697-4561, USA. mcahalan@uci.edu</Affiliation>
+		<AuthorList CompleteYN="Y">
+			<Author ValidYN="Y">
+				<LastName>Cahalan</LastName>
+				<ForeName>Michael D</ForeName>
+				<Initials>MD</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Chandy</LastName>
+				<ForeName>K George</ForeName>
+				<Initials>KG</Initials>
+			</Author>
+		</AuthorList>
+		<Language>eng</Language>
+		<GrantList CompleteYN="Y">
+			<Grant>
+				<GrantID>GM-41514</GrantID>
+				<Acronym>GM</Acronym>
+				<Agency>NIGMS NIH HHS</Agency>
+				<Country>United States</Country>
+			</Grant>
+			<Grant>
+				<GrantID>NS-048252</GrantID>
+				<Acronym>NS</Acronym>
+				<Agency>NINDS NIH HHS</Agency>
+				<Country>United States</Country>
+			</Grant>
+			<Grant>
+				<GrantID>NS-14609</GrantID>
+				<Acronym>NS</Acronym>
+				<Agency>NINDS NIH HHS</Agency>
+				<Country>United States</Country>
+			</Grant>
+		</GrantList>
+		<PublicationTypeList>
+			<PublicationType>Journal Article</PublicationType>
+			<PublicationType>Research Support, N.I.H., Extramural
+			</PublicationType>
+			<PublicationType>Review</PublicationType>
+		</PublicationTypeList>
+	</Article>
+	<MedlineJournalInfo>
+		<Country>Denmark</Country>
+		<MedlineTA>Immunol Rev</MedlineTA>
+		<NlmUniqueID>7702118</NlmUniqueID>
+		<ISSNLinking>0105-2896</ISSNLinking>
+	</MedlineJournalInfo>
+	<ChemicalList>
+		<Chemical>
+			<RegistryNumber>0</RegistryNumber>
+			<NameOfSubstance>Ion Channels</NameOfSubstance>
+		</Chemical>
+	</ChemicalList>
+	<CitationSubset>IM</CitationSubset>
+	<MeshHeadingList>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Autoimmune Diseases
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">immunology</QualifierName>
+			<QualifierName MajorTopicYN="N">metabolism</QualifierName>
+			<QualifierName MajorTopicYN="N">therapy</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Calcium Signaling
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Cell Movement
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Ion Channels
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Lymphocyte Activation
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">T-Lymphocytes
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="N">cytology</QualifierName>
+			<QualifierName MajorTopicYN="Y">immunology</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+	</MeshHeadingList>
+	<NumberOfReferences>293</NumberOfReferences>
+</MedlineCitation>

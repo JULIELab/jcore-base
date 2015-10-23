@@ -1,0 +1,535 @@
+<MedlineCitation Status="MEDLINE" Owner="NLM">
+        <PMID Version="1">10022921</PMID>
+        <DateCreated>
+            <Year>1999</Year>
+            <Month>03</Month>
+            <Day>25</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>1999</Year>
+            <Month>03</Month>
+            <Day>25</Day>
+        </DateCompleted>
+        <DateRevised>
+            <Year>2009</Year>
+            <Month>11</Month>
+            <Day>19</Day>
+        </DateRevised>
+        <Article PubModel="Print">
+            <Journal>
+                <ISSN IssnType="Print">0270-7306</ISSN>
+                <JournalIssue CitedMedium="Print">
+                    <Volume>19</Volume>
+                    <Issue>3</Issue>
+                    <PubDate>
+                        <Year>1999</Year>
+                        <Month>Mar</Month>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Molecular and cellular biology</Title>
+                <ISOAbbreviation>Mol. Cell. Biol.</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle><s id="0">A new member of the Sin3 family of corepressors is essential for cell viability and required for retroelement propagation in fission yeast.</s></ArticleTitle>
+            <Pagination>
+                <MedlinePgn>2351-65</MedlinePgn>
+            </Pagination>
+            <Abstract>
+                <AbstractText><s id="1">Tf1 is a long terminal repeat (LTR)-containing retrotransposon that propagates within the fission yeast Schizosaccharomyces pombe.</s>  <s id="2">LTR-retrotransposons possess significant similarity to retroviruses and therefore serve as retrovirus models.</s>  <s id="3">To determine what features of the host cell are important for the proliferation of this class of retroelements, we screened for mutations in host genes that reduced the transposition activity of Tf1.</s>  <s id="4">We report here the isolation and characterization of pst1(+), a gene required for Tf1 transposition.</s>  <s id="5">The predicted amino acid sequence of Pst1p possessed high sequence homology with the Sin3 family of proteins, known for their interaction with histone deacetylases.</s>  <s id="6">However, unlike the SIN3 gene of Saccharomyces cerevisiae, pst1(+) is essential for cell viability.</s>  <s id="7">Immunofluorescence microscopy indicated that Pst1p was localized in the nucleus.</s>  <s id="8">Consistent with the critical role previously reported for Sin3 proteins in the histone acetylation process, we found that the growth of the strain with the pst1-1 allele was supersensitive to the specific histone deacetylase inhibitor trichostatin A.</s>  <s id="9">However, our analysis of strains with the pst1-1 mutation was unable to detect any changes in the acetylation of specific lysines of histones H3 and H4 as measured in bulk chromatin.</s>  <s id="10">Interestingly, the pst1-1 mutant strain produced wild-type levels of Tf1-encoded proteins and cDNA, indicating that the defect in transposition occurred after reverse transcription.</s>  <s id="11">The results of immunofluorescence microscopy showed that the nuclear localization of the Tf1 capsid protein was disrupted in the strain with the pst1-1 mutation, indicating an important role of pst1(+) in modulating the nuclear import of Tf1 virus-like particles.</s></AbstractText>
+            </Abstract>
+            <Affiliation>Laboratory of Eukaryotic Gene Regulation, National Institute of Child Health and Human Development, National Institutes of Health, Bethesda, Maryland 20892, USA.</Affiliation>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Dang</LastName>
+                    <ForeName>V D</ForeName>
+                    <Initials>VD</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Benedik</LastName>
+                    <ForeName>M J</ForeName>
+                    <Initials>MJ</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Ekwall</LastName>
+                    <ForeName>K</ForeName>
+                    <Initials>K</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Choi</LastName>
+                    <ForeName>J</ForeName>
+                    <Initials>J</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Allshire</LastName>
+                    <ForeName>R C</ForeName>
+                    <Initials>RC</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Levin</LastName>
+                    <ForeName>H L</ForeName>
+                    <Initials>HL</Initials>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType>Journal Article</PublicationType>
+                <PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+            </PublicationTypeList>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>UNITED STATES</Country>
+            <MedlineTA>Mol Cell Biol</MedlineTA>
+            <NlmUniqueID>8109087</NlmUniqueID>
+            <ISSNLinking>0270-7306</ISSNLinking>
+        </MedlineJournalInfo>
+        <ChemicalList>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Enzyme Inhibitors</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Fungal Proteins</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Hemagglutinins</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Histone Deacetylase Inhibitors</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Hydroxamic Acids</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Repressor Proteins</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Retroelements</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>SIN3 protein, S cerevisiae</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Saccharomyces cerevisiae Proteins</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Schizosaccharomyces pombe Proteins</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Transcription Factors</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>pst1 protein, S pombe</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>58880-19-6</RegistryNumber>
+                <NameOfSubstance>trichostatin A</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>EC 3.5.1.98</RegistryNumber>
+                <NameOfSubstance>Histone Deacetylases</NameOfSubstance>
+            </Chemical>
+        </ChemicalList>
+        <CitationSubset>IM</CitationSubset>
+        <CommentsCorrectionsList>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell Biol. 1995 Jun;15(6):3310-7</RefSource>
+                <PMID Version="1">7760826</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Bioessays. 1995 May;17(5):423-30</RefSource>
+                <PMID Version="1">7786288</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genetics. 1994 Nov;138(3):587-95</RefSource>
+                <PMID Version="1">7851757</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genes Dev. 1995 Jan 15;9(2):218-33</RefSource>
+                <PMID Version="1">7851795</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Science. 1995 Mar 10;267(5203):1488-91</RefSource>
+                <PMID Version="1">7878467</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1995 Mar 10;80(5):767-76</RefSource>
+                <PMID Version="1">7889570</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1995 Mar 10;80(5):777-86</RefSource>
+                <PMID Version="1">7889571</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Yeast. 1994 Oct;10(10):1273-83</RefSource>
+                <PMID Version="1">7900416</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>J Biol Chem. 1994 Oct 7;269(40):25031-41</RefSource>
+                <PMID Version="1">7929189</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genetics. 1994 Mar;136(3):849-56</RefSource>
+                <PMID Version="1">8005439</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Gene. 1996 Oct 3;174(2):315-8</RefSource>
+                <PMID Version="1">8890754</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proc Natl Acad Sci U S A. 1996 Nov 12;93(23):12845-50</RefSource>
+                <PMID Version="1">8917507</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 1997 May 1;387(6628):16-7</RefSource>
+                <PMID Version="1">9139815</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 1997 May 1;387(6628):43-8</RefSource>
+                <PMID Version="1">9139820</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 1997 May 1;387(6628):49-55</RefSource>
+                <PMID Version="1">9139821</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1997 May 2;89(3):325-8</RefSource>
+                <PMID Version="1">9150131</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1997 May 2;89(3):349-56</RefSource>
+                <PMID Version="1">9150134</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1997 May 2;89(3):365-71</RefSource>
+                <PMID Version="1">9150136</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1997 May 2;89(3):373-80</RefSource>
+                <PMID Version="1">9150137</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Science. 1997 Jul 4;277(5322):105-9</RefSource>
+                <PMID Version="1">9204892</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proc Natl Acad Sci U S A. 1997 Jul 8;94(14):7412-6</RefSource>
+                <PMID Version="1">9207105</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell Biol. 1997 Aug;17(8):4852-8</RefSource>
+                <PMID Version="1">9234741</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 1997 Sep 25;389(6649):349-52</RefSource>
+                <PMID Version="1">9311776</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1997 Dec 26;91(7):1021-32</RefSource>
+                <PMID Version="1">9428524</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>J Virol. 1998 Feb;72(2):1324-33</RefSource>
+                <PMID Version="1">9445033</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell Biol. 1998 Feb;18(2):1105-14</RefSource>
+                <PMID Version="1">9448008</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell Mol Life Sci. 1998 Jan;54(1):6-20</RefSource>
+                <PMID Version="1">9487383</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genes Dev. 1998 Mar 1;12(5):599-606</RefSource>
+                <PMID Version="1">9499396</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proc Natl Acad Sci U S A. 1994 Jun 21;91(13):5913-7</RefSource>
+                <PMID Version="1">8016088</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>J Am Acad Dermatol. 1994 Sep;31(3 Pt 2):S2-5</RefSource>
+                <PMID Version="1">8077502</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 1993 Oct 14;365(6447):666-9</RefSource>
+                <PMID Version="1">8105392</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>J Cell Biol. 1994 May;125(3):517-30</RefSource>
+                <PMID Version="1">8175878</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>EMBO J. 1993 Dec;12(12):4885-95</RefSource>
+                <PMID Version="1">8223497</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Curr Genet. 1993 May-Jun;23(5-6):547-8</RefSource>
+                <PMID Version="1">8319314</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1993 Jan 15;72(1):29-38</RefSource>
+                <PMID Version="1">8422679</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell Biol. 1993 Mar;13(3):1805-14</RefSource>
+                <PMID Version="1">8441414</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell Biol. 1996 Jan;16(1):338-46</RefSource>
+                <PMID Version="1">8524313</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>J Virol. 1996 Feb;70(2):1027-32</RefSource>
+                <PMID Version="1">8551560</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Semin Cell Biol. 1995 Aug;6(4):229-36</RefSource>
+                <PMID Version="1">8562915</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genes Dev. 1996 Mar 1;10(5):620-33</RefSource>
+                <PMID Version="1">8598291</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genes Dev. 1996 Mar 1;10(5):634-45</RefSource>
+                <PMID Version="1">8598292</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1996 Mar 22;84(6):817-9</RefSource>
+                <PMID Version="1">8601304</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genes Dev. 1996 Apr 15;10(8):905-20</RefSource>
+                <PMID Version="1">8608939</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Exp Cell Res. 1996 Jun 15;225(2):277-85</RefSource>
+                <PMID Version="1">8660915</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Curr Opin Genet Dev. 1996 Apr;6(2):176-84</RefSource>
+                <PMID Version="1">8722174</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell Biol. 1996 Oct;16(10):5645-54</RefSource>
+                <PMID Version="1">8816477</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1996 Oct 4;87(1):5-8</RefSource>
+                <PMID Version="1">8858142</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genes Dev. 1998 Mar 15;12(6):797-805</RefSource>
+                <PMID Version="1">9512514</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proc Natl Acad Sci U S A. 1998 Mar 31;95(7):3519-24</RefSource>
+                <PMID Version="1">9520398</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 1998 Apr 23;392(6678):831-5</RefSource>
+                <PMID Version="1">9572144</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1998 May 1;93(3):321-4</RefSource>
+                <PMID Version="1">9590165</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nat Genet. 1998 Jun;19(2):187-91</RefSource>
+                <PMID Version="1">9620779</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 1998 May 28;393(6683):311-2</RefSource>
+                <PMID Version="1">9620794</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 1998 May 28;393(6683):386-9</RefSource>
+                <PMID Version="1">9620804</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nucleic Acids Res. 1998 Jul 1;26(13):3247-54</RefSource>
+                <PMID Version="1">9628926</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1989 Jun 30;57(7):1275-83</RefSource>
+                <PMID Version="1">2500253</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1987 Feb 27;48(4):579-87</RefSource>
+                <PMID Version="1">3028642</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Methods Enzymol. 1987;154:164-75</RefSource>
+                <PMID Version="1">3323810</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1987 Feb 27;48(4):567-77</RefSource>
+                <PMID Version="1">3545494</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>EMBO J. 1987 Jun;6(6):1757-63</RefSource>
+                <PMID Version="1">3649292</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proc Natl Acad Sci U S A. 1979 Sep;76(9):4350-4</RefSource>
+                <PMID Version="1">388439</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1998 Jun 26;93(7):1087-9</RefSource>
+                <PMID Version="1">9657139</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>EMBO J. 1992 Jan;11(1):291-303</RefSource>
+                <PMID Version="1">1310932</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>EMBO J. 1992 Mar;11(3):1145-53</RefSource>
+                <PMID Version="1">1312461</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1992 May 29;69(5):769-80</RefSource>
+                <PMID Version="1">1317268</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Curr Opin Genet Dev. 1992 Oct;2(5):705-11</RefSource>
+                <PMID Version="1">1333855</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1992 Apr 17;69(2):375-84</RefSource>
+                <PMID Version="1">1568251</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proc Natl Acad Sci U S A. 1992 Jan 1;89(1):227-31</RefSource>
+                <PMID Version="1">1729693</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Trends Biochem Sci. 1991 May;16(5):173-7</RefSource>
+                <PMID Version="1">1882418</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell Biol. 1991 Dec;11(12):6306-16</RefSource>
+                <PMID Version="1">1944290</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Methods Enzymol. 1991;194:795-823</RefSource>
+                <PMID Version="1">2005825</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proteins. 1991;9(3):180-90</RefSource>
+                <PMID Version="1">2006136</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proc Natl Acad Sci U S A. 1990 Jun;87(12):4722-6</RefSource>
+                <PMID Version="1">2112746</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell Biol. 1990 Dec;10(12):6791-8</RefSource>
+                <PMID Version="1">2174117</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genetics. 1990 Jun;125(2):313-20</RefSource>
+                <PMID Version="1">2199313</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell Biol. 1990 Nov;10(11):5927-36</RefSource>
+                <PMID Version="1">2233725</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1990 Jan 26;60(2):319-28</RefSource>
+                <PMID Version="1">2297790</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1990 Jan 26;60(2):307-17</RefSource>
+                <PMID Version="1">2404612</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1989 Mar 10;56(5):777-83</RefSource>
+                <PMID Version="1">2493990</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Cell. 1995 Nov 17;83(4):569-76</RefSource>
+                <PMID Version="1">7585960</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Science. 1995 Sep 8;269(5229):1429-31</RefSource>
+                <PMID Version="1">7660126</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proc Natl Acad Sci U S A. 1993 Jul 1;90(13):6125-9</RefSource>
+                <PMID Version="1">7687060</PMID>
+            </CommentsCorrections>
+        </CommentsCorrectionsList>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Amino Acid Sequence</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Enzyme Inhibitors</DescriptorName>
+                <QualifierName MajorTopicYN="N">pharmacology</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Fungal Proteins</DescriptorName>
+                <QualifierName MajorTopicYN="Y">genetics</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Hemagglutinins</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Histone Deacetylase Inhibitors</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Histone Deacetylases</DescriptorName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Hydroxamic Acids</DescriptorName>
+                <QualifierName MajorTopicYN="N">pharmacology</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Molecular Sequence Data</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Mutagenesis</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Repressor Proteins</DescriptorName>
+                <QualifierName MajorTopicYN="Y">genetics</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">Retroelements</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Saccharomyces cerevisiae</DescriptorName>
+                <QualifierName MajorTopicYN="N">genetics</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">Saccharomyces cerevisiae Proteins</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Schizosaccharomyces</DescriptorName>
+                <QualifierName MajorTopicYN="Y">genetics</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Schizosaccharomyces pombe Proteins</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Transcription Factors</DescriptorName>
+                <QualifierName MajorTopicYN="Y">genetics</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+        </MeshHeadingList>
+        <OtherID Source="NLM">PMC84027</OtherID>
+    </MedlineCitation>

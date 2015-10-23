@@ -1,0 +1,126 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+	<PMID>19754891</PMID>
+	<DateCreated>
+		<Year>2009</Year>
+		<Month>09</Month>
+		<Day>16</Day>
+	</DateCreated>
+	<DateCompleted>
+		<Year>2009</Year>
+		<Month>11</Month>
+		<Day>04</Day>
+	</DateCompleted>
+	<Article PubModel="Print">
+		<Journal>
+			<ISSN IssnType="Electronic">1600-065X</ISSN>
+			<JournalIssue CitedMedium="Internet">
+				<Volume>231</Volume>
+				<Issue>1</Issue>
+				<PubDate>
+					<Year>2009</Year>
+					<Month>Sep</Month>
+				</PubDate>
+			</JournalIssue>
+			<Title>Immunological reviews</Title>
+			<ISOAbbreviation>Immunol. Rev.</ISOAbbreviation>
+		</Journal>
+		<ArticleTitle>The molecular physiology of CRAC channels.
+		</ArticleTitle>
+		<Pagination>
+			<MedlinePgn>88-98</MedlinePgn>
+		</Pagination>
+		<Abstract>
+			<AbstractText>The Ca2+release-activated Ca2+ (CRAC) channel is a
+				highly Ca2+-selective store-operated channel expressed in T cells,
+				mast cells, and various other tissues. CRAC channels regulate
+				critical cellular processes such as gene expression, motility, and
+				the secretion of inflammatory mediators. The identification of
+				Orai1, a key subunit of the CRAC channel pore, and STIM1, the
+				endoplasmic reticulum (ER) Ca2+ sensor, have provided the tools to
+				illuminate the mechanisms of regulation and the pore properties of
+				CRAC channels. Recent evidence indicates that the activation of CRAC
+				channels by store depletion involves a coordinated series of steps,
+				which include the redistributions of STIM1 and Orai1, direct
+				physical interactions between these proteins, and conformational
+				changes in Orai1, culminating in channel activation. Additional
+				studies have revealed that the high Ca2+ selectivity of CRAC
+				channels arises from the presence of an intrapore Ca2+ binding site,
+				the properties of which are finely honed to occlude the permeation
+				of the much more prevalent Na+. Structure-function studies have led
+				to the identification of the potential pore-binding sites for Ca2+,
+				providing a firm framework for understanding the mechanisms of
+				selectivity and gating of the CRAC channel. This review summarizes
+				recent progress in understanding the mechanisms of CRAC channel
+				activation, pore properties, and modulation.</AbstractText>
+		</Abstract>
+		<Affiliation>Department of Molecular Pharmacology and Biological
+			Chemistry, Northwestern University School of Medicine, Chicago, IL
+			60611, USA. m-prakriya@northwestern.edu</Affiliation>
+		<AuthorList CompleteYN="Y">
+			<Author ValidYN="Y">
+				<LastName>Prakriya</LastName>
+				<ForeName>Murali</ForeName>
+				<Initials>M</Initials>
+			</Author>
+		</AuthorList>
+		<Language>eng</Language>
+		<PublicationTypeList>
+			<PublicationType>Journal Article</PublicationType>
+			<PublicationType>Research Support, N.I.H., Extramural
+			</PublicationType>
+			<PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+			<PublicationType>Review</PublicationType>
+		</PublicationTypeList>
+	</Article>
+	<MedlineJournalInfo>
+		<Country>Denmark</Country>
+		<MedlineTA>Immunol Rev</MedlineTA>
+		<NlmUniqueID>7702118</NlmUniqueID>
+		<ISSNLinking>0105-2896</ISSNLinking>
+	</MedlineJournalInfo>
+	<ChemicalList>
+		<Chemical>
+			<RegistryNumber>0</RegistryNumber>
+			<NameOfSubstance>Calcium Channels</NameOfSubstance>
+		</Chemical>
+		<Chemical>
+			<RegistryNumber>7440-70-2</RegistryNumber>
+			<NameOfSubstance>Calcium</NameOfSubstance>
+		</Chemical>
+	</ChemicalList>
+	<CitationSubset>IM</CitationSubset>
+	<MeshHeadingList>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Calcium</DescriptorName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Calcium Channels
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="N">genetics</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Gene Expression
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Ion Channel Gating
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">T-Lymphocytes
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">immunology</QualifierName>
+			<QualifierName MajorTopicYN="N">metabolism</QualifierName>
+		</MeshHeading>
+	</MeshHeadingList>
+	<NumberOfReferences>94</NumberOfReferences>
+</MedlineCitation>

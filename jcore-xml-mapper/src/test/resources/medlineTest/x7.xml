@@ -1,0 +1,141 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+	<PMID>19754894</PMID>
+	<DateCreated>
+		<Year>2009</Year>
+		<Month>09</Month>
+		<Day>16</Day>
+	</DateCreated>
+	<DateCompleted>
+		<Year>2009</Year>
+		<Month>11</Month>
+		<Day>04</Day>
+	</DateCompleted>
+	<Article PubModel="Print">
+		<Journal>
+			<ISSN IssnType="Electronic">1600-065X</ISSN>
+			<JournalIssue CitedMedium="Internet">
+				<Volume>231</Volume>
+				<Issue>1</Issue>
+				<PubDate>
+					<Year>2009</Year>
+					<Month>Sep</Month>
+				</PubDate>
+			</JournalIssue>
+			<Title>Immunological reviews</Title>
+			<ISOAbbreviation>Immunol. Rev.</ISOAbbreviation>
+		</Journal>
+		<ArticleTitle>The immunological synapse controls local and global
+			calcium signals in T lymphocytes.</ArticleTitle>
+		<Pagination>
+			<MedlinePgn>132-47</MedlinePgn>
+		</Pagination>
+		<Abstract>
+			<AbstractText>Cell polarization is a key feature of T-cell function.
+				The immunological synapse (IS) between T cells and
+				antigen-presenting cells is a beautiful example of how polarization
+				of cells is used to guide cell function. Receptors, signal
+				transducers, the cytoskeleton, and organelles are enriched at or
+				depleted from the IS after its formation, and in many cases these
+				re-localizations have already been linked with certain T-cell
+				functions. One key step for T-cell activation is a rise in the
+				cytoplasmic calcium concentration. Whereas it is undisputed that the
+				IS initiates and controls calcium signals in T cells, very little is
+				known about the role of T-cell polarization for calcium signals and
+				calcium-dependent signal transduction. We briefly summarize the
+				basic commonly agreed principles of IS-dependent calcium signal
+				generation but then focus on the less well understood influence of
+				polarization on calcium signals. The discussion of the role of
+				polarization for calcium signals leads to a model how the IS
+				controls local and global calcium signals and calcium-dependent
+				T-cell functions. We develop a theoretical formalism based on
+				existing spatiotemporal calcium dynamic simulations to better
+				understand the model in the future and allow further predictions
+				which can be tested by fast, high resolution live-cell microscopy.
+			</AbstractText>
+		</Abstract>
+		<Affiliation>Department of Biophysics, Saarland University, Homburg,
+			Germany.</Affiliation>
+		<AuthorList CompleteYN="Y">
+			<Author ValidYN="Y">
+				<LastName>Kummerow</LastName>
+				<ForeName>Carsten</ForeName>
+				<Initials>C</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Junker</LastName>
+				<ForeName>Christian</ForeName>
+				<Initials>C</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Kruse</LastName>
+				<ForeName>Karsten</ForeName>
+				<Initials>K</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Rieger</LastName>
+				<ForeName>Heiko</ForeName>
+				<Initials>H</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Quintana</LastName>
+				<ForeName>Ariel</ForeName>
+				<Initials>A</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Hoth</LastName>
+				<ForeName>Markus</ForeName>
+				<Initials>M</Initials>
+			</Author>
+		</AuthorList>
+		<Language>eng</Language>
+		<PublicationTypeList>
+			<PublicationType>Journal Article</PublicationType>
+			<PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+			<PublicationType>Review</PublicationType>
+		</PublicationTypeList>
+	</Article>
+	<MedlineJournalInfo>
+		<Country>Denmark</Country>
+		<MedlineTA>Immunol Rev</MedlineTA>
+		<NlmUniqueID>7702118</NlmUniqueID>
+		<ISSNLinking>0105-2896</ISSNLinking>
+	</MedlineJournalInfo>
+	<CitationSubset>IM</CitationSubset>
+	<MeshHeadingList>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="Y">Calcium Signaling
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Cell Polarity
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Cell Shape
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Immunological Synapses
+			</DescriptorName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Lymphocyte Activation
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">T-Lymphocytes
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">cytology</QualifierName>
+			<QualifierName MajorTopicYN="Y">immunology</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+	</MeshHeadingList>
+	<NumberOfReferences>155</NumberOfReferences>
+</MedlineCitation>

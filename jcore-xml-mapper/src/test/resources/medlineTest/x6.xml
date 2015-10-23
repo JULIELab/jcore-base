@@ -1,0 +1,128 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+	<PMID>19754893</PMID>
+	<DateCreated>
+		<Year>2009</Year>
+		<Month>09</Month>
+		<Day>16</Day>
+	</DateCreated>
+	<DateCompleted>
+		<Year>2009</Year>
+		<Month>11</Month>
+		<Day>04</Day>
+	</DateCompleted>
+	<Article PubModel="Print">
+		<Journal>
+			<ISSN IssnType="Electronic">1600-065X</ISSN>
+			<JournalIssue CitedMedium="Internet">
+				<Volume>231</Volume>
+				<Issue>1</Issue>
+				<PubDate>
+					<Year>2009</Year>
+					<Month>Sep</Month>
+				</PubDate>
+			</JournalIssue>
+			<Title>Immunological reviews</Title>
+			<ISOAbbreviation>Immunol. Rev.</ISOAbbreviation>
+		</Journal>
+		<ArticleTitle>Structurally delineating stromal interaction molecules
+			as the endoplasmic reticulum calcium sensors and regulators of
+			calcium release-activated calcium entry.</ArticleTitle>
+		<Pagination>
+			<MedlinePgn>113-31</MedlinePgn>
+		</Pagination>
+		<Abstract>
+			<AbstractText>The endoplasmic reticulum (ER) lumen stores a crucial
+				source of calcium (Ca2+) maintained orders of magnitude higher than
+				the cytosol for the activation of a plethora of cellular responses
+				transmitted in health and disease by a mutually efficient and
+				communicative exchange of Ca2+ between compartments. A coordination
+				of the Ca2+ signal is evident in the development of Ca2+
+				release-activated Ca2+ (CRAC) entry, vital to lymphocyte activation
+				and replenishing of the ER Ca2+ stores, where modest decreases in ER
+				luminal Ca2+ induce sustained increases in cytosolic Ca2+ sourced
+				from steadfast extracellular Ca2+ supplies. While protein sensors
+				that transduce Ca2+ signals in the cytosol such as calmodulin are
+				succinctly understood, comparative data on the ER luminal Ca2+
+				sensors is only recently coming to light with the discovery that
+				stromal interaction molecules (STIMs) sense variations in ER stored
+				Ca2+ levels in the functional regulation of plasma membrane Orai
+				proteins, the major component of CRAC channel pores. Drawing from
+				data on the role of STIMs in the modulation of CRAC entry, this
+				review illustrates the structural features that delimit the
+				functional characteristics of ER Ca2+ sensors relative to well known
+				cytoplasmic Ca2+ sensors.</AbstractText>
+		</Abstract>
+		<Affiliation>Division of Signaling Biology and Department of Medical
+			Biophysics, Ontario Cancer Institute and University of Toronto,
+			Toronto, ON, Canada.</Affiliation>
+		<AuthorList CompleteYN="Y">
+			<Author ValidYN="Y">
+				<LastName>Stathopulos</LastName>
+				<ForeName>Peter B</ForeName>
+				<Initials>PB</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Ikura</LastName>
+				<ForeName>Mitsuhiko</ForeName>
+				<Initials>M</Initials>
+			</Author>
+		</AuthorList>
+		<Language>eng</Language>
+		<PublicationTypeList>
+			<PublicationType>Journal Article</PublicationType>
+			<PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+			<PublicationType>Review</PublicationType>
+		</PublicationTypeList>
+	</Article>
+	<MedlineJournalInfo>
+		<Country>Denmark</Country>
+		<MedlineTA>Immunol Rev</MedlineTA>
+		<NlmUniqueID>7702118</NlmUniqueID>
+		<ISSNLinking>0105-2896</ISSNLinking>
+	</MedlineJournalInfo>
+	<ChemicalList>
+		<Chemical>
+			<RegistryNumber>0</RegistryNumber>
+			<NameOfSubstance>Membrane Proteins</NameOfSubstance>
+		</Chemical>
+		<Chemical>
+			<RegistryNumber>7440-70-2</RegistryNumber>
+			<NameOfSubstance>Calcium</NameOfSubstance>
+		</Chemical>
+	</ChemicalList>
+	<CitationSubset>IM</CitationSubset>
+	<MeshHeadingList>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Calcium</DescriptorName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Endoplasmic Reticulum
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+			<QualifierName MajorTopicYN="N">secretion</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Membrane Proteins
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Protein Binding
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Protein Multimerization
+			</DescriptorName>
+		</MeshHeading>
+	</MeshHeadingList>
+	<NumberOfReferences>120</NumberOfReferences>
+</MedlineCitation>

@@ -1,0 +1,127 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+	<PMID>19754889</PMID>
+	<DateCreated>
+		<Year>2009</Year>
+		<Month>09</Month>
+		<Day>16</Day>
+	</DateCreated>
+	<DateCompleted>
+		<Year>2009</Year>
+		<Month>11</Month>
+		<Day>04</Day>
+	</DateCompleted>
+	<Article PubModel="Print">
+		<Journal>
+			<ISSN IssnType="Electronic">1600-065X</ISSN>
+			<JournalIssue CitedMedium="Internet">
+				<Volume>231</Volume>
+				<Issue>1</Issue>
+				<PubDate>
+					<Year>2009</Year>
+					<Month>Sep</Month>
+				</PubDate>
+			</JournalIssue>
+			<Title>Immunological reviews</Title>
+			<ISOAbbreviation>Immunol. Rev.</ISOAbbreviation>
+		</Journal>
+		<ArticleTitle>CRAC channels and Ca2+ signaling in mast cells.
+		</ArticleTitle>
+		<Pagination>
+			<MedlinePgn>45-58</MedlinePgn>
+		</Pagination>
+		<Abstract>
+			<AbstractText>Mast cells are integral members of the immune system.
+				Upon activation by a rise in cytoplasmic Ca2+, they release a
+				battery of paracrine signals, chemokines, and cytokines, which help
+				sculpt the subsequent immune response. Ca2+ entry through
+				store-operated Ca2+ release-activated Ca2+ (CRAC) channels in the
+				plasma membrane is central for driving most of these responses. The
+				molecular basis of the CRAC channel has been identified, with Orai1
+				forming the channel pore. Recent work has revealed that a range of
+				mast cell responses are activated by spatially restricted Ca2+
+				signals just below the plasma membrane. These Ca2+ microdomains can
+				activate cytosolic enzymes, leading to the generation of
+				intracellular messengers as well as proinflammatory molecules like
+				LTC4. In this review, we describe key features of CRAC channels in
+				mast cells, how they generate local Ca2+ signals, and how the cell
+				can decode these restricted signals to generate a raft of responses.
+			</AbstractText>
+		</Abstract>
+		<Affiliation>Department of Physiology, Anatomy and Genetics, Oxford
+			University, Oxford, UK.</Affiliation>
+		<AuthorList CompleteYN="Y">
+			<Author ValidYN="Y">
+				<LastName>Di Capite</LastName>
+				<ForeName>Joseph</ForeName>
+				<Initials>J</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Parekh</LastName>
+				<ForeName>Anant B</ForeName>
+				<Initials>AB</Initials>
+			</Author>
+		</AuthorList>
+		<Language>eng</Language>
+		<GrantList CompleteYN="Y">
+			<Grant>
+				<Agency>Medical Research Council</Agency>
+				<Country>United Kingdom</Country>
+			</Grant>
+		</GrantList>
+		<PublicationTypeList>
+			<PublicationType>Journal Article</PublicationType>
+			<PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+			<PublicationType>Review</PublicationType>
+		</PublicationTypeList>
+	</Article>
+	<MedlineJournalInfo>
+		<Country>Denmark</Country>
+		<MedlineTA>Immunol Rev</MedlineTA>
+		<NlmUniqueID>7702118</NlmUniqueID>
+		<ISSNLinking>0105-2896</ISSNLinking>
+	</MedlineJournalInfo>
+	<ChemicalList>
+		<Chemical>
+			<RegistryNumber>0</RegistryNumber>
+			<NameOfSubstance>Calcium Channels</NameOfSubstance>
+		</Chemical>
+		<Chemical>
+			<RegistryNumber>85166-31-0</RegistryNumber>
+			<NameOfSubstance>Inositol 1,4,5-Trisphosphate</NameOfSubstance>
+		</Chemical>
+	</ChemicalList>
+	<CitationSubset>IM</CitationSubset>
+	<MeshHeadingList>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Calcium Channels
+			</DescriptorName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="Y">Calcium Signaling
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Inositol
+				1,4,5-Trisphosphate</DescriptorName>
+			<QualifierName MajorTopicYN="N">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Mast Cells
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">immunology</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Paracrine Communication
+			</DescriptorName>
+		</MeshHeading>
+	</MeshHeadingList>
+	<NumberOfReferences>107</NumberOfReferences>
+</MedlineCitation>
