@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>JCoRe Document Structure Types</name>
+  <description>The type system contains the types for the annotation of document sutructure, e.g. titles, abstract text, captions etc.</description>
+  <version>2.0.0-SNAPSHOT</version>
+  <vendor>JULIE Lab Jena, Germany</vendor>
+  <imports>
+    <import location="jcore-basic-types.xml"/>
+  </imports>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jules.types.Paragraph</name>
+      <description>A paragraph is a self-contained unit of discourse in a written text dealing with a particular point or idea.</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Section</name>
+      <description>a section is a part of the text that often has a heading, an id, a section type, figures, tables, citations and footnotes that occur in this section</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+      <features>
+        <featureDescription>
+          <name>sectionHeading</name>
+          <description>the title of the section</description>
+          <rangeTypeName>de.julielab.jules.types.Title</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>sectionType</name>
+          <description>the type of the section (e.g. results)</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>textObjects</name>
+          <description>the text objects (figure, table, boxed text etc.) that are associated with a particular section</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.TextObject</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>sectionId</name>
+          <description>the id of the section, for example as mentioned in the original file, or level of the section</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>depth</name>
+          <description>depth of the section, e.g. 0 -&gt; section, 1 -&gt; subsection, 2 -&gt; sub-subsection, ...</description>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Zone</name>
+      <description>A Zone is a distinct division of text. It is an abstract Type and provides a parent type for sub-types which represent various kinds of text zones.</description>
+      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Title</name>
+      <description>Title annotates titles covering various text units, including the whole paper, sections and subsections.</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+    <features>
+        <featureDescription>
+          <name>titleType</name>
+          <description>The type of the title:
+table: title of a table
+figure: title of a figure
+caption: title of a caption
+footnote: title of a footnote</description>
+          <rangeTypeName>de.julielab.jules.types.TitleType</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Caption</name>
+      <description>the caption of figures, tables etc.
+
+feature captionTitle is a Title-Annotation of the title of the caption, if existent.
+
+feature captionType is an Enumeration, stating to what type of entity the caption belongs, e.g. figure or table</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+    <features>
+        <featureDescription>
+          <name>captionTitle</name>
+          <description>The title of a figure / table caption, if it exists</description>
+          <rangeTypeName>de.julielab.jules.types.Title</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>captionType</name>
+          <description>The type of entity, this caption belongs to, e.g. figure or table</description>
+          <rangeTypeName>de.julielab.jules.types.CaptionType</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.TextObject</name>
+      <description>Object, on our case, are annotations such as figures, tables, boxed text etc.</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+      <features>
+        <featureDescription>
+          <name>objectType</name>
+          <description>such as figure, table, boxed-text etc.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>objectId</name>
+          <description>the id of the object as found in the text</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>objectLabel</name>
+          <description>the label of an object</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>objectCaption</name>
+          <description>the caption that comes with the object</description>
+          <rangeTypeName>de.julielab.jules.types.Caption</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.AbstractText</name>
+      <description>Annotation of the complete abstract.</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+    <features>
+        <featureDescription>
+          <name>structuredAbstractParts</name>
+          <description>A List of all parts of a structured abstract. Empty, if the abstract consists of only one part and has no titles.</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.AbstractPart</elementType>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Style</name>
+      <description>Text-markup information (italic, bold etc.) on any (e.g. character) level. Allows to keep the original style markup of the text, several style types might be set to same (or overlapping) range, when different styles are set to the same text region.</description>
+      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>styleName</name>
+          <description>the name of the style used.</description>
+          <rangeTypeName>de.julielab.jules.types.StyleName</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>encoding</name>
+          <description>the encoding used.</description>
+          <rangeTypeName>de.julielab.jules.types.Encoding</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.StyleName</name>
+      <description/>
+      <supertypeName>uima.cas.String</supertypeName>
+      <allowedValues>
+        <value>
+          <string>slanted</string>
+          <description/>
+        </value>
+        <value>
+          <string>italic</string>
+          <description/>
+        </value>
+        <value>
+          <string>bold</string>
+          <description/>
+        </value>
+        <value>
+          <string>underscore</string>
+          <description/>
+        </value>
+        <value>
+          <string>stricke-though</string>
+          <description/>
+        </value>
+      </allowedValues>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Encoding</name>
+      <description>Encoding Information</description>
+      <supertypeName>uima.cas.String</supertypeName>
+      <allowedValues>
+        <value>
+          <string>UTF-8</string>
+          <description/>
+        </value>
+        <value>
+          <string>UTF-16</string>
+          <description/>
+        </value>
+      </allowedValues>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.List</name>
+      <description>used for annotation of lists</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+      <features>
+        <featureDescription>
+          <name>itemList</name>
+          <description>contains items of the level 1. The items of the level 1 could contain further items of next level and so on in order to represent an iterative structure of list items.</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.ListItem</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.ListItem</name>
+      <description>item of a list</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+      <features>
+        <featureDescription>
+          <name>itemList</name>
+          <description>items of the next level (sub-items)</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.ListItem</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>level</name>
+          <description>Level of indentation of the list item.</description>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.SectionTitle</name>
+      <description>Title of a text section in contrast to the title of the whole document.</description>
+      <supertypeName>de.julielab.jules.types.Title</supertypeName>
+    <features>
+        <featureDescription>
+          <name>depth</name>
+          <description>depth of the section, e.g. 0 -&gt; section, 1 -&gt; subsection, 2 -&gt; sub-subsection, ...</description>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Figure</name>
+      <description>Annotation for all elements in the CAS that belong to figures, e.g. figure title, figure caption etc.</description>
+      <supertypeName>de.julielab.jules.types.TextObject</supertypeName>
+    <features>
+        <featureDescription>
+          <name>figureTitle</name>
+          <description>Annotation to mark the title of a caption specific to figure text object in the CAS document text.</description>
+          <rangeTypeName>de.julielab.jules.types.Title</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Table</name>
+      <description>An annotation for CAS elements that belong to a table, e.g. table title, table caption etc.</description>
+      <supertypeName>de.julielab.jules.types.TextObject</supertypeName>
+    <features>
+        <featureDescription>
+          <name>tableFootnotes</name>
+          <description>An array collecting all footnotes, appearing in this table</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.Footnote</elementType>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Footnote</name>
+      <description>Footnotes of all kinds, i.e. footnotes found in running text or in tables etc.</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+    <features>
+        <featureDescription>
+          <name>footnoteTitle</name>
+          <description/>
+          <rangeTypeName>de.julielab.jules.types.Title</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.AbstractPart</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+      <features>
+        <featureDescription>
+          <name>abstractPartHeading</name>
+          <description>The title of a part of a structured abstract, e.g. "Background", "Methods", "Results", ...</description>
+          <rangeTypeName>de.julielab.jules.types.Title</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Bibliography</name>
+      <description>The whole bibliography, beginning with a title like e.g. References or Literature and ending at the end of the last reference.</description>
+      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+    </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jules.types.TitleType</name>
+      <description>The type of a title:
+abstract: title of an abstract or abstract part
+table: title of a table
+figure: title of a figure
+caption: title of a caption
+footnote: title of a footnote
+abstract: title of an abstract or abstract part
+document: title of the document</description>
+      <supertypeName>uima.cas.String</supertypeName>
+      <allowedValues>
+      	<value>
+          <string>table</string>
+          <description/>
+        </value>
+        <value>
+          <string>figure</string>
+          <description/>
+        </value>
+        <value>
+          <string>caption</string>
+          <description/>
+        </value>
+        <value>
+          <string>footnote</string>
+          <description/>
+        </value>
+                <value>
+          <string>abstract</string>
+          <description/>
+        </value>
+        <value>
+          <string>document</string>
+          <description/>
+        </value>
+      </allowedValues>
+    </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jules.types.CaptionType</name>
+      <description>The type of entity the Caption belongs to, e.g. a figure or a table</description>
+      <supertypeName>uima.cas.String</supertypeName>
+            <allowedValues>
+      	<value>
+          <string>table</string>
+          <description/>
+        </value>
+        <value>
+          <string>figure</string>
+          <description/>
+        </value>
+      </allowedValues>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

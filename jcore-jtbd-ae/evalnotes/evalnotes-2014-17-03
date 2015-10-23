@@ -1,0 +1,50 @@
+Here, we want to asses whether the addition of the character 'x' as potential
+token boundary has some impact on JTBD performance on the english biomed data.
+The addition of the character as a token boundary character is required by
+the German corpus 'FraMed' where 'x' is employed as a multiplication
+character.
+
+Evaluation was performed on Julie Token Corpus as described in the original
+JSBD / JTBD paper.
+Actual data: /data/data_corpora/JulieAnnotatedCorpora/Biology/TokenAnnotated/traintestdata/biotoken.[sent|tok]
+Evaluation method: JTBD built-in 10-fold cross-validation
+Results:
+
+WITH 'x' as token boundary:
+
+ACC in round 0: 0.964
+ACC in round 1: 0.959
+ACC in round 2: 0.957
+ACC in round 3: 0.963
+ACC in round 4: 0.966
+ACC in round 5: 0.961
+ACC in round 6: 0.967
+ACC in round 7: 0.959
+ACC in round 8: 0.962
+ACC in round 9: 0.965
+
+
+------------------------------------
+avg accuracy: 0.962
+avg F-score: 0.981
+------------------------------------
+
+
+WITHOUT 'x' as token boundary:
+
+ACC in round 0: 0.944
+ACC in round 1: 0.954
+ACC in round 2: 0.954
+ACC in round 3: 0.961
+ACC in round 4: 0.961
+ACC in round 5: 0.955
+ACC in round 6: 0.944
+ACC in round 7: 0.953
+ACC in round 8: 0.960
+ACC in round 9: 0.959
+
+
+------------------------------------
+avg accuracy: 0.955
+avg F-score: 0.977
+------------------------------------

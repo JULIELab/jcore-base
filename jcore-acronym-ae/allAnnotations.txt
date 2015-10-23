@@ -1,0 +1,300 @@
+src/main/resources/input/mmax_1180623333978
+----------------
+full_form_introduced:	Schistosoma haematobium - derived recombinant glutathione S-transferase 	[206 - 276]
+acronym_form:	FCA 	[386 - 388]
+full_form_introduced:	Freund 's Complete Adjuvant 	[356 - 382]
+acronym_form:	Sh28GST 	[280 - 286]
+
+
+src/main/resources/input/mmax_1180623334001
+----------------
+acronym_form:	PBPC 	[461 - 464]
+full_form_introduced:	autologous bone marrow transplantation 	[373 - 410]
+full_form_introduced:	peripheral blood progenitor cell 	[426 - 457]
+acronym_form:	rhIL 	[262 - 265]
+acronym_form:	ABMT 	[414 - 417]
+full_form_introduced:	recombinant human interleukin 	[230 - 258]
+
+
+src/main/resources/input/mmax_1180623334014
+----------------
+acronym_form:	Csfu 	[711 - 714]
+acronym_form:	fU 	[341 - 342]
+full_form_introduced:	fraction unbound 	[322 - 337]
+full_form_introduced:	cyclosporine fU 	[693 - 707]
+
+
+src/main/resources/input/mmax_1180623334037
+----------------
+full_form_introduced:	Polycomb group 	[129 - 142]
+acronym_form:	PcG 	[146 - 148]
+
+
+src/main/resources/input/mmax_1180623334050
+----------------
+full_form_introduced:	soluble interleukin-2 receptor 	[827 - 856]
+acronym_form:	sIL-2R 	[860 - 865]
+
+
+src/main/resources/input/mmax_1180623334062
+----------------
+acronym_form:	TRAP 	[441 - 444]
+full_form_introduced:	Protease - activated receptor 1 	[0 - 30]
+acronym_form:	PAR-1 	[300 - 304]
+full_form_introduced:	protease - activated receptor 	[268 - 296]
+full_form_introduced:	reverse transcriptase - polymerase chain reaction 	[645 - 693]
+acronym_form:	RT - PCR 	[697 - 704]
+acronym_form:	PAR-1 	[34 - 38]
+full_form_introduced:	thrombin receptor activation peptide 	[402 - 437]
+
+
+src/main/resources/input/mmax_1180623333978
+----------------
+full_form_introduced:	Schistosoma haematobium - derived recombinant glutathione S-transferase 	[206 - 276]
+acronym_form:	FCA 	[386 - 388]
+full_form_introduced:	Freund 's Complete Adjuvant 	[356 - 382]
+acronym_form:	Sh28GST 	[280 - 286]
+
+
+src/main/resources/input/mmax_1180623334001
+----------------
+acronym_form:	PBPC 	[461 - 464]
+full_form_introduced:	autologous bone marrow transplantation 	[373 - 410]
+full_form_introduced:	peripheral blood progenitor cell 	[426 - 457]
+acronym_form:	rhIL 	[262 - 265]
+acronym_form:	ABMT 	[414 - 417]
+full_form_introduced:	recombinant human interleukin 	[230 - 258]
+
+
+src/main/resources/input/mmax_1180623334014
+----------------
+acronym_form:	Csfu 	[711 - 714]
+acronym_form:	fU 	[341 - 342]
+full_form_introduced:	fraction unbound 	[322 - 337]
+full_form_introduced:	cyclosporine fU 	[693 - 707]
+
+
+src/main/resources/input/mmax_1180623334037
+----------------
+full_form_introduced:	Polycomb group 	[129 - 142]
+acronym_form:	PcG 	[146 - 148]
+
+
+src/main/resources/input/mmax_1180623334050
+----------------
+full_form_introduced:	soluble interleukin-2 receptor 	[827 - 856]
+acronym_form:	sIL-2R 	[860 - 865]
+
+
+src/main/resources/input/mmax_1180623334062
+----------------
+acronym_form:	TRAP 	[441 - 444]
+full_form_introduced:	Protease - activated receptor 1 	[0 - 30]
+acronym_form:	PAR-1 	[300 - 304]
+full_form_introduced:	protease - activated receptor 	[268 - 296]
+full_form_introduced:	reverse transcriptase - polymerase chain reaction 	[645 - 693]
+acronym_form:	RT - PCR 	[697 - 704]
+acronym_form:	PAR-1 	[34 - 38]
+full_form_introduced:	thrombin receptor activation peptide 	[402 - 437]
+
+
+src/main/resources/input/mmax_1180623333978
+----------------
+full_form_introduced:	Schistosoma haematobium - derived recombinant glutathione S-transferase 	[206 - 276]
+acronym_form:	FCA 	[386 - 388]
+full_form_introduced:	Freund 's Complete Adjuvant 	[356 - 382]
+acronym_form:	Sh28GST 	[280 - 286]
+
+
+src/main/resources/input/mmax_1180623334001
+----------------
+acronym_form:	PBPC 	[461 - 464]
+full_form_introduced:	autologous bone marrow transplantation 	[373 - 410]
+full_form_introduced:	peripheral blood progenitor cell 	[426 - 457]
+acronym_form:	rhIL 	[262 - 265]
+acronym_form:	ABMT 	[414 - 417]
+full_form_introduced:	recombinant human interleukin 	[230 - 258]
+
+
+src/main/resources/input/mmax_1180623334014
+----------------
+acronym_form:	Csfu 	[711 - 714]
+acronym_form:	fU 	[341 - 342]
+full_form_introduced:	fraction unbound 	[322 - 337]
+full_form_introduced:	cyclosporine fU 	[693 - 707]
+
+
+src/main/resources/input/mmax_1180623334037
+----------------
+full_form_introduced:	Polycomb group 	[129 - 142]
+acronym_form:	PcG 	[146 - 148]
+
+
+src/main/resources/input/mmax_1180623334050
+----------------
+full_form_introduced:	soluble interleukin-2 receptor 	[827 - 856]
+acronym_form:	sIL-2R 	[860 - 865]
+
+
+src/main/resources/input/mmax_1180623334062
+----------------
+acronym_form:	TRAP 	[441 - 444]
+full_form_introduced:	Protease - activated receptor 1 	[0 - 30]
+acronym_form:	PAR-1 	[300 - 304]
+full_form_introduced:	protease - activated receptor 	[268 - 296]
+full_form_introduced:	reverse transcriptase - polymerase chain reaction 	[645 - 693]
+acronym_form:	RT - PCR 	[697 - 704]
+acronym_form:	PAR-1 	[34 - 38]
+full_form_introduced:	thrombin receptor activation peptide 	[402 - 437]
+
+
+src/main/resources/input/mmax_1180623333978
+----------------
+full_form_introduced:	Schistosoma haematobium - derived recombinant glutathione S-transferase 	[206 - 276]
+acronym_form:	FCA 	[386 - 388]
+full_form_introduced:	Freund 's Complete Adjuvant 	[356 - 382]
+acronym_form:	Sh28GST 	[280 - 286]
+
+
+src/main/resources/input/mmax_1180623334001
+----------------
+acronym_form:	PBPC 	[461 - 464]
+full_form_introduced:	autologous bone marrow transplantation 	[373 - 410]
+full_form_introduced:	peripheral blood progenitor cell 	[426 - 457]
+acronym_form:	rhIL 	[262 - 265]
+acronym_form:	ABMT 	[414 - 417]
+full_form_introduced:	recombinant human interleukin 	[230 - 258]
+
+
+src/main/resources/input/mmax_1180623334014
+----------------
+acronym_form:	Csfu 	[711 - 714]
+acronym_form:	fU 	[341 - 342]
+full_form_introduced:	fraction unbound 	[322 - 337]
+full_form_introduced:	cyclosporine fU 	[693 - 707]
+
+
+src/main/resources/input/mmax_1180623334037
+----------------
+full_form_introduced:	Polycomb group 	[129 - 142]
+acronym_form:	PcG 	[146 - 148]
+
+
+src/main/resources/input/mmax_1180623334050
+----------------
+full_form_introduced:	soluble interleukin-2 receptor 	[827 - 856]
+acronym_form:	sIL-2R 	[860 - 865]
+
+
+src/main/resources/input/mmax_1180623334062
+----------------
+acronym_form:	TRAP 	[441 - 444]
+full_form_introduced:	Protease - activated receptor 1 	[0 - 30]
+acronym_form:	PAR-1 	[300 - 304]
+full_form_introduced:	protease - activated receptor 	[268 - 296]
+full_form_introduced:	reverse transcriptase - polymerase chain reaction 	[645 - 693]
+acronym_form:	RT - PCR 	[697 - 704]
+acronym_form:	PAR-1 	[34 - 38]
+full_form_introduced:	thrombin receptor activation peptide 	[402 - 437]
+
+
+src/main/resources/input/mmax_1180623333978
+----------------
+full_form_introduced:	Schistosoma haematobium - derived recombinant glutathione S-transferase 	[206 - 276]
+acronym_form:	FCA 	[386 - 388]
+full_form_introduced:	Freund 's Complete Adjuvant 	[356 - 382]
+acronym_form:	Sh28GST 	[280 - 286]
+
+
+src/main/resources/input/mmax_1180623334001
+----------------
+acronym_form:	PBPC 	[461 - 464]
+full_form_introduced:	autologous bone marrow transplantation 	[373 - 410]
+full_form_introduced:	peripheral blood progenitor cell 	[426 - 457]
+acronym_form:	rhIL 	[262 - 265]
+acronym_form:	ABMT 	[414 - 417]
+full_form_introduced:	recombinant human interleukin 	[230 - 258]
+
+
+src/main/resources/input/mmax_1180623334014
+----------------
+acronym_form:	Csfu 	[711 - 714]
+acronym_form:	fU 	[341 - 342]
+full_form_introduced:	fraction unbound 	[322 - 337]
+full_form_introduced:	cyclosporine fU 	[693 - 707]
+
+
+src/main/resources/input/mmax_1180623334037
+----------------
+full_form_introduced:	Polycomb group 	[129 - 142]
+acronym_form:	PcG 	[146 - 148]
+
+
+src/main/resources/input/mmax_1180623334050
+----------------
+full_form_introduced:	soluble interleukin-2 receptor 	[827 - 856]
+acronym_form:	sIL-2R 	[860 - 865]
+
+
+src/main/resources/input/mmax_1180623334062
+----------------
+acronym_form:	TRAP 	[441 - 444]
+full_form_introduced:	Protease - activated receptor 1 	[0 - 30]
+acronym_form:	PAR-1 	[300 - 304]
+full_form_introduced:	protease - activated receptor 	[268 - 296]
+full_form_introduced:	reverse transcriptase - polymerase chain reaction 	[645 - 693]
+acronym_form:	RT - PCR 	[697 - 704]
+acronym_form:	PAR-1 	[34 - 38]
+full_form_introduced:	thrombin receptor activation peptide 	[402 - 437]
+
+
+src/main/resources/input/mmax_1180623333978
+----------------
+full_form_introduced:	Schistosoma haematobium - derived recombinant glutathione S-transferase 	[206 - 276]
+acronym_form:	FCA 	[386 - 388]
+full_form_introduced:	Freund 's Complete Adjuvant 	[356 - 382]
+acronym_form:	Sh28GST 	[280 - 286]
+
+
+src/main/resources/input/mmax_1180623334001
+----------------
+acronym_form:	PBPC 	[461 - 464]
+full_form_introduced:	autologous bone marrow transplantation 	[373 - 410]
+full_form_introduced:	peripheral blood progenitor cell 	[426 - 457]
+acronym_form:	rhIL 	[262 - 265]
+acronym_form:	ABMT 	[414 - 417]
+full_form_introduced:	recombinant human interleukin 	[230 - 258]
+
+
+src/main/resources/input/mmax_1180623334014
+----------------
+acronym_form:	Csfu 	[711 - 714]
+acronym_form:	fU 	[341 - 342]
+full_form_introduced:	fraction unbound 	[322 - 337]
+full_form_introduced:	cyclosporine fU 	[693 - 707]
+
+
+src/main/resources/input/mmax_1180623334037
+----------------
+full_form_introduced:	Polycomb group 	[129 - 142]
+acronym_form:	PcG 	[146 - 148]
+
+
+src/main/resources/input/mmax_1180623334050
+----------------
+full_form_introduced:	soluble interleukin-2 receptor 	[827 - 856]
+acronym_form:	sIL-2R 	[860 - 865]
+
+
+src/main/resources/input/mmax_1180623334062
+----------------
+acronym_form:	TRAP 	[441 - 444]
+full_form_introduced:	Protease - activated receptor 1 	[0 - 30]
+acronym_form:	PAR-1 	[300 - 304]
+full_form_introduced:	protease - activated receptor 	[268 - 296]
+full_form_introduced:	reverse transcriptase - polymerase chain reaction 	[645 - 693]
+acronym_form:	RT - PCR 	[697 - 704]
+acronym_form:	PAR-1 	[34 - 38]
+full_form_introduced:	thrombin receptor activation peptide 	[402 - 437]
+
+

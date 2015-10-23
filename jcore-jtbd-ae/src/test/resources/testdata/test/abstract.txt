@@ -1,0 +1,3 @@
+The AraSet sequence set, the Perl programs and complementary results and notes are available at http://sphinx.rug.ac.be:8080/biocomp/napav/.
+CONTACT: Pierre.Rouze@gengenp.rug.ac.be.
+The Intronerator (http://www.cse.ucsc.edu/ approximately kent/intronerator/ ) is a set of web-based tools for exploring RNA splicing and gene structure in Caenorhabditis elegans.

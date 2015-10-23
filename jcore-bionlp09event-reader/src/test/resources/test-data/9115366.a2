@@ -1,0 +1,16 @@
+T1	Binding 70 77	binding
+T3	Negative_regulation 291 298	inhibit
+T4	Binding 307 314	binding
+T7	Gene_expression 581 590	expressed
+T9	Positive_regulation 972 981	derepress
+T13	Negative_regulation 1221 1236	negative effect
+T14	Binding 1248 1255	binding
+E1	Binding:T1 Theme:T2
+E2	Negative_regulation:T3 Theme:E3
+M1	Speculation E2
+E3	Binding:T4 Theme:T5
+E4	Gene_expression:T7 Theme:T6
+E5	Positive_regulation:T9 Theme:T10
+E6	Negative_regulation:T13 Theme:E7
+M2	Speculation E6
+E7	Binding:T14 Theme:T15

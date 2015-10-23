@@ -1,0 +1,8 @@
+
+# /
+/.classpath
+/.project
+/.settings
+
+# /src/test/resources/cas-output/
+/src/test/resources/cas-output/*.xmi

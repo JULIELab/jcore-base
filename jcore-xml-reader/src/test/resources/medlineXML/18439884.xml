@@ -1,0 +1,92 @@
+<PubmedArticle>
+
+    <MedlineCitation Owner="NLM" Status="Publisher">
+        <PMID>18439884</PMID>
+        <DateCreated>
+            <Year>2008</Year>
+            <Month>4</Month>
+            <Day>28</Day>
+        </DateCreated>
+        <Article PubModel="Print-Electronic">
+            <Journal>
+                <ISSN IssnType="Print">1590-8658</ISSN>
+                <JournalIssue CitedMedium="Print">
+                    <PubDate>
+                        <Year>2008</Year>
+                        <Month>Apr</Month>
+                        <Day>23</Day>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Digestive and liver disease : official journal of the Italian Society of Gastroenterology and the Italian Association for the Study of the Liver</Title>
+            </Journal>
+            <ArticleTitle>Non-invasive test in gastric diseases.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn/>
+            </Pagination>
+            <Abstract>
+                <AbstractText>Although the gastric cancer incidence is decreasing, this neoplasia remains one of the major causes of oncological mortality. Because of an insidious development, gastric cancer is often diagnosed in an advanced stage and consequently with a poor prognosis. Accurate non-invasive tests should be extremely useful in order to detect gastric neoplasm in an early phase. In clinical practice, there is no reliable bio-marker for detecting this malignant disease. However, intestinal as well as diffuse types of gastric cancer are preceded by gastric mucosa inflammation. Furthermore, the intestinal type of the neoplasia is, generally, related to chronic atrophic gastritis, especially if associated with intestinal metaplasia. In particular, the risk of the neoplasm is linked to both extension and severity of gastric atrophy. Serological parameters such as serum pepsinogens I (PGI) and II (PGII), gastrin-17 (G-17) cytokines (e.g. IL-8), antiparietal cells, IgG anti-Hp and CagA antibodies and lastly ghrelin supply information about either atrophic or inflammatory conditions characterising gastric mucosa. Low PGI and PGI/PGII ratio levels, especially if combined with high G-17 levels, are recognised bio-markers of corpus atrophic gastritis. Low G-17 levels could be, also, suggestive of antral atrophic gastritis. Furthermore, plasmatic ghrelin levels seem to be also a bio-marker of corpus atrophy. Anti-Hp IgG and CagA antibodies as well as PGII levels are able to detect gastric inflammation. Serological parameters could select subjects at risk for gastric mucosa alterations such as inflammation or atrophy, rather than gastric cancer itself. This review analyses the information derived from serological bio-markers as well as the involved clinical studies.</AbstractText>
+            </Abstract>
+            <Affiliation>Section of Gastroenterology, Department of Clinical Sciences, University of Parma, Italy.</Affiliation>
+            <AuthorList>
+                <Author>
+                    <LastName>di Mario</LastName>
+                    <FirstName>F</FirstName>
+                    <Initials>F</Initials>
+                </Author>
+                <Author>
+                    <LastName>Cavallaro</LastName>
+                    <FirstName>L G</FirstName>
+                    <Initials>LG</Initials>
+                </Author>
+            </AuthorList>
+            <Language>ENG</Language>
+            <PublicationTypeList>
+                <PublicationType>JOURNAL ARTICLE</PublicationType>
+            </PublicationTypeList>
+            <ArticleDate DateType="Electronic">
+                <Year>2008</Year>
+                <Month>4</Month>
+                <Day>23</Day>
+            </ArticleDate>
+        </Article>
+        <MedlineJournalInfo>
+            <MedlineTA>Dig Liver Dis</MedlineTA>
+            <NlmUniqueID>100958385</NlmUniqueID>
+        </MedlineJournalInfo>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="received">
+                <Year>2008</Year>
+                <Month>1</Month>
+                <Day>31</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="accepted">
+                <Year>2008</Year>
+                <Month>2</Month>
+                <Day>18</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2008</Year>
+                <Month>4</Month>
+                <Day>29</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2008</Year>
+                <Month>4</Month>
+                <Day>29</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>aheadofprint</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pii">S1590-8658(08)00087-X</ArticleId>
+            <ArticleId IdType="doi">10.1016/j.dld.2008.02.028</ArticleId>
+            <ArticleId IdType="pubmed">18439884</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+
+</PubmedArticle>

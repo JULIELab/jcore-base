@@ -1,0 +1,227 @@
+<PubmedArticle>
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+  <PMID>12626969</PMID>
+  <DateCreated>
+    <Year>2003</Year>
+    <Month>03</Month>
+    <Day>10</Day>
+  </DateCreated>
+  <DateCompleted>
+    <Year>2003</Year>
+    <Month>04</Month>
+    <Day>11</Day>
+  </DateCompleted>
+  <DateRevised>
+    <Year>2004</Year>
+    <Month>11</Month>
+    <Day>17</Day>
+  </DateRevised>
+  <Article PubModel="Print">
+    <Journal>
+      <ISSN IssnType="Print">0090-3493</ISSN>
+      <JournalIssue CitedMedium="Print">
+        <Volume>31</Volume>
+        <Issue>3</Issue>
+        <PubDate>
+          <Year>2003</Year>
+          <Month>Mar</Month>
+        </PubDate>
+      </JournalIssue>
+      <Title>Critical care medicine. </Title>
+      <ISOAbbreviation>Crit. Care Med.</ISOAbbreviation>
+    </Journal>
+    <ArticleTitle><s id="453">Leukotriene-mediated coronary vasoconstriction and loss of myocardial contractility evoked by low doses of Escherichia coli hemolysin in perfused rat hearts.</s></ArticleTitle>
+    <Pagination>
+      <MedlinePgn>683-8</MedlinePgn>
+    </Pagination>
+    <Abstract>
+      <AbstractText><s id="454">OBJECTIVE: hemolysin has been implicated as an important pathogenic factor in extraintestinal infections including sepsis. We investigated the effects of coronary administration of hemolysin on cardiac function in isolated rat hearts perfused at constant flow.</s> <s id="455">DESIGN: Prospective, experimental study.</s> <s id="456">SETTING: Research laboratory at a university hospital.</s> <s id="457">SUBJECTS: Isolated hearts from male Wistar rats.</s> <s id="458">INTERVENTIONS: Isolated hearts were perfused with purified hemolysin for 60 min. MEASUREMENTS AND MAIN RESULTS: Low concentrations of the toxin in the perfusate (0.1-0.2 hemolytic units/mL) caused a dose-dependent coronary vasoconstriction with a marked increase in coronary perfusion pressure, which was paralleled by a decrease in left ventricular developed pressure (and the maximum rate of left ventricular pressure increase).</s> <s id="459">Moreover, 0.2 hemolytic units/mL hemolysin evoked ventricular fibrillation within 10 mins of toxin application.</s> <s id="460">These events were accompanied by the liberation of leukotrienes (LTC4, LTD4, LTE4, and LTB4), thromboxane A2, prostaglandin I2, and the cell necrosis markers lactate dehydrogenase and creatine kinase into the recirculating perfusate.</s> <s id="461">The lipoxygenase inhibitor MK-886 fully blocked the toxin-induced coronary vasoconstrictor response and the loss of myocardial contractility and reduced the release of lactate dehydrogenase and creatine kinase.</s> <s id="462">In contrast to this, the cyclooxygenase inhibitor indomethacin was entirely ineffective.</s> <s id="463">In addition, hemolysin elicited an increase in heart weight and left ventricular end-diastolic pressure, the latter again being suppressed by MK-886.</s> <s id="464">CONCLUSIONS: Low doses of hemolysin cause strong coronary vasoconstriction, linked with loss of myocardial performance, release of cell injury enzymes, and electrical instability, with all events being largely attributable to toxin-elicited leukotriene generation in the coronary vasculature.</s> <s id="465">Bacterial exotoxins such as hemolysin thus may be implicated in the cardiac abnormalities encountered in septic shock.</s></AbstractText>
+    </Abstract>
+    <Affiliation>Department of Internal Medicine, Justus-Liebig-University, Giessen, Germany.</Affiliation>
+    <AuthorList CompleteYN="Y">
+      <Author ValidYN="Y">
+        <LastName>Sibelius</LastName>
+        <ForeName>Ulf</ForeName>
+        <Initials>U</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Grandel</LastName>
+        <ForeName>Ulrich</ForeName>
+        <Initials>U</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Buerke</LastName>
+        <ForeName>Michael</ForeName>
+        <Initials>M</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Kiss</LastName>
+        <ForeName>Ladislau</ForeName>
+        <Initials>L</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Klingenberger</LastName>
+        <ForeName>Pascal</ForeName>
+        <Initials>P</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Heep</LastName>
+        <ForeName>Martina</ForeName>
+        <Initials>M</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Bournelis</LastName>
+        <ForeName>Emmanoyil</ForeName>
+        <Initials>E</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Seeger</LastName>
+        <ForeName>Werner</ForeName>
+        <Initials>W</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Grimminger</LastName>
+        <ForeName>Friedrich</ForeName>
+        <Initials>F</Initials>
+      </Author>
+    </AuthorList>
+    <Language>eng</Language>
+    <PublicationTypeList>
+      <PublicationType>Journal Article</PublicationType>
+    </PublicationTypeList>
+  </Article>
+  <MedlineJournalInfo>
+    <Country>United States</Country>
+    <MedlineTA>Crit Care Med</MedlineTA>
+    <NlmUniqueID>0355501</NlmUniqueID>
+  </MedlineJournalInfo>
+  <ChemicalList>
+    <Chemical>
+      <RegistryNumber>0</RegistryNumber>
+      <NameOfSubstance>Exotoxins</NameOfSubstance>
+    </Chemical>
+    <Chemical>
+      <RegistryNumber>0</RegistryNumber>
+      <NameOfSubstance>Hemolysins</NameOfSubstance>
+    </Chemical>
+    <Chemical>
+      <RegistryNumber>0</RegistryNumber>
+      <NameOfSubstance>Indoles</NameOfSubstance>
+    </Chemical>
+    <Chemical>
+      <RegistryNumber>0</RegistryNumber>
+      <NameOfSubstance>Leukotrienes</NameOfSubstance>
+    </Chemical>
+    <Chemical>
+      <RegistryNumber>0</RegistryNumber>
+      <NameOfSubstance>Lipoxygenase Inhibitors</NameOfSubstance>
+    </Chemical>
+    <Chemical>
+      <RegistryNumber>118414-82-7</RegistryNumber>
+      <NameOfSubstance>L 663536</NameOfSubstance>
+    </Chemical>
+  </ChemicalList>
+  <CitationSubset>AIM</CitationSubset>
+  <CitationSubset>IM</CitationSubset>
+  <CommentsCorrections>
+    <CommentIn>
+      <RefSource>Crit Care Med. 2003 Mar;31(3):971-3</RefSource>
+      <PMID>12627015</PMID>
+    </CommentIn>
+  </CommentsCorrections>
+  <MeshHeadingList>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Coronary Circulation</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Coronary Vessels</DescriptorName>
+      <QualifierName MajorTopicYN="Y">physiopathology</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="Y">Disease Models, Animal</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Dose-Response Relationship, Drug</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="Y">Escherichia coli</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Escherichia coli Infections</DescriptorName>
+      <QualifierName MajorTopicYN="Y">complications</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Exotoxins</DescriptorName>
+      <QualifierName MajorTopicYN="Y">adverse effects</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Heart Failure, Congestive</DescriptorName>
+      <QualifierName MajorTopicYN="N">immunology</QualifierName>
+      <QualifierName MajorTopicYN="Y">microbiology</QualifierName>
+      <QualifierName MajorTopicYN="N">physiopathology</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Hemolysins</DescriptorName>
+      <QualifierName MajorTopicYN="Y">adverse effects</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">In Vitro</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Indoles</DescriptorName>
+      <QualifierName MajorTopicYN="N">pharmacology</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Leukotrienes</DescriptorName>
+      <QualifierName MajorTopicYN="Y">physiology</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Lipoxygenase Inhibitors</DescriptorName>
+      <QualifierName MajorTopicYN="N">pharmacology</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Male</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="Y">Myocardial Contraction</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Prospective Studies</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Rats</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Research Support, Non-U.S. Gov&apos;t</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Shock, Septic</DescriptorName>
+      <QualifierName MajorTopicYN="N">immunology</QualifierName>
+      <QualifierName MajorTopicYN="Y">microbiology</QualifierName>
+      <QualifierName MajorTopicYN="N">physiopathology</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="Y">Vasoconstriction</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Ventricular Dysfunction, Left</DescriptorName>
+      <QualifierName MajorTopicYN="N">immunology</QualifierName>
+      <QualifierName MajorTopicYN="N">microbiology</QualifierName>
+      <QualifierName MajorTopicYN="N">physiopathology</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Ventricular Fibrillation</DescriptorName>
+      <QualifierName MajorTopicYN="N">immunology</QualifierName>
+      <QualifierName MajorTopicYN="Y">microbiology</QualifierName>
+      <QualifierName MajorTopicYN="N">physiopathology</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Ventricular Pressure</DescriptorName>
+    </MeshHeading>
+  </MeshHeadingList>
+</MedlineCitation>
+
+</PubmedArticle>

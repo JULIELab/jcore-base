@@ -1,0 +1,794 @@
+\documentclass[11pt,a4paper,halfparskip]{scrartcl}
+%\usepackage[pdftex]{graphics} 
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{url} 
+\usepackage[T1]{fontenc}
+\usepackage{ucs}
+\usepackage{longtable}
+\setkomafont{sectioning}{\bfseries}
+\pagestyle{plain}
+\typearea{10}
+
+
+\begin{document}
+
+\title{\small{Documentation for}\\\huge JCORE JULIE Lab Named Entity Tagger\\\vspace{3mm}\small{Version 2.0}}
+
+
+\author{\normalsize Katrin Tomanek\\
+  \normalsize  Jena University Language \& Information Engineering (JULIE) Lab\\
+  \normalsize F\"urstengraben 30 \\
+  \normalsize D-07743 Jena, Germany\\
+  {\normalsize \tt katrin.tomanek@uni-jena.de} }
+
+\date{}
+
+\maketitle
+
+
+
+\section{Objective}
+\label{sec_objective}
+
+
+The JULIE Lab Named Entity Tagger (JNET) is a generic and configurable
+multi-class named entity recognizer. Given a plain text of written
+natural language, it automatically detects and classifies named entity
+mentions. JNET's comprehensive feature sets allows to employ JNET for
+most domain and entity types. JNET was intensively tested on the
+general-language news paper domain (recognition of the classical MUC
+entities: person, location, organization) and several entity classes
+in the bio-medical domain.
+
+As JNET employs a machine learning (ML) approach (see Section
+\ref{sec:background}), a model (for the specific domain and entity
+classes to be predicted) needs to be trained first. Thus, JNET offers
+a training mode. Furthermore, JNET also provides several evaluation
+modes to assess the current model performance in terms of recall (R),
+precision (P), and f-score (F).
+ 
+%\subsection{Features}
+JNET offers the following functionalities:
+\begin{itemize}
+\item generation of training data containing multiple annotations
+\item training a model
+\item prediction using a previously trained model
+\item evaluation
+\item flexible feature parametrization
+\end{itemize}
+
+
+\section{About this documentation}
+This is a documentation on the functionality of JNET, especially when
+used in a stand-alone manner. When using the UIMA-compliant version of
+JNET, please refer to the UIMA-JNET documentation for additional
+information.
+
+\section{Changelog}
+
+Jcore 2.0.0:
+\begin{itemize}
+\item all jcore components were changed to use the same version number. There should arise no confusion, as the jcore prefix was added to all components at the same time.
+\item we no longer use pears, all components are meant to be used via the descriptors in their classpath
+\item models / training material was moved in a separate project
+\end{itemize}
+
+Why version 2.3 now ?
+\begin{itemize}
+\item this is due to internal package management reasons where JNET
+  and the UIMA wrapper are now part of the same project at the JULIE
+  Lab. However, JNET-2.3 is the direct successor of JNET-1.6.
+\end{itemize}
+
+since version 1.5:
+\begin{itemize}
+\item new features can be specified in feature configuration file
+  (including token and character n-grams, lexicon membership)
+\item stemming now by default
+\end{itemize}
+
+
+since version 1.3:
+\begin{itemize}
+\item JNET can now output confidence values for each predicted entity
+  (see below)
+\end{itemize}
+
+since version 1.2:
+\begin{itemize}
+\item ML features can now be configured by means of a configuration
+  file.
+\item Piped format (PPD) changed: double pipes between the PoS tag and
+  the entity label reduced to single pipe. Multiple annotations per
+  token allowed now.
+\end{itemize}
+
+
+%\section{Requirements}
+\section{Installation}
+The program is written in Java, thus you need a Java 1.7 (or
+above) runtime environment installed on your system. In addition to
+the common Java libraries, JNET employs \textsc{MALLET}
+\cite{McCallum2002}, a machine learning toolkit, and
+\textsc{UEAStemmer}, a conservative word
+stemmer\footnote{\url{http://www.cmp.uea.ac.uk/Research/stemmer/}}.
+
+\section{File Formats}
+\label{sec_formats}
+In this section, the file formats relevant to JNET are introduced. The
+first subsection explains how to generate training material
+processable by JNET using the \textit{FormatConverter}. In this
+context, the \textit{PPD format} and the \textit{tagset} files will
+also be illustrated. The second subsection shows in detail how JNET
+may be configured.
+
+
+\subsection{Generating Training Data Containing Multiple Annotations}
+\label{ssec_formatconverter}
+The FormatConverter takes multiple annotations in different files and
+merges them into a single file that contains all annotations (this
+file then has the PPD format). To use the FormatConverter call JNET
+with the argument \textit{``t''}.
+
+Omitting further parameters causes JNET to print which paramters it
+expects:
+\begin{verbatim}
+usage: JNETApplication f <iobFile> <1st meta datafile>
+[further meta datafiles] <outFile> <taglist (or 0 if not used)>
+\end{verbatim}
+
+In other words, the following input is expected:
+\begin{itemize}
+\item the base entity annotation (\textit{<iobFile>}),
+\item one or more further annotations (\textit{<1st meta data file>,
+    <further meta data files>}),
+\item the desired name of the output file (\textit{<outFile>}),
+\item optionally the used entity tagset (\textit{<taglist (or 0 if not
+    used)>}). If you specify a tagset, then only the labels contained
+  in this file will be used in the final output file (PPD). Other
+  labels contained in the 1st meta data file (the entity annotation
+  file) will be replaced by the default outside-label (``O'').  If you
+  do not use a tagset it is important to pass a ``0'' instead.
+\end{itemize}
+
+All \textit{annotation files} need to have the following format: one
+token per line and a respective label per line, seperated by one or
+multiple whitespaces. As with the entity annotations, the label would
+be the entity label that has to be learned by JNET. Note: the default
+outside label is ``O'', i.e.\ when a token does not have a specific
+label, add an ``O''. At the end of a sentence there needs to be an
+empty line. The examples used below are taken from the tutorial (see
+Section \ref{sec:tutorial}).
+
+An example of such an entity annotation might look like this:
+
+\begin{verbatim}
+We      0
+report  0
+a       0
+case    0
+of      0
+colon   malignancy
+cancer  malignancy
+presenting      0
+point   variation-type
+mutations       variation-type
+at      0
+both    0
+codons  variation-location
+12      variation-location
+and     0
+22      variation-location
+of      0
+the     0
+K-ras   gene-rna
+gene    0
+.       0
+\end{verbatim}
+
+All other additional annotations (e.g. PoS annotations) look the same,
+i.e. have the same lengths, the same tokens, only the labels would
+then be different (PoS tags instead of entity labels).
+
+The \textit{tagset}, is expected to contain one entity label per line.
+These tags are just the entity labels you want to use. See below for
+an example tagset (for variation event entity types). Note: the tagset
+always has to contain the (default) outside label (``O''):
+
+\begin{verbatim}
+variation-event
+variation-location
+variation-state-altered
+variation-state-generic
+variation-state-original
+variation-type
+O
+\end{verbatim}
+
+Performing the conversion using the FormatConverter will result in a
+file that contains all tokens and their annotations in the
+\textit{piped format} (PPD). This is illustrated by the following
+example:
+
+\begin{verbatim}
+Almost|RB|O all|DT|O of|IN|O these|DT|O mutations|NNS|variation-event have|VBP|O
+been|VBN|O localized|VBN|O in|IN|O codons|NNS|variation-location
+12|CD|variation-location ,|,|O 13|CD|variation-location and|CC|O
+61|CD|variation-location .|.|O
+\end{verbatim}
+
+The token is followed by a pipe and a meta data tag alternating. For
+demonstration consider the string up to the first whitespace in the example
+above. The token ``Almost'' preceds a pipe (``|''). After this first pipe a meta
+data, here the PoS information, is shown. A second pipe follows. If available, a
+second meta data would appear after the second pipe. However, as
+only one meta data is used here, the string is finished by the entity label.
+
+\subsubsection{Feature Configuration File}
+\label{ssec_featconfig}
+
+A configuration file may be passed to JNET where the features to be
+used can be parameterized. Both the training mode and the evaluation
+modes (because they include model training as well) can consume such a
+file.
+%  This can be done when only training a
+%model but also when performing any of the provided evaluations of JNET
+%since the evaluation modes contain a training process.
+
+The information within a configuration file serves to customise the
+behaviour of JNET in creating its ML features. As the actual feature
+instances are generated depending on the respective training material,
+a configuration file together with the training material determines
+the features (and thus the model).
+% and therefore the result of a prediction process (together with the
+% text on which the prediction is performed, of course).
+
+Next, details to the configurations are given.  Generally, a
+configuration file consists of key-value pairs, one in a line. See
+Table \ref{tab_keyval} for an enumeration of these key-value pairs.
+
+There are simple features, which can just be turned on or off (e.g.
+whether word stemming should be used or not), and more configurable
+features for which, when turned on, some parameter can be set (such as
+the context feature for which the size of the context can be set).
+
+
+% Note that JNET is highly configurable with respect to the features
+% and meta datta to be used (features based on additional information,
+% such as e.g. PoS tags, will in the following be refered to as
+% \textit{"meta data"}). 
+
+
+Further, there are so-called \textit{meta-features}, i.e. binary
+features based on (external) information (which thus has to be
+provided in the training material, see above: FormatConverter and
+further meta data file, Section \ref{ssec_formatconverter}). An example of such
+a meta-feature are PoS tags.  On which meta data a key-value pair (in
+the configuration file) refers is determined by the very first prefix
+of the key. For the PoS information, the corresponding configuration
+file may contain the pair \textit{"pos\_feat\_ = true"}.  It is
+important to note that the substring \textit{"pos"} of the key only
+serves as identification of the pairs which belong to the same meta
+data. You could also call it \textit{"nightisdark\_feat\_enabled =
+  true"} and it would not make any difference. This stays in contrast
+to the rest of the key string - the form \textit{"xxx\_feat\_enabled"}
+for indicating that the meta data refered to as \textit{"xxx"} is
+used or not used must not vary!
+% Following key-value pairs are defined:\\\\
+
+%\begin{table}[h!]
+\begin{longtable}{|l|l|p{6cm}|l|}
+%\begin{tabular}{|l|l|p{6cm}|l|}
+\hline
+\textsc{key} & \textsc{allowed values} & \textsc{description}\\
+\hline\hline
+
+feat\_lowercase\_enabled & true/false & if enabled, tokens beginning
+with a capital letter are modified to lower case (this is done only if
+and only if
+the beginning letter is upper case\\
+\hline feat\_wc\_enabled & true / false & enables or disables the word
+class
+feature\\
+\hline feat\_bwc\_enabled & true / false & enables or disables the
+brief word class
+feature\\
+\hline feat\_bioregexp\_enabled & true / false & enables or disables
+some features
+primary used for bio or bio-medical texts\\
+\hline feat\_plural\_enabled & true / false & if enabled, this feature
+is activated in case the
+only difference between the stemmed and the unstemmed version of a token is a putative plural ``s''\\
+\hline token\_ngrams & integer list & defines the token-level ngrams
+to be generated as features.  If uncommented from the feature
+configuration, no token ngrams are built (not subject to offset
+conjunction).
+Example: 2,3; ngrams of size 2 and 3 are built\\
+\hline char\_ngram & integer list & ngrams on the character level (not
+subject to offset conjunction)\\
+\hline prefix\_sizes & integer list & the prefixes to be build
+according to the specified length.
+Example: 2,3; prefixes of 2 and 3 characters are build\\
+\hline
+suffix\_sizes & integer list & the suffixes to be build (compare to prefix\_sizes)\\
+\hline XXX\_lexicon & file name & this is a feature for lexicon
+membership on token level. XXX can here be replaced by an arbitrary
+name refering, e.g., to the type of lexicon. Matching is done case
+insensitive. This feature can be specified more than once. Make sure
+in such a case you use
+different names for XXX. Full path should be given for the lexicon file.\\
+\hline\hline offset\_conjunctions & integer list & determines the
+feature generation environment of a token and combinations of token
+features; numbers correspond to token positions relatively to the
+actually viewed token. (0) stands for the actual token, (-1) for the
+preceding token etc. \mbox{(-2) (-1) (0) (1)} indicates that features
+for the tokens (-2), (-1), (0) and (1) are generated.  something like
+\mbox{(-1 -2)} or \mbox{(-1, -2)} would
+combine the features of (-1) and (-2)\\
+\hline\hline gap\_character & character & character that serves for
+indicating that the
+annotation for a token is not available/not known in the training material\\
+\hline\hline xxx\_feat\_enabled & true / false & the meta data named
+"xxx" is used if and
+only if the value equals true\\
+\hline
+%xxx\_feat\_data & string &  a string representing the path to the corresponding
+%UIMA class for this annotation\\
+xxx\_feat\_unit & string & how this meta data should be called internally;
+appears in some outputs\\
+\hline
+%xxx\_feat\_valMethod & string & the name of the method of the class referenced
+%to in "xxx\_feat\_data" for getting the value of the annotation (without
+%brackets)\\
+xxx\_feat\_position & positive integer & the rank of this meta data in all meta
+datas appearing in the training material \mbox{(token|meta1|meta2|...|entity
+label)}\\
+
+%xxx\_begin\_flag & true / false & indicates if an IOB-like begin flag should be
+%used; useful for annotations spanning multiple tokens\\
+\hline
+\caption{Defined key-value pairs in feature configuration files.}
+\label{tab_keyval}
+\end{longtable}
+%\end{tabular}
+%\end{table}
+
+
+
+%The default feature configuration file is given as an example which is
+%used when no feature configuration file is passed:\\
+Such a feature configuration file might look like this:
+
+\begin{verbatim}
+offset_conjunctions = (-1) (1)
+
+feat_lowercase_enabled = true
+feat_wc_enabled = true
+feat_bwc_enabled = true
+feat_bioregexp_enabled = true
+feat_plural_enabled = true
+#token_ngrams = 2,3
+#char_ngrams = 3,4
+#prefix_sizes = 2,3
+#suffix_sizes = 2,3
+#STOPWORD_lexicon = stopwords.lex
+
+gap_character = @
+
+# details for part-of-speech meta information
+pos_feat_enabled = true
+pos_feat_unit = pos
+pos_feat_position = 1
+
+\end{verbatim}
+
+Now, let us assume we would like to consider chunking information for
+our named entity recognition. This first requires, that we have chunk
+annotations. We would then modify the above example feature
+configuration file by adding the following lines:
+
+\begin{verbatim}
+chunk_feat_enabled = true
+chunk_feat_unit = chunks
+chunk_feat_position= 2
+\end{verbatim}
+
+(That means, in our PPD file, the chunk information is at the second
+position (whereas PoS information was on the first position).)
+
+
+\section{Using JNET}
+
+% and used via the console. 
+%The tagger can be used for training, prediction, and evaluation.
+% itself is only able to train and to predict. 
+
+
+JNET is a command-line tool. To call JNET go to the directory where
+you unpacked the downloaded file and type the following:
+
+\begin{verbatim}
+JNETApplication <your arguments>
+\end{verbatim}
+
+This will then directly call the class 
+%In order to simplify the usability of JNET, the .jar package contains
+%the class 
+\textit{JNETApplication} which serves as interface to JNET.  All
+functionality, as listed in Section \ref{sec_objective}, can be called
+from this application.
+%  The evaluation modes stated in the first
+%section are in fact part of JNETApplication rather than a
+%functionality of the tagger itself. 
+Running JNET without further parameters, you will be informed about
+the available modes:
+\begin{verbatim} 
+usage: JNETApplication <mode> <mode-specific-parameters>
+
+Available modes:
+f: converting multiple annotations to one file
+s: 90-10 split evaluation
+x: cross validation
+c: compare goldstandard and prediction
+t: train
+p: predict
+oc: output model configuration
+oa: output the model's output alphabet
+\end{verbatim}
+
+Thus, the first parameter JNET expects, determines the operation mode.
+For example, if you want to train a model, JNET expects you to give a
+\textit{'t'} as first parameter.  For performing a 90-10 split
+evaluation a \textit{'s'} as first parameter is needed.  If you run
+JNET only with the first parameter the program will display the
+required parameters for the corresponding operation mode. E.g., if you
+run JNET only with the \textit{'t'} parameter you will be noticed that
+it needs in addition an annotated file, a file containing the used
+tagset, the model file name and optionally a feature configuration
+file. Working with JNET always follows this scheme (for details see
+below).
+
+\subsection{Training}
+In order to train a model you need training material like that
+generated by the FormatConverter, that is in PPD format.  Furthermore,
+you need to specify a tagset (see Section \ref{ssec_formatconverter}) and a
+feature
+configuration file (optionally). Starting JNET only with the parameter
+\textit{'t'} will result in the following output:
+\begin{verbatim}
+usage: JNETApplication t <trainData.ppd> <tags.def> <model-out-file>
+[featureConfigFile]
+\end{verbatim}
+Training requires training data in piped format
+(\textit{<trainData.ppd>}), the tagset (\textit{<tags.def>)} and the
+future model file name (\textit{<model-out-file>}).  Optionally, you
+may pass a feature configuration file. The output of a training
+process is a model which may be used for prediction.
+
+
+\subsection{Prediction}
+\label{sec_prediction}
+For tagging a given plain text you need the used tagset and a model.
+In addition you have to determine the name of the output file:
+
+\begin{verbatim}
+usage: JNETApplication p <unlabeled data.ppd> <tag.def> <modelFile>
+<outFile> <estimate segment conf>
+\end{verbatim}
+
+The format of the text on which the prediction is to take place is
+required to equal the format of the training data. It must match the
+PPD format and also has to contain the same number of meta
+information. This is because you are to provide the meta data used for
+training also in the prediction process in order to generate adequate
+features. Obviously, the entity labels are not known for the
+prediction PPD file (as this is what we want to predict); thus, employ
+an arbitrary place holder here (e.g. \textit{``X''}) just to meet the
+format specifications. But remember that you have to give exactly as
+much information in your predicting material as is known in the model
+you use for the prediction. The FormatConverter should serve well
+here.
+
+When \textit{estimate segment conf} is set to 'true', confidence
+estimates are printed for all entity mentions. The estimation of the
+classifier's confidence on each entity is based on the approach
+proposed by \cite{Culotta2004}. Note: entity-level confidence
+calculation might seriously slow down JNET. Thus, for processing large
+amounts of documents we advice to use this feature carefully.
+
+The output of a prediction process resembles the entity annotations
+(see Section \ref{ssec_formatconverter}; by the way: this format is
+often also called ``iob''), i.e. a file that consists of
+token-annotation pairs, one pair per line. When activated, confidence
+estimates are printed in a third column. See Figure \ref{fig:output}
+for an example.
+
+\begin{figure}[t]
+\centering
+\begin{verbatim}
+Small   malignancy
+cell    malignancy
+carcinoma       malignancy
+of      malignancy
+the     malignancy
+gallbladder     malignancy
+:       0
+a       0
+clinicopathologic       0
+,       0
+\end{verbatim}
+\caption{JNET's prediction output.}
+\label{fig:output}
+\end{figure}
+
+
+
+\subsection{Evaluation}
+JNET provides several standard evaluation modes. Each of them returns
+the performance in terms of recall (R), precision (P), and f-score
+(F). 
+% How to use them is explained in the next subsections.
+
+\subsubsection{Comparing Prediction and Gold Standard}
+For comparing the output of a prediction process with a given gold
+standard you need the prediction (\textit{<predData.iob>}) and the
+gold standard (\textit{<goldData.iob>}). Then you can run JNET in mode
+\textit{'c'}:
+ 
+\begin{verbatim}
+usage: JNETApplication c <predData.iob> <goldData.iob> <tag.def>
+\end{verbatim}
+
+Both are required to be plain text files and to be in the same format
+as the entity annotation (which is the same as the output of the
+prediction mode). They need to be of the same length. That is, the
+number of tokens and respectively the number of lines must match.
+
+\subsubsection{90-10 Split Evaluation}
+For performing a 90-10 split evaluation you have to pass the
+(training data) PPD file (\textit{data.ppd}) on which the evaluation
+is to be made to JNET. This data is then randomly split into 10\% for
+evaluation, and another 90\% for training. Moreover the
+tagset and the name of the evaluation output is required:
+\begin{verbatim}
+usage: JNETApplication s <data.ppd> <tags.def> <pred-out>
+[featureConfigFile]
+\end{verbatim}
+
+An evaluation contains a training process. Thus you pass a feature
+configuration file. 
+
+\subsubsection{Evaluation Output}
+The output of a 90-10 split evaluation or of a cross evaluation
+contains one token per line. Every token is followed by the entity
+label given by the JNET prediction and then by the label that should
+be there (according to the training data provided), that is, by the
+label corresponding to the gold standard. In addition the used meta
+infos are shown behind the gold label. 
+
+
+In the example below, only PoS information has been used as meta data
+(last column).
+
+\begin{verbatim}
+PCR     O       O       NN
+-       O       O       HYPH
+SSCP    O       O       NN
+and     O       O       CC
+subsequent      O       O       JJ
+sequencing      O       O       NN
+revealed        O       O       VBD
+that    O       O       IN
+GGT     O       variation-state-original        NN
+(       O       O       -LRB-
+glycine O       variation-state-original        NN
+,       O       O       ,
+wild    O       O       JJ
+-       O       O       HYPH
+type    O       O       NN
+)       O       O       -RRB-
+\end{verbatim}
+
+\subsubsection{Cross Validation}
+During cross validation, the prodived training material is randomly
+split into $n$ subsets (\textit{<x-rounds>} specifies the number of
+subsets). Then $n-1$ subsets are used for training, the remaining one
+for evaluation. This is repeated $n$ times, the performance values
+(R/P/F) are the mean average over the performance values of each
+round. Standard deviation is also shown.
+
+The arguments for cross valiation are the same as for 90-10 split
+evaluation, except that you have to specify the number of evaluation
+rounds and a file where to write the final evaluation results to
+additionally:
+
+\begin{verbatim}
+usage: JNETApplication x <trainData.ppd> <tags.def> <pred-out> \
+<x-rounds> <performance-out-file> [featureConfigFile]
+\end{verbatim}
+
+The output of cross validation is the same as of 90-10 split evaluation.
+
+
+
+
+\subsubsection{Model information}
+Running JNET with the arguments \textit{'oc'} outputs the feature
+configuration specified during training for this model; argument
+\textit{'oa'} shows the tagset for which the model was trained. Of
+course, for both modes you will have to specify the respective model.
+
+\section{Background/Algorithms}
+\label{sec:background}
+
+JNET is based on Conditional Random Fields (CRFs) \cite{Lafferty2001}, a
+sequential learning algorithm. It was inspired by ABNER, a named
+entity recognition application based on CRFs as well \cite{Settles2004}.
+
+
+\section{Tutorial}
+\label{sec:tutorial}
+
+By means of the demo-files contained in the \url{JNET_data/tutorial}
+directory\footnote{These files contain annotations taken from the
+  \textsc{PennBioIE} corpus. We converted them to the IOB format and
+  added the PoS tags with our PoS tagger.}, the use of JNET will be shown.
+It will be described in detail how to train a model, how to predict
+and how an evaluation is performed.
+
+\subsection{Training a model}
+This is done by calling JNET with the \textit{``t''} parameter. The arguments
+are expected as follows:
+
+\begin{verbatim}
+usage: JNETApplication t <trainData.ppd> <tags.def> <model-out-file>
+[featureConfigFile]
+\end{verbatim}
+
+The training data \textit{(<trainData.ppd>)} must match the piped format. A
+small section of the training file \url{variation.ppd} located in the
+\url{JNET_data/tutorial} directory is given as an example:
+
+\begin{verbatim}
+A|DT|O stabilizing|VBG|O beta-catenin|NN|O mutation|NN|O (|-LRB-|O
+S|NN|variation-state-original 45|NN|variation-location
+F|NN|variation-state-altered )|-RRB-|O appears|VBZ|O in|IN|O the|DT|O same|JJ|O
+cell|NN|O line|NN|O that|WDT|O carried|VBD|O the|DT|O mutated|VBN|O
+E-cadherin|NN|O gene|NN|O .|.|O
+\end{verbatim}
+
+The file \url{vartags.def} is provided as an appropriate tagset
+\textit{(<tags.def>)}. It contains one tag per line:
+
+\begin{verbatim}
+variation-event
+variation-location
+variation-state-altered
+variation-state-generic
+variation-state-original
+variation-type
+O
+\end{verbatim}
+
+Additionally, the model file name \textit{(<model-out-file>)} is needed. The
+use of a feature configuration file \textit{([featureConfigFile])} is
+optional. An example for a feature configuration file is provided with
+\url{featconf.conf}:
+
+\begin{verbatim}
+pos_feat_enabled = true
+pos_feat_unit = pos
+pos_feat_position = 1
+pos_begin_flag = false
+
+offset_conjunctions = (-1)(1)
+
+gap_character = @
+
+stemming_enabled = true
+feat_wc_enabled = true
+feat_bwc_enabled = true
+feat_bioregexp_enabled = true
+\end{verbatim}
+
+The command
+\begin{verbatim}
+JNETApplication t JNET_data/tutorial/variation.ppd \
+JNET_data/tutorial/variations.tags mymodel.mod \
+JNET_data/tutorial/featconf.conf
+\end{verbatim}
+will result in the creation of a model named \textit{mymodel.mod}.
+
+Given a model, it is possible to print out to the console the used
+tagset and feature configuration. Printing out the tagset is done by
+
+\begin{verbatim}
+JNETApplication oa mymodel.mod.gz
+\end{verbatim}
+
+printing out the feature configuration is done by
+
+\begin{verbatim}
+JNETApplication oc mymodel.mod.gz
+\end{verbatim}
+
+\subsection{Prediction}
+A prediction is performed using the \textit{``p''} parameter when calling JNET.
+The following parameters are expected:
+
+\begin{verbatim}
+usage: JNETApplication p <unlabeled data.ppd> <tag.def> <modelFile>
+<outFile>
+\end{verbatim}
+
+As stated in section \ref{sec_prediction} the unlabeled input data
+\textit{(<unlabeled data.ppd>)} is needed to contain the same meta data as the
+training data of the used model. Therefore it requires to match the piped
+format. The file \url{variations_unlabeled.ppd} serves as an example:
+
+\begin{verbatim}
+Point|NN|X mutations|NNS|X have|VBP|X the|DT|X potential|NN|X to|TO|X
+activate|VB|X the|DT|X K-ras|NN|X gene|NN|X if|IN|X they|PRP|X occur|VBP|X
+in|IN|X the|DT|X critical|JJ|X coding|NN|X sequences|NNS|X .|.|X
+\end{verbatim}
+
+In this case the character ``X'' is used instead of the unknown labels.
+The tagset \textit{(<tag.def>)} equals the tagset showed above.
+If you followed the instructions of this tutorial
+concerning the training of a model, the file
+\url{mymodel.mod} could be used as a model \textit{(<modelFile>)}.
+A prediction command on the file \url{variations_unlabeled.ppd} might look like
+this:
+\begin{verbatim}
+JNETApplication p JNET_data/tutorial/variations_unlabeled.ppd \
+JNET_data/tutorial/variations.def \
+mymodel.mod.gz myprediction.iob
+\end{verbatim}
+
+The output of such a prediction process is a file that contains one token and its
+detected label per line. Performing a prediction on the file
+\url{variations_unlabeled.ppd} outputs a file whose first lines are showed here:
+
+\begin{verbatim}
+Point	variation-type
+mutations	variation-type
+have	O
+the	O
+potential	O
+to	O
+activate	O
+the	O
+K-ras	O
+gene	O
+\end{verbatim}
+
+\subsection{Evaluation}
+To run a 10-fold cross-validation with the tutorial feature set on the
+tutorial data, just run the following command:
+
+\begin{verbatim}
+JNETApplication x JNET_data/tutorial/variations_labeled.ppd \
+JNET_data/tutorial/variations.tags xvalprediction 10 \
+JNET_data/tutorial/featconfig.conf
+\end{verbatim}
+
+This will create the file \url{xvalprediction} whereto the predictions of
+each of the cross-validations will be printed. Further, the overall
+performance measure is shown in terms of recall, precision, and f-measure.
+
+
+\section{Available Models}
+\textsc{PennBioIE}\footnote{http://bioie.ldc.upenn.edu/} models and training material are no longer contained in JNET, yet in a separate jcore-jnet-biomedical-english project. This model classifies entities into the classes protein, rna, and
+generic. (With 10-fold cross-validation, JNET achieves a performance
+of 83.6\% F-score on these classes).
+
+Using JNET's training facilities your can easily train you own models
+-- given training material is available.
+
+
+\bibliographystyle{alpha}
+\bibliography{literature.bib}
+
+
+\end{document}

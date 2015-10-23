@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>JCoRe Semantics Biology Types</name>
+  <description>The type system contains types of the biomedical domain.</description>
+  <version>2.0.0-SNAPSHOT</version>
+  <vendor>JULIE Lab Jena, Germany</vendor>
+  <imports>
+    <import location="jcore-semantics-mention-types.xml"/>
+  </imports>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jules.types.BioEntityMention</name>
+      <description>Biomedical Entity (e.g. gene, organism, cell type)</description>
+      <supertypeName>de.julielab.jules.types.EntityMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>species</name>
+          <description>The species this BioEntityMentions refers to, if known.</description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Gene</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.MiRNA</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Disease</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Organism</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.UnspecifiedOrganism</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.Organism</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.OrganismAttribute</name>
+      <description>attributes to an organism such as e.g. sex, developmental stage, transplantation type ...</description>
+      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.BioEventMention</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.EventMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.BioRelationMention</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.RelationMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Chemicals</name>
+      <description>Chemical Entity</description>
+      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Cell</name>
+      <description>Cell Entity</description>
+      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.MeshMention</name>
+      <description>Mesh Term</description>
+      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Protein</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.GOMention</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>categories</name>
+          <description>created for the shared task, here we add the group</description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+          <multipleReferencesAllowed>false</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>goID</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.GeneResourceEntry</name>
+      <description>A specific version of the resource entry for Gene entries.</description>
+      <supertypeName>de.julielab.jules.types.ResourceEntry</supertypeName>
+      <features>
+        <featureDescription>
+          <name>synonym</name>
+          <description>The synonym for which this resource entry was chosen.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>confidenceMention</name>
+          <description>The confidence that the textual found mention fits to the selected synonyms.</description>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>confidenceSemantic</name>
+          <description>Confidence that this resource entry is indeed semantically fitting to the context.</description>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>taxonomyId</name>
+          <description>The NCBI taxonomy ID of this gene.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

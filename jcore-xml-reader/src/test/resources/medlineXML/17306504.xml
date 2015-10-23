@@ -1,0 +1,197 @@
+<PubmedArticle>
+	<MedlineCitation Owner="NLM" Status="MEDLINE">
+		<PMID>17306504</PMID>
+		<DateCreated>
+			<Year>2007</Year>
+			<Month>05</Month>
+			<Day>14</Day>
+		</DateCreated>
+		<DateCompleted>
+			<Year>2007</Year>
+			<Month>08</Month>
+			<Day>30</Day>
+		</DateCompleted>
+		<Article PubModel="Print-Electronic">
+			<Journal>
+				<ISSN IssnType="Print">0901-5027</ISSN>
+				<JournalIssue CitedMedium="Print">
+					<Volume>36</Volume>
+					<Issue>6</Issue>
+					<PubDate>
+						<Year>2007</Year>
+						<Month>Jun</Month>
+					</PubDate>
+				</JournalIssue>
+				<Title>
+					International journal of oral and maxillofacial
+					surgery
+				</Title>
+			</Journal>
+			<ArticleTitle>
+				Lymphoepithelial carcinoma of the parotid gland: is an
+				association with Epstein-Barr virus possible in
+				non-endemic areas?
+			</ArticleTitle>
+			<Pagination>
+				<MedlinePgn>556-9</MedlinePgn>
+			</Pagination>
+			<Abstract>
+				<AbstractText>
+					Lymphoepithelial carcinoma (LEC) is a rare
+					histological type of cancer of the salivary glands.
+					Here is reported a case of LEC of the parotid gland
+					that developed in a Caucasian female, whose serology
+					was positive for Epstein-Barr virus antibody. The
+					patient underwent surgical treatment and
+					postoperative radiotherapy. Because of the
+					relatively limited clinical data concerning LEC of
+					the salivary glands compared to other more common
+					histological types, the clinical course, optimal
+					treatment and prognosis have not been extensively
+					studied. The aim of this report was to summarize all
+					the key points, following a comprehensive literature
+					review.
+				</AbstractText>
+			</Abstract>
+			<Affiliation>
+				E.N.T. Department, THEAGENIO Anticancer Hospital, 2
+				Alexandrou Simeonidi Str., Thessaloniki, Greece.
+				amanganaris@hotmail.com
+			</Affiliation>
+			<AuthorList CompleteYN="Y">
+				<Author ValidYN="Y">
+					<LastName>Manganaris</LastName>
+					<ForeName>A</ForeName>
+					<Initials>A</Initials>
+				</Author>
+				<Author ValidYN="Y">
+					<LastName>Patakiouta</LastName>
+					<ForeName>F</ForeName>
+					<Initials>F</Initials>
+				</Author>
+				<Author ValidYN="Y">
+					<LastName>Xirou</LastName>
+					<ForeName>P</ForeName>
+					<Initials>P</Initials>
+				</Author>
+				<Author ValidYN="Y">
+					<LastName>Manganaris</LastName>
+					<ForeName>T</ForeName>
+					<Initials>T</Initials>
+				</Author>
+			</AuthorList>
+			<Language>eng</Language>
+			<PublicationTypeList>
+				<PublicationType>Case Reports</PublicationType>
+				<PublicationType>Journal Article</PublicationType>
+				<PublicationType>Review</PublicationType>
+			</PublicationTypeList>
+			<ArticleDate DateType="Electronic">
+				<Year>2007</Year>
+				<Month>02</Month>
+				<Day>15</Day>
+			</ArticleDate>
+		</Article>
+		<MedlineJournalInfo>
+			<Country>Denmark</Country>
+			<MedlineTA>Int J Oral Maxillofac Surg</MedlineTA>
+			<NlmUniqueID>8605826</NlmUniqueID>
+		</MedlineJournalInfo>
+		<CitationSubset>D</CitationSubset>
+		<CitationSubset>IM</CitationSubset>
+		<MeshHeadingList>
+			<MeshHeading>
+				<DescriptorName MajorTopicYN="N">Aged</DescriptorName>
+			</MeshHeading>
+			<MeshHeading>
+				<DescriptorName MajorTopicYN="N">
+					Epstein-Barr Virus Infections
+				</DescriptorName>
+				<QualifierName MajorTopicYN="N">
+					pathology
+				</QualifierName>
+				<QualifierName MajorTopicYN="N">therapy</QualifierName>
+				<QualifierName MajorTopicYN="Y">virology</QualifierName>
+			</MeshHeading>
+			<MeshHeading>
+				<DescriptorName MajorTopicYN="N">Female</DescriptorName>
+			</MeshHeading>
+			<MeshHeading>
+				<DescriptorName MajorTopicYN="N">
+					Herpesvirus 4, Human
+				</DescriptorName>
+				<QualifierName MajorTopicYN="Y">
+					isolation &amp; purification
+				</QualifierName>
+			</MeshHeading>
+			<MeshHeading>
+				<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+			</MeshHeading>
+			<MeshHeading>
+				<DescriptorName MajorTopicYN="N">
+					Parotid Gland
+				</DescriptorName>
+				<QualifierName MajorTopicYN="N">
+					pathology
+				</QualifierName>
+				<QualifierName MajorTopicYN="N">surgery</QualifierName>
+				<QualifierName MajorTopicYN="Y">virology</QualifierName>
+			</MeshHeading>
+			<MeshHeading>
+				<DescriptorName MajorTopicYN="N">
+					Parotid Neoplasms
+				</DescriptorName>
+				<QualifierName MajorTopicYN="N">
+					pathology
+				</QualifierName>
+				<QualifierName MajorTopicYN="N">therapy</QualifierName>
+				<QualifierName MajorTopicYN="Y">virology</QualifierName>
+			</MeshHeading>
+		</MeshHeadingList>
+		<NumberOfReferences>18</NumberOfReferences>
+	</MedlineCitation>
+	<PubmedData>
+		<History>
+			<PubMedPubDate PubStatus="received">
+				<Year>2006</Year>
+				<Month>10</Month>
+				<Day>5</Day>
+			</PubMedPubDate>
+			<PubMedPubDate PubStatus="revised">
+				<Year>2006</Year>
+				<Month>11</Month>
+				<Day>17</Day>
+			</PubMedPubDate>
+			<PubMedPubDate PubStatus="accepted">
+				<Year>2006</Year>
+				<Month>12</Month>
+				<Day>14</Day>
+			</PubMedPubDate>
+			<PubMedPubDate PubStatus="aheadofprint">
+				<Year>2007</Year>
+				<Month>2</Month>
+				<Day>15</Day>
+			</PubMedPubDate>
+			<PubMedPubDate PubStatus="pubmed">
+				<Year>2007</Year>
+				<Month>2</Month>
+				<Day>20</Day>
+				<Hour>9</Hour>
+				<Minute>0</Minute>
+			</PubMedPubDate>
+			<PubMedPubDate PubStatus="medline">
+				<Year>2007</Year>
+				<Month>8</Month>
+				<Day>31</Day>
+				<Hour>9</Hour>
+				<Minute>0</Minute>
+			</PubMedPubDate>
+		</History>
+		<PublicationStatus>ppublish</PublicationStatus>
+		<ArticleIdList>
+			<ArticleId IdType="pii">S0901-5027(06)00510-8</ArticleId>
+			<ArticleId IdType="doi">10.1016/j.ijom.2006.12.012</ArticleId>
+			<ArticleId IdType="pubmed">17306504</ArticleId>
+		</ArticleIdList>
+	</PubmedData>
+</PubmedArticle>

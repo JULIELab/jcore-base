@@ -1,0 +1,33 @@
+T29	Entity 1687 1697	serine 133
+T1	Positive_regulation 15 22	induces
+T2	Phosphorylation 23 38	phosphorylation
+T9	Binding 617 630	cross-linking
+T10	Phosphorylation 723 738	phosphorylation
+T14	Binding 894 907	cross-linking
+T16	Binding 1017 1030	cross-linking
+T17	Positive_regulation 1044 1053	increased
+T18	Phosphorylation 1054 1069	phosphorylation
+T21	Phosphorylation 1220 1235	Phosphorylation
+T23	Positive_regulation 1253 1260	through
+T24	Positive_regulation 1335 1343	required
+T26	Binding 1450 1463	cross-linking
+T27	Phosphorylation 1660 1675	phosphorylation
+T30	Regulation 1728 1738	modulation
+T31	Regulation 1728 1738	modulation
+E1	Positive_regulation:T1 Theme:E2
+E2	Phosphorylation:T2 Theme:T3
+E3	Binding:T9 Theme:T8
+E4	Phosphorylation:T10 Theme:T11
+E5	Binding:T14 Theme:T13
+E6	Binding:T16 Theme:T15
+E7	Positive_regulation:T17 Theme:E8
+E8	Phosphorylation:T18 Theme:T19
+E9	Phosphorylation:T21 Theme:T22
+E10	Positive_regulation:T23 Theme:E9
+E11	Positive_regulation:T24 Theme:E9
+M1	Speculation E11
+E12	Binding:T26 Theme:T25
+M2	Negation E12
+E13	Phosphorylation:T27 Theme:T28 Site:T29
+E14	Regulation:T30 Theme:T33 Cause:T34
+E15	Regulation:T31 Theme:T32 Cause:T34

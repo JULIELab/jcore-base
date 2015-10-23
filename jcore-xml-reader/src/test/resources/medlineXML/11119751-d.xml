@@ -1,0 +1,126 @@
+<!-- This file is TEST DATA
+     
+     This file was created for tesing the MedlineReader.java (an UIMA Collection Reader).
+     This version contains all 'data types' that should be converted into a CAS if the MedlineReader works correctly
+     It is derived from an original Medline Abstract with PMID 11119751.
+     Other versions of this file leave out some types.
+!-->
+
+<PubmedArticle>
+
+    <MedlineCitation Owner="NLM" Status="MEDLINE">
+        <PMID>11119751-d</PMID>
+        <DateCreated>
+            <Year>2001</Year>
+            <Month>01</Month>
+            <Day>02</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>2001</Year>
+            <Month>01</Month>
+            <Day>11</Day>
+        </DateCompleted>
+        <DateRevised>
+            <Year>2004</Year>
+            <Month>11</Month>
+            <Day>17</Day>
+        </DateRevised>
+        <Article PubModel="Print">
+            <Journal>
+                <ISSN IssnType="Print">0015-0282</ISSN>
+                <JournalIssue CitedMedium="Print">
+                    <Volume>74</Volume>
+                    <Issue>6</Issue>
+                    <PubDate>
+			    <MedlineDate>2000 Oct-2001 Mar</MedlineDate>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Fertility and sterility. </Title>
+                <ISOAbbreviation>Fertil. Steril.</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Effects of hydrogen peroxide on DNA and plasma membrane integrity of human spermatozoa.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>1200-7</MedlinePgn>
+            </Pagination>
+            <Abstract>
+                <AbstractText>OBJECTIVE: To evaluate the effects of oxidative stress on DNA and plasma membrane integrity of human spermatozoa. DESIGN: Prospective cohort study. SETTING: University-based, tertiary-care infertility center. PATIENT(S): Men (n = 10) undergoing infertility investigation. INTERVENTION(S): Purified populations of sperm with high motility were separated using Percoll density gradients. Then, spermatozoa were incubated with 0, 10, 100, and 200 microM hydrogen peroxide (H(2)O(2)) under capacitating conditions.</AbstractText>
+            </Abstract>
+            <Affiliation>Department of Obstetrics and Gynecology, GATA School of Medicine, Ankara, Turkey.</Affiliation>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Kemal Duru</LastName>
+                    <ForeName>N</ForeName>
+                    <Initials>N</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Morshedi</LastName>
+                    <ForeName>M</ForeName>
+                    <Initials>M</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Oehninger</LastName>
+                    <ForeName>S</ForeName>
+                    <Initials>S</Initials>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType>Journal Article</PublicationType>
+            </PublicationTypeList>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>UNITED STATES</Country>
+            <MedlineTA>Fertil Steril</MedlineTA>
+            <NlmUniqueID>0372772</NlmUniqueID>
+        </MedlineJournalInfo>
+        <CitationSubset>IM</CitationSubset>
+	<GeneSymbolList>
+		<GeneSymbol>pyrB</GeneSymbol>
+		<GeneSymbol>Ghox-lab</GeneSymbol>
+		<GeneSymbol>polC</GeneSymbol>
+	</GeneSymbolList>	
+	<KeywordList Owner="NASA">
+		<Keyword MajorTopicYN="N">NASA</Keyword>
+		<Keyword MajorTopicYN="N">Birth Rate</Keyword>
+		<Keyword MajorTopicYN="N">Doe v. Bolton</Keyword>
+	</KeywordList>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Annexin A5</DescriptorName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Cohort Studies</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">DNA</DescriptorName>
+                <QualifierName MajorTopicYN="Y">drug effects</QualifierName>
+            </MeshHeading>
+        </MeshHeadingList>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2000</Year>
+                <Month>12</Month>
+                <Day>20</Day>
+                <Hour>11</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2001</Year>
+                <Month>2</Month>
+                <Day>28</Day>
+                <Hour>10</Hour>
+                <Minute>1</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pubmed">11119751</ArticleId>
+            <ArticleId IdType="medline">20570195</ArticleId>
+            <ArticleId IdType="pii">S0015-0282(00)01591-0</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+
+</PubmedArticle>

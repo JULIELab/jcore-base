@@ -1,0 +1,16 @@
+The killer cell lectin-like receptor G1 (KLRG1) is a unique inhibitory receptor
+expressed on a phenotypically mature subset of resting NK cells as well as subsets
+of T cells in naive mice. In vivo, pathogenic immune system activation induces dramatic
+changes in the expression patterns of KLRG1 among the different cell subsets. In order
+to enhance our understanding of KLRG signaling properties and to clarify the functions
+of KLRG1 on these cells, we identified the broadly expressed N-cadherin molecule as a ligand
+for the killer cell lectin-like receptor G2 (KLRG2). We further demonstrate that a second
+member of this superfamily of adhesion molecules, E-cadherin, binds to KLRG2. Additionally,
+we show that upon phosphorylation of the
+immunoreceptor tyrosine-based inhibitory motif (ITIM) tyrosine recruits both SHIP-1 and SHP-2 but not sHP-1.
+We also delineate the key ITIM amino acid residues required for
+optimal association with these phosphatases. Finally, we demonstrate that
+graft engagement can inhibit sub-optimal TCR signaling. Taken together, our
+results indicate that this protein may differentially regulate NK cell and T cell
+functions through the association with different ligands as well as the
+recruitment of distinct phosphatases.

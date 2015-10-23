@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>JCoRe Evaluation Types</name>
+  <description>This type system is an extension of the JCoRe type system to cover evaluation Annotations like missing or additional annotations for evaluation purposes.</description>
+  <version>2.0.0-SNAPSHOT</version>
+  <vendor>JULIE Lab Jena, Germany</vendor>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jules.types.Missing</name>
+      <description>for Evaluation - when an annotation is missing</description>
+      <supertypeName>de.julielab.jules.types.EvaluationAnnotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>expected</name>
+          <description/>
+          <rangeTypeName>uima.tcas.Annotation</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Additional</name>
+      <description>for Evaluation - if there is an additional annotation</description>
+      <supertypeName>de.julielab.jules.types.EvaluationAnnotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>actual</name>
+          <description>The annotation that was found and should not be found according to the reference.</description>
+          <rangeTypeName>uima.tcas.Annotation</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.EvaluationAnnotation</name>
+      <description>Base type for all EvaluationAnnotations</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Correct</name>
+      <description>when annotation is correct</description>
+      <supertypeName>de.julielab.jules.types.EvaluationAnnotation</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Overall</name>
+      <description>collects information about number of missing/additional/correct annotations on the document level</description>
+      <supertypeName>de.julielab.jules.types.EvaluationAnnotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>missing</name>
+          <description>number of missing annotations (false negatives)</description>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>additionall</name>
+          <description>number of additional annotations (false positives)</description>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>correct</name>
+          <description>number of correct annotations</description>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>fscore</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>precision</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>recall</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

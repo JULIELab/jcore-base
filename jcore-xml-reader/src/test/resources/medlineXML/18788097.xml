@@ -1,0 +1,73 @@
+<PubmedArticle>
+	<MedlineCitation>
+		<PMID>18788097</PMID>
+		<DateCreated>
+			<Year>2008</Year>
+			<Month>09</Month>
+			<Day>11</Day>
+		</DateCreated>
+		<Article PubModel="Print">
+			<Journal>
+				<ISSN IssnType="Electronic">1533-4406</ISSN>
+				<JournalIssue CitedMedium="Internet">
+					<Volume>359</Volume>
+					<Issue>11</Issue>
+					<PubDate>
+						<Year>2008</Year>
+						<Month>Sep</Month>
+						<Day>11</Day>
+					</PubDate>
+				</JournalIssue>
+				<Title>The New England journal of medicine</Title>
+				<ISOAbbreviation>N. Engl. J. Med.</ISOAbbreviation>
+			</Journal>
+			<ArticleTitle>
+				Case 16-2008: a woman with bone pain.
+			</ArticleTitle>
+			<Pagination>
+				<MedlinePgn>1184; author reply 1184</MedlinePgn>
+			</Pagination>
+			<AuthorList CompleteYN="Y">
+				<Author ValidYN="Y">
+					<LastName>Ish</LastName>
+					<ForeName>Christopher</ForeName>
+					<Initials>C</Initials>
+				</Author>
+			</AuthorList>
+			<Language>eng</Language>
+			<PublicationTypeList>
+				<PublicationType>Comment</PublicationType>
+				<PublicationType>Letter</PublicationType>
+			</PublicationTypeList>
+		</Article>
+		<MedlineJournalInfo>
+			<Country>United States</Country>
+			<MedlineTA>N Engl J Med</MedlineTA>
+			<NlmUniqueID>0255562</NlmUniqueID>
+		</MedlineJournalInfo>
+		<CitationSubset>AIM</CitationSubset>
+		<CitationSubset>IM</CitationSubset>
+	</MedlineCitation>
+	<PubmedData>
+		<History>
+			<PubMedPubDate PubStatus="pubmed">
+				<Year>2008</Year>
+				<Month>9</Month>
+				<Day>13</Day>
+				<Hour>9</Hour>
+				<Minute>0</Minute>
+			</PubMedPubDate>
+			<PubMedPubDate PubStatus="medline">
+				<Year>2008</Year>
+				<Month>9</Month>
+				<Day>13</Day>
+				<Hour>9</Hour>
+				<Minute>0</Minute>
+			</PubMedPubDate>
+		</History>
+		<PublicationStatus>ppublish</PublicationStatus>
+		<ArticleIdList>
+			<ArticleId IdType="pubmed">18788097</ArticleId>
+		</ArticleIdList>
+	</PubmedData>
+</PubmedArticle>

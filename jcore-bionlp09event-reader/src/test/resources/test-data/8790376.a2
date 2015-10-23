@@ -1,0 +1,26 @@
+T7	Entity 537 545	tyrosine
+T1	Positive_regulation 0 10	Activation
+T5	Positive_regulation 525 532	induced
+T6	Positive_regulation 525 532	induced
+T8	Phosphorylation 546 561	phosphorylation
+T9	Binding 567 574	binding
+T11	Positive_regulation 657 667	activation
+T13	Positive_regulation 691 697	induce
+T14	Positive_regulation 691 697	induce
+T15	Positive_regulation 738 748	Activation
+T17	Positive_regulation 780 786	caused
+T18	Binding 800 807	binding
+E1	Positive_regulation:T1 Theme:T2
+E2	Positive_regulation:T5 Theme:E4
+E3	Positive_regulation:T6 Theme:E5
+E4	Phosphorylation:T8 Theme:T10 Site:T7
+E5	Binding:T9 Theme:T10
+E6	Positive_regulation:T11 Theme:T12
+E7	Positive_regulation:T13 Theme:E5 Cause:E6
+M1	Negation E7
+E8	Positive_regulation:T14 Theme:E4 Cause:E6
+M2	Negation E8
+M3	Speculation E8
+E9	Positive_regulation:T15 Theme:T16
+E10	Positive_regulation:T17 Theme:E11 Cause:E9
+E11	Binding:T18 Theme:T19

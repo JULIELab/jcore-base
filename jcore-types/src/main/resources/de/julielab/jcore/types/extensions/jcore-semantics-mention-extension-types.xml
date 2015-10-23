@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>JCoRe Semantics Mention Types Extension</name>
+    <description>JCoRe type extensions to the JCoRe Semantics Mention types. Required for some processing or representation, these types do not extend the actual semantics of the core type system.</description>
+    <version>2.0.0-SNAPSHOT</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+  <imports>
+    <import location="../jcore-semantics-mention-types.xml"/>
+  </imports>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jules.types.ext.FlattenedRelation</name>
+      <description>This type represents a flattened view of complex relational types such as events. It is meant to serve for further processing where the original complex types pose difficulties. The type aims to offer all participating arguments and relation types in a single structure. However, which arguments originally belonged to which relation cannot be seen anymore.</description>
+      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>arguments</name>
+          <description>The list of atomic arguments participating in the original relational expression. The arguments should not be relational expressions in themselves.</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.ArgumentMention</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>relations</name>
+          <description>All relations participating in the event structure for which the instance of this type represents the flattened form, including the root relation.</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.GeneralEventMention</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      <featureDescription>
+          <name>agents</name>
+          <description>All atomic (i.e. not relational) entities participating in the flattened event structure as the active part(s), acting on the patient(s). This feature may not be meaningful defined for all relations (i.e. bindings are often described with specifying some kind of direction or active part).</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.ArgumentMention</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>patients</name>
+          <description>All atomic (i.e. not relational) entities participating in the flattened event structure as the passive part(s), acted upon by the agent(s). This feature may not be meaningful defined for all relations (i.e. bindings are often described with specifying some kind of direction or explicitly passive part).</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.ArgumentMention</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      <featureDescription>
+          <name>rootRelation</name>
+          <description>The relation of the relation structure that is not an argument itself. All other relations participating in the relation structure represented by an instance of this type is a direct or indirect argument-descendent of the root relation. As such, the root relation may be seen as the main relation of the structure, determining the main semantics expressed (although the real semantics is more intricate if multiple relations are taking part in the complete proposition).</description>
+          <rangeTypeName>de.julielab.jules.types.GeneralEventMention</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

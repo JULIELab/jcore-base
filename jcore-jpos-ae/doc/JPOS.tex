@@ -1,0 +1,303 @@
+\documentclass[11pt,a4paper,halfparskip]{scrartcl}
+%\usepackage[pdftex]{graphics} 
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{url} 
+\usepackage[T1]{fontenc}
+\usepackage{ucs}
+\usepackage{longtable}
+\setkomafont{sectioning}{\bfseries}
+\pagestyle{plain}
+\typearea{10}
+
+
+\begin{document}
+
+\title{\small{Documentation for}\\\huge JULIE Lab Part of Speech Tagger\\\vspace{3mm}\small{Version 1.0}}
+
+
+\author{\normalsize Johannes Hellrich\\
+  \normalsize  Jena University Language \& Information Engineering (JULIE) Lab\\
+  \normalsize F\"urstengraben 30 \\
+  \normalsize D-07743 Jena, Germany\\
+  {\normalsize \tt johannes.hellrich@uni-jena.de} }
+
+\date{}
+
+\maketitle
+
+
+
+\section{Objective}
+\label{sec_objective}
+
+
+The JULIE Lab Part of Speech Tagger (JPOS) is a generic and configurable
+POS tagger. JPOS was tested on the general-language news paper domain and in the bio-medical domain; it performs very good for German texts, yet only mediocre for English \cite{hellrich15}.
+
+As JPOS employs a machine learning (ML) approach (see Section
+\ref{sec:background}), a model (for the specific domain and entity
+classes to be predicted) needs to be trained first. Thus, JPOS offers
+a training mode. Furthermore, JPOS also provides an evaluation
+mode to assess the current model performance in terms of accuracy.
+ 
+\section{About this documentation}
+This is a documentation on the functionality of JPOS, especially when
+used in a stand-alone manner. When using the UIMA-compliant version of
+JPOS, please refer to the UIMA-JPOS documentation for additional
+information.
+
+\section{Changelog}
+\begin{description}
+\item[1.0] Initial release.
+\end{description}
+
+
+%\section{Requirements}
+\section{Installation}
+After extracting the JPOS-tgz package, nothing more has to be done.
+The program is written in Java. To run JPOS you need a Java 1.7 (or
+above) runtime environment installed on your system. In addition to
+the common Java libraries, JNET employs \textsc{MALLET}
+\cite{McCallum2002}, a machine learning toolkit, and
+\textsc{UEAStemmer}, a conservative word
+stemmer\footnote{\url{http://www.cmp.uea.ac.uk/Research/stemmer/}}.
+%All libraries can be found in the \url{lib} directory. JPOS can be started by running the script ``runJPOS.sh'' (see below for usage).
+
+\section{File Formats}
+\label{sec_formats}
+In this section, the file formats relevant to JPOS are introduced. The
+first subsection explains the format for annotated texts used as training material or produced during annotation. The second subsection shows in detail how JPOS may be configured.
+
+
+\subsection{Annotation format}
+\label{ssec_formatconverter}
+All \textit{training files} need to have the following format: one
+sentence per line, tokens separated by whitespaces and followed by their respective POS tag, using the pipe symbol ("|") as a separator, e.g.:
+
+\begin{verbatim}
+These|DT mutations|NNS have|VBP been|VBN localized|VBN .|$.
+\end{verbatim}
+
+POS tags can be chosen arbitrarily.
+
+\subsubsection{Feature Configuration File}
+\label{ssec_featconfig}
+
+A configuration file may be passed to JPOS where the features to be
+used can be parameterized. Both the training mode and the evaluation
+modes (because they include model training as well) can consume such a
+file.
+%  This can be done when only training a
+%model but also when performing any of the provided evaluations of JPOS
+%since the evaluation modes contain a training process.
+
+The information within a configuration file serves to customise the
+behaviour of JPOS in creating its ML features. As the actual feature
+instances are generated depending on the respective training material,
+a configuration file together with the training material determines
+the features (and thus the model).
+% and therefore the result of a prediction process (together with the
+% text on which the prediction is performed, of course).
+
+Next, details to the configurations are given.  Generally, a
+configuration file consists of key-value pairs, one in a line. See
+Table \ref{tab_keyval} for an enumeration of these key-value pairs.
+
+There are simple features, which can just be turned on or off (e.g.
+whether word stemming should be used or not), and more configurable
+features for which, when turned on, some parameter can be set (such as
+the context feature for which the size of the context can be set).
+
+
+% Note that JPOS is highly configurable with respect to the features
+% and meta datta to be used (features based on additional information,
+% such as e.g. PoS tags, will in the following be refered to as
+% \textit{"meta data"}). 
+
+%\begin{table}[h!]
+\begin{longtable}{|l|l|p{6cm}|l|}
+%\begin{tabular}{|l|l|p{6cm}|l|}
+\hline
+\textsc{key} & \textsc{allowed values} & \textsc{description}\\
+\hline\hline
+
+feat\_lowercase\_enabled & true/false & if enabled, tokens beginning
+with a capital letter are modified to lower case (this is done only if
+and only if
+the beginning letter is upper case\\
+\hline feat\_wc\_enabled & true / false & enables or disables the word
+class
+feature\\
+\hline feat\_bwc\_enabled & true / false & enables or disables the
+brief word class
+feature\\
+\hline feat\_bioregexp\_enabled & true / false & enables or disables
+some features
+primary used for bio or bio-medical texts\\
+\hline feat\_plural\_enabled & true / false & if enabled, this feature
+is activated in case the
+only difference between the stemmed and the unstemmed version of a token is a putative plural ``s''\\
+\hline token\_ngrams & integer list & defines the token-level ngrams
+to be generated as features.  If uncommented from the feature
+configuration, no token ngrams are built (not subject to offset
+conjunction).
+Example: 2,3; ngrams of size 2 and 3 are built\\
+\hline char\_ngram & integer list & ngrams on the character level (not
+subject to offset conjunction)\\
+\hline prefix\_sizes & integer list & the prefixes to be build
+according to the specified length.
+Example: 2,3; prefixes of 2 and 3 characters are build\\
+\hline
+suffix\_sizes & integer list & the suffixes to be build (compare to prefix\_sizes)\\
+\hline\hline offset\_conjunctions & integer list & determines the
+feature generation environment of a token and combinations of token
+features; numbers correspond to token positions relatively to the
+actually viewed token. (0) stands for the actual token, (-1) for the
+preceding token etc. \mbox{(-2) (-1) (0) (1)} indicates that features
+for the tokens (-2), (-1), (0) and (1) are generated.  something like
+\mbox{(-1 -2)} or \mbox{(-1, -2)} would
+combine the features of (-1) and (-2)\\
+\hline\hline gap\_character & character & character that serves for
+indicating that the
+annotation for a token is not available/not known in the training material\\
+\hline
+\\
+
+%xxx\_begin\_flag & true / false & indicates if an IOB-like begin flag should be
+%used; useful for annotations spanning multiple tokens\\
+\hline
+\caption{Defined key-value pairs in feature configuration files.}
+\label{tab_keyval}
+\end{longtable}
+%\end{tabular}
+%\end{table}
+
+
+
+%The default feature configuration file is given as an example which is
+%used when no feature configuration file is passed:\\
+Such a feature configuration file might look like this:
+
+\begin{verbatim}
+offset_conjunctions = (-1) (1)
+
+feat_lowercase_enabled = false
+feat_wc_enabled = true 
+feat_bwc_enabled = true
+feat_bioregexp_enabled = true
+feat_plural_enabled = true
+token_ngrams = 2,3
+char_ngrams = 3,4
+prefix_sizes = 1,4
+suffix_sizes = 1,4
+
+# -------------------------------------------------------------
+# the character for indicating that the annotation for a
+# single token is not known/not available
+gap_character = @
+
+
+
+\end{verbatim}
+
+\section{Using JPOS}
+
+% and used via the console. 
+%The tagger can be used for training, prediction, and evaluation.
+% itself is only able to train and to predict. 
+
+
+JPOS is a command-line tool, supplied as an executable jar. To use JPOS you have to call:
+\begin{verbatim} 
+java -jar <jpos-jar>
+\end{verbatim}
+Depending on your system configuration you will have to increase the allotted RAM for some operations:
+\begin{verbatim} 
+java -Xmx<required RAM in gigabyte>g -jar <jpos-jar>
+\end{verbatim}
+Running JPOS without further parameters, you will be informed about
+the available modes:
+\begin{verbatim} 
+usage: <mode> <mode-specific-parameters>
+
+Available modes:
+x: cross validation
+c: compare goldstandard and prediction
+t: train
+p: predict
+oc: output model configuration
+ts: output tag set
+\end{verbatim}
+
+\subsection{Training}
+In order to train a model you need training material like described in \ref{ssec_formatconverter} and a feature configuration file. The output of a training process is a model which may be used for prediction. If no \texttt{number of iterations} is set (or 0 is used) training will continue until convergence. You will probably need several GB of RAM for training on every non-trivial corpus.
+The arguments for training are:
+\begin{verbatim}
+t <trainData> <model-out-file> <featureConfigFile> [number of iterations]
+\end{verbatim}
+
+
+
+\subsection{Prediction}
+\label{sec_prediction}
+For tagging a given plain text you need a trained model. Annotated output is stored in the specified file.
+The arguments for prediction are:
+\begin{verbatim}
+p <unlabeled data> <modelFile> <outFile>
+\end{verbatim}
+
+\subsection{Evaluation}
+JPOS provides two evaluation modes. Each of them returns the performance in terms of accuracy.
+
+\subsubsection{Comparing Prediction and Gold Standard}
+For comparing the output of a prediction process with a given gold
+standard you need the prediction and the
+gold standard. Both are required to be text files in the format
+described in \ref{ssec_formatconverter}. They need to be of the same length. That is, the
+number of tokens and respectively the number of lines must match.
+The arguments for comparison are:
+\begin{verbatim}
+c <prediction> <gold>
+\end{verbatim}
+
+
+
+
+\subsubsection{Cross Validation}
+During cross validation, the prodived training material is randomly
+split into $n$ subsets (\textit{<x-rounds>} specifies the number of
+subsets). Then $n-1$ subsets are used for training, the remaining one
+for evaluation. This is repeated $n$ times, the performance values
+are the mean average over the performance values of each
+round. Standard deviation is also shown.
+
+The arguments for cross valiation are:
+
+\begin{verbatim}
+x <trainData> <x-rounds> <featureConfigFile> [number of iterations]
+\end{verbatim}
+
+
+\subsubsection{Model Configuration / Tag Set}
+Running JPOS with the argument \textit{'oc'} outputs the feature
+configuration specified during training for the specified model, whereas \textit{'ts'} outputs the tag set used by this model. Both modes need a model file as their second argument.
+
+\section{Background/Algorithms}
+\label{sec:background}
+
+JPOS is based on the JNET named entity recognizer from our lab and uses MaxEnt models.
+
+\section{Available Models}
+
+The directory \url{JPOS_data/models} contains two German models, trained on \textsc{FraMed} \cite{wermter.lrec04} and \textsc{TiGER}, achieving accuracy values of 97.6 and 97.7, respectively, during 10-fold cross-validation. These models can be used to annotate texts with an STTS derived tag set \cite{wermter.lrec04,stts}
+
+Using JPOS's training facilities your can easily train you own models
+-- given training material is available.
+
+
+\bibliographystyle{alpha}
+\bibliography{literature.bib}
+
+
+\end{document}

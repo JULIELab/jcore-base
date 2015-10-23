@@ -1,0 +1,437 @@
+%\documentclass[11pt]{article}
+\documentclass[11pt,a4paper,halfparskip]{scrartcl}
+%\usepackage[pdftex]{graphics} 
+\usepackage{graphicx}
+\usepackage[utf8x]{inputenc}
+\usepackage{url} 
+\usepackage[T1]{fontenc}
+\usepackage{ucs} 
+
+%\setkomafont{sectioning}{\bfseries}
+\pagestyle{plain}
+%\typearea{10}
+
+\title{\small{Documentation for}\\\huge UIMA Wrapper for JULIE Lab Named Entity Tagger\\\vspace{3mm}\small{Version 2.0.0}}
+
+\author{\normalsize Katrin Tomanek ~~~~~~~~~~~~~ Erik F\"assler\\
+  \normalsize  Jena University Language \& Information Engineering (JULIE) Lab\\
+  \normalsize F\"urstengraben 30 \\
+  \normalsize D-07743 Jena, Germany\\
+  {\normalsize \tt katrin.tomanek@uni-jena.de} }
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Objective}
+
+The UIMA Wrapper for JULIE Lab Named Entity Tagger (UIMA-JNET) is an
+UIMA wrapper for the JULIE Lab named entity tagger (JNET).  It is part
+of the JULIE Lab JCORE NLP tool suite\footnote{\url{http://www.julielab.de/}}
+which contains several NLP components (all UIMA compliant) from
+sentence splitting to named entity recognition and normalization as
+well as a comprehensive UIMA type system.
+
+For detecting and classifing named entity mentions in a document, this
+analysis engine employs the JULIE Lab Named Entity Tagger (JNET). JNET
+is a named entity tagger that uses a machine learning (ML) approach.
+It generates (ML-)features in order to recognise named entities in a
+given text of written natural language.  JNET offers the possibility
+to configure the feature generation and allows to use arbitrary
+available annotations, so-called meta data, for its features. As JNET
+does the named entity recognition, the UIMA-JNET provides all needed
+data. It takes sentence and token annotations from its CAS as well as
+meta data potentially required by JNET. It then writes the found named
+entity mentions and optionally a given corresponding resource ID back
+to the CAS.
+
+
+\section{About this documentation}
+This is a documentation on using the UIMA-compliant version of
+JNET. UIMA-JNET is a wrapper to JNET, which actually does all the
+named entity recognition. To get more information on JNET itself,
+please refer to its documentation.
+
+
+%%\section{Changelog}
+%
+%\subsection*{For Version 2.3}
+%\begin{itemize}
+%\item negative list can now be specified: entries in this list will
+%  never be recognized as entities
+%\item UIMA-JNET now writes to the type
+%  \url{de.julielab.jules.types.EntityMention}. This is due to type
+%  system changes. In earlier versions of UIMA-JNET, the type
+%  \url{Entity} was used instead. Now, a feature called
+%  \url{textualRepresentation} in \url{EntityMention} is also filled by
+%  UIMA-JNET.
+%\item consistency preservation mode (based on strings and
+%  abbreviations) now available
+%\item abbreviation expansion improved, bug fixed
+%\item several methods rewritten to clean up the code
+%\end{itemize}
+%% uncomment when needed
+
+
+\section{Requirements and Dependencies}
+
+UIMA-JNET is completely written in Java using Apache UIMA\footnote{\url{https://uima.apache.org}}. It
+requires Java 1.7 (or above).
+
+The input and output of an AE takes place by annotation objects. The
+classes corresponding to these objects are part of a \emph{JULIE Lab
+  UIMA Type System}.\footnote{The \emph{JULIE UIMA type system} can be
+  obtained separately from \url{http://www.julielab.de/}.} When refering to UIMA annotation types we mean types from
+the JULIE Lab UIMA type system. 
+
+
+
+\subsection{JNET}
+
+UIMA-JNET is based on JNET which employs the machine learning toolkit
+MALLET \cite{McCallum2002}. JNET does the named entity recognition. It
+receives the text to be tagged sentence-by-sentence. On a token-level,
+each token is assigned a class by the tagger which is either one of
+the entity classes or, in case that this token is not part of an
+entity mention, the common \texttt{OUTSIDE} label ``O''.
+
+For recognizing named entities, JNET generates a set of machine
+learning features. It is possible to provide already available
+annotations of the text to be tagged. These so-called \textit{meta
+  datas}, e.g. PoS information, are employed for feature
+generation. It may be configured which meta data is supposed to be
+used. This is done by a \textit{configuration file} that may be passed
+to JNET in any training process. The file consists of key-value pairs
+whereas the key is a setting-variable and the value its concrete
+setting. The keys refering to meta data settings are of the form
+\textit{``xxx\_feat\_data''}. ``xxx'' stands for the meta data name
+and the rest of the string for the setting-variable which receives a
+value. For details on this topic please see the JNET
+documentation\footnote{JNET and its documentation can be obtained
+  separately from \url{http://www.julielab.de/}}. In the following
+tabular the configuration settings only interesting in relation to the
+UIMA UIMA-JNET are explained. Please refer to the JNET documentation
+for more information.
+
+\begin{table}[h!]
+\begin{tabular}{|l|l|p{6cm}|l|}
+\hline
+\textsc{key} & \textsc{allowed values} & \textsc{description}\\
+\hline\hline
+
+xxx\_feat\_data & string &  a string representing the path to the corresponding
+UIMA-typesystem class for this annotation\\
+
+\hline
+
+xxx\_feat\_valMethod & string & the name of the method of the class referenced
+to in "xxx\_feat\_data" for getting the value of the annotation (without
+parameter brackets)\\
+
+\hline
+
+xxx\_begin\_flag & true / false & indicates if an IOB-like begin flag should be
+used; useful for annotations spanning multiple tokens\\
+\hline
+
+\end{tabular}
+\caption{Meta Data Feature Settings of JNET which are related to the UIMA
+UIMA-JNET}
+\end{table}
+
+
+\subsection{Model}
+UIMA-JNET needs a model previously trained. For training you need to
+use JNET directly; just type the command:
+\begin{verbatim}
+runJNET.sh jar t
+\end{verbatim}
+,whereas the \textit{´t'} at the end of the string indicates a training
+process, will result in the following output:
+\begin{verbatim}
+usage: runJNET.sh jar t <trainData.ppd> <tags.def> <model-out-file>
+[featureConfigFile]
+\end{verbatim}
+Training requires training data in \emph{piped format (PPD)}
+(\textit{<trainData.ppd>}), the tagset (\emph{<tags.def>)} and the
+feature model file name (\emph{<model-out-file>}).  Optionally, you
+may pass a feature configuration file. The output of a training
+process is a model which may be used for prediction.
+For details about the piped format, tagsets and feature configuration files
+please refer to the JNET documentation.
+
+\subsection{Connections Between Model Training and Running UIMA-JNET}
+The machine learning features\footnote{on ``features'' is refered in the
+meaning of a generic feature predicate rather than a concrete feature instance}
+created during a training process are also generated during the prediction
+process. This is done on the training text or the text to be predicted,
+respectively. A model contains the storage of ML-features builded while
+training. Using a model for prediction requires to generate the features
+that were used for the creation of the model. Therefore it is necessary to
+provide the same information. The meta datas used in the
+training process are required to be available in the prediction process. That
+is, if PoS information were used for the training process, a PoS annotation of
+the text to be predicted must also be provided. In the UIMA environment the CAS
+on which the UIMA-JNET refers needs to have the meta information available that
+were used during the training process in order to work properly.
+
+
+\section{Using the AE -- Descriptor Configuration}
+
+In UIMA, each component is configured by a descriptor in XML. In the
+following we describe how the descriptor required by this AE can be
+created (or modified) with the \emph{Component Descriptor Editor}, an
+Eclipse plugin which is part of the UIMA SDK.
+
+A descriptor contains information on different aspects. The following
+subsection refers to each sub aspect of the descriptor which is, in
+the Component Descriptor Editor, a separate \emph{tabbed page}. For an
+indepth description of the respective configuration aspects or tabs,
+please refer to the \emph{UIMA SKD User's
+  Guide}\footnote{\url{http://incubator.apache.org/uima/}}, especially
+the chapter on ``Component Descriptor Editor User's Guide''.
+
+To define your descriptor go through each tabbed pages mentioned here,
+make your respective entries (especially in page \emph{Parameter
+  Settings} you will be able to configure UIMA-JNET to your needs) and
+save the descriptor as \url{SomeName.xml}.
+
+\paragraph{Overview}
+This tab provides general informtion about the component. For the UIMA-JNET
+you need to provide the information as specified in Table
+\ref{tab:overview}.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{3.5cm}|p{4cm}|p{6cm}|}
+    \hline
+    Subsection & Key & Value \\
+    \hline\hline
+    Implementation Details & Implementation Language &  Java\\
+    \cline{2-3}
+    & Engine Type & primitive\\
+    \hline
+    Runtime Information & updates the CAS & check \\
+    \cline{2-3}
+    & multiple deployment allowed & check\\
+    \cline{2-3}
+    & outputs new CASes & don't check \\
+    \cline{2-3}
+    & Name of the Java class file & \url{de.julielab.jules.ae.netagger.EntityAnnotator}\\
+    \hline
+    Overall Identification Information & Name & UIMA-JNET \\
+    \cline{2-3}
+    & Version &  2.3\\
+    \cline{2-3}
+    & Vendor & JULIE Lab\\
+    \cline{2-3}
+    & Description & you may keep this empty\\
+    \hline
+  \end{tabular}
+  \caption{Overview/General Settings for AE.}
+  \label{tab:overview}
+\end{table}
+
+
+\paragraph{Aggregate}
+Not needed here, as this AE is a primitive.
+
+\paragraph{Parameters}
+\label{sss:parameters}
+
+See Table \ref{tab:parameters} for a specification of the
+configuration parameters of this AE. Do not check ``Use Parameter
+Groups'' in this tab.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{4cm}|p{2cm}|p{2cm}|p{2cm}|p{4cm}|}
+    \hline
+    Parameter Name & Parameter Type & Mandatory & Multivalued & Description \\
+    \hline\hline
+    ModelFilename & String & yes & no & specifies which model JNET
+    should use\\
+    \hline
+    EntityTypes & String & yes & yes & specifies which JNET named entity
+    label should be represented by which typesystem class within UIMA\\
+    \hline
+    ExpandAbbreviations & Boolean & no & no & if set to true then abbreviations (if annotated in the CAS) are expanded by their full form. Entity recognition is then performed on the full form (instead of the short form).\\
+    \hline
+    ShowSegmentConfidence & Boolean & no & no & if set to true, a the classifier's confidence on each entity is calculated. See Section~\ref{sss:segconf} for more details.\\
+    \hline
+    NegativeList & String & no & no & a list with entity mentions (covered text) and label which, when predicted as entity, will be ignored, i.e., is not written to the CAS. \\
+    \hline
+    ConsistencyPreservation & String & no & no & coma-separated list of modes. Keep blanc if consistency preservation should not be used. See Section \ref{sss:consistencypres} for more details.\\
+    \hline  
+  \end{tabular}
+  \caption{Parameters of this AE.}
+  \label{tab:parameters}
+\end{table}
+
+\paragraph{Parameter Settings}
+\label{sss:param_settings}
+
+The specific parameter settings are filled in here. For each of the
+parameters defined in \ref{sss:parameters}, add the respective values
+here (has to be done at least for each parameter that is defined as
+mandatory). See Table \ref{tab:param_settings} for the respective
+parameter settings of this AE.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{4cm}|p{4cm}|p{8cm}|}
+    \hline
+    Parameter Name & Parameter Syntax & Example \\
+    \hline\hline
+    ModelFilename & just give the complete path to the model file
+    & \url{/my/path/to/genemodel.mod.gz} \\
+    \hline
+    EntityTypes & given by pairs in the form of ``<JNET label>=<path typesystem
+    class>'' &
+    ``gene-dna=de.julielab.jules.types.EntityMention''; note that although you might specifiy different types here, all types must be subtypes of \url{EntityMention}.\\
+    \hline
+    ExpandAbbreviations & boolean & see above\\
+    \hline
+    ShowSegmentConfidence & Boolean & see above\\
+    \hline
+    NegativeList & one entry per line: ``entity mention@label''. You might omit the label (if so then the this is a negative entry for an arbitry entity label), however, in this case you should have an @ at the end of the line!
+    & IL-2@gene-protein\newline
+    IL-2 receptor\newline
+    HDA1@gene-generic\newline
+    \\
+    \hline
+    ConsistencyPreservation & String & "string, full2acro"\\
+    \hline
+  \end{tabular}
+  \caption{Parameter settings of this AE.}
+  \label{tab:param_settings}
+\end{table}
+
+\paragraph{Type System}
+\label{sss:type_system}
+On this page, go to \emph{Imported Type} and add the following layers
+of the \emph{JULIE UIMA Type System} (Use ``Import by Location''):
+\url{julie-basic-types.xml}, \url{julie-morpho-syntax-types.xml}, and
+\url{julie-semantics-types.xml}. In case you use special subtypes of
+\url{EntityMention}, of course, this part of the type system needs to
+be added as well.
+
+\paragraph{Capabilities}
+\label{sss:capabilities}
+UIMA-JNET needs as input annotations from type
+\url{de.julielab.jules.types.Sentence} and
+\url{de.julielab.jules.types.Token}. It returns annotations from type
+\url{de.julielab.jules.types.EntityMention}. As output type you might
+specify any subtype of \url{EntityMention}. If you do so, do not
+forget to add the respective type system defining this type.  See
+Table \ref{tab:capabilities}.
+% adapt if needed
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{5cm}|p{2cm}|p{2cm}|}
+    \hline
+    Type & Input & Output \\
+    \hline\hline
+     de.julielab.jules.types.Sentence &  $\surd$ & \\
+      \hline
+     de.julielab.jules.types.Token &  $\surd$ & \\
+      \hline
+     de.julielab.jules.types.EntityMention & &  $\surd$  \\
+      \hline
+  \end{tabular}
+  \caption{Capabilities of this AE.}
+  \label{tab:capabilities}
+\end{table} 
+
+
+
+\paragraph{Index}
+
+Nothing needs to be done here.
+
+\paragraph{Resources}
+
+Nothing needs to be done here.
+
+
+\section{Further Explanation of some Functionalities of UIMA-JNET}
+
+This section explains some of UIMA-JNET's features in more detail. 
+
+\subsection{Segment Confidence}
+\label{sss:segconf}
+The calculation of the segment confidence follows the approach
+proposed in \cite{Culotta2004}). The segment confidence is written to
+the feature \url{confidence} of the annotation type (or any subtypes
+of) \url{EntityMention}.
+
+Note: entity-level confidence calculation might seriously slow down
+UIMA-JNET. Thus, for processing large amounts of documents we advice
+not to use this feature.
+
+\subsection{Consistency Preservation}
+\label{sss:consistencypres}
+The idea of this feature is that within one document the same string
+should recieve the same entity label (if at all). As UIMA-JNET does
+the tagging on sentence-level, it might happen that within one
+sentence as certain token is tagged as an entity whereas in another
+sentence it is not. This is often the case when an entity is used in
+an ``untypical'' context (i.e., it is surrounded by words very
+different from the training material). To avoid inconsistent
+annotation, the consistency preservation mode makes sure that when a
+token (or a multi-token expression) is once recognized as an entity
+mention, all other occurences of this token within an document are
+also labeled as the same entity mention.
+
+Further, if an acronym was detected as an entity, but the respective
+full-form was not (or vice versa)\footnote{For this feature to work
+  you need to run the acronym tagger beforehand!}, the respective
+\url{EntityMention} annotation is copied.
+
+This feature is currently under construction and will have to be
+improved. Use it carefully!
+
+Available modes are:
+\begin{itemize}
+\item string
+\item full2acro
+\item acro2full
+\end{itemize}
+
+
+
+
+%\section{Modifying the Descriptors}
+%
+%This PEAR package contain one descriptor for UIMA-JNET configured so
+%that UIMA-JNET detects gene entities. Most probably, you do not intend
+%to use UIMA-JNET for gene recognition but for any other entites
+%types. To do so, train a model with JNET for the respective entity
+%types and modify the descriptor in this package respectively (add youŕ
+%model and define the EntityTypes mappings from the predicted labels to
+%the UIMA types where the outputs should be written to).
+%
+%The model contained in this package was trained on the gene
+%annotations of the\textsc{PennBioIE}
+%corpus\footnote{http://bioie.ldc.upenn.edu/} corpus. You will find the
+%training data (in the format JNET expects it and) we used to build
+%this model in the directory \url{resources}. Using 10-fold
+%cross-validation we achieved an F-score around 83\% on this data with
+%JNET.
+%
+%\section{Copyright and License}
+%
+%This software is Copyright (C) 2008 Jena University Language \& Information
+%Engineering Lab (Friedrich-Schiller University Jena, Germany), and is
+%licensed under the terms of the Common Public License, Version 1.0 or (at
+%your option) any subsequent version.
+%
+%The license is approved by the Open Source Initiative, and is
+%available from their website at \url{http://www.opensource.org}.
+
+\bibliographystyle{alpha}
+\bibliography{literature}
+
+
+\end{document}
