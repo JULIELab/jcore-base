@@ -1,0 +1,168 @@
+<?xml version = '1.0'?>
+<!DOCTYPE source_file SYSTEM "apf.v5.1.1.dtd">
+<source_file URI="XIN_ENG_20030624.0085.sgm" TYPE="text" AUTHOR="LDC" SOURCE="newswire" ENCODING="UTF-8" >
+  <document DOCID="XIN_ENG_20030624.0085" >
+    <entity CLASS="USP" TYPE="LOC" ID="XIN_ENG_20030624.0085-E1" SUBTYPE="Region-General" >
+      <entity_mention LDCTYPE="PTV" TYPE="PRO" ID="XIN_ENG_20030624.0085-E1-4" >
+        <extent>
+          <charseq END="616" START="594" >other parts of Shandong</charseq>
+        </extent>
+        <head>
+          <charseq END="604" START="600" >parts</charseq>
+        </head>
+      </entity_mention>
+      <entity_mention LDCTYPE="PTV" TYPE="PRO" ID="XIN_ENG_20030624.0085-E1-34" >
+        <extent>
+          <charseq END="579" START="543" >other parts of the Shandong Peninsula</charseq>
+        </extent>
+        <head>
+          <charseq END="553" START="549" >parts</charseq>
+        </head>
+      </entity_mention>
+    </entity>
+    <entity CLASS="SPC" TYPE="GPE" ID="XIN_ENG_20030624.0085-E11" SUBTYPE="State-or-Province" >
+      <entity_mention LDCATR="FALSE" ROLE="LOC" LDCTYPE="NAM" TYPE="NAM" ID="XIN_ENG_20030624.0085-E11-2" >
+        <extent>
+          <charseq END="579" START="558" >the Shandong Peninsula</charseq>
+        </extent>
+        <head>
+          <charseq END="579" START="562" >Shandong Peninsula</charseq>
+        </head>
+      </entity_mention>
+      <entity_mention LDCATR="FALSE" ROLE="LOC" LDCTYPE="NAM" TYPE="NAM" ID="XIN_ENG_20030624.0085-E11-5" >
+        <extent>
+          <charseq END="616" START="609" >Shandong</charseq>
+        </extent>
+        <head>
+          <charseq END="616" START="609" >Shandong</charseq>
+        </head>
+      </entity_mention>
+      <entity_mention LDCATR="FALSE" ROLE="LOC" LDCTYPE="NAM" TYPE="NAM" ID="XIN_ENG_20030624.0085-E11-22" >
+        <extent>
+          <charseq END="255" START="226" >east China's Shandong Province</charseq>
+        </extent>
+        <head>
+          <charseq END="255" START="239" >Shandong Province</charseq>
+        </head>
+      </entity_mention>
+      <entity_mention LDCATR="TRUE" ROLE="GPE" LDCTYPE="NAMPRE" TYPE="NAM" ID="XIN_ENG_20030624.0085-E11-30" >
+        <extent>
+          <charseq END="401" START="394" >Shandong</charseq>
+        </extent>
+        <head>
+          <charseq END="401" START="394" >Shandong</charseq>
+        </head>
+      </entity_mention>
+      <entity_attributes>
+        <name NAME="Shandong Province" >
+          <charseq END="255" START="239" >Shandong Province</charseq>
+        </name>
+        <name NAME="Shandong" >
+          <charseq END="401" START="394" >Shandong</charseq>
+        </name>
+        <name NAME="Shandong Peninsula" >
+          <charseq END="579" START="562" >Shandong Peninsula</charseq>
+        </name>
+        <name NAME="Shandong" >
+          <charseq END="616" START="609" >Shandong</charseq>
+        </name>
+      </entity_attributes>
+    </entity>
+    <value TYPE="Numeric" ID="XIN_ENG_20030624.0085-V2" SUBTYPE="Money" >
+      <value_mention ID="XIN_ENG_20030624.0085-V2-1" >
+        <extent>
+          <charseq END="854" START="826" >nearly 200 million US dollars</charseq>
+        </extent>
+      </value_mention>
+    </value>
+    <value TYPE="Numeric" ID="XIN_ENG_20030624.0085-V3" SUBTYPE="Money" >
+      <value_mention ID="XIN_ENG_20030624.0085-V3-1" >
+        <extent>
+          <charseq END="1087" START="1079" >3.75 yuan</charseq>
+        </extent>
+      </value_mention>
+    </value>
+    <timex2 ID="XIN_ENG_20030624.0085-T4" >
+      <timex2_mention ID="XIN_ENG_20030624.0085-T4-1" >
+        <extent>
+          <charseq END="332" START="327" >a year</charseq>
+        </extent>
+      </timex2_mention>
+    </timex2>
+    <timex2 ID="XIN_ENG_20030624.0085-T8" >
+      <timex2_mention ID="XIN_ENG_20030624.0085-T8-1" >
+        <extent>
+          <charseq END="1330" START="1327" >2007</charseq>
+        </extent>
+      </timex2_mention>
+    </timex2>
+    <relation MODALITY="Asserted" TYPE="PART-WHOLE" TENSE="Unspecified" ID="XIN_ENG_20030624.0085-R7" SUBTYPE="Geographical" >
+      <relation_argument ROLE="Arg-1" REFID="XIN_ENG_20030624.0085-E1" />
+      <relation_argument ROLE="Arg-2" REFID="XIN_ENG_20030624.0085-E11" />
+      <relation_mention LEXICALCONDITION="Preposition" ID="XIN_ENG_20030624.0085-R7-1" >
+        <extent>
+          <charseq END="579" START="543" >other parts of the Shandong Peninsula</charseq>
+        </extent>
+        <relation_mention_argument ROLE="Arg-1" REFID="XIN_ENG_20030624.0085-E1-34" >
+          <extent>
+            <charseq END="579" START="543" >other parts of the Shandong Peninsula</charseq>
+          </extent>
+        </relation_mention_argument>
+        <relation_mention_argument ROLE="Arg-2" REFID="XIN_ENG_20030624.0085-E11-2" >
+          <extent>
+            <charseq END="579" START="558" >the Shandong Peninsula</charseq>
+          </extent>
+        </relation_mention_argument>
+      </relation_mention>
+      <relation_mention LEXICALCONDITION="Preposition" ID="XIN_ENG_20030624.0085-R7-2" >
+        <extent>
+          <charseq END="616" START="594" >other parts of Shandong</charseq>
+        </extent>
+        <relation_mention_argument ROLE="Arg-1" REFID="XIN_ENG_20030624.0085-E1-4" >
+          <extent>
+            <charseq END="616" START="594" >other parts of Shandong</charseq>
+          </extent>
+        </relation_mention_argument>
+        <relation_mention_argument ROLE="Arg-2" REFID="XIN_ENG_20030624.0085-E11-5" >
+          <extent>
+            <charseq END="616" START="609" >Shandong</charseq>
+          </extent>
+        </relation_mention_argument>
+      </relation_mention>
+    </relation>
+    <relation MODALITY="Asserted" TYPE="PART-WHOLE" TENSE="Unspecified" ID="XIN_ENG_20030624.0085-R8" SUBTYPE="Geographical">
+<relation_argument ROLE="Arg-2" REFID="XIN_ENG_20030624.0085-E1"/>
+<relation_argument ROLE="Arg-1" REFID="XIN_ENG_20030624.0085-E11"/>
+	<relation_mention LEXICALCONDITION="Preposition" ID="XIN_ENG_20030624.0085-R8-1">
+	<extent>
+<charseq END="579" START="543">other parts of the Shandong Peninsula</charseq>
+</extent>
+	<relation_mention_argument ROLE="Arg-2" REFID="XIN_ENG_20030624.0085-E1-34">
+	<extent>
+<charseq END="579" START="543">other parts of the Shandong Peninsula</charseq>
+</extent>
+</relation_mention_argument>
+	<relation_mention_argument ROLE="Arg-1" REFID="XIN_ENG_20030624.0085-E11-2">
+	<extent>
+<charseq END="579" START="558">the Shandong Peninsula</charseq>
+</extent>
+</relation_mention_argument>
+</relation_mention> 
+<relation_mention LEXICALCONDITION="Preposition" ID="XIN_ENG_20030624.0085-R8-2">
+	<extent>
+<charseq END="616" START="594">other parts of Shandong</charseq>
+</extent>
+	<relation_mention_argument ROLE="Arg-2" REFID="XIN_ENG_20030624.0085-E1-4">
+	<extent>
+<charseq END="616" START="594">other parts of Shandong</charseq>
+</extent>
+</relation_mention_argument>
+	<relation_mention_argument ROLE="Arg-1" REFID="XIN_ENG_20030624.0085-E11-5">
+	<extent>
+<charseq END="616" START="609">Shandong</charseq>
+</extent>
+</relation_mention_argument>
+</relation_mention>
+</relation>
+  </document>
+</source_file>

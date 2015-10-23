@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>de.julielab</groupId>
+		<artifactId>jcore</artifactId>
+		<version>2.0.0</version>
+	</parent>
+	<artifactId>jcore-biosem-ae</artifactId>
+	<name>JCoRe BioSem Event Annotator</name>
+	<description>A UIMA wrapper around the BioSem Event Extractor from the University of Amsterdam.</description>
+	<dependencies>
+		<dependency>
+			<groupId>de.julielab</groupId>
+			<artifactId>jcore-types</artifactId>
+			<version>${jcore-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.julielab</groupId>
+			<artifactId>jcore-bionlp09event-consumer</artifactId>
+			<version>${jcore-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>de.julielab</groupId>
+			<artifactId>jcore-bionlp09event-reader</artifactId>
+			<version>${jcore-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>nl.uva</groupId>
+			<artifactId>biosem-event-extractor</artifactId>
+			<version>1.1</version>
+		</dependency>
+	</dependencies>
+	<url>http://www.ncbi.nlm.nih.gov/pubmed/22859502</url>
+	<organization>
+		<name>JULIE Lab Jena, Germany</name>
+		<url>http://www.julielab.de</url>
+	</organization>
+</project>
