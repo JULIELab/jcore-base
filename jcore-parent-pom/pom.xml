@@ -11,6 +11,12 @@
 		<name>JULIE Lab, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3.0</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.html</url>
+		</license>
+	</licenses>
 	<groupId>de.julielab</groupId>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -70,4 +76,10 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-parent-pom</url>
+	<scm>
+		<connection>scm:git:git@github.com:JULIELab/jcore-base.git</connection>
+		<developerConnection>scm:git:git@github.com:JULIELab/jcore-base.git</developerConnection>
+		<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-parent-pom</url>
+	</scm>
 </project>
