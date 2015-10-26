@@ -98,11 +98,6 @@
       </exclusions>
 	</dependency>
 
-    <dependency>
-      <groupId>com.uea</groupId>
-      <artifactId>uea-stemmer</artifactId>
-      <version>0.1</version>
-    </dependency>
 
    
     <dependency>
@@ -134,6 +129,11 @@
     	<groupId>com.google.guava</groupId>
     	<artifactId>guava</artifactId>
     	<version>15.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>de.julielab</groupId>
+    	<artifactId>uea-stemmer</artifactId>
+    	<version>0.1</version>
     </dependency>
   </dependencies>
   
