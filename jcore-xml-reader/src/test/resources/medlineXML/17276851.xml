@@ -1,0 +1,112 @@
+<PubmedArticle>
+
+    <MedlineCitation Owner="NLM" Status="MEDLINE">
+        <PMID>17276851</PMID>
+        <DateCreated>
+            <Year>2007</Year>
+            <Month>02</Month>
+            <Day>05</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>2007</Year>
+            <Month>02</Month>
+            <Day>27</Day>
+        </DateCompleted>
+        <DateRevised>
+            <Year>2007</Year>
+            <Month>11</Month>
+            <Day>15</Day>
+        </DateRevised>
+        <Article PubModel="Print">
+            <Journal>
+                <ISSN IssnType="Electronic">1097-6752</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <Volume>131</Volume>
+                    <Issue>2</Issue>
+                    <PubDate>
+                        <Year>2007</Year>
+                        <Month>Feb</Month>
+                    </PubDate>
+                </JournalIssue>
+                <Title>American journal of orthodontics and dentofacial orthopedics : official publication of the American Association of Orthodontists, its constituent societies, and the American Board of Orthodontics</Title>
+            </Journal>
+            <ArticleTitle>The case for treatment guidelines.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>159</MedlinePgn>
+            </Pagination>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Turpin</LastName>
+                    <ForeName>David L</ForeName>
+                    <Initials>DL</Initials>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType>Editorial</PublicationType>
+            </PublicationTypeList>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>United States</Country>
+            <MedlineTA>Am J Orthod Dentofacial Orthop</MedlineTA>
+            <NlmUniqueID>8610224</NlmUniqueID>
+        </MedlineJournalInfo>
+        <CitationSubset>D</CitationSubset>
+        <CitationSubset>IM</CitationSubset>
+        <CommentsCorrections>
+            <CommentIn>
+                <RefSource>Am J Orthod Dentofacial Orthop. 2007 Jun;131(6):698</RefSource>
+                <PMID>17561031</PMID>
+            </CommentIn>
+            <CommentIn>
+                <RefSource>Am J Orthod Dentofacial Orthop. 2007 Jun;131(6):698-9</RefSource>
+                <PMID>17561030</PMID>
+            </CommentIn>
+            <CommentIn>
+                <RefSource>Am J Orthod Dentofacial Orthop. 2007 May;131(5):576; discussion 576-7</RefSource>
+                <PMID>17482072</PMID>
+            </CommentIn>
+        </CommentsCorrections>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Malocclusion</DescriptorName>
+                <QualifierName MajorTopicYN="Y">therapy</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Orthodontics, Corrective</DescriptorName>
+                <QualifierName MajorTopicYN="Y">standards</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">Practice Guidelines as Topic</DescriptorName>
+            </MeshHeading>
+        </MeshHeadingList>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2007</Year>
+                <Month>2</Month>
+                <Day>6</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2007</Year>
+                <Month>2</Month>
+                <Day>28</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pii">S0889-5406(06)01649-0</ArticleId>
+            <ArticleId IdType="doi">10.1016/j.ajodo.2006.12.004</ArticleId>
+            <ArticleId IdType="pubmed">17276851</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+
+</PubmedArticle>
