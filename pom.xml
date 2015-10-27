@@ -11,12 +11,6 @@
 		<name>JULIE Lab, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
-	<licenses>
-		<license>
-			<name>GNU Lesser General Public License, Version 3.0</name>
-			<url>http://www.gnu.org/licenses/lgpl-3.0.html</url>
-		</license>
-	</licenses>
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore</artifactId>
