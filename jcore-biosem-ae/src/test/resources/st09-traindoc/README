@@ -1,0 +1,7 @@
+The txt and .a1 files are the originals from the BioNLP Shared Task 2009 data.
+The .a2 file in ../st09-predicted has been created by calling the BioSem event extractor
+manually, using the "BioSemApplication" class in the respective project (i.e. the class
+is not contained in this project!). The trained database used
+to create this .a2 file is the one at src/test/resources/dbs-2009 in this
+project, trained on the ST09 development data.
+Thus, we expect the test to reproduce those very same results.
