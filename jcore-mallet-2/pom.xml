@@ -16,26 +16,6 @@
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
-
-
-		<dependency>
-			<groupId>no.uib.cipr</groupId>
-			<artifactId>mtj</artifactId>
-			<version>0.9.9</version>
-		</dependency>
-
-
-
-
-
-
-		<dependency>
-			<groupId>bash</groupId>
-			<artifactId>bash</artifactId>
-			<version>1.0</version>
-		</dependency>
-
-
 		<dependency>
 			<groupId>jgrapht</groupId>
 			<artifactId>jgrapht</artifactId>
@@ -52,6 +32,16 @@
 			<version>2.0.2</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.beanshell</groupId>
+			<artifactId>bsh</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.matrix-toolkits-java</groupId>
+			<artifactId>mtj</artifactId>
+			<version>1.0.4</version>
 		</dependency>
 	</dependencies>
 	<parent>

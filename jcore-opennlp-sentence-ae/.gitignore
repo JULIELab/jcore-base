@@ -1,5 +1,8 @@
 
 # /
+/.settings
+/.classpath
+/.project
 /target
 /bin
 /conf

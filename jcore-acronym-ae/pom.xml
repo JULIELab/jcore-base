@@ -16,17 +16,6 @@ Ariel S. Schwartz and Marti A. Hearst: A Simple Algorithm For Identifying Abbrev
   </parent>	
 	 
   <dependencies>
-
-    
-    <dependency>
-      <groupId>com.uea</groupId>
-      <artifactId>uea-stemmer</artifactId>
-      <version>0.1</version>
-    </dependency>
-
-
-
-
     <dependency>
     	<groupId>org.slf4j</groupId>
     	<artifactId>slf4j-api</artifactId>

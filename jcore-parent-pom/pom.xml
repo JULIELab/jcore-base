@@ -7,38 +7,31 @@
 	<version>2.0.0</version>
 	<packaging>pom</packaging>
 	<description>The Parent POM of the JCoRe project.</description>
-	<parent>
-		<groupId>de.julielab</groupId>
-		<artifactId>julie</artifactId>
-		<version>1.2.1</version>
-	</parent>
 	<organization>
 		<name>JULIE Lab, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
-	<repositories>
-		<repository>
-			<id>apache-incubating</id>
-			<name>Apache Incubating Repository</name>
-			<url>
-				http://people.apache.org/repo/m2-incubating-repository/
-			</url>
-		</repository>
-	</repositories>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback-version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3.0</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.html</url>
+		</license>
+	</licenses>
+	<groupId>de.julielab</groupId>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>9</version>
+	</parent>
+	<name>JCoRe Parent POM</name>
+	<properties>
+		<jcore-version>2.0.0</jcore-version>
+		<uima-version>2.6.0</uima-version>
+		<uimafit-version>2.1.0</uimafit-version>
+		<slf4j-version>1.7.12</slf4j-version>
+		<logback-version>1.1.3</logback-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
@@ -57,7 +50,20 @@
 			<version>${uimafit-version}</version>
 		</dependency>
 	</dependencies>
-
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback-version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<reporting>
 		<plugins>
 			<plugin>
@@ -68,16 +74,21 @@
 					<showSuccess>false</showSuccess>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
 		</plugins>
 	</reporting>
-
-
-	<properties>
-		<jcore-version>2.0.0</jcore-version>
-		<uima-version>2.6.0</uima-version>
-		<uimafit-version>2.1.0</uimafit-version>
-		<slf4j-version>1.7.12</slf4j-version>
-		<logback-version>1.1.3</logback-version>
-	</properties>
-	<name>JCoRe Parent POM</name>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-parent-pom</url>
+	<scm>
+		<connection>scm:git:git@github.com:JULIELab/jcore-base.git</connection>
+		<developerConnection>scm:git:git@github.com:JULIELab/jcore-base.git</developerConnection>
+		<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-parent-pom</url>
+	</scm>
 </project>

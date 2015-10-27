@@ -178,16 +178,25 @@ public class JCoReFeaturePathTest {
 
 	@Test
 	public void testGetValueAsStringArrayOnValueArrayWithoutIndex() throws Exception {
+<<<<<<< HEAD
 		// Here we test whether the correct value is retrieved via the feature
 		// path when the end of the path is an
 		// array and we don't deliver an index. This means that we want to get
 		// all values.
+=======
+		// Here we test whether the correct value is retrieved via the feature path when the end of the path is an
+		// array and we don't deliver an index. This means that we want to get all values.
+>>>>>>> 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
 
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		JCoReFeaturePath fp = new JCoReFeaturePath();
 		fp.initialize("/semanticTypes");
+<<<<<<< HEAD
 		// We don't need to call fp.typeInit() because this is done
 		// automatically in fp.getValueAsString().
+=======
+		// We don't need to call fp.typeInit() because this is done automatically in fp.getValueAsString().
+>>>>>>> 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
 
 		OntClassMention ontClass = new OntClassMention(jcas);
 		StringArray semTypes = new StringArray(jcas, 2);
@@ -453,5 +462,4 @@ public class JCoReFeaturePathTest {
 		fp.initialize("/resourceEntryList:coveredText()");
 		assertEquals("IL-2, mTOR", fp.getValueAsString(g));
 	}
-
 }
