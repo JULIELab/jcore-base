@@ -1,0 +1,217 @@
+\documentclass[11pt,a4paper,halfparskip]{scrartcl}
+\usepackage{graphicx}
+\usepackage[utf8x]{inputenc}
+\usepackage{url} 
+\usepackage[T1]{fontenc}
+\usepackage{ucs} 
+\pagestyle{plain}
+
+\title{\small{Documentation for}\\\huge JULIELAB UIMA Wrapper for \\OpenNLP Part-of-Speech (POS)
+Tagger}
+
+\author{\normalsize Ekaterina Buyko\\
+  \normalsize  Jena University Language \& Information Engineering (JULIE) Lab\\
+  \normalsize F\"urstengraben 30 \\
+  \normalsize D-07743 Jena, Germany\\
+  {\normalsize \tt \{buyko\}@coling-uni-jena.de} }
+
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Objective}
+
+
+
+The \textsc{OpenNLP POS Tagger}\footnote{http://www.opennlp.org} provides part of speech tags for
+tokens. \textsc{JULIELAB UIMA Wrapper for OpenNLP POS Tagger} is part of the JULIE NLP tool
+suite\footnote{\url{http://www.julielab.de/}} which contains several NLP components (all UIMA
+compliant) from sentence splitting to named
+entity recognition and normalization as well as a comprehensive UIMA
+type system.
+
+% now you can put a longer description of the tool here
+
+
+%\section{Changelog}
+% uncomment when needed
+
+
+\section{Requirements and Dependencies}
+
+% mostly our tools will be based on java 1.5 and use UIMA
+\textsc{JULIELAB UIMA Wrapper for OpenNLP POS Tagger} is written in Java 1.5 using Apache
+UIMA version 2.1.0-incubation\footnote{\url{http://incubator.apache.org/uima/}}. It
+was not tested with other UIMA versions.
+
+% ref to our type system
+The input and output of an AE takes place by annotation objects. The
+classes corresponding to these objects are part of a \emph{JULIE UIMA
+  Type System}\footnote{The \emph{JULIE UIMA type system} can be
+  obtained from \url{http://www.julielab.de/}}.
+
+% now other dependencies you tool might have (you might organize this
+% a subsections as well)
+
+
+
+
+\section{Using the AE -- Descriptor Configuration}
+% carefully edit this section!
+
+In UIMA, each component is configured by a descriptor in XML. In the
+following we describe how the descriptor required by this AE can be
+created with \emph{Component Descriptor Editor}, an Eclipse plugin
+which is part of the UIMA SDK.
+
+A descriptor contains information on different aspects. The following
+subsection refers to each sub aspect of the descriptor which is, in
+the Component Descriptor Editor, a separate \emph{tabbed page}. For an
+indepth description of the respective configuration aspects or tabs,
+please refer to the \emph{UIMA SKD User's
+  Guide}\footnote{\url{http://incubator.apache.org/uima/}}, especially
+chapter 12 on ``Component Descriptor Editor User's Guide''.
+
+To define your descriptor go through each tabbed pages mentioned
+here, make your respective entries (especially in page \emph{Parameter
+Settings} you will be able to configure \textsc{OpenNLP POS Tagger} 
+to your needs) and save the descriptor as \\ \url{PosTagAnnotator.xml}.
+
+\paragraph{Overview}
+This tab provides general informtion about the component. For the
+OpenNLP Sentence Splitter you need to provide the information as
+specified in Table
+\ref{tab:overview}.
+% adapt to your needs, remember to change values in tabular below!
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{3.5cm}|p{4cm}|p{6cm}|}
+    \hline
+    Subsection & Key & Value \\
+    \hline\hline
+    Implementation Details & Implementation Language &  \textsc{Java} \\
+    \cline{2-3}
+    & Engine Type & Primitive\\
+    \hline
+    Runtime Information & updates the CAS & yes  \\
+    \cline{2-3}
+    & multiple deployment allowed & yes \\
+    \cline{2-3}
+    & outputs new CASes & no \\
+    \cline{2-3}
+    & Name of the Java class file & \url{de.julielab.jules.ae.opennlp.PosTagAnnotator}\\
+    \hline
+    Overall Identification Information & Name & \textsc{JULIELAB UIMA Wrapper for OpenNLP Tokenizer}
+\\
+    \cline{2-3}
+    & Version & 2.0 \\
+    \cline{2-3}
+    & Vendor & julielab\\
+    \cline{2-3}
+    & Description & see above\\
+    \hline
+  \end{tabular}
+  \caption{Overview/General Settings for AE.}
+  \label{tab:overview}
+\end{table}
+
+
+\paragraph{Aggregate}
+% for primitive AEs this does not have to be set
+Not needed here, as this AE is a primitive.
+
+\paragraph{Parameters}
+\label{sss:parameters}
+% adapt to your needs
+
+See Table \ref{tab:parameters} for a specification of the
+configuration parameters of this AE. Do not check ``Use Parameter
+Groups'' in this tab.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{4cm}|p{2cm}|p{2cm}|p{2cm}|p{4cm}|}
+    \hline 
+    Parameter Name & Parameter Type & Mandatory & Multivalued & Description \\
+   \hline \hline
+      modelFile & String & yes &no &  path to the \textsc{OpenNLP POS Tagger}
+model.\\
+ tagset & String & no &no &  CAS types to annotate (see \emph{JULIE UIMA type system}) \\
+ language & String & yes & no &  language (e.g. eng) (see \emph{JULIE UIMA type system}) \\
+ useTagdict & Boolean & yes & no &  \url{true} if a tag dictionary should be used \\
+ tagDict & String & yes & no &  path to a tag dictionary (if the parameter value 
+of \textsc{useTagdict} is \url{true})\\
+ caseSensitive & Boolean & no & no &  \url{true} if a tag dictionary is case senstive \\
+    % add your parameters here
+  \hline
+  \end{tabular}
+  \caption{Parameters of this AE.}
+  \label{tab:parameters}
+\end{table}
+
+
+\paragraph{Parameter Settings}
+\label{sss:param_settings}
+% adapt to your needs
+
+The specific parameter settings are filled in here. For each of the
+parameters defined in \ref{sss:parameters}, add the respective values
+here (has to be done at least for each parameter that is defined as
+mandatory). See Table \ref{tab:param_settings} for the respective
+parameter settings of this AE.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{4cm}|p{4cm}|p{7cm}|}
+    \hline
+    Parameter Name & Parameter Syntax & Example \\
+    \hline\hline
+    modelFile & model.bin.gz & resources/POSTaggerPennBio.bin.gz\\
+    tagset & CASType & de.julielab.jules.types.PennBioIEPOSTag \\
+    language & ISO 639-1/2 & en \\
+    useTagdict & Boolean & yes \\
+    tagDict & dir/tagdict & resources/tagdictPennBioIE\\
+   caseSensitive & Boolean & no \\
+  \hline
+  \end{tabular}
+  \caption{Parameter settings of this AE.}
+  \label{tab:param_settings}
+\end{table}
+
+\paragraph{Type System}
+\label{sss:type_system}
+On this page, go to \emph{Imported Type} and add the \emph{julie-morpho-syntax-types.xml} type system. (Use ``Import by Location'').
+
+
+\paragraph{Capabilities}
+% adapt if needed
+Nothing needs to be done here.
+
+
+\paragraph{Index}
+% adapt if needed
+Nothing needs to be done here.
+
+\paragraph{Resources}
+% adapt if needed
+Nothing needs to be done here.
+
+
+\section{Copyright and License}
+% leave unchanged
+This software is Copyright (C) 2007 Jena University Language \& Information
+Engineering Lab (Friedrich-Schiller University Jena, Germany), and is
+licensed under the terms of the Common Public License, Version 1.0 or (at
+your option) any subsequent version.
+
+The license is approved by the Open Source Initiative, and is
+available from their website at \url{http://www.opensource.org}.
+
+\bibliographystyle{alpha}
+\bibliography{/home/paper/biblio/paper.bib}
+
+
+\end{document}
