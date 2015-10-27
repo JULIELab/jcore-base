@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.julielab.jcore.ae.jsbd.main.SentenceAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe Sentence Annotator</name>
+    <description>This is the UIMA Wrapper for the JULIE Sentence Boundary Detector.</description>
+    <version>2.0.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>ModelFilename</name>
+        <description>Filename for the trained JSBD model</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>Postprocessing</name>
+        <description>Indicates whether postprocessing should be run. Default: no postprocessing</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ProcessingScope</name>
+        <description>The Annotation object over which to iterate for doing the sentence segmentation. If nothing is given, the documentText is taken as scope!</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>Postprocessing</name>
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ModelFilename</name>
+        <value>
+          <string>de/julielab/jcore/ae/jsbd/model/jsbd-2.0-biomed.gz</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>
