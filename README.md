@@ -1,3 +1,4 @@
 # JCoRe Base
 
-Base modules of JCoRe as describe in:
+Base modules of JCoRe as described in:
+[to do]

@@ -3,14 +3,15 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jcore-types</artifactId>
-	<name>JULIELab JCoRe Type System</name>
+	<name>JCoRe Type System</name>
 	<description>The JCoRe type system.</description>
 
 
 	<parent>
 		<groupId>de.julielab</groupId>
-		<artifactId>jcore</artifactId>
-		<version>2.0.0</version>
+		<artifactId>jcore-base</artifactId>
+		<version>${jcore-version}</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<url>http://www.julielab.de</url>
 	<organization>

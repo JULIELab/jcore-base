@@ -3,10 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jcore-bionlp09event-consumer</artifactId>
     <parent>
-    <artifactId>jcore</artifactId>
+    <artifactId>jcore-base</artifactId>
     <groupId>de.julielab</groupId>
-    <version>2.0.0</version>
-  </parent>
+    <version>${jcore-version}</version>
+    <relativePath>..</relativePath>
+    </parent>
    <dependencies>
       <dependency>
       <groupId>org.easymock</groupId>
@@ -37,7 +38,7 @@
 			<scope>test</scope>
 		</dependency>
    </dependencies>  
-   <name>BioNLP 09 Event Consumer</name>
+   <name>JCoRe BioNLP 09 Event Consumer</name>
    <organization>
    	<name>JULIE Lab Jena, Germany</name>
    	<url>http://www.julielab.de</url>

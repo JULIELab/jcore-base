@@ -3,9 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jcore-bionlp09event-reader</artifactId>
   <parent>
-    <artifactId>jcore</artifactId>
+    <artifactId>jcore-base</artifactId>
     <groupId>de.julielab</groupId>
-    <version>2.0.0</version>
+    <version>${jcore-version}</version>
+    <relativePath>..</relativePath>
   </parent>
   <dependencies>
       <dependency>
@@ -44,5 +45,5 @@
   	<name>JULIE Lab Jena, Germany</name>
   	<url>http://www.julielab.de</url>
   </organization>
-  <name>BioNLP 09 Event Reader</name>
+  <name>JCoRe BioNLP 09 Event Reader</name>
 </project>

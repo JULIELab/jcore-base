@@ -7,8 +7,9 @@
 	<description>Wrapper for OpenNLP POS Tagger</description>
 	<parent>
 		<groupId>de.julielab</groupId>
-		<artifactId>jcore</artifactId>
-		<version>2.0.0</version>
+		<artifactId>jcore-base</artifactId>
+		<version>${jcore-version}</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<build>
 		<pluginManagement>
