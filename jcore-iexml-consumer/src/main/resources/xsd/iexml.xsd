@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+	<xs:element name="document">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="unit" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="w">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="offset" type="xs:integer" use="required"/>
+			<xs:attribute name="len" type="xs:integer" use="required"/>
+			<xs:attribute name="pos" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="e">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="src" type="xs:string"/>
+			<xs:attribute name="cui" type="xs:string"/>
+			<xs:attribute name="type" type="xs:string"/>
+			<xs:attribute name="grp" type="group" use="required"/>
+			<xs:attribute name="offset" type="xs:integer"/>
+			<xs:attribute name="len" type="xs:integer"/>
+			<xs:attribute name="b" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="docType">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="(EMEA|Medline|Patent|Cochrane|Other)(.)*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="group">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="ACTI"/>
+			<xs:enumeration value="ANAT"/>
+			<xs:enumeration value="CHEM"/>
+			<xs:enumeration value="CONC"/>
+			<xs:enumeration value="DEVI"/>
+			<xs:enumeration value="DISO"/>
+			<xs:enumeration value="GEOG"/>
+			<xs:enumeration value="LIVB"/>
+			<xs:enumeration value="OBJC"/>
+			<xs:enumeration value="OCCU"/>
+			<xs:enumeration value="ORGA"/>
+			<xs:enumeration value="PHEN"/>
+			<xs:enumeration value="PHYS"/>
+			<xs:enumeration value="GENE"/>
+			<xs:enumeration value="PROC"/>
+			<xs:enumeration value="PRGE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="unit">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element name="text">
+					<xs:complexType mixed="true">
+						<xs:sequence>
+							<xs:element ref="e" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="e" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="w" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="lang">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="no"/>
+			<xs:enumeration value="he"/>
+			<xs:enumeration value="uk"/>
+			<xs:enumeration value="ko"/>
+			<xs:enumeration value="ar"/>
+			<xs:enumeration value="ro"/>
+			<xs:enumeration value="bg"/>
+			<xs:enumeration value="el"/>
+			<xs:enumeration value="en"/>
+			<xs:enumeration value="az"/>
+			<xs:enumeration value="vi"/>
+			<xs:enumeration value="hu"/>
+			<xs:enumeration value="ru"/>
+			<xs:enumeration value="fa"/>
+			<xs:enumeration value="es"/>
+			<xs:enumeration value="hy"/>
+			<xs:enumeration value="sk"/>
+			<xs:enumeration value="sl"/>
+			<xs:enumeration value="in"/>
+			<xs:enumeration value="fi"/>
+			<xs:enumeration value="zh"/>
+			<xs:enumeration value="lt"/>
+			<xs:enumeration value="ja"/>
+			<xs:enumeration value="sq"/>
+			<xs:enumeration value="pl"/>
+			<xs:enumeration value="sr"/>
+			<xs:enumeration value="is"/>
+			<xs:enumeration value="it"/>
+			<xs:enumeration value="mk"/>
+			<xs:enumeration value="sv"/>
+			<xs:enumeration value="fr"/>
+			<xs:enumeration value="iw"/>
+			<xs:enumeration value="ml"/>
+			<xs:enumeration value="sw"/>
+			<xs:enumeration value="th"/>
+			<xs:enumeration value="ps"/>
+			<xs:enumeration value="pt"/>
+			<xs:enumeration value="da"/>
+			<xs:enumeration value="cs"/>
+			<xs:enumeration value="de"/>
+			<xs:enumeration value="ka"/>
+			<xs:enumeration value="tr"/>
+			<xs:enumeration value="af"/>
+			<xs:enumeration value="nl"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="annoType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="inline"/>
+			<xs:enumeration value="standoff"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Corpus">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="document" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="docType" type="docType" use="required"/>
+			<xs:attribute name="lang" type="lang" use="required"/>
+			<xs:attribute name="creationDate" type="xs:date" use="required"/>
+			<xs:attribute name="annotationType" type="annoType"/>
+			<xs:attribute name="annotationDate" type="xs:date"/>
+			<xs:attribute name="author" type="xs:string"/>
+			<xs:attribute name="description" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

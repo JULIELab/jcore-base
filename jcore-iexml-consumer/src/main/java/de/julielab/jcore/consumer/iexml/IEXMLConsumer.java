@@ -1,0 +1,223 @@
+/**
+ * Copyright (c) 2015, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ */
+
+package de.julielab.jcore.consumer.iexml;
+
+import generated.AnnoType;
+import generated.Lang;
+
+import java.io.File;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.collection.CasConsumer_ImplBase;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceProcessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.julielab.jules.types.mantra.Corpus;
+import de.julielab.jules.types.mantra.Document;
+import de.julielab.jules.types.mantra.Entity;
+import de.julielab.jules.types.mantra.NER;
+import de.julielab.jules.types.mantra.Unit;
+
+public class IEXMLConsumer extends CasConsumer_ImplBase {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(IEXMLConsumer.class);
+
+	public static final String PARAM_OUTPUTFILE = "outputFile";
+
+	private static final String PARAM_AUTHOR = "author";
+
+	private static final String PARAM_DESCRIPTION = "description";
+
+	private static final String WRITE_NER = "writeNER";
+
+	private String outputFile;
+
+	private String author;
+
+	private String description;
+
+	private boolean writeNER;
+
+	private static generated.Corpus xmlCorpus = null;
+
+	@Override
+	public void initialize() throws ResourceInitializationException {
+		// get the parameters
+		this.outputFile = (String) getConfigParameterValue(PARAM_OUTPUTFILE);
+		this.author = (String) getConfigParameterValue(PARAM_AUTHOR);
+		this.description = (String) getConfigParameterValue(PARAM_DESCRIPTION);
+		Object x = getConfigParameterValue(WRITE_NER);
+		this.writeNER =  x != null && (Boolean) x;
+	}
+
+	@Override
+	public void processCas(CAS cas) throws ResourceProcessException {
+		JCas jcas = null;
+		try {
+			jcas = cas.getJCas();
+		} catch (CASException e) {
+			e.printStackTrace();
+		}
+		String docText = jcas.getDocumentText();
+
+		if (xmlCorpus == null)
+			setXMLCorpusAttributes(jcas);
+
+		// Document
+		Document doc = (Document) jcas.getAnnotationIndex(Document.type)
+				.iterator().next();
+		generated.Document xmlDoc = new generated.Document();
+		xmlDoc.setId(doc.getId());
+
+		// Units
+		FSIterator<Annotation> units = jcas.getAnnotationIndex(Unit.type)
+				.iterator();
+		while (units.hasNext()) {
+			Unit unit = (Unit) units.next();
+			generated.Unit xmlUnit = new generated.Unit();
+			int offset = unit.getBegin();
+
+			xmlUnit.setId(unit.getId());
+
+			generated.Unit.Text xmlText = new generated.Unit.Text();
+			xmlText.getContent().add(
+					docText.substring(unit.getBegin(), unit.getEnd()));
+			xmlUnit.setText(xmlText);
+
+			FSIterator<Annotation> entities = jcas.getAnnotationIndex(
+					Entity.type).subiterator(unit);
+			int numberOfEntities = 1;
+			String idTemplate = unit.getId() + ".e%s";
+			while (entities.hasNext()) {
+				Entity e = (Entity) entities.next();
+				generated.E xmlE = new generated.E();
+
+				xmlE.setOffset(BigInteger.valueOf(e.getBegin() - offset));
+				xmlE.setLen(BigInteger.valueOf(e.getEnd() - e.getBegin()));
+
+				xmlE.setId(String.format(idTemplate, numberOfEntities));
+
+				if (!writeNER) {
+					xmlE.setSrc(e.getSource());
+					xmlE.setCui(e.getCui());
+					xmlE.setType(e.getSemanticType());
+					xmlE.setGrp(generated.Group.fromValue(e.getSemanticGroup()));
+				}
+				
+				List<Serializable> content = xmlE.getContent();
+				content.add(e.getCoveredText());
+
+				if (writeNER) {
+					FSArray ners = e.getNer();
+					for (int i = 0; i < ners.size(); ++i) {
+						generated.NER xmlNER = new generated.NER();
+						NER ner = (NER) ners.get(i);
+						xmlNER.setGroup(generated.Group.fromValue(ner
+								.getSemanticGroup()));
+						xmlNER.setProbability(ner.getProbability());
+						content.add((Serializable) xmlNER);// why do i have to
+															// cast
+															// it? was generated
+															// by
+															// jaxb...
+					}
+				}
+
+				numberOfEntities++;
+				xmlUnit.getE().add(xmlE);
+			}
+
+			// TODO handle w here
+
+			xmlDoc.getUnit().add(xmlUnit);
+		}
+		xmlCorpus.getDocument().add(xmlDoc);
+	}
+
+	private void setXMLCorpusAttributes(JCas jcas) {
+		Corpus corpus = (Corpus) jcas.getAnnotationIndex(Corpus.type)
+				.iterator().next();
+		xmlCorpus = new generated.Corpus();
+
+		// attributes
+		xmlCorpus.setAnnotationType(AnnoType.STANDOFF);
+		xmlCorpus.setAuthor(author);
+		xmlCorpus.setDescription(description);
+		xmlCorpus.setDocType(corpus.getDocType());
+		xmlCorpus.setLang(Lang.fromValue(corpus.getLanguage()));
+
+		String id = outputFile.substring(
+				outputFile.lastIndexOf(File.separator) + 1,
+				outputFile.lastIndexOf("."));
+		xmlCorpus.setId(id);
+
+		// finally the dates
+		try {
+			GregorianCalendar c = new GregorianCalendar();
+			de.julielab.jules.types.Date creationDate = corpus
+					.getCreationDate();
+			// Stupid inconsistent API: The first month of the year is JANUARY
+			// which is 0
+			c.set(creationDate.getYear(), creationDate.getMonth() - 1,
+					creationDate.getDay());
+			XMLGregorianCalendar xmlCreationDate = DatatypeFactory
+					.newInstance().newXMLGregorianCalendar(c);
+			xmlCreationDate.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+			xmlCorpus.setCreationDate(xmlCreationDate);
+
+			GregorianCalendar d = new GregorianCalendar();
+			d.setGregorianChange(new Date());
+			XMLGregorianCalendar xmlAnnotationDate = DatatypeFactory
+					.newInstance().newXMLGregorianCalendar(d);
+			xmlAnnotationDate.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+			xmlCorpus.setAnnotationDate(xmlAnnotationDate);
+		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void destroy() {
+
+		LOGGER.info("Writing altered content back to " + outputFile + ".");
+		JAXBContext jc;
+		try {
+			jc = JAXBContext.newInstance("generated");
+			Marshaller marshaller = jc.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+					Boolean.TRUE);
+			marshaller.marshal(xmlCorpus, new File(outputFile));
+		} catch (JAXBException e) {
+			LOGGER.error("Something got wrong while trying to write content to "
+					+ outputFile + ".");
+		}
+
+		super.destroy();
+	}
+
+}
