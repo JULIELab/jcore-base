@@ -26,10 +26,10 @@ import java.util.HashMap;
 
 import de.julielab.jcore.ae.coordbaseline.main.Baseline;
 import de.julielab.jcore.ae.coordbaseline.types.CoordinationToken;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
-import de.julielab.jules.types.Entity;
-import de.julielab.jules.types.EEE;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.Entity;
+import de.julielab.jcore.types.EEE;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.UimaContext;

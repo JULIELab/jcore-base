@@ -11,8 +11,8 @@ import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.julielab.jules.types.Gene;
-import de.julielab.jules.types.Protein;
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Protein;
 
 public class ProteinWriter {
 

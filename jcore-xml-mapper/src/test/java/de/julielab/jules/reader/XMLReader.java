@@ -12,7 +12,7 @@
  *
  * Creation date: 28.10.2008 
  **/
-package de.julielab.jules.reader;
+package de.julielab.jcore.reader;
 
 import java.io.File;
 import java.io.FileInputStream;

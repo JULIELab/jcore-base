@@ -18,16 +18,16 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
-import de.julielab.jules.types.ArgumentMention;
-import de.julielab.jules.types.AuthorInfo;
-import de.julielab.jules.types.ConceptMention;
-import de.julielab.jules.types.Gene;
-import de.julielab.jules.types.Header;
-import de.julielab.jules.types.Lemma;
-import de.julielab.jules.types.OntClassMention;
-import de.julielab.jules.types.ResourceEntry;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.AuthorInfo;
+import de.julielab.jcore.types.ConceptMention;
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.Lemma;
+import de.julielab.jcore.types.OntClassMention;
+import de.julielab.jcore.types.ResourceEntry;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 public class JCoReFeaturePathTest {
 	@Test
@@ -37,7 +37,7 @@ public class JCoReFeaturePathTest {
 
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		TypeSystem ts = jcas.getTypeSystem();
-		Type geneType = ts.getType("de.julielab.jules.types.Gene");
+		Type geneType = ts.getType("de.julielab.jcore.types.Gene");
 		JCoReFeaturePath fp = new JCoReFeaturePath();
 		fp.initialize("/resourceEntryList[0]/entryId");
 		fp.typeInit(geneType);
@@ -51,7 +51,7 @@ public class JCoReFeaturePathTest {
 		// Check whether the (recursive) extracted features are the correct
 		// ones.
 		Feature[] internalFeatures = (Feature[]) FieldUtils.readField(fp, "features", true);
-		Type resourceEntryType = ts.getType("de.julielab.jules.types.ResourceEntry");
+		Type resourceEntryType = ts.getType("de.julielab.jcore.types.ResourceEntry");
 		assertArrayEquals(new Feature[] { geneType.getFeatureByBaseName("resourceEntryList"), resourceEntryType.getFeatureByBaseName("entryId") },
 				internalFeatures);
 
@@ -178,25 +178,16 @@ public class JCoReFeaturePathTest {
 
 	@Test
 	public void testGetValueAsStringArrayOnValueArrayWithoutIndex() throws Exception {
-<<<<<<< HEAD
 		// Here we test whether the correct value is retrieved via the feature
 		// path when the end of the path is an
 		// array and we don't deliver an index. This means that we want to get
 		// all values.
-=======
-		// Here we test whether the correct value is retrieved via the feature path when the end of the path is an
-		// array and we don't deliver an index. This means that we want to get all values.
->>>>>>> 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
 
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		JCoReFeaturePath fp = new JCoReFeaturePath();
 		fp.initialize("/semanticTypes");
-<<<<<<< HEAD
 		// We don't need to call fp.typeInit() because this is done
 		// automatically in fp.getValueAsString().
-=======
-		// We don't need to call fp.typeInit() because this is done automatically in fp.getValueAsString().
->>>>>>> 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
 
 		OntClassMention ontClass = new OntClassMention(jcas);
 		StringArray semTypes = new StringArray(jcas, 2);

@@ -10,15 +10,15 @@
   </imports>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.CorefRelation</name>
+      <name>de.julielab.jcore.types.CorefRelation</name>
       <description>A coreference relation connecting one anaphor to one or multiple antecedents this anaphor is referring to.</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>antecedents</name>
           <description>The coreference expressions referred to by the anaphor of this coreference relation.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.CorefExpression</elementType>
+          <elementType>de.julielab.jcore.CorefExpression</elementType>
         </featureDescription>
         <featureDescription>
           <name>id</name>
@@ -28,14 +28,14 @@
         <featureDescription>
           <name>anaphora</name>
           <description>The anaphora that refers to other corefence expression as antecedents in this coreference relation.</description>
-          <rangeTypeName>de.julielab.jules.CorefExpression</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.CorefExpression</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.CorefExpression</name>
+      <name>de.julielab.jcore.CorefExpression</name>
       <description>A 'coreference expression' might by any span of text that is part of a set of text expressions refering to the same entity. Speaking in the anaphora framework, coreference expressions are either anaphors - mostly pronouns and definite noun phrases - or their antecedents - the original, first mention of an entity or already an anaphoric expression referring itself to a reference to the original entity mention.</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>isAnaphor</name>
@@ -50,13 +50,13 @@
         <featureDescription>
           <name>antecedentRelation</name>
           <description>The actual relations TO antecedents of THIS expression. I.e. if there is at least one coreference relation found at this feature, this coreference expression is automatically an anaphor. Note that it can also be an antecedent to other anaphors.</description>
-          <rangeTypeName>de.julielab.jules.types.CorefRelation</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.CorefRelation</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>anaphoraRelations</name>
           <description>The actual relations TO anaphors of THIS expression. I.e. if there is at least one coreference relation found at this feature, this coreference expression is automatically an antecedent to at least one anaphor found later in the text. Note that it can also be a an anaphor at the same time.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.CorefRelation</elementType>
+          <elementType>de.julielab.jcore.types.CorefRelation</elementType>
         </featureDescription>
       </features>
     </typeDescription>

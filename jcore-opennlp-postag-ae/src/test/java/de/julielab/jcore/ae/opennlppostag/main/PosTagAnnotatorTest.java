@@ -42,9 +42,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
 import de.julielab.jcore.ae.opennlppostag.main.PosTagAnnotator;
-import de.julielab.jules.types.PennBioIEPOSTag;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.PennBioIEPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 public class PosTagAnnotatorTest {
 
@@ -153,7 +153,7 @@ public class PosTagAnnotatorTest {
 		// creating and running the PoS tag annotator
 		AnalysisEngine engine =
 				AnalysisEngineFactory.createEngine(PosTagAnnotator.class, PosTagAnnotator.PARAM_TAGSET,
-						"de.julielab.jules.types.PennBioIEPOSTag", PosTagAnnotator.PARAM_MODEL_FILE,
+						"de.julielab.jcore.types.PennBioIEPOSTag", PosTagAnnotator.PARAM_MODEL_FILE,
 						"POSTagPennBioIE-3.0.bin.gz");
 		engine.process(jCas.getCas());
 

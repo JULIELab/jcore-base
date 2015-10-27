@@ -32,13 +32,13 @@ import org.apache.uima.cas.FSIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jules.types.POSTag;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Coordination;
-import de.julielab.jules.types.CoordinationElement;
-import de.julielab.jules.types.Token;
-import de.julielab.jules.types.Entity;
-import de.julielab.jules.types.EEE;
+import de.julielab.jcore.types.POSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Coordination;
+import de.julielab.jcore.types.CoordinationElement;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.Entity;
+import de.julielab.jcore.types.EEE;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;

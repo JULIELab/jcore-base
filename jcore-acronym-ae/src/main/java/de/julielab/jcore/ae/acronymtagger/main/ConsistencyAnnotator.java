@@ -20,8 +20,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.Annotation;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.Annotation;
 
 /**
  * TODO insert description

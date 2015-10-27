@@ -171,7 +171,7 @@ public class PubDateParser implements TypeParser {
 
 	/**
 	 * Puts the content of the ELEMENT_DELINE_DATE tag into a
-	 * de.julielab.jules.types.Date
+	 * de.julielab.jcore.types.Date
 	 * 
 	 * @param date
 	 *            The date to be filled

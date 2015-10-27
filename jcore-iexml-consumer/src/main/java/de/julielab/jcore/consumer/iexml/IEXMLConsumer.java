@@ -36,11 +36,11 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jules.types.mantra.Corpus;
-import de.julielab.jules.types.mantra.Document;
-import de.julielab.jules.types.mantra.Entity;
-import de.julielab.jules.types.mantra.NER;
-import de.julielab.jules.types.mantra.Unit;
+import de.julielab.jcore.types.mantra.Corpus;
+import de.julielab.jcore.types.mantra.Document;
+import de.julielab.jcore.types.mantra.Entity;
+import de.julielab.jcore.types.mantra.NER;
+import de.julielab.jcore.types.mantra.Unit;
 
 public class IEXMLConsumer extends CasConsumer_ImplBase {
 
@@ -179,7 +179,7 @@ public class IEXMLConsumer extends CasConsumer_ImplBase {
 		// finally the dates
 		try {
 			GregorianCalendar c = new GregorianCalendar();
-			de.julielab.jules.types.Date creationDate = corpus
+			de.julielab.jcore.types.Date creationDate = corpus
 					.getCreationDate();
 			// Stupid inconsistent API: The first month of the year is JANUARY
 			// which is 0

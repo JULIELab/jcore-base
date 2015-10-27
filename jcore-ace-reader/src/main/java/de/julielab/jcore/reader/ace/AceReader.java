@@ -49,16 +49,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.julielab.jules.types.ArgumentMention;
-import de.julielab.jules.types.ace.EntityMention;
-import de.julielab.jules.types.ace.EventMention;
-import de.julielab.jules.types.ace.EventMentionArgument;
-import de.julielab.jules.types.ace.RelationMention;
-import de.julielab.jules.types.ace.RelationMentionArgument;
-import de.julielab.jules.types.ace.Timex2;
-import de.julielab.jules.types.ace.Timex2Mention;
-import de.julielab.jules.types.ace.Value;
-import de.julielab.jules.types.ace.ValueMention;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.ace.EntityMention;
+import de.julielab.jcore.types.ace.EventMention;
+import de.julielab.jcore.types.ace.EventMentionArgument;
+import de.julielab.jcore.types.ace.RelationMention;
+import de.julielab.jcore.types.ace.RelationMentionArgument;
+import de.julielab.jcore.types.ace.Timex2;
+import de.julielab.jcore.types.ace.Timex2Mention;
+import de.julielab.jcore.types.ace.Value;
+import de.julielab.jcore.types.ace.ValueMention;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 
 // TODO add query if the data elements (e.g. ArrayLists) are null. Only if it is
@@ -92,7 +92,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	/**
 	 * IDs of ENtityMentions
 	 */
-	Hashtable<String, de.julielab.jules.types.Annotation> ids = new Hashtable<String, de.julielab.jules.types.Annotation>();
+	Hashtable<String, de.julielab.jcore.types.Annotation> ids = new Hashtable<String, de.julielab.jcore.types.Annotation>();
 
 	/**
 	 * String which will contain the document text
@@ -535,7 +535,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		String type;
 		EventMentionArgument orignial_arg;
-		de.julielab.jules.types.ArgumentMention event_arg;
+		de.julielab.jcore.types.ArgumentMention event_arg;
 
 		AnnotationIndex eventmentionIndex = (AnnotationIndex) jcas.getJFSIndexRepository().getAnnotationIndex(
 				EventMention.type);
@@ -544,9 +544,9 @@ public class AceReader extends CollectionReader_ImplBase {
 		while (evIterator.hasNext()) {
 
 			EventMention em = (EventMention) evIterator.next();
-			type = "de.julielab.jules.types.ace." + em.getEvent_ref().getAce_type();
+			type = "de.julielab.jcore.types.ace." + em.getEvent_ref().getAce_type();
 
-			de.julielab.jules.types.EventMention event = (de.julielab.jules.types.EventMention) JCoReAnnotationTools
+			de.julielab.jcore.types.EventMention event = (de.julielab.jcore.types.EventMention) JCoReAnnotationTools
 					.getAnnotationByClassName(jcas, type);
 
 			event.setBegin(em.getBegin());
@@ -562,8 +562,8 @@ public class AceReader extends CollectionReader_ImplBase {
 			FSArray event_args = new FSArray(jcas, eventmention_args.size());
 			for (int i = 0; i < eventmention_args.size(); i++) {
 				orignial_arg = (EventMentionArgument) eventmention_args.get(i);
-				event_arg = new de.julielab.jules.types.ArgumentMention(jcas);
-				event_arg.setRef((de.julielab.jules.types.Annotation) ids.get(orignial_arg.getRefid()));
+				event_arg = new de.julielab.jcore.types.ArgumentMention(jcas);
+				event_arg.setRef((de.julielab.jcore.types.Annotation) ids.get(orignial_arg.getRefid()));
 				event_arg.setRole(orignial_arg.getAce_role());
 				event_arg.setBegin(orignial_arg.getBegin());
 				event_arg.setEnd(orignial_arg.getEnd());
@@ -628,11 +628,11 @@ public class AceReader extends CollectionReader_ImplBase {
 			else
 				inverse = true;
 
-			type = "de.julielab.jules.types.ace." + mappings.get(rl.getRelation_ref().getAce_type());
+			type = "de.julielab.jcore.types.ace." + mappings.get(rl.getRelation_ref().getAce_type());
 
 			if (inverse)
 				type = type + "_Inverse";
-			de.julielab.jules.types.RelationMention relation = (de.julielab.jules.types.RelationMention) JCoReAnnotationTools
+			de.julielab.jcore.types.RelationMention relation = (de.julielab.jcore.types.RelationMention) JCoReAnnotationTools
 					.getAnnotationByClassName(jcas, type);
 
 			subtype = rl.getRelation_ref().getAce_subtype();
@@ -647,17 +647,17 @@ public class AceReader extends CollectionReader_ImplBase {
 			ArgumentMention mentionarg2 = new ArgumentMention(jcas);
 
 			if (inverse) {
-				mentionarg1.setRef((de.julielab.jules.types.Annotation) ids.get(arg2.getRefid()));
+				mentionarg1.setRef((de.julielab.jcore.types.Annotation) ids.get(arg2.getRefid()));
 				mentionarg1.setRole("arg1");
 
-				mentionarg2.setRef((de.julielab.jules.types.Annotation) ids.get(arg1.getRefid()));
+				mentionarg2.setRef((de.julielab.jcore.types.Annotation) ids.get(arg1.getRefid()));
 				mentionarg2.setRole("arg2");
 
 			} else {
-				mentionarg1.setRef((de.julielab.jules.types.Annotation) ids.get(arg1.getRefid()));
+				mentionarg1.setRef((de.julielab.jcore.types.Annotation) ids.get(arg1.getRefid()));
 				mentionarg1.setRole("arg1");
 
-				mentionarg2.setRef((de.julielab.jules.types.Annotation) ids.get(arg2.getRefid()));
+				mentionarg2.setRef((de.julielab.jcore.types.Annotation) ids.get(arg2.getRefid()));
 				mentionarg2.setRole("arg2");
 
 			} // of if/else
@@ -694,14 +694,14 @@ public class AceReader extends CollectionReader_ImplBase {
 		while (entitymentionIterator.hasNext()) {
 			EntityMention em = (EntityMention) entitymentionIterator.next();
 
-			type = "de.julielab.jules.types.ace." + em.getEntity_ref().getAce_type();
+			type = "de.julielab.jcore.types.ace." + em.getEntity_ref().getAce_type();
 			subtype = em.getEntity_ref().getAce_subtype();
-			de.julielab.jules.types.EntityMention entity = (de.julielab.jules.types.EntityMention) JCoReAnnotationTools
+			de.julielab.jcore.types.EntityMention entity = (de.julielab.jcore.types.EntityMention) JCoReAnnotationTools
 					.getAnnotationByClassName(jcas, type);
 
 			entity.setSpecificType(subtype);
 			entity
-					.setHead(new de.julielab.jules.types.Annotation(jcas, em.getHead().getBegin(), em.getHead()
+					.setHead(new de.julielab.jcore.types.Annotation(jcas, em.getHead().getBegin(), em.getHead()
 							.getEnd()));
 			entity.setMentionLevel(em.getMention_type());
 			entity.setBegin(em.getBegin());
@@ -741,8 +741,8 @@ public class AceReader extends CollectionReader_ImplBase {
 
 				Timex2Mention timex2mention = (Timex2Mention) timex2Mentions.get(i);
 
-				de.julielab.jules.types.Timex2Mention current = (de.julielab.jules.types.Timex2Mention) JCoReAnnotationTools
-						.getAnnotationByClassName(jcas, "de.julielab.jules.types.Timex2Mention");
+				de.julielab.jcore.types.Timex2Mention current = (de.julielab.jcore.types.Timex2Mention) JCoReAnnotationTools
+						.getAnnotationByClassName(jcas, "de.julielab.jcore.types.Timex2Mention");
 
 				// current.setSpecificType(subtype);
 				current.setBegin(timex2mention.getBegin());
@@ -778,10 +778,10 @@ public class AceReader extends CollectionReader_ImplBase {
 			FSArray valuementions = value.getMentions();
 			for (int i = 0; i < valuementions.size(); i++) {
 				ValueMention valueMention = (ValueMention) valuementions.get(i);
-				String type = "de.julielab.jules.types.ace." + mappings.get(value.getAce_type());
+				String type = "de.julielab.jcore.types.ace." + mappings.get(value.getAce_type());
 				String subtype = value.getAce_subtype();
 
-				de.julielab.jules.types.ValueMention current = (de.julielab.jules.types.ValueMention) JCoReAnnotationTools
+				de.julielab.jcore.types.ValueMention current = (de.julielab.jcore.types.ValueMention) JCoReAnnotationTools
 						.getAnnotationByClassName(jcas, type);
 
 				current.setSpecificType(subtype);
@@ -875,7 +875,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            Jcas which will be filled with retrieved information
 	 */
-	public void addTimex2Information(Node timex2Node, de.julielab.jules.types.ace.Timex2 aceTimex2, JCas jcas) {
+	public void addTimex2Information(Node timex2Node, de.julielab.jcore.types.ace.Timex2 aceTimex2, JCas jcas) {
 		setTimex2Attributes(aceTimex2, timex2Node);
 		FSArray timex2MentionFSArray = getTimex2MentionFSArray(timex2Node, jcas);
 		aceTimex2.setMentions(timex2MentionFSArray);
@@ -893,7 +893,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            Jcas which will be filled with retrieved information
 	 */
-	public void addRelationInformation(Node relationNode, de.julielab.jules.types.ace.Relation aceRelation, JCas jcas) {
+	public void addRelationInformation(Node relationNode, de.julielab.jcore.types.ace.Relation aceRelation, JCas jcas) {
 		setRelationAttributes(aceRelation, relationNode);
 		FSArray relationArgumentFSArray = getRelationArgumentFSArray(relationNode, jcas);
 		FSArray relationMentionFSArray = getRelationMentionFSArray(relationNode, aceRelation, jcas);
@@ -913,7 +913,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            Jcas which will be filled with retrieved information
 	 */
-	public void addEventInformation(Node eventNode, de.julielab.jules.types.ace.Event aceEvent, JCas jcas) {
+	public void addEventInformation(Node eventNode, de.julielab.jcore.types.ace.Event aceEvent, JCas jcas) {
 		setEventAttributes(aceEvent, eventNode);
 		FSArray eventArgumentFSArray = getEventArgumentFSArray(eventNode, jcas);
 		FSArray eventMentionFSArray = getEventMentionFSArray(eventNode, aceEvent, jcas);
@@ -958,7 +958,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            Jcas which will be filled with retrieved information
 	 */
-	public void addValueInformation(Node valueNode, de.julielab.jules.types.ace.Value aceValue, JCas jcas) {
+	public void addValueInformation(Node valueNode, de.julielab.jcore.types.ace.Value aceValue, JCas jcas) {
 		setValueAttributes(aceValue, valueNode);
 		FSArray valueMentionFSArray = getValueMentionFSArray(valueNode, jcas);
 		aceValue.setMentions(valueMentionFSArray);
@@ -977,7 +977,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            Jcas which will be filled with retrieved information
 	 */
-	public void addEntityInformation(Node entityNode, de.julielab.jules.types.ace.Entity aceEntity, JCas jcas) {
+	public void addEntityInformation(Node entityNode, de.julielab.jcore.types.ace.Entity aceEntity, JCas jcas) {
 		setEntityAttributes(aceEntity, entityNode);
 		FSArray entityMentionFSArray = getEntityMentionFSArray(entityNode, aceEntity, jcas);
 		FSArray entityAttributesFSArray = getEntityAttributesFSArray(entityNode, jcas);
@@ -1002,7 +1002,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < attributesNodeArrayList.size(); i++) {
 			Node entityAttributesNode = attributesNodeArrayList.get(i);
-			de.julielab.jules.types.ace.EntityAttribute entityAttribute = new de.julielab.jules.types.ace.EntityAttribute(
+			de.julielab.jcore.types.ace.EntityAttribute entityAttribute = new de.julielab.jcore.types.ace.EntityAttribute(
 					jcas);
 			setEntityAttributesInformation(entityAttribute, entityAttributesNode, jcas);
 			entityAttribute.addToIndexes();
@@ -1024,7 +1024,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            JCAs which will be filled with retrieved information
 	 */
-	public void setEntityAttributesInformation(de.julielab.jules.types.ace.EntityAttribute entityAttributes,
+	public void setEntityAttributesInformation(de.julielab.jcore.types.ace.EntityAttribute entityAttributes,
 			Node entityAttributesNode, JCas jcas) {
 		ArrayList<Node> nameNodeArrayList = new ArrayList<Node>();
 		NodeList children = entityAttributesNode.getChildNodes();
@@ -1033,7 +1033,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < nameNodeArrayList.size(); i++) {
 			Node nameNode = nameNodeArrayList.get(i);
-			de.julielab.jules.types.ace.Name julesName = new de.julielab.jules.types.ace.Name(jcas);
+			de.julielab.jcore.types.ace.Name julesName = new de.julielab.jcore.types.ace.Name(jcas);
 			setJulesNameName(julesName, nameNode);
 			setJulesNameStartEnd(julesName, nameNode);
 			julesName.addToIndexes();
@@ -1055,7 +1055,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 *            Node which contains the name start and end
 	 * 
 	 */
-	public void setJulesNameStartEnd(de.julielab.jules.types.ace.Name julesName, Node nameNode) {
+	public void setJulesNameStartEnd(de.julielab.jcore.types.ace.Name julesName, Node nameNode) {
 		NodeList children = nameNode.getChildNodes();
 		ArrayList<Node> charseqNodeArrayList = getSpecificNodeArrayList(children, ELEMENT_CHARSEQ);
 		Node charseqNode = charseqNodeArrayList.get(0);
@@ -1076,7 +1076,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param valueMentionNode
 	 *            Node which contains start and end of the value
 	 */
-	public void setValueMentionStartEnd(de.julielab.jules.types.ace.ValueMention valueMention, Node valueMentionNode) {
+	public void setValueMentionStartEnd(de.julielab.jcore.types.ace.ValueMention valueMention, Node valueMentionNode) {
 		int valueMentionStart = retrieveStartEndValue(valueMentionNode, ITEM_START);
 		int valueMentionEnd = retrieveStartEndValue(valueMentionNode, ITEM_END);
 		validateStartEnd(valueMentionStart, valueMentionEnd, getMentionCharseqNode(valueMentionNode));
@@ -1094,7 +1094,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param relationMentionNode
 	 *            Node which contains start and end of the value
 	 */
-	public void setRelationMentionStartEnd(de.julielab.jules.types.ace.RelationMention relationMention,
+	public void setRelationMentionStartEnd(de.julielab.jcore.types.ace.RelationMention relationMention,
 			Node relationMentionNode) {
 		int relationMentionStart = retrieveStartEndValue(relationMentionNode, ITEM_START);
 		int relationMentionEnd = retrieveStartEndValue(relationMentionNode, ITEM_END);
@@ -1114,7 +1114,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 *            Node which contains start and end of the value
 	 */
 	public void setRelationMentionArgumentStartEnd(
-			de.julielab.jules.types.ace.RelationMentionArgument relationMentionArgument,
+			de.julielab.jcore.types.ace.RelationMentionArgument relationMentionArgument,
 			Node relationMentionArgumentNode) {
 		int relationMentionArgumentStart = retrieveStartEndValue(relationMentionArgumentNode, ITEM_START);
 		int relationMentionArgumentEnd = retrieveStartEndValue(relationMentionArgumentNode, ITEM_END);
@@ -1134,7 +1134,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param eventMentionNode
 	 *            Node which contains start and end of the value
 	 */
-	public void setEventMentiuonStartEnd(de.julielab.jules.types.ace.EventMention eventMention, Node eventMentionNode) {
+	public void setEventMentiuonStartEnd(de.julielab.jcore.types.ace.EventMention eventMention, Node eventMentionNode) {
 		int eventMentionStart = retrieveStartEndValue(eventMentionNode, ITEM_START);
 		int eventMentionEnd = retrieveStartEndValue(eventMentionNode, ITEM_END);
 		validateStartEnd(eventMentionStart, eventMentionEnd, getMentionCharseqNode(eventMentionNode));
@@ -1153,7 +1153,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param eventMentionArgumentNode
 	 *            Node which contains start and end of the value
 	 */
-	public void setEventMentionArgumentStartEnd(de.julielab.jules.types.ace.EventMentionArgument eventMentionArgument,
+	public void setEventMentionArgumentStartEnd(de.julielab.jcore.types.ace.EventMentionArgument eventMentionArgument,
 			Node eventMentionArgumentNode) {
 		int eventMentionArgumentStart = retrieveStartEndValue(eventMentionArgumentNode, ITEM_START);
 		int eventMentionArgumentEnd = retrieveStartEndValue(eventMentionArgumentNode, ITEM_END);
@@ -1202,7 +1202,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param timex2MentionNode
 	 *            Node which contains start and end of the value
 	 */
-	public void setTimex2MentionStartEnd(de.julielab.jules.types.ace.Timex2Mention timex2Mention, Node timex2MentionNode) {
+	public void setTimex2MentionStartEnd(de.julielab.jcore.types.ace.Timex2Mention timex2Mention, Node timex2MentionNode) {
 		int timex2MentionStart = retrieveStartEndValue(timex2MentionNode, ITEM_START);
 		int timex2MentionEnd = retrieveStartEndValue(timex2MentionNode, ITEM_END);
 		validateStartEnd(timex2MentionStart, timex2MentionEnd, getMentionCharseqNode(timex2MentionNode));
@@ -1220,7 +1220,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param anchorNode
 	 *            Node which contains start and end of the value
 	 */
-	public void setEventMentionAnchorStartEnd(de.julielab.jules.types.ace.Anchor eventMentionAnchor, Node anchorNode) {
+	public void setEventMentionAnchorStartEnd(de.julielab.jcore.types.ace.Anchor eventMentionAnchor, Node anchorNode) {
 		NodeList children = anchorNode.getChildNodes();
 		ArrayList<Node> charseqNodeArrayList = getSpecificNodeArrayList(children, ELEMENT_CHARSEQ);
 		Node charseqNode = charseqNodeArrayList.get(0);
@@ -1241,7 +1241,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param LDCScopeNode
 	 *            Node which contains start and end of the value
 	 */
-	public void setEventMentionLDCScopeStartEnd(de.julielab.jules.types.ace.LDC_Scope eventMentionLDCScope,
+	public void setEventMentionLDCScopeStartEnd(de.julielab.jcore.types.ace.LDC_Scope eventMentionLDCScope,
 			Node LDCScopeNode) {
 		NodeList children = LDCScopeNode.getChildNodes();
 		ArrayList<Node> charseqNodeArrayList = getSpecificNodeArrayList(children, ELEMENT_CHARSEQ);
@@ -1264,7 +1264,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param nameNode
 	 *            Node which attribute "NAME" will be parsed in order to retrieve its value
 	 */
-	public void setJulesNameName(de.julielab.jules.types.ace.Name julesName, Node nameNode) {
+	public void setJulesNameName(de.julielab.jcore.types.ace.Name julesName, Node nameNode) {
 		String name = "";
 
 		try {
@@ -1286,14 +1286,14 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            JCas which will be filled with retrieved information
 	 */
-	public FSArray getEntityMentionFSArray(Node entityNode, de.julielab.jules.types.ace.Entity aceEntity, JCas jcas) {
+	public FSArray getEntityMentionFSArray(Node entityNode, de.julielab.jcore.types.ace.Entity aceEntity, JCas jcas) {
 		NodeList children = entityNode.getChildNodes();
 		ArrayList<Node> entityMentionNodeArrayList = getSpecificNodeArrayList(children, ELEMENT_ENTITY_MENTION);
 		FSArray entityMentionFSArray = new FSArray(jcas, entityMentionNodeArrayList.size());
 
 		for (int i = 0; i < entityMentionNodeArrayList.size(); i++) {
 			Node entityMentionNode = entityMentionNodeArrayList.get(i);
-			de.julielab.jules.types.ace.EntityMention entityMention = new de.julielab.jules.types.ace.EntityMention(
+			de.julielab.jcore.types.ace.EntityMention entityMention = new de.julielab.jcore.types.ace.EntityMention(
 					jcas);
 			setEntityMentionAttributes(entityMention, entityMentionNode);
 			setEntityMentionStartEnd(entityMention, entityMentionNode);
@@ -1324,7 +1324,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < timex2MentionNodeArrayList.size(); i++) {
 			Node timex2MentionNode = timex2MentionNodeArrayList.get(i);
-			de.julielab.jules.types.ace.Timex2Mention timex2Mention = new de.julielab.jules.types.ace.Timex2Mention(
+			de.julielab.jcore.types.ace.Timex2Mention timex2Mention = new de.julielab.jcore.types.ace.Timex2Mention(
 					jcas);
 			setTimex2MentionAttributes(timex2Mention, timex2MentionNode);
 			setTimex2MentionStartEnd(timex2Mention, timex2MentionNode);
@@ -1352,7 +1352,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < relationArgumentNodeArrayList.size(); i++) {
 			Node relationArgumentNode = relationArgumentNodeArrayList.get(i);
-			de.julielab.jules.types.ace.RelationArgument relationArgument = new de.julielab.jules.types.ace.RelationArgument(
+			de.julielab.jcore.types.ace.RelationArgument relationArgument = new de.julielab.jcore.types.ace.RelationArgument(
 					jcas);
 			setRelationArgumentAttributes(relationArgument, relationArgumentNode);
 			relationArgument.addToIndexes();
@@ -1379,7 +1379,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < eventArgumentNodeArrayList.size(); i++) {
 			Node eventArgumentNode = eventArgumentNodeArrayList.get(i);
-			de.julielab.jules.types.ace.EventArgument eventArgument = new de.julielab.jules.types.ace.EventArgument(
+			de.julielab.jcore.types.ace.EventArgument eventArgument = new de.julielab.jcore.types.ace.EventArgument(
 					jcas);
 			setEventArgumentAttributes(eventArgument, eventArgumentNode);
 			eventArgument.addToIndexes();
@@ -1399,14 +1399,14 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            JCas which will be filled with retrieved information
 	 */
-	public FSArray getEventMentionFSArray(Node eventNode, de.julielab.jules.types.ace.Event aceEvent, JCas jcas) {
+	public FSArray getEventMentionFSArray(Node eventNode, de.julielab.jcore.types.ace.Event aceEvent, JCas jcas) {
 		NodeList children = eventNode.getChildNodes();
 		ArrayList<Node> eventMentionNodeArrayList = getSpecificNodeArrayList(children, ELEMENT_EVENT_MENTION);
 		FSArray eventMentionFSArray = new FSArray(jcas, eventMentionNodeArrayList.size());
 
 		for (int i = 0; i < eventMentionNodeArrayList.size(); i++) {
 			Node eventMentionNode = eventMentionNodeArrayList.get(i);
-			de.julielab.jules.types.ace.EventMention eventMention = new de.julielab.jules.types.ace.EventMention(jcas);
+			de.julielab.jcore.types.ace.EventMention eventMention = new de.julielab.jcore.types.ace.EventMention(jcas);
 			setEventMentionAttributes(eventMention, eventMentionNode);
 			setEventMentiuonStartEnd(eventMention, eventMentionNode);
 			setEventMentionLDCScope(eventMention, eventMentionNode, jcas);
@@ -1433,7 +1433,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * 
 	 * @return relationMentionFSArray FSarray which contains the relationMentions
 	 */
-	public FSArray getRelationMentionFSArray(Node relationNode, de.julielab.jules.types.ace.Relation aceRelation,
+	public FSArray getRelationMentionFSArray(Node relationNode, de.julielab.jcore.types.ace.Relation aceRelation,
 			JCas jcas) {
 		NodeList children = relationNode.getChildNodes();
 		ArrayList<Node> relationMentionNodeArrayList = getSpecificNodeArrayList(children, ELEMENT_RELATION_MENTION);
@@ -1441,7 +1441,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < relationMentionNodeArrayList.size(); i++) {
 			Node relationMentionNode = relationMentionNodeArrayList.get(i);
-			de.julielab.jules.types.ace.RelationMention relationMention = new de.julielab.jules.types.ace.RelationMention(
+			de.julielab.jcore.types.ace.RelationMention relationMention = new de.julielab.jcore.types.ace.RelationMention(
 					jcas);
 			setRelationMentionAttributes(relationMention, relationMentionNode);
 			setRelationMentionStartEnd(relationMention, relationMentionNode);
@@ -1477,7 +1477,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < relationMentionArgumentNodeArrayList.size(); i++) {
 			Node relationMentionArgumentNode = relationMentionArgumentNodeArrayList.get(i);
-			de.julielab.jules.types.ace.RelationMentionArgument relationMentionArgument = new de.julielab.jules.types.ace.RelationMentionArgument(
+			de.julielab.jcore.types.ace.RelationMentionArgument relationMentionArgument = new de.julielab.jcore.types.ace.RelationMentionArgument(
 					jcas);
 			setRelationMentionArgumentAttributes(relationMentionArgument, relationMentionArgumentNode);
 			setRelationMentionArgumentStartEnd(relationMentionArgument, relationMentionArgumentNode);
@@ -1509,7 +1509,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < eventMentionArgumentNodeArrayList.size(); i++) {
 			Node eventMentionArgumentNode = eventMentionArgumentNodeArrayList.get(i);
-			de.julielab.jules.types.ace.EventMentionArgument eventMentionArgument = new de.julielab.jules.types.ace.EventMentionArgument(
+			de.julielab.jcore.types.ace.EventMentionArgument eventMentionArgument = new de.julielab.jcore.types.ace.EventMentionArgument(
 					jcas);
 			setEventMentionArgumentAttributes(eventMentionArgument, eventMentionArgumentNode);
 			setEventMentionArgumentStartEnd(eventMentionArgument, eventMentionArgumentNode);
@@ -1531,7 +1531,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param entityNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setEntityAttributes(de.julielab.jules.types.ace.Entity aceEntity, Node entityNode) {
+	public void setEntityAttributes(de.julielab.jcore.types.ace.Entity aceEntity, Node entityNode) {
 		String entityID = retrieveAttribute(entityNode, ITEM_ID);
 		String entityAceType = retrieveAttribute(entityNode, ITEM_TYPE);
 		String entityAceSubtype = retrieveAttribute(entityNode, ITEM_SUBTYPE);
@@ -1552,7 +1552,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param valueNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setValueAttributes(de.julielab.jules.types.ace.Value aceValue, Node valueNode) {
+	public void setValueAttributes(de.julielab.jcore.types.ace.Value aceValue, Node valueNode) {
 		String valueID = retrieveAttribute(valueNode, ITEM_ID);
 		String valueAceType = retrieveAttribute(valueNode, ITEM_TYPE);
 		String valueAceSubtype = retrieveAttribute(valueNode, ITEM_SUBTYPE);
@@ -1570,7 +1570,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param relationNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setRelationAttributes(de.julielab.jules.types.ace.Relation aceRelation, Node relationNode) {
+	public void setRelationAttributes(de.julielab.jcore.types.ace.Relation aceRelation, Node relationNode) {
 		String relationID = retrieveAttribute(relationNode, ITEM_ID);
 		String relationType = retrieveAttribute(relationNode, ITEM_TYPE);
 		String relationSubtype = retrieveAttribute(relationNode, ITEM_SUBTYPE);
@@ -1592,7 +1592,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param eventNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setEventAttributes(de.julielab.jules.types.ace.Event aceEvent, Node eventNode) {
+	public void setEventAttributes(de.julielab.jcore.types.ace.Event aceEvent, Node eventNode) {
 		String eventID = retrieveAttribute(eventNode, ITEM_ID);
 		String eventType = retrieveAttribute(eventNode, ITEM_TYPE);
 		String eventSubtype = retrieveAttribute(eventNode, ITEM_SUBTYPE);
@@ -1618,7 +1618,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param timex2Node
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setTimex2Attributes(de.julielab.jules.types.ace.Timex2 aceTimex2, Node timex2Node) {
+	public void setTimex2Attributes(de.julielab.jcore.types.ace.Timex2 aceTimex2, Node timex2Node) {
 		String timex2ID = retrieveAttribute(timex2Node, ITEM_ID);
 		String timex2Mod = retrieveAttribute(timex2Node, ITEM_MOD);
 		String timex2Comment = retrieveAttribute(timex2Node, ITEM_COMMENT);
@@ -1639,7 +1639,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 	/*----------------------------------------------------------------------------------------------*/
 
-	public void setTimex2MentionAttributes(de.julielab.jules.types.ace.Timex2Mention timex2Mention,
+	public void setTimex2MentionAttributes(de.julielab.jcore.types.ace.Timex2Mention timex2Mention,
 			Node timex2MentionNode) {
 		String timex2MentionID = retrieveAttribute(timex2MentionNode, ITEM_ID);
 		timex2Mention.setId(timex2MentionID);
@@ -1655,7 +1655,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
 	public void setRelationMentionArgumentAttributes(
-			de.julielab.jules.types.ace.RelationMentionArgument relationMentionArgument,
+			de.julielab.jcore.types.ace.RelationMentionArgument relationMentionArgument,
 			Node relationMentionArgumentNode) {
 		String relationMentionArgumentRefID = retrieveAttribute(relationMentionArgumentNode, ITEM_REFID);
 		String relationMentionArgumentRole = retrieveAttribute(relationMentionArgumentNode, ITEM_ROLE);
@@ -1673,7 +1673,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
 	public void setEventMentionArgumentAttributes(
-			de.julielab.jules.types.ace.EventMentionArgument eventMentionArgument, Node eventMentionArgumentNode) {
+			de.julielab.jcore.types.ace.EventMentionArgument eventMentionArgument, Node eventMentionArgumentNode) {
 		String eventMentionArgumentRefID = retrieveAttribute(eventMentionArgumentNode, ITEM_REFID);
 		String eventMentionArgumentRole = retrieveAttribute(eventMentionArgumentNode, ITEM_ROLE);
 		eventMentionArgument.setRefid(eventMentionArgumentRefID);
@@ -1690,7 +1690,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param sourceFileNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setSourceFileAttributes(de.julielab.jules.types.ace.SourceFile aceSourceFile, Node sourceFileNode) {
+	public void setSourceFileAttributes(de.julielab.jcore.types.ace.SourceFile aceSourceFile, Node sourceFileNode) {
 		String sourceFileUri = retrieveAttribute(sourceFileNode, ITEM_URI);
 		String sourceFileType = retrieveAttribute(sourceFileNode, ITEM_TYPE);
 		String sourceFileSource = retrieveAttribute(sourceFileNode, ITEM_SOURCE);
@@ -1712,7 +1712,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param entityMentionNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setEntityMentionAttributes(de.julielab.jules.types.ace.EntityMention entityMention,
+	public void setEntityMentionAttributes(de.julielab.jcore.types.ace.EntityMention entityMention,
 			Node entityMentionNode) {
 		String entityMentionID = retrieveAttribute(entityMentionNode, ITEM_ID);
 		String entityMentionType = retrieveAttribute(entityMentionNode, ITEM_TYPE);
@@ -1737,7 +1737,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param relationArgumentNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setRelationArgumentAttributes(de.julielab.jules.types.ace.RelationArgument relationArgument,
+	public void setRelationArgumentAttributes(de.julielab.jcore.types.ace.RelationArgument relationArgument,
 			Node relationArgumentNode) {
 		String relationArgumentREFID = retrieveAttribute(relationArgumentNode, ITEM_REFID);
 		String relationArgumentRole = retrieveAttribute(relationArgumentNode, ITEM_ROLE);
@@ -1754,7 +1754,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param eventArgumentNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setEventArgumentAttributes(de.julielab.jules.types.ace.EventArgument eventArgument,
+	public void setEventArgumentAttributes(de.julielab.jcore.types.ace.EventArgument eventArgument,
 			Node eventArgumentNode) {
 		String eventArgumentRefID = retrieveAttribute(eventArgumentNode, ITEM_REFID);
 		String eventArgumentRole = retrieveAttribute(eventArgumentNode, ITEM_ROLE);
@@ -1774,7 +1774,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param eventMentionNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setEventMentionAttributes(de.julielab.jules.types.ace.EventMention eventMention, Node eventMentionNode) {
+	public void setEventMentionAttributes(de.julielab.jcore.types.ace.EventMention eventMention, Node eventMentionNode) {
 		String eventMentionID = retrieveAttribute(eventMentionNode, ITEM_ID);
 		String eventMentionLevel = retrieveAttribute(eventMentionNode, ITEM_LEVEL);
 		eventMention.setId(eventMentionID);
@@ -1792,7 +1792,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            JCas which will be filled with retrieved information
 	 */
-	public void setEventMentionAnchor(de.julielab.jules.types.ace.EventMention eventMention, Node eventMentionNode,
+	public void setEventMentionAnchor(de.julielab.jcore.types.ace.EventMention eventMention, Node eventMentionNode,
 			JCas jcas) {
 		NodeList children = eventMentionNode.getChildNodes();
 		ArrayList<Node> anchorNodeArrayList = getSpecificNodeArrayList(children, ELEMENT_ANCHOR);
@@ -1801,7 +1801,7 @@ public class AceReader extends CollectionReader_ImplBase {
 		// ATTENTION! This could be critical as some event mentions in a given XML
 		// file might not have an anchor node.
 		Node anchorNode = anchorNodeArrayList.get(0);
-		de.julielab.jules.types.ace.Anchor eventMentionAnchor = new de.julielab.jules.types.ace.Anchor(jcas);
+		de.julielab.jcore.types.ace.Anchor eventMentionAnchor = new de.julielab.jcore.types.ace.Anchor(jcas);
 
 		try {
 			setEventMentionAnchorStartEnd(eventMentionAnchor, anchorNode);
@@ -1826,7 +1826,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            JCas which will be filled with retrieved information
 	 */
-	public void setEventMentionLDCScope(de.julielab.jules.types.ace.EventMention eventMention, Node eventMentionNode,
+	public void setEventMentionLDCScope(de.julielab.jcore.types.ace.EventMention eventMention, Node eventMentionNode,
 			JCas jcas) {
 		NodeList children = eventMentionNode.getChildNodes();
 		ArrayList<Node> LDCScopeNodeArrayList = getSpecificNodeArrayList(children, ELEMENT_LDC_SCOPE);
@@ -1834,7 +1834,7 @@ public class AceReader extends CollectionReader_ImplBase {
 		// Since there should be one and only one ldc scope per event mention, it will be accessed directly.
 		// ATTENTION! This could be critical since some event mentions might not have an ldc scope.
 		Node LDCScopeNode = LDCScopeNodeArrayList.get(0);
-		de.julielab.jules.types.ace.LDC_Scope eventMentionLDCScope = new de.julielab.jules.types.ace.LDC_Scope(jcas);
+		de.julielab.jcore.types.ace.LDC_Scope eventMentionLDCScope = new de.julielab.jcore.types.ace.LDC_Scope(jcas);
 
 		try {
 			setEventMentionLDCScopeStartEnd(eventMentionLDCScope, LDCScopeNode);
@@ -1859,7 +1859,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param relationMentionNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setRelationMentionAttributes(de.julielab.jules.types.ace.RelationMention relationMention,
+	public void setRelationMentionAttributes(de.julielab.jcore.types.ace.RelationMention relationMention,
 			Node relationMentionNode) {
 		String relationMentionID = retrieveAttribute(relationMentionNode, ITEM_ID);
 		String relationMentionLexCond = retrieveAttribute(relationMentionNode, ITEM_LEXICALCONDITION);
@@ -1876,7 +1876,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param valueMentionNode
 	 *            Node which will be parsed in order to retrieve the attributes
 	 */
-	public void setValueMentionAttributes(de.julielab.jules.types.ace.ValueMention valueMention, Node valueMentionNode) {
+	public void setValueMentionAttributes(de.julielab.jcore.types.ace.ValueMention valueMention, Node valueMentionNode) {
 		String valueMentionID = retrieveAttribute(valueMentionNode, ITEM_ID);
 		valueMention.setId(valueMentionID);
 	} // of setValueMentionAttributes
@@ -1898,7 +1898,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < valueMentionNodeArrayList.size(); i++) {
 			Node valueMentionNode = valueMentionNodeArrayList.get(i);
-			de.julielab.jules.types.ace.ValueMention valueMention = new de.julielab.jules.types.ace.ValueMention(jcas);
+			de.julielab.jcore.types.ace.ValueMention valueMention = new de.julielab.jcore.types.ace.ValueMention(jcas);
 			setValueMentionAttributes(valueMention, valueMentionNode);
 			setValueMentionStartEnd(valueMention, valueMentionNode);
 			valueMention.addToIndexes();
@@ -1920,10 +1920,10 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            JCas which will be filled with retrieved information
 	 */
-	public void setEntityMentionHead(de.julielab.jules.types.ace.EntityMention entityMention, Node entityMentionNode,
+	public void setEntityMentionHead(de.julielab.jcore.types.ace.EntityMention entityMention, Node entityMentionNode,
 			JCas jcas) {
 		try {
-			de.julielab.jules.types.ace.Head entityMentionHead = new de.julielab.jules.types.ace.Head(jcas);
+			de.julielab.jcore.types.ace.Head entityMentionHead = new de.julielab.jcore.types.ace.Head(jcas);
 			getHeadInformation(entityMentionHead, entityMentionNode);
 			entityMention.setHead(entityMentionHead);
 		} // of try
@@ -1942,7 +1942,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param entityMentionNode
 	 *            Node which contains the entity mention start and end
 	 */
-	public void setEntityMentionStartEnd(de.julielab.jules.types.ace.EntityMention entityMention, Node entityMentionNode) {
+	public void setEntityMentionStartEnd(de.julielab.jcore.types.ace.EntityMention entityMention, Node entityMentionNode) {
 		int entityMentionStart = retrieveStartEndValue(entityMentionNode, ITEM_START);
 		int entityMentionEnd = retrieveStartEndValue(entityMentionNode, ITEM_END);
 		validateStartEnd(entityMentionStart, entityMentionEnd, getMentionCharseqNode(entityMentionNode));
@@ -1959,7 +1959,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param entityMentionNode
 	 *            a Node which contain the head information
 	 */
-	public void getHeadInformation(de.julielab.jules.types.ace.Head entityMentionHead, Node entityMentionNode) {
+	public void getHeadInformation(de.julielab.jcore.types.ace.Head entityMentionHead, Node entityMentionNode) {
 		int headStart = 0;
 		int headEnd = 0;
 		NodeList children = entityMentionNode.getChildNodes();
@@ -2026,7 +2026,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * @param jcas
 	 *            JCas which will be filled with retrieved information
 	 */
-	public void addDocumentInformation(Node documentNode, de.julielab.jules.types.ace.Document aceDocument, JCas jcas) {
+	public void addDocumentInformation(Node documentNode, de.julielab.jcore.types.ace.Document aceDocument, JCas jcas) {
 		try {
 			String docID = retrieveAttribute(documentNode, ITEM_DOCID);
 			FSArray entityFSArray = getEntityFSArray(documentNode, jcas);
@@ -2064,7 +2064,7 @@ public class AceReader extends CollectionReader_ImplBase {
 		FSArray entityFSArray = new FSArray(jcas, entityNodeArrayList.size());
 
 		for (int i = 0; i < entityNodeArrayList.size(); i++) {
-			de.julielab.jules.types.ace.Entity aceEntity = new de.julielab.jules.types.ace.Entity(jcas);
+			de.julielab.jcore.types.ace.Entity aceEntity = new de.julielab.jcore.types.ace.Entity(jcas);
 			Node entityNode = entityNodeArrayList.get(i);
 			addEntityInformation(entityNode, aceEntity, jcas);
 			entityFSArray.set(i, aceEntity);
@@ -2089,7 +2089,7 @@ public class AceReader extends CollectionReader_ImplBase {
 		FSArray valueFSArray = new FSArray(jcas, valueNodeArrayList.size());
 
 		for (int i = 0; i < valueNodeArrayList.size(); i++) {
-			de.julielab.jules.types.ace.Value aceValue = new de.julielab.jules.types.ace.Value(jcas);
+			de.julielab.jcore.types.ace.Value aceValue = new de.julielab.jcore.types.ace.Value(jcas);
 			Node valueNode = valueNodeArrayList.get(i);
 			addValueInformation(valueNode, aceValue, jcas);
 			valueFSArray.set(i, aceValue);
@@ -2114,7 +2114,7 @@ public class AceReader extends CollectionReader_ImplBase {
 		FSArray timex2FSArray = new FSArray(jcas, timex2NodeArrayList.size());
 
 		for (int i = 0; i < timex2NodeArrayList.size(); i++) {
-			de.julielab.jules.types.ace.Timex2 aceTimex2 = new de.julielab.jules.types.ace.Timex2(jcas);
+			de.julielab.jcore.types.ace.Timex2 aceTimex2 = new de.julielab.jcore.types.ace.Timex2(jcas);
 			Node timex2Node = timex2NodeArrayList.get(i);
 			addTimex2Information(timex2Node, aceTimex2, jcas);
 			timex2FSArray.set(i, aceTimex2);
@@ -2139,7 +2139,7 @@ public class AceReader extends CollectionReader_ImplBase {
 		FSArray relationFSArray = new FSArray(jcas, relationNodeArrayList.size());
 
 		for (int i = 0; i < relationNodeArrayList.size(); i++) {
-			de.julielab.jules.types.ace.Relation aceRelation = new de.julielab.jules.types.ace.Relation(jcas);
+			de.julielab.jcore.types.ace.Relation aceRelation = new de.julielab.jcore.types.ace.Relation(jcas);
 			Node relationNode = relationNodeArrayList.get(i);
 			addRelationInformation(relationNode, aceRelation, jcas);
 			relationFSArray.set(i, aceRelation);
@@ -2164,7 +2164,7 @@ public class AceReader extends CollectionReader_ImplBase {
 		FSArray eventFSArray = new FSArray(jcas, eventNodeArrayList.size());
 
 		for (int i = 0; i < eventNodeArrayList.size(); i++) {
-			de.julielab.jules.types.ace.Event aceEvent = new de.julielab.jules.types.ace.Event(jcas);
+			de.julielab.jcore.types.ace.Event aceEvent = new de.julielab.jcore.types.ace.Event(jcas);
 			Node eventNode = eventNodeArrayList.get(i);
 			addEventInformation(eventNode, aceEvent, jcas);
 			aceEvent.addToIndexes();
@@ -2190,7 +2190,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < sourceFileNodeList.getLength(); i++) {
 			Node sourceFileNode = sourceFileNodeList.item(i);
-			de.julielab.jules.types.ace.SourceFile aceSourceFile = new de.julielab.jules.types.ace.SourceFile(jcas);
+			de.julielab.jcore.types.ace.SourceFile aceSourceFile = new de.julielab.jcore.types.ace.SourceFile(jcas);
 			setSourceFileAttributes(aceSourceFile, sourceFileNode);
 			FSArray documentsFSArray = getDocumentFSArray(sourceFileNode, jcas);
 			aceSourceFile.setDocuments(documentsFSArray);
@@ -2214,7 +2214,7 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		for (int i = 0; i < documentNodeArrayList.size(); i++) {
 			try {
-				de.julielab.jules.types.ace.Document aceDocument = new de.julielab.jules.types.ace.Document(jcas);
+				de.julielab.jcore.types.ace.Document aceDocument = new de.julielab.jcore.types.ace.Document(jcas);
 				Node documentNode = documentNodeArrayList.get(i);
 				addDocumentInformation(documentNode, aceDocument, jcas);
 				documentFSArray.set(i, aceDocument);

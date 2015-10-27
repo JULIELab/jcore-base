@@ -12,7 +12,7 @@
  *
  * Creation date: Dec 11, 2006 
  * 
- * Test for class de.julielab.jules.reader.MedlineReader
+ * Test for class de.julielab.jcore.reader.MedlineReader
  **/
 
 package de.julielab.jcore.reader.pubmed;
@@ -53,17 +53,17 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import de.julielab.jcore.reader.xml.XMLReader;
-import de.julielab.jules.types.AbstractText;
-import de.julielab.jules.types.AuthorInfo;
-import de.julielab.jules.types.Chemical;
-import de.julielab.jules.types.DBInfo;
-import de.julielab.jules.types.Date;
-import de.julielab.jules.types.Journal;
-import de.julielab.jules.types.Keyword;
-import de.julielab.jules.types.MeshHeading;
-import de.julielab.jules.types.Title;
-import de.julielab.jules.types.pubmed.Header;
-import de.julielab.jules.types.pubmed.ManualDescriptor;
+import de.julielab.jcore.types.AbstractText;
+import de.julielab.jcore.types.AuthorInfo;
+import de.julielab.jcore.types.Chemical;
+import de.julielab.jcore.types.DBInfo;
+import de.julielab.jcore.types.Date;
+import de.julielab.jcore.types.Journal;
+import de.julielab.jcore.types.Keyword;
+import de.julielab.jcore.types.MeshHeading;
+import de.julielab.jcore.types.Title;
+import de.julielab.jcore.types.pubmed.Header;
+import de.julielab.jcore.types.pubmed.ManualDescriptor;
 
 /**
  * Test for class MedlineReader

@@ -11,7 +11,7 @@ import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.julielab.jules.types.EntityMention;
+import de.julielab.jcore.types.EntityMention;
 
 public class EntityWriter {
 	private Writer writer;

@@ -56,10 +56,10 @@ import com.aliasi.chunk.ChunkFactory;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProviderImplAlt;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
 import de.julielab.jcore.ae.lingpipegazetteer.uima.GazetteerAnnotator;
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.Annotation;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.OntClassMention;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.OntClassMention;
 
 public class GazetteerAnnotatorTest extends TestCase {
 
@@ -261,7 +261,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 				.createPrimitive(GazetteerAnnotator.class, tsDesc,
 						GazetteerAnnotator.PARAM_CHECK_ACRONYMS, false,
 						GazetteerAnnotator.PARAM_OUTPUT_TYPE,
-						"de.julielab.jules.types.OntClassMention",
+						"de.julielab.jcore.types.OntClassMention",
 						GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
 		JCas myCAS = gazetteerAnnotator.newJCas();
@@ -312,7 +312,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(
 				GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE,
-				"de.julielab.jules.types.EntityMention",
+				"de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 		JCas jCas = annotator.newJCas();
 
@@ -402,7 +402,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(
 				GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE,
-				"de.julielab.jules.types.EntityMention",
+				"de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 		JCas jCas = annotator.newJCas();
 
@@ -483,7 +483,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(
 				GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE,
-				"de.julielab.jules.types.EntityMention",
+				"de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 		JCas jCas = annotator.newJCas();
 
@@ -514,7 +514,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(
 				GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE,
-				"de.julielab.jules.types.EntityMention",
+				"de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
 		JCas jCas = annotator.newJCas();
@@ -576,7 +576,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(
 				GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE,
-				"de.julielab.jules.types.EntityMention",
+				"de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
 		JCas jCas = annotator.newJCas();
@@ -707,7 +707,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(
 				GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE,
-				"de.julielab.jules.types.EntityMention",
+				"de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
 		JCas jCas = annotator.newJCas();

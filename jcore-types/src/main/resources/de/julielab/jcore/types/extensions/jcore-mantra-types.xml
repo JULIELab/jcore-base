@@ -11,14 +11,14 @@
   </imports>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.mantra.Corpus</name>
+      <name>de.julielab.jcore.types.mantra.Corpus</name>
       <description>Stores Information about the corpus.</description>
-      <supertypeName>de.julielab.jules.types.DocumentAnnotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.DocumentAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>creationDate</name>
           <description>Date this corpus was created.</description>
-          <rangeTypeName>de.julielab.jules.types.Date</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.Date</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>id</name>
@@ -28,19 +28,19 @@
         <featureDescription>
           <name>docType</name>
           <description>Type of the documents in this corpus, e.g. Medline(title)</description>
-          <rangeTypeName>de.julielab.jules.types.mantra.DocType</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.mantra.DocType</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>language</name>
           <description>The language of this corpus</description>
-          <rangeTypeName>de.julielab.jules.types.mantra.Language</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.mantra.Language</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mantra.Document</name>
+      <name>de.julielab.jcore.types.mantra.Document</name>
       <description>Stores Information about this document.</description>
-      <supertypeName>de.julielab.jules.types.DocumentAnnotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.DocumentAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>id</name>
@@ -50,10 +50,10 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mantra.Unit</name>
+      <name>de.julielab.jcore.types.mantra.Unit</name>
       <description>Unit in a Mantra document (could be e.g. a sentence or
 				paragraph, depending on the alignment level of the corpus).</description>
-      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
       <features>
         <featureDescription>
           <name>id</name>
@@ -68,9 +68,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mantra.Entity</name>
+      <name>de.julielab.jcore.types.mantra.Entity</name>
       <description>Used to annotate entities (called e in the xsd)</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>source</name>
@@ -90,19 +90,19 @@
         <featureDescription>
           <name>semanticGroup</name>
           <description>Semantic group this term belongs to.</description>
-          <rangeTypeName>de.julielab.jules.types.mantra.SemanticGroup</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.mantra.SemanticGroup</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>ner</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.mantra.NER</elementType>
+          <elementType>de.julielab.jcore.types.mantra.NER</elementType>
           <multipleReferencesAllowed>false</multipleReferencesAllowed>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mantra.DocType</name>
+      <name>de.julielab.jcore.types.mantra.DocType</name>
       <description>Type/Source of this corpus</description>
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
@@ -129,7 +129,7 @@
       </allowedValues>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mantra.Language</name>
+      <name>de.julielab.jcore.types.mantra.Language</name>
       <description>The language of the document. Only 2 letter codes are
 				allowed.</description>
       <supertypeName>uima.cas.String</supertypeName>
@@ -313,7 +313,7 @@
       </allowedValues>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mantra.SemanticGroup</name>
+      <name>de.julielab.jcore.types.mantra.SemanticGroup</name>
       <description>The UMLS semantic group an entity belongs to.</description>
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
@@ -364,14 +364,14 @@
       </allowedValues>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mantra.NER</name>
+      <name>de.julielab.jcore.types.mantra.NER</name>
       <description>For storring NER probabilities</description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>semanticGroup</name>
           <description/>
-          <rangeTypeName>de.julielab.jules.types.mantra.SemanticGroup</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.mantra.SemanticGroup</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>probability</name>

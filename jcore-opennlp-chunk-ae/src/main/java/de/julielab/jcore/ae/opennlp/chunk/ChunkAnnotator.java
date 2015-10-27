@@ -45,19 +45,19 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.julielab.jules.types.Chunk;
-import de.julielab.jules.types.ChunkADJP;
-import de.julielab.jules.types.ChunkADVP;
-import de.julielab.jules.types.ChunkCONJP;
-import de.julielab.jules.types.ChunkLST;
-import de.julielab.jules.types.ChunkNP;
-import de.julielab.jules.types.ChunkPP;
-import de.julielab.jules.types.ChunkPRT;
-import de.julielab.jules.types.ChunkSBAR;
-import de.julielab.jules.types.ChunkVP;
-import de.julielab.jules.types.POSTag;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Chunk;
+import de.julielab.jcore.types.ChunkADJP;
+import de.julielab.jcore.types.ChunkADVP;
+import de.julielab.jcore.types.ChunkCONJP;
+import de.julielab.jcore.types.ChunkLST;
+import de.julielab.jcore.types.ChunkNP;
+import de.julielab.jcore.types.ChunkPP;
+import de.julielab.jcore.types.ChunkPRT;
+import de.julielab.jcore.types.ChunkSBAR;
+import de.julielab.jcore.types.ChunkVP;
+import de.julielab.jcore.types.POSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,7 @@ public class ChunkAnnotator extends JCasAnnotator_ImplBase {
 	/**
 	 * component Id
 	 */
-	private static final String COMPONENT_ID = "de.julielab.jules.ae.OpenNLPChunker";
+	private static final String COMPONENT_ID = "de.julielab.jcore.ae.OpenNLPChunker";
 	/**
 	 * instance of the OpenNLP chunker
 	 */

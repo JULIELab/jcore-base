@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.apache.uima.fit.factory.JCasFactory;
 
 import de.julielab.jcore.consumer.bionlp09event.utils.EventTriggerWriter;
-import de.julielab.jules.types.EventTrigger;
+import de.julielab.jcore.types.EventTrigger;
 
 public class EventTriggerWriterTest {
 	private static final String TRIGGER_T1 = "T1	Negative_regulation 12 19	inhibit\n";

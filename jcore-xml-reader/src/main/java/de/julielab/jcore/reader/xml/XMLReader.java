@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
-import de.julielab.jules.types.Header;
+import de.julielab.jcore.types.Header;
 
 /**
  * CollectionReader for MEDLINE (www.pubmed.gov) Abstracts in XML that
@@ -114,7 +114,7 @@ public class XMLReader extends CollectionReader_ImplBase {
 
 		headerTypeName = (String) getConfigParameterValue(PARAM_HEADER_TYPE);
 		if (null == headerTypeName)
-			headerTypeName = "de.julielab.jules.types.Header";
+			headerTypeName = "de.julielab.jcore.types.Header";
 		mappingFileStr = (String) getConfigParameterValue(PARAM_MAPPING_FILE);
 		InputStream is = null;
 

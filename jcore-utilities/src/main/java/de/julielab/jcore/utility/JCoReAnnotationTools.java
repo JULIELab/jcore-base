@@ -29,13 +29,13 @@ import org.apache.commons.lang3.Range;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
-// import de.julielab.jules.types.Annotation;
+// import de.julielab.jcore.types.Annotation;
 import org.apache.uima.jcas.tcas.Annotation;
 
 public class JCoReAnnotationTools {
 
 	/**
-	 * returns an annotation object (de.julielab.jules.types.annotation) of the type specified by fullEntityClassName.
+	 * returns an annotation object (de.julielab.jcore.types.annotation) of the type specified by fullEntityClassName.
 	 * This is done by means of dynamic class loading and reflection.
 	 * 
 	 * @param aJCas

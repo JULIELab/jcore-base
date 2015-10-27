@@ -13,7 +13,7 @@
  * Creation date: 09.05.2011
  **/
 
-package de.julielab.jules.reader;
+package de.julielab.jcore.reader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +39,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Test;
 
-import de.julielab.jules.types.Sentence;
+import de.julielab.jcore.types.Sentence;
 
 /**
  * TODO insert description

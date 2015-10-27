@@ -35,7 +35,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jules.types.Sentence;
+import de.julielab.jcore.types.Sentence;
 
 public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 

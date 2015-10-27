@@ -30,10 +30,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
-import de.julielab.jules.types.Chunk;
-import de.julielab.jules.types.PennBioIEPOSTag;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Chunk;
+import de.julielab.jcore.types.PennBioIEPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

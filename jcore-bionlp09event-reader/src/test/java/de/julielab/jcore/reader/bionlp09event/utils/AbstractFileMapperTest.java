@@ -23,9 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.julielab.jcore.reader.bionlp09event.utils.AbstractFileMapper;
-import de.julielab.jules.types.AbstractText;
-import de.julielab.jules.types.Title;
-import de.julielab.jules.types.pubmed.Header;
+import de.julielab.jcore.types.AbstractText;
+import de.julielab.jcore.types.Title;
+import de.julielab.jcore.types.pubmed.Header;
 import static org.easymock.classextension.EasyMock.*;
 public class AbstractFileMapperTest {
 
@@ -52,7 +52,7 @@ public class AbstractFileMapperTest {
 		verify(bufferedReader);
 		
 		assertEquals("title\ntext", cas.getDocumentText());
-		Type titleType = cas.getTypeSystem().getType("de.julielab.jules.types.Title");
+		Type titleType = cas.getTypeSystem().getType("de.julielab.jcore.types.Title");
 		assertNotNull(titleType);
 		FSIterator titleIterator = cas.getAnnotationIndex(titleType).iterator();
 		assertNotNull(titleIterator);
@@ -61,14 +61,14 @@ public class AbstractFileMapperTest {
 		assertEquals(0, title.getBegin());
 		assertEquals(5, title.getEnd());
 		
-		Type abstractType = cas.getTypeSystem().getType("de.julielab.jules.types.AbstractText");
+		Type abstractType = cas.getTypeSystem().getType("de.julielab.jcore.types.AbstractText");
 		FSIterator abstractIterator = cas.getAnnotationIndex(abstractType).iterator();
 		AbstractText abstractText = (AbstractText) abstractIterator.next();
 		assertNotNull(abstractText);
 		assertEquals(6, abstractText.getBegin());
 		assertEquals(10, abstractText.getEnd());
 		
-		Type headerType = cas.getTypeSystem().getType("de.julielab.jules.types.pubmed.Header");
+		Type headerType = cas.getTypeSystem().getType("de.julielab.jcore.types.pubmed.Header");
 		Header header = (Header) cas.getAnnotationIndex(headerType).iterator().next();
 		assertNotNull(header);
 		assertEquals("123456", header.getDocId());

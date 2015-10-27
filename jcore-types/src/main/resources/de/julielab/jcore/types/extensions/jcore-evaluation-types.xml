@@ -6,9 +6,9 @@
   <vendor>JULIE Lab Jena, Germany</vendor>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.Missing</name>
+      <name>de.julielab.jcore.types.Missing</name>
       <description>for Evaluation - when an annotation is missing</description>
-      <supertypeName>de.julielab.jules.types.EvaluationAnnotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.EvaluationAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>expected</name>
@@ -18,9 +18,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Additional</name>
+      <name>de.julielab.jcore.types.Additional</name>
       <description>for Evaluation - if there is an additional annotation</description>
-      <supertypeName>de.julielab.jules.types.EvaluationAnnotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.EvaluationAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>actual</name>
@@ -30,19 +30,19 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.EvaluationAnnotation</name>
+      <name>de.julielab.jcore.types.EvaluationAnnotation</name>
       <description>Base type for all EvaluationAnnotations</description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Correct</name>
+      <name>de.julielab.jcore.types.Correct</name>
       <description>when annotation is correct</description>
-      <supertypeName>de.julielab.jules.types.EvaluationAnnotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.EvaluationAnnotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Overall</name>
+      <name>de.julielab.jcore.types.Overall</name>
       <description>collects information about number of missing/additional/correct annotations on the document level</description>
-      <supertypeName>de.julielab.jules.types.EvaluationAnnotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.EvaluationAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>missing</name>

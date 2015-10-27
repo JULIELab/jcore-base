@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
 
 import com.google.common.io.Files;
 
-import de.julielab.jules.types.Sentence;
+import de.julielab.jcore.types.Sentence;
 
 public class MiniTestapp {
 

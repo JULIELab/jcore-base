@@ -9,94 +9,94 @@
   </imports>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.Cytokine</name>
+      <name>de.julielab.jcore.types.stemnet.Cytokine</name>
       <description>Cytokine</description>
-      <supertypeName>de.julielab.jules.types.Gene</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Gene</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.Chemokine</name>
+      <name>de.julielab.jcore.types.stemnet.Chemokine</name>
       <description>Chemokine</description>
-      <supertypeName>de.julielab.jules.types.Gene</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Gene</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.CytokineReceptor</name>
+      <name>de.julielab.jcore.types.stemnet.CytokineReceptor</name>
       <description>Cytokine Receptor</description>
-      <supertypeName>de.julielab.jules.types.Gene</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Gene</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.ChemokineReceptor</name>
+      <name>de.julielab.jcore.types.stemnet.ChemokineReceptor</name>
       <description>Chemokine Receptor</description>
-      <supertypeName>de.julielab.jules.types.Gene</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Gene</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.Variation</name>
+      <name>de.julielab.jcore.types.stemnet.Variation</name>
       <description>Variation</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.VariationLocation</name>
+      <name>de.julielab.jcore.types.stemnet.VariationLocation</name>
       <description>Variation Location</description>
-      <supertypeName>de.julielab.jules.types.stemnet.Variation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.stemnet.Variation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.VariationStateOriginal</name>
+      <name>de.julielab.jcore.types.stemnet.VariationStateOriginal</name>
       <description>original state of the variation</description>
-      <supertypeName>de.julielab.jules.types.stemnet.Variation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.stemnet.Variation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.VariationStateAltered</name>
+      <name>de.julielab.jcore.types.stemnet.VariationStateAltered</name>
       <description>altered state of the variation</description>
-      <supertypeName>de.julielab.jules.types.stemnet.Variation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.stemnet.Variation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.VariationStateGeneric</name>
+      <name>de.julielab.jcore.types.stemnet.VariationStateGeneric</name>
       <description>generic state of the variation</description>
-      <supertypeName>de.julielab.jules.types.stemnet.Variation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.stemnet.Variation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.VariationProcess</name>
+      <name>de.julielab.jcore.types.stemnet.VariationProcess</name>
       <description>super type for processes in variation event</description>
-      <supertypeName>de.julielab.jules.types.stemnet.Variation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.stemnet.Variation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.VariationEvent</name>
+      <name>de.julielab.jcore.types.stemnet.VariationEvent</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.stemnet.VariationProcess</supertypeName>
+      <supertypeName>de.julielab.jcore.types.stemnet.VariationProcess</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.VariationType</name>
+      <name>de.julielab.jcore.types.stemnet.VariationType</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.stemnet.VariationProcess</supertypeName>
+      <supertypeName>de.julielab.jcore.types.stemnet.VariationProcess</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.CD_antigens</name>
+      <name>de.julielab.jcore.types.stemnet.CD_antigens</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.MinorHA</name>
+      <name>de.julielab.jcore.types.stemnet.MinorHA</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.HematopoieticProgenitorCell</name>
+      <name>de.julielab.jcore.types.stemnet.HematopoieticProgenitorCell</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.LymphoidLeukocyte</name>
+      <name>de.julielab.jcore.types.stemnet.LymphoidLeukocyte</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.MyeloidLeukocyte</name>
+      <name>de.julielab.jcore.types.stemnet.MyeloidLeukocyte</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.stemnet.Erythrocyte</name>
+      <name>de.julielab.jcore.types.stemnet.Erythrocyte</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
   </types>
 </typeSystemDescription>

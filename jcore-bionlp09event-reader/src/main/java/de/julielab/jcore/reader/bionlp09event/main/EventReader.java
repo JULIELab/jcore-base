@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.reader.bionlp09event.utils.AbstractFileMapper;
 import de.julielab.jcore.reader.bionlp09event.utils.AnnotationFileMapper;
-import de.julielab.jules.types.Annotation;
+import de.julielab.jcore.types.Annotation;
 
 public class EventReader extends CollectionReader_ImplBase {
 

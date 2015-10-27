@@ -44,7 +44,7 @@ import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
 import de.julielab.jcore.reader.xmlmapper.mapper.DocumentTextData;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.MedlineTextSentenceBuilder;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.TypeBuilder;
-import de.julielab.jules.types.EntityMention;
+import de.julielab.jcore.types.EntityMention;
 import de.julielab.xml.JulieXMLTools;
 
 /**

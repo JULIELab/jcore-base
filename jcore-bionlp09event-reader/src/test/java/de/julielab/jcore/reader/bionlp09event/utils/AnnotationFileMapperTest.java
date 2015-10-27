@@ -40,13 +40,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import de.julielab.jcore.reader.bionlp09event.utils.AnnotationFileMapper;
-import de.julielab.jules.types.Annotation;
-import de.julielab.jules.types.ArgumentMention;
-import de.julielab.jules.types.Entity;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.EventMention;
-import de.julielab.jules.types.EventTrigger;
-import de.julielab.jules.types.Gene;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.Entity;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.EventTrigger;
+import de.julielab.jcore.types.Gene;
 
 
 
@@ -114,7 +114,7 @@ public class AnnotationFileMapperTest {
 		annotationFileMapper.mapProteinFile(bufferedReader, cas);
 		verify(bufferedReader);
 		
-		Type proteinType = cas.getTypeSystem().getType("de.julielab.jules.types.Gene");
+		Type proteinType = cas.getTypeSystem().getType("de.julielab.jcore.types.Gene");
 		Gene protein = (Gene) cas.getAnnotationIndex(proteinType).iterator().next();
 		assertNotNull(protein);
 		assertEquals(34, protein.getBegin());
@@ -133,7 +133,7 @@ public class AnnotationFileMapperTest {
 		annotationFileMapper.mapEventFile(null, bufferedReader, cas);
 		verify(bufferedReader);
 		
-		Type entityMentionType = cas.getTypeSystem().getType("de.julielab.jules.types.EntityMention");
+		Type entityMentionType = cas.getTypeSystem().getType("de.julielab.jcore.types.EntityMention");
 		EntityMention entityMention = (EntityMention) cas.getAnnotationIndex(entityMentionType).iterator().next();
 		assertNotNull(entityMention);
 		assertEquals(322, entityMention.getBegin());
@@ -154,7 +154,7 @@ public class AnnotationFileMapperTest {
 		annotationFileMapper.mapEventFile(null, bufferedReader, cas);
 		verify(bufferedReader);
 		
-		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jules.types.EventTrigger");
+		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventTrigger");
 		FSIterator iterator = cas.getAnnotationIndex(eventTriggerType).iterator();
 
 		EventTrigger eventTriggerT33 = (EventTrigger) iterator.next();
@@ -189,7 +189,7 @@ public class AnnotationFileMapperTest {
 		annotationFileMapper.mapEventFile(null, bufferedReader, cas);
 		verify(bufferedReader);
 		
-		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jules.types.EventTrigger");
+		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventTrigger");
 		EventTrigger eventTrigger = (EventTrigger) cas.getAnnotationIndex(eventTriggerType).iterator().next();
 		assertNotNull(eventTrigger);
 		assertEquals(100, eventTrigger.getBegin());
@@ -209,9 +209,9 @@ public class AnnotationFileMapperTest {
 		annotationFileMapper.mapEventFile(mappedProteins, bufferedReader, cas);
 		verify(bufferedReader);
 
-		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jules.types.EventTrigger");
+		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventTrigger");
 		EventTrigger eventTrigger = (EventTrigger) cas.getAnnotationIndex(eventTriggerType).iterator().next();
-		Type eventMentionType = cas.getTypeSystem().getType("de.julielab.jules.types.EventMention");
+		Type eventMentionType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventMention");
 		EventMention eventMention = (EventMention) cas.getAnnotationIndex(eventMentionType).iterator().next();
 		
 		assertNotNull(eventMention);
@@ -242,9 +242,9 @@ public class AnnotationFileMapperTest {
 		annotationFileMapper.mapEventFile(mappedProteins, bufferedReader, cas);
 		verify(bufferedReader);
 
-		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jules.types.EventTrigger");
+		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventTrigger");
 		EventTrigger eventTrigger = (EventTrigger) cas.getAnnotationIndex(eventTriggerType).iterator().next();
-		Type eventMentionType = cas.getTypeSystem().getType("de.julielab.jules.types.EventMention");
+		Type eventMentionType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventMention");
 		FSIterator iterator= cas.getAnnotationIndex(eventMentionType).iterator();
 		EventMention eventMentionE3 = (EventMention) iterator.next();
 		EventMention eventMentionE4 = (EventMention) iterator.next();
@@ -276,11 +276,11 @@ public class AnnotationFileMapperTest {
 		annotationFileMapper.mapEventFile(mappedProteins, bufferedReader, cas);
 		verify(bufferedReader);
 
-		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jules.types.EventTrigger");
+		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventTrigger");
 		EventTrigger eventTriggerT34 = (EventTrigger) cas.getAnnotationIndex(eventTriggerType).iterator().next();
-		Type eventMentionType = cas.getTypeSystem().getType("de.julielab.jules.types.EventMention");
+		Type eventMentionType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventMention");
 		EventMention eventMentionE2 = (EventMention) cas.getAnnotationIndex(eventMentionType).iterator().next();
-		Type entityMentionType = cas.getTypeSystem().getType("de.julielab.jules.types.EntityMention");
+		Type entityMentionType = cas.getTypeSystem().getType("de.julielab.jcore.types.EntityMention");
 		FSIterator iterator = cas.getAnnotationIndex(entityMentionType).iterator();
 		EntityMention entityMentionT1 = (EntityMention) iterator.next();
 
@@ -327,13 +327,13 @@ public class AnnotationFileMapperTest {
 		
 		verify(bufferedReader);
 		
-		Type eventMentionType = cas.getTypeSystem().getType("de.julielab.jules.types.EventMention");
+		Type eventMentionType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventMention");
 		FSIterator iterator = cas.getAnnotationIndex(eventMentionType).iterator();
 		EventMention eventMentionE1 = (EventMention) iterator.next();
 		EventMention eventMentionE2 = (EventMention) iterator.next();
 		EventMention eventMentionE3 = (EventMention) iterator.next();
 		
-		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jules.types.EventTrigger");
+		Type eventTriggerType = cas.getTypeSystem().getType("de.julielab.jcore.types.EventTrigger");
 		EventTrigger eventTriggerT33 = (EventTrigger) cas.getAnnotationIndex(eventTriggerType).iterator().next();
 			
 		assertNotNull(eventMentionE1);

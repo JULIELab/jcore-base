@@ -26,7 +26,7 @@ import org.junit.Test;
 import com.google.common.collect.Sets;
 
 import de.julielab.jcore.reader.bionlp09event.main.EventReader;
-import de.julielab.jules.types.pubmed.Header;
+import de.julielab.jcore.types.pubmed.Header;
 
 // This test's EventReaderTest.xml descriptor points to local directories of Ekaterina Buyko and as such, the test doesn't work this way. However it might, if the data is made available as proper test data.
 @Ignore
@@ -52,11 +52,11 @@ public class EventReaderTest {
 		JCas jcas = cas.getJCas();
 
 		Type headerType = jcas.getTypeSystem().getType(
-				"de.julielab.jules.types.pubmed.Header");
+				"de.julielab.jcore.types.pubmed.Header");
 		Type proteinType = jcas.getTypeSystem().getType(
-				"de.julielab.jules.types.Gene");
+				"de.julielab.jcore.types.Gene");
 		Type eventType = jcas.getTypeSystem().getType(
-				"de.julielab.jules.types.EventMention");
+				"de.julielab.jcore.types.EventMention");
 
 		boolean bioEventServiceMode = (Boolean) collectionReader
 				.getConfigParameterValue(EventReader.BIOEVENT_SERVICE_MODE_PARAM);

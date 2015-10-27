@@ -6,7 +6,7 @@
   <vendor>JULIE Lab Jena, Germany</vendor>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.mmax.MMAXAnnotation</name>
+      <name>de.julielab.jcore.types.mmax.MMAXAnnotation</name>
       <description>Type to represent MMAX annotation.</description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -25,21 +25,21 @@ Could be also detected by checking if segmentList has length = 1.</description>
           <name>segmentList</name>
           <description>List of MMAX annotation segements that make up the MMAX annotation.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.mmax.AnnotationSegment</elementType>
+          <elementType>de.julielab.jcore.types.mmax.AnnotationSegment</elementType>
           <multipleReferencesAllowed>false</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
           <name>attributeList</name>
           <description>List of attributes of the MMAX annotation.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.mmax.MMAXAttribute</elementType>
+          <elementType>de.julielab.jcore.types.mmax.MMAXAttribute</elementType>
           <multipleReferencesAllowed>false</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
           <name>pointerList</name>
           <description>The list of MMAX pointers of the MMAX annotation.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.mmax.MMAXPointer</elementType>
+          <elementType>de.julielab.jcore.types.mmax.MMAXPointer</elementType>
           <multipleReferencesAllowed>false</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
@@ -55,7 +55,7 @@ Could be also detected by checking if segmentList has length = 1.</description>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mmax.AnnotationSegment</name>
+      <name>de.julielab.jcore.types.mmax.AnnotationSegment</name>
       <description>Annotation segment of an MMAX annotation. Helps to represent discontinuous annotations.</description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -67,7 +67,7 @@ Could be also detected by checking if segmentList has length = 1.</description>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mmax.MMAXAttribute</name>
+      <name>de.julielab.jcore.types.mmax.MMAXAttribute</name>
       <description>MMAX annotation attribute.</description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -84,7 +84,7 @@ Could be also detected by checking if segmentList has length = 1.</description>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.mmax.MMAXPointer</name>
+      <name>de.julielab.jcore.types.mmax.MMAXPointer</name>
       <description>MMAX pointers specify a relation between two MMAX annotations.</description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -97,7 +97,7 @@ Could be also detected by checking if segmentList has length = 1.</description>
           <name>targetList</name>
           <description>The MMAX annotations the pointer points at.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.mmax.MMAXAnnotation</elementType>
+          <elementType>de.julielab.jcore.types.mmax.MMAXAnnotation</elementType>
           <multipleReferencesAllowed>false</multipleReferencesAllowed>
         </featureDescription>
       </features>

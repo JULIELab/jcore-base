@@ -9,48 +9,48 @@
 </imports>
 <types>
 <typeDescription>
-<name>de.julielab.jules.types.pubmed.Header</name>
+<name>de.julielab.jcore.types.pubmed.Header</name>
 <description>The special Header for PubMed  (http://www.pubmed.org) documents</description>
-<supertypeName>de.julielab.jules.types.Header</supertypeName>
+<supertypeName>de.julielab.jcore.types.Header</supertypeName>
 <features>
 <featureDescription>
 <name>citationStatus</name>
 <description>Indicates the status of citation of a PubMed document, O</description>
-<rangeTypeName>de.julielab.jules.types.CitationStatus</rangeTypeName>
+<rangeTypeName>de.julielab.jcore.types.CitationStatus</rangeTypeName>
 </featureDescription>
 </features>
 </typeDescription>
 <typeDescription>
-<name>de.julielab.jules.types.pubmed.ManualDescriptor</name>
+<name>de.julielab.jcore.types.pubmed.ManualDescriptor</name>
 <description>The special type for PubMed documents</description>
-<supertypeName>de.julielab.jules.types.ManualDescriptor</supertypeName>
+<supertypeName>de.julielab.jcore.types.ManualDescriptor</supertypeName>
 <features>
 <featureDescription>
 <name>meSHList</name>
 <description>A collection of objects of type uima.julielab.uima.MeSHHeading, O</description>
 <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-<elementType>de.julielab.jules.types.MeshHeading</elementType>
+<elementType>de.julielab.jcore.types.MeshHeading</elementType>
 <multipleReferencesAllowed>true</multipleReferencesAllowed>
 </featureDescription>
 <featureDescription>
 <name>chemicalList</name>
 <description>A collection of objects of type uima.julielab.uima.Chemical, O</description>
 <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-<elementType>de.julielab.jules.types.Chemical</elementType>
+<elementType>de.julielab.jcore.types.Chemical</elementType>
 <multipleReferencesAllowed>true</multipleReferencesAllowed>
 </featureDescription>
 <featureDescription>
 <name>dBInfoList</name>
 <description>A collection of objects of type uima.julielab.uima.DBInfo, O</description>
 <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-<elementType>de.julielab.jules.types.DBInfo</elementType>
+<elementType>de.julielab.jcore.types.DBInfo</elementType>
 <multipleReferencesAllowed>true</multipleReferencesAllowed>
 </featureDescription>
 <featureDescription>
 <name>keywordList</name>
 <description>A collection of objects of type uima.julielab.uima.Keyword, O</description>
 <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-<elementType>de.julielab.jules.types.Keyword</elementType>
+<elementType>de.julielab.jcore.types.Keyword</elementType>
 <multipleReferencesAllowed>true</multipleReferencesAllowed>
 </featureDescription>
 <featureDescription>
@@ -61,7 +61,7 @@
 </features>
 </typeDescription>
   <typeDescription>
-      <name>de.julielab.jules.types.CitationStatus</name>
+      <name>de.julielab.jcore.types.CitationStatus</name>
       <description>A citation status (PubMed relevant)</description>
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>

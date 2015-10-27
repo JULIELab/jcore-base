@@ -33,15 +33,15 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.Annotation;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 
 public class ConsistencyPreservation {
 
-	private static final String COMPONENT_ID = "de.julielab.jules.ae.netagger.ConsistencyPreservation";
+	private static final String COMPONENT_ID = "de.julielab.jcore.ae.netagger.ConsistencyPreservation";
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(ConsistencyPreservation.class);

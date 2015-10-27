@@ -44,13 +44,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.julielab.jules.types.Paragraph;
-import de.julielab.jules.types.Section;
-import de.julielab.jules.types.muc7.Coref;
-import de.julielab.jules.types.muc7.ENAMEX;
-import de.julielab.jules.types.muc7.MUC7Header;
-import de.julielab.jules.types.muc7.NUMEX;
-import de.julielab.jules.types.muc7.TIMEX;
+import de.julielab.jcore.types.Paragraph;
+import de.julielab.jcore.types.Section;
+import de.julielab.jcore.types.muc7.Coref;
+import de.julielab.jcore.types.muc7.ENAMEX;
+import de.julielab.jcore.types.muc7.MUC7Header;
+import de.julielab.jcore.types.muc7.NUMEX;
+import de.julielab.jcore.types.muc7.TIMEX;
 
 public class MUC7Reader extends CollectionReader_ImplBase {
 

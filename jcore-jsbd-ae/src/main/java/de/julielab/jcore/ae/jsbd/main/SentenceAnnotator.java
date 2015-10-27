@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import de.julielab.jsbd.SentenceSplitter;
 import de.julielab.jsbd.Unit;
-import de.julielab.jules.types.Sentence;
+import de.julielab.jcore.types.Sentence;
 
 public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 

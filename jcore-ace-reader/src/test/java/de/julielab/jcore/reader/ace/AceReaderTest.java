@@ -44,24 +44,24 @@ import org.apache.uima.util.XMLSerializer;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import de.julielab.jules.types.Annotation;
-import de.julielab.jules.types.ArgumentMention;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.ace.GPE;
-import de.julielab.jules.types.ace.LOC;
-import de.julielab.jules.types.ace.PART_WHOLE;
-import de.julielab.jules.types.ace.PART_WHOLE_Inverse;
-import de.julielab.jules.types.ace.Transaction;
-import de.julielab.jules.types.ace.Document;
-import de.julielab.jules.types.ace.Entity;
-import de.julielab.jules.types.ace.EntityAttribute;
-import de.julielab.jules.types.ace.Event;
-import de.julielab.jules.types.ace.EventMention;
-import de.julielab.jules.types.ace.Relation;
-import de.julielab.jules.types.ace.RelationMention;
-import de.julielab.jules.types.ace.SourceFile;
-import de.julielab.jules.types.ace.Timex2;
-import de.julielab.jules.types.ace.Value;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.ace.GPE;
+import de.julielab.jcore.types.ace.LOC;
+import de.julielab.jcore.types.ace.PART_WHOLE;
+import de.julielab.jcore.types.ace.PART_WHOLE_Inverse;
+import de.julielab.jcore.types.ace.Transaction;
+import de.julielab.jcore.types.ace.Document;
+import de.julielab.jcore.types.ace.Entity;
+import de.julielab.jcore.types.ace.EntityAttribute;
+import de.julielab.jcore.types.ace.Event;
+import de.julielab.jcore.types.ace.EventMention;
+import de.julielab.jcore.types.ace.Relation;
+import de.julielab.jcore.types.ace.RelationMention;
+import de.julielab.jcore.types.ace.SourceFile;
+import de.julielab.jcore.types.ace.Timex2;
+import de.julielab.jcore.types.ace.Value;
 import de.julielab.jcore.utility.JCoReTools;
 
 public class AceReaderTest extends TestCase {
@@ -203,13 +203,13 @@ public class AceReaderTest extends TestCase {
 		System.out.println("CALL checkJulesEntities()");
 		boolean julesEntityEqual = true;
 
-		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jules.types.EntityMention.type);
-		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jules.types.EntityMention.type);
+		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jcore.types.EntityMention.type);
+		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jcore.types.EntityMention.type);
 
 		while (aceReaderIterator.hasNext()) {
-			de.julielab.jules.types.EntityMention aceReaderJulesEntity = (de.julielab.jules.types.EntityMention) aceReaderIterator
+			de.julielab.jcore.types.EntityMention aceReaderJulesEntity = (de.julielab.jcore.types.EntityMention) aceReaderIterator
 					.next();
-			de.julielab.jules.types.EntityMention testReaderJulesEntity = (de.julielab.jules.types.EntityMention) testReaderIterator
+			de.julielab.jcore.types.EntityMention testReaderJulesEntity = (de.julielab.jcore.types.EntityMention) testReaderIterator
 					.next();
 
 			System.out.println("Entities ACE reader " + aceReaderJulesEntity.getCoveredText() + " test reader "
@@ -255,13 +255,13 @@ public class AceReaderTest extends TestCase {
 		System.out.println("CALL checkJulesRelations()");
 		boolean juleRelationEqual = true;
 
-		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jules.types.RelationMention.type);
-		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jules.types.RelationMention.type);
+		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jcore.types.RelationMention.type);
+		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jcore.types.RelationMention.type);
 
 		while (aceReaderIterator.hasNext()) {
-			de.julielab.jules.types.RelationMention aceReaderRelation = (de.julielab.jules.types.RelationMention) aceReaderIterator
+			de.julielab.jcore.types.RelationMention aceReaderRelation = (de.julielab.jcore.types.RelationMention) aceReaderIterator
 					.next();
-			de.julielab.jules.types.RelationMention testReaderRelation = (de.julielab.jules.types.RelationMention) testReaderIterator
+			de.julielab.jcore.types.RelationMention testReaderRelation = (de.julielab.jcore.types.RelationMention) testReaderIterator
 					.next();
 
 			if (!(aceReaderRelation.getSpecificType()).equals(testReaderRelation.getSpecificType())) {
@@ -300,19 +300,19 @@ public class AceReaderTest extends TestCase {
 	} // of checkJulesRelations
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkJulesRelationArguments(de.julielab.jules.types.RelationMention aceReaderRelation,
-			de.julielab.jules.types.RelationMention testReaderRelation) {
+	private boolean checkJulesRelationArguments(de.julielab.jcore.types.RelationMention aceReaderRelation,
+			de.julielab.jcore.types.RelationMention testReaderRelation) {
 		System.out.println("CALL checkJulesRelationArguments()");
 		boolean julesRelationArgumentEqual = true;
 
-		de.julielab.jules.types.EntityMention aceReaderArgument1 = (EntityMention) ((ArgumentMention) aceReaderRelation
+		de.julielab.jcore.types.EntityMention aceReaderArgument1 = (EntityMention) ((ArgumentMention) aceReaderRelation
 				.getArguments().get(0)).getRef();
-		de.julielab.jules.types.EntityMention testReaderArgument1 = (EntityMention) ((ArgumentMention) testReaderRelation
+		de.julielab.jcore.types.EntityMention testReaderArgument1 = (EntityMention) ((ArgumentMention) testReaderRelation
 				.getArguments().get(0)).getRef();
 
-		de.julielab.jules.types.EntityMention aceReaderArgument2 = (EntityMention) ((ArgumentMention) aceReaderRelation
+		de.julielab.jcore.types.EntityMention aceReaderArgument2 = (EntityMention) ((ArgumentMention) aceReaderRelation
 				.getArguments().get(1)).getRef();
-		de.julielab.jules.types.EntityMention testReaderArgument2 = (EntityMention) ((ArgumentMention) aceReaderRelation
+		de.julielab.jcore.types.EntityMention testReaderArgument2 = (EntityMention) ((ArgumentMention) aceReaderRelation
 				.getArguments().get(1)).getRef();
 
 		System.out.println("ace reader relation:" + aceReaderRelation.getClass().getName() + "test reader relation"
@@ -348,13 +348,13 @@ public class AceReaderTest extends TestCase {
 		System.out.println("CALL checkJulesEvents()");
 		boolean julesEventEqual = true;
 
-		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jules.types.Event.type);
-		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jules.types.Event.type);
+		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jcore.types.Event.type);
+		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jcore.types.Event.type);
 
 		while (aceReaderIterator.hasNext()) {
-			de.julielab.jules.types.EventMention aceReaderJulesEvent = (de.julielab.jules.types.EventMention) aceReaderIterator
+			de.julielab.jcore.types.EventMention aceReaderJulesEvent = (de.julielab.jcore.types.EventMention) aceReaderIterator
 					.next();
-			de.julielab.jules.types.EventMention testReaderJulesEvent = (de.julielab.jules.types.EventMention) testReaderIterator
+			de.julielab.jcore.types.EventMention testReaderJulesEvent = (de.julielab.jcore.types.EventMention) testReaderIterator
 					.next();
 
 			if (!(aceReaderJulesEvent.getSpecificType().equals(testReaderJulesEvent.getSpecificType()))) {
@@ -418,8 +418,8 @@ public class AceReaderTest extends TestCase {
 	} // checkJulesEvents
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkJulesEventArguments(de.julielab.jules.types.EventMention aceReaderJulesEvent,
-			de.julielab.jules.types.EventMention testReaderJulesEvent) {
+	private boolean checkJulesEventArguments(de.julielab.jcore.types.EventMention aceReaderJulesEvent,
+			de.julielab.jcore.types.EventMention testReaderJulesEvent) {
 		System.out.println("CALL checkJulesEventArgument()");
 		boolean julesEventArgumentEqual = true;
 
@@ -427,9 +427,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderJulesEventArgumentFSArray = testReaderJulesEvent.getArguments();
 
 		for (int i = 0; i < aceReaderJulesEventArgumentFSArray.size(); i++) {
-			de.julielab.jules.types.ArgumentMention aceReaderJulesEventArgument = (de.julielab.jules.types.ArgumentMention) aceReaderJulesEventArgumentFSArray
+			de.julielab.jcore.types.ArgumentMention aceReaderJulesEventArgument = (de.julielab.jcore.types.ArgumentMention) aceReaderJulesEventArgumentFSArray
 					.get(i);
-			de.julielab.jules.types.ArgumentMention testReaderJulesEventArgument = (de.julielab.jules.types.ArgumentMention) testReaderJulesEventArgumentFSArray
+			de.julielab.jcore.types.ArgumentMention testReaderJulesEventArgument = (de.julielab.jcore.types.ArgumentMention) testReaderJulesEventArgumentFSArray
 					.get(i);
 
 			if (!(aceReaderJulesEventArgument.getBegin() == testReaderJulesEventArgument.getBegin())) {
@@ -466,12 +466,12 @@ public class AceReaderTest extends TestCase {
 	private boolean checkSourceFile() {
 		boolean sourceFileEqual = true;
 
-		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jules.types.ace.SourceFile.type);
-		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jules.types.ace.SourceFile.type);
+		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jcore.types.ace.SourceFile.type);
+		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jcore.types.ace.SourceFile.type);
 
-		de.julielab.jules.types.ace.SourceFile aceReaderSourceFile = (de.julielab.jules.types.ace.SourceFile) aceReaderIterator
+		de.julielab.jcore.types.ace.SourceFile aceReaderSourceFile = (de.julielab.jcore.types.ace.SourceFile) aceReaderIterator
 				.next();
-		de.julielab.jules.types.ace.SourceFile testReaderSourceFile = (de.julielab.jules.types.ace.SourceFile) testReaderIterator
+		de.julielab.jcore.types.ace.SourceFile testReaderSourceFile = (de.julielab.jcore.types.ace.SourceFile) testReaderIterator
 				.next();
 
 		if (!(aceReaderSourceFile.getUri().equals(testReaderSourceFile.getUri()))) {
@@ -516,12 +516,12 @@ public class AceReaderTest extends TestCase {
 	private boolean checkDocument() {
 		boolean documentEqual = true;
 
-		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jules.types.ace.Document.type);
-		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jules.types.ace.Document.type);
+		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jcore.types.ace.Document.type);
+		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jcore.types.ace.Document.type);
 
-		de.julielab.jules.types.ace.Document aceReaderDocument = (de.julielab.jules.types.ace.Document) aceReaderIterator
+		de.julielab.jcore.types.ace.Document aceReaderDocument = (de.julielab.jcore.types.ace.Document) aceReaderIterator
 				.next();
-		de.julielab.jules.types.ace.Document testReaderDocument = (de.julielab.jules.types.ace.Document) testReaderIterator
+		de.julielab.jcore.types.ace.Document testReaderDocument = (de.julielab.jcore.types.ace.Document) testReaderIterator
 				.next();
 
 		if (!(aceReaderDocument.getDocid().equals(testReaderDocument.getDocid()))) {
@@ -590,9 +590,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderEventFSArray = testReaderDocument.getEvents();
 
 		for (int i = 0; i < aceReaderEventFSArray.size(); i++) {
-			de.julielab.jules.types.ace.Event aceReaderEvent = (de.julielab.jules.types.ace.Event) aceReaderEventFSArray
+			de.julielab.jcore.types.ace.Event aceReaderEvent = (de.julielab.jcore.types.ace.Event) aceReaderEventFSArray
 					.get(i);
-			de.julielab.jules.types.ace.Event testReaderEvent = (de.julielab.jules.types.ace.Event) testReaderEventFSArray
+			de.julielab.jcore.types.ace.Event testReaderEvent = (de.julielab.jcore.types.ace.Event) testReaderEventFSArray
 					.get(i);
 
 			if (!(aceReaderEvent.getId().equals(testReaderEvent.getId()))) {
@@ -662,9 +662,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderEventMentionFSArray = testReaderEvent.getMentions();
 
 		for (int i = 0; i < aceReaderEventMentionFSArray.size(); i++) {
-			de.julielab.jules.types.ace.EventMention aceReaderEventMention = (de.julielab.jules.types.ace.EventMention) aceReaderEventMentionFSArray
+			de.julielab.jcore.types.ace.EventMention aceReaderEventMention = (de.julielab.jcore.types.ace.EventMention) aceReaderEventMentionFSArray
 					.get(i);
-			de.julielab.jules.types.ace.EventMention testReaderEventMention = (de.julielab.jules.types.ace.EventMention) testReaderEventMentionFSArray
+			de.julielab.jcore.types.ace.EventMention testReaderEventMention = (de.julielab.jcore.types.ace.EventMention) testReaderEventMentionFSArray
 					.get(i);
 
 			if (!(aceReaderEventMention.getId().equals(testReaderEventMention.getId()))) {
@@ -724,9 +724,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderEventMentionArgumentFSArray = testReaderEventMention.getArguments();
 
 		for (int i = 0; i < aceReaderEventMentionArgumentFSArray.size(); i++) {
-			de.julielab.jules.types.ace.EventMentionArgument aceReaderEventMentionArgument = (de.julielab.jules.types.ace.EventMentionArgument) aceReaderEventMentionArgumentFSArray
+			de.julielab.jcore.types.ace.EventMentionArgument aceReaderEventMentionArgument = (de.julielab.jcore.types.ace.EventMentionArgument) aceReaderEventMentionArgumentFSArray
 					.get(i);
-			de.julielab.jules.types.ace.EventMentionArgument testReaderEventMentionArgument = (de.julielab.jules.types.ace.EventMentionArgument) testReaderEventMentionArgumentFSArray
+			de.julielab.jcore.types.ace.EventMentionArgument testReaderEventMentionArgument = (de.julielab.jcore.types.ace.EventMentionArgument) testReaderEventMentionArgumentFSArray
 					.get(i);
 
 			if (!(aceReaderEventMentionArgument.getAce_role().equals(testReaderEventMentionArgument.getAce_role()))) {
@@ -761,9 +761,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderEventArgumentFSArray = testReaderEvent.getArguments();
 
 		for (int i = 0; i < aceReaderEventArgumentFSArray.size(); i++) {
-			de.julielab.jules.types.ace.EventArgument aceReaderEventArgument = (de.julielab.jules.types.ace.EventArgument) aceReaderEventArgumentFSArray
+			de.julielab.jcore.types.ace.EventArgument aceReaderEventArgument = (de.julielab.jcore.types.ace.EventArgument) aceReaderEventArgumentFSArray
 					.get(i);
-			de.julielab.jules.types.ace.EventArgument testReaderEventArgument = (de.julielab.jules.types.ace.EventArgument) testReaderEventArgumentFSArray
+			de.julielab.jcore.types.ace.EventArgument testReaderEventArgument = (de.julielab.jcore.types.ace.EventArgument) testReaderEventArgumentFSArray
 					.get(i);
 
 			if (!(aceReaderEventArgument.getAce_role().equals(testReaderEventArgument.getAce_role()))) {
@@ -788,9 +788,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderRelationFSArray = testReaderDocument.getRelations();
 
 		for (int i = 0; i < aceReaderRelationFSArray.size(); i++) {
-			de.julielab.jules.types.ace.Relation aceReaderRelation = (de.julielab.jules.types.ace.Relation) aceReaderRelationFSArray
+			de.julielab.jcore.types.ace.Relation aceReaderRelation = (de.julielab.jcore.types.ace.Relation) aceReaderRelationFSArray
 					.get(i);
-			de.julielab.jules.types.ace.Relation testReaderRelation = (de.julielab.jules.types.ace.Relation) testReaderRelationFSArray
+			de.julielab.jcore.types.ace.Relation testReaderRelation = (de.julielab.jcore.types.ace.Relation) testReaderRelationFSArray
 					.get(i);
 
 			if (!(aceReaderRelation.getId().equals(testReaderRelation.getId()))) {
@@ -851,9 +851,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderRelationMentionFSArray = testReaderRelation.getMentions();
 
 		for (int i = 0; i < aceReaderRelationMentionFSArray.size(); i++) {
-			de.julielab.jules.types.ace.RelationMention aceReaderRelationMention = (de.julielab.jules.types.ace.RelationMention) aceReaderRelationMentionFSArray
+			de.julielab.jcore.types.ace.RelationMention aceReaderRelationMention = (de.julielab.jcore.types.ace.RelationMention) aceReaderRelationMentionFSArray
 					.get(i);
-			de.julielab.jules.types.ace.RelationMention testReaderRelationMention = (de.julielab.jules.types.ace.RelationMention) testReaderRelationMentionFSArray
+			de.julielab.jcore.types.ace.RelationMention testReaderRelationMention = (de.julielab.jcore.types.ace.RelationMention) testReaderRelationMentionFSArray
 					.get(i);
 
 			if (!(aceReaderRelationMention.getId().equals(testReaderRelationMention.getId()))) {
@@ -907,9 +907,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderRelationMentionArgumentFSArray = testReaderRelationMention.getArguments();
 
 		for (int i = 0; i < aceReaderRelationMentionArgumentFSArray.size(); i++) {
-			de.julielab.jules.types.ace.RelationMentionArgument aceReaderRelationMentionArgument = (de.julielab.jules.types.ace.RelationMentionArgument) aceReaderRelationMentionArgumentFSArray
+			de.julielab.jcore.types.ace.RelationMentionArgument aceReaderRelationMentionArgument = (de.julielab.jcore.types.ace.RelationMentionArgument) aceReaderRelationMentionArgumentFSArray
 					.get(i);
-			de.julielab.jules.types.ace.RelationMentionArgument testReaderRelationMentionArgument = (de.julielab.jules.types.ace.RelationMentionArgument) testReaderRelationMentionArgumentFSArray
+			de.julielab.jcore.types.ace.RelationMentionArgument testReaderRelationMentionArgument = (de.julielab.jcore.types.ace.RelationMentionArgument) testReaderRelationMentionArgumentFSArray
 					.get(i);
 
 			if (!(aceReaderRelationMentionArgument.getRefid().equals(testReaderRelationMentionArgument.getRefid()))) {
@@ -946,9 +946,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderRelationArgumentFSArray = testReaderRelation.getArguments();
 
 		for (int i = 0; i < aceReaderRelationArgumentFSArray.size(); i++) {
-			de.julielab.jules.types.ace.RelationArgument aceReaderRelationArgument = (de.julielab.jules.types.ace.RelationArgument) aceReaderRelationArgumentFSArray
+			de.julielab.jcore.types.ace.RelationArgument aceReaderRelationArgument = (de.julielab.jcore.types.ace.RelationArgument) aceReaderRelationArgumentFSArray
 					.get(i);
-			de.julielab.jules.types.ace.RelationArgument testReaderRelationArgument = (de.julielab.jules.types.ace.RelationArgument) testReaderRelationArgumentFSArray
+			de.julielab.jcore.types.ace.RelationArgument testReaderRelationArgument = (de.julielab.jcore.types.ace.RelationArgument) testReaderRelationArgumentFSArray
 					.get(i);
 
 			if (!(aceReaderRelationArgument.getAce_role().equals(testReaderRelationArgument.getAce_role()))) {
@@ -973,9 +973,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderTimex2FSArray = testReaderDocument.getTimex2();
 
 		for (int i = 0; i < aceReaderTimex2FSArray.size(); i++) {
-			de.julielab.jules.types.ace.Timex2 aceReaderTimex2 = (de.julielab.jules.types.ace.Timex2) aceReaderTimex2FSArray
+			de.julielab.jcore.types.ace.Timex2 aceReaderTimex2 = (de.julielab.jcore.types.ace.Timex2) aceReaderTimex2FSArray
 					.get(i);
-			de.julielab.jules.types.ace.Timex2 testReaderTimex2 = (de.julielab.jules.types.ace.Timex2) testReaderTimex2FSArray
+			de.julielab.jcore.types.ace.Timex2 testReaderTimex2 = (de.julielab.jcore.types.ace.Timex2) testReaderTimex2FSArray
 					.get(i);
 
 			if (!(aceReaderTimex2.getId().equals(testReaderTimex2.getId()))) {
@@ -1006,9 +1006,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderTimex2MentionFSArray = testReaderTimex2.getMentions();
 
 		for (int i = 0; i < aceReaderTimex2MentionFSArray.size(); i++) {
-			de.julielab.jules.types.ace.Timex2Mention aceReaderTimex2Mention = (de.julielab.jules.types.ace.Timex2Mention) aceReaderTimex2MentionFSArray
+			de.julielab.jcore.types.ace.Timex2Mention aceReaderTimex2Mention = (de.julielab.jcore.types.ace.Timex2Mention) aceReaderTimex2MentionFSArray
 					.get(i);
-			de.julielab.jules.types.ace.Timex2Mention testReaderTimex2Mention = (de.julielab.jules.types.ace.Timex2Mention) testReaderTimex2MentionFSArray
+			de.julielab.jcore.types.ace.Timex2Mention testReaderTimex2Mention = (de.julielab.jcore.types.ace.Timex2Mention) testReaderTimex2MentionFSArray
 					.get(i);
 
 			if (!(aceReaderTimex2Mention.getId().equals(testReaderTimex2Mention.getId()))) {
@@ -1038,9 +1038,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderValueFSArray = testReaderDocument.getValues();
 
 		for (int i = 0; i < aceReaderValueFSArray.size(); i++) {
-			de.julielab.jules.types.ace.Value aceReaderValue = (de.julielab.jules.types.ace.Value) aceReaderValueFSArray
+			de.julielab.jcore.types.ace.Value aceReaderValue = (de.julielab.jcore.types.ace.Value) aceReaderValueFSArray
 					.get(i);
-			de.julielab.jules.types.ace.Value testReaderValue = (de.julielab.jules.types.ace.Value) testReaderValueFSArray
+			de.julielab.jcore.types.ace.Value testReaderValue = (de.julielab.jcore.types.ace.Value) testReaderValueFSArray
 					.get(i);
 
 			if (!(aceReaderValue.getAce_type().equals(testReaderValue.getAce_type()))) {
@@ -1081,9 +1081,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderValueMentionFSArray = testReaderValue.getMentions();
 
 		for (int i = 0; i < aceReaderValueMentionFSArray.size(); i++) {
-			de.julielab.jules.types.ace.ValueMention aceReaderValueMention = (de.julielab.jules.types.ace.ValueMention) aceReaderValueMentionFSArray
+			de.julielab.jcore.types.ace.ValueMention aceReaderValueMention = (de.julielab.jcore.types.ace.ValueMention) aceReaderValueMentionFSArray
 					.get(i);
-			de.julielab.jules.types.ace.ValueMention testReaderValueMention = (de.julielab.jules.types.ace.ValueMention) testReaderValueMentionFSArray
+			de.julielab.jcore.types.ace.ValueMention testReaderValueMention = (de.julielab.jcore.types.ace.ValueMention) testReaderValueMentionFSArray
 					.get(i);
 
 			if (!(aceReaderValueMention.getId().equals(testReaderValueMention.getId()))) {
@@ -1110,14 +1110,14 @@ public class AceReaderTest extends TestCase {
 	private boolean checkEntities() {
 		boolean entityEqual = true;
 
-		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jules.types.ace.Entity.type);
-		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jules.types.ace.Entity.type);
+		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jcore.types.ace.Entity.type);
+		Iterator testReaderIterator = getTypeIterator(testReaderCas, de.julielab.jcore.types.ace.Entity.type);
 
 		try {
 			while (aceReaderIterator.hasNext()) {
-				de.julielab.jules.types.ace.Entity aceReaderEntity = (de.julielab.jules.types.ace.Entity) aceReaderIterator
+				de.julielab.jcore.types.ace.Entity aceReaderEntity = (de.julielab.jcore.types.ace.Entity) aceReaderIterator
 						.next();
-				de.julielab.jules.types.ace.Entity testReaderEntity = (de.julielab.jules.types.ace.Entity) testReaderIterator
+				de.julielab.jcore.types.ace.Entity testReaderEntity = (de.julielab.jcore.types.ace.Entity) testReaderIterator
 						.next();
 
 				// It is assumed, that both of the iterators contain the enti-
@@ -1196,9 +1196,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderEntityAttributeFSArray = testReaderEntity.getEntity_attributes();
 
 		for (int i = 0; i < aceReaderEntityAttributeFSArray.size(); i++) {
-			de.julielab.jules.types.ace.EntityAttribute aceReaderEntityAttribute = (de.julielab.jules.types.ace.EntityAttribute) aceReaderEntityAttributeFSArray
+			de.julielab.jcore.types.ace.EntityAttribute aceReaderEntityAttribute = (de.julielab.jcore.types.ace.EntityAttribute) aceReaderEntityAttributeFSArray
 					.get(i);
-			de.julielab.jules.types.ace.EntityAttribute testReaderEntityAttribute = (de.julielab.jules.types.ace.EntityAttribute) testReaderEntityAttributeFSArray
+			de.julielab.jcore.types.ace.EntityAttribute testReaderEntityAttribute = (de.julielab.jcore.types.ace.EntityAttribute) testReaderEntityAttributeFSArray
 					.get(i);
 
 			if (!(aceReaderEntityAttribute.getNames() == null) && !(testReaderEntityAttribute.getNames() == null)) {
@@ -1229,9 +1229,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderEntityAttributesNamesFSArray = testReaderEntityAttribute.getNames();
 
 		for (int i = 0; i < aceReaderEntityAttributesNamesFSArray.size(); i++) {
-			de.julielab.jules.types.ace.Name aceReaderEntityAttributeName = (de.julielab.jules.types.ace.Name) aceReaderEntityAttributesNamesFSArray
+			de.julielab.jcore.types.ace.Name aceReaderEntityAttributeName = (de.julielab.jcore.types.ace.Name) aceReaderEntityAttributesNamesFSArray
 					.get(i);
-			de.julielab.jules.types.ace.Name testReaderEntityAttributeName = (de.julielab.jules.types.ace.Name) testReaderEntityAttributesNamesFSArray
+			de.julielab.jcore.types.ace.Name testReaderEntityAttributeName = (de.julielab.jcore.types.ace.Name) testReaderEntityAttributesNamesFSArray
 					.get(i);
 
 			if (!(aceReaderEntityAttributeName.getName().equals(testReaderEntityAttributeName.getName()))) {
@@ -1261,9 +1261,9 @@ public class AceReaderTest extends TestCase {
 		FSArray testReaderEntityMentionFSArray = testReaderEntity.getEntity_mentions();
 
 		for (int i = 0; i < aceReaderEntityMentionFSArray.size(); i++) {
-			de.julielab.jules.types.ace.EntityMention aceReaderEntityMention = (de.julielab.jules.types.ace.EntityMention) aceReaderEntityMentionFSArray
+			de.julielab.jcore.types.ace.EntityMention aceReaderEntityMention = (de.julielab.jcore.types.ace.EntityMention) aceReaderEntityMentionFSArray
 					.get(i);
-			de.julielab.jules.types.ace.EntityMention testReaderEntityMention = (de.julielab.jules.types.ace.EntityMention) testReaderEntityMentionFSArray
+			de.julielab.jcore.types.ace.EntityMention testReaderEntityMention = (de.julielab.jcore.types.ace.EntityMention) testReaderEntityMentionFSArray
 					.get(i);
 
 			if (!(aceReaderEntityMention.getId().equals(testReaderEntityMention.getId()))) {
@@ -1324,7 +1324,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildSourceFile(JCas jcas) throws SAXException, IOException, ParserConfigurationException {
-		de.julielab.jules.types.ace.SourceFile sourceFile = new de.julielab.jules.types.ace.SourceFile(jcas);
+		de.julielab.jcore.types.ace.SourceFile sourceFile = new de.julielab.jcore.types.ace.SourceFile(jcas);
 
 		sourceFile.setUri("XIN_ENG_20030624.0085.sgm");
 
@@ -1351,7 +1351,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildDocument(JCas jcas, SourceFile sourceFile) {
-		de.julielab.jules.types.ace.Document document = new de.julielab.jules.types.ace.Document(jcas);
+		de.julielab.jcore.types.ace.Document document = new de.julielab.jcore.types.ace.Document(jcas);
 		document.setDocid("XIN_ENG_20030624.0085");
 		buildEntities(jcas, document);
 		buildValues(jcas, document);
@@ -1389,7 +1389,7 @@ public class AceReaderTest extends TestCase {
 	private void buildJulesEventArgs(JCas jcas, Transaction event1) {
 		System.out.println("CALL buildJulesEventArgs()");
 
-		de.julielab.jules.types.ArgumentMention eventArg1 = new de.julielab.jules.types.ArgumentMention(jcas);
+		de.julielab.jcore.types.ArgumentMention eventArg1 = new de.julielab.jcore.types.ArgumentMention(jcas);
 		eventArg1.setRef(entity1_1);
 
 		// System.out.println("MENTION: " + eventArg1.getMention().toString());
@@ -1399,7 +1399,7 @@ public class AceReaderTest extends TestCase {
 		eventArg1.setEnd(767);
 		eventArg1.addToIndexes();
 
-		de.julielab.jules.types.ArgumentMention eventArg2 = new de.julielab.jules.types.ArgumentMention(jcas);
+		de.julielab.jcore.types.ArgumentMention eventArg2 = new de.julielab.jcore.types.ArgumentMention(jcas);
 		eventArg2.setRef(entity2_1);
 		eventArg2.setRole("Recipient");
 		eventArg2.setBegin(773);
@@ -1577,7 +1577,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildEvents(JCas jcas, Document document) {
-		de.julielab.jules.types.ace.Event event = new de.julielab.jules.types.ace.Event(jcas);
+		de.julielab.jcore.types.ace.Event event = new de.julielab.jcore.types.ace.Event(jcas);
 
 		event.setGenericity("Specific");
 		event.setModality("Asserted");
@@ -1598,19 +1598,19 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildEventMentions(JCas jcas, Event event) {
-		de.julielab.jules.types.ace.EventMention eventMention = new de.julielab.jules.types.ace.EventMention(jcas);
+		de.julielab.jcore.types.ace.EventMention eventMention = new de.julielab.jcore.types.ace.EventMention(jcas);
 		eventMention.setId("XIN_ENG_20030405.0080-EV2-1");
 		eventMention.setBegin(625);
 		eventMention.setEnd(854);
 		eventMention.setEvent_ref(event);
 
-		de.julielab.jules.types.ace.LDC_Scope ldcScope = new de.julielab.jules.types.ace.LDC_Scope(jcas);
+		de.julielab.jcore.types.ace.LDC_Scope ldcScope = new de.julielab.jcore.types.ace.LDC_Scope(jcas);
 		ldcScope.setBegin(625);
 		ldcScope.setEnd(854);
 		ldcScope.addToIndexes();
 		eventMention.setLdc_scope(ldcScope);
 
-		de.julielab.jules.types.ace.Anchor anchor = new de.julielab.jules.types.ace.Anchor(jcas);
+		de.julielab.jcore.types.ace.Anchor anchor = new de.julielab.jcore.types.ace.Anchor(jcas);
 		anchor.setBegin(663);
 		anchor.setEnd(667);
 		anchor.addToIndexes();
@@ -1627,7 +1627,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildEventMentionArguments(JCas jcas, EventMention eventMention) {
-		de.julielab.jules.types.ace.EventMentionArgument eventMentionArgument1 = new de.julielab.jules.types.ace.EventMentionArgument(
+		de.julielab.jcore.types.ace.EventMentionArgument eventMentionArgument1 = new de.julielab.jcore.types.ace.EventMentionArgument(
 				jcas);
 		eventMentionArgument1.setAce_role("Recipient");
 		eventMentionArgument1.setRefid("XIN_ENG_20030624.0085-E1-4");
@@ -1635,7 +1635,7 @@ public class AceReaderTest extends TestCase {
 		eventMentionArgument1.setEnd(767);
 		eventMentionArgument1.addToIndexes();
 
-		de.julielab.jules.types.ace.EventMentionArgument eventMentionArgument2 = new de.julielab.jules.types.ace.EventMentionArgument(
+		de.julielab.jcore.types.ace.EventMentionArgument eventMentionArgument2 = new de.julielab.jcore.types.ace.EventMentionArgument(
 				jcas);
 		eventMentionArgument2.setAce_role("Recipient");
 		eventMentionArgument2.setRefid("XIN_ENG_20030624.0085-E11-2");
@@ -1652,12 +1652,12 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildEventArguments(JCas jcas, Event event) {
-		de.julielab.jules.types.ace.EventArgument eventArgument1 = new de.julielab.jules.types.ace.EventArgument(jcas);
+		de.julielab.jcore.types.ace.EventArgument eventArgument1 = new de.julielab.jcore.types.ace.EventArgument(jcas);
 		eventArgument1.setAce_role("Recipient");
 		eventArgument1.setRefid("XIN_ENG_20030405.0080-E1");
 		eventArgument1.addToIndexes();
 
-		de.julielab.jules.types.ace.EventArgument eventArgument2 = new de.julielab.jules.types.ace.EventArgument(jcas);
+		de.julielab.jcore.types.ace.EventArgument eventArgument2 = new de.julielab.jcore.types.ace.EventArgument(jcas);
 		eventArgument2.setAce_role("Recipient");
 		eventArgument2.setRefid("XIN_ENG_20030405.0080-E11");
 		eventArgument2.addToIndexes();
@@ -1671,7 +1671,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildRelations(JCas jcas, Document document) {
-		de.julielab.jules.types.ace.Relation relation1 = new de.julielab.jules.types.ace.Relation(jcas);
+		de.julielab.jcore.types.ace.Relation relation1 = new de.julielab.jcore.types.ace.Relation(jcas);
 		relation1.setModality("Asserted");
 		relation1.setTense("Unspecified");
 		relation1.setAce_type("PART-WHOLE");
@@ -1681,7 +1681,7 @@ public class AceReaderTest extends TestCase {
 		buildRelationMentions1(jcas, relation1);
 		relation1.addToIndexes();
 
-		de.julielab.jules.types.ace.Relation relation2 = new de.julielab.jules.types.ace.Relation(jcas);
+		de.julielab.jcore.types.ace.Relation relation2 = new de.julielab.jcore.types.ace.Relation(jcas);
 		relation2.setModality("Asserted");
 		relation2.setTense("Unspecified");
 		relation2.setAce_type("PART-WHOLE");
@@ -1700,7 +1700,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildRelationMentions2(JCas jcas, Relation relation2) {
-		de.julielab.jules.types.ace.RelationMention relationMention2_1 = new de.julielab.jules.types.ace.RelationMention(
+		de.julielab.jcore.types.ace.RelationMention relationMention2_1 = new de.julielab.jcore.types.ace.RelationMention(
 				jcas);
 		relationMention2_1.setLexical_condition("Preposition");
 		relationMention2_1.setId("XIN_ENG_20030624.0085-R8-1");
@@ -1710,7 +1710,7 @@ public class AceReaderTest extends TestCase {
 		buildRelationMentionArguments2_1(jcas, relationMention2_1);
 		relationMention2_1.addToIndexes();
 
-		de.julielab.jules.types.ace.RelationMention relationMention2_2 = new de.julielab.jules.types.ace.RelationMention(
+		de.julielab.jcore.types.ace.RelationMention relationMention2_2 = new de.julielab.jcore.types.ace.RelationMention(
 				jcas);
 		relationMention2_2.setLexical_condition("Preposition");
 		relationMention2_2.setId("XIN_ENG_20030624.0085-R8-2");
@@ -1729,7 +1729,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildRelationMentionArgument2_2(JCas jcas, RelationMention relationMention2_2) {
-		de.julielab.jules.types.ace.RelationMentionArgument argument1 = new de.julielab.jules.types.ace.RelationMentionArgument(
+		de.julielab.jcore.types.ace.RelationMentionArgument argument1 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument1.setAce_role("Arg-2");
 		argument1.setRefid("XIN_ENG_20030624.0085-E1-4");
@@ -1737,7 +1737,7 @@ public class AceReaderTest extends TestCase {
 		argument1.setEnd(616);
 		argument1.addToIndexes();
 
-		de.julielab.jules.types.ace.RelationMentionArgument argument2 = new de.julielab.jules.types.ace.RelationMentionArgument(
+		de.julielab.jcore.types.ace.RelationMentionArgument argument2 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument2.setAce_role("Arg-1");
 		argument2.setRefid("XIN_ENG_20030624.0085-E11-5");
@@ -1754,7 +1754,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildRelationMentionArguments2_1(JCas jcas, RelationMention relationMention1) {
-		de.julielab.jules.types.ace.RelationMentionArgument argument1 = new de.julielab.jules.types.ace.RelationMentionArgument(
+		de.julielab.jcore.types.ace.RelationMentionArgument argument1 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument1.setAce_role("Arg-2");
 		argument1.setRefid("XIN_ENG_20030624.0085-E1-34");
@@ -1762,7 +1762,7 @@ public class AceReaderTest extends TestCase {
 		argument1.setEnd(579);
 		argument1.addToIndexes();
 
-		de.julielab.jules.types.ace.RelationMentionArgument argument2 = new de.julielab.jules.types.ace.RelationMentionArgument(
+		de.julielab.jcore.types.ace.RelationMentionArgument argument2 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument2.setAce_role("Arg-1");
 		argument2.setRefid("XIN_ENG_20030624.0085-E11-2");
@@ -1779,12 +1779,12 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildRelationArguments2(JCas jcas, Relation relation2) {
-		de.julielab.jules.types.ace.RelationArgument argument1 = new de.julielab.jules.types.ace.RelationArgument(jcas);
+		de.julielab.jcore.types.ace.RelationArgument argument1 = new de.julielab.jcore.types.ace.RelationArgument(jcas);
 		argument1.setAce_role("Arg-2");
 		argument1.setRefid("XIN_ENG_20030624.0085-E1");
 		argument1.addToIndexes();
 
-		de.julielab.jules.types.ace.RelationArgument argument2 = new de.julielab.jules.types.ace.RelationArgument(jcas);
+		de.julielab.jcore.types.ace.RelationArgument argument2 = new de.julielab.jcore.types.ace.RelationArgument(jcas);
 		argument2.setAce_role("Arg-1");
 		argument2.setRefid("XIN_ENG_20030624.0085-E11");
 
@@ -1797,7 +1797,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildRelationMentions1(JCas jcas, Relation relation) {
-		de.julielab.jules.types.ace.RelationMention relationMention1 = new de.julielab.jules.types.ace.RelationMention(
+		de.julielab.jcore.types.ace.RelationMention relationMention1 = new de.julielab.jcore.types.ace.RelationMention(
 				jcas);
 		relationMention1.setLexical_condition("Preposition");
 		relationMention1.setId("XIN_ENG_20030624.0085-R7-1");
@@ -1807,7 +1807,7 @@ public class AceReaderTest extends TestCase {
 		buildRelationMentionArguments1_1(jcas, relationMention1);
 		relationMention1.addToIndexes();
 
-		de.julielab.jules.types.ace.RelationMention relationMention2 = new de.julielab.jules.types.ace.RelationMention(
+		de.julielab.jcore.types.ace.RelationMention relationMention2 = new de.julielab.jcore.types.ace.RelationMention(
 				jcas);
 		relationMention2.setLexical_condition("Preposition");
 		relationMention2.setId("XIN_ENG_20030624.0085-R7-2");
@@ -1826,7 +1826,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildRelationMentionArguments1_2(JCas jcas, RelationMention relationMention2) {
-		de.julielab.jules.types.ace.RelationMentionArgument argument1 = new de.julielab.jules.types.ace.RelationMentionArgument(
+		de.julielab.jcore.types.ace.RelationMentionArgument argument1 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument1.setAce_role("Arg-1");
 		argument1.setRefid("XIN_ENG_20030624.0085-E1-4");
@@ -1834,7 +1834,7 @@ public class AceReaderTest extends TestCase {
 		argument1.setEnd(616);
 		argument1.addToIndexes();
 
-		de.julielab.jules.types.ace.RelationMentionArgument argument2 = new de.julielab.jules.types.ace.RelationMentionArgument(
+		de.julielab.jcore.types.ace.RelationMentionArgument argument2 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument2.setAce_role("Arg-2");
 		argument2.setRefid("XIN_ENG_20030624.0085-E11-5");
@@ -1851,7 +1851,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildRelationMentionArguments1_1(JCas jcas, RelationMention relationMention1) {
-		de.julielab.jules.types.ace.RelationMentionArgument argument1 = new de.julielab.jules.types.ace.RelationMentionArgument(
+		de.julielab.jcore.types.ace.RelationMentionArgument argument1 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument1.setAce_role("Arg-1");
 		argument1.setRefid("XIN_ENG_20030624.0085-E1-34");
@@ -1859,7 +1859,7 @@ public class AceReaderTest extends TestCase {
 		argument1.setEnd(579);
 		argument1.addToIndexes();
 
-		de.julielab.jules.types.ace.RelationMentionArgument argument2 = new de.julielab.jules.types.ace.RelationMentionArgument(
+		de.julielab.jcore.types.ace.RelationMentionArgument argument2 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument2.setAce_role("Arg-2");
 		argument2.setRefid("XIN_ENG_20030624.0085-E11-2");
@@ -1876,12 +1876,12 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildRelationAgruments1(JCas jcas, Relation relation) {
-		de.julielab.jules.types.ace.RelationArgument argument1 = new de.julielab.jules.types.ace.RelationArgument(jcas);
+		de.julielab.jcore.types.ace.RelationArgument argument1 = new de.julielab.jcore.types.ace.RelationArgument(jcas);
 		argument1.setAce_role("Arg-1");
 		argument1.setRefid("XIN_ENG_20030624.0085-E1");
 		argument1.addToIndexes();
 
-		de.julielab.jules.types.ace.RelationArgument argument2 = new de.julielab.jules.types.ace.RelationArgument(jcas);
+		de.julielab.jcore.types.ace.RelationArgument argument2 = new de.julielab.jcore.types.ace.RelationArgument(jcas);
 		argument2.setAce_role("Arg-2");
 		argument2.setRefid("XIN_ENG_20030624.0085-E11");
 		argument2.addToIndexes();
@@ -1895,11 +1895,11 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildTimex2(JCas jcas, Document document) {
-		de.julielab.jules.types.ace.Timex2 timex2_1 = new de.julielab.jules.types.ace.Timex2(jcas);
+		de.julielab.jcore.types.ace.Timex2 timex2_1 = new de.julielab.jcore.types.ace.Timex2(jcas);
 		timex2_1.setId("XIN_ENG_20030624.0085-T4");
 		buildTimex2Mentions1(jcas, timex2_1);
 
-		de.julielab.jules.types.ace.Timex2 timex2_2 = new de.julielab.jules.types.ace.Timex2(jcas);
+		de.julielab.jcore.types.ace.Timex2 timex2_2 = new de.julielab.jcore.types.ace.Timex2(jcas);
 		timex2_2.setId("XIN_ENG_20030624.0085-T8");
 		buildTimex2Mentions2(jcas, timex2_2);
 
@@ -1912,7 +1912,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildTimex2Mentions2(JCas jcas, Timex2 timex2_2) {
-		de.julielab.jules.types.ace.Timex2Mention timex2Mention = new de.julielab.jules.types.ace.Timex2Mention(jcas);
+		de.julielab.jcore.types.ace.Timex2Mention timex2Mention = new de.julielab.jcore.types.ace.Timex2Mention(jcas);
 		timex2Mention.setId("XIN_ENG_20030624.0085-T8-1");
 		timex2Mention.setBegin(1327);
 		timex2Mention.setEnd(1330);
@@ -1926,7 +1926,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildTimex2Mentions1(JCas jcas, Timex2 timex2_1) {
-		de.julielab.jules.types.ace.Timex2Mention timex2Mention = new de.julielab.jules.types.ace.Timex2Mention(jcas);
+		de.julielab.jcore.types.ace.Timex2Mention timex2Mention = new de.julielab.jcore.types.ace.Timex2Mention(jcas);
 		timex2Mention.setId("XIN_ENG_20030624.0085-T4-1");
 		timex2Mention.setBegin(327);
 		timex2Mention.setEnd(332);
@@ -1940,14 +1940,14 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildValues(JCas jcas, Document document) {
-		de.julielab.jules.types.ace.Value value1 = new de.julielab.jules.types.ace.Value(jcas);
+		de.julielab.jcore.types.ace.Value value1 = new de.julielab.jcore.types.ace.Value(jcas);
 		value1.setAce_type("Numeric");
 		value1.setAce_subtype("Money");
 		value1.setId("XIN_ENG_20030624.0085-V2");
 		buildValueMentions1(jcas, value1);
 		value1.addToIndexes();
 
-		de.julielab.jules.types.ace.Value value2 = new de.julielab.jules.types.ace.Value(jcas);
+		de.julielab.jcore.types.ace.Value value2 = new de.julielab.jcore.types.ace.Value(jcas);
 		value2.setAce_type("Numeric");
 		value2.setAce_subtype("Money");
 		value2.setId("XIN_ENG_20030624.0085-V3");
@@ -1963,7 +1963,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildValueMentuions2(JCas jcas, Value value2) {
-		de.julielab.jules.types.ace.ValueMention valueMention = new de.julielab.jules.types.ace.ValueMention(jcas);
+		de.julielab.jcore.types.ace.ValueMention valueMention = new de.julielab.jcore.types.ace.ValueMention(jcas);
 		valueMention.setId("XIN_ENG_20030624.0085-V3-1");
 		valueMention.setBegin(1079);
 		valueMention.setEnd(1087);
@@ -1977,7 +1977,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildValueMentions1(JCas jcas, Value value1) {
-		de.julielab.jules.types.ace.ValueMention valueMention = new de.julielab.jules.types.ace.ValueMention(jcas);
+		de.julielab.jcore.types.ace.ValueMention valueMention = new de.julielab.jcore.types.ace.ValueMention(jcas);
 		valueMention.setId("XIN_ENG_20030624.0085-V2-1");
 		valueMention.setBegin(826);
 		valueMention.setEnd(854);
@@ -1990,7 +1990,7 @@ public class AceReaderTest extends TestCase {
 	} // buildValueMentions1
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEntities(JCas jcas, de.julielab.jules.types.ace.Document document) {
+	private void buildEntities(JCas jcas, de.julielab.jcore.types.ace.Document document) {
 		Entity entity1 = new Entity(jcas);
 		entity1.setAce_class("USP");
 		entity1.setAce_type("LOC");
@@ -2025,7 +2025,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildEntityAttributes2(JCas jcas, Entity entity2) {
-		de.julielab.jules.types.ace.EntityAttribute entityAttribute = new de.julielab.jules.types.ace.EntityAttribute(
+		de.julielab.jcore.types.ace.EntityAttribute entityAttribute = new de.julielab.jcore.types.ace.EntityAttribute(
 				jcas);
 
 		buildEntityAttributeNames(jcas, entityAttribute);
@@ -2038,28 +2038,28 @@ public class AceReaderTest extends TestCase {
 	} // ofbuildEntityAttributes2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEntityAttributeNames(JCas jcas, de.julielab.jules.types.ace.EntityAttribute entityAttribute) {
+	private void buildEntityAttributeNames(JCas jcas, de.julielab.jcore.types.ace.EntityAttribute entityAttribute) {
 		FSArray nameFSArray = new FSArray(jcas, 4);
 
-		de.julielab.jules.types.ace.Name entityAttributeName1 = new de.julielab.jules.types.ace.Name(jcas);
+		de.julielab.jcore.types.ace.Name entityAttributeName1 = new de.julielab.jcore.types.ace.Name(jcas);
 		entityAttributeName1.setName("Shandong Province");
 		entityAttributeName1.setBegin(239);
 		entityAttributeName1.setEnd(255);
 		entityAttributeName1.addToIndexes();
 
-		de.julielab.jules.types.ace.Name entityAttributeName2 = new de.julielab.jules.types.ace.Name(jcas);
+		de.julielab.jcore.types.ace.Name entityAttributeName2 = new de.julielab.jcore.types.ace.Name(jcas);
 		entityAttributeName2.setName("Shandong");
 		entityAttributeName2.setBegin(394);
 		entityAttributeName2.setEnd(401);
 		entityAttributeName2.addToIndexes();
 
-		de.julielab.jules.types.ace.Name entityAttributeName3 = new de.julielab.jules.types.ace.Name(jcas);
+		de.julielab.jcore.types.ace.Name entityAttributeName3 = new de.julielab.jcore.types.ace.Name(jcas);
 		entityAttributeName3.setName("Shandong Peninsula");
 		entityAttributeName3.setBegin(562);
 		entityAttributeName3.setEnd(579);
 		entityAttributeName3.addToIndexes();
 
-		de.julielab.jules.types.ace.Name entityAttributeName4 = new de.julielab.jules.types.ace.Name(jcas);
+		de.julielab.jcore.types.ace.Name entityAttributeName4 = new de.julielab.jcore.types.ace.Name(jcas);
 		entityAttributeName4.setName("Shandong");
 		entityAttributeName4.setBegin(609);
 		entityAttributeName4.setEnd(616);
@@ -2075,7 +2075,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildEntityMentions1(JCas jcas, Entity entity) {
-		de.julielab.jules.types.ace.EntityMention entityMention1 = new de.julielab.jules.types.ace.EntityMention(jcas);
+		de.julielab.jcore.types.ace.EntityMention entityMention1 = new de.julielab.jcore.types.ace.EntityMention(jcas);
 		entityMention1.setMention_ldctype("PTV");
 		entityMention1.setMention_type("PRO");
 		entityMention1.setId("XIN_ENG_20030624.0085-E1-4");
@@ -2084,14 +2084,14 @@ public class AceReaderTest extends TestCase {
 		entityMention1.setAce_role("");
 		entityMention1.setBegin(594);
 		entityMention1.setEnd(616);
-		de.julielab.jules.types.ace.Head entityMentionHead1 = new de.julielab.jules.types.ace.Head(jcas);
+		de.julielab.jcore.types.ace.Head entityMentionHead1 = new de.julielab.jcore.types.ace.Head(jcas);
 		entityMentionHead1.setBegin(600);
 		entityMentionHead1.setEnd(604);
 		entityMentionHead1.addToIndexes();
 		entityMention1.setHead(entityMentionHead1);
 		entityMention1.addToIndexes();
 
-		de.julielab.jules.types.ace.EntityMention entityMention2 = new de.julielab.jules.types.ace.EntityMention(jcas);
+		de.julielab.jcore.types.ace.EntityMention entityMention2 = new de.julielab.jcore.types.ace.EntityMention(jcas);
 		entityMention2.setMention_ldctype("PTV");
 		entityMention2.setMention_type("PRO");
 		entityMention2.setId("XIN_ENG_20030624.0085-E1-34");
@@ -2100,7 +2100,7 @@ public class AceReaderTest extends TestCase {
 		entityMention2.setAce_role("");
 		entityMention2.setBegin(543);
 		entityMention2.setEnd(579);
-		de.julielab.jules.types.ace.Head entityMentionHead2 = new de.julielab.jules.types.ace.Head(jcas);
+		de.julielab.jcore.types.ace.Head entityMentionHead2 = new de.julielab.jcore.types.ace.Head(jcas);
 		entityMentionHead2.setBegin(549);
 		entityMentionHead2.setEnd(553);
 		entityMentionHead2.addToIndexes();
@@ -2116,7 +2116,7 @@ public class AceReaderTest extends TestCase {
 
 	/*----------------------------------------------------------------------------------------------*/
 	private void buildEntityMentions2(JCas jcas, Entity entity2) {
-		de.julielab.jules.types.ace.EntityMention entityMention1 = new de.julielab.jules.types.ace.EntityMention(jcas);
+		de.julielab.jcore.types.ace.EntityMention entityMention1 = new de.julielab.jcore.types.ace.EntityMention(jcas);
 		entityMention1.setLdcatr("FALSE");
 		entityMention1.setAce_role("LOC");
 		entityMention1.setMention_ldctype("NAM");
@@ -2125,14 +2125,14 @@ public class AceReaderTest extends TestCase {
 		entityMention1.setEntity_ref(entity2);
 		entityMention1.setBegin(558);
 		entityMention1.setEnd(579);
-		de.julielab.jules.types.ace.Head entityMentionHead1 = new de.julielab.jules.types.ace.Head(jcas);
+		de.julielab.jcore.types.ace.Head entityMentionHead1 = new de.julielab.jcore.types.ace.Head(jcas);
 		entityMentionHead1.setBegin(562);
 		entityMentionHead1.setEnd(579);
 		entityMentionHead1.addToIndexes();
 		entityMention1.setHead(entityMentionHead1);
 		entityMention1.addToIndexes();
 
-		de.julielab.jules.types.ace.EntityMention entityMention2 = new de.julielab.jules.types.ace.EntityMention(jcas);
+		de.julielab.jcore.types.ace.EntityMention entityMention2 = new de.julielab.jcore.types.ace.EntityMention(jcas);
 		entityMention2.setLdcatr("FALSE");
 		entityMention2.setAce_role("LOC");
 		entityMention2.setMention_ldctype("NAM");
@@ -2141,14 +2141,14 @@ public class AceReaderTest extends TestCase {
 		entityMention2.setEntity_ref(entity2);
 		entityMention2.setBegin(609);
 		entityMention2.setEnd(616);
-		de.julielab.jules.types.ace.Head entityMentionHead2 = new de.julielab.jules.types.ace.Head(jcas);
+		de.julielab.jcore.types.ace.Head entityMentionHead2 = new de.julielab.jcore.types.ace.Head(jcas);
 		entityMentionHead2.setBegin(609);
 		entityMentionHead2.setEnd(616);
 		entityMentionHead2.addToIndexes();
 		entityMention2.setHead(entityMentionHead2);
 		entityMention2.addToIndexes();
 
-		de.julielab.jules.types.ace.EntityMention entityMention3 = new de.julielab.jules.types.ace.EntityMention(jcas);
+		de.julielab.jcore.types.ace.EntityMention entityMention3 = new de.julielab.jcore.types.ace.EntityMention(jcas);
 		entityMention3.setLdcatr("FALSE");
 		entityMention3.setAce_role("LOC");
 		entityMention3.setMention_ldctype("NAM");
@@ -2157,14 +2157,14 @@ public class AceReaderTest extends TestCase {
 		entityMention3.setEntity_ref(entity2);
 		entityMention3.setBegin(226);
 		entityMention3.setEnd(255);
-		de.julielab.jules.types.ace.Head entityMentionHead3 = new de.julielab.jules.types.ace.Head(jcas);
+		de.julielab.jcore.types.ace.Head entityMentionHead3 = new de.julielab.jcore.types.ace.Head(jcas);
 		entityMentionHead3.setBegin(239);
 		entityMentionHead3.setEnd(255);
 		entityMentionHead3.addToIndexes();
 		entityMention3.setHead(entityMentionHead3);
 		entityMention3.addToIndexes();
 
-		de.julielab.jules.types.ace.EntityMention entityMention4 = new de.julielab.jules.types.ace.EntityMention(jcas);
+		de.julielab.jcore.types.ace.EntityMention entityMention4 = new de.julielab.jcore.types.ace.EntityMention(jcas);
 		entityMention4.setLdcatr("TRUE");
 		entityMention4.setAce_role("GPE");
 		entityMention4.setMention_ldctype("NAMPRE");
@@ -2173,7 +2173,7 @@ public class AceReaderTest extends TestCase {
 		entityMention4.setEntity_ref(entity2);
 		entityMention4.setBegin(394);
 		entityMention4.setEnd(401);
-		de.julielab.jules.types.ace.Head entityMentionHead4 = new de.julielab.jules.types.ace.Head(jcas);
+		de.julielab.jcore.types.ace.Head entityMentionHead4 = new de.julielab.jcore.types.ace.Head(jcas);
 		entityMentionHead4.setBegin(394);
 		entityMentionHead4.setEnd(401);
 		entityMentionHead4.addToIndexes();

@@ -11,7 +11,7 @@ import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.julielab.jules.types.EventTrigger;
+import de.julielab.jcore.types.EventTrigger;
 
 public class EventTriggerWriter {
 	private Writer writer;

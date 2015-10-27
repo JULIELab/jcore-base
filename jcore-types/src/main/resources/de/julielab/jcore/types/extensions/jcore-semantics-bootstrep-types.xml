@@ -9,43 +9,43 @@
   </imports>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.Ligand</name>
+      <name>de.julielab.jcore.types.bootstrep.Ligand</name>
       <description>IMR:0000965. Any ligand of a transcription
 regulator or a polymerase that is not a protein.</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.Polymerase</name>
+      <name>de.julielab.jcore.types.bootstrep.Polymerase</name>
       <description>GO:0016779. RNA or DNA polymerase, RNA or DNA
 directed</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.ProteinSubstructure</name>
+      <name>de.julielab.jcore.types.bootstrep.ProteinSubstructure</name>
       <description>A protein domain or structural motif that is part of a transcription regulator or polymerase, such as a TF DNA binding site.
 specificType: protein_substructure, unspecified</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.Regulation</name>
+      <name>de.julielab.jcore.types.bootstrep.Regulation</name>
       <description>specificType: positive, negative, unspecified</description>
-      <supertypeName>de.julielab.jules.types.BioEventMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEventMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.GeneExpression</name>
+      <name>de.julielab.jcore.types.bootstrep.GeneExpression</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEventMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEventMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.ExperimentalIntervention</name>
+      <name>de.julielab.jcore.types.bootstrep.ExperimentalIntervention</name>
       <description>subtypes: geneticModification, increase, decrease</description>
-      <supertypeName>de.julielab.jules.types.BioEventMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEventMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.RegulationOfGeneExpression</name>
+      <name>de.julielab.jcore.types.bootstrep.RegulationOfGeneExpression</name>
       <description>specificType: positive, negative, unspecified
 contains regulation of gene transcription as well</description>
-      <supertypeName>de.julielab.jules.types.BioRelationMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioRelationMention</supertypeName>
       <features>
         <featureDescription>
           <name>physicalContact</name>
@@ -55,54 +55,54 @@ contains regulation of gene transcription as well</description>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.GeneTranscription</name>
+      <name>de.julielab.jcore.types.bootstrep.GeneTranscription</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEventMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEventMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.Promoter</name>
+      <name>de.julielab.jcore.types.bootstrep.Promoter</name>
       <description>promoter region of gene</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.Mutant</name>
+      <name>de.julielab.jcore.types.bootstrep.Mutant</name>
       <description>mutated gene, strain</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.InvestigationTechnique</name>
+      <name>de.julielab.jcore.types.bootstrep.InvestigationTechnique</name>
       <description>experimental methods</description>
-      <supertypeName>de.julielab.jules.types.EntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.EntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.CellGrowthCondition</name>
+      <name>de.julielab.jcore.types.bootstrep.CellGrowthCondition</name>
       <description>growth condition of cells</description>
-      <supertypeName>de.julielab.jules.types.EntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.EntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.bootstrep.GeneRegulationTemplate</name>
+      <name>de.julielab.jcore.types.bootstrep.GeneRegulationTemplate</name>
       <description>Gene Regulation Template for BootStrep</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>relation</name>
           <description>mention of gene regulation relation</description>
-          <rangeTypeName>de.julielab.jules.types.bootstrep.RegulationOfGeneExpression</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.bootstrep.RegulationOfGeneExpression</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>ligand</name>
           <description>chemical particpating in the gene regulation process</description>
-          <rangeTypeName>de.julielab.jules.types.Chemicals</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.Chemicals</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>cellGrowthCondition</name>
           <description>cell growth condition</description>
-          <rangeTypeName>de.julielab.jules.types.bootstrep.CellGrowthCondition</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.bootstrep.CellGrowthCondition</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>investigationTechnique</name>
           <description>investigation technique for the detection of the gene regulation relation</description>
-          <rangeTypeName>de.julielab.jules.types.bootstrep.InvestigationTechnique</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.bootstrep.InvestigationTechnique</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
