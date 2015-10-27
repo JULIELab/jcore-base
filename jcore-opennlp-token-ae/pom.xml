@@ -7,8 +7,9 @@
 	<description>Wrapper for OpenNLP Tokenizer. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed is is thus compatible to other JCoRe components.</description>	
 	<parent>
 		<groupId>de.julielab</groupId>
-		<artifactId>jcore</artifactId>
-		<version>2.0.0</version>
+		<artifactId>jcore-base</artifactId>
+		<version>${jcore-version}</version>
+		<relativePath>..</relativePath>
 	</parent>		
 	<dependencies>
 		<dependency>

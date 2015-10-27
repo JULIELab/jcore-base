@@ -8,8 +8,9 @@
 
 	<parent>
 		<groupId>de.julielab</groupId>
-		<version>2.0.0</version>
-		<artifactId>jcore</artifactId>
+		<version>${jcore-version}</version>
+		<artifactId>jcore-base</artifactId>
+		<relativePath>..</relativePath>
 	</parent>
 
 	<build>

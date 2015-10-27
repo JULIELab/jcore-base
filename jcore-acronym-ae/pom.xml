@@ -11,8 +11,9 @@ Ariel S. Schwartz and Marti A. Hearst: A Simple Algorithm For Identifying Abbrev
 
   <parent>
 	<groupId>de.julielab</groupId>
-	<artifactId>jcore</artifactId>
-	<version>2.0.0</version>
+	<artifactId>jcore-base</artifactId>
+	<version>${jcore-version}</version>
+	<relativePath>..</relativePath>
   </parent>	
 	 
   <dependencies>
