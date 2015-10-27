@@ -31,7 +31,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
 import de.julielab.jcore.reader.bionlp09event.main.EventReader;
-import de.julielab.jules.types.pubmed.Header;
+import de.julielab.jcore.types.pubmed.Header;
 
 /**
  * TODO insert description

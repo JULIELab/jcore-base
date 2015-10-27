@@ -41,9 +41,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.ae.acronymtagger.main.AcronymAnnotator;
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.Acronym;
-import de.julielab.jules.types.Sentence;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.Acronym;
+import de.julielab.jcore.types.Sentence;
 
 /**
  * The AcronymAnnotatorTest class

@@ -34,12 +34,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.ae.jnet.uima.ConsistencyPreservation;
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.Annotation;
-import de.julielab.jules.types.Disease;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.Gene;
-import de.julielab.jules.types.ResourceEntry;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.Disease;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.ResourceEntry;
 
 /**
  * Please note that in the original test there were "GoodEntityMentions" and "BadEntityMentions". Both types were only
@@ -161,7 +161,7 @@ public class ConsistencyPreservationTest extends TestCase {
 		System.out.println("\n");
 
 		final TreeSet<String> entityMentionClassnames = new TreeSet<String>();
-		entityMentionClassnames.add("de.julielab.jules.types.Gene");
+		entityMentionClassnames.add("de.julielab.jcore.types.Gene");
 
 		consistencyPreservation.acroMatch(JCas, entityMentionClassnames);
 
@@ -214,7 +214,7 @@ public class ConsistencyPreservationTest extends TestCase {
 		System.out.println("CAS before: ");
 		listEntityAnnotations(JCas);
 		final TreeSet<String> entityMentionClassnames = new TreeSet<String>();
-		entityMentionClassnames.add("de.julielab.jules.types.EntityMention");
+		entityMentionClassnames.add("de.julielab.jcore.types.EntityMention");
 		consistencyPreservation.stringMatch(JCas, entityMentionClassnames, 0);
 		final ArrayList<String> expectedResults = new ArrayList<String>();
 		expectedResults.add("type a");

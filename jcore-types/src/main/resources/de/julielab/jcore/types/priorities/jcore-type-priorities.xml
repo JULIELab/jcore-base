@@ -5,21 +5,21 @@
     <version>1.0</version>
     <vendor/>
 <priorityList>
-    <type>de.julielab.jules.types.Title</type>
-    <type>de.julielab.jules.types.Sentence</type>
-    <type>de.julielab.jules.types.Token</type>
+    <type>de.julielab.jcore.types.Title</type>
+    <type>de.julielab.jcore.types.Sentence</type>
+    <type>de.julielab.jcore.types.Token</type>
   </priorityList>
   <priorityList>
-  <type>de.julielab.jules.types.AbstractText</type>
-	  <type>de.julielab.jules.types.AbstractPart</type> 
-    <type>de.julielab.jules.types.Sentence</type>
-    <type>de.julielab.jules.types.Token</type>
+  <type>de.julielab.jcore.types.AbstractText</type>
+	  <type>de.julielab.jcore.types.AbstractPart</type> 
+    <type>de.julielab.jcore.types.Sentence</type>
+    <type>de.julielab.jcore.types.Token</type>
   </priorityList>
     <priorityList>
-  <type>de.julielab.jules.types.Section</type>
-    <type>de.julielab.jules.types.Zone</type>
-	  <type>de.julielab.jules.types.Paragraph</type> 
-    <type>de.julielab.jules.types.Sentence</type>
-    <type>de.julielab.jules.types.Token</type>
+  <type>de.julielab.jcore.types.Section</type>
+    <type>de.julielab.jcore.types.Zone</type>
+	  <type>de.julielab.jcore.types.Paragraph</type> 
+    <type>de.julielab.jcore.types.Sentence</type>
+    <type>de.julielab.jcore.types.Token</type>
   </priorityList>
 </typePriorities>

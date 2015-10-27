@@ -10,14 +10,14 @@
   </imports>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.EntityMention</name>
+      <name>de.julielab.jcore.types.EntityMention</name>
       <description>(Named) EntityMention (i.e. An entity is an object or set of objects in the world. Entitiy mentions may be refrenced in a text by their name, indicated by a common noun or noun phrase, or represented by a pronoun) annotation</description>
-      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
       <features>
         <featureDescription>
           <name>head</name>
           <description>Head of an entity mention such as Northwest in the Northwest</description>
-          <rangeTypeName>de.julielab.jules.types.Annotation</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.Annotation</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>mentionLevel</name>
@@ -32,10 +32,10 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.GeneralEventMention</name>
+      <name>de.julielab.jcore.types.GeneralEventMention</name>
       <description>A super type for all event mentions. Under this type, mentions for predicate-argument relations and eventive propositional relations are found. This terminology follows section 3.1 and more especially 3.1.3 of Ekaterina Buyko's dissertation "Event Extraction from Biomedical Texts Using
 Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet/Derivate-26400/Diss2/thesis_buyko.pdf). The type system should completely follow the thesis' notion but does not due to historical reasons.</description>
-      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
       <features>
         <featureDescription>
           <name>tense</name>
@@ -51,14 +51,14 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
           <name>arguments</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.ArgumentMention</elementType>
+          <elementType>de.julielab.jcore.types.ArgumentMention</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
           <name>reorderedArguments</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.ArgumentMention</elementType>
+          <elementType>de.julielab.jcore.types.ArgumentMention</elementType>
         </featureDescription>
         <featureDescription>
           <name>polarity</name>
@@ -73,14 +73,14 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.RelationMention</name>
+      <name>de.julielab.jcore.types.RelationMention</name>
       <description>Binary Relation between Entitiy Mentions. While quite generally called "Relation", this type is commonly used for dynamic, i.e. eventive, propositional relations such as the regulation between genes.</description>
-      <supertypeName>de.julielab.jules.types.GeneralEventMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.GeneralEventMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.EventMention</name>
+      <name>de.julielab.jcore.types.EventMention</name>
       <description>This type was introduced during the participation of the BioNLP Shared Task 2009 by Ekaterina Buyko. Therefore, it mainly satisfies the requirements of the event type of this challenge. This includes the use of an "event trigger" which is not necessary for all relation types. In practice, the type is used to capture predicate-argument relations (such as binding) as well as eventive propositional relations (such as phosphorylation or up- and down-regulation). The latter category also includes events where one of the event arguments is an event itself.</description>
-      <supertypeName>de.julielab.jules.types.GeneralEventMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.GeneralEventMention</supertypeName>
       <features>
         <featureDescription>
           <name>genericity</name>
@@ -90,19 +90,19 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
         <featureDescription>
           <name>trigger</name>
           <description/>
-          <rangeTypeName>de.julielab.jules.types.EventTrigger</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.EventTrigger</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.ArgumentMention</name>
+      <name>de.julielab.jcore.types.ArgumentMention</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>ref</name>
           <description>Reference to the Annotation Object that acts as a argument here</description>
-          <rangeTypeName>de.julielab.jules.types.Annotation</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.Annotation</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>role</name>
@@ -117,14 +117,14 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Timex2Mention</name>
+      <name>de.julielab.jcore.types.Timex2Mention</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.ConceptMention</name>
+      <name>de.julielab.jcore.types.ConceptMention</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>specificType</name>
@@ -140,7 +140,7 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
           <name>resourceEntryList</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.ResourceEntry</elementType>
+          <elementType>de.julielab.jcore.types.ResourceEntry</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
@@ -151,19 +151,19 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
         <featureDescription>
           <name>likelihood</name>
           <description/>
-          <rangeTypeName>de.julielab.jules.types.LikelihoodIndicator</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.LikelihoodIndicator</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.ValueMention</name>
+      <name>de.julielab.jcore.types.ValueMention</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.EventTrigger</name>
+      <name>de.julielab.jcore.types.EventTrigger</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
       <features>
         <featureDescription>
           <name>probability</name>
@@ -183,9 +183,9 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.OntClassMention</name>
+      <name>de.julielab.jcore.types.OntClassMention</name>
       <description>ontology class mention</description>
-      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
       <features>
         <featureDescription>
           <name>ontClassId</name>
@@ -211,7 +211,7 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
           <name>matchedTokens</name>
           <description>List of tokens the ontology class mention is comprised of.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.Token</elementType>
+          <elementType>de.julielab.jcore.types.Token</elementType>
         </featureDescription>
         <featureDescription>
           <name>matchedSourceTerm</name>
@@ -221,31 +221,31 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.OntRelationMention</name>
+      <name>de.julielab.jcore.types.OntRelationMention</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>domain</name>
           <description/>
-          <rangeTypeName>de.julielab.jules.types.Annotation</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.Annotation</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>range</name>
           <description/>
-          <rangeTypeName>de.julielab.jules.types.Annotation</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.Annotation</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>domainList</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.Annotation</elementType>
+          <elementType>de.julielab.jcore.types.Annotation</elementType>
         </featureDescription>
         <featureDescription>
           <name>rangeList</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.Annotation</elementType>
+          <elementType>de.julielab.jcore.types.Annotation</elementType>
         </featureDescription>
         <featureDescription>
           <name>name</name>
@@ -270,14 +270,14 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.LikelihoodIndicator</name>
+      <name>de.julielab.jcore.types.LikelihoodIndicator</name>
       <description>This type refers to the likelihood aspect of epistemic modality. The annotation marks epistemic modal expressions used to linguistically modify the likelihood of an event or of a relation that an entity might be in. The employed likelihood scale also includes negation (0% likelihood) and assertion (100% likelihood), the latter being the default case where no explicit likelihood modifier is present in the text.</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>likelihood</name>
           <description/>
-          <rangeTypeName>de.julielab.jules.types.Likelihood</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.Likelihood</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>entityAndRelationString</name>
@@ -287,7 +287,7 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Likelihood</name>
+      <name>de.julielab.jcore.types.Likelihood</name>
       <description/>
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
@@ -318,19 +318,19 @@ Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet
       </allowedValues>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.OntClassMentionAggregate</name>
+      <name>de.julielab.jcore.types.OntClassMentionAggregate</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.OntClassMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.OntClassMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.OntClassMentionAggElement</name>
+      <name>de.julielab.jcore.types.OntClassMentionAggElement</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.OntClassMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.OntClassMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.OntClassMentionSimple</name>
+      <name>de.julielab.jcore.types.OntClassMentionSimple</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.OntClassMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.OntClassMention</supertypeName>
     </typeDescription>
   </types>
 </typeSystemDescription>

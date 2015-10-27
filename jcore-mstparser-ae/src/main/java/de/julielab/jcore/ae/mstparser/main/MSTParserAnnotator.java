@@ -43,11 +43,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jules.types.DependencyRelation;
-import de.julielab.jules.types.Header;
-import de.julielab.jules.types.POSTag;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.DependencyRelation;
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.POSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import edu.upenn.seas.mstparser.DependencyParser;
 
 /**

@@ -10,7 +10,7 @@
 </imports>
 <types>
 <typeDescription>
-<name>de.julielab.jules.types.muc7.Coref</name>
+<name>de.julielab.jcore.types.muc7.Coref</name>
 <description/>
 <supertypeName>uima.tcas.Annotation</supertypeName>
 <features>
@@ -27,7 +27,7 @@
 <featureDescription>
 <name>ref</name>
 <description/>
-<rangeTypeName>de.julielab.jules.types.muc7.Coref</rangeTypeName>
+<rangeTypeName>de.julielab.jcore.types.muc7.Coref</rangeTypeName>
 </featureDescription>
 <featureDescription>
 <name>min</name>
@@ -37,9 +37,9 @@
 </features>
 </typeDescription>
 <typeDescription>
-<name>de.julielab.jules.types.muc7.MUC7Header</name>
+<name>de.julielab.jcore.types.muc7.MUC7Header</name>
 <description>the MUC7Header has the storyID as additional type</description>
-<supertypeName>de.julielab.jules.types.Header</supertypeName>
+<supertypeName>de.julielab.jcore.types.Header</supertypeName>
 <features>
 <featureDescription>
 <name>storyID</name>
@@ -49,9 +49,9 @@
 </features>
 </typeDescription>
 <typeDescription>
-<name>de.julielab.jules.types.muc7.ENAMEX</name>
+<name>de.julielab.jcore.types.muc7.ENAMEX</name>
 <description>the ENAMAX entities that can be found in MUC7; have their particular types as attribute</description>
-<supertypeName>de.julielab.jules.types.EntityMention</supertypeName>
+<supertypeName>de.julielab.jcore.types.EntityMention</supertypeName>
 <features>
 <featureDescription>
 <name>typeOfNE</name>
@@ -66,7 +66,7 @@
 </features>
 </typeDescription>
 <typeDescription>
-<name>de.julielab.jules.types.muc7.TIMEX</name>
+<name>de.julielab.jcore.types.muc7.TIMEX</name>
 <description>the temporal entities from MUC7; their particular type is stored in the attribure</description>
 <supertypeName>uima.tcas.Annotation</supertypeName>
 <features>
@@ -88,9 +88,9 @@
       </features>
 </typeDescription>
 <typeDescription>
-<name>de.julielab.jules.types.muc7.NUMEX</name>
+<name>de.julielab.jcore.types.muc7.NUMEX</name>
 <description>the NUMEX NE in MUC7</description>
-<supertypeName>de.julielab.jules.types.EntityMention</supertypeName>
+<supertypeName>de.julielab.jcore.types.EntityMention</supertypeName>
 <features>
 <featureDescription>
 <name>min</name>

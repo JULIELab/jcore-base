@@ -52,11 +52,11 @@ import de.julielab.jcore.ae.jnet.uima.EntityAnnotator;
 import de.julielab.jcore.ae.jnet.uima.NegativeList;
 import de.julielab.jcore.ae.jnet.uima.UIMAUtils;
 import de.julielab.jnet.tagger.Unit;
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.Annotation;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 public class EntityAnnotatorTest extends TestCase {
 
@@ -323,9 +323,9 @@ public class EntityAnnotatorTest extends TestCase {
 		// within the initialize() method. In this test cast we have to build
 		// our own.
 		final HashMap<String, String> entityHashMap = new HashMap<String, String>();
-		entityHashMap.put("A", "de.julielab.jules.types.EntityMention");
-		entityHashMap.put("O", "de.julielab.jules.types.EntityMention");
-		entityHashMap.put("B", "de.julielab.jules.types.EntityMention");
+		entityHashMap.put("A", "de.julielab.jcore.types.EntityMention");
+		entityHashMap.put("O", "de.julielab.jcore.types.EntityMention");
+		entityHashMap.put("B", "de.julielab.jcore.types.EntityMention");
 
 		// use reflection to get private field
 		final Field entityMap = entityAnnotator.getClass().getDeclaredField(

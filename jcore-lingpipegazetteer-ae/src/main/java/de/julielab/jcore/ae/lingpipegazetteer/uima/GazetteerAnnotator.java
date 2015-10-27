@@ -59,9 +59,9 @@ import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.AnnotationRetrieval;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking.NormalizedString;
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.ConceptMention;
-import de.julielab.jules.types.mantra.Entity;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.ConceptMention;
+import de.julielab.jcore.types.mantra.Entity;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 
 public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
@@ -584,7 +584,7 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 					// @@ is used to separate source, cui, type(s) and group (in this order!)
 					String[] info = term.split("@@");
 					Entity newEntity = (Entity) JCoReAnnotationTools.getAnnotationByClassName(aJCas,
-							"de.julielab.jules.types.mantra.Entity");
+							"de.julielab.jcore.types.mantra.Entity");
 					newEntity.setBegin(start);
 					newEntity.setEnd(end);
 					newEntity.setComponentId(COMPONENT_ID);

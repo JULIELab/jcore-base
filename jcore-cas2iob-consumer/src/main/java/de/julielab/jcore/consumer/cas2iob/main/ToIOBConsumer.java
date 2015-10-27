@@ -46,9 +46,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.consumer.cas2iob.utils.UIMAUtils;
-import de.julielab.jules.types.Paragraph;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Paragraph;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.segmentationEvaluator.IOBToken;
 import de.julielab.segmentationEvaluator.IOToken;

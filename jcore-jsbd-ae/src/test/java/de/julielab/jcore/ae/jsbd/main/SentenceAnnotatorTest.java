@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.ae.jsbd.main.SentenceAnnotator;
 import de.julielab.jcore.ae.jsbd.types.TestScope;
-import de.julielab.jules.types.Sentence;
+import de.julielab.jcore.types.Sentence;
 
 public class SentenceAnnotatorTest {
 

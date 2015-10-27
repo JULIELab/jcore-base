@@ -13,13 +13,13 @@ import java.util.Set;
 
 import org.apache.uima.jcas.cas.FSArray;
 
-import de.julielab.jules.types.Annotation;
-import de.julielab.jules.types.ArgumentMention;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.EventMention;
-import de.julielab.jules.types.EventTrigger;
-import de.julielab.jules.types.Gene;
-import de.julielab.jules.types.Protein;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.EventTrigger;
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Protein;
 
 public class EventWriter {
 

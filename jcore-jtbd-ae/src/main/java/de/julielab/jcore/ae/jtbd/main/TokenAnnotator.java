@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
 import de.julielab.jtbd.EOSSymbols;
 import de.julielab.jtbd.Tokenizer;
 import de.julielab.jtbd.Unit;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 public class TokenAnnotator extends JCasAnnotator_ImplBase {
 

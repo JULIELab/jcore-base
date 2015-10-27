@@ -28,11 +28,11 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.xml.sax.SAXException;
 
-import de.julielab.jules.types.Header;
-import de.julielab.jules.types.muc7.Coref;
-import de.julielab.jules.types.muc7.ENAMEX;
-import de.julielab.jules.types.muc7.NUMEX;
-import de.julielab.jules.types.muc7.TIMEX;
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.muc7.Coref;
+import de.julielab.jcore.types.muc7.ENAMEX;
+import de.julielab.jcore.types.muc7.NUMEX;
+import de.julielab.jcore.types.muc7.TIMEX;
 
 public class MUC7ReaderTest extends TestCase {
 	/**

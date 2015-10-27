@@ -24,15 +24,15 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 
 import de.julielab.jcore.reader.bionlp09event.main.FormatClashException;
-import de.julielab.jules.CorefExpression;
-import de.julielab.jules.types.Annotation;
-import de.julielab.jules.types.ArgumentMention;
-import de.julielab.jules.types.CorefRelation;
-import de.julielab.jules.types.Entity;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.EventMention;
-import de.julielab.jules.types.EventTrigger;
-import de.julielab.jules.types.Gene;
+import de.julielab.jcore.CorefExpression;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.CorefRelation;
+import de.julielab.jcore.types.Entity;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.EventTrigger;
+import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.utility.JCoReTools;
 
 /**

@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.apache.uima.fit.factory.JCasFactory;
 
 import de.julielab.jcore.consumer.bionlp09event.utils.ProteinWriter;
-import de.julielab.jules.types.Gene;
+import de.julielab.jcore.types.Gene;
 
 public class ProteinWriterTest {
 

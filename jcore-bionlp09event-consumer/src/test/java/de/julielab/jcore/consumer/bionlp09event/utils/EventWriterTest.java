@@ -25,11 +25,11 @@ import de.julielab.jcore.consumer.bionlp09event.utils.EntityWriter;
 import de.julielab.jcore.consumer.bionlp09event.utils.EventTriggerWriter;
 import de.julielab.jcore.consumer.bionlp09event.utils.EventWriter;
 import de.julielab.jcore.consumer.bionlp09event.utils.ProteinWriter;
-import de.julielab.jules.types.ArgumentMention;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.EventMention;
-import de.julielab.jules.types.EventTrigger;
-import de.julielab.jules.types.Gene;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.EventTrigger;
+import de.julielab.jcore.types.Gene;
 
 
 public class EventWriterTest {

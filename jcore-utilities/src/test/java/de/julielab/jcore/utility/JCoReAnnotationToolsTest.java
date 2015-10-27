@@ -28,7 +28,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-// import de.julielab.jules.types.Annotation;
+// import de.julielab.jcore.types.Annotation;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
@@ -38,12 +38,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.utility.JCoReAnnotationTools;
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.ConceptMention;
-import de.julielab.jules.types.DocumentAnnotation;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.Gene;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.ConceptMention;
+import de.julielab.jcore.types.DocumentAnnotation;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Token;
 
 public class JCoReAnnotationToolsTest extends TestCase {
 

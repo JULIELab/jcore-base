@@ -38,8 +38,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jules.types.Gene;
-import de.julielab.jules.types.ResourceEntry;
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.ResourceEntry;
 
 /**
 <<<<<<< HEAD

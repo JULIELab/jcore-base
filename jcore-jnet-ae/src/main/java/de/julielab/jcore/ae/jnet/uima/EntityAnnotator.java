@@ -50,10 +50,10 @@ import cc.mallet.fst.CRF;
 import cc.mallet.types.Alphabet;
 import de.julielab.jnet.tagger.NETagger;
 import de.julielab.jnet.tagger.Unit;
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 
 public class EntityAnnotator extends JCasAnnotator_ImplBase {

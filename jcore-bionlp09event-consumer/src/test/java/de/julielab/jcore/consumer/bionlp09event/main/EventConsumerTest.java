@@ -27,14 +27,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.julielab.jcore.consumer.bionlp09event.main.EventConsumer;
-import de.julielab.jules.types.AbstractText;
-import de.julielab.jules.types.ArgumentMention;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.EventMention;
-import de.julielab.jules.types.EventTrigger;
-import de.julielab.jules.types.Gene;
-import de.julielab.jules.types.Title;
-import de.julielab.jules.types.pubmed.Header;
+import de.julielab.jcore.types.AbstractText;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.EventTrigger;
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Title;
+import de.julielab.jcore.types.pubmed.Header;
 
 public class EventConsumerTest {
 	private static final String EVENT_E8 = "E8	Phosphorylation:T14 Theme:T17 Site:T13";

@@ -11,9 +11,9 @@ import java.io.IOException;
 
 import org.apache.uima.jcas.JCas;
 
-import de.julielab.jules.types.AbstractText;
-import de.julielab.jules.types.Title;
-import de.julielab.jules.types.pubmed.Header;
+import de.julielab.jcore.types.AbstractText;
+import de.julielab.jcore.types.Title;
+import de.julielab.jcore.types.pubmed.Header;
 
 public class AbstractFileMapper {
 

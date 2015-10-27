@@ -6,7 +6,7 @@
   <vendor>JULIE Lab Jena, Germany</vendor>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.Annotation</name>
+      <name>de.julielab.jcore.types.Annotation</name>
       <description>The super-type for all types.</description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -28,22 +28,22 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.DiscontinuousAnnotation</name>
+      <name>de.julielab.jcore.types.DiscontinuousAnnotation</name>
       <description>Chains annotations of the same type</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>value</name>
           <description>Annotations to be chained.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.Annotation</elementType>
+          <elementType>de.julielab.jcore.types.Annotation</elementType>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.ResourceEntry</name>
+      <name>de.julielab.jcore.types.ResourceEntry</name>
       <description>The reference to an external resource</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>source</name>

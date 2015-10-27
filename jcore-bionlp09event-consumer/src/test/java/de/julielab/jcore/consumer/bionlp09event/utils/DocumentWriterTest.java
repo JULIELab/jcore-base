@@ -19,8 +19,8 @@ import org.junit.Test;
 import org.apache.uima.fit.factory.JCasFactory;
 
 import de.julielab.jcore.consumer.bionlp09event.utils.DocumentWriter;
-import de.julielab.jules.types.AbstractText;
-import de.julielab.jules.types.Title;
+import de.julielab.jcore.types.AbstractText;
+import de.julielab.jcore.types.Title;
 
 public class DocumentWriterTest {
 

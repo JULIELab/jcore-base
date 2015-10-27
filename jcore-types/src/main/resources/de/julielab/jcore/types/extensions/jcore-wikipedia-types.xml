@@ -10,7 +10,7 @@
   </imports>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.wikipedia.PageType</name>
+      <name>de.julielab.jcore.types.wikipedia.PageType</name>
       <description>Type of Wikipedia page (article, redirect, or disambiguation page)</description>
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
@@ -29,29 +29,29 @@
       </allowedValues>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.wikipedia.Descriptor</name>
+      <name>de.julielab.jcore.types.wikipedia.Descriptor</name>
       <description>Descriptor for Wikipedia pages. It covers a list of Wikipedia categories associated with the page, a list of incoming and outgoing links, and a list of associated redirects.</description>
-      <supertypeName>de.julielab.jules.types.Descriptor</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Descriptor</supertypeName>
       <features>
         <featureDescription>
           <name>categories</name>
           <description>List of Wikipedia categories associated with a Wikipedia page.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.wikipedia.Title</elementType>
+          <elementType>de.julielab.jcore.types.wikipedia.Title</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
           <name>incomingLinks</name>
           <description>List of incoming links (from other Wikipedia pages) associated with a Wikipedia page.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.wikipedia.Title</elementType>
+          <elementType>de.julielab.jcore.types.wikipedia.Title</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
           <name>outgoingLinks</name>
           <description>List of outgoing links pointing to other Wikipedia pages starting at a Wikipedia page.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.wikipedia.Title</elementType>
+          <elementType>de.julielab.jcore.types.wikipedia.Title</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
@@ -63,9 +63,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.wikipedia.Title</name>
+      <name>de.julielab.jcore.types.wikipedia.Title</name>
       <description>Combined full form and short form of the title of a Wikipedia page (the short form does not include disambiguation strings such as the expression in brackets in 'Ontologies (Informatics)').</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>name</name>
@@ -80,9 +80,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.wikipedia.Link</name>
+      <name>de.julielab.jcore.types.wikipedia.Link</name>
       <description>Link to another Wikipedia page.</description>
-      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
       <features>
         <featureDescription>
           <name>target</name>
@@ -92,9 +92,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.wikipedia.ArticleText</name>
+      <name>de.julielab.jcore.types.wikipedia.ArticleText</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.Zone</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
     </typeDescription>
   </types>
 </typeSystemDescription>

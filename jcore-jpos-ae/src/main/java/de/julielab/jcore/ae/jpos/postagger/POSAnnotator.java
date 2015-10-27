@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
 
 import de.julielab.jpos.tagger.POSTagger;
 import de.julielab.jpos.tagger.Unit;
-import de.julielab.jules.types.POSTag;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.POSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReTools;
 
 public class POSAnnotator extends JCasAnnotator_ImplBase {

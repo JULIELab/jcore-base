@@ -9,19 +9,19 @@
   </imports>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.DocumentAnnotation</name>
+      <name>de.julielab.jcore.types.DocumentAnnotation</name>
       <description>The super-type for the document annotation types (Header, Descriptor)</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Header</name>
+      <name>de.julielab.jcore.types.Header</name>
       <description>The Header type stores the bibliographical document information.</description>
-      <supertypeName>de.julielab.jules.types.DocumentAnnotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.DocumentAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>docType</name>
           <description>The type of the document (e.g. abstract, fulltext, randomized).</description>
-          <rangeTypeName>de.julielab.jules.types.DocType</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.DocType</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>source</name>
@@ -47,7 +47,7 @@
           <name>authors</name>
           <description>The authors of the document.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.AuthorInfo</elementType>
+          <elementType>de.julielab.jcore.types.AuthorInfo</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
@@ -59,12 +59,12 @@
           <name>pubTypeList</name>
           <description>The list of the publication types.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.PubType</elementType>
+          <elementType>de.julielab.jcore.types.PubType</elementType>
         </featureDescription>
         <featureDescription>
           <name>language</name>
           <description>The language of the document.</description>
-          <rangeTypeName>de.julielab.jules.types.Language</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.Language</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>doi</name>
@@ -75,14 +75,14 @@
           <name>pkElements</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.PKElement</elementType>
+          <elementType>de.julielab.jcore.types.PKElement</elementType>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.PubType</name>
+      <name>de.julielab.jcore.types.PubType</name>
       <description>An abstract type which should be used to store information on the publication. See subtypes Journal and an accumulative type (OtherPub)</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>name</name>
@@ -92,14 +92,14 @@
         <featureDescription>
           <name>pubDate</name>
           <description>The date on which the document was published.</description>
-          <rangeTypeName>de.julielab.jules.types.Date</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.Date</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Journal</name>
+      <name>de.julielab.jcore.types.Journal</name>
       <description>This type contains attributes to describe a journal publication.</description>
-      <supertypeName>de.julielab.jules.types.PubType</supertypeName>
+      <supertypeName>de.julielab.jcore.types.PubType</supertypeName>
       <features>
         <featureDescription>
           <name>ISSN</name>
@@ -144,9 +144,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Date</name>
+      <name>de.julielab.jcore.types.Date</name>
       <description>Type to store dates</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>day</name>
@@ -166,32 +166,32 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.OtherPub</name>
+      <name>de.julielab.jcore.types.OtherPub</name>
       <description>Accumulative type for all other types of publications</description>
-      <supertypeName>de.julielab.jules.types.PubType</supertypeName>
+      <supertypeName>de.julielab.jcore.types.PubType</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Descriptor</name>
+      <name>de.julielab.jcore.types.Descriptor</name>
       <description>An abstract type for the document descriptors, there are two subclasses: one for automatically acquired meta information and one for meta information that was added manually (such as e.g. MeSH term lists)</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.AutoDescriptor</name>
+      <name>de.julielab.jcore.types.AutoDescriptor</name>
       <description>The descriptor type for automatically (i.e. algorithmically) acquired meta information. It can be refined and extended.</description>
-      <supertypeName>de.julielab.jules.types.Descriptor</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Descriptor</supertypeName>
       <features>
         <featureDescription>
           <name>documentClasses</name>
           <description>Here the document classification result will be stored, for example for storing infos if the document is age-related or not.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.DocumentClass</elementType>
+          <elementType>de.julielab.jcore.types.DocumentClass</elementType>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.ManualDescriptor</name>
+      <name>de.julielab.jcore.types.ManualDescriptor</name>
       <description>The descriptor type for the manually added information.</description>
-      <supertypeName>de.julielab.jules.types.Descriptor</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Descriptor</supertypeName>
       <features>
         <featureDescription>
           <name>metaInfo</name>
@@ -201,9 +201,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.MeshHeading</name>
+      <name>de.julielab.jcore.types.MeshHeading</name>
       <description>Medical Subject Headings, see NLM's MeSH for a detailed description.</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>descriptorName</name>
@@ -228,9 +228,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Chemical</name>
+      <name>de.julielab.jcore.types.Chemical</name>
       <description>A chemical type</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>registryNumber</name>
@@ -245,9 +245,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.DBInfo</name>
+      <name>de.julielab.jcore.types.DBInfo</name>
       <description>References to other databases, e.g. SwissProt, INTERPRO e.g.</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>name</name>
@@ -262,9 +262,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Keyword</name>
+      <name>de.julielab.jcore.types.Keyword</name>
       <description>A term of a controlled keyword list to describe the content of the publication.</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>name</name>
@@ -279,7 +279,7 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.DocType</name>
+      <name>de.julielab.jcore.types.DocType</name>
       <description>The document type</description>
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
@@ -306,7 +306,7 @@
       </allowedValues>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Language</name>
+      <name>de.julielab.jcore.types.Language</name>
       <description>The language of the document. Possible values: based on ISO-639-1 language codes; we start with a first selection (which might be extended later).</description>
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
@@ -357,7 +357,7 @@
       </allowedValues>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.DocumentClass</name>
+      <name>de.julielab.jcore.types.DocumentClass</name>
       <description>A document class specification for the CAS' document text.</description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -374,9 +374,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.AuthorInfo</name>
+      <name>de.julielab.jcore.types.AuthorInfo</name>
       <description>AuthorInfo Type annotates the text segments containing the information about an author and his/her affiliation information.</description>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>foreName</name>
@@ -406,9 +406,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.RelatedArticle</name>
+      <name>de.julielab.jcore.types.RelatedArticle</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>relatedArticle</name>
@@ -418,23 +418,23 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.RelatedArticleList</name>
+      <name>de.julielab.jcore.types.RelatedArticleList</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>relatedArticles</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.RelatedArticle</elementType>
+          <elementType>de.julielab.jcore.types.RelatedArticle</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.FullTextLink</name>
+      <name>de.julielab.jcore.types.FullTextLink</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>url</name>
@@ -449,21 +449,21 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.FullTextLinkList</name>
+      <name>de.julielab.jcore.types.FullTextLinkList</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>fullTextLinks</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jules.types.FullTextLink</elementType>
+          <elementType>de.julielab.jcore.types.FullTextLink</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.PKElement</name>
+      <name>de.julielab.jcore.types.PKElement</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>

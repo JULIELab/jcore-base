@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
  */
 
-package de.julielab.jules.reader;
+package de.julielab.jcore.reader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -46,19 +46,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import de.julielab.jules.types.AbstractText;
-import de.julielab.jules.types.AuthorInfo;
-import de.julielab.jules.types.Chemical;
-import de.julielab.jules.types.DBInfo;
-import de.julielab.jules.types.Date;
-import de.julielab.jules.types.EntityMention;
-import de.julielab.jules.types.Journal;
-import de.julielab.jules.types.Keyword;
-import de.julielab.jules.types.MeshHeading;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Title;
-import de.julielab.jules.types.pubmed.Header;
-import de.julielab.jules.types.pubmed.ManualDescriptor;
+import de.julielab.jcore.types.AbstractText;
+import de.julielab.jcore.types.AuthorInfo;
+import de.julielab.jcore.types.Chemical;
+import de.julielab.jcore.types.DBInfo;
+import de.julielab.jcore.types.Date;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.Journal;
+import de.julielab.jcore.types.Keyword;
+import de.julielab.jcore.types.MeshHeading;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Title;
+import de.julielab.jcore.types.pubmed.Header;
+import de.julielab.jcore.types.pubmed.ManualDescriptor;
 
 /**
  * Test for class MedlineReader

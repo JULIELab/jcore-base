@@ -11,12 +11,12 @@
 package de.julielab.jcore.reader.iexml;
 
 import generated.Unit.Text;
-import de.julielab.jules.types.Date;
-import de.julielab.jules.types.mantra.Document;
-import de.julielab.jules.types.mantra.Entity;
-import de.julielab.jules.types.mantra.NER;
-import de.julielab.jules.types.mantra.Unit;
-import de.julielab.jules.types.mantra.Corpus;
+import de.julielab.jcore.types.Date;
+import de.julielab.jcore.types.mantra.Document;
+import de.julielab.jcore.types.mantra.Entity;
+import de.julielab.jcore.types.mantra.NER;
+import de.julielab.jcore.types.mantra.Unit;
+import de.julielab.jcore.types.mantra.Corpus;
 
 import java.io.File;
 import java.io.IOException;

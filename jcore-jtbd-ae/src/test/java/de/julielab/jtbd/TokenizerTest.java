@@ -40,7 +40,7 @@ import cc.mallet.types.InstanceList;
 import de.julielab.jcore.ae.jtbd.main.TokenAnnotator;
 import de.julielab.jtbd.Tokenizer;
 import de.julielab.jtbd.Unit;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Token;
 
 /**
  * Test for the class {@link Tokenizer}

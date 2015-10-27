@@ -22,7 +22,7 @@ import org.apache.uima.fit.factory.JCasBuilder;
 import org.apache.uima.fit.factory.JCasFactory;
 
 import de.julielab.jcore.consumer.bionlp09event.utils.EntityWriter;
-import de.julielab.jules.types.EntityMention;
+import de.julielab.jcore.types.EntityMention;
 
 public class EntityWriterTest {
 	private static final String ENTITY_T13 = "T13	Entity 322 330	tyrosine\n";

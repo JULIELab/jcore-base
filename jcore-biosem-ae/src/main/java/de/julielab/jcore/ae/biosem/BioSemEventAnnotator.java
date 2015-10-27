@@ -27,11 +27,11 @@ import relations.Word;
 import utils.BioSemException;
 import utils.DBUtils;
 import corpora.DataLoader;
-import de.julielab.jules.types.ArgumentMention;
-import de.julielab.jules.types.EventMention;
-import de.julielab.jules.types.EventTrigger;
-import de.julielab.jules.types.Gene;
-import de.julielab.jules.types.Header;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.EventTrigger;
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Header;
 
 public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 

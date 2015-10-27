@@ -43,9 +43,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import de.julielab.jules.types.DependencyRelation;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.DependencyRelation;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 /**
  * This is the JUnit test for the MST Parser Annotator.

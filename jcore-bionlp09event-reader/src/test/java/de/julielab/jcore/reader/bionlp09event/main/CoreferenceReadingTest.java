@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import de.julielab.jcore.reader.bionlp09event.main.EventReader;
-import de.julielab.jules.types.Header;
+import de.julielab.jcore.types.Header;
 
 // Ignore because the data path does generally not exist; a fix should only contain some test data, not the whole dataset
 @Ignore

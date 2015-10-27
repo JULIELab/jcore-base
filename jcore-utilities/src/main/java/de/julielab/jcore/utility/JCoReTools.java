@@ -37,7 +37,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jules.types.Header;
+import de.julielab.jcore.types.Header;
 
 /**
  * Tool for creating new UIMA Objects and other UIMA related things
@@ -251,12 +251,12 @@ public class JCoReTools {
 	 * Returns the PubMed ID of the document in the <code>JCas</code>.
 	 * </p>
 	 * <p>
-	 * This can only be done when an annotation of type <code>de.julielab.jules.types.pubmed.Header</code> is present
+	 * This can only be done when an annotation of type <code>de.julielab.jcore.types.pubmed.Header</code> is present
 	 * and its feature <code>docId</code> has the appropriate value.
 	 * </p>
 	 * 
 	 * @param aJCas
-	 * @return The value of of {@link de.julielab.jules.types.pubmed.Header#getDocId()}
+	 * @return The value of of {@link de.julielab.jcore.types.pubmed.Header#getDocId()}
 	 */
 	public static String getPubmedId(JCas aJCas) {
 		AnnotationIndex<Annotation> headerIndex = aJCas.getAnnotationIndex(Header.type);

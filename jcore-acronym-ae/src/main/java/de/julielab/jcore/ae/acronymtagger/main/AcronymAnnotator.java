@@ -59,9 +59,9 @@ import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.ae.acronymtagger.entries.AcronymEntry;
 import de.julielab.jcore.ae.acronymtagger.entries.FullformEntry;
-import de.julielab.jules.types.Abbreviation;
-import de.julielab.jules.types.Annotation;
-import de.julielab.jules.types.Sentence;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.Sentence;
 
 /**
  * Finds fullforms for acronyms using the Schwartz/Hearst algorithm if no fullform was found, then the acronym can be
@@ -72,7 +72,7 @@ import de.julielab.jules.types.Sentence;
  */
 public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 
-	private static final String COMPONENT_ID = "de.julielab.jules.ae.acronymtagger.AcronymAnnotator";
+	private static final String COMPONENT_ID = "de.julielab.jcore.ae.acronymtagger.AcronymAnnotator";
 
 	public static final String PARAM_ACROLIST = "AcroList";
 	// path to an additional list of acronyms for lookup

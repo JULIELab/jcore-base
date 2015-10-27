@@ -18,9 +18,9 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Test;
 
-import de.julielab.jules.types.STTSMedPOSTag;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.STTSMedPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 public class POSAnnotatorTest {
 
