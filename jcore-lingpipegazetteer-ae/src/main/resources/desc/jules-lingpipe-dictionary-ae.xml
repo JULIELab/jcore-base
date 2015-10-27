@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.julielab.jcore.ae.lingpipegazetteer.uima.GazetteerAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>GazetteerAnnotator</name>
+    <description/>
+    <version>2.6</version>
+    <vendor>julielab</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>UseApproximateMatching</name>
+        <description>Whether to use approximate matching based on an edit distance rather than exact dictionary matches. Using an approximate matcher allows variations in the text in comparison to the dictionary entries. Thus, text passages will be matched that do not occurr verbatim as a dictionary entry. The employed edit distance is configured in the ChunkerProvider configuration file. Note that this parameter should have the same value in the the ChunkerProvider configuration file because the approximate chunker requires some post processing in contrast to the exact dictionary chunker.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>CheckAcronyms</name>
+        <description>Checks whether an acronym match in dictionary has a respective full form with the same label (=specificType). If a matched text passage is an acronym but the long form is not a ConceptMention (or a sub type) with the same specificType value, the original match will be rejected.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>OutputType</name>
+        <description>The UIMA annotation type that should be generated for text passages matching a dictionary entry. The given type must be a sub type of de.julielab.jules.types.ConceptMention. The label given for the dictionary entry will be used for the annotation's 'specific type' feature.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>CaseSensitive</name>
+        <description>Only used in the annotator if approximate matching is enabled. Lower cases the input text before matching dictionary entries. Note that this parameter should have the same value in the the ChunkerProvider configuration file so that dictionary entries and the input text are processed in equal ways.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>NormalizeText</name>
+        <description>Whether to normalize the text by stemming and removing possessive 's constructions. Note that this parameter should have the same value in the the ChunkerProvider configuration file so that dictionary entries and the input text are processed in equal ways.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>TransliterateText</name>
+        <description>Whether to strip accents and other character variations from the text. Note that this parameter should have the same value in the the ChunkerProvider configuration file so that dictionary entries and the input text are processed in equal ways.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="julie-semantics-biology-types"/>
+        <import name="julie-morpho-syntax-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities/>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration>
+    <externalResources>
+      <externalResource>
+        <name>GazetteerDictionaryChunkerProvider</name>
+        <description>Provides the dictionary chunker instance.</description>
+        <fileResourceSpecifier>
+          <fileUrl>file:...patch to dictionary</fileUrl>
+        </fileResourceSpecifier>
+        <implementationName>de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProviderImplAlt</implementationName>
+      </externalResource>
+    </externalResources>
+    <externalResourceBindings>
+      <externalResourceBinding>
+        <key>DictionaryChunkerProvider</key>
+        <resourceName>GazetteerDictionaryChunkerProvider</resourceName>
+      </externalResourceBinding>
+    </externalResourceBindings>
+  </resourceManagerConfiguration>
+</analysisEngineDescription>
