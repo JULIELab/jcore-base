@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<name>aceComplete</name>
+<description></description>
+<version>1.0</version>
+<vendor></vendor>
+<imports>
+        <import name="de.julielab.jcore.types.jcore-basic-types"/>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+</imports>
+</typeSystemDescription>

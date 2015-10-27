@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.julielab.jcore.ae.jnet.uima.EntityAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>EntityTaggerAnnotator</name>
+    <description/>
+    <version>2.4</version>
+    <vendor>julielab</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>ModelFilename</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>EntityTypes</name>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ExpandAbbreviations</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ShowSegmentConfidence</name>
+        <description>whether a confidence should be estimated for each entity or not</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>NegativeList</name>
+        <description>a list with entity mentions (covered text) and label which when found is ignore, i.e., not written to the CAS. 
+Format: one entry per line, within the line: 
+entityMention@label
+if no label is given, also @ should not be given!
+Example:
+--------------
+IL-2@gene
+IL-2 receptor
+HDA1@protein
+--------------</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ConsistencyPreservation</name>
+        <description>Coma-separated list of active modes.
+Available modes are:
+ - string
+ - full2acro
+ - acro2full</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>IgnoreNotIntroducedAbbreviations</name>
+        <description>whether labels predicted by JNET on strings which represent abbreviations ([A-Z]{2,3}) but were not introduced in the text should be ignored</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>maxEnt</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>iterations</name>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>ModelFilename</name>
+        <value>
+          <string>src/test/resources/de/julielab/jcore/ae/jnet/uima/testModel</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>EntityTypes</name>
+        <value>
+          <array>
+            <string>variation-event=de.julielab.jules.types.EntityMention</string>
+            <string>variation-location=de.julielab.jules.types.EntityMention</string>
+            <string>variation-state-altered=de.julielab.jules.types.EntityMention</string>
+            <string>variation-state-generic=de.julielab.jules.types.EntityMention</string>
+            <string>variation-state-original=de.julielab.jules.types.EntityMention</string>
+            <string>variation-type=de.julielab.jules.types.EntityMention</string>
+          </array>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ExpandAbbreviations</name>
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ShowSegmentConfidence</name>
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>NegativeList</name>
+        <value>
+          <string>src/test/resources/de/julielab/jcore/ae/jnet/uima/negativeList</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ConsistencyPreservation</name>
+        <value>
+          <string>string,full2acro,acro2full</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>IgnoreNotIntroducedAbbreviations</name>
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>iterations</name>
+        <value>
+          <integer>0</integer>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.Token</type>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+        </inputs>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.EntityMention</type>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>
