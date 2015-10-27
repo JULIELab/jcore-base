@@ -1,0 +1,67 @@
+T13	Entity 322 330	tyrosine
+T45	Entity 1067 1075	tyrosine
+T1	Negative_regulation 12 19	inhibit
+T2	Positive_regulation 20 30	activation
+T5	Positive_regulation 79 87	inducing
+T7	Gene_expression 100 110	expression
+T10	Positive_regulation 313 321	inducing
+T11	Positive_regulation 313 321	inducing
+T12	Positive_regulation 313 321	inducing
+T14	Phosphorylation 331 346	phosphorylation
+T15	Binding 348 364	homodimerization
+T16	Localization 378 391	translocation
+T22	Positive_regulation 601 611	activation
+T24	Regulation 713 721	regulate
+T25	Positive_regulation 722 732	activation
+T34	Negative_regulation 981 991	suppressed
+T35	Negative_regulation 981 991	suppressed
+T36	Negative_regulation 981 991	suppressed
+T37	Negative_regulation 981 991	suppressed
+T38	Negative_regulation 981 991	suppressed
+T39	Negative_regulation 981 991	suppressed
+T40	Positive_regulation 992 1002	activation
+T43	Negative_regulation 1057 1066	decreased
+T44	Negative_regulation 1057 1066	decreased
+T46	Phosphorylation 1076 1091	phosphorylation
+T47	Localization 1104 1117	translocation
+T50	Positive_regulation 1347 1356	induction
+T52	Gene_expression 1405 1415	expression
+T57	Negative_regulation 1628 1635	inhibit
+T59	Positive_regulation 1649 1659	activation
+T62	Positive_regulation 1727 1735	inducing
+T63	Gene_expression 1736 1746	expression
+E1	Negative_regulation:T1 Theme:E2 Cause:E3
+E2	Positive_regulation:T2 Theme:T3 Cause:T4
+E3	Positive_regulation:T5 Theme:E4
+E4	Gene_expression:T7 Theme:T6
+E5	Positive_regulation:T10 Theme:E10 Cause:T9
+E6	Positive_regulation:T11 Theme:E9 Cause:T9
+E7	Positive_regulation:T12 Theme:E8 Cause:T9
+E8	Phosphorylation:T14 Theme:T17 Site:T13
+E9	Binding:T15 Theme:T17
+E10	Localization:T16 Theme:T17
+E11	Positive_regulation:T22 Theme:T21
+E12	Regulation:T24 Theme:E13
+M1	Speculation E12
+E13	Positive_regulation:T25 Theme:T26 Cause:T27
+E14	Negative_regulation:T34 Theme:E20 Cause:T33
+M2	Negation E14
+E15	Negative_regulation:T35 Theme:E20 Cause:T31
+M3	Negation E15
+E16	Negative_regulation:T36 Theme:E20 Cause:T29
+E17	Negative_regulation:T37 Theme:E20 Cause:T28
+E18	Negative_regulation:T38 Theme:E20 Cause:T32
+M4	Negation E18
+E19	Negative_regulation:T39 Theme:E20 Cause:T30
+M5	Negation E19
+E20	Positive_regulation:T40 Theme:T41 Cause:T42
+E21	Negative_regulation:T43 Theme:E23
+E22	Negative_regulation:T44 Theme:E24
+E23	Phosphorylation:T46 Theme:T48 Site:T45
+E24	Localization:T47 Theme:T48
+E25	Positive_regulation:T50 Theme:T51
+E26	Gene_expression:T52 Theme:T53
+E27	Negative_regulation:T57 Theme:E28 Cause:E29
+E28	Positive_regulation:T59 Theme:T60 Cause:T58
+E29	Positive_regulation:T62 Theme:E30
+E30	Gene_expression:T63 Theme:T64

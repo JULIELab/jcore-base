@@ -1,0 +1,49 @@
+T3	Entity 26 53	nuclear localization signal
+T30	Entity 1514 1541	nuclear localization signal
+T35	Entity 1661 1671	C-terminus
+T2	Negative_regulation 16 21	masks
+T5	Negative_regulation 115 122	inhibit
+T7	Binding 142 149	binding
+T8	Binding 215 222	complex
+T9	Binding 246 253	binding
+T10	Binding 246 253	binding
+T15	Binding 503 511	receptor
+T17	Regulation 711 720	regulated
+T23	Binding 1353 1360	binding
+T26	Positive_regulation 1401 1411	sufficient
+T27	Localization 1415 1423	retarget
+T29	Negative_regulation 1487 1495	deletion
+T32	Negative_regulation 1595 1603	disrupts
+T33	Binding 1619 1625	engage
+T37	Negative_regulation 1690 1700	attenuates
+T38	Localization 1717 1729	localization
+T39	Positive_regulation 1762 1770	required
+T40	Negative_regulation 1794 1804	inhibition
+T42	Binding 1827 1834	binding
+T46	Binding 2137 2142	binds
+T48	Positive_regulation 2208 2213	leads
+T49	Localization 2217 2228	retargeting
+E1	Negative_regulation:T2 Theme:T4 Cause:T1 Site:T3
+E2	Negative_regulation:T5 Theme:E3 Cause:T1
+E3	Binding:T7 Theme:T6
+E4	Binding:T8 Theme:T11 Theme2:T12
+E5	Binding:T9 Theme:T12
+E6	Binding:T10 Theme:T11
+E7	Binding:T15 Theme:T14
+E8	Regulation:T17 Theme:T16
+M1	Negation E8
+E9	Binding:T23 Theme:T24 Theme2:T25
+E10	Positive_regulation:T26 Theme:E11 Cause:E9
+E11	Localization:T27 Theme:T28
+E12	Negative_regulation:T29 Theme:T31 Site:T30
+E13	Negative_regulation:T32 Theme:E14 Cause:E12
+M2	Speculation E13
+E14	Binding:T33 Theme:T31 Theme2:T34
+E15	Negative_regulation:T37 Theme:E16 Cause:T36 CSite:T35
+E16	Localization:T38 Theme:T36
+E17	Positive_regulation:T39 Theme:E18 Cause:T36 CSite:T35
+E18	Negative_regulation:T40 Theme:E19
+E19	Binding:T42 Theme:T41
+E20	Binding:T46 Theme:T45 Theme2:T47
+E21	Positive_regulation:T48 Theme:E22 Cause:E20
+E22	Localization:T49 Theme:T50

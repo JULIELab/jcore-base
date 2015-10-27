@@ -1,0 +1,33 @@
+T3	Protein 34 39	STAT6
+T4	Protein 43 56	interleukin 4
+T6	Protein 88 94	SOCS-1
+T8	Protein 153 157	IL-4
+T9	Protein 279 283	IL-4
+T17	Protein 428 433	STAT6
+T18	Protein 435 485	signal transducer and activator of transcription-6
+T19	Protein 488 493	STAT6
+T20	Protein 565 569	IL-4
+T21	Protein 595 600	STAT6
+T23	Protein 629 633	IL-4
+T26	Protein 736 741	STAT6
+T27	Protein 745 749	IL-4
+T28	Protein 809 817	IFN-beta
+T29	Protein 821 830	IFN-gamma
+T30	Protein 840 844	IL-1
+T31	Protein 846 850	IL-2
+T32	Protein 940 944	IL-6
+T33	Protein 949 980	transforming growth factor beta
+T41	Protein 1006 1011	STAT6
+T42	Protein 1015 1019	IL-4
+T48	Protein 1121 1126	STAT6
+T49	Protein 1216 1220	IL-4
+T51	Protein 1390 1396	SOCS-1
+T53	Protein 1419 1425	SOCS-1
+T54	Protein 1504 1508	IL-4
+T55	Protein 1539 1543	IL-6
+T56	Protein 1549 1558	IFN-gamma
+T58	Protein 1636 1640	IL-4
+T60	Protein 1663 1668	STAT6
+T61	Protein 1673 1678	STAT6
+T64	Protein 1750 1756	SOCS-1
+*	Equiv T17 T18

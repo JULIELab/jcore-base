@@ -1,0 +1,64 @@
+T1	Regulation 0 10	Regulation
+T3	Gene_expression 49 59	expression
+T5	Regulation 188 198	regulation
+T8	Gene_expression 251 261	expression
+T9	Positive_regulation 425 432	induced
+T10	Gene_expression 437 447	expression
+T12	Localization 528 541	translocation
+T13	Localization 528 541	translocation
+T16	Binding 630 635	bound
+T17	Binding 630 635	bound
+T23	Binding 719 731	heterodimers
+T24	Binding 719 731	heterodimers
+T25	Positive_regulation 794 802	mediated
+T26	Positive_regulation 794 802	mediated
+T27	Positive_regulation 794 802	mediated
+T28	Localization 819 827	secreted
+T31	Negative_regulation 891 900	inhibited
+T32	Negative_regulation 891 900	inhibited
+T33	Negative_regulation 891 900	inhibited
+T35	Negative_regulation 989 996	blocked
+T37	Gene_expression 1007 1017	production
+T38	Positive_regulation 1018 1025	induced
+T39	Negative_regulation 1043 1052	inhibited
+T41	Positive_regulation 1080 1090	activation
+T44	Negative_regulation 1143 1152	recovered
+T45	Negative_regulation 1143 1152	recovered
+T47	Negative_regulation 1187 1197	inhibition
+T49	Localization 1379 1387	secreted
+T51	Regulation 1442 1449	control
+T52	Gene_expression 1457 1467	expression
+E1	Regulation:T1 Theme:E2
+E2	Gene_expression:T3 Theme:T2
+E3	Regulation:T5 Theme:E4
+M1	Speculation E3
+E4	Gene_expression:T8 Theme:T7
+E5	Positive_regulation:T9 Theme:E6
+E6	Gene_expression:T10 Theme:T11
+M2	Negation E6
+E7	Localization:T12 Theme:T14
+E8	Localization:T13 Theme:T15
+E9	Binding:T16 Theme:T18 Theme2:T15
+E10	Binding:T17 Theme:T18 Theme2:T14
+E11	Binding:T23 Theme:T21 Theme2:T22
+E12	Binding:T24 Theme:T19 Theme2:T20
+E13	Positive_regulation:T25 Theme:E10 Cause:T30
+E14	Positive_regulation:T26 Theme:E9 Cause:T30
+E15	Positive_regulation:T27 Theme:E8 Cause:T30
+E16	Localization:T28 Theme:T30
+E17	Negative_regulation:T31 Theme:E9
+E18	Negative_regulation:T32 Theme:E10
+E19	Negative_regulation:T33 Theme:E8
+E20	Negative_regulation:T35 Theme:E22
+E21	Gene_expression:T37 Theme:T36
+E22	Positive_regulation:T38 Theme:E21
+M3	Speculation E22
+E23	Negative_regulation:T39 Theme:E24
+E24	Positive_regulation:T41 Theme:T40
+E25	Negative_regulation:T44 Theme:E27 Cause:T43
+E26	Negative_regulation:T45 Theme:E27 Cause:T42
+E27	Negative_regulation:T47 Theme:T46
+E28	Localization:T49 Theme:T50
+E29	Regulation:T51 Theme:E30 Cause:T50
+M4	Negation E29
+E30	Gene_expression:T52 Theme:T53
