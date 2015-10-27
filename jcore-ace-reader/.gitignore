@@ -1,0 +1,8 @@
+
+# /
+/.classpath
+/.project
+/.settings
+
+# /src/test/resources/de/julielab/jcore/reader/ace/data/out/
+/src/test/resources/de/julielab/jcore/reader/ace/data/out/XIN_ENG_20030624.0085.xmi

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.reader.ace.AceReader</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe ACE Reader</name>
+    <description/>
+    <version>2.0.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>inputDirectory</name>
+        <description>Path to the ACE files</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>generateJulesTypes</name>
+        <description>Determines if JULIE Lab Types (julie-semantics- ace-types.xml) should be generated in addition to types from julie-ace-types.xml</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>generateJulesTypes</name>
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>inputDirectory</name>
+        <value>
+          <string>data/AceData</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.extensions.jcore-ace-types"/>
+        <import name="de.julielab.jcore.types.extensions.jcore-semantics-ace-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>
