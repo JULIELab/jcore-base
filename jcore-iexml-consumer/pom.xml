@@ -73,7 +73,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.julielab</groupId>
-			<artifactId>mantra-xml-types</artifactId>
+			<artifactId>jcore-mantra-xml-types</artifactId>
 			<version>${jcore-version}</version>
 		</dependency>
 	</dependencies>
