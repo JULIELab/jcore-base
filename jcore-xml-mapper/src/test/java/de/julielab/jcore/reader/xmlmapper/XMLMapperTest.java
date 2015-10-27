@@ -13,7 +13,7 @@
  * Creation date: 09.05.2011
  **/
 
-package de.julielab.jcore.reader;
+package de.julielab.jcore.reader.xmlmapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

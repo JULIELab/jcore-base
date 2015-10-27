@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
  */
 
-package de.julielab.jcore.reader;
+package de.julielab.jcore.reader.xmlmapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

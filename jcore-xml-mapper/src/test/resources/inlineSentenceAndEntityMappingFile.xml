@@ -10,7 +10,7 @@
 
 	<tsType>
 		<tsFullClassName>
-			de.julielab.jules.types.AbstractText
+			de.julielab.jcore.types.AbstractText
 		</tsFullClassName>
 		<offset>
 			<partOfDocumentText>
@@ -21,7 +21,7 @@
 	</tsType>
 
 	<tsType>
-		<tsFullClassName>de.julielab.jules.types.Title</tsFullClassName>
+		<tsFullClassName>de.julielab.jcore.types.Title</tsFullClassName>
 		<offset>
 			<partOfDocumentText>
 				<id>0</id>
@@ -31,7 +31,7 @@
 
 	<tsType>
 		<tsFullClassName>
-			de.julielab.jules.types.pubmed.Header
+			de.julielab.jcore.types.pubmed.Header
 		</tsFullClassName>
 		<tsFeature>
 			<xPath>
@@ -107,7 +107,7 @@
 			<tsFeature>
 				<tsFeatureName>authorInfo</tsFeatureName>
 				<tsFullClassName>
-					de.julielab.jules.types.AuthorInfo
+					de.julielab.jcore.types.AuthorInfo
 				</tsFullClassName>
 				<isType>true</isType>
 				<xPath>
@@ -150,7 +150,7 @@
 			<isType>true</isType>
 			<tsFeature>
 				<tsFullClassName>
-					de.julielab.jules.types.Journal
+					de.julielab.jcore.types.Journal
 				</tsFullClassName>
 				<xPath>
 					/MedlineCitation/Article/PublicationTypeList/PublicationType
@@ -207,7 +207,7 @@
 				<tsFeature>
 					<isType>true</isType>
 					<tsFullClassName>
-						de.julielab.jules.types.Date
+						de.julielab.jcore.types.Date
 					</tsFullClassName>
 					<tsFeatureName>PubDate</tsFeatureName>
 					<externalParser>
@@ -234,7 +234,7 @@
 	</tsType>
 	<tsType>
 		<tsFullClassName>
-			de.julielab.jules.types.pubmed.ManualDescriptor
+			de.julielab.jcore.types.pubmed.ManualDescriptor
 		</tsFullClassName>
 		<tsFeature>
 			<xPath>/MedlineCitation/GeneSymbolList</xPath>
@@ -257,7 +257,7 @@
 					/MedlineCitation/KeywordList/Keyword
 				</xPath>
 				<tsFullClassName>
-					de.julielab.jules.types.Keyword
+					de.julielab.jcore.types.Keyword
 				</tsFullClassName>
 				<tsFeature>
 					<tsFeatureName>Name</tsFeatureName>
@@ -279,7 +279,7 @@
 					/MedlineCitation/ChemicalList/Chemical
 				</xPath>
 				<tsFullClassName>
-					de.julielab.jules.types.Chemical
+					de.julielab.jcore.types.Chemical
 				</tsFullClassName>
 				<tsFeature>
 					<tsFeatureName>RegistryNumber</tsFeatureName>
@@ -306,7 +306,7 @@
 					/MedlineCitation/DataBankList/DataBank
 				</xPath>
 				<tsFullClassName>
-					de.julielab.jules.types.DBInfo
+					de.julielab.jcore.types.DBInfo
 				</tsFullClassName>
 				<tsFeature>
 					<tsFeatureName>Name</tsFeatureName>
@@ -341,7 +341,7 @@
 					/MedlineCitation/MeshHeadingList/MeshHeading
 				</xPath>
 				<tsFullClassName>
-					de.julielab.jules.types.MeshHeading
+					de.julielab.jcore.types.MeshHeading
 				</tsFullClassName>
 				<tsFeature>
 					<tsFeatureName>DescriptorName</tsFeatureName>
@@ -389,7 +389,7 @@
 	</tsType>
 	<tsType multipleInstances="true" inline="true">
 		<tsFullClassName>
-			de.julielab.jules.types.Sentence
+			de.julielab.jcore.types.Sentence
 		</tsFullClassName>
 		<tsFeature>
 			<tsFeatureName>id</tsFeatureName>
@@ -401,7 +401,7 @@
 	</tsType>
 	<tsType multipleInstances="true" inline="true">
 		<tsFullClassName>
-			de.julielab.jules.types.EntityMention
+			de.julielab.jcore.types.EntityMention
 		</tsFullClassName>
 		<externalParser>de.julielab.jcore.reader.xmlmapper.typeParser.EntityParser</externalParser>
 		<xPath>//e</xPath>
