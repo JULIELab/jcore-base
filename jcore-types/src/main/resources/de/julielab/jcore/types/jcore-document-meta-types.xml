@@ -273,7 +273,7 @@
         </featureDescription>
         <featureDescription>
           <name>source</name>
-          <description>Tthe keyword source (terminology).</description>
+          <description>The keyword source (terminology).</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>
