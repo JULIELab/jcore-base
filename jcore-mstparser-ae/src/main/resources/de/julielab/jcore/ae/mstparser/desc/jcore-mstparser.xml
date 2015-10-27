@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.julielab.jcore.ae.mstparser.main.MSTParserAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe MST Parser Annotator</name>
+    <description/>
+    <version>2.0.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>NumMaxTokens</name>
+        <description>If this parameter has a value, the parser will skip all sentences of which the number of tokens exceeds this value.</description>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-basic-types"/>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+        </inputs>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.Token</type>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <externalResourceDependencies>
+    <externalResourceDependency>
+      <key>SharedModel</key>
+      <description>The model as a shared resource</description>
+      <interfaceName>de.julielab.jcore.ae.mstparser.main.MSTParserWrapper</interfaceName>
+      <optional>false</optional>
+    </externalResourceDependency>
+  </externalResourceDependencies>
+  <resourceManagerConfiguration>
+    <externalResources>
+      <externalResource>
+        <name>SharedModelName</name>
+        <description>The implementation of the model loader</description>
+        <fileResourceSpecifier>
+          <fileUrl>de/julielab/jcore/ae/mstparser/config/modelConfig.cfg</fileUrl>
+        </fileResourceSpecifier>
+        <implementationName>de.julielab.jcore.ae.mstparser.main.MSTParserWrapperImpl</implementationName>
+      </externalResource>
+    </externalResources>
+    <externalResourceBindings>
+      <externalResourceBinding>
+        <key>SharedModel</key>
+        <resourceName>SharedModelName</resourceName>
+      </externalResourceBinding>
+    </externalResourceBindings>
+  </resourceManagerConfiguration>
+</analysisEngineDescription>
