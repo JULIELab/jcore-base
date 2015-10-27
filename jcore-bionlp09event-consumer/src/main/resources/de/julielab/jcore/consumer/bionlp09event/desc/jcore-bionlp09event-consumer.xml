@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jcore.consumer.bionlp09event.main.EventConsumer</implementationName>
+  <processingResourceMetaData>
+    <name>BioNLP 09 Event Consumer</name>
+    <description>Writes a CAS to three separate text files: a abstract, a protein and a event file.</description>
+    <version>2.0.0</version>
+    <vendor/>
+    <configurationParameters>
+      <configurationParameter>
+        <name>Directory</name>
+        <description>The directory where the consumer writes the files.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>a2FileString</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>bioEventServiceMode</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>Directory</name>
+        <value>
+          <string>bionlp-09-event-output</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>bioEventServiceMode</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>a2FileString</name>
+        <value>
+          <string>BLOEDSINN_derParameterWirdNichtGebrauchtGlaubeIch</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-basic-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-concept-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>false</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration/>
+</casConsumerDescription>
