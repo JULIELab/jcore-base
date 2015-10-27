@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jules.ae.StanfordLemmatizer</annotatorImplementationName>
+  <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.ae.stanford.lemma.StanfordLemmatizer</annotatorImplementationName>
   <analysisEngineMetaData>
-    <name>jules-stanford-lemmatizer-ae</name>
+    <name>JCoRe Stanford Lemmatizer</name>
     <description>This is the UIMA Wrapper for the Stanford CoreNLP Lemmatizer component.</description>
-    <version>1.0</version>
+    <version>2.0.0</version>
     <vendor/>
     <configurationParameters/>
     <configurationParameterSettings/>
     <typeSystemDescription>
       <imports>
-        <import name="julie-morpho-syntax-types"/>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
     <fsIndexCollection/>
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
+        <inputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.POSTag</type>
+        </inputs>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Lemma</type>
+        </outputs>
         <languagesSupported/>
       </capability>
     </capabilities>

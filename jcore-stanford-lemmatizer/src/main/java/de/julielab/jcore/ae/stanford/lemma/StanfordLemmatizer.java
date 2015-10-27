@@ -1,4 +1,4 @@
-package de.julielab.jules.ae;
+package de.julielab.jcore.ae.stanford.lemma;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -8,9 +8,9 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jules.types.Lemma;
-import de.julielab.jules.types.POSTag;
-import de.julielab.jules.types.Token;
+import de.julielab.jcore.types.Lemma;
+import de.julielab.jcore.types.POSTag;
+import de.julielab.jcore.types.Token;
 import edu.stanford.nlp.process.Morphology;
 
 public class StanfordLemmatizer extends JCasAnnotator_ImplBase {

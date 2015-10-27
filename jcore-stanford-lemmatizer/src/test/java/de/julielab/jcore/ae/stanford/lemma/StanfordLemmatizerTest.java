@@ -1,6 +1,8 @@
-package de.julielab.jules.ae;
+package de.julielab.jcore.ae.stanford.lemma;
 
 import java.util.Iterator;
+
+import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -13,16 +15,15 @@ import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jules.types.PennBioIEPOSTag;
-import de.julielab.jules.types.Sentence;
-import de.julielab.jules.types.Token;
-import junit.framework.TestCase;
+import de.julielab.jcore.types.PennBioIEPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 public class StanfordLemmatizerTest extends TestCase {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(StanfordLemmatizerTest.class);
-	private static final String DESCRIPTOR = "src/test/resources/jules-stanford-lemmatizer-ae.xml";
+	private static final String DESCRIPTOR = "src/test/resources/de/julielab/jcore/ae/stanford/lemma/desc/jcore-stanford-lemmatizer-ae.xml";
 
 	private static final String TEST_SENTENCES = "Plectranthus barbatus is a medicinal plant used to treat a wide range of disorders including seizure.";
 	private static final int[] tokenBegins = { 0, 13, 22, 25, 27, 37, 43, 48,

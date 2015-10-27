@@ -2,11 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.julielab</groupId>
-    <artifactId>jules</artifactId>
-    <version>1.8.0</version>
+    <artifactId>jcore</artifactId>
+    <version>2.0.0</version>
   </parent>
-  <artifactId>jules-stanford-lemmatizer</artifactId>
-  <version>1.0.2</version>
+  <artifactId>jcore-stanford-lemmatizer</artifactId>
   <name>JULES Stanford Lemmatizer</name>
   <description>UIMA Wrapper for Stanford CoreNLP Lemmatizer</description>
   <dependencies>
@@ -14,11 +13,6 @@
   		<groupId>edu.stanford.nlp</groupId>
   		<artifactId>stanford-corenlp</artifactId>
   		<version>3.3.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>de.julielab</groupId>
-  		<artifactId>jules-types</artifactId>
-  		<version>[2.13.0,)</version>
   	</dependency>
   	<dependency>
   		<groupId>junit</groupId>
@@ -29,13 +23,20 @@
   	<dependency>
   		<groupId>org.slf4j</groupId>
   		<artifactId>slf4j-api</artifactId>
-  		<version>1.7.12</version>
   	</dependency>
   	<dependency>
   		<groupId>ch.qos.logback</groupId>
   		<artifactId>logback-classic</artifactId>
-  		<version>1.1.3</version>
   		<scope>test</scope>
   	</dependency>
+  	<dependency>
+  		<groupId>de.julielab</groupId>
+  		<artifactId>jcore-types</artifactId>
+  		<version>${jcore-version}</version>
+  	</dependency>
   </dependencies>
+  <organization>
+  	<name>Julie Lab Jena, Germany</name>
+  	<url>http://www.julielab.de</url>
+  </organization>
 </project>
