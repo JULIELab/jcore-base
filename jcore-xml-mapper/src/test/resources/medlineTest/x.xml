@@ -1,0 +1,165 @@
+
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+	<PMID>19754895</PMID>
+	<DateCreated>
+		<Year>2009</Year>
+		<Month>09</Month>
+		<Day>16</Day>
+	</DateCreated>
+	<DateCompleted>
+		<Year>2009</Year>
+		<Month>11</Month>
+		<Day>04</Day>
+	</DateCompleted>
+	<Article PubModel="Print">
+		<Journal>
+			<ISSN IssnType="Electronic">1600-065X</ISSN>
+			<JournalIssue CitedMedium="Internet">
+				<Volume>231</Volume>
+				<Issue>1</Issue>
+				<PubDate>
+					<Year>2009</Year>
+					<Month>Sep</Month>
+				</PubDate>
+			</JournalIssue>
+			<Title>Immunological reviews</Title>
+			<ISOAbbreviation>Immunol. Rev.</ISOAbbreviation>
+		</Journal>
+		<ArticleTitle>Formation of STIM and Orai complexes: puncta and distal
+			caps.</ArticleTitle>
+		<Pagination>
+			<MedlinePgn>148-59</MedlinePgn>
+		</Pagination>
+		<Abstract>
+			<AbstractText>In the last few years, great progress has been made in
+				understanding how stromal interacting molecule 1 (STIM1), a protein
+				containing a calcium sensor that is located in the endoplasmic
+				reticulum, and Orai1, a protein that forms a calcium channel in the
+				plasma membrane, interact and give rise to store-operated calcium
+				entry. Pharmacological depletion of calcium stores leads to the
+				formation of clusters containing STIM and Orai that appear to be
+				sites for calcium influx. Similar puncta are also produced in
+				response to physiological stimuli in immune cells. In T cells
+				engaged with antigen-presenting cells, clusters containing STIM and
+				Orai accumulate at the immunological synapse. We recently discovered
+				that in activated T cells, STIM1 and Orai1 also accumulate in
+				cap-like structures opposite the immune synapse at the distal pole
+				of the cell. Both caps and puncta are long-lived stable structures
+				containing STIM1 and Orai1 in close proximity. The function of
+				puncta as sites of calcium influx is clear. We speculate that the
+				caps may provide a secondary site of calcium entry. Alternatively,
+				they may serve as a source of preformed channel complexes that move
+				to new immune synapses as T cells repeatedly engage
+				antigen-presenting cells.</AbstractText>
+		</Abstract>
+		<Affiliation>Laboratory of Cellular and Molecular Biology, Center for
+			Cancer Research, National Cancer Institute, Bethesda, MD 20892, USA.
+			barrv@mail.nih.gov</Affiliation>
+		<AuthorList CompleteYN="Y">
+			<Author ValidYN="Y">
+				<LastName>Barr</LastName>
+				<ForeName>Valarie A</ForeName>
+				<Initials>VA</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Bernot</LastName>
+				<ForeName>Kelsie M</ForeName>
+				<Initials>KM</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Shaffer</LastName>
+				<ForeName>Meredith H</ForeName>
+				<Initials>MH</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Burkhardt</LastName>
+				<ForeName>Janis K</ForeName>
+				<Initials>JK</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Samelson</LastName>
+				<ForeName>Lawrence E</ForeName>
+				<Initials>LE</Initials>
+			</Author>
+		</AuthorList>
+		<Language>eng</Language>
+		<GrantList CompleteYN="Y">
+			<Grant>
+				<GrantID>P01 CA093615</GrantID>
+				<Acronym>CA</Acronym>
+				<Agency>NCI NIH HHS</Agency>
+				<Country>United States</Country>
+			</Grant>
+		</GrantList>
+		<PublicationTypeList>
+			<PublicationType>Journal Article</PublicationType>
+			<PublicationType>Research Support, N.I.H., Extramural
+			</PublicationType>
+			<PublicationType>Research Support, N.I.H., Intramural
+			</PublicationType>
+			<PublicationType>Review</PublicationType>
+		</PublicationTypeList>
+	</Article>
+	<MedlineJournalInfo>
+		<Country>Denmark</Country>
+		<MedlineTA>Immunol Rev</MedlineTA>
+		<NlmUniqueID>7702118</NlmUniqueID>
+		<ISSNLinking>0105-2896</ISSNLinking>
+	</MedlineJournalInfo>
+	<ChemicalList>
+		<Chemical>
+			<RegistryNumber>0</RegistryNumber>
+			<NameOfSubstance>Calcium Channels</NameOfSubstance>
+		</Chemical>
+		<Chemical>
+			<RegistryNumber>0</RegistryNumber>
+			<NameOfSubstance>Membrane Proteins</NameOfSubstance>
+		</Chemical>
+		<Chemical>
+			<RegistryNumber>7440-70-2</RegistryNumber>
+			<NameOfSubstance>Calcium</NameOfSubstance>
+		</Chemical>
+	</ChemicalList>
+	<CitationSubset>IM</CitationSubset>
+	<MeshHeadingList>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Calcium</DescriptorName>
+			<QualifierName MajorTopicYN="N">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Calcium Channels
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Membrane Proteins
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Protein Binding
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Signal Transduction
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">T-Lymphocytes
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="Y">cytology</QualifierName>
+			<QualifierName MajorTopicYN="N">immunology</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+	</MeshHeadingList>
+	<NumberOfReferences>74</NumberOfReferences>
+</MedlineCitation>

@@ -1,0 +1,221 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+<PMID Version="1">15030341</PMID>
+<DateCreated>
+<Year>2004</Year>
+<Month>03</Month>
+<Day>19</Day>
+</DateCreated>
+<DateCompleted>
+<Year>2004</Year>
+<Month>05</Month>
+<Day>03</Day>
+</DateCompleted>
+<DateRevised>
+<Year>2006</Year>
+<Month>11</Month>
+<Day>15</Day>
+</DateRevised>
+<Article PubModel="Print">
+<Journal>
+<ISSN IssnType="Print">0007-0963</ISSN>
+<JournalIssue CitedMedium="Print">
+<Volume>150</Volume>
+<Issue>3</Issue>
+<PubDate>
+<Year>2004</Year>
+<Month>Mar</Month>
+</PubDate>
+</JournalIssue>
+<Title>The British journal of dermatology</Title>
+<ISOAbbreviation>Br. J. Dermatol.</ISOAbbreviation>
+</Journal>
+<ArticleTitle>0.03% Tacrolimus ointment applied once or twice daily is more efficacious than 1% hydrocortisone acetate in children with moderate to severe atopic dermatitis: results of a randomized double-blind controlled trial.</ArticleTitle>
+<Pagination>
+<MedlinePgn>554-62</MedlinePgn>
+</Pagination>
+<Abstract>
+<AbstractText Label="BACKGROUND" NlmCategory="BACKGROUND">Topical corticosteroids are the usual treatment for atopic dermatitis (AD) in children but can have side-effects.</AbstractText>
+<AbstractText Label="OBJECTIVES" NlmCategory="OBJECTIVE">This study compared the efficacy and safety of 0.03% tacrolimus ointment applied once or twice daily over a 3-week period with the twice daily application of 1% hydrocortisone acetate (HA) ointment in children with moderate to severe AD.</AbstractText>
+<AbstractText Label="PATIENTS AND METHODS" NlmCategory="METHODS">Patients applied ointment daily to all affected body surface areas. The primary study endpoint was the percentage change in the modified Eczema Area and Severity Index (mEASI) between baseline and treatment end.</AbstractText>
+<AbstractText Label="RESULTS" NlmCategory="RESULTS">Six hundred and twenty-four patients, aged 2-15 years, applied 0.03% tacrolimus ointment once daily (n = 207), twice daily (n = 210) or 1% HA twice daily (n = 207). By the end of treatment, application of 0.03% tacrolimus ointment both once or twice daily resulted in significantly greater median percentage decreases in mEASI (66.7% and 76.7%, respectively) compared with 1% HA (47.6%; P &lt; 0.001). Furthermore, the median percentage decrease in mEASI was significantly greater for patients applying 0.03% tacrolimus twice daily compared with once daily (P = 0.007). Patients with severe AD benefited especially from twice daily application of 0.03% tacrolimus ointment compared with once daily application (P = 0.001). Transient mild to moderate skin burning occurred significantly more often in the 0.03% tacrolimus groups (P = 0.028) but resolved in most cases within 3-4 days. Laboratory parameters showed no clinically relevant changes.</AbstractText>
+<AbstractText Label="CONCLUSIONS" NlmCategory="CONCLUSIONS">0.03% tacrolimus ointment applied once or twice daily is significantly more efficacious than 1% HA in treating moderate-severe AD in children. Twice daily application of 0.03% tacrolimus ointment results in the greatest improvement in mEASI, and is especially effective in patients with severe baseline disease.</AbstractText>
+</Abstract>
+<Affiliation>Department of Dermatology, Helsinki University Central Hospital, Helsinki, Finland. sakari.reitamo@hus.fi</Affiliation>
+<AuthorList CompleteYN="Y">
+<Author ValidYN="Y">
+<LastName>Reitamo</LastName>
+<ForeName>S</ForeName>
+<Initials>S</Initials>
+</Author>
+<Author ValidYN="Y">
+<LastName>Harper</LastName>
+<ForeName>J</ForeName>
+<Initials>J</Initials>
+</Author>
+<Author ValidYN="Y">
+<LastName>Bos</LastName>
+<ForeName>J D</ForeName>
+<Initials>JD</Initials>
+</Author>
+<Author ValidYN="Y">
+<LastName>Cambazard</LastName>
+<ForeName>F</ForeName>
+<Initials>F</Initials>
+</Author>
+<Author ValidYN="Y">
+<LastName>Bruijnzeel-Koomen</LastName>
+<ForeName>C</ForeName>
+<Initials>C</Initials>
+</Author>
+<Author ValidYN="Y">
+<LastName>Valk</LastName>
+<ForeName>P</ForeName>
+<Initials>P</Initials>
+</Author>
+<Author ValidYN="Y">
+<LastName>Smith</LastName>
+<ForeName>C</ForeName>
+<Initials>C</Initials>
+</Author>
+<Author ValidYN="Y">
+<LastName>Moss</LastName>
+<ForeName>C</ForeName>
+<Initials>C</Initials>
+</Author>
+<Author ValidYN="Y">
+<LastName>Dobozy</LastName>
+<ForeName>A</ForeName>
+<Initials>A</Initials>
+</Author>
+<Author ValidYN="Y">
+<LastName>Palatsi</LastName>
+<ForeName>R</ForeName>
+<Initials>R</Initials>
+</Author>
+<Author ValidYN="Y">
+<CollectiveName>European Tacrolimus Ointment Group</CollectiveName>
+</Author>
+</AuthorList>
+<Language>eng</Language>
+<PublicationTypeList>
+<PublicationType>Clinical Trial</PublicationType>
+<PublicationType>Journal Article</PublicationType>
+<PublicationType>Multicenter Study</PublicationType>
+<PublicationType>Randomized Controlled Trial</PublicationType>
+<PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+</PublicationTypeList>
+</Article>
+<MedlineJournalInfo>
+<Country>England</Country>
+<MedlineTA>Br J Dermatol</MedlineTA>
+<NlmUniqueID>0004041</NlmUniqueID>
+<ISSNLinking>0007-0963</ISSNLinking>
+</MedlineJournalInfo>
+<ChemicalList>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance>Anti-Inflammatory Agents</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance>Immunosuppressive Agents</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance>Ointments</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>109581-93-3</RegistryNumber>
+<NameOfSubstance>Tacrolimus</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>50-23-7</RegistryNumber>
+<NameOfSubstance>Hydrocortisone</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>53187-58-9</RegistryNumber>
+<NameOfSubstance>hydrocortisone acetate</NameOfSubstance>
+</Chemical>
+</ChemicalList>
+<CitationSubset>IM</CitationSubset>
+<CommentsCorrectionsList>
+<CommentsCorrections RefType="CommentIn">
+<RefSource>Br J Dermatol. 2004 Dec;151(6):1281; author reply 1281-2</RefSource>
+<PMID Version="1">15606537</PMID>
+</CommentsCorrections>
+</CommentsCorrectionsList>
+<MeshHeadingList>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Administration, Topical</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Adolescent</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Anti-Inflammatory Agents</DescriptorName>
+<QualifierName MajorTopicYN="Y">administration &amp; dosage</QualifierName>
+<QualifierName MajorTopicYN="N">adverse effects</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Burns, Chemical</DescriptorName>
+<QualifierName MajorTopicYN="N">etiology</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Child</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Child, Preschool</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Dermatitis, Atopic</DescriptorName>
+<QualifierName MajorTopicYN="Y">drug therapy</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Double-Blind Method</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Drug Administration Schedule</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Drug Eruptions</DescriptorName>
+<QualifierName MajorTopicYN="N">etiology</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Female</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Hydrocortisone</DescriptorName>
+<QualifierName MajorTopicYN="Y">administration &amp; dosage</QualifierName>
+<QualifierName MajorTopicYN="N">adverse effects</QualifierName>
+<QualifierName MajorTopicYN="Y">analogs &amp; derivatives</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Immunosuppressive Agents</DescriptorName>
+<QualifierName MajorTopicYN="Y">administration &amp; dosage</QualifierName>
+<QualifierName MajorTopicYN="N">adverse effects</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Male</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Ointments</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Patient Satisfaction</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Severity of Illness Index</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Tacrolimus</DescriptorName>
+<QualifierName MajorTopicYN="Y">administration &amp; dosage</QualifierName>
+<QualifierName MajorTopicYN="N">adverse effects</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N">Treatment Outcome</DescriptorName>
+</MeshHeading>
+</MeshHeadingList>
+</MedlineCitation>

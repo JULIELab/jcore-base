@@ -1,0 +1,117 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+  <PMID>5281</PMID>
+  <DateCreated>
+    <Year>1976</Year>
+    <Month>08</Month>
+    <Day>03</Day>
+  </DateCreated>
+  <DateCompleted>
+    <Year>1976</Year>
+    <Month>08</Month>
+    <Day>03</Day>
+  </DateCompleted>
+  <DateRevised>
+    <Year>2003</Year>
+    <Month>11</Month>
+    <Day>14</Day>
+  </DateRevised>
+  <Article PubModel="Print">
+    <Journal>
+      <ISSN IssnType="Print">0014-4754</ISSN>
+      <JournalIssue CitedMedium="Print">
+        <Volume>32</Volume>
+        <Issue>2</Issue>
+        <PubDate>
+          <Year>1976</Year>
+          <Month>Feb</Month>
+          <Day>15</Day>
+        </PubDate>
+      </JournalIssue>
+      <Title>Experientia. </Title>
+      <ISOAbbreviation>Experientia</ISOAbbreviation>
+    </Journal>
+    <ArticleTitle><document><s id="">Mitigation of <e id=":::diso:2,3"><w id="2">graft-versus-host</w> <w id="3">disease</w></e> in <e id=":::spe">rats</e> treated with allogeneic and xenogeneic antilymphocytic <e id=":::pgn">sera</e>.</s></document></ArticleTitle>
+    <Pagination>
+      <MedlinePgn>241-2</MedlinePgn>
+    </Pagination>
+    <Abstract>
+<AbstractText>This is a very short test abstract.</AbstractText>
+</Abstract>
+    <AuthorList CompleteYN="Y">
+      <Author ValidYN="Y">
+        <LastName>Werner</LastName>
+        <ForeName>C</ForeName>
+        <Initials>C</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Ramirez</LastName>
+        <ForeName>E</ForeName>
+        <Initials>E</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Gervasoni</LastName>
+        <ForeName>C</ForeName>
+        <Initials>C</Initials>
+      </Author>
+      <Author ValidYN="Y">
+        <LastName>Jeannet</LastName>
+        <ForeName>M</ForeName>
+        <Initials>M</Initials>
+      </Author>
+    </AuthorList>
+    <Language>eng</Language>
+    <PublicationTypeList>
+      <PublicationType>Journal Article</PublicationType>
+    </PublicationTypeList>
+  </Article>
+  <MedlineJournalInfo>
+    <Country>SWITZERLAND</Country>
+    <MedlineTA>Experientia</MedlineTA>
+    <NlmUniqueID>0376547</NlmUniqueID>
+  </MedlineJournalInfo>
+  <ChemicalList>
+    <Chemical>
+      <RegistryNumber>0</RegistryNumber>
+      <NameOfSubstance>Antilymphocyte Serum</NameOfSubstance>
+    </Chemical>
+    <Chemical>
+      <RegistryNumber>50-18-0</RegistryNumber>
+      <NameOfSubstance>Cyclophosphamide</NameOfSubstance>
+    </Chemical>
+  </ChemicalList>
+  <CitationSubset>IM</CitationSubset>
+  <MeshHeadingList>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Antilymphocyte Serum</DescriptorName>
+      <QualifierName MajorTopicYN="Y">therapeutic use</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="Y">Bone Marrow Cells</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="Y">Bone Marrow Transplantation</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Cyclophosphamide</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Graft vs Host Reaction</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Lymph Nodes</DescriptorName>
+      <QualifierName MajorTopicYN="N">immunology</QualifierName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Rats</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Transplantation, Heterologous</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Transplantation, Homologous</DescriptorName>
+    </MeshHeading>
+  </MeshHeadingList>
+</MedlineCitation>

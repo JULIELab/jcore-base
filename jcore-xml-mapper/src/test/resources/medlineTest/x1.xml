@@ -1,0 +1,161 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+	<PMID>19754888</PMID>
+	<DateCreated>
+		<Year>2009</Year>
+		<Month>09</Month>
+		<Day>16</Day>
+	</DateCreated>
+	<DateCompleted>
+		<Year>2009</Year>
+		<Month>11</Month>
+		<Day>04</Day>
+	</DateCompleted>
+	<Article PubModel="Print">
+		<Journal>
+			<ISSN IssnType="Electronic">1600-065X</ISSN>
+			<JournalIssue CitedMedium="Internet">
+				<Volume>231</Volume>
+				<Issue>1</Issue>
+				<PubDate>
+					<Year>2009</Year>
+					<Month>Sep</Month>
+				</PubDate>
+			</JournalIssue>
+			<Title>Immunological reviews</Title>
+			<ISOAbbreviation>Immunol. Rev.</ISOAbbreviation>
+		</Journal>
+		<ArticleTitle>IP3 receptors: some lessons from DT40 cells.
+		</ArticleTitle>
+		<Pagination>
+			<MedlinePgn>23-44</MedlinePgn>
+		</Pagination>
+		<Abstract>
+			<AbstractText>Inositol-1,4,5-trisphosphate receptors (IP3Rs) are
+				intracellular Ca2+ channels that are regulated by IP3 and Ca2+ and
+				are modulated by many additional signals. These properties allow
+				them to initiate and, via Ca2+-induced Ca2+ release, regeneratively
+				propagate Ca2+ signals evoked by receptors that stimulate formation
+				of IP3. The ubiquitous expression of IP3R highlights their
+				importance, but it also presents problems when attempting to resolve
+				the behavior of defined IP3R. DT40 cells are a pre-B-lymphocyte cell
+				line in which high rates of homologous recombination afford
+				unrivalled opportunities to disrupt endogenous genes. DT40-knockout
+				cells with both alleles of each of the three IP3R genes disrupted
+				provide the only null-background for analysis of homogenous
+				recombinant IP3R. We review the properties of DT40 cells and
+				consider three areas where they have contributed to understanding
+				IP3R behavior. Patch-clamp recording from the nuclear envelope and
+				Ca2+ release from intracellular stores loaded with a low-affinity
+				Ca2+ indicator address the mechanisms leading to activation of
+				IP(3)R. We show that IP3 causes intracellular IP3R to cluster and
+				re-tune their responses to IP3 and Ca2+, better equipping them to
+				mediate regenerative Ca2+ signals. Finally, we show that DT40 cells
+				reliably count very few IP3R into the plasma membrane, where they
+				mediate about half the Ca2+ entry evoked by the B-cell antigen
+				receptor.</AbstractText>
+		</Abstract>
+		<Affiliation>Department of Pharmacology, University of Cambridge,
+			Cambridge, UK. cwt1000@cam.ac.uk</Affiliation>
+		<AuthorList CompleteYN="Y">
+			<Author ValidYN="Y">
+				<LastName>Taylor</LastName>
+				<ForeName>Colin W</ForeName>
+				<Initials>CW</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Rahman</LastName>
+				<ForeName>Taufiq</ForeName>
+				<Initials>T</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Tovey</LastName>
+				<ForeName>Stephen C</ForeName>
+				<Initials>SC</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Dedos</LastName>
+				<ForeName>Skarlatos G</ForeName>
+				<Initials>SG</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Taylor</LastName>
+				<ForeName>Emily J A</ForeName>
+				<Initials>EJ</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Velamakanni</LastName>
+				<ForeName>Saroj</ForeName>
+				<Initials>S</Initials>
+			</Author>
+		</AuthorList>
+		<Language>eng</Language>
+		<GrantList CompleteYN="Y">
+			<Grant>
+				<Agency>Biotechnology and Biological Sciences Research Council
+				</Agency>
+				<Country>United Kingdom</Country>
+			</Grant>
+			<Grant>
+				<Agency>Medical Research Council</Agency>
+				<Country>United Kingdom</Country>
+			</Grant>
+			<Grant>
+				<Agency>Wellcome Trust</Agency>
+				<Country>United Kingdom</Country>
+			</Grant>
+		</GrantList>
+		<PublicationTypeList>
+			<PublicationType>Journal Article</PublicationType>
+			<PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+			<PublicationType>Review</PublicationType>
+		</PublicationTypeList>
+	</Article>
+	<MedlineJournalInfo>
+		<Country>Denmark</Country>
+		<MedlineTA>Immunol Rev</MedlineTA>
+		<NlmUniqueID>7702118</NlmUniqueID>
+		<ISSNLinking>0105-2896</ISSNLinking>
+	</MedlineJournalInfo>
+	<ChemicalList>
+		<Chemical>
+			<RegistryNumber>0</RegistryNumber>
+			<NameOfSubstance>Inositol 1,4,5-Trisphosphate Receptors
+			</NameOfSubstance>
+		</Chemical>
+	</ChemicalList>
+	<CitationSubset>IM</CitationSubset>
+	<MeshHeadingList>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">B-Lymphocytes
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">immunology</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="Y">Calcium Signaling
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Cell Line
+			</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Chickens</DescriptorName>
+			<QualifierName MajorTopicYN="N">immunology</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Inositol
+				1,4,5-Trisphosphate Receptors</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+	</MeshHeadingList>
+	<NumberOfReferences>207</NumberOfReferences>
+</MedlineCitation>

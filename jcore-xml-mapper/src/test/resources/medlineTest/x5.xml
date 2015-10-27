@@ -1,0 +1,155 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+	<PMID>19754892</PMID>
+	<DateCreated>
+		<Year>2009</Year>
+		<Month>09</Month>
+		<Day>16</Day>
+	</DateCreated>
+	<DateCompleted>
+		<Year>2009</Year>
+		<Month>11</Month>
+		<Day>04</Day>
+	</DateCompleted>
+	<Article PubModel="Print">
+		<Journal>
+			<ISSN IssnType="Electronic">1600-065X</ISSN>
+			<JournalIssue CitedMedium="Internet">
+				<Volume>231</Volume>
+				<Issue>1</Issue>
+				<PubDate>
+					<Year>2009</Year>
+					<Month>Sep</Month>
+				</PubDate>
+			</JournalIssue>
+			<Title>Immunological reviews</Title>
+			<ISOAbbreviation>Immunol. Rev.</ISOAbbreviation>
+		</Journal>
+		<ArticleTitle>Mechanistic view on domains mediating STIM1-Orai
+			coupling.</ArticleTitle>
+		<Pagination>
+			<MedlinePgn>99-112</MedlinePgn>
+		</Pagination>
+		<Abstract>
+			<AbstractText>Calcium (Ca2+) entry into non-excitable cells is mainly
+				carried by store-operated channels, which serve essential functions
+				ranging from regulation of transcription to cell growth. The
+				best-characterized store-operated current, initially discovered in T
+				lymphocytes and mast cells, is the Ca2+ release-activated Ca2+
+				(CRAC) current. The search for the molecular components of the CRAC
+				channel has recently identified stromal interaction molecule 1
+				(STIM1) as the Ca2+ sensor in the endoplasmic reticulum (ER) and
+				Orai1 as the CRAC channel pore. ER store depletion results in
+				formation of STIM1 puncta that trigger Ca2+ influx via Orai1
+				channels. This review covers the role of domains within STIM1 and
+				Orai and enlightens their function in the STIM1/Orai coupling
+				process. Moreover, a molecular interpretation focuses on
+				interactions between cytosolic portions of STIM1 and Orai together
+				with a mechanistic view on the loss of function of the SCID (severe
+				combined immunodeficiency)-linked Orai1 R91W mutant channel. The
+				architecture of the selectivity filter of Orai channels is finally
+				elucidated based on permeation properties of Orai pore mutants.
+			</AbstractText>
+		</Abstract>
+		<Affiliation>Institute of Biophysics, University of Linz, Linz,
+			Austria.</Affiliation>
+		<AuthorList CompleteYN="Y">
+			<Author ValidYN="Y">
+				<LastName>Fahrner</LastName>
+				<ForeName>Marc</ForeName>
+				<Initials>M</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Muik</LastName>
+				<ForeName>Martin</ForeName>
+				<Initials>M</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Derler</LastName>
+				<ForeName>Isabella</ForeName>
+				<Initials>I</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Schindl</LastName>
+				<ForeName>Rainer</ForeName>
+				<Initials>R</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Fritsch</LastName>
+				<ForeName>Reinhard</ForeName>
+				<Initials>R</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Frischauf</LastName>
+				<ForeName>Irene</ForeName>
+				<Initials>I</Initials>
+			</Author>
+			<Author ValidYN="Y">
+				<LastName>Romanin</LastName>
+				<ForeName>Christoph</ForeName>
+				<Initials>C</Initials>
+			</Author>
+		</AuthorList>
+		<Language>eng</Language>
+		<PublicationTypeList>
+			<PublicationType>Journal Article</PublicationType>
+			<PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+			<PublicationType>Review</PublicationType>
+		</PublicationTypeList>
+	</Article>
+	<MedlineJournalInfo>
+		<Country>Denmark</Country>
+		<MedlineTA>Immunol Rev</MedlineTA>
+		<NlmUniqueID>7702118</NlmUniqueID>
+		<ISSNLinking>0105-2896</ISSNLinking>
+	</MedlineJournalInfo>
+	<ChemicalList>
+		<Chemical>
+			<RegistryNumber>0</RegistryNumber>
+			<NameOfSubstance>Calcium Channels</NameOfSubstance>
+		</Chemical>
+		<Chemical>
+			<RegistryNumber>0</RegistryNumber>
+			<NameOfSubstance>Membrane Proteins</NameOfSubstance>
+		</Chemical>
+		<Chemical>
+			<RegistryNumber>7440-70-2</RegistryNumber>
+			<NameOfSubstance>Calcium</NameOfSubstance>
+		</Chemical>
+	</ChemicalList>
+	<CitationSubset>IM</CitationSubset>
+	<MeshHeadingList>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Calcium</DescriptorName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Calcium Channels
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="N">genetics</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Cytosol</DescriptorName>
+			<QualifierName MajorTopicYN="N">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Membrane Proteins
+			</DescriptorName>
+			<QualifierName MajorTopicYN="N">chemistry</QualifierName>
+			<QualifierName MajorTopicYN="N">genetics</QualifierName>
+			<QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+		</MeshHeading>
+		<MeshHeading>
+			<DescriptorName MajorTopicYN="N">Protein Binding
+			</DescriptorName>
+		</MeshHeading>
+	</MeshHeadingList>
+	<NumberOfReferences>95</NumberOfReferences>
+</MedlineCitation>
