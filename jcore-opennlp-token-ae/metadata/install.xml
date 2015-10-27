@@ -9,7 +9,7 @@
 	<UIMA_FRAMEWORK>
 	</UIMA_FRAMEWORK>
 	<SUBMITTED_COMPONENT>
-		<ID>jules-opennlp-token-ae</ID>
+		<ID>jcore-opennlp-token-ae</ID>
 		<NAME></NAME>
 		<DESC>$main_root/desc/TokenAnnotator.xml</DESC>
 		<DEPLOYMENT>standard</DEPLOYMENT>

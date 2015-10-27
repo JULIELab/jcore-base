@@ -42,9 +42,9 @@
       <capability>
         <inputs/>
         <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.mantra.Unit</type>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.mantra.Entity</type>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.mantra.DocumentInformation</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.mantra.Unit</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.mantra.Entity</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.mantra.DocumentInformation</type>
         </outputs>
         <languagesSupported/>
       </capability>

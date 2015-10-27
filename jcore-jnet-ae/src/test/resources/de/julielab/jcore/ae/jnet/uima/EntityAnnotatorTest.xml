@@ -91,12 +91,12 @@ Available modes are:
         <name>EntityTypes</name>
         <value>
           <array>
-            <string>variation-event=de.julielab.jules.types.EntityMention</string>
-            <string>variation-location=de.julielab.jules.types.EntityMention</string>
-            <string>variation-state-altered=de.julielab.jules.types.EntityMention</string>
-            <string>variation-state-generic=de.julielab.jules.types.EntityMention</string>
-            <string>variation-state-original=de.julielab.jules.types.EntityMention</string>
-            <string>variation-type=de.julielab.jules.types.EntityMention</string>
+            <string>variation-event=de.julielab.jcore.types.EntityMention</string>
+            <string>variation-location=de.julielab.jcore.types.EntityMention</string>
+            <string>variation-state-altered=de.julielab.jcore.types.EntityMention</string>
+            <string>variation-state-generic=de.julielab.jcore.types.EntityMention</string>
+            <string>variation-state-original=de.julielab.jcore.types.EntityMention</string>
+            <string>variation-type=de.julielab.jcore.types.EntityMention</string>
           </array>
         </value>
       </nameValuePair>
@@ -149,11 +149,11 @@ Available modes are:
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Token</type>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
         </inputs>
         <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.EntityMention</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EntityMention</type>
         </outputs>
         <languagesSupported/>
       </capability>

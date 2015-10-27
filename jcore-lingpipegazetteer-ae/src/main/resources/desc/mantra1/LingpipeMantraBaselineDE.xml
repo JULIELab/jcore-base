@@ -2,7 +2,7 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
-  <annotatorImplementationName>de.julielab.jules.lingpipegazetteer.GazetteerAnnotator</annotatorImplementationName>
+  <annotatorImplementationName>de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>LingpipeMantraBaselineDE</name>
     <description/>
@@ -61,7 +61,7 @@
 				<nameValuePair>
 					<name>OutputType</name>
 					<value>
-						<string>de.julielab.jules.types.Gene
+						<string>de.julielab.jcore.types.Gene
 						</string>
 					</value>
 				</nameValuePair>
@@ -107,7 +107,7 @@
         <fileResourceSpecifier>
           <fileUrl>file:/home/hellrich/mantra/properties/MantraBaselineDE.properties</fileUrl>
         </fileResourceSpecifier>
-        <implementationName>de.julielab.jules.lingpipegazetteer.ChunkerProviderImpl</implementationName>
+        <implementationName>de.julielab.jcore.lingpipegazetteer.ChunkerProviderImpl</implementationName>
       </externalResource>
     </externalResources>
     <externalResourceBindings>

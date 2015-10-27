@@ -24,7 +24,7 @@
       </configurationParameter>
       <configurationParameter>
         <name>OutputType</name>
-        <description>The UIMA annotation type that should be generated for text passages matching a dictionary entry. The given type must be a sub type of de.julielab.jules.types.ConceptMention. The label given for the dictionary entry will be used for the annotation's 'specific type' feature.</description>
+        <description>The UIMA annotation type that should be generated for text passages matching a dictionary entry. The given type must be a sub type of de.julielab.jcore.types.ConceptMention. The label given for the dictionary entry will be used for the annotation's 'specific type' feature.</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>

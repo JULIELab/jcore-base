@@ -56,7 +56,7 @@
       <capability>
         <inputs/>
         <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
         </outputs>
         <languagesSupported/>
       </capability>

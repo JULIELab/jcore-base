@@ -2,7 +2,7 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
-  <annotatorImplementationName>de.julielab.jules.utility.JulesToolsAnnotator</annotatorImplementationName>
+  <annotatorImplementationName>de.julielab.jcore.utility.JulesToolsAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>JulesToolsDescriptor</name>
     <description/>

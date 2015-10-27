@@ -1,4 +1,5 @@
 
 # /
-/.settings
-/.project
+.settings
+.project
+.classpath

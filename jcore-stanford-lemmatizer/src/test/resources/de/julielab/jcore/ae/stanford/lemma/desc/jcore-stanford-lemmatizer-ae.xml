@@ -4,7 +4,7 @@
 	<primitive>true</primitive>
 	<annotatorImplementationName>de.julielab.jcore.ae.stanford.lemma.StanfordLemmatizer</annotatorImplementationName>
 	<analysisEngineMetaData>
-		<name>jules-stanford-lemmatizer-ae</name>
+		<name>jcore-stanford-lemmatizer-ae</name>
 		<description>This is the UIMA Wrapper for the Stanford CoreNLP
 			Lemmatizer component.</description>
 		<version>1.0</version>

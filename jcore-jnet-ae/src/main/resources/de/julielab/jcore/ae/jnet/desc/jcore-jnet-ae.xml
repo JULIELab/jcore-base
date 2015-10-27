@@ -74,9 +74,9 @@ Available modes are:
         <name>EntityTypes</name>
         <value>
           <array>
-            <string>gene-protein=de.julielab.jules.types.EntityMention</string>
-            <string>gene-generic=de.julielab.jules.types.EntityMention</string>
-            <string>gene-rna=de.julielab.jules.types.EntityMention</string>
+            <string>gene-protein=de.julielab.jcore.types.EntityMention</string>
+            <string>gene-generic=de.julielab.jcore.types.EntityMention</string>
+            <string>gene-rna=de.julielab.jcore.types.EntityMention</string>
           </array>
         </value>
       </nameValuePair>
@@ -121,11 +121,11 @@ Available modes are:
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Token</type>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
         </inputs>
         <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.EntityMention</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EntityMention</type>
         </outputs>
         <languagesSupported/>
       </capability>

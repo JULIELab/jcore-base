@@ -29,10 +29,10 @@
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
         </inputs>
         <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Token</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
         </outputs>
         <languagesSupported/>
       </capability>

@@ -66,10 +66,10 @@ etc.</description>
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
         </inputs>
         <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Abbreviation</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Abbreviation</type>
         </outputs>
         <languagesSupported/>
       </capability>

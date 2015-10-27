@@ -9,9 +9,9 @@
   </imports>
   <types>
     <typeDescription>
-      <name>de.julielab.jules.types.BioEntityMention</name>
+      <name>de.julielab.jcore.types.BioEntityMention</name>
       <description>Biomedical Entity (e.g. gene, organism, cell type)</description>
-      <supertypeName>de.julielab.jules.types.EntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.EntityMention</supertypeName>
       <features>
         <featureDescription>
           <name>species</name>
@@ -21,69 +21,69 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Gene</name>
+      <name>de.julielab.jcore.types.Gene</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.MiRNA</name>
+      <name>de.julielab.jcore.types.MiRNA</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Disease</name>
+      <name>de.julielab.jcore.types.Disease</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Organism</name>
+      <name>de.julielab.jcore.types.Organism</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.UnspecifiedOrganism</name>
+      <name>de.julielab.jcore.types.UnspecifiedOrganism</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.Organism</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Organism</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.OrganismAttribute</name>
+      <name>de.julielab.jcore.types.OrganismAttribute</name>
       <description>attributes to an organism such as e.g. sex, developmental stage, transplantation type ...</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.BioEventMention</name>
+      <name>de.julielab.jcore.types.BioEventMention</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.EventMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.BioRelationMention</name>
+      <name>de.julielab.jcore.types.BioRelationMention</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.RelationMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.RelationMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Chemicals</name>
+      <name>de.julielab.jcore.types.Chemicals</name>
       <description>Chemical Entity</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Cell</name>
+      <name>de.julielab.jcore.types.Cell</name>
       <description>Cell Entity</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.MeshMention</name>
+      <name>de.julielab.jcore.types.MeshMention</name>
       <description>Mesh Term</description>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.Protein</name>
+      <name>de.julielab.jcore.types.Protein</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.BioEntityMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.GOMention</name>
+      <name>de.julielab.jcore.types.GOMention</name>
       <description/>
-      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
       <features>
         <featureDescription>
           <name>categories</name>
@@ -99,9 +99,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jules.types.GeneResourceEntry</name>
+      <name>de.julielab.jcore.types.GeneResourceEntry</name>
       <description>A specific version of the resource entry for Gene entries.</description>
-      <supertypeName>de.julielab.jules.types.ResourceEntry</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ResourceEntry</supertypeName>
       <features>
         <featureDescription>
           <name>synonym</name>

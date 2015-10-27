@@ -34,7 +34,7 @@
       <nameValuePair>
         <name>tagset</name>
         <value>
-          <string>de.julielab.jules.types.PennBioIEPOSTag</string>
+          <string>de.julielab.jcore.types.PennBioIEPOSTag</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
@@ -48,11 +48,11 @@
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Token</type>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
         </inputs>
         <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jules.types.POSTag</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.POSTag</type>
         </outputs>
         <languagesSupported/>
       </capability>

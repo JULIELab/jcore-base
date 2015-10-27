@@ -39,7 +39,7 @@
       <nameValuePair>
         <name>OutputType</name>
         <value>
-          <string>de.julielab.jules.types.EntityMention</string>
+          <string>de.julielab.jcore.types.EntityMention</string>
         </value>
       </nameValuePair>
       <nameValuePair>

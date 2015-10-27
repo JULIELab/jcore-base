@@ -38,7 +38,7 @@
       </configurationParameter>
       <configurationParameter>
         <name>typePath</name>
-        <description>The path of the UIMA types, e.g. "de.julielab.jules." (with terminating "."!). It is prepended to the class names in labelNameMethods. This parameter may be null which is equivalent to the empty String "".</description>
+        <description>The path of the UIMA types, e.g. "de.julielab.jcore." (with terminating "."!). It is prepended to the class names in labelNameMethods. This parameter may be null which is equivalent to the empty String "".</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
@@ -70,7 +70,7 @@
         <name>iobLabelNames</name>
         <value>
           <array>
-            <string>de.julielab.jules.types.Gene=Gene</string>
+            <string>de.julielab.jcore.types.Gene=Gene</string>
           </array>
         </value>
       </nameValuePair>
@@ -83,7 +83,7 @@
       <nameValuePair>
         <name>typePath</name>
         <value>
-          <string>de.julielab.jules.types.</string>
+          <string>de.julielab.jcore.types.</string>
         </value>
       </nameValuePair>
       <nameValuePair>

@@ -9,8 +9,8 @@
 		</encoder>
 	</appender>
 
-	<logger name="de.julielab.jules.reader.EventReader" level="INFO" />
-	<logger name="de.julielab.jules.utility.JulesTools" level="INFO" />
+	<logger name="de.julielab.jcore.reader.EventReader" level="INFO" />
+	<logger name="de.julielab.jcore.utility.JulesTools" level="INFO" />
 	<root level="TRACE">
 		<appender-ref ref="STDOUT" />
 	</root>

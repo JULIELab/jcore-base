@@ -61,7 +61,7 @@
 				<nameValuePair>
 					<name>OutputType</name>
 					<value>
-						<string>de.julielab.jules.types.Gene
+						<string>de.julielab.jcore.types.Gene
 						</string>
 					</value>
 				</nameValuePair>

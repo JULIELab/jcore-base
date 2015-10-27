@@ -493,7 +493,7 @@
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkComplexNP</name>
-      <description>This encodes a complex noun phrase (CNP) which is usually an extension of a ChunkNP (see, e.g., jules-cnp-extractor-ae). A CNP is currently defined to be the top-modes noun phrase of a constituency parse tree (excluding some special phrases such as appositions and SBARs).</description>
+      <description>This encodes a complex noun phrase (CNP) which is usually an extension of a ChunkNP (see, e.g., jcore-cnp-extractor-ae). A CNP is currently defined to be the top-modes noun phrase of a constituency parse tree (excluding some special phrases such as appositions and SBARs).</description>
       <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
