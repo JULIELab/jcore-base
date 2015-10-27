@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<name>StemNetSemanticsTypeSystem</name>
+<description></description>
+<version>1.7</version>
+<vendor>http://www.julielab.de</vendor>
+<imports>
+<import location="JulieTypeSystem.xml"/>
+</imports>
+<types>
+<typeDescription>
+<name>de.julielab.jules.types.Cytokine</name>
+<description>Cytokine</description>
+<supertypeName>de.julielab.jules.types.Gene</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Chemokine</name>
+<description>Chemokine</description>
+<supertypeName>de.julielab.jules.types.Gene</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.CytokineReceptor</name>
+<description>Cytokine Receptor</description>
+<supertypeName>de.julielab.jules.types.Gene</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.ChemokineReceptor</name>
+<description>Chemokine Receptor</description>
+<supertypeName>de.julielab.jules.types.Gene</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Variation</name>
+<description>Variation</description>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.VariationLocation</name>
+<description>Variation Location</description>
+<supertypeName>de.julielab.jules.types.Variation</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.VariationStateOriginal</name>
+<description>original state of the variation</description>
+<supertypeName>de.julielab.jules.types.Variation</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.VariationStateAltered</name>
+<description>altered state of the variation</description>
+<supertypeName>de.julielab.jules.types.Variation</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.VariationStateGeneric</name>
+<description>generic state of the variation</description>
+<supertypeName>de.julielab.jules.types.Variation</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.VariationProcess</name>
+<description>super type for processes in variation event</description>
+<supertypeName>de.julielab.jules.types.Variation</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.VariationEvent</name>
+<description></description>
+<supertypeName>de.julielab.jules.types.VariationProcess</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.VariationType</name>
+<description></description>
+<supertypeName>de.julielab.jules.types.VariationProcess</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Organism</name>
+<description></description>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.UnspecifiedOrganism</name>
+<description></description>
+<supertypeName>de.julielab.jules.types.Organism</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Gene</name>
+<description></description>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.OrganismAttribute</name>
+<description>attributes to an organism such as e.g. sex, developmental stage, transplantation type ...</description>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.CD_antigens</name>
+<description></description>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.MinorHA</name>
+<description></description>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Disease</name>
+<description></description>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.HematopoieticProgenitorCell</name>
+<description/>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.LymphoidLeukocyte</name>
+<description/>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.MyeloidLeukocyte</name>
+<description/>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Erythrocyte</name>
+<description/>
+<supertypeName>de.julielab.jules.types.BioEntity</supertypeName>
+</typeDescription>
+</types>
+</typeSystemDescription>

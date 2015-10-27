@@ -1,0 +1,107 @@
+
+------------------RESULTS------------------
+
+number of all acronyms alltogether: 257
+	 found by Medstract only: 47	(18 %)
+	 found by AcronymAnnotator only: 40	(15 %)
+	 found by both: 170	(66 %)
+
+
+-------------------------------------------------
+Precision of AcronymAnnotator:	80.95238095238095
+Recall of AcronymAnnotator:	78.3410138248848
+-------------------------------------------------
+
+>>> pairs only by AcronymAnnotator:
+
+LCMV                           lymphocytic choriomeningitis virus
+JNK                            jun nh2 terminal kinase
+TFIIB                          transcription factor iib
+Cx50                           channels formed by alpha3 cx46 and alpha8
+MHC                            myosin heavy chain
+VHL                            von hippel lindau
+HOT1                           hot spot
+bHLH                           basic helix loop helix
+CLIP                           class ii associated invariant chain peptide
+DHPG                           dihydroxyphenylglycine
+PERE                           primary ethylene response element
+TTF-1                          transcription factor 1
+CaSR                           ca2 sensing receptor
+HMG-CoA                        hydroxy 3 methylglutaryl coenzyme a
+GMCSF                          granulocyte macrophage colony stimulating factor gene
+BP                             bipolarity
+14C-UBT                        c urea breath test
+LI                             labeling index
+ET                             endothelin
+PaO2                           pressure of oxygen in arterial blood
+HIV                            human immunodeficiency virus
+SOD1                           superoxide dismutase
+LRP1                           lipoprotein receptor related protein gene
+apoE                           apolipoprotein e
+DYT1                           dystonia
+DYT5                           dystonia
+SS                             steer serum
+HZA                            hemizona assay
+OPU                            ovum pick up
+L-OPU                          laparoscopic opu
+IVF                            in vitro maturation ivm and fertilization
+Me2SO                          methanol dimethyl sulfoxide
+SCSA                           structure assay
+SPR                            seasonal pregnancy rate
+TSH                            tissue for thyrotropin
+PMA                            phorbol ester 12 myriistate 13 acetate
+ICM                            inner cell mass
+EFSm                           efs modified ef
+NCSU                           north carolina state university
+ICM                            inner cell mass
+
+
+>>> pairs only by Medstract:
+
+TCR                            pre t cell receptor
+TCR                            pre t cell receptor
+ATN                            anterior thalamus
+CD95                           fas
+LCMV                           ymphocytic choriomeningitis virus
+JNK                            c jun nh2 terminal kinase
+TH                             cd4 helper t
+TFIIB                          general transcription factor iib
+O-glycans                      serine threonine linked oligosaccharide
+dsf                            dissatisfaction
+MHC                            alpha myosin heavy chain
+VHL                            multiprotein von hippel lindau
+PKA                            camp dependent protein kinase a
+HOT1                           recombination hot spot
+v-src                          tyrosine kinase pp60
+N-methyl-D-aspartate           nmda
+so                             sine ocule
+eya                            eyes absent
+Pax6                           eyeless
+CLIP                           recombination hot spot
+DHPG                           3 5 dihydroxyphenylglycine
+TGF-beta                       ransforming growth factor beta
+TTF-1                          hyroid transcription factor 1
+HMG-CoA                        3 hydroxy 3 methylglutaryl coenzyme a
+GMCSF                          colony stimulating factor gene
+TEMPS-I                        semi structured affective temperament interview
+BP                             prepubertal bipolarity
+Pi                             inorganic phosphate
+Raw                            airway resistance
+rhG-CSF                        filgrastim
+ET                             interaction of endothelin
+PaO2                           partial pressure of oxygen in arterial blood
+SOD1                           cu zn superoxide dismutase
+LRP1                           low density lipoprotein receptor related protein gene
+DYT5                           dopa responsive dystonia
+T                              testosterone
+SET                            transfer of single embryo
+DET                            bilateral transfer of two embryo
+OPU                            transvaginal ovum pick up
+Me2SO                          dimethyl sulfoxide
+SCSA                           sperm chromatin structure assay
+TSH                            thyrotropin
+CIDR                           intravaginal progesterone device
+FITC-PSA                       fluorescein conjugated pisum sativum agglutinin
+EFSm                           modified ef
+GSH                            glutathione
+NCSU                           null

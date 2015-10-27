@@ -1,0 +1,243 @@
+\documentclass[11pt,a4paper,halfparskip]{scrartcl}
+\usepackage{graphicx}
+\usepackage[utf8x]{inputenc}
+\usepackage{url} 
+\usepackage[T1]{fontenc}
+\usepackage{ucs} 
+\pagestyle{plain}
+
+\title{\small{Documentation for}\\\huge JULIE Lab Acronym
+  Annotator\\\vspace{3mm}\small{Version 2.1}}
+  
+
+\author{\normalsize Katrin Tomanek ~~~~~~~~~~~~~ Christina Tusche\\
+  \normalsize  Jena University Language \& Information Engineering (JULIE) Lab\\
+  \normalsize F\"urstengraben 30 \\
+  \normalsize D-07743 Jena, Germany\\
+  {\normalsize \tt katrin.tomanek@uni-jena.de} }
+
+
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Objective}
+
+JULIE Lab Acronym Annotator (JACRO) is an UIMA Analysis Engine that
+annotates acronyms with their full-forms when locally introduced in
+the current document.  It is part of the JULIE Lab NLP tool
+suite\footnote{\url{http://www.julielab.de/}} which contains several
+UIMA-compliant NLP components from sentence splitting to named entity
+recognition and normalization as well as a comprehensive UIMA type
+system.
+
+The functionality of the engine is based on the simple algorithm for
+abbreviation recognition by Schwartz and
+Hearst\footnote{\url{http://biotext.berkeley.edu/papers/psb03.pdf}}. We
+have reimplemented the algorithm and extended it with respect to some
+pattern definitions and normalizations. 
+
+During the processing of documents, this UIMA annotator takes sentence
+annotions from the CAS and creates an \url{Abbreviation} annotation
+object for each identified acronym. The \url{Abbreviation} annotation
+stores the corresponding full-form, whether the acronym was introduced
+at the respective position, and a reference to the full-form in the
+text.
+%\section{Changelog}
+% uncomment when needed
+
+
+\section{Requirements and Dependencies}
+
+% mostly our tools will be based on java 1.5 and use UIMA
+The annotator is completely written in Java (at least Java 1.5
+required) using Apache UIMA version
+2.2.1-incubation\footnote{\url{http://incubator.apache.org/uima/}}.
+
+% ref to our type system
+The input and output of an AE takes place by annotation objects. The
+classes corresponding to these objects are part of the \emph{JULIE Lab
+  UIMA Type System} in its current version (2.1).\footnote{The
+  \emph{JULIE Lab UIMA type system} can be separately obtained from
+  \url{http://www.julielab.de/}, however, this package already
+  includes the necessary parts of the type system.}
+
+% now other dependencies you tool might have (you might organize this
+% a subsections as well)
+
+
+
+
+\section{Using the AE -- Descriptor Configuration}
+% carefully edit this section!
+
+In UIMA, each component is configured by a descriptor in XML. In the
+following we describe how the descriptor required by this AE can be
+created with the \emph{Component Descriptor Editor}, an Eclipse plugin
+which is part of the UIMA SDK. 
+
+A descriptor contains information on different aspects. The following
+subsection refers to each sub aspect of the descriptor which is, in
+the Component Descriptor Editor, a separate \emph{tabbed page}. For an
+indepth description of the respective configuration aspects or tabs,
+please refer to the \emph{UIMA SKD User's
+  Guide}\footnote{\url{http://incubator.apache.org/uima/}}, especially
+the chapter on ``Component Descriptor Editor User's Guide''.
+
+To define your descriptor go through each tabbed page mentioned
+here, make your respective entries and save
+the descriptor as e.g. \url{AcronymAnnotatorDescriptor.xml}.
+
+\textbf{As this package already contains a pre-configured descriptor
+  (see \url{desc/AcronymAnnotator.xml}) there is no need to build such
+  a descriptor from scratch. However, you might modify the parameter
+  settings according to your needs.}
+
+\paragraph{Overview}
+This tab provides general informtion about the component. For the
+Acronym Annotator you need to provide the information as specified in
+Table \ref{tab:overview}.
+% adapt to your needs, remember to change values in tabular below!
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{3.5cm}|p{4cm}|p{6cm}|}
+    \hline
+    Subsection & Key & Value \\
+    \hline\hline
+    Implementation Details & Implementation Language &  Java\\
+    \cline{2-3}
+    & Engine Type & primitive\\
+    \hline
+    Runtime Information & updates the CAS & yes \\
+    \cline{2-3}
+    & multiple deployment allowed & yes\\
+    \cline{2-3}
+    & outputs new CASes & yes \\
+    \cline{2-3}
+    & Name of the Java class file & \url{de.julielab.jules.ae.acronymtagger.AcronymAnnotator}\\
+    \hline
+    Overall Identification Information & Name & Acronym Annotator \\
+    \cline{2-3}
+    & Version &  2.1\\
+    \cline{2-3}
+    & Vendor & julielab\\
+    \cline{2-3}
+    & Description & you may keep this empty\\
+    \hline
+  \end{tabular}
+  \caption{Overview/General Settings for AE.}
+  \label{tab:overview}
+\end{table}
+
+
+\paragraph{Aggregate}
+% for primitive AEs this does not have to be set
+Not needed here, as this AE is a primitive.
+
+\paragraph{Parameters}
+\label{sss:parameters}
+% adapt to your needs
+
+See Table \ref{tab:parameters} for a specification of the
+configuration parameters of this AE. Do not check ``Use Parameter
+Groups'' in this tab.
+
+
+\begin{table}[ht!]
+  \centering
+  \begin{tabular}{|p{2.8cm}|p{1.8cm}|p{1.5cm}|p{1.5cm}|p{5cm}|}
+    \hline
+    Parameter Name & Parameter Type & Mandt. & Multi\-valued & Description \\
+    \hline\hline
+    ConsistencyAnno & Bool & yes & no & specifies whether only the first or all occurences of the acronym are annotated in the document\\
+\hline
+MaxLength & Integer &  yes & no & Define how far (how many words, ignoring stopwords) the AE is supposed too look for the beginning of the fullform.\\
+    \hline
+  \end{tabular}
+  \caption{Parameters of this AE.}
+  \label{tab:parameters}
+\end{table}
+
+
+
+\paragraph{Parameter Settings}
+\label{sss:param_settings}
+% adapt to your needs
+
+The specific parameter settings are filled in here. For each of the
+parameters defined in Table \ref{tab:parameters}, add the respective values
+here (has to be done at least for each parameter that is defined as
+mandatory). See Table \ref{tab:param_settings} for the respective
+parameter settings of this AE.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{2.8cm}|p{5cm}|p{6cm}|}
+    \hline
+    Parameter Name & Parameter Syntax & Example \\
+    \hline\hline
+    \hline
+    ConsistencyAnno & set to true iff you want to annotate all occurences of the found acronyms &
+    true\\
+\hline
+MaxLength & just an integer & 5 \\
+  \hline
+  \end{tabular}
+  \caption{Parameter settings of this AE.}
+  \label{tab:param_settings}
+\end{table}
+
+\paragraph{Type System}
+\label{sss:type_system}
+On this page, go to \emph{Imported Type} and add the following layers
+of the \emph{JULIE UIMA Type System} (Use ``Import by Location''):
+\url{julie-basic-types.xml} and \url{julie-morpho-syntax-types.xml}.
+
+
+\paragraph{Capabilities}
+\label{sss:capabilities}
+JACRO takes as input annotations from type \url{de.julielab.jules.types.Sentence} and returns annotations from type \url{de.julielab.jules.types.Abbreviation}. See Table \ref{tab:capabilities}.
+% adapt if needed
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{5cm}|p{2cm}|p{2cm}|}
+    \hline
+    Type & Input & Output \\
+    \hline\hline
+     de.julielab.jules.types.Sentence & $\surd$ & \\
+      \hline
+     de.julielab.jules.types.Abbreviation & &  $\surd$  \\
+      \hline
+  \end{tabular}
+  \caption{Capabilities of this AE.}
+  \label{tab:capabilities}
+\end{table} 
+
+
+\paragraph{Index}
+% adapt if needed
+Nothing needs to be done here.
+
+\paragraph{Resources}
+% adapt if needed
+Nothing needs to be done here.
+
+
+\section{Copyright and License}
+% leave unchanged
+This software is Copyright (C) 2008 Jena University Language \& Information
+Engineering Lab (Friedrich-Schiller University Jena, Germany), and is
+licensed under the terms of the Common Public License, Version 1.0 or (at
+your option) any subsequent version.
+
+The license is approved by the Open Source Initiative, and is
+available from their website at \url{http://www.opensource.org}.
+
+\bibliographystyle{alpha}
+%\bibliography{/home/paper/biblio/paper.bib}
+
+
+\end{document}

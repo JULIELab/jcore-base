@@ -1,0 +1,22 @@
+
+------------------RESULTS------------------
+
+number of all acronyms alltogether: 14
+	 found by MMAX only: 1	(7 %)
+	 found by AcronymAnnotator only: 1	(7 %)
+	 found by both: 12	(85 %)
+
+
+-------------------------------------------------
+Precision of AcronymAnnotator:	92.3076923076923
+Recall of AcronymAnnotator:		92.3076923076923
+-------------------------------------------------
+
+>>> pairs only by AcronymAnnotator:
+
+RT-PCR              reverse transcriptase polymerase chain reaction
+
+
+>>> pairs only by MMAX:
+
+RT - PCR            reverse transcriptase polymerase chain reaction
