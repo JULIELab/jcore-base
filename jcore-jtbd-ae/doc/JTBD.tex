@@ -1,0 +1,481 @@
+\documentclass[11pt,a4paper,halfparskip]{scrartcl}
+\usepackage{graphicx}
+\usepackage[utf8x]{inputenc}
+\usepackage{url} 
+\usepackage[T1]{fontenc}
+\usepackage{ucs} 
+\pagestyle{plain}
+
+\title{\small{Documentation for}\\\huge JULIE Lab Token Boundary Detector\\\vspace{3mm}\small{Version 2.4}}
+
+
+\author{\normalsize Katrin Tomanek\\
+  \normalsize  Jena University Language \& Information Engineering (JULIE) Lab\\
+  \normalsize F\"urstengraben 30 \\
+  \normalsize D-07743 Jena, Germany\\
+  {\normalsize \tt katrin.tomanek@uni-jena.de} }
+
+
+
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{UIMA Wrapper}
+
+The JULIE Lab Token Boundary Detector (UIMA-JTBD) is a token boundary
+detector for UIMA.  It is part of the JULIE Lab NLP tool
+suite\footnote{\url{http://www.julielab.de/}} which contains several
+NLP components (all UIMA compliant) from sentence splitting to named
+entity recognition and normalization as well as a comprehensive UIMA
+type system.
+
+UIMA-JTBD is an UIMA wrapper for JTBD, the respective command-line
+version. For more detailed information on the functioning of JTBD
+check the JTBD documentation or refer to \cite{Tomanek2007a}.
+
+\subsection{Installation}
+
+UIMA-JTBD comes as a UIMA pear file. Run the Pear-Installer (e.g.,
+\url{./runPearInstaller.sh} for Linux) from your UIMA-bin directory.
+After installation, you will find a subfolder \url{desc} in you
+installation folder. This directory contains a descriptor
+\url{TokenAnnotator.xml} for UIMA-JTBD. You may now e.g. run UIMA's
+Collection Proeccessing Engine Configurator (\url{cpeGUI.sh}) and add
+UIMA-JTBD as a component into your NLP pipeline.
+
+This pear package also contains a model for tokenization splitting. The
+model was trained on a special bio-medical corpus which consists of
+data from (manually annotated) material which we took from MedLine
+abstracts and a modified version of
+\textsc{PennBioIE}'s\footnote{\url{http://bioie.ldc.upenn.edu/}}
+underlying tokenization. In the \textsc{PennBioIE} corpus, some purely
+alphanumeric strings are divided into smaller tokens to support
+\textsc{PennBioIE}'s entity annotation, especially in a common
+annotation for variation events (e.g.  "S45F" with
+"S"=state\_original, "45"=location, "F"=state\_altered).  Those splits
+were (manually) undone to fit our tokenization guidelines.  Currently,
+our tokenization corpus comprises about 36000 sentences.  An accuracy
+of ACC=96.7\% is reached on this data using 10-fold cross-validation.
+You will find the model trained on this data in the directory
+\url{resources}.
+
+%\section{Changelog}
+% uncomment when needed
+
+
+\subsection{Requirements and Dependencies}
+
+% mostly our tools will be based on java 1.5 and use UIMA
+UIMA-JTBD is written in Java (version 1.5 or above required) using
+Apache UIMA version
+2.2.x-incubation\footnote{\url{http://incubator.apache.org/uima/}}.
+
+% ref to our type system
+The input and output of an AE takes place by annotation objects. The
+classes corresponding to these objects are part of the \emph{JULIE Lab
+  UIMA Type System} in its current version (2.1).\footnote{The
+  \emph{JULIE Lab UIMA type system} can be separately obtained from
+  \url{http://www.julielab.de/}, however, this package already
+  includes the necessary parts of the type system.}
+
+UIMA-JTBD employs the machine learning toolkit MALLET
+\cite{McCallum2002}.
+
+
+
+
+\subsection{Using the AE -- Descriptor Configuration}
+% carefully edit this section!
+
+In UIMA, each component is configured by a descriptor in XML. In the
+following we describe how the descriptor required by this AE can be
+created with the \emph{Component Descriptor Editor}, an Eclipse plugin
+which is part of the UIMA SDK.
+
+A descriptor contains information on different aspects. The following
+subsection refers to each sub aspect of the descriptor which is, in
+the Component Descriptor Editor, a separate \emph{tabbed page}. For an
+indepth description of the respective configuration aspects or tabs,
+please refer to the \emph{UIMA SKD User's
+  Guide}\footnote{\url{http://incubator.apache.org/uima/}}, especially
+the chapter on ``Component Descriptor Editor User's Guide''.
+
+To define your own descriptor go through each tabbed pages mentioned
+here, make your respective entries (especially in page \emph{Parameter
+  Settings} you will be able to configure JNET to your needs) and save
+the descriptor as \url{SomeName.xml}.
+
+Otherwise, you can of course employ the descriptor that is contained
+in the pear package you downloaded (in your installation directory, see
+\url{desc/TokenAnnotator.xml}).
+
+\paragraph{Overview}
+This tab provides general informtion about the component. For the
+UIMA-JTBD you need to provide the information as specified in Table
+\ref{tab:overview}.
+% adapt to your needs, remember to change values in tabular below!
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{3.5cm}|p{4cm}|p{6cm}|}
+    \hline
+    Subsection & Key & Value \\
+    \hline\hline
+    Implementation Details & Implementation Language & Java \\
+    \cline{2-3}
+    & Engine Type & primitive \\
+    \hline
+    Runtime Information & updates the CAS & yes \\
+    \cline{2-3}
+    & multiple deployment allowed & yes \\
+    \cline{2-3}
+    & outputs new CASes &  no \\
+    \cline{2-3}
+    & Name of the Java class file & \url{de.julielab.jules.ae.TokenAnnotator}\\
+    \hline
+    Overall Identification Information & Name &  Token Annotator \\
+    \cline{2-3}
+    & Version &  2.4 \\
+    \cline{2-3}
+    & Vendor & JULIE Lab\\
+    \cline{2-3}
+    & Description & not needed\\
+    \hline
+  \end{tabular}
+  \caption{Overview/General Settings for AE.}
+  \label{tab:overview}
+\end{table}
+
+
+\paragraph{Aggregate}
+% for primitive AEs this does not have to be set
+Not needed here, as this AE is a primitive.
+
+\paragraph{Parameters}
+\label{sss:parameters}
+% adapt to your needs
+
+See Table \ref{tab:parameters} for a specification of the
+configuration parameters of this AE. Do not check ``Use Parameter
+Groups'' in this tab.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{4cm}|p{2cm}|p{2cm}|p{2cm}|p{4cm}|}
+    \hline
+    Parameter Name & Parameter Type & Mandatory & Multivalued & Description \\
+    \hline\hline
+    ModelFilename & String & yes & no & filename to model trained for JTBD\\
+    \hline
+  \end{tabular}
+  \caption{Parameters of this AE.}
+  \label{tab:parameters}
+\end{table}
+
+
+\paragraph{Parameter Settings}
+\label{sss:param_settings}
+% adapt to your needs
+
+The specific parameter settings are filled in here. For each of the
+parameters defined in \ref{sss:parameters}, add the respective values
+here (has to be done at least for each parameter that is defined as
+mandatory). See Table \ref{tab:param_settings} for the respective
+parameter settings of this AE.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{4cm}|p{4cm}|p{7cm}|}
+    \hline
+    Parameter Name & Parameter Syntax & Example \\
+    \hline\hline
+    ModelFilename & full path & \url{resources/JULIE_life-science-1.6.mod.gz}\\
+    \hline
+  \end{tabular}
+  \caption{Parameter settings of this AE.}
+  \label{tab:param_settings}
+\end{table}
+
+\paragraph{Type System}
+\label{sss:type_system}
+On this page, go to \emph{Imported Type} and add the \emph{JULIE UIMA
+  Type System}. (Use ``Import by Location'').
+
+
+\paragraph{Capabilities}
+\label{sss:capabilities}
+The tokenizer takes as input annotations from type \url{de.julielab.jules.types.Sentence} and returns annotations from type \url{de.julielab.jules.types.Token}. See Table \ref{tab:capabilities}.
+% adapt if needed
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|p{5cm}|p{2cm}|p{2cm}|}
+    \hline
+    Type & Input & Output \\
+    \hline\hline
+     de.julielab.jules.types.Sentence & $\surd$ & \\
+      \hline
+     de.julielab.jules.types.Token & &  $\surd$  \\
+      \hline
+  \end{tabular}
+  \caption{Capabilities of this AE.}
+  \label{tab:capabilities}
+\end{table} 
+
+
+\paragraph{Index}
+% adapt if needed
+Nothing needs to be done here.
+
+\paragraph{Resources}
+% adapt if needed
+Nothing needs to be done here.
+
+
+
+\clearpage
+\section{JTBD: Core Functionality and Stand Alone Tool}
+\label{sec_objective}
+
+
+JULIE Token Boundary Detector (JTBD) is a tokenizer developed and
+optimized for the bio-medical domain. In contrast to many other
+tokenizers which consists of simple patterns, JTBD is based on machine
+learning (see Section \ref{sec:background}) which enables it to handle
+also tricky cases occuring frequently in life science documents. See
+\cite{tomanek.medinfo07} for a more in depth description of JTDB and a
+performance study.
+
+
+JTBD offers the following functionalities:
+\begin{itemize}
+\item training a model
+\item prediction using a previously trained model
+\item evaluation
+\end{itemize}
+
+% \subsection{Changelog}
+% since version 1.5:
+% \begin{itemize}
+% \item minor bugs removed (consecutive whitespaces)
+% \end{itemize}
+
+% since version 1.4:
+% \begin{itemize}
+% \item models compressed with GZIP
+%   umlauts)\end{itemize}
+
+
+% since version 1.4:
+% \begin{itemize}
+% \item regular expression set modified (JTBD can now also handle german
+%   umlauts)\end{itemize}
+
+
+\subsection{Installation}
+Just unpack the tar-ball. The program is written in Java\footnote{Java
+  is a registered trademark of Sun Microsystems, Inc.}. Note that JTBD
+was only tested with Java 1.5; you need at least the Java 1.5 runtime
+environment installed on your system to run JTBD. In addition to the
+common Java libraries, JTBD employs \textsc{MALLET} \cite{mallet}, a
+machine learning toolkit (no further installation steps are
+required here).
+
+\subsection{File Formats}
+\label{sec_formats}
+
+
+There are two input formats for text documents. There are some example
+documents in directory \url{testdata}. All data need to be simple
+ASCII.
+
+\begin{itemize}
+\item For training and evaluation, two files are needed, called
+  <sent-file> and <tok-file> later on. <sent-file> contains sentence
+  information (one sentence per line) and <tok-file> contains the
+  tokenization information (also here one sentence per line and
+  tokenization made by adding white spaces). See the files in
+  \url{testdata} for examples (\url{train.*}).
+\item For tokenization, the input files have to be sentence splitted,
+  i.e. there has to be exactly one sentence per line.  See the files
+  in \url{testdata} for examples (\url{split.txt}).
+\end{itemize}
+
+\subsection{Using JTBD}
+
+To execute JTBD just type 
+
+\begin{verbatim}
+./runJTBDpackaged.sh
+\end{verbatim}
+
+without any arguments. This will print the following list of available
+modes:
+
+\begin{verbatim}
+usage: JTBD <mode> <mode-specific-parameters>
+
+Available modes:
+c: check data 
+s: 90-10 split evaluation
+x: cross validation 
+t: train a tokenizer 
+p: predict with tokenizer 
+e: evaluation on previously trained model
+\end{verbatim}
+
+When running JTBD only with the mode as its only parameter it will
+return the specific parameters needed for this mode.
+
+\subsection{Data Check}
+
+The provided data is checked for the correct format.
+
+\begin{verbatim}
+./runJTBDpackaged.sh c
+
+-> usage: JTBD c <sent-file> <tok-file>
+\end{verbatim}
+
+\textit{<sent-file>} is a sentence splitted document (one sentence in
+each line); \textit{<tok-file>} is a sentence splitted and tokenized
+document (one sentence in each line and a white space after each
+single token).
+
+\subsection{Evaluation}
+
+There are two evaluation modes to evaluate the tokenizer on given
+training material. Performance is measured in terms of accuracy, i.e.\
+the number of correct decisions divided by the total number of
+decisions being made.
+
+\begin{description}
+\item [90-10 split evaluation] the given data is split into two data
+  sets, 90\% of the files are used for training the model, the other
+  10\% are used to evaluate the trained model (splits are made on file
+  level, i.e. you should make sure, that the files are more or less of
+  the same size)
+
+\begin{verbatim}
+./runJTBDpackaged.sh s
+
+-> usage: usage: JTBD s <sent-file> <tok-file> <predout-file> <errout-file>
+\end{verbatim}
+
+  \textit{<sent-file>} is a sentence splitted document (one sentence
+  in each line); \textit{<tok-file>} is a sentence splitted and
+  tokenized document (one sentence in each line and a white space
+  after each single token); \textit{predout-file} is a file where all
+  the predictions made during this evaluation are written to.
+  \textit{<errorFile>} is a file where all predictions errors are
+  written to. The Format of this file is as follows: @P->N indicates a
+  false negative error, @N->P indicates a false positive error, then
+  the prediction and the original tokenization are shown (the
+  problematic token itself and some neighbouring tokens) and finally
+  the complete sentence where the error occured (predicted and
+  original version).
+
+
+\item[X-fold cross-validation] the given data is split into X data
+  set. X rounds of evaluation are run, in each round X-1 of these data
+  sets are used for training and the remaining one is used for
+  evaluation. Finally, the results of each round are averaged. (splits
+  are made the same way as in 90-10 mode)
+
+\begin{verbatim}
+./runJTBDpackaged.sh x
+
+-> usage: usage: JTBD x <sent-file> <tok-file> 
+                        <cross-val-rounds> <predout-file> <errout-file>
+\end{verbatim}
+
+  \textit{<sentFile>}, \textit{<tokFile>}, \textit{<predout-file>} and
+  \textit{<errorout-file>} are the same as in 90-10 split mode.
+  \textit{<cross-val-round>} is the number of rounds for
+  cross-validation. Typically, this might be set to 10.
+
+\end{description}
+
+\subsection{Training}
+
+To train a tokenizer model, you need to provide some training material
+(format: see above). The trained model can then be saved to disk and
+used for tokenization.
+
+\begin{verbatim}
+./runJTBDpackaged.sh t
+
+-> usage: JTBD t <sent-file> <tok-file> <model-file>
+\end{verbatim}
+
+\textit{<sent-file>} and \textit{<tok-file>} is the sentence splitted
+and tokenized training data. \textit{<model-file>} is the file where
+the resulting model is saved to.
+
+\subsection{Prediction}
+
+To employ the tokenizer, you need a trained model. Directory
+\url{resources} contains a pre-trained model for life-science documents.
+
+\begin{verbatim}
+./runJTBDpackaged.sh p
+
+-> JTBD p JTBD p <inDir> <outDir> <model-file>
+\end{verbatim}
+
+\textit{<inDir>} is a directory of text documents which should be
+tokenized. \textit{<model-file>} is the file where a previously
+trained model was saved to. The processed texts with one sentence per
+line and white spaces between the single tokens are written to
+\textit{<outDir>}
+
+\section{Background/Algorithms}
+\label{sec:background}
+
+JTBD is based on Conditional Random Fields (CRFs) \cite{lafferty01}, a
+sequential learning algorithm. 
+
+\section{Evaluation Studies and Available Models}
+
+JTBD was developed and optimized for the bio-medical domain. However,
+when training it on respective corpora, it may also be used for other
+domains.
+
+
+We have evaluated JTBD on our tokenization corpus which we compiled
+for the bio-medical domain. It consists of data from (manually
+annotated) material which we took from MedLine abstracts and a
+modified version of
+\textsc{PennBioIE}'s\footnote{\url{http://bioie.ldc.upenn.edu/}}
+underlying tokenization. In the \textsc{PennBioIE} corpus, some purely
+alphanumeric strings are divided into smaller tokens to support
+\textsc{PennBioIE}'s entity annotation, especially in a common
+annotation for variation events (e.g.  "S45F" with "S"=state\_original,
+"45"=location, "F"=state\_altered).  Those splits were (manually)
+undone to fit our tokenization guidelines.
+
+Currently, our tokenization corpus comprises about 36000 sentences.
+An accuracy of ACC=96.7\% is reached on this data using 10-fold
+cross-validation.  You will find the model trained on this data in the
+directory \url{resources}.
+
+If you run any evaluations on other data, we would be happy to learn about
+your experiences with JTBD and evaluation results.
+
+\section{Copyright and License}
+% leave unchanged
+This software is Copyright (C) 2008 Jena University Language \& Information
+Engineering Lab (Friedrich-Schiller University Jena, Germany), and is
+licensed under the terms of the Common Public License, Version 1.0 or (at
+your option) any subsequent version.
+
+The license is approved by the Open Source Initiative, and is
+available from their website at \url{http://www.opensource.org}.
+
+\bibliographystyle{alpha}
+\bibliography{literature}
+
+
+\end{document}
