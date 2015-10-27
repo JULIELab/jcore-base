@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typePriorities xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>jcore-type-priorities</name>
+    <description/>
+    <version>1.0</version>
+    <vendor/>
+<priorityList>
+    <type>de.julielab.jules.types.Title</type>
+    <type>de.julielab.jules.types.Sentence</type>
+    <type>de.julielab.jules.types.Token</type>
+  </priorityList>
+  <priorityList>
+  <type>de.julielab.jules.types.AbstractText</type>
+	  <type>de.julielab.jules.types.AbstractPart</type> 
+    <type>de.julielab.jules.types.Sentence</type>
+    <type>de.julielab.jules.types.Token</type>
+  </priorityList>
+    <priorityList>
+  <type>de.julielab.jules.types.Section</type>
+    <type>de.julielab.jules.types.Zone</type>
+	  <type>de.julielab.jules.types.Paragraph</type> 
+    <type>de.julielab.jules.types.Sentence</type>
+    <type>de.julielab.jules.types.Token</type>
+  </priorityList>
+</typePriorities>

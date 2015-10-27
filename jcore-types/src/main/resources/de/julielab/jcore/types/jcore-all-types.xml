@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>JCoRe All Types</name>
+  <description>This is just a convenience file, assembling all JCoRe types</description>
+  <version>2.0.0-SNAPSHOT</version>
+  <vendor>JULIE Lab Jena, Germany</vendor>
+  <imports>
+    <import location="jcore-basic-types.xml"/>
+    <import location="jcore-discourse-types.xml"/>
+    <import location="jcore-document-meta-pubmed-types.xml"/>
+    <import location="jcore-document-meta-pubmed-types.xml"/>
+    <import location="jcore-document-meta-types.xml"/>
+    <import location="jcore-document-structure-types.xml"/>
+    <import location="jcore-morpho-syntax-types.xml"/>
+    <import location="jcore-semantics-biology-types.xml"/>
+    <import location="jcore-semantics-concept-types.xml"/>
+    <import location="jcore-semantics-mention-types.xml"/>
+    <import location="extensions/jcore-ace-types.xml"/>
+    <import location="extensions/jcore-evaluation-types.xml"/>
+    <import location="extensions/jcore-semantics-bootstrep-types.xml"/>
+    <import location="extensions/jcore-mantra-types.xml"/>
+    <import location="extensions/jcore-mmax-types.xml"/>
+    <import location="extensions/jcore-muc7-types.xml"/>
+    <import location="extensions/jcore-semantics-ace-types.xml"/>
+    <import location="extensions/jcore-semantics-mention-extension-types.xml"/>
+    <import location="extensions/jcore-semantics-stemnet-types.xml"/>
+    <import location="extensions/jcore-wikipedia-types.xml"/>
+  </imports>
+</typeSystemDescription>

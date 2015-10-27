@@ -1,0 +1,1 @@
+classpath*:de/julielab/jcore/types/priorities/jcore-type-priorities.xml

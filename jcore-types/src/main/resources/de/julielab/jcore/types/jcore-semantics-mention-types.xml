@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>JCoRe Semantics Mention Types</name>
+  <description>The type system contains core semantic types definitions such as entity, relation and event. The types in this type system refer to actual text occurrences.</description>
+  <version>2.0.0-SNAPSHOT</version>
+  <vendor>JULIE Lab Jena, Germany</vendor>
+  <imports>
+    <import location="jcore-basic-types.xml"/>
+    <import location="jcore-morpho-syntax-types.xml"/>
+  </imports>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jules.types.EntityMention</name>
+      <description>(Named) EntityMention (i.e. An entity is an object or set of objects in the world. Entitiy mentions may be refrenced in a text by their name, indicated by a common noun or noun phrase, or represented by a pronoun) annotation</description>
+      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>head</name>
+          <description>Head of an entity mention such as Northwest in the Northwest</description>
+          <rangeTypeName>de.julielab.jules.types.Annotation</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>mentionLevel</name>
+          <description>mention level such as PRO (many), NOM, NAM (see ACE)</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>entityString</name>
+          <description>Entry ids for the entity concatenated with the likelihood category associated with this entity (in this case the exact event/relation modified by the likelihood indicator in question is deemed to be underspecified).</description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.GeneralEventMention</name>
+      <description>A super type for all event mentions. Under this type, mentions for predicate-argument relations and eventive propositional relations are found. This terminology follows section 3.1 and more especially 3.1.3 of Ekaterina Buyko's dissertation "Event Extraction from Biomedical Texts Using
+Trimmed Dependency Graphs" (http://www.db-thueringen.de/servlets/DerivateServlet/Derivate-26400/Diss2/thesis_buyko.pdf). The type system should completely follow the thesis' notion but does not due to historical reasons.</description>
+      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>tense</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>modality</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>arguments</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.ArgumentMention</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>reorderedArguments</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.ArgumentMention</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>polarity</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>relationString</name>
+          <description>used to make relations visible for LuCas</description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.RelationMention</name>
+      <description>Binary Relation between Entitiy Mentions. While quite generally called "Relation", this type is commonly used for dynamic, i.e. eventive, propositional relations such as the regulation between genes.</description>
+      <supertypeName>de.julielab.jules.types.GeneralEventMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.EventMention</name>
+      <description>This type was introduced during the participation of the BioNLP Shared Task 2009 by Ekaterina Buyko. Therefore, it mainly satisfies the requirements of the event type of this challenge. This includes the use of an "event trigger" which is not necessary for all relation types. In practice, the type is used to capture predicate-argument relations (such as binding) as well as eventive propositional relations (such as phosphorylation or up- and down-regulation). The latter category also includes events where one of the event arguments is an event itself.</description>
+      <supertypeName>de.julielab.jules.types.GeneralEventMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>genericity</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>trigger</name>
+          <description/>
+          <rangeTypeName>de.julielab.jules.types.EventTrigger</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.ArgumentMention</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>ref</name>
+          <description>Reference to the Annotation Object that acts as a argument here</description>
+          <rangeTypeName>de.julielab.jules.types.Annotation</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>role</name>
+          <description>the role of the argument</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>relationString</name>
+          <description>used to make relations visible for LuCas</description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Timex2Mention</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.ConceptMention</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>specificType</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>ref</name>
+          <description>The reference to the Concept, we use here the super type TOP in order to avoid the recursive dependencies between type systems</description>
+          <rangeTypeName>uima.cas.TOP</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>resourceEntryList</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.ResourceEntry</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>textualRepresentation</name>
+          <description>This feature provides the text of the annotated concept mention (e.g., entity mention). important for easily representing discontinious mentions such as 'T cell'  in th expression 'T and B cell'</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>likelihood</name>
+          <description/>
+          <rangeTypeName>de.julielab.jules.types.LikelihoodIndicator</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.ValueMention</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.EventTrigger</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>probability</name>
+          <description>probability of this trigger to be an event or relation trigger</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>specifity</name>
+          <description>specifity to be an event trigger, compare with using in other context</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>importance</name>
+          <description>how important is this trigger for the event</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.OntClassMention</name>
+      <description>ontology class mention</description>
+      <supertypeName>de.julielab.jules.types.ConceptMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>ontClassId</name>
+          <description>ID of the corresponding ontology class</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>sourceOntology</name>
+          <description>name or ID of the ontology the class comes from</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>semanticTypes</name>
+          <description>Names or IDs of associated semantic types.</description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>preferredTerm</name>
+          <description>The preferred term associated with the corresponding ontology class.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>matchedTokens</name>
+          <description>List of tokens the ontology class mention is comprised of.</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.Token</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>matchedSourceTerm</name>
+          <description>E.g. an ontology class label that was found to correspond to the mention (e.g. as result of a dictionary lookup).</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.OntRelationMention</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>domain</name>
+          <description/>
+          <rangeTypeName>de.julielab.jules.types.Annotation</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>range</name>
+          <description/>
+          <rangeTypeName>de.julielab.jules.types.Annotation</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>domainList</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.Annotation</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>rangeList</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jules.types.Annotation</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>name</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>ontRelationId</name>
+          <description>ID of the ontology relation the relation mention refers to.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>sourceOntology</name>
+          <description>Ontology defining the relation to which the relation mention refers to.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>textualRepresentation</name>
+          <description>Textual representation of the ontology relation. Could be redundant to the covered text of the relation mention annotation.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.LikelihoodIndicator</name>
+      <description>This type refers to the likelihood aspect of epistemic modality. The annotation marks epistemic modal expressions used to linguistically modify the likelihood of an event or of a relation that an entity might be in. The employed likelihood scale also includes negation (0% likelihood) and assertion (100% likelihood), the latter being the default case where no explicit likelihood modifier is present in the text.</description>
+      <supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>likelihood</name>
+          <description/>
+          <rangeTypeName>de.julielab.jules.types.Likelihood</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>entityAndRelationString</name>
+          <description/>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.Likelihood</name>
+      <description/>
+      <supertypeName>uima.cas.String</supertypeName>
+      <allowedValues>
+        <value>
+          <string>negation</string>
+          <description/>
+        </value>
+        <value>
+          <string>low</string>
+          <description/>
+        </value>
+        <value>
+          <string>moderate</string>
+          <description/>
+        </value>
+        <value>
+          <string>high</string>
+          <description/>
+        </value>
+        <value>
+          <string>assertion</string>
+          <description/>
+        </value>
+        <value>
+          <string>investigation</string>
+          <description/>
+        </value>
+      </allowedValues>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.OntClassMentionAggregate</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.OntClassMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.OntClassMentionAggElement</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.OntClassMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jules.types.OntClassMentionSimple</name>
+      <description/>
+      <supertypeName>de.julielab.jules.types.OntClassMention</supertypeName>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

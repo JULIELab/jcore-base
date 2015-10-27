@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<name>JCoRe Semantics Concept Types</name>
+<description>The type system contains core semantic types definitions such as entity, relation and event.</description>
+<version>2.0.0-SNAPSHOT</version>
+<vendor>JULIE Lab Jena, Germany</vendor>
+<imports>
+<import location="jcore-semantics-mention-types.xml"/>
+</imports>
+<types>
+<typeDescription>
+<name>de.julielab.jules.types.Entity</name>
+<description/>
+<supertypeName>de.julielab.jules.types.Concept</supertypeName>
+<features>
+        <featureDescription>
+          <name>specificType</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Relation</name>
+<description/>
+<supertypeName>de.julielab.jules.types.Concept</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Event</name>
+<description/>
+<supertypeName>de.julielab.jules.types.Concept</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Timex2</name>
+<description/>
+<supertypeName>de.julielab.jules.types.Concept</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Concept</name>
+<description>Super Type for semantic concepts such as Entity, Relation and Event</description>
+<supertypeName>de.julielab.jules.types.Annotation</supertypeName>
+<features>
+<featureDescription>
+<name>mentions</name>
+<description/>
+<rangeTypeName>uima.cas.FSArray</rangeTypeName>
+<elementType>de.julielab.jules.types.Annotation</elementType>
+<multipleReferencesAllowed>false</multipleReferencesAllowed>
+</featureDescription>
+</features>
+</typeDescription>
+<typeDescription>
+<name>de.julielab.jules.types.Value</name>
+<description/>
+<supertypeName>de.julielab.jules.types.Concept</supertypeName>
+</typeDescription>
+</types>
+</typeSystemDescription>
