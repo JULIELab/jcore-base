@@ -9,3 +9,4 @@
 /doc/*.bbl
 /doc/*.blg
 /doc/*.gz
+/target/

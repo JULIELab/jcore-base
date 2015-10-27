@@ -97,14 +97,6 @@
       	</exclusion>
       </exclusions>
 	</dependency>
-
-    <dependency>
-      <groupId>com.uea</groupId>
-      <artifactId>uea-stemmer</artifactId>
-      <version>0.1</version>
-    </dependency>
-
-   
     <dependency>
 	    <groupId>de.julielab</groupId>
 	    <artifactId>jcore-utilities</artifactId>
@@ -135,6 +127,14 @@
     	<artifactId>guava</artifactId>
     	<version>15.0</version>
     </dependency>
+<<<<<<< HEAD
+=======
+    <dependency>
+    	<groupId>de.julielab</groupId>
+    	<artifactId>uea-stemmer</artifactId>
+    	<version>0.1</version>
+    </dependency>
+>>>>>>> 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
   </dependencies>
   
 
