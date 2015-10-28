@@ -15,7 +15,7 @@
  * Test for OpenNLP POS Tagger
  **/
 
-package de.julielab.jcore.ae.opennlppostag.main;
+package de.julielab.jcore.ae.opennlp.postag;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
-import de.julielab.jcore.ae.opennlppostag.main.PosTagAnnotator;
+import de.julielab.jcore.ae.opennlp.postag.PosTagAnnotator;
 import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
