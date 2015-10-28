@@ -1,4 +1,4 @@
-package de.julielab.jcore.ae.opennlppostag.main;
+package de.julielab.jcore.ae.opennlp.postag;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -15,7 +15,7 @@ import opennlp.tools.postag.POSSample;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import de.julielab.jcore.ae.opennlppostag.main.POSTagDictCreator;
+import de.julielab.jcore.ae.opennlp.postag.POSTagDictCreator;
 
 public class PosTagDictCreatorTest {
 	@Test

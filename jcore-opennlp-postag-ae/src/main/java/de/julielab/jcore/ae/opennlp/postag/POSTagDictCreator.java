@@ -1,4 +1,4 @@
-package de.julielab.jcore.ae.opennlppostag.main;
+package de.julielab.jcore.ae.opennlp.postag;
 
 import java.io.File;
 import java.io.FileInputStream;

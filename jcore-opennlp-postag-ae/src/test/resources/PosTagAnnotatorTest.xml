@@ -2,7 +2,7 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
-  <annotatorImplementationName>de.julielab.jcore.ae.opennlppostag.main.PosTagAnnotator</annotatorImplementationName>
+  <annotatorImplementationName>de.julielab.jcore.ae.opennlp.postag.PosTagAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>jcore-opennlp-postag-ae</name>
     <description/>
