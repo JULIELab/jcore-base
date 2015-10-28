@@ -23,8 +23,8 @@ package de.julielab.jcore.ae.jtbd.main;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -39,11 +39,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import de.julielab.jtbd.EOSSymbols;
 import de.julielab.jtbd.Tokenizer;
 import de.julielab.jtbd.Unit;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
 
 public class TokenAnnotator extends JCasAnnotator_ImplBase {
 
@@ -98,24 +98,32 @@ public class TokenAnnotator extends JCasAnnotator_ImplBase {
 
 		// initialize Tokenizer
 		tokenizer = new Tokenizer();
+		InputStream is = null;
 		try {
 			// get model file name from parameters
 			modelFilename = (String) aContext.getConfigParameterValue(PARAM_MODEL);
 
-			File modelFile = new File(modelFilename);
-			if (!modelFile.exists()) {
+			try {
+				is = new FileInputStream(modelFilename);
+			} catch (IOException e) {
 				LOGGER.debug("File \"{}\" does not exist. Searching for the model as a classpath resource.",
 						modelFilename);
-				URL resource =
-						getClass().getResource(modelFilename.startsWith("/") ? modelFilename : "/" + modelFilename);
-				if (null == resource)
+				is = getClass().getResourceAsStream(modelFilename.startsWith("/") ? modelFilename : "/" + modelFilename);
+				if (null == is)
 					throw new IllegalArgumentException("The model file \"" + modelFilename
 							+ "\" could be found neither in the file system nor in the classpath.");
-				modelFile = new File(resource.toURI());
+				LOGGER.info("Loading model as classpathresource");
 			}
-			tokenizer.readModel(modelFile);
+			tokenizer.readModel(is);
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
+		} finally {
+			if (is != null)
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
 		
 		// define if sentence annotations should be taken into account

@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -250,7 +251,11 @@ public class Tokenizer {
 	public void readModel(final File file) throws IOException,
 	FileNotFoundException, ClassNotFoundException {
 		final FileInputStream fis = new FileInputStream(file);
-		final GZIPInputStream gin = new GZIPInputStream(fis);
+		readModel(fis);
+	}
+
+	public void readModel(InputStream is) throws IOException, ClassNotFoundException {
+		final GZIPInputStream gin = new GZIPInputStream(is);
 		final ObjectInputStream ois = new ObjectInputStream(gin);
 		model = (CRF) ois.readObject();
 		trained = true;
