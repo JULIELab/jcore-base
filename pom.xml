@@ -31,7 +31,7 @@
 		<module>jcore-jsbd-ae</module>
 		<module>jcore-jtbd-ae</module>
 <!-- 		<module>jcore-lingpipegazetteer-ae</module> -->
-		<module>jcore-mallet-2</module>
+		
 		<module>jcore-mantra-xml-types</module>
 <!-- 		<module>jcore-mstparser-ae</module> -->
 		<module>jcore-muc7-reader</module>
@@ -44,6 +44,6 @@
 		<module>jcore-utilities</module>
 		<module>jcore-xml-mapper</module>
 		<module>jcore-xml-reader</module>
-		<module>jcore-xmi-writer</module>
+		
 	</modules>
 </project>
