@@ -4,7 +4,6 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jcore-base</artifactId>
-	<version>${jcore-version}</version>
 	<packaging>pom</packaging>
 	<description>The POM for the JCoRe Base projects.</description>
 	<organization>
@@ -45,5 +44,6 @@
 		<module>jcore-utilities</module>
 		<module>jcore-xml-mapper</module>
 		<module>jcore-xml-reader</module>
+		<module>jcore-xmi-writer</module>
 	</modules>
 </project>
