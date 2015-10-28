@@ -125,6 +125,9 @@ public class PosTagAnnotator extends JCasAnnotator_ImplBase {
 		FSIterator<Annotation> sentenceIterator = aJCas.getAnnotationIndex(Sentence.type).iterator();
 		AnnotationIndex<Annotation> tokenIndex = aJCas.getAnnotationIndex(Token.type);
 
+		if (!sentenceIterator.hasNext())
+			LOGGER.debug("CAS has no sentences, no POS tags will be added");
+		
 		// iterate over Sentences
 		while (sentenceIterator.hasNext()) {
 			tokenList.clear();
@@ -133,6 +136,8 @@ public class PosTagAnnotator extends JCasAnnotator_ImplBase {
 
 			// iterate over Tokens
 			FSIterator<Annotation> tokenIterator = tokenIndex.subiterator(sentence);
+			if (!tokenIterator.hasNext())
+				LOGGER.debug("Sentence has no tokens, no POS tags will be added for this sentence");
 			while (tokenIterator.hasNext()) {
 				Token token = (Token) tokenIterator.next();
 				tokenList.add(token);
