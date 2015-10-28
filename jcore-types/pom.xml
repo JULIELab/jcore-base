@@ -5,13 +5,10 @@
 	<artifactId>jcore-types</artifactId>
 	<name>JCoRe Type System</name>
 	<description>The JCoRe type system.</description>
-
-
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
-		<version>${jcore-version}</version>
-		<relativePath>..</relativePath>
+		<version>2.0.0</version>
 	</parent>
 	<url>http://www.julielab.de</url>
 	<organization>

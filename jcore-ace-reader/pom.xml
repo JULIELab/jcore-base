@@ -11,8 +11,7 @@ A Collection Reader that converts ACE-XML files to CAS objects.</description>
    <parent>
 	<groupId>de.julielab</groupId>
 	<artifactId>jcore-base</artifactId>
-	<version>${jcore-version}</version>
-	<relativePath>..</relativePath>
+	<version>2.0.0</version>
    </parent>		 
   
   <dependencies>

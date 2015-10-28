@@ -8,8 +8,7 @@
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
-		<version>${jcore-version}</version>
-		<relativePath>..</relativePath>
+		<version>2.0.0</version>
 	</parent>
 	<description>Generates stand-off IEXML files as used in mantra</description>
 

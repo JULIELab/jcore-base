@@ -5,8 +5,7 @@
   <parent>
     <artifactId>jcore-base</artifactId>
     <groupId>de.julielab</groupId>
-    <version>${jcore-version}</version>
-    <relativePath>..</relativePath>
+    <version>2.0.0</version>
   </parent>
   <dependencies>
       <dependency>
