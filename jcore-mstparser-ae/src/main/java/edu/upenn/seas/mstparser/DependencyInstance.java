@@ -1,14 +1,16 @@
 /**
  * Copyright (c) 2015, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the  Eclipse Public License (EPL) v3.0
  */
 
 package edu.upenn.seas.mstparser;
 
-import de.julielab.gnu.trove.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Arrays;
 
 public class DependencyInstance implements Serializable {
 
@@ -17,10 +19,10 @@ public class DependencyInstance implements Serializable {
 
     // The various data types. Here's an example from Portuguese:
     //
-    // 3  eles ele   pron       pron-pers M|3P|NOM 4    SUBJ   _     _
-    // ID FORM LEMMA COURSE-POS FINE-POS  FEATURES HEAD DEPREL PHEAD PDEPREL
+    // 3 eles ele pron pron-pers M|3P|NOM 4 SUBJ _ _
+    // ID FORM LEMMA COURSE-POS FINE-POS FEATURES HEAD DEPREL PHEAD PDEPREL
     //
-    // We ignore PHEAD and PDEPREL for now. 
+    // We ignore PHEAD and PDEPREL for now.
 
     // FORM: the forms - usually words, like "thought"
     public String[] forms;
@@ -46,91 +48,87 @@ public class DependencyInstance implements Serializable {
     // RELATIONAL FEATURE: relational features that hold between items
     public RelationalFeature[] relFeats;
 
-    public DependencyInstance() {}
+    public DependencyInstance() {
+    }
 
     public DependencyInstance(DependencyInstance source) {
-	this.fv = source.fv;
-	this.actParseTree = source.actParseTree;
+        this.fv = source.fv;
+        this.actParseTree = source.actParseTree;
     }
-    
+
     public DependencyInstance(String[] forms, FeatureVector fv) {
-	this.forms = forms;
-	this.fv = fv;
+        this.forms = forms;
+        this.fv = fv;
     }
-    
+
     public DependencyInstance(String[] forms, String[] postags, FeatureVector fv) {
-	this(forms, fv);
-	this.postags = postags;
-    }
-    
-    public DependencyInstance(String[] forms, String[] postags, 
-			      String[] labs, FeatureVector fv) {
-	this(forms, postags, fv);
-	this.deprels = labs;
+        this(forms, fv);
+        this.postags = postags;
     }
 
-    public DependencyInstance(String[] forms, String[] postags, 
-			      String[] labs, int[] heads) {
-	this.forms = forms;
-	this.postags = postags;
-	this.deprels = labs;
-	this.heads = heads;
+    public DependencyInstance(String[] forms, String[] postags, String[] labs, FeatureVector fv) {
+        this(forms, postags, fv);
+        this.deprels = labs;
     }
 
-    public DependencyInstance(String[] forms, String[] lemmas, String[] cpostags, 
-			      String[] postags, String[][] feats, String[] labs, int[] heads) {
-	this(forms, postags, labs, heads);
-	this.lemmas = lemmas;
-	this.cpostags = cpostags;
-	this.feats = feats;
+    public DependencyInstance(String[] forms, String[] postags, String[] labs, int[] heads) {
+        this.forms = forms;
+        this.postags = postags;
+        this.deprels = labs;
+        this.heads = heads;
     }
 
-    public DependencyInstance(String[] forms, String[] lemmas, String[] cpostags, 
-			      String[] postags, String[][] feats, String[] labs, int[] heads,
-			      RelationalFeature[] relFeats) {
-	this(forms, lemmas, cpostags, postags, feats, labs, heads);
-	this.relFeats = relFeats;
+    public DependencyInstance(String[] forms, String[] lemmas, String[] cpostags, String[] postags, String[][] feats,
+            String[] labs, int[] heads) {
+        this(forms, postags, labs, heads);
+        this.lemmas = lemmas;
+        this.cpostags = cpostags;
+        this.feats = feats;
     }
 
-    public void setFeatureVector (FeatureVector fv) {
-	this.fv = fv;
+    public DependencyInstance(String[] forms, String[] lemmas, String[] cpostags, String[] postags, String[][] feats,
+            String[] labs, int[] heads, RelationalFeature[] relFeats) {
+        this(forms, lemmas, cpostags, postags, feats, labs, heads);
+        this.relFeats = relFeats;
     }
 
-
-    public int length () {
-	return forms.length;
+    public void setFeatureVector(FeatureVector fv) {
+        this.fv = fv;
     }
 
-    public String toString () {
-	StringBuffer sb = new StringBuffer();
-	sb.append(Arrays.toString(forms)).append("\n");
-	return sb.toString();
+    public int length() {
+        return forms.length;
     }
 
-
-    private void writeObject (ObjectOutputStream out) throws IOException {
-	out.writeObject(forms);
-	out.writeObject(lemmas);
-	out.writeObject(cpostags);
-	out.writeObject(postags);
-	out.writeObject(heads);
-	out.writeObject(deprels);
-	out.writeObject(actParseTree);
-	out.writeObject(feats);
-	out.writeObject(relFeats);
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(Arrays.toString(forms)).append("\n");
+        return sb.toString();
     }
 
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeObject(forms);
+        out.writeObject(lemmas);
+        out.writeObject(cpostags);
+        out.writeObject(postags);
+        out.writeObject(heads);
+        out.writeObject(deprels);
+        out.writeObject(actParseTree);
+        out.writeObject(feats);
+        out.writeObject(relFeats);
+    }
 
-    private void readObject (ObjectInputStream in) throws IOException, ClassNotFoundException {
-	forms = (String[])in.readObject();
-	lemmas = (String[])in.readObject();
-	cpostags = (String[])in.readObject();
-	postags = (String[])in.readObject();
-	heads = (int[])in.readObject();
-	deprels = (String[])in.readObject();
-	actParseTree = (String)in.readObject();
-	feats = (String[][])in.readObject();
-	relFeats = (RelationalFeature[])in.readObject();
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        forms = (String[]) in.readObject();
+        lemmas = (String[]) in.readObject();
+        cpostags = (String[]) in.readObject();
+        postags = (String[]) in.readObject();
+        heads = (int[]) in.readObject();
+        deprels = (String[]) in.readObject();
+        actParseTree = (String) in.readObject();
+        feats = (String[][]) in.readObject();
+        relFeats = (RelationalFeature[]) in.readObject();
     }
 
 }

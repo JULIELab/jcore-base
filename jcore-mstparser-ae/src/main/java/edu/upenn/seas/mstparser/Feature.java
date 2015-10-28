@@ -5,19 +5,17 @@
 //
 // This software is licensed under the terms of the Common Public
 // License, Version 1.0 or (at your option) any subsequent version.
-// 
+//
 // The license is approved by the Open Source Initiative, and is
 // available from their website at http://www.opensource.org.
 ///////////////////////////////////////////////////////////////////////////////
 
 package edu.upenn.seas.mstparser;
 
-import de.julielab.gnu.trove.*;
-
+import gnu.trove.TLinkableAdapter;
 
 /**
- * A simple class holding a feature index and value that can be used
- * in a TLinkedList.
+ * A simple class holding a feature index and value that can be used in a TLinkedList.
  *
  * <p>
  * Created: Sat Nov 10 15:25:10 2001
@@ -28,26 +26,28 @@ import de.julielab.gnu.trove.*;
  * @see edu.upenn.seas.mstparser.FeatureVector
  */
 
-public final class Feature extends TLinkableAdaptor {
+public final class Feature extends TLinkableAdapter {
 
     public int index;
     public double value;
 
-    public Feature (int i, double v) {
-	index = i;
-	value = v;
+    public Feature(int i, double v) {
+        index = i;
+        value = v;
     }
 
-    public final Feature clone () {
-	return new Feature(index, value);
+    @Override
+    public final Feature clone() {
+        return new Feature(index, value);
     }
 
-    public final Feature negation () {
-	return new Feature(index, -value);
+    public final Feature negation() {
+        return new Feature(index, -value);
     }
 
+    @Override
     public final String toString() {
-	return index+"="+value;
+        return index + "=" + value;
     }
 
 }

@@ -5,111 +5,95 @@
    version 1.0, as published by http://www.opensource.org.  For further
    information, see the file `LICENSE' included with this distribution. */
 
-
-
-
-/** 
+/**
     @author Andrew McCallum <a href="mailto:mccallum@cs.umass.edu">mccallum@cs.umass.edu</a>
 */
 
 package edu.upenn.seas.mstparser;
 
-import java.util.ArrayList;
-import java.io.*;
-import java.util.Iterator;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-import de.julielab.gnu.trove.TObjectIntHashMap;
+import gnu.trove.TObjectIntHashMap;
 
-
-public class Alphabet implements Serializable
-{
-    de.julielab.gnu.trove.TObjectIntHashMap map;
+public class Alphabet implements Serializable {
+    TObjectIntHashMap map;
     int numEntries;
     boolean growthStopped = false;
 
-    public Alphabet (int capacity)
-    {
-	this.map = new de.julielab.gnu.trove.TObjectIntHashMap (capacity);
-	//this.map.setDefaultValue(-1);
+    public Alphabet(int capacity) {
+        this.map = new gnu.trove.TObjectIntHashMap(capacity);
+        // this.map.setDefaultValue(-1);
 
-	numEntries = 0;
+        numEntries = 0;
     }
 
-    public Alphabet ()
-    {
-	this (10000);
+    public Alphabet() {
+        this(10000);
     }
 
-	
     /** Return -1 if entry isn't present. */
-    public int lookupIndex (Object entry)
-    {
-	if (entry == null) {
-	    throw new IllegalArgumentException ("Can't lookup \"null\" in an Alphabet.");
-	}
+    public int lookupIndex(Object entry) {
+        if (entry == null) {
+            throw new IllegalArgumentException("Can't lookup \"null\" in an Alphabet.");
+        }
 
-	
-	int ret = map.get(entry);
+        int ret = map.get(entry);
 
+        if (ret == -1 && !growthStopped) {
+            ret = numEntries;
+            map.put(entry, ret);
+            numEntries++;
 
-	if (ret == -1 && !growthStopped) {
-	    ret = numEntries;
-	    map.put (entry, ret);
-	    numEntries++;
-	 
-	}
-	
-	return ret;
+        }
+
+        return ret;
     }
 
-    public Object[] toArray () {
-	return map.keys();
+    public Object[] toArray() {
+        return map.keys();
     }
 
-    public boolean contains (Object entry)
-    {
-	return map.contains (entry);
+    public boolean contains(Object entry) {
+        return map.contains(entry);
     }
 
-    public int size ()
-    {
-	return numEntries;
+    public int size() {
+        return numEntries;
     }
 
-    public void stopGrowth ()
-    {
-	growthStopped = true;
-	map.compact();
+    public void stopGrowth() {
+        growthStopped = true;
+        map.compact();
     }
 
-    public void allowGrowth ()
-    {
-	growthStopped = false;
+    public void allowGrowth() {
+        growthStopped = false;
     }
 
-    public boolean growthStopped ()
-    {
-	return growthStopped;
+    public boolean growthStopped() {
+        return growthStopped;
     }
 
+    // Serialization
 
-    // Serialization 
-		
     private static final long serialVersionUID = 1;
     private static final int CURRENT_SERIAL_VERSION = 0;
 
-    private void writeObject (ObjectOutputStream out) throws IOException {
-	out.writeInt (CURRENT_SERIAL_VERSION);
-	out.writeInt (numEntries);
-	out.writeObject(map);
-	out.writeBoolean (growthStopped);
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeInt(CURRENT_SERIAL_VERSION);
+        out.writeInt(numEntries);
+        out.writeObject(map);
+        out.writeBoolean(growthStopped);
     }
 
-    private void readObject (ObjectInputStream in) throws IOException, ClassNotFoundException {
-	int version = in.readInt ();
-	numEntries = in.readInt();
-	map = (TObjectIntHashMap)in.readObject();
-	growthStopped = in.readBoolean();
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        int version = in.readInt();
+        numEntries = in.readInt();
+        map = (TObjectIntHashMap) in.readObject();
+        growthStopped = in.readBoolean();
     }
-	
+
 }
