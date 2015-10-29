@@ -22,6 +22,7 @@
       <imports>
         <import name="de.julielab.jcore.types.jcore-basic-types"/>
         <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+      <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
