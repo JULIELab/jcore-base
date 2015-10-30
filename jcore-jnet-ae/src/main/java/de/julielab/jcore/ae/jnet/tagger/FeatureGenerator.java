@@ -16,7 +16,7 @@
  * an ArrayList of ArrayLists of Unit objects.
  **/
 
-package de.julielab.jnet.tagger;
+package de.julielab.jcore.ae.jnet.tagger;
 
 import java.io.File;
 import java.io.FileNotFoundException;

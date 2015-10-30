@@ -14,7 +14,7 @@
  * 
  **/
 
-package de.julielab.jnet.tagger;
+package de.julielab.jcore.ae.jnet.tagger;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

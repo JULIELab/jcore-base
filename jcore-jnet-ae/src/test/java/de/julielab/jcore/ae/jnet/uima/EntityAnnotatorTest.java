@@ -48,10 +48,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import de.julielab.jcore.ae.jnet.tagger.Unit;
 import de.julielab.jcore.ae.jnet.uima.EntityAnnotator;
 import de.julielab.jcore.ae.jnet.uima.NegativeList;
 import de.julielab.jcore.ae.jnet.uima.UIMAUtils;
-import de.julielab.jnet.tagger.Unit;
 import de.julielab.jcore.types.Abbreviation;
 import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.EntityMention;
@@ -229,7 +229,7 @@ public class EntityAnnotatorTest extends TestCase {
 				metaList.add(new HashMap<String, String>());
 
 			// create unit sentence
-			de.julielab.jnet.tagger.Sentence unitSentence = annotator
+			de.julielab.jcore.ae.jnet.tagger.Sentence unitSentence = annotator
 					.createUnitSentence(tokenList, aJCas, metaList);
 
 			// simiulate prediction
@@ -334,7 +334,7 @@ public class EntityAnnotatorTest extends TestCase {
 		entityMap.set(entityAnnotator, entityHashMap);
 
 		// this could be some prediction
-		final de.julielab.jnet.tagger.Sentence unitSentence = new de.julielab.jnet.tagger.Sentence();
+		final de.julielab.jcore.ae.jnet.tagger.Sentence unitSentence = new de.julielab.jcore.ae.jnet.tagger.Sentence();
 		// add mock-up units: with: begin, end, covered text, label
 		unitSentence.add(new Unit(1, 2, "Y", "A"));
 		unitSentence.add(new Unit(2, 3, "X", "A"));

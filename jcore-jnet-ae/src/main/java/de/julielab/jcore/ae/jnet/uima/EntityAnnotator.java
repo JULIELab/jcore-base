@@ -48,8 +48,8 @@ import org.slf4j.LoggerFactory;
 
 import cc.mallet.fst.CRF;
 import cc.mallet.types.Alphabet;
-import de.julielab.jnet.tagger.NETagger;
-import de.julielab.jnet.tagger.Unit;
+import de.julielab.jcore.ae.jnet.tagger.NETagger;
+import de.julielab.jcore.ae.jnet.tagger.Unit;
 import de.julielab.jcore.types.Abbreviation;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Sentence;
@@ -415,7 +415,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 				throw new AnalysisEngineProcessException();
 			}
 			// make the Sentence object
-			de.julielab.jnet.tagger.Sentence unitSentence = createUnitSentence(
+			de.julielab.jcore.ae.jnet.tagger.Sentence unitSentence = createUnitSentence(
 					tokenList, aJCas, metaList);
 
 			LOGGER.debug("process() - original sentence: "
@@ -466,9 +466,9 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * abbreviation long form differ in their prediction, the outside label is
 	 * assumed for the abbreviation!
 	 */
-	protected de.julielab.jnet.tagger.Sentence removeDuplicatedTokens(
-			de.julielab.jnet.tagger.Sentence unitSentence) {
-		de.julielab.jnet.tagger.Sentence newUnitSentence = new de.julielab.jnet.tagger.Sentence();
+	protected de.julielab.jcore.ae.jnet.tagger.Sentence removeDuplicatedTokens(
+			de.julielab.jcore.ae.jnet.tagger.Sentence unitSentence) {
+		de.julielab.jcore.ae.jnet.tagger.Sentence newUnitSentence = new de.julielab.jcore.ae.jnet.tagger.Sentence();
 		String lastPos = null;
 		Unit lastUnit = null;
 		TreeSet<String> lastLabels = new TreeSet<String>();
@@ -513,11 +513,11 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 *         abbreviations are expanded to their fullform. In the second
 	 *         sequence, the tokens are of their original form.
 	 */
-	protected de.julielab.jnet.tagger.Sentence createUnitSentence(
+	protected de.julielab.jcore.ae.jnet.tagger.Sentence createUnitSentence(
 			ArrayList<Token> tokenList, JCas JCas,
 			ArrayList<HashMap<String, String>> metaList) {
 
-		de.julielab.jnet.tagger.Sentence unitSentence = new de.julielab.jnet.tagger.Sentence();
+		de.julielab.jcore.ae.jnet.tagger.Sentence unitSentence = new de.julielab.jcore.ae.jnet.tagger.Sentence();
 		ArrayList<Abbreviation> abbreviationList = getAbbreviationList(
 				tokenList, JCas);
 
@@ -545,7 +545,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 			if (tokenRepresentation != null) {
 				if (tokenRepresentation.equals(token.getCoveredText())) {
 					// no abbrevs were expanded here
-					Unit unit = new de.julielab.jnet.tagger.Unit(
+					Unit unit = new de.julielab.jcore.ae.jnet.tagger.Unit(
 							token.getBegin(), token.getEnd(),
 							tokenRepresentation, "", metas);
 					unitSentence.add(unit);
@@ -569,7 +569,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 								tokenRepresentation);
 						while (st.hasMoreTokens()) {
 							String fullformToken = st.nextToken();
-							Unit unit = new de.julielab.jnet.tagger.Unit(
+							Unit unit = new de.julielab.jcore.ae.jnet.tagger.Unit(
 									token.getBegin(), token.getEnd(),
 									fullformToken, "", metas);
 							unitSentence.add(unit);
@@ -577,7 +577,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 					} else {
 						// tokens within full form
 						for (Token abbrevToken : abbrevTokens) {
-							Unit unit = new de.julielab.jnet.tagger.Unit(
+							Unit unit = new de.julielab.jcore.ae.jnet.tagger.Unit(
 									token.getBegin(), token.getEnd(),
 									abbrevToken.getCoveredText(), "", metas);
 							unitSentence.add(unit);
@@ -602,9 +602,9 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 *            the original unit sentence to be modified
 	 * @return
 	 */
-	private de.julielab.jnet.tagger.Sentence removeConsecutiveBrackets(
-			de.julielab.jnet.tagger.Sentence unitSentence) {
-		de.julielab.jnet.tagger.Sentence finalUnitSentence = new de.julielab.jnet.tagger.Sentence();
+	private de.julielab.jcore.ae.jnet.tagger.Sentence removeConsecutiveBrackets(
+			de.julielab.jcore.ae.jnet.tagger.Sentence unitSentence) {
+		de.julielab.jcore.ae.jnet.tagger.Sentence finalUnitSentence = new de.julielab.jcore.ae.jnet.tagger.Sentence();
 		for (int i = 0; i < unitSentence.getUnits().size(); i++) {
 			Unit currentUnit = unitSentence.getUnits().get(i);
 			if ((i + 1) < unitSentence.getUnits().size()) {
@@ -768,7 +768,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * @param aJCas
 	 *            the cas to write the annotation to
 	 */
-	public void writeToCAS(de.julielab.jnet.tagger.Sentence unitSentence,
+	public void writeToCAS(de.julielab.jcore.ae.jnet.tagger.Sentence unitSentence,
 			JCas aJCas) {
 		String lastLabel = OUTSIDE_LABEL;
 		int lastStart = 0;
@@ -776,7 +776,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 		double conf = -1;
 		double lastConf = -1;
 
-		de.julielab.jnet.tagger.Unit unit = null;
+		de.julielab.jcore.ae.jnet.tagger.Unit unit = null;
 		for (int i = 0; i < unitSentence.size(); i++) {
 			unit = unitSentence.get(i);
 			String label = unit.getLabel();

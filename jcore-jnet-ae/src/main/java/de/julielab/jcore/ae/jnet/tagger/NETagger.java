@@ -16,7 +16,7 @@
  * 
  **/
 
-package de.julielab.jnet.tagger;
+package de.julielab.jcore.ae.jnet.tagger;
 
 import java.io.File;
 import java.io.FileInputStream;

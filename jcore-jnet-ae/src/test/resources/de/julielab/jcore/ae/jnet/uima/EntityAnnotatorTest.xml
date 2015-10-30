@@ -84,7 +84,8 @@ Available modes are:
       <nameValuePair>
         <name>ModelFilename</name>
         <value>
-          <string>src/test/resources/de/julielab/jcore/ae/jnet/uima/testModel</string>
+<!--           <string>src/test/resources/de/julielab/jcore/ae/jnet/uima/testModel</string> -->
+<string>/Users/faessler/Coding/workspace/jules-jcore-jnet-model-upgrader/jcoremodel.gz</string>
         </value>
       </nameValuePair>
       <nameValuePair>

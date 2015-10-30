@@ -28,6 +28,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import julielab.jcore.uea.stemmer.UEALite;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tartarus.snowball.SnowballProgram;
@@ -39,9 +41,6 @@ import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
-
-import com.uea.stemmer.UEALite;
-
 import de.julielab.jpos.tagger.FeatureConfiguration;
 import de.julielab.jpos.tagger.Sentence;
 import de.julielab.jpos.tagger.Unit;
