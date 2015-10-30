@@ -16,7 +16,7 @@
  * is needed when sequence features are converted to token features
  **/
 
-package de.julielab.jnet.tagger;
+package de.julielab.jcore.ae.jnet.tagger;
 
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Alphabet;

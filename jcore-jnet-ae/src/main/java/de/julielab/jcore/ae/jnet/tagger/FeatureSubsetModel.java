@@ -16,7 +16,7 @@
  * object contains information about the feature subset used with this CRF4 model.
  **/
 
-package de.julielab.jnet.tagger;
+package de.julielab.jcore.ae.jnet.tagger;
 
 import java.io.Serializable;
 import java.util.Properties;

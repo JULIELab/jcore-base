@@ -19,7 +19,7 @@
  * of these objects, the iterator creates an Instance (the data field is a Sentence object).
  **/
 
-package de.julielab.jnet.tagger;
+package de.julielab.jcore.ae.jnet.tagger;
 
 import java.util.ArrayList;
 import java.util.Iterator;

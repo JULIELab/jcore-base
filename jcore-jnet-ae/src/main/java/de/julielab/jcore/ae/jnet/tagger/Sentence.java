@@ -16,7 +16,7 @@
  * of the source code that is, to avoid things like ArrayList<ArrayList<Unit>>.
  **/
 
-package de.julielab.jnet.tagger;
+package de.julielab.jcore.ae.jnet.tagger;
 
 import java.util.ArrayList;
 

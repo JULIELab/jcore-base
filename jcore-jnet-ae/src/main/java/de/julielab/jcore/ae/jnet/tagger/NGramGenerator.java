@@ -15,7 +15,7 @@
  * generates different kinds of ngrams
  **/
 
-package de.julielab.jnet.tagger;
+package de.julielab.jcore.ae.jnet.tagger;
 
 import java.util.ArrayList;
 

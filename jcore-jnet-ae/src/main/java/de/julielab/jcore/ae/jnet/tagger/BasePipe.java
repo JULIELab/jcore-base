@@ -19,7 +19,7 @@
  * other fields (source, target, name) are ignored and/or overwritten.
  **/
 
-package de.julielab.jnet.tagger;
+package de.julielab.jcore.ae.jnet.tagger;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import julielab.jcore.uea.stemmer.UEALite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,6 @@ import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
-import com.uea.stemmer.UEALite;
 
 class BasePipe extends Pipe {
 
