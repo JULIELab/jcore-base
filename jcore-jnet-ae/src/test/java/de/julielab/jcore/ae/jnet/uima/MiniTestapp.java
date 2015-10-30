@@ -1,23 +1,23 @@
-/** 
+/**
  * MiniTestapp.java
- * 
+ *
  * Copyright (c) 2015, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
  *
  * Author: faessler
- * 
+ *
  * Current version: 2.2
  * Since version:   1.0
  *
- * Creation date: 09.08.2007 
- * 
+ * Creation date: 09.08.2007
+ *
  * A small UIMA-Pipeline for better testing purposes.
  * A result XMI is also written. Can be viewed e.g. with UIMA's annotationViewer.
  **/
 
 /**
- * 
+ *
  */
 package de.julielab.jcore.ae.jnet.uima;
 
@@ -53,88 +53,85 @@ import de.julielab.jcore.types.Sentence;
 
 public class MiniTestapp {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(EntityAnnotatorTest.class);
-	private static final String PREFIX = "src/test/resources/de/julielab/jcore/ae/jnet/uima/";
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityAnnotatorTest.class);
+    private static final String PREFIX = "src/test/resources/de/julielab/jcore/ae/jnet/uima/";
 
-	private static final String TEST_XMI_IN = PREFIX+"17088488.xmi";
+    private static final String TEST_XMI_IN = PREFIX + "17088488.xmi";
 
-	private static final String TEST_XMI_OUT = PREFIX+"miniapp_out.xmi";
-	private static final String TEST_XMI_OUT_TEMPLATE = PREFIX+"miniapp_out_template.xmi";
+    private static final String TEST_XMI_OUT = PREFIX + "miniapp_out.xmi";
+    private static final String TEST_XMI_OUT_TEMPLATE = PREFIX + "miniapp_out_template.xmi";
 
-	private static final String ANNOTATOR_DESC = PREFIX+"EntityAnnotatorTest.xml";
+    private static final String ANNOTATOR_DESC = PREFIX + "EntityAnnotatorTest.xml";
 
-	
-	
-	@After
-	public void clean(){
-		if ((new File(TEST_XMI_OUT)).isFile())
-			(new File(TEST_XMI_OUT)).delete();
-	}
-	
-	/**
-	 * Was a main method, made a dummy test out of it
-	 * @throws Exception
-	 */
-	@Test
-	public void test() throws Exception {
+    @After
+    public void clean() {
+        if (new File(TEST_XMI_OUT).isFile()) {
+            new File(TEST_XMI_OUT).delete();
+        }
+    }
 
-		// reading XMI file
-		final File filename = new File(TEST_XMI_IN);
+    /**
+     * Was a main method, made a dummy test out of it
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test() throws Exception {
 
-		final CAS cas = CasCreationUtils.createCas(UIMAFramework.getXMLParser()
-				.parseAnalysisEngineDescription(
-						new XMLInputSource(ANNOTATOR_DESC)));
-		initCas(cas, filename);
+        // reading XMI file
+        final File filename = new File(TEST_XMI_IN);
 
-		final JCas aJCas = cas.getJCas();
+        final CAS cas = CasCreationUtils.createCas(
+                UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(ANNOTATOR_DESC)));
+        initCas(cas, filename);
 
-		final JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
-		indexes.getAnnotationIndex(Sentence.type).iterator();
+        final JCas aJCas = cas.getJCas();
 
-		// producing entity-ae
+        final JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
+        indexes.getAnnotationIndex(Sentence.type).iterator();
 
-		AnalysisEngine entityAE;
-		ResourceSpecifier spec;
+        // producing entity-ae
 
-		spec = UIMAFramework.getXMLParser().parseResourceSpecifier(
-				new XMLInputSource(ANNOTATOR_DESC));
-		entityAE = UIMAFramework.produceAnalysisEngine(spec);
+        AnalysisEngine entityAE;
+        ResourceSpecifier spec;
 
-		// process document
-		entityAE.process(cas);
+        spec = UIMAFramework.getXMLParser().parseResourceSpecifier(new XMLInputSource(ANNOTATOR_DESC));
+        entityAE = UIMAFramework.produceAnalysisEngine(spec);
 
-		// write results to new XMI
-		if ((new File(TEST_XMI_OUT)).isFile())
-			(new File(TEST_XMI_OUT)).delete();
-		writeCasToXMI(cas, TEST_XMI_OUT);
-		
-		String output = Files.toString(new File(TEST_XMI_OUT), Charset.forName("UTF-8"));
-		String template = Files.toString(new File(TEST_XMI_OUT_TEMPLATE), Charset.forName("UTF-8"));
-		assertEquals(template,output);
-	}
+        // process document
+        entityAE.process(cas);
 
-	/**
-	 * @param cas
-	 */
-	private static void initCas(final CAS cas, final File filename)
-			throws Exception {
-		LOGGER.info("Reading test document");
-		final FileInputStream fis = new FileInputStream(
-				filename.getAbsolutePath());
-		XmiCasDeserializer.deserialize(fis, cas);
-	}
+        // write results to new XMI
+        if (new File(TEST_XMI_OUT).isFile()) {
+            new File(TEST_XMI_OUT).delete();
+        }
+        writeCasToXMI(cas, TEST_XMI_OUT);
 
-	/**
-	 * writes produced annotations to CAS
-	 */
-	private static void writeCasToXMI(final CAS cas, final String filename)
-			throws CASException, IOException, SAXException {
-		// now write CAS
-		final FileOutputStream fos = new FileOutputStream(filename);
-		final XmiCasSerializer ser = new XmiCasSerializer(cas.getTypeSystem());
-		final XMLSerializer xmlSer = new XMLSerializer(fos, false);
-		ser.serialize(cas, xmlSer.getContentHandler());
-	}
+        String output = Files.toString(new File(TEST_XMI_OUT), Charset.forName("UTF-8"));
+        String template = Files.toString(new File(TEST_XMI_OUT_TEMPLATE), Charset.forName("UTF-8"));
+
+        assertEquals(template, output);
+    }
+
+    /**
+     * @param cas
+     */
+    private static void initCas(final CAS cas, final File filename) throws Exception {
+        LOGGER.info("Reading test document");
+        final FileInputStream fis = new FileInputStream(filename.getAbsolutePath());
+        XmiCasDeserializer.deserialize(fis, cas);
+    }
+
+    /**
+     * writes produced annotations to CAS
+     */
+    private static void writeCasToXMI(final CAS cas, final String filename)
+            throws CASException, IOException, SAXException {
+        // now write CAS
+        final FileOutputStream fos = new FileOutputStream(filename);
+        final XmiCasSerializer ser = new XmiCasSerializer(cas.getTypeSystem());
+        final XMLSerializer xmlSer = new XMLSerializer(fos, false);
+        ser.serialize(cas, xmlSer.getContentHandler());
+    }
 
 }
