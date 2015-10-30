@@ -16,6 +16,8 @@
  **/
 package de.julielab.jcore.ae.mstparser.main;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,6 +37,8 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.InvalidXMLException;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -42,14 +46,13 @@ import org.xml.sax.SAXException;
 import de.julielab.jcore.types.DependencyRelation;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import junit.framework.TestCase;
 
 /**
  * This is the JUnit test for the MST Parser Annotator.
  *
  * @author Lichtenwald
  */
-public class MSTParserTest extends TestCase {
+public class MSTParserTest {
     private static final String LOGGER_PROPERTIES = "src/test/java/log4j.properties";
 
     public static final String PARAM_MAX_NUM_TOKENS = "MaxNumTokens";
@@ -66,6 +69,8 @@ public class MSTParserTest extends TestCase {
 
     /*--------------------------------------------------------------------------------------------*/
 
+    @Ignore
+    @Test
     public void testCAS() throws Exception {
         String[] heads = new String[] { "have", "Migrants", "drown", "coast", "off", "40", "40", "migrants", "have",
                 "have", "drowned", "Sea", "Sea", "in", "drowned", "coast", "coast", "off", "coast", "of", "drowned",
@@ -135,6 +140,7 @@ public class MSTParserTest extends TestCase {
     // jcas.reset();
     // } // of initCas
 
+    @Test
     public void testThreads() throws Exception {
         try {
             int count = 3;
@@ -153,6 +159,7 @@ public class MSTParserTest extends TestCase {
         }
     }
 
+    @Test
     public void testSharedResource() throws Exception {
         LOGGER.info("testing loading of model as shared resource ...");
         // XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER");
@@ -191,6 +198,8 @@ public class MSTParserTest extends TestCase {
      * @throws AnalysisEngineProcessException
      * @throws SAXException
      */
+    @Ignore
+    @Test
     public void testProcess() throws IOException, InvalidXMLException, ResourceInitializationException, CASException,
             AnalysisEngineProcessException, SAXException {
         // XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER);
@@ -209,6 +218,8 @@ public class MSTParserTest extends TestCase {
         assertTrue("Invalid JCas!", checkAnnotations(jcas, null));
     } // of testProcess
 
+    @Ignore
+    @Test
     public void testProcessWithNumTokensRestriction()
             throws IOException, InvalidXMLException, ResourceInitializationException, CASException,
             AnalysisEngineProcessException, SAXException, ResourceConfigurationException {
@@ -246,7 +257,6 @@ public class MSTParserTest extends TestCase {
         // iterate over sentences
         while (sentenceIterator.hasNext()) {
             Sentence sentence = (Sentence) sentenceIterator.next();
-            System.out.println(sentence.getCoveredText());
             FSIterator tokenIterator = tokenIndex.subiterator(sentence);
             int nullAndDummyLabelCounter = 0;
             int nullHeadCounter = 0;
@@ -264,10 +274,8 @@ public class MSTParserTest extends TestCase {
                     foundDepRel = true;
                     // get first available DependencyRelation annotation of depRel array
                     DependencyRelation depRelation = (DependencyRelation) depRelationFSArray.get(0);
-                    System.out.println(depRelation.getCoveredText() + " " + depRelation.getLabel());
                     if (depRelation.getLabel() == null || depRelation.getLabel().equals("<no-type>")) {
                         nullAndDummyLabelCounter++;
-                        System.out.println("--> null or dummy");
                     }
                     if (depRelation.getHead() == null) {
                         nullHeadCounter++;
