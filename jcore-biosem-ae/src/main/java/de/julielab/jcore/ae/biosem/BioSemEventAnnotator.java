@@ -386,7 +386,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 		while (geneIt.hasNext()) {
 			Gene gene = (Gene) geneIt.next();
 			String id = gene.getId();
-			if (StringUtils.isBlank(id))
+//			if (StringUtils.isBlank(id))
 				id = "T" + i++;
 			gene.setId(id);
 			proteins.put(id, gene);
