@@ -133,7 +133,13 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			try {
 				addEventToIndexes(event, proteinMap, triggerMap, eventAnnotations, triggerAnnotations, aJCas);
 			} catch (UnknownProteinIdException e) {
-				log.error("Exception occured. The respective event will be skipped. Error was: {}", e);
+				String docId = "<unknown>";
+				FSIterator<Annotation> it = aJCas.getAnnotationIndex(Header.type).iterator();
+				if (it.hasNext()) {
+					Header h = (Header) it.next();
+					docId = h.getDocId();
+				}
+				log.error("Exception occured in document " + docId + ". The respective event will be skipped. Error was: ", e);
 			}
 		}
 
