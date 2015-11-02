@@ -22,13 +22,18 @@ public class AbstractFileMapper {
         String text = "";
 
         StringBuilder sb = new StringBuilder();
+        Boolean addedText = false;
         while (text != null) {
             text = bufferedReader.readLine();
             if (text != null) {
                 sb.append(text + " ");
+                if (!addedText) {
+                    addedText = true;
+                }
             }
         }
-        text = sb.toString();
+
+        text = !addedText ? sb.toString() : sb.toString().substring(0, sb.length() - 1);
 
         title = title == null ? "" : title;
         text = text == null ? "" : text;
