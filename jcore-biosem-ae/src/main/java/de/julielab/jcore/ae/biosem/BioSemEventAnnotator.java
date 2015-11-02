@@ -365,7 +365,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			proteins.put(id, gene);
 			lastEnd = gene.getEnd();
 		}
-		log.debug("Got {} genes/proteins in the document.", proteins.size());
+		log.debug("Got {} non-overlapping genes/proteins in the document.", proteins.size());
 		return proteins;
 	}
 
