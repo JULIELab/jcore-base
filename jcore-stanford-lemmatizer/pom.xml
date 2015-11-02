@@ -6,7 +6,7 @@
     <version>2.0.0</version>
   </parent>
   <artifactId>jcore-stanford-lemmatizer</artifactId>
-  <name>JULES Stanford Lemmatizer</name>
+  <name>JCoRe Stanford Lemmatizer</name>
   <description>UIMA Wrapper for Stanford CoreNLP Lemmatizer</description>
   <dependencies>
   	<dependency>
