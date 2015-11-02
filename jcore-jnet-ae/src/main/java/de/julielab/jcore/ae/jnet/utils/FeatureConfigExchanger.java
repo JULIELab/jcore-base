@@ -22,7 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import de.julielab.jcore.ae.jnet.tagger.NETagger;
+import de.julielab.jnet.tagger.NETagger;
 
 public class FeatureConfigExchanger {
 

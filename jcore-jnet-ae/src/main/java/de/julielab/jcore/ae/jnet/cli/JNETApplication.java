@@ -31,14 +31,14 @@ import java.util.Random;
 
 import cc.mallet.fst.CRF;
 import cc.mallet.types.Alphabet;
-import de.julielab.jcore.ae.jnet.tagger.NETagger;
-import de.julielab.jcore.ae.jnet.tagger.Sentence;
-import de.julielab.jcore.ae.jnet.tagger.Tags;
-import de.julielab.jcore.ae.jnet.tagger.Unit;
 import de.julielab.jcore.ae.jnet.utils.FormatConverter;
 import de.julielab.jcore.ae.jnet.utils.IOBEvaluation;
 import de.julielab.jcore.ae.jnet.utils.IOEvaluation;
 import de.julielab.jcore.ae.jnet.utils.Utils;
+import de.julielab.jnet.tagger.NETagger;
+import de.julielab.jnet.tagger.Sentence;
+import de.julielab.jnet.tagger.Tags;
+import de.julielab.jnet.tagger.Unit;
 
 /**
  * Command line application
