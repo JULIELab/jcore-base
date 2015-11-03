@@ -18,11 +18,6 @@
 	
 
 		<dependency>
-			<groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>de.julielab</groupId>
 			<artifactId>jcore-types</artifactId>
 			<version>${jcore-version}</version>
