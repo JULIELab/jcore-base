@@ -450,7 +450,7 @@ public class JCoReFeaturePath implements FeaturePath {
 		} catch (CASException e) {
 			throw new RuntimeException(e);
 		}
-		if (builtInFunction != null && List.class.isAssignableFrom(featureValue.getClass())) {
+		if (builtInFunction != null && featureValue != null && List.class.isAssignableFrom(featureValue.getClass())) {
 			@SuppressWarnings("unchecked")
 			List<Object> valueList = (List<Object>) featureValue;
 			for (int i = 0; i < valueList.size(); i++) {
