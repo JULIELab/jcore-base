@@ -107,11 +107,6 @@
     	<artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-    	<groupId>de.julielab</groupId>
-    	<artifactId>jcore-types</artifactId>
-    	<version>${jcore-version}</version>
-    </dependency>
-    <dependency>
     	<groupId>ch.qos.logback</groupId>
     	<artifactId>logback-classic</artifactId>
     	<scope>test</scope>
@@ -125,7 +120,7 @@
     <dependency>
     	<groupId>com.google.guava</groupId>
     	<artifactId>guava</artifactId>
-    	<version>15.0</version>
+    	<version>17.0</version>
     </dependency>
     <dependency>
     	<groupId>de.julielab</groupId>
