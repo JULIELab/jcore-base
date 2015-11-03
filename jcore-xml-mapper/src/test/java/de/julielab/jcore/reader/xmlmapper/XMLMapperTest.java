@@ -16,6 +16,7 @@
 package de.julielab.jcore.reader.xmlmapper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.FileResourceSpecifier;
@@ -39,7 +41,10 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Test;
 
+import de.julielab.jcore.types.AbstractPart;
+import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Title;
 
 /**
  * TODO insert description
@@ -49,7 +54,7 @@ import de.julielab.jcore.types.Sentence;
 public class XMLMapperTest {
 
 	public static final String TEST_DESC_PATH = "src/test/resources/XMLReaderDescriptor.xml";
-	
+
 	private static final String EXT_RES_KEY = "key";
 	private static final String EXT_RES_NAME = "name";
 	private static final String EXT_RES_URL = "url";
@@ -62,16 +67,15 @@ public class XMLMapperTest {
 		readerExtRes.put(EXT_RES_KEY, XMLReader.RESOURCE_MAPPING_FILE);
 		readerExtRes.put(EXT_RES_NAME, "newMappingFile");
 		readerExtRes.put(EXT_RES_URL, "file:newMappingFile.xml");
-		
-		
+
 		CollectionReader xmlReader = createCollectionReaderWithDescriptor(TEST_DESC_PATH, readerConfig, readerExtRes);
-		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData)xmlReader.getMetaData());
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlReader.getMetaData());
 		assertTrue(xmlReader.hasNext());
 		xmlReader.getNext(cas);
-		
+
 		System.out.println(cas.getDocumentText());
 	}
-	
+
 	@Test
 	public void inlineSentenceTest() throws Exception {
 		Map<String, String> readerConfig = new HashMap<String, String>();
@@ -80,9 +84,9 @@ public class XMLMapperTest {
 		readerExtRes.put(EXT_RES_KEY, XMLReader.RESOURCE_MAPPING_FILE);
 		readerExtRes.put(EXT_RES_NAME, "InlineSentenceMappingFile");
 		readerExtRes.put(EXT_RES_URL, "file:inlineSentenceMappingFile.xml");
-		
+
 		CollectionReader xmlReader = createCollectionReaderWithDescriptor(TEST_DESC_PATH, readerConfig, readerExtRes);
-		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData)xmlReader.getMetaData());
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlReader.getMetaData());
 		assertTrue(xmlReader.hasNext());
 		xmlReader.getNext(cas);
 		FSIterator<Annotation> it = cas.getJCas().getAnnotationIndex(Sentence.type).iterator();
@@ -95,7 +99,55 @@ public class XMLMapperTest {
 		}
 		assertEquals(12, sentencecount);
 	}
+
+	@Test
+	public void testSpecifyTitleType() throws Exception {
+		Map<String, String> readerConfig = new HashMap<String, String>();
+		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/doc_medline_test_structured_abstract.xml");
+		Map<String, String> readerExtRes = new HashMap<String, String>();
+		readerExtRes.put(EXT_RES_KEY, XMLReader.RESOURCE_MAPPING_FILE);
+		readerExtRes.put(EXT_RES_NAME, "newMappingFile");
+		readerExtRes.put(EXT_RES_URL, "file:newMappingFile.xml");
+		CollectionReader xmlReader = createCollectionReaderWithDescriptor(TEST_DESC_PATH, readerConfig, readerExtRes);
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlReader.getMetaData());
+		assertTrue(xmlReader.hasNext());
+
+		xmlReader.getNext(cas);
+		JCas jCas = cas.getJCas();
+		FSIterator<Annotation> it = jCas.getAnnotationIndex(Title.type).iterator();
+		assertTrue(it.hasNext());
+		Title title = (Title) it.next();
+		assertFalse(it.hasNext());
+		assertEquals("document", title.getTitleType());
+
+	}
 	
+	@Test
+	public void testStructuredAbstract()throws Exception {
+		Map<String, String> readerConfig = new HashMap<String, String>();
+		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/doc_medline_test_structured_abstract.xml");
+		Map<String, String> readerExtRes = new HashMap<String, String>();
+		readerExtRes.put(EXT_RES_KEY, XMLReader.RESOURCE_MAPPING_FILE);
+		readerExtRes.put(EXT_RES_NAME, "MappingFile");
+		readerExtRes.put(EXT_RES_URL, "file:medlineMappingFileStructuredAbstract.xml");
+		CollectionReader xmlReader = createCollectionReaderWithDescriptor(TEST_DESC_PATH, readerConfig, readerExtRes);
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlReader.getMetaData());
+		assertTrue(xmlReader.hasNext());
+
+		xmlReader.getNext(cas);
+		JCas jCas = cas.getJCas();
+		
+		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractPart.type).iterator();
+		assertTrue(it.hasNext());
+		int numAbstractSections = 0; 
+		while(it.hasNext()) {
+			it.next();
+			++numAbstractSections;
+		}
+		assertEquals(5, numAbstractSections);
+		
+	}
+
 	/**
 	 * Creates a new CollectionReader with the given descriptor file and
 	 * configuration parameters.
@@ -108,35 +160,29 @@ public class XMLMapperTest {
 	 * @throws UIMAException
 	 * @throws IOException
 	 */
-	private CollectionReader createCollectionReaderWithDescriptor(
-			String descriptorFile, Map<String, String> configurationParameters, Map<String, String> externalResources)
-			throws UIMAException, IOException {
-		CollectionReaderDescription readerDescription = (CollectionReaderDescription) UIMAFramework
-				.getXMLParser().parseCollectionReaderDescription(
-						new XMLInputSource(descriptorFile));
-		ConfigurationParameterSettings settings = readerDescription
-				.getCollectionReaderMetaData()
-				.getConfigurationParameterSettings();
+	private CollectionReader createCollectionReaderWithDescriptor(String descriptorFile, Map<String, String> configurationParameters,
+			Map<String, String> externalResources) throws UIMAException, IOException {
+		CollectionReaderDescription readerDescription = (CollectionReaderDescription) UIMAFramework.getXMLParser().parseCollectionReaderDescription(
+				new XMLInputSource(descriptorFile));
+		ConfigurationParameterSettings settings = readerDescription.getCollectionReaderMetaData().getConfigurationParameterSettings();
 		if (configurationParameters != null) {
 			for (String parameterName : configurationParameters.keySet())
-				settings.setParameterValue(parameterName,
-						configurationParameters.get(parameterName));
+				settings.setParameterValue(parameterName, configurationParameters.get(parameterName));
 		}
-		
+
 		ResourceSpecifierFactory f = UIMAFramework.getResourceSpecifierFactory();
 		ExternalResourceDescription extResDesc = f.createExternalResourceDescription();
 		extResDesc.setName(externalResources.get(EXT_RES_NAME));
 		FileResourceSpecifier fspec = f.createFileResourceSpecifier();
 		fspec.setFileUrl(externalResources.get(EXT_RES_URL));
 		extResDesc.setResourceSpecifier(fspec);
-		
+
 		ExternalResourceBinding extResBind = f.createExternalResourceBinding();
 		extResBind.setKey(externalResources.get(EXT_RES_KEY));
 		extResBind.setResourceName(externalResources.get(EXT_RES_NAME));
 		readerDescription.getResourceManagerConfiguration().addExternalResource(extResDesc);
 		readerDescription.getResourceManagerConfiguration().addExternalResourceBinding(extResBind);
-		
-		
+
 		return UIMAFramework.produceCollectionReader(readerDescription);
 	}
 

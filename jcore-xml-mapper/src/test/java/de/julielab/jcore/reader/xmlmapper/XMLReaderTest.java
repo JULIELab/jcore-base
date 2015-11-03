@@ -383,7 +383,9 @@ public class XMLReaderTest {
 		Iterator<Annotation> typeIterator = getTypeIterator(cas,
 				AbstractText.type);
 		if (typeIterator.hasNext()) {
-			text = ((AbstractText) typeIterator.next()).getCoveredText();
+			AbstractText abstractText = (AbstractText) typeIterator.next();
+			System.out.println("hier: " +abstractText.getBegin() + " " + abstractText.getEnd());
+			text = abstractText.getCoveredText();
 		}
 		assertEquals("\n" + abstractText + "		", text);
 	}

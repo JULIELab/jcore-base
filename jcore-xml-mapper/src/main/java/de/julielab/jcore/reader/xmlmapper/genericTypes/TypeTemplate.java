@@ -171,7 +171,7 @@ public class TypeTemplate {
 	}
 
 	/**
-	 * gets the partOfDocument ids for the offset
+	 * returns the first and the last of partOfDocument ids that should be covered by this annotation; that is, the begin of this annotation should be at the begin of the first returned part and the end should be the end of the second returned part.
 	 * 
 	 * @return int[] ( int[0]->begin index, int[1] -> endIndex )
 	 */

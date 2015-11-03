@@ -2,7 +2,7 @@
 	<documentText>
 		<partOfDocumentText id="0">/MedlineCitation/Article/ArticleTitle
 		</partOfDocumentText>
-		<partOfDocumentText id="1">/MedlineCitation/Article/Abstract
+		<partOfDocumentText id="1">/MedlineCitation/Article/Abstract/AbstractText
 		</partOfDocumentText>
 		<partOfDocumentText id="2">/MedlineCitation/OtherAbstract
 		</partOfDocumentText>

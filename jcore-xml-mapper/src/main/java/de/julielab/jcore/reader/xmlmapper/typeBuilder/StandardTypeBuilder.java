@@ -19,6 +19,7 @@ import static org.fest.reflect.core.Reflection.method;
 
 import java.util.HashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.jcas.JCas;
@@ -39,8 +40,7 @@ import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
  */
 public class StandardTypeBuilder implements TypeBuilder {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(StandardTypeBuilder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StandardTypeBuilder.class);
 	private HashMap<String, Class<?>> standardJavaTypesMap;
 
 	/**
@@ -80,12 +80,9 @@ public class StandardTypeBuilder implements TypeBuilder {
 	 *         {@link ConcreteType#getFullClassName()} with all features and
 	 *         their values given by {@link ConcreteType#getConcreteFeatures()}.
 	 */
-	public Annotation buildType(ConcreteType concreteType, JCas jcas)
-			throws CollectionException {
-		if (concreteType.getTypeTemplate().isMultipleInstances()
-				|| concreteType.getTypeTemplate().isInlineAnnotation()) {
-			for (ConcreteFeature concreteFeature : concreteType
-					.getConcreteFeatures()) {
+	public Annotation buildType(ConcreteType concreteType, JCas jcas) throws CollectionException {
+		if (concreteType.getTypeTemplate().isMultipleInstances() || concreteType.getTypeTemplate().isInlineAnnotation()) {
+			for (ConcreteFeature concreteFeature : concreteType.getConcreteFeatures()) {
 				this.buildType(concreteFeature, jcas);
 			}
 			return null;
@@ -107,12 +104,10 @@ public class StandardTypeBuilder implements TypeBuilder {
 	 *         <code>concreteType</code> does not define any features.
 	 * @throws CollectionException
 	 */
-	private Annotation buildSingleInstance(ConcreteType concreteType, JCas jcas)
-			throws CollectionException {
+	private Annotation buildSingleInstance(ConcreteType concreteType, JCas jcas) throws CollectionException {
 		if (concreteType.getFullClassName() == null) {
 			// this will happen at special cases like the documentText
-			concreteType.getTypeTemplate().getParser().getTypeBuilder()
-					.buildType(concreteType, jcas);
+			concreteType.getTypeTemplate().getParser().getTypeBuilder().buildType(concreteType, jcas);
 			return null;
 		}
 		Class<?> typeClass = null;
@@ -127,14 +122,11 @@ public class StandardTypeBuilder implements TypeBuilder {
 		if (concreteType.getConcreteFeatures() != null) {
 			// Create the UIMA type corresponding to the type description in
 			// concreteType.
-			type = (Annotation) constructor().withParameterTypes(JCas.class)
-					.in(typeClass).newInstance(jcas);
+			type = (Annotation) constructor().withParameterTypes(JCas.class).in(typeClass).newInstance(jcas);
 
 			// For each feature this type has, set the corret feature value.
-			for (ConcreteFeature concreteFeature : concreteType
-					.getConcreteFeatures()) {
-				if ((concreteFeature.getValue() == null || concreteFeature
-						.getValue().equals("")) && !concreteFeature.isType()) {
+			for (ConcreteFeature concreteFeature : concreteType.getConcreteFeatures()) {
+				if ((concreteFeature.getValue() == null || concreteFeature.getValue().equals("")) && !concreteFeature.isType()) {
 					continue;
 				}
 				Class<?> featureClass;
@@ -145,10 +137,7 @@ public class StandardTypeBuilder implements TypeBuilder {
 					// prefixed by 'set'. Then,
 					// the name of the feature is appended with the first
 					// character in upper case.
-					String methodName = "set"
-							+ concreteFeature.getTsName().substring(0, 1)
-									.toUpperCase()
-							+ concreteFeature.getTsName().substring(1);
+					String methodName = "set" + concreteFeature.getTsName().substring(0, 1).toUpperCase() + concreteFeature.getTsName().substring(1);
 
 					// Now set the actual value for the feature. We have to
 					// determine the data type
@@ -158,47 +147,33 @@ public class StandardTypeBuilder implements TypeBuilder {
 					// is neither a Java
 					// primitive nor a String, we expect it to be an UIMA type
 					// itself.
-					if (standardJavaTypesMap.get(concreteFeature
-							.getFullClassName()) != null) {
-						featureClass = standardJavaTypesMap.get(concreteFeature
-								.getFullClassName());
-						method(methodName)
-								.withParameterTypes(featureClass)
-								.in(type)
-								.invoke(parseValueStringToValueType(
-										concreteFeature.getValue(),
-										concreteFeature.getFullClassName()));
-					} else if (concreteFeature.getFullClassName().equals(
-							"String")
-							|| concreteFeature.getFullClassName().equals(
-									"java.lang.String")) {
-						featureClass = Class.forName(concreteFeature
-								.getFullClassName());
-						method(methodName).withParameterTypes(featureClass)
-								.in(type).invoke(concreteFeature.getValue());
+					if (standardJavaTypesMap.get(concreteFeature.getFullClassName()) != null) {
+						featureClass = standardJavaTypesMap.get(concreteFeature.getFullClassName());
+						method(methodName).withParameterTypes(featureClass).in(type)
+								.invoke(parseValueStringToValueType(concreteFeature.getValue(), concreteFeature.getFullClassName()));
+					} else if (concreteFeature.getFullClassName().equals("String") || concreteFeature.getFullClassName().equals("java.lang.String")) {
+						featureClass = Class.forName(concreteFeature.getFullClassName());
+						method(methodName).withParameterTypes(featureClass).in(type).invoke(concreteFeature.getValue());
 					} else {
-						featureClass = Class.forName(concreteFeature
-								.getFullClassName());
-						TOP top = concreteFeature.getTypeTemplate().getParser()
-								.getTypeBuilder()
-								.buildType(concreteFeature, jcas);
-						method(methodName).withParameterTypes(featureClass)
-								.in(type).invoke(top);
+						String featureClassName = concreteFeature.getFullClassName();
+						if (StringUtils.isBlank(featureClassName))
+							throw new IllegalStateException("For the feature \"" + concreteFeature.getTsName() + "\" of the type \""
+									+ concreteType.getFullClassName()
+									+ "\" the feature value class (e.g. String, Integer, another type...) was not defined in the mapping file.");
+						featureClass = Class.forName(featureClassName);
+						TOP top = concreteFeature.getTypeTemplate().getParser().getTypeBuilder().buildType(concreteFeature, jcas);
+						method(methodName).withParameterTypes(featureClass).in(type).invoke(top);
 					}
 				} catch (Throwable e) {
-					LOGGER.error(
-							"Wrong Feature Type: "
-									+ concreteFeature.getFullClassName(), e);
-					throw new CollectionException(
-							UIMAException.STANDARD_MESSAGE_CATALOG, null);
+					LOGGER.error("Wrong Feature Type: " + concreteFeature.getFullClassName(), e);
+					throw new CollectionException(UIMAException.STANDARD_MESSAGE_CATALOG, null);
 				}
 			}
 			type.setBegin(concreteType.getBegin());
 			type.setEnd(concreteType.getEnd());
 			type.addToIndexes();
 		} else
-			LOGGER.warn("Type " + concreteType.getFullClassName()
-					+ " does not define any features and is omitted.");
+			LOGGER.warn("Type " + concreteType.getFullClassName() + " does not define any features and is omitted.");
 		return type;
 	}
 
