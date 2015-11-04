@@ -70,7 +70,7 @@ public class DocumentTextHandler {
 			if (docTextPart.getParser() == null)
 				textPartStrs = getTextPart(vn, docTextPart, identifier);
 			else
-				textPartStrs = docTextPart.getParser().parseDocumentPart(vn, docTextPart, textPartList.isEmpty() ? offset : offset+1, jcas, identifier);
+				textPartStrs = docTextPart.getParser().parseDocumentPart(vn, docTextPart, textPartList.isEmpty() ? offset : offset + 1, jcas, identifier);
 			docTextPart.setText(textPartStrs.toArray(new String[textPartStrs.size()]));
 			beginOffsets = new int[textPartStrs.size()];
 			endOffsets = new int[textPartStrs.size()];
@@ -78,12 +78,16 @@ public class DocumentTextHandler {
 				String textPartStr = textPartStrs.get(j).trim();
 				if (textPartStr.length() > 0) {
 					// Important: First compute offset, then add the new text
-					// part. Otherwise, the new text part will be treated as the former
-					// text part and there will be an offset increment although it is
+					// part. Otherwise, the new text part will be treated as the
+					// former
+					// text part and there will be an offset increment although
+					// it is
 					// incorrect.
-//					if (i - 1 >= 0 && i - 1 < textPartList.size() && textPartList.get(i - 1).length() > 0)
-//						offset += 1;
-					// accommodate for the line break after each text part inserted at the end of the method
+					// if (i - 1 >= 0 && i - 1 < textPartList.size() &&
+					// textPartList.get(i - 1).length() > 0)
+					// offset += 1;
+					// accommodate for the line break after each text part
+					// inserted at the end of the method
 					if (!textPartList.isEmpty())
 						++offset;
 					textPartList.add(textPartStr);
@@ -112,6 +116,8 @@ public class DocumentTextHandler {
 		vn.cloneNav();
 		AutoPilot ap = new AutoPilot(vn);
 		String textPart;
+		if (StringUtils.isBlank(part.getXPath()))
+			throw new IllegalStateException("Document text part with ID " + part.getId() + " has no XPath specified.");
 		ap.selectXPath(part.getXPath());
 
 		int i = ap.evalXPath();
