@@ -39,6 +39,7 @@ import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
 import de.julielab.jcore.reader.xmlmapper.genericTypes.TypeFactory;
 import de.julielab.jcore.reader.xmlmapper.genericTypes.TypeTemplate;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.TypeBuilder;
+import de.julielab.jcore.reader.xmlmapper.typeParser.NoDocumentTextCoveredException;
 import de.julielab.xml.JulieXMLTools;
 
 /**
@@ -67,7 +68,7 @@ public class XMLMapper {
 	public XMLMapper(byte[] mappingFileData) {
 		readMappingFile(mappingFileData);
 	}
-	
+
 	public XMLMapper(InputStream mappingFileDateStream) throws IOException {
 		readMappingFile(JulieXMLTools.readStream(mappingFileDateStream, 1000));
 	}
@@ -100,11 +101,13 @@ public class XMLMapper {
 		} catch (EOFException e) {
 			e.printStackTrace();
 		} catch (EntityException e) {
-			LOG.error(String.format("Document %s could not be parsed due to an EntityError. Document text is:\n%s", new String(identifier), new String(data)), e);
+			LOG.error(String.format("Document %s could not be parsed due to an EntityError. Document text is:\n%s", new String(identifier), new String(data)),
+					e);
 		} catch (CollectionException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
-			LOG.error(String.format("Document %s could not be parsed due to a general parsing error. Document text is:\n%s", new String(identifier), new String(data)), e);
+			LOG.error(String.format("Document %s could not be parsed due to a general parsing error. Document text is:\n%s", new String(identifier),
+					new String(data)), e);
 		}
 	}
 
@@ -123,19 +126,29 @@ public class XMLMapper {
 
 	private void buildTypes(byte[] identifier, JCas jcas, VTDNav vn) throws CollectionException {
 		try {
-			DocumentTextData docText = this.documentTextHandler.parseAndAddToCas(vn,jcas,identifier);
+			DocumentTextData docText = this.documentTextHandler.parseAndAddToCas(vn, jcas, identifier);
 			for (TypeTemplate typeTemplate : this.genericTemplates) {
 				ConcreteType concreteType = new ConcreteType(typeTemplate);
-				// This parser is the StandardTypeParser unless an external parser has been specified in the mapping file.
-				concreteType.getTypeTemplate().getParser().parseType(concreteType, vn, jcas, identifier, docText);
+				try {
+					// This parser is the StandardTypeParser unless an external
+					// parser has been specified in the mapping file.
+					concreteType.getTypeTemplate().getParser().parseType(concreteType, vn, jcas, identifier, docText);
+				} catch (NoDocumentTextCoveredException e) {
+					// this is not actually an error but just tells us that this
+					// concrete type - i.e. the annotation we are currently
+					// building - would refer to a non-existing text span and
+					// thus should be left out.
+					continue;
+				}
 				TypeBuilder builder = typeTemplate.getParser().getTypeBuilder();
 				if (builder == null) {
-					throw new RuntimeException("Your TypeParser is not associated with a TypeBuilder. To fix this, return a TypeBuilder in the implementation of the method getTypeBuilder of your TypeParser.");
+					throw new RuntimeException(
+							"Your TypeParser is not associated with a TypeBuilder. To fix this, return a TypeBuilder in the implementation of the method getTypeBuilder of your TypeParser.");
 				}
 				builder.buildType(concreteType, jcas);
 			}
 		} catch (Exception e) {
-			LOG.error("",e);
+			LOG.error("", e);
 		}
 	}
 }

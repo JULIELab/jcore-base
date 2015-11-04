@@ -143,7 +143,7 @@ public class TypeFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void fillDocumentParser(XMLEventReader reader) throws XMLStreamException {
+	private void fillDocumentParser(XMLEventReader reader) throws XMLStreamException, CollectionException {
 		this.documentTextParser = new DocumentTextHandler();
 		XMLEvent event = reader.nextEvent();
 		int id = -1;
@@ -156,6 +156,7 @@ public class TypeFactory {
 						Attribute next = attributes.next();
 						if (next.getName().getLocalPart().equals("id")) {
 							id = Integer.parseInt(next.getValue());
+							documentTextParser.addPartOfDocumentTextXPath(id);
 						}
 					} else {
 						LOGGER.error("no id for " + PART_OF_DOCUMENT_TEXT);
@@ -171,11 +172,23 @@ public class TypeFactory {
 						xpath = (event.asCharacters()).getData();
 					}
 					if (xpath.length() > 0 && id >= 0) {
-						documentTextParser.addPartOfDocumentTextXPath(id, xpath);
+						documentTextParser.setXPathForPartOfDocumentText(id, xpath);
 					} else {
 						LOGGER.error("Unkown data in " + DOCUMENT_TEXT + "/" + VALUE_X_PATH + " tag ");
 					}
-				} else {
+				} else if (nodeName.equals(EXTERNAL_PARSER)){
+					event = reader.nextEvent();
+					String externalParserClassName = "";
+					if (event.isCharacters()) {
+						externalParserClassName = (event.asCharacters()).getData();
+					}
+					if (externalParserClassName.length() > 0 && id >= 0) {
+						documentTextParser.setExternalParserForPartOfDocument(id, externalParserClassName);
+					} else {
+						LOGGER.error("Unkown data in " + DOCUMENT_TEXT + "/" + VALUE_X_PATH + " tag ");
+					}
+				}
+				else {
 					LOGGER.error("Unknown element in mapping file: " + nodeName);
 				}
 			}

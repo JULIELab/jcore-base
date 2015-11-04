@@ -5,6 +5,8 @@
 		</partOfDocumentText>
 		<partOfDocumentText id="1">
 			<xPath>/MedlineCitation/Article/Abstract</xPath>
+			<externalParser>de.julielab.jcore.reader.xmlmapper.mapper.StructuredAbstractParser
+			</externalParser>
 		</partOfDocumentText>
 		<partOfDocumentText id="2">
 			<xPath>/MedlineCitation/OtherAbstract</xPath>
@@ -17,7 +19,6 @@
 		</tsFullClassName>
 		<offset>
 			<partOfDocumentText>
-				<id>1</id>
 				<id>2</id>
 			</partOfDocumentText>
 		</offset>

@@ -15,9 +15,7 @@
 
 package de.julielab.jcore.reader.xmlmapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,7 +39,8 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Test;
 
-import de.julielab.jcore.types.AbstractPart;
+import de.julielab.jcore.types.AbstractSection;
+import de.julielab.jcore.types.AbstractSectionHeading;
 import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Title;
@@ -137,14 +136,63 @@ public class XMLMapperTest {
 		xmlReader.getNext(cas);
 		JCas jCas = cas.getJCas();
 		
-		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractPart.type).iterator();
+		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractSection.type).iterator();
 		assertTrue(it.hasNext());
 		int numAbstractSections = 0; 
 		while(it.hasNext()) {
-			it.next();
+			AbstractSection as = (AbstractSection) it.next();
+			if (numAbstractSections == 0) {
+				assertTrue(as.getCoveredText().startsWith("Topical corticosteroids"));
+				assertTrue(as.getCoveredText().endsWith("can have side-effects."));
+				assertNotNull(as.getAbstractSectionHeading());
+				AbstractSectionHeading heading = (AbstractSectionHeading) as.getAbstractSectionHeading();
+				assertEquals("BACKGROUND", heading.getLabel());
+				assertEquals("BACKGROUND", heading.getNlmCategory());
+			}
+			if (numAbstractSections == 2) {
+				assertTrue(as.getCoveredText().startsWith("Patients applied ointment daily"));
+				assertTrue(as.getCoveredText().endsWith("baseline and treatment end."));
+				assertNotNull(as.getAbstractSectionHeading());
+				AbstractSectionHeading heading = (AbstractSectionHeading) as.getAbstractSectionHeading();
+				assertEquals("PATIENTS AND METHODS", heading.getLabel());
+				assertEquals("METHODS", heading.getNlmCategory());
+			}
 			++numAbstractSections;
 		}
 		assertEquals(5, numAbstractSections);
+
+		it = jCas.getAnnotationIndex(AbstractText.type).iterator();
+		assertTrue(it.hasNext());
+		AbstractText at = (AbstractText) it.next();
+		assertFalse(it.hasNext());
+		assertTrue(at.getCoveredText().startsWith("Topical corticosteroids"));
+		assertTrue(at.getCoveredText().endsWith("severe baseline disease."));
+		assertEquals(5, at.getStructuredAbstractParts().size());
+	}
+	
+	@Test
+	public void testStructuredAbstractMappingWithNonStructuredAbstractDocument()throws Exception {
+		Map<String, String> readerConfig = new HashMap<String, String>();
+		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/medlineTest/x.xml");
+		Map<String, String> readerExtRes = new HashMap<String, String>();
+		readerExtRes.put(EXT_RES_KEY, XMLReader.RESOURCE_MAPPING_FILE);
+		readerExtRes.put(EXT_RES_NAME, "MappingFile");
+		readerExtRes.put(EXT_RES_URL, "file:medlineMappingFileStructuredAbstract.xml");
+		CollectionReader xmlReader = createCollectionReaderWithDescriptor(TEST_DESC_PATH, readerConfig, readerExtRes);
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlReader.getMetaData());
+		assertTrue(xmlReader.hasNext());
+
+		xmlReader.getNext(cas);
+		JCas jCas = cas.getJCas();
+		
+		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractSection.type).iterator();
+		assertFalse(it.hasNext());
+		
+		it = jCas.getAnnotationIndex(AbstractText.type).iterator();
+		assertTrue(it.hasNext());
+		AbstractText at = (AbstractText) it.next();
+		assertTrue(at.getCoveredText().startsWith("In the last few years,"));
+		assertTrue(at.getCoveredText().endsWith("antigen-presenting cells."));
 		
 	}
 

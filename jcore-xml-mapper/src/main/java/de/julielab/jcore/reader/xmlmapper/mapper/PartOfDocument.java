@@ -12,10 +12,16 @@ public class PartOfDocument {
 	private int[] end;
 	private String[] text;
 	private int id;
+	// If set, this parser is used to get the text of the text part pointed to
+	// by xPath. The parser might also set additional annotations internally.
+	private DocumentTextPartParser parser;
 
-	public PartOfDocument(int id, String xPath) {
+	public DocumentTextPartParser getParser() {
+		return parser;
+	}
+
+	public PartOfDocument(int id) {
 		this.id = id;
-		this.xPath = xPath;
 	}
 
 	public String getXPath() {
@@ -81,5 +87,10 @@ public class PartOfDocument {
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	public void setParser(DocumentTextPartParser parser) {
+		this.parser = parser;
+	}
+
 
 }

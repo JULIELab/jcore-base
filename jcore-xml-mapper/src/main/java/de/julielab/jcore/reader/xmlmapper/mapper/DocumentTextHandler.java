@@ -14,11 +14,14 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.mapper;
 
+import static org.fest.reflect.core.Reflection.constructor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.collection.CollectionException;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +32,8 @@ import com.ximpleware.VTDException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+
+import de.julielab.jcore.reader.xmlmapper.typeParser.TypeParser;
 
 /**
  * Handels to parse the DocumentText
@@ -44,8 +49,8 @@ public class DocumentTextHandler {
 		docTextData = new DocumentTextData();
 	}
 
-	public void addPartOfDocumentTextXPath(int id, String xpath) {
-		this.docTextData.put(id, new PartOfDocument(id, xpath));
+	public void addPartOfDocumentTextXPath(int id) {
+		this.docTextData.put(id, new PartOfDocument(id));
 
 	}
 
@@ -61,7 +66,11 @@ public class DocumentTextHandler {
 
 			int[] beginOffsets;
 			int[] endOffsets;
-			List<String> textPartStrs = getTextPart(vn, docTextPart, identifier);
+			List<String> textPartStrs;
+			if (docTextPart.getParser() == null)
+				textPartStrs = getTextPart(vn, docTextPart, identifier);
+			else
+				textPartStrs = docTextPart.getParser().parseDocumentPart(vn, docTextPart, textPartList.isEmpty() ? offset : offset+1, jcas, identifier);
 			docTextPart.setText(textPartStrs.toArray(new String[textPartStrs.size()]));
 			beginOffsets = new int[textPartStrs.size()];
 			endOffsets = new int[textPartStrs.size()];
@@ -69,13 +78,14 @@ public class DocumentTextHandler {
 				String textPartStr = textPartStrs.get(j).trim();
 				if (textPartStr.length() > 0) {
 					// Important: First compute offset, then add the new text
-					// part.
-					// Otherwise, the new text part will be treated as a former
-					// text part
-					// and there will be an offset increment although it is
+					// part. Otherwise, the new text part will be treated as the former
+					// text part and there will be an offset increment although it is
 					// incorrect.
-					if (i - 1 >= 0 && i - 1 < textPartList.size() && textPartList.get(i - 1).length() > 0)
-						offset += 1;
+//					if (i - 1 >= 0 && i - 1 < textPartList.size() && textPartList.get(i - 1).length() > 0)
+//						offset += 1;
+					// accommodate for the line break after each text part inserted at the end of the method
+					if (!textPartList.isEmpty())
+						++offset;
 					textPartList.add(textPartStr);
 					beginOffsets[j] = offset;
 					offset += textPartStr.length();
@@ -114,6 +124,24 @@ public class DocumentTextHandler {
 			i = ap.evalXPath();
 		}
 		return textParts;
+	}
+
+	public void setXPathForPartOfDocumentText(int id, String xpath) {
+		docTextData.get(id).setxPath(xpath);
+	}
+
+	public void setExternalParserForPartOfDocument(int id, String externalParserClassName) throws CollectionException {
+		if (externalParserClassName != null) {
+			Class<?> externalParserClass;
+			try {
+				externalParserClass = Class.forName(externalParserClassName.trim());
+			} catch (ClassNotFoundException e) {
+				LOGGER.error("ExternalParser " + externalParserClassName + " for document text part " + id + " returns a ClassNotFoundException", e);
+				throw new CollectionException(e);
+			}
+			DocumentTextPartParser parser = (DocumentTextPartParser) constructor().in(externalParserClass).newInstance();
+			this.docTextData.get(id).setParser(parser);
+		}
 	}
 
 }
