@@ -17,11 +17,4 @@ A Collection Reader that converts MUC-7 files to CAS objects (only corefs).</des
   	<name>JULIE Lab Jena, Germany</name>
   	<url>http://www.julielab.de</url>
   </organization>
-  <dependencies>
-  	<dependency>
-  		<groupId>de.julielab</groupId>
-  		<artifactId>jcore-types</artifactId>
-  		<version>${jcore-version}</version>
-  	</dependency>
-  </dependencies>
 </project>

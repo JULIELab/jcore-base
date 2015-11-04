@@ -34,11 +34,6 @@
 		<artifactId>jcore-utilities</artifactId>
 		<version>${jcore-version}</version>
 	</dependency>
-	<dependency>
-		<groupId>de.julielab</groupId>
-		<artifactId>jcore-types</artifactId>
-		<version>${jcore-version}</version>
-	</dependency>
   </dependencies>  
   <organization>
   	<name>JULIE Lab Jena, Germany</name>

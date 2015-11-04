@@ -31,6 +31,11 @@
            <artifactId>uimafit-core</artifactId>
            <version>${uimafit-version}</version>
        </dependency>
+       <dependency>
+       	<groupId>de.julielab</groupId>
+       	<artifactId>jcore-types</artifactId>
+       	<version>${jcore-version}</version>
+       </dependency>
     </dependencies>
 	<modules>
 		<module>jcore-ace-reader</module>

@@ -27,11 +27,6 @@
     </dependency>
     <dependency>
     	<groupId>de.julielab</groupId>
-    	<artifactId>jcore-types</artifactId>
-    	<version>${jcore-version}</version>
-    </dependency>
-    <dependency>
-    	<groupId>de.julielab</groupId>
     	<artifactId>julie-segment-eval</artifactId>
     	<version>1.0.6</version>
     </dependency>
