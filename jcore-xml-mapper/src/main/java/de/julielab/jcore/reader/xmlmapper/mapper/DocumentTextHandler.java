@@ -66,7 +66,7 @@ public class DocumentTextHandler {
 			beginOffsets = new int[textPartStrs.size()];
 			endOffsets = new int[textPartStrs.size()];
 			for (int j = 0; j < textPartStrs.size(); ++j) {
-				String textPartStr = textPartStrs.get(j);
+				String textPartStr = textPartStrs.get(j).trim();
 				if (textPartStr.length() > 0) {
 					// Important: First compute offset, then add the new text
 					// part.

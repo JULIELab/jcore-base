@@ -1,10 +1,13 @@
 <mappings>
-	<documentText>
-		<partOfDocumentText id="0">/MedlineCitation/Article/ArticleTitle
+		<documentText>
+		<partOfDocumentText id="0">
+			<xPath>/MedlineCitation/Article/ArticleTitle</xPath>
 		</partOfDocumentText>
-		<partOfDocumentText id="1">/MedlineCitation/Article/Abstract
+		<partOfDocumentText id="1">
+			<xPath>/MedlineCitation/Article/Abstract</xPath>
 		</partOfDocumentText>
-		<partOfDocumentText id="2">/MedlineCitation/OtherAbstract
+		<partOfDocumentText id="2">
+			<xPath>/MedlineCitation/OtherAbstract</xPath>
 		</partOfDocumentText>
 	</documentText>
 

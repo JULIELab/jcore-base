@@ -129,7 +129,7 @@ public class TypeTemplate {
 			try {
 				externalParserClass = Class.forName(trim);
 			} catch (ClassNotFoundException e) {
-				LOGGER.error("ExternalParser " + trim + " returns a ClassNotFoundException", e);
+				LOGGER.error("ExternalParser " + trim + " for type or feature " + fullClassName + " returns a ClassNotFoundException", e);
 				throw new CollectionException(e);
 			}
 			this.parser = (TypeParser) constructor().in(externalParserClass).newInstance();
