@@ -125,7 +125,7 @@ feature captionType is an Enumeration, stating to what type of entity the captio
           <name>structuredAbstractParts</name>
           <description>A List of all parts of a structured abstract. Empty, if the abstract consists of only one part and has no titles.</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jcore.types.AbstractPart</elementType>
+          <elementType>de.julielab.jcore.types.AbstractSection</elementType>
         </featureDescription>
       </features>
     </typeDescription>
@@ -271,12 +271,12 @@ feature captionType is an Enumeration, stating to what type of entity the captio
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jcore.types.AbstractPart</name>
+      <name>de.julielab.jcore.types.AbstractSection</name>
       <description/>
       <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
       <features>
         <featureDescription>
-          <name>abstractPartHeading</name>
+          <name>abstractSectionHeading</name>
           <description>The title of a part of a structured abstract, e.g. "Background", "Methods", "Results", ...</description>
           <rangeTypeName>de.julielab.jcore.types.Title</rangeTypeName>
         </featureDescription>
@@ -316,12 +316,12 @@ document: title of the document</description>
           <description/>
         </value>
                 <value>
-          <string>abstract</string>
-          <description/>
+          <string>abstractSection</string>
+          <description>Denotes the heading of a section of a structured abstract</description>
         </value>
         <value>
           <string>document</string>
-          <description/>
+          <description>Denotes the document title</description>
         </value>
       </allowedValues>
     </typeDescription>
