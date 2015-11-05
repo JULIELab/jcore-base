@@ -16,10 +16,6 @@
 		<version>2.0.0</version>
 	</parent>
 	<name>JCoRe Base</name>
-	<properties>
-       <uima-version>2.6.0</uima-version>
-       <uimafit-version>2.1.0</uimafit-version>
-    </properties>
     <dependencies>
        <dependency>
            <groupId>org.apache.uima</groupId>
