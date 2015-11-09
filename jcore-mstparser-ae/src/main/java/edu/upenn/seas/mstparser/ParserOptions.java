@@ -114,7 +114,6 @@ public final class ParserOptions {
         }
 
         try {
-            // System.setProperty("java.io.tmpdir", "/home/matthies/temp");
             if (null != trainfile) {
                 trainforest = File.createTempFile("train", ".forest");
                 trainforest.deleteOnExit();

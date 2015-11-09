@@ -16,10 +16,6 @@
 		<version>2.0.0</version>
 	</parent>
 	<name>JCoRe Base</name>
-	<properties>
-       <uima-version>2.6.0</uima-version>
-       <uimafit-version>2.1.0</uimafit-version>
-    </properties>
     <dependencies>
        <dependency>
            <groupId>org.apache.uima</groupId>
@@ -66,4 +62,9 @@
 		<module>jcore-xml-mapper</module>
 		<module>jcore-xml-reader</module>
 	</modules>
+	<scm>
+        <connection>scm:git:git@github.com:JULIELab/jcore-base.git</connection>
+        <developerConnection>scm:git:git@github.com:JULIELab/jcore-base.git</developerConnection>
+        <url>https://github.com/JULIELab/jcore-base</url>
+    </scm>
 </project>
