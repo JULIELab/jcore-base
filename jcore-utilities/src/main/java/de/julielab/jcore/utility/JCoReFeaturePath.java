@@ -42,9 +42,22 @@ import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.ResourceEntry;
 
 /**
-<<<<<<< HEAD
- * A simple implementation of a feature path, originally adapted to the needs of
- * the EntityEvaluatorConverter. It is currently not supposed to serve as a full
+ * <<<<<<< HEAD A simple implementation of a feature path, originally adapted to
+ * the needs of the EntityEvaluatorConverter. It is currently not supposed to
+ * serve as a full UIMA FeaturePath replacement. However, it is thinkable that
+ * the implementation will be extended in the future by whomever requires a
+ * feature path more capable of what the original UIMA implementation can do.
+ * 
+ * UIMA discloses the {@link FeatureValuePath} which seems to be able to handle
+ * arrays. However, it is marked deprecated and shouldn't be used any more. The
+ * new interface to use is the {@link FeaturePath} interface. Problem is, it
+ * seemingly can't handle arrays very well.
+ * 
+ * The current implementation is quite preliminary. It can only be used via
+ * {@link #getValueAsString(FeatureStructure)}, i.e. even numeric types are
+ * returned as strings. The workflow is as follows: ======= A simple
+ * implementation of a feature path, originally adapted to the needs of the
+ * EntityEvaluatorConverter. It is currently not supposed to serve as a full
  * UIMA FeaturePath replacement. However, it is thinkable that the
  * implementation will be extended in the future by whomever requires a feature
  * path more capable of what the original UIMA implementation can do.
@@ -56,20 +69,8 @@ import de.julielab.jcore.types.ResourceEntry;
  * 
  * The current implementation is quite preliminary. It can only be used via
  * {@link #getValueAsString(FeatureStructure)}, i.e. even numeric types are
- * returned as strings. The workflow is as follows:
-=======
- * A simple implementation of a feature path, originally adapted to the needs of the EntityEvaluatorConverter. It is
- * currently not supposed to serve as a full UIMA FeaturePath replacement. However, it is thinkable that the
- * implementation will be extended in the future by whomever requires a feature path more capable of what the original
- * UIMA implementation can do.
- * 
- * UIMA discloses the {@link FeatureValuePath} which seems to be able to handle arrays. However, it is marked deprecated
- * and shouldn't be used any more. The new interface to use is the {@link FeaturePath} interface. Problem is, it
- * seemingly can't handle arrays very well.
- * 
- * The current implementation is quite preliminary. It can only be used via {@link #getValueAsString(FeatureStructure)},
- * i.e. even numeric types are returned as strings. The workflow is as follows:
->>>>>>> 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
+ * returned as strings. The workflow is as follows: >>>>>>>
+ * 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
  * 
  * <pre>
  * JulesFeaturePath fp = new JulesFeaturePath();
@@ -77,24 +78,25 @@ import de.julielab.jcore.types.ResourceEntry;
  * String entryId = fp.getValueAsString(gene);
  * </pre>
  * 
-<<<<<<< HEAD
- * This example retrieves the entry ID of the first {@link ResourceEntry} of a
- * {@link Gene} annotation.
+ * <<<<<<< HEAD This example retrieves the entry ID of the first
+ * {@link ResourceEntry} of a {@link Gene} annotation.
  * 
  * <p>
  * Feature paths can be any sequence of feature base names in the form
  * <code>/feature1/feature2/feature3</code>. The last feature must be
  * primitive-valued. If any of the features is an array, the index must be
  * given, e.g. <code>/feature1/feature2[2]/feature3</code>. Otherwise, an array
- * index out of bounds (-1) exception will be thrown.
-=======
- * This example retrieves the entry ID of the first {@link ResourceEntry} of a {@link Gene} annotation.
+ * index out of bounds (-1) exception will be thrown. ======= This example
+ * retrieves the entry ID of the first {@link ResourceEntry} of a {@link Gene}
+ * annotation.
  * 
  * <p>
- * Feature paths can be any sequence of feature base names in the form <code>/feature1/feature2/feature3</code>. The
- * last feature must be primitive-valued. If any of the features is an array, the index must be given, e.g.
- * <code>/feature1/feature2[2]/feature3</code>. Otherwise, an array index out of bounds (-1) exception will be thrown.
->>>>>>> 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
+ * Feature paths can be any sequence of feature base names in the form
+ * <code>/feature1/feature2/feature3</code>. The last feature must be
+ * primitive-valued. If any of the features is an array, the index must be
+ * given, e.g. <code>/feature1/feature2[2]/feature3</code>. Otherwise, an array
+ * index out of bounds (-1) exception will be thrown. >>>>>>>
+ * 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
  * </p>
  * 
  * @author faessler
@@ -450,21 +452,33 @@ public class JCoReFeaturePath implements FeaturePath {
 		} catch (CASException e) {
 			throw new RuntimeException(e);
 		}
-		if (builtInFunction != null && featureValue != null && List.class.isAssignableFrom(featureValue.getClass())) {
-			@SuppressWarnings("unchecked")
-			List<Object> valueList = (List<Object>) featureValue;
-			for (int i = 0; i < valueList.size(); i++) {
-				Object value = valueList.get(i);
-				if (value instanceof Annotation) {
-					if (builtInFunction.equals("coveredText()"))
-						valueList.set(i, ((Annotation)value).getCoveredText());
-					else
-						throw new NotImplementedException("Built-in function " + builtInFunction + " is currently not supported by the JCoReFeaturePath");
+		if (builtInFunction != null && featureValue != null) {
+			if (List.class.isAssignableFrom(featureValue.getClass())) {
+				@SuppressWarnings("unchecked")
+				List<Object> valueList = (List<Object>) featureValue;
+				for (int i = 0; i < valueList.size(); i++) {
+					Object value = valueList.get(i);
+					Object functionValue = null;
+					functionValue = applyBuiltInFunction(value);
+					if (functionValue != null)
+						valueList.set(i, functionValue);
 				}
-				
+			} else if (featureValue instanceof FeatureStructure) {
+				featureValue = applyBuiltInFunction(featureValue);
 			}
 		}
 		return featureValue;
+	}
+
+	private Object applyBuiltInFunction(Object value) {
+		Object functionValue = null;
+		if (value instanceof Annotation) {
+			if (builtInFunction.equals("coveredText()"))
+				functionValue = ((Annotation) value).getCoveredText();
+			else
+				throw new NotImplementedException("Built-in function " + builtInFunction + " is currently not supported by the JCoReFeaturePath");
+		}
+		return functionValue;
 	}
 
 	private Object getArrayValue(CommonArrayFS sa, int index, Map<?, ?> replacements) throws NoSuchMethodException, SecurityException, IllegalAccessException,

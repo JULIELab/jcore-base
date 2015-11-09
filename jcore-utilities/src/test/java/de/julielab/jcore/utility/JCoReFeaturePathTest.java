@@ -15,18 +15,18 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
 import de.julielab.jcore.types.ArgumentMention;
 import de.julielab.jcore.types.AuthorInfo;
 import de.julielab.jcore.types.ConceptMention;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.EventTrigger;
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Lemma;
 import de.julielab.jcore.types.OntClassMention;
 import de.julielab.jcore.types.ResourceEntry;
-import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 
 public class JCoReFeaturePathTest {
@@ -429,7 +429,20 @@ public class JCoReFeaturePathTest {
 	}
 
 	@Test
-	public void testGetCoveredText() throws Exception {
+	public void testGetCoveredTextFeatureStructure() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		jcas.setDocumentText("IL-2 regulation");
+		EventMention em = new EventMention(jcas, 5, 15);
+		EventTrigger et = new EventTrigger(jcas, 5, 15);
+		em.setTrigger(et);
+
+		JCoReFeaturePath fp = new JCoReFeaturePath();
+		fp.initialize("/trigger:coveredText()");
+		assertEquals("regulation", fp.getValueAsString(em));
+	}
+	
+	@Test
+	public void testGetCoveredTextArrayElements() throws Exception {
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		jcas.setDocumentText("IL-2 mTOR");
 		Gene g = new Gene(jcas, 0, 4);
