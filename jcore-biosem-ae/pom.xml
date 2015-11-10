@@ -37,6 +37,11 @@
 			<artifactId>biosem-event-extractor</artifactId>
 			<version>1.1.2</version>
 		</dependency>
+		<dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-version}</version>
+        </dependency>
 	</dependencies>
 	<url>http://www.ncbi.nlm.nih.gov/pubmed/22859502</url>
 	<organization>

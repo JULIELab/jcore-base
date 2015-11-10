@@ -9,6 +9,11 @@
   <name>JCoRe Stanford Lemmatizer</name>
   <description>UIMA Wrapper for Stanford CoreNLP Lemmatizer</description>
   <dependencies>
+    <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-version}</version>
+    </dependency>
   	<dependency>
   		<groupId>edu.stanford.nlp</groupId>
   		<artifactId>stanford-corenlp</artifactId>

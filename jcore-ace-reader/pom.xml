@@ -25,6 +25,11 @@ A Collection Reader that converts ACE-XML files to CAS objects.</description>
       	<groupId>org.slf4j</groupId>
       	<artifactId>slf4j-api</artifactId>
       </dependency>
+      <dependency>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-types</artifactId>
+        <version>${jcore-version}</version>
+       </dependency>
   </dependencies>
   <organization>
   	<name>JULIE Lab Jena, Germany</name>
