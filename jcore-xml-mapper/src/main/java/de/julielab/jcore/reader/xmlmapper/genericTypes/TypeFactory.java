@@ -104,7 +104,8 @@ public class TypeFactory {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// Check the root children: These are only allowed to be 'documentText' nodes or 'tsType' nodes.
+			// Check the root children: These are only allowed to be
+			// 'documentText' nodes or 'tsType' nodes.
 			if (event.isStartElement()) {
 				String nodeName = event.asStartElement().getName().toString();
 				// tsType...
@@ -142,35 +143,52 @@ public class TypeFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void fillDocumentParser(XMLEventReader reader) throws XMLStreamException {
+	private void fillDocumentParser(XMLEventReader reader) throws XMLStreamException, CollectionException {
 		this.documentTextParser = new DocumentTextHandler();
 		XMLEvent event = reader.nextEvent();
+		int id = -1;
 		while (!(event.isEndElement() && event.asEndElement().getName().toString().equals(DOCUMENT_TEXT))) {
 			if (event.isStartElement()) {
 				String nodeName = event.asStartElement().getName().toString();
 				if (nodeName.equals(PART_OF_DOCUMENT_TEXT)) {
 					Iterator<Attribute> attributes = event.asStartElement().getAttributes();
-					int id = -1;
 					if (attributes.hasNext()) {
 						Attribute next = attributes.next();
 						if (next.getName().getLocalPart().equals("id")) {
 							id = Integer.parseInt(next.getValue());
+							documentTextParser.addPartOfDocumentTextXPath(id);
 						}
 					} else {
 						LOGGER.error("no id for " + PART_OF_DOCUMENT_TEXT);
 						throw new RuntimeException();
 					}
+				} else if (nodeName.equals(VALUE_X_PATH)) {
+					// since the ID is an attribute of the partOfDocument
+					// element, we will always have the correct ID for the
+					// respective xPath
 					event = reader.nextEvent();
 					String xpath = "";
 					if (event.isCharacters()) {
 						xpath = (event.asCharacters()).getData();
 					}
 					if (xpath.length() > 0 && id >= 0) {
-						documentTextParser.addPartOfDocumentTextXPath(id, xpath);
+						documentTextParser.setXPathForPartOfDocumentText(id, xpath);
 					} else {
-						LOGGER.error("Unkownt data in " + DOCUMENT_TEXT + " tag ");
+						LOGGER.error("Unkown data in " + DOCUMENT_TEXT + "/" + VALUE_X_PATH + " tag ");
 					}
-				} else {
+				} else if (nodeName.equals(EXTERNAL_PARSER)){
+					event = reader.nextEvent();
+					String externalParserClassName = "";
+					if (event.isCharacters()) {
+						externalParserClassName = (event.asCharacters()).getData();
+					}
+					if (externalParserClassName.length() > 0 && id >= 0) {
+						documentTextParser.setExternalParserForPartOfDocument(id, externalParserClassName);
+					} else {
+						LOGGER.error("Unkown data in " + DOCUMENT_TEXT + "/" + VALUE_X_PATH + " tag ");
+					}
+				}
+				else {
 					LOGGER.error("Unknown element in mapping file: " + nodeName);
 				}
 			}

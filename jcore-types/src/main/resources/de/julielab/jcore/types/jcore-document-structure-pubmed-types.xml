@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>JCoRe Document Structure  PubMed Types</name>
+  <description>This type system contains document structure types specific to PubMed or MEDLINE, e.g. detailed descriptions of structured abstracts.</description>
+  <version>2.0.0-SNAPSHOT</version>
+  <vendor>JULIE Lab Jena, Germany</vendor>
+  <imports>
+    <import location="jcore-document-structure-types.xml"/>
+  </imports>
+  <types>
+    	<typeDescription>
+			<name>de.julielab.jcore.types.AbstractSectionHeading</name>
+			<description>The heading of a section of a structured abstract as
+				used by MEDLINE and PubMed.
+				The TitleType feature value should always be 'abstractSection'.</description>
+			<supertypeName>de.julielab.jcore.types.Title</supertypeName>
+		<features>
+        <featureDescription>
+          <name>label</name>
+          <description>The author-given label to the abstract section this heading belongs to.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>nlmCategory</name>
+          <description>The NLM category associated with the section label given by the authors (see feature 'label').</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+		</types>
+  </typeSystemDescription>

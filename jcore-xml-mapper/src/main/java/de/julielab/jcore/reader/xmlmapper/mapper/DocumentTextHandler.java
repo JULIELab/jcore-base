@@ -14,10 +14,14 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.mapper;
 
+import static org.fest.reflect.core.Reflection.constructor;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.collection.CollectionException;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +32,8 @@ import com.ximpleware.VTDException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+
+import de.julielab.jcore.reader.xmlmapper.typeParser.TypeParser;
 
 /**
  * Handels to parse the DocumentText
@@ -43,19 +49,13 @@ public class DocumentTextHandler {
 		docTextData = new DocumentTextData();
 	}
 
-	public void addPartOfDocumentTextXPath(int id, String xpath) {
-		this.docTextData.put(id, new PartOfDocument(id, xpath));
+	public void addPartOfDocumentTextXPath(int id) {
+		this.docTextData.put(id, new PartOfDocument(id));
 
 	}
 
-	public PartOfDocument getPartOfDocumentText(int id) {
-		return this.docTextData.get(id);
-	}
-
-	public DocumentTextData parseAndAddToCas(VTDNav vn, JCas jcas,
-			byte[] identifier) throws VTDException {
-		List<String> textPartList = new ArrayList<String>(
-				this.docTextData.size());
+	public DocumentTextData parseAndAddToCas(VTDNav vn, JCas jcas, byte[] identifier) throws VTDException {
+		List<String> textPartList = new ArrayList<String>(this.docTextData.size());
 		int offset = 0;
 		for (int i = 0; i < docTextData.size(); i++) {
 			PartOfDocument docTextPart = this.docTextData.get(i);
@@ -64,21 +64,46 @@ public class DocumentTextHandler {
 				continue;
 			}
 
-			String textPartStr = getTextPart(vn, docTextPart, identifier);
-			docTextPart.setText(textPartStr);
-
-			if (textPartStr.length() > 0) {
-				// Important: First compute offset, then add the new text part.
-				// Otherwise, the new text part will be treated as a former text part
-				// and there will be an offset increment although it is incorrect.
-				if (i - 1 >= 0 && i - 1 < textPartList.size() && textPartList.get(i - 1).length() > 0)
-					offset += 1;
-				textPartList.add(textPartStr);
+			int[] beginOffsets;
+			int[] endOffsets;
+			List<String> textPartStrs;
+			if (docTextPart.getParser() == null)
+				textPartStrs = getTextPart(vn, docTextPart, identifier);
+			else
+				textPartStrs = docTextPart.getParser().parseDocumentPart(vn, docTextPart, textPartList.isEmpty() ? offset : offset + 1, jcas, identifier);
+			docTextPart.setText(textPartStrs.toArray(new String[textPartStrs.size()]));
+			beginOffsets = new int[textPartStrs.size()];
+			endOffsets = new int[textPartStrs.size()];
+			for (int j = 0; j < textPartStrs.size(); ++j) {
+				String textPartStr = textPartStrs.get(j).trim();
+				if (textPartStr.length() > 0) {
+					// Important: First compute offset, then add the new text
+					// part. Otherwise, the new text part will be treated as the
+					// former
+					// text part and there will be an offset increment although
+					// it is
+					// incorrect.
+					// if (i - 1 >= 0 && i - 1 < textPartList.size() &&
+					// textPartList.get(i - 1).length() > 0)
+					// offset += 1;
+					// accommodate for the line break after each text part
+					// inserted at the end of the method
+					if (!textPartList.isEmpty())
+						++offset;
+					textPartList.add(textPartStr);
+					beginOffsets[j] = offset;
+					offset += textPartStr.length();
+					endOffsets[j] = offset;
+				}
 			}
-			docTextPart.setBegin(offset);
-			offset += textPartStr.length();
-			docTextPart.setEnd(offset);
-			
+			// in case the text part was empty, we need to set the offsets to
+			// the current offsets, begin and end equal (part has empty length)
+			if (textPartStrs.isEmpty())
+				beginOffsets = endOffsets = new int[] { offset };
+			docTextPart.setBeginOffsets(beginOffsets);
+			// offset += textPartStr.length();
+			docTextPart.setEndOffsets(endOffsets);
+
 		}
 		String docTextStr = StringUtils.join(textPartList, "\n");
 		docTextData.setText(docTextStr);
@@ -86,22 +111,43 @@ public class DocumentTextHandler {
 		return this.docTextData;
 	}
 
-	private String getTextPart(VTDNav vn, PartOfDocument part, byte[] identifier)
-			throws XPathParseException, XPathEvalException, NavException {
+	private List<String> getTextPart(VTDNav vn, PartOfDocument part, byte[] identifier) throws XPathParseException, XPathEvalException, NavException {
+		List<String> textParts = new ArrayList<>();
 		vn.cloneNav();
 		AutoPilot ap = new AutoPilot(vn);
-		String textPart = "";
+		String textPart;
+		if (StringUtils.isBlank(part.getXPath()))
+			throw new IllegalStateException("Document text part with ID " + part.getId() + " has no XPath specified.");
 		ap.selectXPath(part.getXPath());
 
 		int i = ap.evalXPath();
-//		if (i < 0)
-//			LOGGER.warn("no match for xPath " + part.getXPath()
-//					+ " in document with identifier " + new String(identifier));
+		// if (i < 0)
+		// LOGGER.warn("no match for xPath " + part.getXPath()
+		// + " in document with identifier " + new String(identifier));
 		while (i != -1) {
 			textPart = MapperUtils.getElementText(vn);
+			textParts.add(textPart);
 			i = ap.evalXPath();
 		}
-		return textPart;
+		return textParts;
+	}
+
+	public void setXPathForPartOfDocumentText(int id, String xpath) {
+		docTextData.get(id).setxPath(xpath);
+	}
+
+	public void setExternalParserForPartOfDocument(int id, String externalParserClassName) throws CollectionException {
+		if (externalParserClassName != null) {
+			Class<?> externalParserClass;
+			try {
+				externalParserClass = Class.forName(externalParserClassName.trim());
+			} catch (ClassNotFoundException e) {
+				LOGGER.error("ExternalParser " + externalParserClassName + " for document text part " + id + " returns a ClassNotFoundException", e);
+				throw new CollectionException(e);
+			}
+			DocumentTextPartParser parser = (DocumentTextPartParser) constructor().in(externalParserClass).newInstance();
+			this.docTextData.get(id).setParser(parser);
+		}
 	}
 
 }

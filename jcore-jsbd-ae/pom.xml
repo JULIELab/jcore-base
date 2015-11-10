@@ -27,7 +27,7 @@
 							<mainClass>de.julielab.jsbd.SentenceSplitterApplication</mainClass>
 						</manifest>
 					</archive>
-					<appendAssemblyId>false</appendAssemblyId>
+<!-- 					<appendAssemblyId>false</appendAssemblyId> -->
 					<finalName>jsbd-${project.version}</finalName>
 				</configuration>
 				<executions>

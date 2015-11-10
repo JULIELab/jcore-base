@@ -1,10 +1,13 @@
 <mappings>
-	<documentText>
-		<partOfDocumentText id="0">/MedlineCitation/Article/ArticleTitle
+		<documentText>
+		<partOfDocumentText id="0">
+			<xPath>/MedlineCitation/Article/ArticleTitle</xPath>
 		</partOfDocumentText>
-		<partOfDocumentText id="1">/MedlineCitation/Article/Abstract
+		<partOfDocumentText id="1">
+			<xPath>/MedlineCitation/Article/Abstract</xPath>
 		</partOfDocumentText>
-		<partOfDocumentText id="2">/MedlineCitation/OtherAbstract
+		<partOfDocumentText id="2">
+			<xPath>/MedlineCitation/OtherAbstract</xPath>
 		</partOfDocumentText>
 	</documentText>
 
@@ -27,11 +30,19 @@
 				<id>0</id>
 			</partOfDocumentText>
 		</offset>
+		<tsFeature>
+			<tsFeatureName>titleType</tsFeatureName>
+			<tsFullClassName>java.lang.String</tsFullClassName>
+			<valueMapping>
+				<default>document</default>
+			</valueMapping>
+		</tsFeature>
 	</tsType>
 
 	<tsType>
-    <tsFullClassName>de.julielab.jcore.types.RelatedArticleList</tsFullClassName>
-    <tsFeature>
+		<tsFullClassName>de.julielab.jcore.types.RelatedArticleList
+		</tsFullClassName>
+		<tsFeature>
 			<tsFeatureName>relatedArticles</tsFeatureName>
 			<isType>true</isType>
 			<tsFullClassName>
@@ -46,51 +57,26 @@
 				<tsFullClassName>
 					de.julielab.jcore.types.RelatedArticle
 				</tsFullClassName>
-				
+
 				<tsFeature>
 					<tsFeatureName>relatedArticle</tsFeatureName>
 					<xPath>.</xPath>
 					<tsFullClassName>java.lang.String</tsFullClassName>
 				</tsFeature>
-				
+
 			</tsFeature>
 		</tsFeature>
-     </tsType>
-	<!--  
-	<tsType>
-    <tsFullClassName>de.julielab.jcore.types.FullTextLinkList</tsFullClassName>
-    <tsFeature>
-			<tsFeatureName>fullTextLinks</tsFeatureName>
-			<isType>true</isType>
-			<tsFullClassName>
-				org.apache.uima.jcas.cas.FSArray
-			</tsFullClassName>
-	    
-	    <tsFeature>
-				<isType>true</isType>
-				<xPath>
-					/PubmedArticle/FullTextLinks/FullTextLink
-				</xPath>
-				<tsFullClassName>
-					de.julielab.jcore.types.FullTextLink
-				</tsFullClassName>
-				
-				<tsFeature>
-					<tsFeatureName>url</tsFeatureName>
-					<xPath>@Url</xPath>
-					<tsFullClassName>java.lang.String</tsFullClassName>
-				</tsFeature>
-				<tsFeature>
-					<tsFeatureName>iconUrl</tsFeatureName>
-					<xPath>@IconUrl</xPath>
-					<tsFullClassName>java.lang.String</tsFullClassName>
-				</tsFeature>
-				
-			</tsFeature>	    
-	</tsFeature>	
-    </tsType>
--->
-	
+	</tsType>
+	<!-- <tsType> <tsFullClassName>de.julielab.jcore.types.FullTextLinkList</tsFullClassName> 
+		<tsFeature> <tsFeatureName>fullTextLinks</tsFeatureName> <isType>true</isType> 
+		<tsFullClassName> org.apache.uima.jcas.cas.FSArray </tsFullClassName> <tsFeature> 
+		<isType>true</isType> <xPath> /PubmedArticle/FullTextLinks/FullTextLink </xPath> 
+		<tsFullClassName> de.julielab.jcore.types.FullTextLink </tsFullClassName> 
+		<tsFeature> <tsFeatureName>url</tsFeatureName> <xPath>@Url</xPath> <tsFullClassName>java.lang.String</tsFullClassName> 
+		</tsFeature> <tsFeature> <tsFeatureName>iconUrl</tsFeatureName> <xPath>@IconUrl</xPath> 
+		<tsFullClassName>java.lang.String</tsFullClassName> </tsFeature> </tsFeature> 
+		</tsFeature> </tsType> -->
+
 	<tsType>
 		<tsFullClassName>
 			de.julielab.jcore.types.pubmed.Header
@@ -164,7 +150,8 @@
 			<tsFullClassName>
 				org.apache.uima.jcas.cas.FSArray
 			</tsFullClassName>
-			<externalParser>de.julielab.jcore.reader.xmlmapper.typeParser.FSArrayParser</externalParser>
+			<externalParser>de.julielab.jcore.reader.xmlmapper.typeParser.FSArrayParser
+			</externalParser>
 			<isType>true</isType>
 			<tsFeature>
 				<tsFeatureName>authorInfo</tsFeatureName>
@@ -379,9 +366,7 @@
 					<tsFeatureName>AcList</tsFeatureName>
 					<xPath>
 						AccessionNumberList
-						<!--
-							/MedlineCitation/DataBankList/DataBank/
-						-->
+						<!-- /MedlineCitation/DataBankList/DataBank/ -->
 					</xPath>
 					<isType>true</isType>
 					<tsFullClassName>
@@ -449,5 +434,5 @@
 			</tsFeature>
 		</tsFeature>
 	</tsType>
-	
+
 </mappings>

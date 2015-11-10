@@ -383,9 +383,11 @@ public class XMLReaderTest {
 		Iterator<Annotation> typeIterator = getTypeIterator(cas,
 				AbstractText.type);
 		if (typeIterator.hasNext()) {
-			text = ((AbstractText) typeIterator.next()).getCoveredText();
+			AbstractText abstractText = (AbstractText) typeIterator.next();
+			System.out.println("hier: " +abstractText.getBegin() + " " + abstractText.getEnd());
+			text = abstractText.getCoveredText();
 		}
-		assertEquals("\n" + abstractText + "		", text);
+		assertEquals(abstractText, text);
 	}
 
 	private void checkTitle(CAS cas) {
@@ -398,11 +400,11 @@ public class XMLReaderTest {
 	}
 
 	private void checkDocText(CAS cas) {
-		assertEquals(abstractTitle + "\n\n" + abstractText + "		",
+		assertEquals(abstractTitle  + "\n" + abstractText,
 				cas.getDocumentText());
 	}
 
-	String abstractText = "			In the last few years, great progress has been made in\n				understanding how stromal interacting molecule 1 (STIM1), a protein\n				containing a calcium sensor that is located in the endoplasmic\n				reticulum, and Orai1, a protein that forms a calcium channel in the\n				plasma membrane, interact and give rise to store-operated calcium\n				entry. Pharmacological depletion of calcium stores leads to the\n				formation of clusters containing STIM and Orai that appear to be\n				sites for calcium influx. Similar puncta are also produced in\n				response to physiological stimuli in immune cells. In T cells\n				engaged with antigen-presenting cells, clusters containing STIM and\n				Orai accumulate at the immunological synapse. We recently discovered\n				that in activated T cells, STIM1 and Orai1 also accumulate in\n				cap-like structures opposite the immune synapse at the distal pole\n				of the cell. Both caps and puncta are long-lived stable structures\n				containing STIM1 and Orai1 in close proximity. The function of\n				puncta as sites of calcium influx is clear. We speculate that the\n				caps may provide a secondary site of calcium entry. Alternatively,\n				they may serve as a source of preformed channel complexes that move\n				to new immune synapses as T cells repeatedly engage\n				antigen-presenting cells.\n";
+	String abstractText = "In the last few years, great progress has been made in\n				understanding how stromal interacting molecule 1 (STIM1), a protein\n				containing a calcium sensor that is located in the endoplasmic\n				reticulum, and Orai1, a protein that forms a calcium channel in the\n				plasma membrane, interact and give rise to store-operated calcium\n				entry. Pharmacological depletion of calcium stores leads to the\n				formation of clusters containing STIM and Orai that appear to be\n				sites for calcium influx. Similar puncta are also produced in\n				response to physiological stimuli in immune cells. In T cells\n				engaged with antigen-presenting cells, clusters containing STIM and\n				Orai accumulate at the immunological synapse. We recently discovered\n				that in activated T cells, STIM1 and Orai1 also accumulate in\n				cap-like structures opposite the immune synapse at the distal pole\n				of the cell. Both caps and puncta are long-lived stable structures\n				containing STIM1 and Orai1 in close proximity. The function of\n				puncta as sites of calcium influx is clear. We speculate that the\n				caps may provide a secondary site of calcium entry. Alternatively,\n				they may serve as a source of preformed channel complexes that move\n				to new immune synapses as T cells repeatedly engage\n				antigen-presenting cells.";
 	String abstractTitle = "Formation of STIM and Orai complexes: puncta and distal\n			caps.";
 
 	String[][] authors = new String[][] {

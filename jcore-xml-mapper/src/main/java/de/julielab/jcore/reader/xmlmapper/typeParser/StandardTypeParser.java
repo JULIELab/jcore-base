@@ -40,11 +40,9 @@ import de.julielab.xml.JulieXMLTools;
  */
 public class StandardTypeParser implements TypeParser {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(StandardTypeParser.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StandardTypeParser.class);
 
-	public void parseType(ConcreteType concreteType, VTDNav nav, JCas jcas,
-			byte[] identifier, DocumentTextData docText) throws Exception {
+	public void parseType(ConcreteType concreteType, VTDNav nav, JCas jcas, byte[] identifier, DocumentTextData docText) throws Exception {
 		VTDNav vn = nav.cloneNav();
 		// System.out.println(this.getClass().getSimpleName() + ".parseType:" +
 		// concreteType.getTypeTemplate().getFullClassName());
@@ -67,27 +65,17 @@ public class StandardTypeParser implements TypeParser {
 							begin = text.indexOf(inlineText, inlinePosition);
 							end = begin + inlineText.length();
 							if (begin == -1)
-								throw new IllegalStateException(
-										"Inline annotation text \""
-												+ inlineText
-												+ "\" was not found in the document text after position "
-												+ inlinePosition
-												+ ".\nDocument identifier is: "
-												+ new String(identifier)
-												+ ".\nDocument text is: \""
-												+ text + "\"");
+								throw new IllegalStateException("Inline annotation text \"" + inlineText
+										+ "\" was not found in the document text after position " + inlinePosition + ".\nDocument identifier is: "
+										+ new String(identifier) + ".\nDocument text is: \"" + text + "\"");
 						}
 						if (begin >= 0) {
-							ConcreteFeature realType = new ConcreteFeature(
-									concreteType.getTypeTemplate());
-							realType.getTypeTemplate().setMultipleInstances(
-									false);
-							realType.getTypeTemplate().setInlineAnnotation(
-									false);
+							ConcreteFeature realType = new ConcreteFeature(concreteType.getTypeTemplate());
+							realType.getTypeTemplate().setMultipleInstances(false);
+							realType.getTypeTemplate().setInlineAnnotation(false);
 							realType.setBegin(begin);
 							realType.setEnd(end);
-							parseSingleType(realType, vn, jcas, identifier,
-									docText);
+							parseSingleType(realType, vn, jcas, identifier, docText);
 							concreteType.addFeature(realType);
 
 							inlinePosition = end;
@@ -104,19 +92,14 @@ public class StandardTypeParser implements TypeParser {
 		}
 	}
 
-	protected void parseSingleType(ConcreteType concreteType, VTDNav nav,
-			JCas jcas, byte[] identifier, DocumentTextData docText)
-			throws Exception, XPathParseException, XPathEvalException,
-			NavException {
+	protected void parseSingleType(ConcreteType concreteType, VTDNav nav, JCas jcas, byte[] identifier, DocumentTextData docText) throws Exception,
+			XPathParseException, XPathEvalException, NavException {
 
 		VTDNav vn = nav.cloneNav();
-		for (FeatureTemplate featureTemplate : concreteType.getTypeTemplate()
-				.getFeatures()) {
-			ConcreteFeature concreteFeature = new ConcreteFeature(
-					featureTemplate);
+		for (FeatureTemplate featureTemplate : concreteType.getTypeTemplate().getFeatures()) {
+			ConcreteFeature concreteFeature = new ConcreteFeature(featureTemplate);
 			if (featureTemplate.isType()) {
-				featureTemplate.getParser().parseType(concreteFeature, vn,
-						jcas, identifier, docText);
+				featureTemplate.getParser().parseType(concreteFeature, vn, jcas, identifier, docText);
 				if (concreteFeature.getConcreteFeatures() != null) {
 					concreteType.addFeature(concreteFeature);
 				}
@@ -126,17 +109,13 @@ public class StandardTypeParser implements TypeParser {
 				// null. Thus: Simple features like strings have no parser (is
 				// null).
 				if (featureTemplate.getParser() != null) {
-					featureTemplate.getParser().parseType(concreteFeature, vn,
-							jcas, identifier, docText);
+					featureTemplate.getParser().parseType(concreteFeature, vn, jcas, identifier, docText);
 					concreteType.addFeature(concreteFeature);
 				} else {
-					if (featureTemplate.getValueMap() != null
-							&& featureTemplate.getValueMap().size() == 1) {
-						directValueFromDefaultMapping(concreteType,
-								featureTemplate, concreteFeature);
+					if (featureTemplate.getValueMap() != null && featureTemplate.getValueMap().size() == 1) {
+						directValueFromDefaultMapping(concreteType, featureTemplate, concreteFeature);
 					} else {
-						parseStandardFeature(concreteType, vn, featureTemplate,
-								concreteFeature);
+						parseStandardFeature(concreteType, vn, featureTemplate, concreteFeature);
 					}
 				}
 			}
@@ -144,16 +123,18 @@ public class StandardTypeParser implements TypeParser {
 		int[] ids = concreteType.getTypeTemplate().getOffsetPartIDs();
 		if (ids != null) {
 			int begin = docText.get(ids[0]).getBegin();
-			concreteType.setBegin(begin);
 			int end = docText.get(ids[1]).getEnd();
+			// the document text this annotation is referring to does not exist.
+			// Skip this annotation
+			if (end - begin <= 0)
+				throw new NoDocumentTextCoveredException();
+			concreteType.setBegin(begin);
 			concreteType.setEnd(end);
 		}
 	}
 
-	public static void parseStandardFeature(ConcreteType concreteType,
-			VTDNav nav, FeatureTemplate featureTemplate,
-			ConcreteFeature concreteFeature) throws XPathParseException,
-			XPathEvalException, NavException {
+	public static void parseStandardFeature(ConcreteType concreteType, VTDNav nav, FeatureTemplate featureTemplate, ConcreteFeature concreteFeature)
+			throws XPathParseException, XPathEvalException, NavException {
 		VTDNav vn = nav.cloneNav();
 		for (String xpath : featureTemplate.getXPaths()) {
 			AutoPilot ap = new AutoPilot(vn);
@@ -176,15 +157,13 @@ public class StandardTypeParser implements TypeParser {
 	}
 
 	// TODO rename (use a verbal phrase not a noun phrase)
-	private void directValueFromDefaultMapping(ConcreteType concreteType,
-			FeatureTemplate featureTemplate, ConcreteFeature concreteFeature) {
+	private void directValueFromDefaultMapping(ConcreteType concreteType, FeatureTemplate featureTemplate, ConcreteFeature concreteFeature) {
 		concreteFeature.setValue(featureTemplate.getMappedValue(""));
 		concreteType.addFeature(concreteFeature);
 	}
 
 	public boolean equals(Object obj) {
-		return this.getClass().getCanonicalName()
-				.equals(obj.getClass().getCanonicalName());
+		return this.getClass().getCanonicalName().equals(obj.getClass().getCanonicalName());
 	}
 
 	public TypeBuilder getTypeBuilder() {

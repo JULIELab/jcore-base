@@ -5,6 +5,8 @@
 		</partOfDocumentText>
 		<partOfDocumentText id="1">
 			<xPath>/MedlineCitation/Article/Abstract</xPath>
+			<externalParser>de.julielab.jcore.reader.xmlmapper.mapper.StructuredAbstractParser
+			</externalParser>
 		</partOfDocumentText>
 		<partOfDocumentText id="2">
 			<xPath>/MedlineCitation/OtherAbstract</xPath>
@@ -17,7 +19,6 @@
 		</tsFullClassName>
 		<offset>
 			<partOfDocumentText>
-				<id>1</id>
 				<id>2</id>
 			</partOfDocumentText>
 		</offset>
@@ -30,28 +31,73 @@
 				<id>0</id>
 			</partOfDocumentText>
 		</offset>
+		<tsFeature>
+			<tsFeatureName>titleType</tsFeatureName>
+			<tsFullClassName>java.lang.String</tsFullClassName>
+			<valueMapping>
+				<default>document</default>
+			</valueMapping>
+		</tsFeature>
 	</tsType>
+
+	<tsType>
+		<tsFullClassName>de.julielab.jcore.types.RelatedArticleList
+		</tsFullClassName>
+		<tsFeature>
+			<tsFeatureName>relatedArticles</tsFeatureName>
+			<isType>true</isType>
+			<tsFullClassName>
+				org.apache.uima.jcas.cas.FSArray
+			</tsFullClassName>
+			<tsFeature>
+				<!-- not necessary: <tsFeatureName>relatedArticle</tsFeatureName> -->
+				<isType>true</isType>
+				<xPath>
+					/PubmedArticle/RelatedArticles/RelatedArticle
+				</xPath>
+				<tsFullClassName>
+					de.julielab.jcore.types.RelatedArticle
+				</tsFullClassName>
+
+				<tsFeature>
+					<tsFeatureName>relatedArticle</tsFeatureName>
+					<xPath>.</xPath>
+					<tsFullClassName>java.lang.String</tsFullClassName>
+				</tsFeature>
+
+			</tsFeature>
+		</tsFeature>
+	</tsType>
+	<!-- <tsType> <tsFullClassName>de.julielab.jcore.types.FullTextLinkList</tsFullClassName> 
+		<tsFeature> <tsFeatureName>fullTextLinks</tsFeatureName> <isType>true</isType> 
+		<tsFullClassName> org.apache.uima.jcas.cas.FSArray </tsFullClassName> <tsFeature> 
+		<isType>true</isType> <xPath> /PubmedArticle/FullTextLinks/FullTextLink </xPath> 
+		<tsFullClassName> de.julielab.jcore.types.FullTextLink </tsFullClassName> 
+		<tsFeature> <tsFeatureName>url</tsFeatureName> <xPath>@Url</xPath> <tsFullClassName>java.lang.String</tsFullClassName> 
+		</tsFeature> <tsFeature> <tsFeatureName>iconUrl</tsFeatureName> <xPath>@IconUrl</xPath> 
+		<tsFullClassName>java.lang.String</tsFullClassName> </tsFeature> </tsFeature> 
+		</tsFeature> </tsType> -->
 
 	<tsType>
 		<tsFullClassName>
 			de.julielab.jcore.types.pubmed.Header
 		</tsFullClassName>
 		<tsFeature>
+			<tsFeatureName>doi</tsFeatureName>
 			<xPath>
 				/MedlineCitation/ArticleIdList/ArticleId[@IdType="doi"]
 			</xPath>
-			<tsFeatureName>doi</tsFeatureName>
 			<tsFullClassName>java.lang.String</tsFullClassName>
 		</tsFeature>
 		<tsFeature>
-			<xPath>/MedlineCitation/PMID</xPath>
 			<tsFeatureName>docId</tsFeatureName>
+			<xPath>/MedlineCitation/PMID</xPath>
 			<tsFullClassName>java.lang.String</tsFullClassName>
 		</tsFeature>
 		<tsFeature>
-			<xPath>/MedlineCitation/@Status</xPath>
 			<tsFeatureName>citationStatus</tsFeatureName>
 			<tsFullClassName>java.lang.String</tsFullClassName>
+			<xPath>/MedlineCitation/@Status</xPath>
 		</tsFeature>
 		<tsFeature>
 			<xPath>
@@ -105,7 +151,8 @@
 			<tsFullClassName>
 				org.apache.uima.jcas.cas.FSArray
 			</tsFullClassName>
-			<externalParser>de.julielab.jcore.reader.xmlmapper.typeParser.FSArrayParser</externalParser>
+			<externalParser>de.julielab.jcore.reader.xmlmapper.typeParser.FSArrayParser
+			</externalParser>
 			<isType>true</isType>
 			<tsFeature>
 				<tsFeatureName>authorInfo</tsFeatureName>
@@ -208,11 +255,11 @@
 					</xPath>
 				</tsFeature>
 				<tsFeature>
+					<tsFeatureName>PubDate</tsFeatureName>
 					<isType>true</isType>
 					<tsFullClassName>
 						de.julielab.jcore.types.Date
 					</tsFullClassName>
-					<tsFeatureName>PubDate</tsFeatureName>
 					<externalParser>
 						de.julielab.jcore.reader.xmlmapper.typeParser.PubDateParser
 					</externalParser>
@@ -320,9 +367,7 @@
 					<tsFeatureName>AcList</tsFeatureName>
 					<xPath>
 						AccessionNumberList
-						<!--
-							/MedlineCitation/DataBankList/DataBank/
-						-->
+						<!-- /MedlineCitation/DataBankList/DataBank/ -->
 					</xPath>
 					<isType>true</isType>
 					<tsFullClassName>
@@ -390,23 +435,5 @@
 			</tsFeature>
 		</tsFeature>
 	</tsType>
-	<tsType multipleInstances="true" inline="true">
-		<tsFullClassName>
-			de.julielab.jcore.types.Sentence
-		</tsFullClassName>
-		<tsFeature>
-			<tsFeatureName>id</tsFeatureName>
-			<tsFullClassName>java.lang.String</tsFullClassName>
-			<xPath>@id</xPath>
-		</tsFeature>
-		<xPath>/MedlineCitation/Article/ArticleTitle/s</xPath>
-		<xPath>/MedlineCitation/Article/Abstract/AbstractText/s</xPath>
-	</tsType>
-	<tsType multipleInstances="true" inline="true">
-		<tsFullClassName>
-			de.julielab.jcore.types.EntityMention
-		</tsFullClassName>
-		<externalParser>de.julielab.jcore.reader.xmlmapper.typeParser.EntityParser</externalParser>
-		<xPath>//e</xPath>
-	</tsType>
+
 </mappings>
