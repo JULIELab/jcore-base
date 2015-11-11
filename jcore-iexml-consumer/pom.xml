@@ -80,4 +80,7 @@
 		<name>JULIE Lab, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
+	<scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-iexml-consumer</url>
+    </scm>
 </project>

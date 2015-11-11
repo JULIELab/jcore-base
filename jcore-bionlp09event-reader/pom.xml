@@ -43,4 +43,7 @@
   	<url>http://www.julielab.de</url>
   </organization>
   <name>JCoRe BioNLP 09 Event Reader</name>
+  <scm>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bionlp09event-reader</url>
+  </scm>
 </project>

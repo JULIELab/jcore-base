@@ -86,4 +86,7 @@
 		<url>http://www.julielab.de</url>
 		<name>JULIE Lab, Germany</name>
 	</organization>
+	<scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-iexml-reader</url>
+    </scm>
 </project>

@@ -126,12 +126,11 @@
     	<version>2.0.9</version>
     </dependency>
   </dependencies>
-  
-
-  
-  
 	<organization>
 		<url>http://www.julielab.de</url>
 		<name>JULIE Lab, Germany</name>
 	</organization>
+	<scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-jpos-ae</url>
+    </scm>
 </project>

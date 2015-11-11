@@ -69,7 +69,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
 	<dependencies>
         <dependency>
             <groupId>de.julielab</groupId>
@@ -96,10 +95,12 @@
 			<version>${jcore-version}</version>
 		</dependency>
 	</dependencies>
-
 	<name>JCoRe Token Annotator</name>
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
+	<scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-jtbd-ae</url>
+    </scm>
 </project>

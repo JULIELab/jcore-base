@@ -35,4 +35,7 @@ Ariel S. Schwartz and Marti A. Hearst: A Simple Algorithm For Identifying Abbrev
   	<name>JULIE Lab Jena, Germany</name>
   	<url>http://www.julielab.de</url>
   </organization>
+  <scm>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-acronym-ae</url>
+  </scm>
 </project>

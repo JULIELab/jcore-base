@@ -38,4 +38,7 @@
   	<name>JULIE Lab Jena, Germany</name>
   	<url>http://www.julielab.de</url>
   </organization>
+  <scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-coordination-baseline-ae</url>
+    </scm>
 </project>

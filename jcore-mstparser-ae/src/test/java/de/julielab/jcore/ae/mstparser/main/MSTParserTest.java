@@ -159,6 +159,7 @@ public class MSTParserTest {
         }
     }
 
+    @Ignore
     @Test
     public void testSharedResource() throws Exception {
         LOGGER.info("testing loading of model as shared resource ...");

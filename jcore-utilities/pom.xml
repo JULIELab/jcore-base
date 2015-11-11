@@ -53,5 +53,8 @@
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
-	<version>2.0.1</version>
+	<scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-utilities</url>
+    </scm>
+    <version>2.0.1</version>
 </project>

@@ -69,4 +69,7 @@
 		<url>http://www.julielab.de</url>
 	</organization>
 	<version>2.0.1</version>
+	<scm>
+	   <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xml-mapper</url>
+	</scm>
 </project>

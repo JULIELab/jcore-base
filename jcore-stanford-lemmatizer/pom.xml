@@ -39,4 +39,7 @@
             <url>http://www.gnu.org/licenses/gpl.html</url>
         </license>
     </licenses>
+    <scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-stanford-lemmatizer</url>
+    </scm>
 </project>

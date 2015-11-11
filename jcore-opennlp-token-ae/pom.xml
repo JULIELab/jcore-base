@@ -42,4 +42,7 @@
     	</dependency>
 	</dependencies>
 	<name>JCoRe OpenNLP Tokenizer</name>
+	<scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-opennlp-token-ae</url>
+    </scm>
 </project>

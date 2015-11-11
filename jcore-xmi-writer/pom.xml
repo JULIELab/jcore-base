@@ -34,5 +34,8 @@
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
 	</organization>
+	<scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-writer</url>
+    </scm>
 </project>
 
