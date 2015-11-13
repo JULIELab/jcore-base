@@ -122,8 +122,8 @@
     </dependency>
     <dependency>
     	<groupId>de.julielab</groupId>
-    	<artifactId>jcore-mallet-2.0.9</artifactId>
-    	<version>2.0.9</version>
+    	<artifactId>jcore-mallet-2.0.1</artifactId>
+    	<version>2.0.1</version>
     </dependency>
   </dependencies>
 	<organization>
@@ -133,4 +133,5 @@
 	<scm>
         <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-jpos-ae</url>
     </scm>
+	<version>2.0.1</version>
 </project>
