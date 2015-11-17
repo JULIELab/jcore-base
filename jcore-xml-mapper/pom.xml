@@ -36,6 +36,11 @@
 	</build>
 	
 	<dependencies>
+	   <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.easytesting</groupId>
 			<artifactId>fest-reflect</artifactId>
@@ -63,4 +68,8 @@
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
+	<version>2.0.1</version>
+	<scm>
+	   <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xml-mapper</url>
+	</scm>
 </project>

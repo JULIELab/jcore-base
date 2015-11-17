@@ -13,8 +13,11 @@
       <artifactId>easymockclassextension</artifactId>
       <version>2.4</version>
     </dependency>      
-	
-
+	<dependency>
+      <groupId>de.julielab</groupId>
+      <artifactId>jcore-types</artifactId>
+      <version>${jcore-version}</version>
+    </dependency>
 	<dependency>
 		<groupId>com.google.guava</groupId>
 		<artifactId>guava</artifactId>
@@ -40,4 +43,7 @@
   	<url>http://www.julielab.de</url>
   </organization>
   <name>JCoRe BioNLP 09 Event Reader</name>
+  <scm>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bionlp09event-reader</url>
+  </scm>
 </project>

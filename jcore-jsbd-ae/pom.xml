@@ -72,18 +72,17 @@
 	</build>
 
 	<dependencies>
-
-
-
-
-
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-version}</version>
+        </dependency>
 		<dependency>
 			<groupId>com.e-movimento.tinytools</groupId>
 			<artifactId>privilegedaccessor</artifactId>
 			<version>1.2.2</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -99,17 +98,11 @@
 			<version>2.0.9</version>
 		</dependency>
 	</dependencies>
-
-
-
-	
-
-	
-
-
-
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
+	<scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-jsbd-ae</url>
+    </scm>
 </project>

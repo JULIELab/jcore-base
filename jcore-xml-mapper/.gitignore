@@ -26,3 +26,4 @@
 /src/test/resources/xmi-output/8.xmi
 /src/test/resources/xmi-output/1.xmi
 /src/test/resources/xmi-output/*.xmi
+/bin/

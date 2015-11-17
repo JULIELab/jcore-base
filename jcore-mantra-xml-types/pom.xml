@@ -7,4 +7,7 @@
   	<version>2.0.0</version>
   </parent>
   <name>JCoRe Mantra XML Types</name>
+  <scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-mantra-xml-types</url>
+    </scm>
 </project>

@@ -11,6 +11,11 @@
 		<version>2.0.0</version>
 	</parent>		
 	<dependencies>
+	   <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-version}</version>
+        </dependency>
 		<dependency>
 			<groupId>ant</groupId>
 			<artifactId>ant-optional</artifactId>
@@ -37,4 +42,7 @@
     	</dependency>
 	</dependencies>
 	<name>JCoRe OpenNLP Tokenizer</name>
+	<scm>
+        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-opennlp-token-ae</url>
+    </scm>
 </project>
