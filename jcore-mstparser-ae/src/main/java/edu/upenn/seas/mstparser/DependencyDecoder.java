@@ -9,7 +9,7 @@ package edu.upenn.seas.mstparser;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.TIntIntHashMap;
 
 public class DependencyDecoder {
 

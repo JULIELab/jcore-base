@@ -16,7 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import gnu.trove.map.hash.TObjectIntHashMap;
+import gnu.trove.TObjectIntHashMap;
 
 public class Alphabet implements Serializable {
     TObjectIntHashMap map;

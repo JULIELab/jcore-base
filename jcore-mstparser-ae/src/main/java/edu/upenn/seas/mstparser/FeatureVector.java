@@ -14,9 +14,9 @@ package edu.upenn.seas.mstparser;
 
 import java.util.ListIterator;
 
-import gnu.trove.list.array.TIntArrayList;
-import gnu.trove.list.linked.TLinkedList;
-import gnu.trove.map.hash.TIntDoubleHashMap;
+import gnu.trove.TIntArrayList;
+import gnu.trove.TIntDoubleHashMap;
+import gnu.trove.TLinkedList;
 
 /**
  * A <tt>FeatureVector</tt> that can hold up to two <tt>FeatureVector</tt> instances inside it, which allows for a very
@@ -70,7 +70,7 @@ public final class FeatureVector extends TLinkedList {
     public int[] keys() {
         TIntArrayList keys = new TIntArrayList();
         addKeysToList(keys);
-        return keys.toArray();
+        return keys.toNativeArray();
     }
 
     private void addKeysToList(TIntArrayList keys) {
