@@ -3,41 +3,42 @@
 	<name>jcore-document-meta-pubmed-types</name>
 	<description>The type system contains types for the annotation of
 		document meta information (bibliographical and content information),
-		especially for PubMed abstracts.
-	</description>
+		especially for PubMed abstracts.</description>
 	<version>2.0.0-SNAPSHOT</version>
 	<vendor>JULIE Lab Jena, Germany</vendor>
 	<imports>
-		<import location="jcore-document-meta-types.xml" />
+		<import location="jcore-document-meta-types.xml"/>
 	</imports>
 	<types>
 		<typeDescription>
 			<name>de.julielab.jcore.types.pubmed.Header</name>
 			<description>The special Header for PubMed (http://www.pubmed.org)
-				documents
-			</description>
+				documents</description>
 			<supertypeName>de.julielab.jcore.types.Header</supertypeName>
 			<features>
 				<featureDescription>
 					<name>citationStatus</name>
-					<description>Indicates the status of citation of a PubMed document
-					</description>
-					<rangeTypeName>de.julielab.jcore.types.CitationStatus
-					</rangeTypeName>
+					<description>Indicates the status of citation of a PubMed document</description>
+					<rangeTypeName>de.julielab.jcore.types.CitationStatus</rangeTypeName>
 				</featureDescription>
-			</features>
+			<featureDescription>
+          <name>otherIDs</name>
+          <description>Other IDs (then the PubMed ID) may delivered by partners of the NLM to PubMed/Medline abstracts. If available, this feature discloses such other IDs and the respective sources.</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jcore.types.pubmed.OtherID</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
 		</typeDescription>
 		<typeDescription>
 			<name>de.julielab.jcore.types.pubmed.ManualDescriptor</name>
 			<description>The special type for PubMed documents</description>
-			<supertypeName>de.julielab.jcore.types.ManualDescriptor
-			</supertypeName>
+			<supertypeName>de.julielab.jcore.types.ManualDescriptor</supertypeName>
 			<features>
 				<featureDescription>
 					<name>meSHList</name>
 					<description>A collection of objects of type
-						uima.julielab.uima.MeSHHeading
-					</description>
+						uima.julielab.uima.MeSHHeading</description>
 					<rangeTypeName>uima.cas.FSArray</rangeTypeName>
 					<elementType>de.julielab.jcore.types.MeshHeading</elementType>
 					<multipleReferencesAllowed>true</multipleReferencesAllowed>
@@ -45,8 +46,7 @@
 				<featureDescription>
 					<name>chemicalList</name>
 					<description>A collection of objects of type
-						uima.julielab.uima.Chemical
-					</description>
+						uima.julielab.uima.Chemical</description>
 					<rangeTypeName>uima.cas.FSArray</rangeTypeName>
 					<elementType>de.julielab.jcore.types.Chemical</elementType>
 					<multipleReferencesAllowed>true</multipleReferencesAllowed>
@@ -54,8 +54,7 @@
 				<featureDescription>
 					<name>dBInfoList</name>
 					<description>A collection of objects of type
-						uima.julielab.uima.DBInfo
-					</description>
+						uima.julielab.uima.DBInfo</description>
 					<rangeTypeName>uima.cas.FSArray</rangeTypeName>
 					<elementType>de.julielab.jcore.types.DBInfo</elementType>
 					<multipleReferencesAllowed>true</multipleReferencesAllowed>
@@ -63,8 +62,7 @@
 				<featureDescription>
 					<name>keywordList</name>
 					<description>A collection of objects of type
-						uima.julielab.uima.Keyword
-					</description>
+						uima.julielab.uima.Keyword</description>
 					<rangeTypeName>uima.cas.FSArray</rangeTypeName>
 					<elementType>de.julielab.jcore.types.Keyword</elementType>
 					<multipleReferencesAllowed>true</multipleReferencesAllowed>
@@ -111,5 +109,22 @@
 				</value>
 			</allowedValues>
 		</typeDescription>
-	</types>
+	<typeDescription>
+      <name>de.julielab.jcore.types.pubmed.OtherID</name>
+      <description>PubMed/Medline abstracts sometimes have other IDs besided their PMID from different sources. This type discloses the respective ID and source. For details see https://www.nlm.nih.gov/bsd/mms/medlineelements.html#oid</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>id</name>
+          <description>The "other" ID of the document (e.g. Pubmed Central).</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>source</name>
+          <description>The source that assigned the ID found at the 'id' feature to this document.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
 </typeSystemDescription>
