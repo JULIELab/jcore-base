@@ -12,7 +12,7 @@
 
 package edu.upenn.seas.mstparser;
 
-import gnu.trove.TLinkableAdaptor;
+import de.julielab.gnu.trove.TLinkableAdaptor;
 
 /**
  * A simple class holding a feature index and value that can be used in a TLinkedList.

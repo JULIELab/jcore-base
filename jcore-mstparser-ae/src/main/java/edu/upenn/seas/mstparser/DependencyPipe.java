@@ -13,9 +13,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Random;
 
+import de.julielab.gnu.trove.TIntArrayList;
 import edu.upenn.seas.mstparser.io.DependencyReader;
 import edu.upenn.seas.mstparser.io.DependencyWriter;
-import gnu.trove.TIntArrayList;
 
 public class DependencyPipe {
 
@@ -168,7 +168,7 @@ public class DependencyPipe {
             }
 
             createFeatureVector(instance);
-            // System.out.println(instance.feats.length);
+            System.out.println(instance.feats.length);
 
             instance = depReader.getNext();
         }

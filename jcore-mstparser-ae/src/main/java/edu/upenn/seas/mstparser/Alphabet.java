@@ -16,15 +16,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import gnu.trove.TObjectIntHashMap;
+import de.julielab.gnu.trove.TObjectIntHashMap;
 
 public class Alphabet implements Serializable {
-    TObjectIntHashMap map;
+    de.julielab.gnu.trove.TObjectIntHashMap map;
     int numEntries;
     boolean growthStopped = false;
 
     public Alphabet(int capacity) {
-        this.map = new TObjectIntHashMap(capacity);
+        this.map = new de.julielab.gnu.trove.TObjectIntHashMap(capacity);
         // this.map.setDefaultValue(-1);
 
         numEntries = 0;
@@ -42,7 +42,7 @@ public class Alphabet implements Serializable {
 
         int ret = map.get(entry);
 
-        if (ret == 0 && !growthStopped) {
+        if (ret == -1 && !growthStopped) {
             ret = numEntries;
             map.put(entry, ret);
             numEntries++;

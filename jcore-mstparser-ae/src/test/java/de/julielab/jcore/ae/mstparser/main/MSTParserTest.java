@@ -16,13 +16,12 @@
  **/
 package de.julielab.jcore.ae.mstparser.main;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
@@ -31,14 +30,13 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationIndex;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -46,13 +44,14 @@ import org.xml.sax.SAXException;
 import de.julielab.jcore.types.DependencyRelation;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import junit.framework.TestCase;
 
 /**
  * This is the JUnit test for the MST Parser Annotator.
  *
  * @author Lichtenwald
  */
-public class MSTParserTest {
+public class MSTParserTest extends TestCase {
     private static final String LOGGER_PROPERTIES = "src/test/java/log4j.properties";
 
     public static final String PARAM_MAX_NUM_TOKENS = "MaxNumTokens";
@@ -61,7 +60,7 @@ public class MSTParserTest {
 
     static final String TEST_XMI = "src/test/resources/de/julielab/jcore/ae/mstparser/data/input/news_text_stp.xmi";
 
-    static final String DESCRIPTOR_MST_PARSER = "de.julielab.jcore.ae.mstparser.desc.MSTParserDescriptorTest";
+    static final String DESCRIPTOR_MST_PARSER = "src/test/resources/de/julielab/jcore/ae/mstparser/desc/MSTParserDescriptorTest.xml";
 
     public static final String OUTPUT_DIR = "src/test/resources/de/julielab/jcore/ae/mstparser/data/output";
 
@@ -69,8 +68,6 @@ public class MSTParserTest {
 
     /*--------------------------------------------------------------------------------------------*/
 
-    @Ignore
-    @Test
     public void testCAS() throws Exception {
         String[] heads = new String[] { "have", "Migrants", "drown", "coast", "off", "40", "40", "migrants", "have",
                 "have", "drowned", "Sea", "Sea", "in", "drowned", "coast", "coast", "off", "coast", "of", "drowned",
@@ -97,12 +94,12 @@ public class MSTParserTest {
                 "islands", "on", "fragile", ",", "overcrowded", "boats", ".", "Two", "of", "those", "rescued",
                 "reported", "to", "be", "Palestinians", "." };
 
-        // XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER);
-        // ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(descriptor);
+        XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER);
+        ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(descriptor);
 
         long t1 = System.currentTimeMillis();
         LOGGER.info("creating analysis engine the first time ...");
-        AnalysisEngine ae = AnalysisEngineFactory.createEngine(DESCRIPTOR_MST_PARSER);
+        AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
         LOGGER.info("... loading completed");
         CAS cas = ae.newCAS();
         FileInputStream fis = new FileInputStream(TEST_XMI);
@@ -140,7 +137,6 @@ public class MSTParserTest {
     // jcas.reset();
     // } // of initCas
 
-    @Test
     public void testThreads() throws Exception {
         try {
             int count = 3;
@@ -159,34 +155,32 @@ public class MSTParserTest {
         }
     }
 
-    @Ignore
-    @Test
-    public void testSharedResource() throws Exception {
-        LOGGER.info("testing loading of model as shared resource ...");
-        // XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER");
-        // ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(descriptor);
-
-        long t1 = System.currentTimeMillis();
-        LOGGER.info("creating analysis engine the first time ...");
-        AnalysisEngine ae = AnalysisEngineFactory.createEngine(DESCRIPTOR_MST_PARSER);
-        LOGGER.info("... loading completed");
-        CAS cas = ae.newCAS();
-        FileInputStream fis = new FileInputStream(TEST_XMI);
-        XmiCasDeserializer.deserialize(fis, cas);
-        JCas jcas = cas.getJCas();
-        ae.process(jcas);
-
-        long t2 = System.currentTimeMillis();
-        AnalysisEngine ae2 = AnalysisEngineFactory.createEngine(DESCRIPTOR_MST_PARSER);
-        ae2.process(jcas);
-
-        long t3 = System.currentTimeMillis();
-        AnalysisEngine ae3 = AnalysisEngineFactory.createEngine(DESCRIPTOR_MST_PARSER);
-        ae3.process(jcas);
-        long t4 = System.currentTimeMillis();
-
-        assertTrue("actually the first AE creation should have taken longer due to model loading", t2 - t1 > t4 - t3);
-    }
+    // public void testSharedResource() throws Exception {
+    // LOGGER.info("testing loading of model as shared resource ...");
+    // XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER);
+    // ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(descriptor);
+    //
+    // long t1 = System.currentTimeMillis();
+    // LOGGER.info("creating analysis engine the first time ...");
+    // AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
+    // LOGGER.info("... loading completed");
+    // CAS cas = ae.newCAS();
+    // FileInputStream fis = new FileInputStream(TEST_XMI);
+    // XmiCasDeserializer.deserialize(fis, cas);
+    // JCas jcas = cas.getJCas();
+    // ae.process(jcas);
+    //
+    // long t2 = System.currentTimeMillis();
+    // AnalysisEngine ae2 = UIMAFramework.produceAnalysisEngine(specifier);
+    // ae2.process(jcas);
+    //
+    // long t3 = System.currentTimeMillis();
+    // AnalysisEngine ae3 = UIMAFramework.produceAnalysisEngine(specifier);
+    // ae3.process(jcas);
+    // long t4 = System.currentTimeMillis();
+    //
+    // assertTrue("actually the first AE creation should have taken longer due to model loading", t2 - t1 > t4 - t3);
+    // }
 
     /*--------------------------------------------------------------------------------------------*/
     /**
@@ -199,13 +193,11 @@ public class MSTParserTest {
      * @throws AnalysisEngineProcessException
      * @throws SAXException
      */
-    @Ignore
-    @Test
     public void testProcess() throws IOException, InvalidXMLException, ResourceInitializationException, CASException,
             AnalysisEngineProcessException, SAXException {
-        // XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER);
-        // ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(descriptor);
-        AnalysisEngine ae = AnalysisEngineFactory.createEngine(DESCRIPTOR_MST_PARSER);
+        XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER);
+        ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(descriptor);
+        AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
 
         CAS cas = ae.newCAS();
         FileInputStream fis = new FileInputStream(TEST_XMI);
@@ -219,14 +211,12 @@ public class MSTParserTest {
         assertTrue("Invalid JCas!", checkAnnotations(jcas, null));
     } // of testProcess
 
-    @Ignore
-    @Test
     public void testProcessWithNumTokensRestriction()
             throws IOException, InvalidXMLException, ResourceInitializationException, CASException,
             AnalysisEngineProcessException, SAXException, ResourceConfigurationException {
-        // XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER);
-        // ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(descriptor);
-        AnalysisEngine ae = AnalysisEngineFactory.createEngine(DESCRIPTOR_MST_PARSER);
+        XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER);
+        ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(descriptor);
+        AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
         ae.setConfigParameterValue(PARAM_MAX_NUM_TOKENS, MAX_NUM_TOKENS);
         ae.reconfigure();
         CAS cas = ae.newCAS();
@@ -287,13 +277,13 @@ public class MSTParserTest {
             // maxNumTokens
             if (maxNumTokens == null || tokenCounter <= maxNumTokens) {
                 if (nullAndDummyLabelCounter != 1) {
-                    LOGGER.error("There were " + nullAndDummyLabelCounter
-                            + " 'null' or '<no-type>' labels in sentence \"" + sentence.getCoveredText() + "\"");
+                    LOGGER.error("There were " + nullAndDummyLabelCounter + " 'null' or '<no-type>' labels in sentence "
+                            + sentence.getCoveredText());
                     return false;
                 }
                 if (nullHeadCounter != 1) {
-                    LOGGER.error("There were " + nullHeadCounter + " head tokens in sentence \""
-                            + sentence.getCoveredText() + "\"");
+                    LOGGER.error(
+                            "There were " + nullHeadCounter + " head tokens in sentence " + sentence.getCoveredText());
                     return false;
                 }
                 if (foundDepRelNull) {

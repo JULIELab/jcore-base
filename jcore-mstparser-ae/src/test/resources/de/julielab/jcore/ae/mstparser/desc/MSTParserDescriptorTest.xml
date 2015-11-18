@@ -22,7 +22,6 @@
       <imports>
         <import name="de.julielab.jcore.types.jcore-basic-types"/>
         <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
-      <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
@@ -30,10 +29,10 @@
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
         </inputs>
         <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.Token</type>
         </outputs>
         <languagesSupported/>
       </capability>
