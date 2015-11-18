@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2015, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the  Eclipse Public License (EPL) v3.0
  */
 
@@ -18,24 +18,22 @@ import org.apache.uima.util.XMLInputSource;
 
 public class TestThread extends Thread {
 
-	@Override
-	public void run() {
-		super.run();
-		try {
-			XMLInputSource descriptor = new XMLInputSource(
-					MSTParserTest.DESCRIPTOR_MST_PARSER);
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser()
-					.parseResourceSpecifier(descriptor);
-			AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
-			CAS cas = ae.newCAS();
-			FileInputStream fis = new FileInputStream(MSTParserTest.TEST_XMI);
-			XmiCasDeserializer.deserialize(fis, cas);
-			JCas jcas = cas.getJCas();
-			ae.process(jcas);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException();
-		}
+    @Override
+    public void run() {
+        super.run();
+        try {
+            XMLInputSource descriptor = new XMLInputSource(MSTParserTest.DESCRIPTOR_MST_PARSER);
+            ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(descriptor);
+            AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
+            CAS cas = ae.newCAS();
+            FileInputStream fis = new FileInputStream(MSTParserTest.TEST_XMI);
+            XmiCasDeserializer.deserialize(fis, cas);
+            JCas jcas = cas.getJCas();
+            ae.process(jcas);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
 
-	}
+    }
 }
