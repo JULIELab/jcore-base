@@ -28,7 +28,7 @@
                         </manifest>
                     </archive>
                     <appendAssemblyId>true</appendAssemblyId>
-                    <finalName>jcore-mstparser-${project-version}</finalName>
+                    <finalName>jcore-mstparser-${project.version}</finalName>
                 </configuration>
                 <executions>
                     <execution>
