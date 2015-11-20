@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.julielab.jcore.ae.coordination.main.CoordinationAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe Coordination Resolution</name>
+    <description/>
+    <version>2.0.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>mode</name>
+        <description>This parameter determines the operation mode of the coordination tagger. It is either 'ml' or 'baseline'. As the name suggests, in the mode 'baseline' the baseline algorithm for the coordination processing will be used. In the mode 'ml' a machine learning approach will be used. Please note that 'ml' and 'baseline' are the only allowed values for the mode parameter.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>objectOfAnalysis</name>
+        <description>This parameter determines the object of analysis. Please note that the only allowed values are 'entity' and 'phrase'.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>resultOfAnalysis</name>
+        <description>This parameter determines the result of analysis. Please note that the only allowed values are 'entity' and 'coordination'.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>usedConjunctions</name>
+        <description>These are the conjunctions which will be used for finding EEEs etc.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>modelFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>mode</name>
+        <value>
+          <string>ml</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>objectOfAnalysis</name>
+        <value>
+          <string>entity</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>usedConjunctions</name>
+        <value>
+          <array>
+            <string>and</string>
+            <string>or</string>
+            <string>,</string>
+            <string>and/or</string>
+            <string>/</string>
+            <string>+/-</string>
+            <string>versus</string>
+            <string>vs</string>
+            <string>vs.</string>
+            <string>but</string>
+            <string>nor</string>
+            <string>yet</string>
+            <string>both</string>
+            <string>either</string>
+            <string>neither</string>
+          </array>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>resultOfAnalysis</name>
+        <value>
+          <string>entity</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>modelFile</name>
+        <value>
+          <string>src/test/resources/models/genia.model.gz</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-basic-types"/>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+        </inputs>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jules.types.Token</type>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>

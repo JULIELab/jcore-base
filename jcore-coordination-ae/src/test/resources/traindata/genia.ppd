@@ -1,0 +1,1488 @@
+alpha-|NN|C and|CC|CC beta-|*|C globin|NN|O 
+human|JJ|C and|CC|CC mouse|NN|C gene|NN|O 
+erythroid|JJ|C ,|,|CC myeloid|JJ|C and|CC|CC lymphoid|JJ|C cell|NN|O types|NNS|O 
+Cellular|JJ|C and|CC|CC molecular|JJ|C mechanisms|NNS|O 
+IL-2|NN|C and|CC|CC IL-12|NN|C stimulation|NN|O 
+cytoplasmic|JJ|O mRNA|NN|C and|CC|CC protein|NN|C expression|NN|O 
+IFN-gamma|NN|C and|CC|CC GM-CSF|NN|C cytoplasmic|JJ|O mRNA|NN|O 
+IFN-gamma|NN|C and|CC|CC GM-CSF|NN|C gene|NN|O expression|NN|O 
+hematopoietic|JJ|C and|CC|CC trophoblast|NN|C cells|NNS|O 
+NFAT-|NN|C and|CC|CC interleukin-2-|*|C dependent|JJ|O transcription|NN|O 
+Positive|JJ|C and|CC|CC negative|JJ|C regulation|NN|O 
+alpha|NN|C and|CC|CC beta|NN|C subunits|NNS|O 
+t|NN|C (|(|C 8|CD|C ;|:|C 21|CD|C )|)|C and|CC|CC t|NN|C (|(|C 3|CD|C ;|:|C 21|CD|C )|)|C myeloid|JJ|O leukemias|NNS|O 
+unstimulated|JJ|C and|CC|CC 12-O-tetradecanoylphorbol|NN|C 13-acetate/phytohemagglutinin-stimulated|JJ|C human|JJ|O Jurkat|NN|O T|NN|O cells|NNS|O 
+biochemical|JJ|C and|CC|CC mutagenesis|NN|C analyses|NNS|O 
+transcriptional|JJ|C and|CC|CC posttranscriptional|JJ|C levels|NNS|O 
+transformed|VBN|C and|CC|CC normal|JJ|C lymphocytes|NNS|O 
+OKA|NN|C but|CC|CC not|RB|CC TNF|NN|C stimulation|NN|O 
+cytokine|NN|O redundancy|NN|C and|CC|CC pleiotropy|NN|C 
+GATA-1|NN|C and|CC|CC Sp1|NN|C binding|NN|O sites|NNS|O 
+erythroid|JJ|C and|CC|CC non-erythroid|JJ|C cells|NNS|O 
+antiatherogenic|JJ|C and|CC|CC antiinflammatory|JJ|C properties|NNS|O 
+P-glycoprotein|NN|C ,|,|CC steroid|NN|C receptors|NNS|C ,|,|CC p53|NN|C and|CC|CC Bcl-2|NN|C expression|NN|O 
+Lyn|NN|C and|CC|CC Jak2|NN|C tyrosine|NN|O kinases|NNS|O 
+viral|JJ|C and|CC|CC cellular|JJ|C promoters|NNS|O 
+human|JJ|O T|NN|C and|CC|CC natural|JJ|C killer|NN|C cells|NNS|O 
+65-75|CD|C and|CC|CC 120-125|CD|C kDa|NN|O 
+FY*A|NN|C and|CC|CC FY*B|NN|C alleles|NNS|O 
+transcriptional|JJ|C and|CC|CC post-transcriptional|JJ|C mechanisms|NNS|O 
+human|JJ|O interleukin|*|O -2|NN|C ,|,|CC -4|CD|C ,|,|CC -5|CD|C and|CC|CC -13|CD|C human|JJ|C and|CC|CC mouse|NN|C granulocyte/macrophage-colony|NN|O stimulating|JJ|O factor|NN|O 
+protein|NN|O phosphatase|NN|O type|NN|C 1|CD|C (|(|C PP-1|NN|C )|)|C and|CC|CC type|NN|C 2A|NN|C 
+TNF-alpha-|NN|C and|CC|CC calyculin|NN|C A-induced|JJ|C I|NN|C kappa|NN|C B|NN|C alpha|NN|C degradation|NN|O 
+murine|JJ|C and|CC|CC human|JJ|C B|NN|O lymphocyte|NN|O immunoglobulin|NN|O production|NN|O 
+HL-60|NN|C ,|,|CC U937|NN|C ,|,|CC HEL/S|NN|C ,|,|CC KU812F|NN|C ,|,|CC K562|NN|C ,|,|CC and|CC|CC HEL|NN|C cells|NNS|O 
+HEL|NN|C ,|,|CC KU812|NN|C and|CC|CC K562|NN|C cells|NNS|O monocytic|JJ|C or|CC|CC granulocytic|JJ|C differentiation|NN|O HL-60|NN|C ,|,|CC U937|NN|C and|CC|CC HEL/S|NN|C cells|NNS|O 
+recombinant|JJ|O human|JJ|O nm23|*|O -H1|NN|C ,|,|CC -H2|NN|C ,|,|CC mouse|NN|O nm23|*|O -M1|NN|C ,|,|CC and|CC|CC -M2|NN|C proteins|NNS|C human|JJ|O nm23|*|O -H1|NN|C ,|,|CC -H2|NN|C mouse|NN|O nm23|*|O -M1|NN|C ,|,|CC and|CC|CC -M2|NN|C 
+major|JJ|O histocompatibility|NN|O complex|NN|O class|NN|O I|CD|C or|CC|CC II|CD|C molecules|NNS|O 
+interleukin-2|NN|C (|(|C IL-2|NN|C )|)|C and|CC|CC IL-4|NN|C gene|NN|O transcription|NN|O 
+GM-CSF|NN|C and|CC|CC IL-2|NN|C gene|NN|O transcription|NN|O 
+IL-2|NN|O mRNA|NN|C and|CC|CC protein|NN|C levels|NNS|O 
+transcriptional|JJ|C and|CC|CC post-transcriptional|JJ|C mechanisms|NNS|O 
+AP2|NN|C and|CC|CC Sp1|NN|C binding|NN|O sites|NNS|O 5'-untranslated|JJ|C and|CC|CC proximal|JJ|C coding|VBG|C regions|NNS|O 
+B|NN|C and|CC|CC T|NN|C cell|NN|O lines|NNS|O 
+B|NN|C and|CC|CC T|NN|C cell|NN|O antigen|NN|O receptors|NNS|O 
+homo-|JJ|C and|CC|CC hetero|*|C dimers|NNS|O 
+erythroid|JJ|C lineage-|NN|C and|CC|CC developmental|JJ|C stage-|*|C specific|JJ|O manner|NN|O 
+erythroid|JJ|C lineage-|NN|C and|CC|CC developmental|JJ|C stage-|*|C specific|JJ|O regulation|NN|O 
+EBV-positive|JJ|C and|CC|CC EBV-negative|JJ|C Burkitt|NN|O 's|POS|O lymphoma|NN|O cell|NN|O lines|NNS|O 
+human|JJ|C and|CC|CC mouse|NN|C TCF-1|NN|O protein|NN|O 
+fetal|JJ|C and|CC|CC erythroid|*|C -specific|JJ|O protein|NN|O 
+antigen|NN|C and|CC|CC cytokine|NN|C receptors|NNS|O 
+viral|JJ|C and|CC|CC immune|JJ|C stimuli|NNS|O 
+cytoskeleton|NN|C and|CC|CC intracellular|JJ|C proteins|NNS|O 
+cytokeratins|NNS|O 8|CD|C and|CC|CC 18|CD|C 
+lymphoid|JJ|C and|CC|CC prostatic|JJ|C cells|NNS|O 
+HLA|*|O -DR|NN|C and|CC|CC -DP|NN|C 
+HLA-DRA|NN|C and|CC|CC DQB|NN|C reporter|NN|O constructs|NNS|O 
+X1-|NN|C or|CC|CC X2-|*|C boxes|NNS|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C phenotypes|NNS|O 
+monocytic|JJ|C and|CC|CC neutrophilic|JJ|C cells|NNS|O 
+protein|NN|O kinase|NN|O C|*|O -alpha|NN|C ,|,|CC -epsilon|NN|C ,|,|CC and|CC|CC -zeta|NN|C 
+PKC|*|O -alpha|NN|C ,|,|CC -epsilon|NN|C ,|,|CC or|CC|CC -zeta|NN|C 
+primary|JJ|C and|CC|CC long-term|JJ|C human|JJ|O lymphoid|JJ|O cells|NNS|O 
+wild-type|JJ|C or|CC|CC mutant|JJ|C LTRs|NNS|O NF-kappa|NN|C B|NN|C and/or|CC|CC Sp1|NN|C binding|NN|O sites|NNS|O 
+EBNA|*|O 1|NN|C ,|,|CC 2|CD|C ,|,|CC 3A|NN|C ,|,|CC 3B|NN|C ,|,|CC 3C|NN|C ,|,|CC -LP|NN|C 
+DR|NN|protein_molecule beta|NN|protein_molecule ,|,|protein_molecule DP|NN|protein_molecule alpha|NN|protein_molecule and|CC|protein_molecule -beta|NN|protein_molecule ,|,|protein_molecule and|CC|protein_molecule DQ|NN|protein_molecule alpha|NN|protein_molecule genes|NNS|protein_molecule DP|NN|O alpha|NN|C and|CC|CC -beta|NN|C 
+DR|NN|C alpha|NN|C and|CC|CC DP|NN|C alpha|NN|C element|NN|O 
+core|NN|O binding|NN|O factor-|*|O alpha|NN|C (|(|C AML1|NN|C )|)|C and|CC|CC beta|NN|C 
+N-terminal|JJ|C and|CC|CC androgen-binding|JJ|C domains|NNS|O 
+SV40|NN|O early|JJ|C and|CC|CC late|JJ|C promoters|NNS|O 
+adolescent|JJ|C and|CC|CC young|JJ|C adult|JJ|C patients|NNS|O 
+AML1-|NN|C or|CC|CC LBF4-|*|C binding|JJ|O sites|NNS|O 
+granulocyte|NN|C or|CC|CC monocyte|NN|C differentiation|NN|O 
+cellular|JJ|C and|CC|CC viral|JJ|C genes|NNS|O 
+positive|JJ|C and|CC|CC negative|JJ|C regulatory|JJ|O elements|NNS|O 
+PEBP2|NN|C alpha|NN|C A|NN|C and|CC|CC PEBP2|NN|C alpha|NN|C B|NN|C genes|NNS|O 
+8;21|NN|C and|CC|CC 3;21|NN|C chromosome|NN|O translocations|NNS|O 
+CD4-|JJ|C CD8-|JJ|C ,|,|CC CD4+|JJ|C CD8+|JJ|C ,|,|CC CD4+|JJ|C CD8-|JJ|C ,|,|CC and|CC|CC CD4-|JJ|C CD8+|JJ|C cell|NN|O populations|NNS|O 
+inflammatory|JJ|C and|CC|CC immune|JJ|C responses|NNS|O 
+TNF-alpha|NN|C ,|,|CC IL-1|NN|C beta|NN|C and|CC|CC phorbol|NN|C myristate|NN|C acetate|NN|C (|(|C PMA|NN|C )|)|C treatment|NN|O 
+AP-1|NN|C ,|,|CC NF|NN|C kappa|NN|C B|NN|C ,|,|CC and|CC|CC CREB|NN|C DNA|NN|O binding|NN|O 
+CD2|NN|C and|CC|CC CD25|NN|C receptors|NNS|O 
+resting|VBG|C ,|,|CC activated|VBN|C ,|,|CC and|CC|CC anergized|VBN|C cells|NNS|O 
+IL-1|NN|C and|CC|CC tumour|NN|C necrosis|NN|CC factor|NN|CC alpha|NN|CC (|(|C TNF|NN|C alpha|NN|CC )|)|C -induced|JJ|O changes|NNS|O 
+DNA-|NN|C and|CC|CC the|DT|CC steroid|*|C -binding|JJ|O region|NN|O 
+mouse|NN|C and|CC|CC human|JJ|C lymphoma|NN|O cells|NNS|O 
+Jun|NN|C and|CC|CC Fos|NN|C families|NNS|O 
+erythroid|JJ|C and|CC|CC T-cell|NN|C lines|NNS|O 
+erythroid|JJ|C ,|,|CC megakaryocytic|JJ|C ,|,|CC and|CC|CC mast|NN|C cell|NN|O lineages|NNS|O 
+HS|NN|O I|CD|C ,|,|CC IV|CD|C ,|,|CC and|CC|CC V|CD|C promoters|NNS|O 1a|NN|C and|CC|CC 1b|NN|C 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C lineages|NNS|O 
+M-TAT/EPO|NN|C ,|,|CC M-TAT/GM-CSF|NN|C ,|,|CC and|CC|CC M-TAT/SCF|NN|C cells|NNS|O 
+E2F-1|NN|C and|CC|CC DP-1|NN|C mRNAs|NNS|O 
+virally|RB|C encoded|VBN|C and|CC|CC cellular|JJ|C proteins|NNS|O 
+T|NN|C lymphocytic|JJ|C and|CC|CC monocytic|JJ|C cells|NNS|O 
+T-lymphoid|JJ|C and|CC|CC monocytoid|JJ|C cell|NN|O lines|NNS|O 
+all-trans|JJ|C and|CC|CC 9-cis|JJ|C RA|NN|O acute|JJ|C and|CC|CC chronic|JJ|C infection|NN|O 
+all-trans|JJ|C and|CC|CC 9-cis|JJ|C RA|NN|O 
+U937|NN|C and|CC|CC THP-1|NN|C cells|NNS|O 
+decreased|VBN|C plasma|NN|C cyst|NN|C (|(|C e|NN|C )|)|C ine|NN|C and|CC|CC intracellular|JJ|C GSH|NN|C levels|NNS|O 
+human|JJ|O fetal|JJ|C and|CC|CC adult|JJ|C erythroid|JJ|O progenitors|NNS|O 
+IL-1|NN|C beta|NN|C and|CC|CC I|NN|C kappa|NN|C B|NN|C alpha/MAD-3|NN|C mRNA|NN|C levels|NNS|O 
+cytoplasmic|JJ|C and|CC|CC nuclear|JJ|C signaling|NN|O steps|NNS|O 
+91|CD|C and|CC|CC 84|CD|C kDa|NN|O proteins|NNS|O 
+all-trans|JJ|C and|CC|CC 9-cis|JJ|C RA|NN|O 
+neutrophil|NN|C and|CC|CC monocyte|NN|C differentiation|NN|O 
+endogenous|JJ|O glucocorticoid|NN|O peripheral|JJ|C and|CC|CC central|JJ|C function|NN|O 
+glucocorticoid|NN|C receptor|NN|C (|(|C GR|NN|C )|)|C and|CC|CC methallothionein|NN|C (|(|C MTIIa|NN|C )|)|C mRNA|NN|O expression|NN|O levels|NNS|O 
+Serum|NN|C cortisol|NN|C ,|,|CC osteocalcin|NN|C and|CC|CC urinary|JJ|C cortisol|NN|C levels|NNS|O osteocalcin|NN|C and|CC|CC urinary|JJ|C cortisol|NN|C 
+c-rel|NN|C and|CC|CC p105/p50|NN|C mRNA|NN|O synthesis|NN|O 
+human|JJ|C ,|,|CC mouse|NN|C ,|,|CC and|CC|CC Drosophila|FW|C sequences|NNS|O 
+S|NN|C and|CC|CC J|NN|C elements|NNS|O 
+Positive|JJ|C and|CC|CC negative|JJ|C regulation|NN|O 
+c-jun|NN|C ,|,|CC jun-B|NN|C ,|,|CC jun-D|NN|C ,|,|CC c-fos|NN|C ,|,|CC or|CC|CC Fos-B|NN|C expression|NN|O vectors|NNS|O 
+T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+PMA|*|C -|NN|CC but|CC|CC not|RB|CC TG|*|C -induced|JJ|O IL-2R|NN|O alpha|NN|O TG|*|C -|NN|CC but|CC|CC not|RB|CC PMA|*|C -induced|JJ|O IL-2R|NN|O alpha|NN|O 
+T-|NN|C and|CC|CC B-|*|C lymphocyte|NN|O 
+Mono|NN|C A|NN|C and|CC|CC Mono|NN|C B|NN|C protein|NN|O complexes|NNS|O 
+alpha|NN|C 1|CD|C ,|,|CC alpha|NN|C 2|CD|C and|CC|CC gamma|NN|C globin|NN|O genes|NNS|O 
+megakaryocytic|JJ|C and|CC|CC erythroid|JJ|C lineages|NNS|O 
+megakaryocytic|JJ|C and|CC|CC erythroid|JJ|C maturation|NN|O 
+LPS-free|JJ|C and|CC|CC serum-free|JJ|C conditions|NNS|O 
+autocrine|JJ|C and|CC|CC paracrine|JJ|C fashion|NN|O 
+calcineurin|NN|C and|CC|CC protein|NN|C kinase|NN|C C|*|C -mediated|JJ|O pathways|NNS|O 
+interleukin|NN|C (|(|C IL|NN|C )|)|C -2|CD|C and|CC|CC IL-4|NN|C promoter|NN|O activation|NN|O 
+AP-1|NN|C and|CC|CC NF-AT|NN|C transactivating|NN|O pathways|NNS|O 
+calcineurin-|NN|C and|CC|CC PKC-|*|C dependent|JJ|O signaling|NN|O systems|NNS|O 
+G1|NN|C and|CC|CC G2|NN|C stages|NNS|O 
+lymphokine|NN|C and|CC|CC lymphokine|NN|C receptor|NN|C genes|NNS|O 
+immature|JJ|C and|CC|CC mature|JJ|C T|NN|O cells|NNS|O 
+NF-kappa|NN|C B|NN|C and|CC|CC CArG|NN|C motifs|NNS|O 
+Elf-1|NN|C or|CC|CC the|DT|CC HMG-I(Y)|NN|C binding|NN|O site|NN|O 
+upstream|JJ|C and|CC|CC downstream|JJ|C positive|JJ|O regulatory|JJ|O elements|NNS|O 
+exons|NNS|O 1|CD|C and|CC|CC 2|CD|C 
+primary|JJ|C and|CC|CC secondary|JJ|C hyperparathyroidism|NN|O 
+cell-cell|JJ|C and|CC|CC cell-extracellular|JJ|C matrix|NN|C interactions|NNS|O 
+androgen-|NN|C and|CC|CC antiandrogen-|*|C bound|JJ|O receptor|NN|O complexes|NNS|O 
+NF-kappa|NN|C B|NN|C (|(|C p50/p65|NN|C )|)|C -|:|C or|CC|CC AP-1|NN|C (|(|C c-Jun/c-Fos|NN|C )|)|C -|:|C expression|NN|O vectors|NNS|O 
+NF-kappa|NN|C B-|NN|C ,|,|CC AP-1-|NN|C and|CC|CC NF-AT-|*|C binding|JJ|O sequences|NNS|O PKC-|NN|C and|CC|CC Ca2+-|*|C signaling|JJ|O pathways|NNS|O 
+PRL-|*|O secreting|JJ|C and|CC|CC nonsecreting|JJ|C lymphoid|JJ|O cells|NNS|O 
+interleukin-4|NN|C and|CC|CC interleukin-5|NN|C genes|NNS|O 
+NF|NN|C kappa|NN|C B|NN|C and|CC|CC the|DT|C NF-activated|JJ|C T|NN|C cell|NN|C binding|NN|O sites|NNS|O 
+IL-4|NN|DNA_domain_or_region and|CC|DNA_domain_or_region IL-5|NN|DNA_domain_or_region genes|NNS|DNA_domain_or_region 
+solution|NN|C and|CC|CC crystal|JJ|C structures|NNS|O 
+NF-kappa|NN|O B|*|O -dependent|JJ|C and|CC|CC -independent|JJ|C pathways|NNS|O 
+myelomonocytic|JJ|C and|CC|CC glia|NN|C cell|NN|O lines|NNS|O 
+positive|JJ|C or|CC|CC negative|JJ|C regulator|NN|O 
+myelomonocytic|JJ|C ,|,|CC and|CC|CC glial|JJ|C cell|NN|O lines|NNS|O 
+NF-AT|NN|C ,|,|CC AP-1|NN|C and|CC|CC CLE0|NN|C sequences|NNS|O 
+serine/threonine|NN|O protein|NN|O phosphatases|NNS|O 1|CD|C and|CC|CC 2A|NN|C 
+TPA-|NN|C or|CC|CC okadaic|JJ|C acid-|*|C induced|JJ|O monocytic|JJ|O differentiation|NN|O 
+TPA-treated|JJ|O U-937|NN|C ,|,|CC and|CC|CC not|RB|CC TUR|NN|C ,|,|CC cells|NNS|O 
+B-cell-restricted|JJ|C and|CC|CC ubiquitous|JJ|C transcription|NN|O factors|NNS|O 
+cellular|JJ|C and|CC|CC viral|JJ|C genes|NNS|O 
+hemin-|NN|C and|CC|CC erythropoietin-|*|C induced|JJ|O erythroid|JJ|O differentiation|NN|O 
+mineralocorticoid|NN|C (|(|C MR|NN|C )|)|C and|CC|CC glucocorticoid|NN|C receptor|NN|C (|(|C GR|NN|C )|)|C levels|NNS|O 
+T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+protein|NN|O tyrosine|NN|C and|CC|CC serine/threonine|NN|C kinases|NNS|O 
+CD3|NN|C and|CC|CC CD2|NN|C receptors|NNS|O 
+HSV-2|NN|O buttock|NN|C and|CC|CC thigh|NN|C lesions|NNS|O 
+gC2-|NN|C and|CC|CC gD2-|*|C specific|JJ|O CD4+|JJ|O clones|NNS|O 
+NF-IL6|NN|C and|CC|CC NF-kappa|NN|C B|NN|C sites|NNS|O bacterial|JJ|C or|CC|CC mycobacterial|JJ|C response|NN|O elements|NNS|O 
+lymphoid|JJ|C and|CC|CC nonlymphoid|JJ|C cells|NNS|O HLF|NN|C or|CC|CC C/EBP|NN|C consensus|NN|O binding|NN|O sites|NNS|O 
+UV-|NN|C and|CC|CC H2O2-|*|C induced|JJ|O T|NN|O cell|NN|O signal|NN|O transduction|NN|O 
+CD3|NN|C or|CC|CC CD45|NN|C expression|NN|O 
+myeloperoxidase|NN|C and|CC|CC CD34|NN|C genes|NNS|O 
+c-|*|C Rel|NN|C and|CC|CC p65|NN|C homodimers|NNS|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C mRNA|NN|O 
+TNF|*|C -|NN|CC or|CC|CC PMA-|*|C induced|JJ|O NF-kappa|NN|O B|NN|CC activity|NN|O 
+TNF|*|C -|NN|CC or|CC|CC PMA-|*|C induced|JJ|O HIV|NN|O replication|NN|O 
+tumor|NN|O necrosis|NN|O factor-alpha|*|O -dependent|JJ|C and|CC|CC -independent|JJ|C mechanisms|NNS|O 
+monocytic|JJ|C and|CC|CC granulocytic|JJ|C maturation|NN|O 
+kappa|NN|C and|CC|CC lambda|NN|C light-chain|JJ|O genes|NNS|O 
+IL-3|NN|C ,|,|CC GM-CSF|NN|C ,|,|CC FMS|NN|C and|CC|CC EGR-1|NN|C genes|NNS|O 
+M-CSF|NN|C and|CC|CC FMS|NN|C genes|NNS|O 
+lymphoid|JJ|C and|CC|CC pancreatic|JJ|C tissues|NNS|O 
+lymphoid|JJ|C and|CC|CC pancreatic|JJ|C tissues|NNS|O 
+p50|NN|C and|CC|CC p65|NN|C NF-kappa|NN|O B|NN|O subunits|NNS|O 
+p50-|NN|C ,|,|CC p65-|NN|C ,|,|CC and|CC|CC c-Rel-|*|C mediated|JJ|O transactivation|NN|O 
+human|JJ|C and|CC|CC mouse|NN|C GATA3|NN|O transcription|NN|O units|NNS|O 
+T-|NN|C and|CC|CC B-|*|C lymphocytes|NNS|O 
+acute|JJ|C promyelocytic|JJ|C and|CC|CC acute|JJ|C myeloblastic|JJ|C leukemia|NN|O cells|NNS|O 
+nasal|NN|C and|CC|CC bronchial|JJ|C epithelium|NN|O 
+Immunohistochemical|JJ|C and|CC|CC ultrastructural|JJ|C studies|NNS|O 
+T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+T|NN|C and|CC|CC monocytic|JJ|C lineages|NNS|O 
+antigenic|JJ|C or|CC|CC mitogenic|JJ|C stimulation|NN|O 
+AP-1|NN|C (|(|C -186|CD|C to|TO|C -176|CD|C )|)|C and|CC|CC the|DT|C kappa|NN|C B|NN|C sites|NNS|O 
+major|JJ|C and|CC|CC one|CD|CC minor|JJ|C transcription|NN|O start|NN|O site|NN|O 
+interleukin-8|NN|C AP-1|NN|C and|CC|CC kappa|NN|C B-like|JJ|C sites|NNS|O 
+IL-2|NN|C NF-AT|NN|C and|CC|CC NFIL-2A|NN|C sites|NNS|O 
+Corticosteroid|NN|O Type|NN|C I|CD|C and|CC|CC Type|NN|C II|CD|C receptors|NNS|O 
+RXR|NN|O alpha|NN|C ,|,|CC beta|NN|C ,|,|CC gamma|NN|C 
+molecular|JJ|O mass|NN|O 40|CD|C ,|,|CC 42|CD|C ,|,|CC 70|CD|C ,|,|CC 120|CD|C ,|,|CC and|CC|CC 130|CD|C kDa|NN|O 
+HLA-DR-|JJ|C ,|,|CC CD33+|JJ|C ,|,|CC CD56+|JJ|C ,|,|CC CD16-|JJ|C myeloid/natural|JJ|O killer|NN|O cell|NN|O acute|JJ|O leukemia|NN|O 
+myeloid|JJ|C and|CC|CC natural|JJ|C killer|NN|C (|(|C NK|NN|C )|)|C cells|NNS|O 
+myeloid|JJ|C (|(|C CD33|NN|C ,|,|C CD13|NN|C ,|,|C CD15|NN|C )|)|C and|CC|CC NK|NN|C cell-associated|JJ|C (|(|C CD56|NN|C )|)|C antigens|NNS|O 
+TCR|NN|O beta|NN|C ,|,|CC gamma|NN|C ,|,|CC delta|NN|C 
+46,XX|NN|C or|CC|CC 46,XY|NN|C karyotypes|NNS|O 
+myeloid|JJ|C and|CC|CC NK|NN|C cell|NN|O lineages|NNS|O 
+T-helper|NN|O 0|CD|C (|(|C Th0|NN|C )|)|C and|CC|CC 2|CD|C (|(|C Th2|NN|C )|)|C subset|NN|O IL-1|NN|C alpha|NN|C ,|,|CC IL-1|NN|C beta|NN|C ,|,|CC IL-6|NN|C ,|,|CC IL-8|NN|C ,|,|CC and|CC|CC TNF-alpha|NN|C gene|NN|O expression|NN|O 
+IL-2-|NN|C ,|,|CC IL-3-|NN|C ,|,|CC or|CC|CC GM-CSF-|*|C induced|JJ|O proinflammatory|JJ|O cytokine|NN|O gene|NN|O expression|NN|O 
+IL-1|NN|C beta|NN|C and|CC|CC TNF|NN|C alpha|NN|C mRNA|NN|O 
+c-jun|NN|C and|CC|CC c-fos|NN|C gene|NN|O products|NNS|O 
+IL-1|NN|C beta|NN|C ,|,|CC IL-6|NN|C or|CC|CC TNF|NN|C alpha|NN|C mRNA|NN|O levels|NNS|O 
+cytokine|NN|C and|CC|CC immune|JJ|C receptors|NNS|O 
+supershift|NN|C and|CC|CC immunoblot|NN|C analysis|NN|O 
+amino-|NN|C or|CC|CC carboxy-|*|C terminal|JJ|O sequences|NNS|O 
+erythroid|JJ|C ,|,|CC megakaryocyte|NN|C ,|,|CC and|CC|CC mast|NN|C cell|NN|O lineages|NNS|O 
+immunoregulatory|JJ|C ,|,|CC cytokine|NN|C and|CC|CC viral|JJ|C gene|NN|O expression|NN|O 
+clonogenetic|JJ|O fetal|JJ|O calf|NN|O serum|*|O -supplemented|JJ|C (|(|C FCS+|JJ|C )|)|C or|CC|CC -nonsupplemented|JJ|C (|(|C FCS-|JJ|C )|)|C culture|NN|O 
+Egr-1|NN|C and|CC|CC c-fos|NN|C mRNA|NN|O expression|NN|O sIgM-|NN|C and|CC|CC sIgD-|*|C crosslinking|NN|O 
+sIgM-|NN|C and|CC|CC sIgD-|*|C crosslinking|NN|O Egr-1|NN|C and|CC|CC c-fos|NN|C mRNA|NN|O 
+sIgM-|NN|C and|CC|CC sIgD-|*|C crosslinking|NN|O 
+protein|NN|C tyrosine|NN|C kinase-|NN|C and|CC|CC PKC-|*|C dependent|JJ|O 
+CD11a|NN|C ,|,|CC CD11b|NN|C ,|,|CC and|CC|CC CD11c|NN|C gene|NN|O promoters|NNS|O 
+class|NN|O I|CD|C and|CC|CC II|CD|C interferons|NNS|O 
+interferon|NN|O gamma|NN|C ,|,|CC but|CC|CC not|RB|CC alpha|NN|C or|CC|CC beta|NN|C 
+mitogen-|NN|C and|CC|CC stress-|*|C activated|JJ|O protein|NN|O kinases|NNS|O 
+human|JJ|C and|CC|CC simian|JJ|C Epstein-Barr|JJ|O virus|NN|CC oncogene|NN|O LMP1|NN|CC 
+1q12|NN|C and|CC|CC 1p36|NN|C regions|NNS|O 
+nuclear|JJ|C factor-kappa|NN|C B|NN|C and|CC|CC activator|NN|C protein-1|NN|C transcription|NN|O factor|NN|O expression|NN|O 
+IL-1|NN|C ,|,|CC IL-2|NN|C ,|,|CC or|CC|CC IL-4|NN|C activity|NN|O 
+human|JJ|O chromosomal|JJ|O bands|NNS|O 6q26-27|NN|C ,|,|CC 1p21-22|NN|C ,|,|CC 3q21-24|NN|C ,|,|CC 8p12|NN|C ,|,|CC 13q14|NN|C ,|,|CC 19p13.3|NN|C and|CC|CC 11p14-15.1|NN|C 
+ductal|JJ|C ,|,|CC exocrine|JJ|C and|CC|CC endocrine|JJ|C compartments|NNS|O 
+endocrine|JJ|C and|CC|CC exocrine|JJ|C precursor|NN|O cells|NNS|O 
+sialylated|VBN|C tetra-|JJ|C and|CC|CC hexasaccharide|NN|C chains|NNS|O 
+G1|NN|C and|CC|CC S|NN|C phase|NN|O expression|NN|O 
+1.3|CD|C ,|,|CC 0.6|CD|C ,|,|CC and|CC|CC 0.2|CD|C kb|NN|O 5'-flanking|JJ|O DNA|NN|O 
+G1|NN|C and|CC|CC S|NN|C phase|NN|O 
+erythroid|JJ|C ,|,|CC megakaryocyte|NN|C ,|,|CC mast|NN|C and|CC|CC early|JJ|C myeloid|JJ|C cell|NN|O lines|NNS|O 
+lymphoid|JJ|C and|CC|CC myeloid|JJ|C cell|NN|O types|NNS|O 
+monocyte|NN|C and|CC|CC T-|*|C cell|NN|O types|NNS|O 
+serum|NN|C or|CC|CC tumor|NN|C necrosis|NN|CC factor|NN|CC alpha|NN|CC 
+HCMV|NN|C and|CC|CC chimpanzee|NN|C CMV|NN|C MIE|NN|C enhancers|NNS|O multimerized|JJ|O wild-type|JJ|C and|CC|CC mutant|JJ|C elements|NNS|O 
+U-937|NN|C ,|,|CC K-562|NN|C ,|,|CC and|CC|CC HeLa|NN|C cell|NN|O extracts|NNS|O 
+SRF|NN|C and|CC|CC ETS|NN|C motifs|NNS|O 
+glucocorticoid-|NN|C and|CC|CC Fas-|*|C mediated|JJ|O cytotoxicity|NN|O 
+etoposide-|NN|C and|CC|CC glucocorticoid-|*|C induced|JJ|O cytotoxicity|NN|O 
+rat|NN|C and|CC|CC human|JJ|C fra-1|NN|O 
+PKC-dependent|JJ|C and|CC|CC PKC-independent|JJ|C pathways|NNS|O 
+human|JJ|C and|CC|CC murine|JJ|C GM-CSF|NN|O genes|NNS|O 
+Ets|NNS|C and|CC|CC AP-1|NN|C sites|NNS|O 
+deletional|JJ|C and|CC|CC alanine|NN|C mutagenesis|NN|O 
+TRAF|*|O 1|NN|C ,|,|CC -2|CD|C ,|,|CC or|CC|CC -3|CD|C 
+type|NN|C 1|CD|C or|CC|CC type|NN|C 2|CD|C EBV|NN|O 
+regulatory|JJ|C and|CC|CC catalytic|JJ|C domains|NNS|O 
+NF-kappaB|NN|C and|CC|CC SRE/CArG|NN|C motifs|NNS|O 
+Stat|*|O 5a|NN|C and|CC|CC b|NN|C proteins|NNS|O 
+CD68-|JJ|C and|CC|CC CD1a-|*|C cells|NNS|O 
+Tyrosines|NNS|O 113|CD|C ,|,|CC 128|CD|C ,|,|CC and|CC|CC 145|CD|C 
+interferon|*|O -alpha|NN|C and|CC|CC -gamma|NN|C 
+serum|NN|O thyroxine|NN|C (|(|C T4|NN|C )|)|C and|CC|CC thyrotropin|NN|C (|(|C TSH|NN|C )|)|C levels|NNS|O 
+basal|JJ|C and|CC|CC T3|*|C -values|NNS|O 
+FOSB/G0S3|NN|C and|CC|CC FOS/G0S7|NN|C mRNAs|NNS|O 
+FOS|NNS|C and|CC|CC FOSB|NN|C mRNAs|NNS|O 
+subgroups|NNS|O A|NN|C (|(|C Ad12|NN|C )|)|C and|CC|CC B|NN|C (|(|C Ad3|NN|C )|)|C 
+lymphoid|JJ|C and|CC|CC myeloid|JJ|C cells|NNS|O 
+Sp1-|NN|C and|CC|CC PU.1-|*|C family|NN|O members|NNS|O 
+rat|NN|C and|CC|CC mouse|NN|C tissues|NNS|O 
+endocrine|NN|C ,|,|CC fibroblast|NN|C ,|,|CC and|CC|CC lymphoid|JJ|C lineages|NNS|O 
+endocrine|JJ|C and|CC|CC nonendocrine|JJ|C cell|NN|O lineages|NNS|O 
+GH/PRL-|NN|C and|CC|CC insulin-|*|C producing|JJ|O ,|,|CC B-|NN|C and|CC|CC T-|*|C lymphocyte|NN|O cells|NNS|O 
+p65|NN|C and|CC|CC c-Rel|NN|C protein|NN|O expression|NN|O 
+immune|JJ|C and|CC|CC inflammatory|JJ|C responses|NNS|O 
+Nasal|JJ|C NK-|NN|C and|CC|CC T-cell|NN|C lymphomas|NNS|O 
+NK-|NN|C and|CC|CC T-cell|NN|C subtypes|NNS|O 
+LMP|*|O 1|NN|C and|CC|CC 2|CD|C 
+LMP1+|JJ|C and|CC|CC LMP1-|*|C tumour|NN|O cells|NNS|O 
+20-methyl-|NN|C and|CC|CC 20-methyl-23-|*|C eneanalogues|NN|O 
+interleukin-2|NN|O receptor|NN|O alpha|NN|C and|CC|CC -beta|NN|C subunit|NN|O expression|NN|O 
+steroid-sensitive|JJ|C and|CC|CC steroid-resistant|JJ|C asthma|NN|O 
+positions|NNS|O -153|CD|C ,|,|CC -178|CD|C ,|,|CC -286|CD|C ,|,|CC -875|CD|C ,|,|CC and|CC|CC -1011|CD|C 
+naive|JJ|C and|CC|CC memory|NN|C T|NN|O lymphocytes|NNS|O 
+Jun|NN|C ,|,|CC Fos|NN|C ,|,|CC NF-kappaB|NN|C ,|,|CC Oct|NN|C or|CC|CC Ets|NN|C family|NN|O members|NNS|O 
+NF-kappa|NN|C B2|NN|C (|(|C p100|NN|C )|)|C and|CC|CC NF-kappa|NN|C B1|NN|C (|(|C p105|NN|C )|)|C genes|NNS|O 
+CN|NN|C A|NN|C (|(|C catalytic|JJ|C )|)|C and|CC|CC CN|NN|C B|NN|C (|(|C regulatory|JJ|C )|)|C subunits|NNS|O 
+GM-CSF|NN|C and|CC|CC IL-2|NN|C genes|NNS|O 
+B-cell|NN|O growth|NN|C and|CC|CC development|NN|C 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C differentiation|NN|O pathways|NNS|O 
+M7|NN|C and|CC|CC TMD|NN|C cases|NNS|O erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C phenotypes|NNS|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C lineages|NNS|O 
+tissue-specific|JJ|C and|CC|CC developmental|JJ|C stage-specific|JJ|C regulation|NN|O 
+myeloid|JJ|C ,|,|CC B-lymphoid|JJ|C ,|,|CC and|CC|CC erythroid|JJ|C lineages|NNS|O 
+DNA|NN|C sequence-|NN|C and|CC|CC pituitary-|*|C specific|JJ|O manner|NN|O 
+nuclear|JJ|C factor|NN|C kappa|NN|C B|NN|C or|CC|CC signal|NN|C transducer|NN|C and|CC|C activator|NN|C of|IN|C transcription|NN|C (|(|C STAT|NN|C )|)|C activation|NN|O pathways|NNS|O 
+murine|JJ|C and|CC|CC human|JJ|C T|NN|O cells|NNS|O 
+Drosophila|NN|C and|CC|CC human|JJ|C TAF|NN|O subunits|NNS|O 
+granulocyte|NN|C and|CC|CC T-cell|NN|C DNA|NN|O 
+kinase|NN|C or|CC|CC protease|NN|C pathways|NNS|O 
+lymphomagenic|JJ|C Akv|NN|C and|CC|CC SL3-3|NN|C murine|JJ|C leukemia|NN|C retroviruses|NNS|O 
+T-|NN|C and|CC|CC B-|*|C cell|NN|O lines|NNS|O 
+interleukin-3-dependent|JJ|C and|CC|CC p53-mediated|JJ|C apoptosis|NN|O 
+interleukin-2|NN|C ,|,|CC CD44|NN|C ,|,|CC ICAM-1|NN|C ,|,|CC and|CC|CC tumor|NN|C necrosis|NN|C factor|NN|C genes|NNS|O 
+oxidant|JJ|C and|CC|CC antioxidant|JJ|C stimuli|NNS|O 
+oxidant|JJ|C and|CC|CC antioxidant|JJ|C conditions|NNS|O 
+upstream|JJ|C and|CC|CC a|DT|CC downstream|JJ|C regulatory|JJ|O region|NN|O 
+2.7|CD|C and|CC|CC 4.5|CD|C kilobase|NN|O pairs|NNS|O 
+neither|CC|CC LMP1|NN|C nor|CC|CC LMP2B|NN|C mRNA|NN|O 
+SH2|NN|C and|CC|CC SH3|NN|C domains|NNS|O 
+consensus|NN|C and|CC|CC non-consensus|JJ|C GAS|NN|O motifs|NNS|O 
+positive|JJ|C and|CC|CC negative|JJ|C regulatory|JJ|O factors|NNS|O 
+RNA|NN|O polymerases|NNS|O II|CD|C and|CC|CC III|CD|C 
+PTF|NN|O gamma|NN|C and|CC|CC delta|NN|C subunits|NNS|O 
+cell-cell|JJ|C and|CC|CC cell-matrix|JJ|C interactions|NNS|O 
+p16|NN|C ,|,|CC p15|NN|C and|CC|CC CDK4|NN|C genes|NNS|O 
+p16|NN|C ,|,|CC p15|NN|C and|CC|CC CDK4|NN|C genes|NNS|O 
+p16|NN|C ,|,|CC p15|NN|C or|CC|CC CDK4|NN|C genes|NNS|O 
+immune|JJ|C and|CC|CC inflammatory|JJ|C responses|NNS|O 
+p50|NN|C and|CC|CC RelA|NN|C (|(|C p65|NN|C )|)|C proteins|NNS|O neonatal|JJ|C and|CC|CC adult|JJ|C cells|NNS|O 
+mixed|*|C /|*|CC erythroid|*|C /|*|CC monocytic|JJ|C to|TO|O granulocytic|JJ|O colony|NN|O formation|NN|O 
+unicellular|JJ|C and|CC|CC paired|JJ|C daughter|NN|O cell|NN|O culture|NN|O multipotent|*|C /|JJ|C erythroid|*|C /monocytic|JJ|C HPC|NN|O growth|NN|O 
+multipotent|*|C /|*|CC erythroid|*|C /|*|CC monocytic|JJ|C to|TO|O the|DT|O granulocytic-neutrophilic|JJ|O differentiation|NN|O program|NN|O 
+young|JJ|C and|CC|CC aged|JJ|C subjects|NNS|O 
+corticosteroid|NN|O Type|NN|C I|CD|C and|CC|CC Type|NN|C II|CD|C receptors|NNS|O 
+Type|NN|C I|CD|C and|CC|CC Type|NN|C II|CD|C receptors|NNS|O 
+IL4|NN|C and|CC|CC IL13|NN|C receptors|NNS|O STAT6|NN|C ,|,|CC STAT3|NN|C and|CC|CC STAT5|NN|C proteins|NNS|O 
+cyclophilin|NN|C A|*|CC /CsA|NN|C or|CC|CC FKBP12|*|C /FK506|NN|C complexes|NNS|O 
+XP|NN|C and|CC|CC CS|NN|C symptoms|NNS|O 
+Sp1-|NN|C and|CC|CC Ets-|*|C related|JJ|O transcription|NN|O factors|NNS|O 
+muA|NN|C ,|,|CC muE3|NN|C ,|,|CC and|CC|CC muB|NN|C sites|NNS|O 
+muA|NN|C and|CC|CC muB|NN|C sites|NNS|O 
+4-|CD|C or|CC|CC 10-|*|C bp|JJ|O insertion|NN|O 
+muA|NN|C and|CC|CC muB|NN|C elements|NNS|O 
+NF-kappaB|NN|C and|CC|CC AP-1|NN|C generation|NN|O 
+wild-type|JJ|C or|CC|CC the|DT|C truncated|VBN|C ER|NN|O 
+lymphoid|JJ|C and|CC|CC myeloid|JJ|C cells|NNS|O 
+PKC-|*|O dependent|JJ|C and|CC|CC -independent|JJ|C activation|NN|O 
+Transcriptional|JJ|C and|CC|CC posttranscriptional|JJ|C regulation|NN|O 
+PBGD|NN|C and|CC|CC GATA-1|NN|C mRNAs|NNS|O 
+ACLA-treated|JJ|C but|CC|CC not|RB|CC in|IN|CC DOX-treated|JJ|C cells|NNS|O 
+normal|JJ|C and|CC|CC leukemic|JJ|C B|NN|C and|CC|CC T|NN|C cell|NN|O precursors|NNS|O and|CC|CC T|NN|C lymphocytes|NNS|O B|NN|C and|CC|CC T|NN|C cell|NN|O precursors|NNS|O 
+transmembrane|NN|C and|CC|CC intracellular|JJ|C domains|NNS|O 
+T|NN|C and|CC|CC ,|,|CC to|TO|CC a|DT|CC lesser|JJR|CC extent|NN|CC ,|,|CC B|NN|C cells|NNS|O 
+T|NN|C and|CC|CC B|NN|C cell|NN|O co-cultures|NNS|O 
+NK|NN|C and|CC|CC T|NN|C cells|NNS|O 
+IL-2|*|C -|NN|CC but|CC|CC not|RB|CC IL-12|*|C -stimulated|JJ|O NK|NN|O cells|NNS|O 
+T|NN|C and|CC|CC NK|NN|C cells|NNS|O 
+NK|NN|C and|CC|CC T|NN|C cells|NNS|O 
+NK|NN|C and|CC|CC T|NN|C cells|NNS|O 
+T|NN|C and|CC|CC NK|NN|C cells|NNS|O 
+IL-2-|NN|C and|CC|CC IL-12-|*|C stimulated|JJ|O cells|NNS|O 
+HLA|*|O -DQ|NN|C alpha|NN|C or|CC|CC -DQ|NN|C beta|NN|C transcription|NN|O 
+Stat1|NN|O and|CC|CC Stat3|NN|O mRNA|NN|C and|CC|CC protein|NN|C levels|NNS|O 
+Stat1|NN|O protein|NN|C and|CC|CC mRNA|NN|C levels|NNS|O 
+p65|NN|C and|CC|CC p105|NN|C mRNA|NN|O levels|NNS|O 
+AP-1|NN|C and|CC|CC NF-IL6|NN|C binding|NN|O activity|NN|O 
+human|JJ|O GM-CSF|NN|O promoter|NN|C and|CC|CC enhancer|NN|C 
+AML1|NN|C and|CC|CC CBF|NN|C beta|NN|C genes|NNS|O 
+AP-1|*|C -TRE|NN|C ,|,|CC NF-AT|NN|C ,|,|CC and|CC|CC IL-2|NN|C promoter|NN|O regions|NNS|O 
+humoral|JJ|C and|CC|CC cell|NN|C mediated|JJ|C immune|JJ|O responses|NNS|O 
+IFN|NN|O (|(|CC beta|NN|C )|)|CC and|CC|CC gamma|NN|C 
+RAR|NN|C (|(|C alpha|NN|C )|)|C and|CC|CC PML-RAR|NN|C mRNAs|NNS|O 
+human|JJ|O interleukin|*|C -12|NN|C and|CC|CC interleukin|*|C -10|NN|C production|NN|O 
+IL-12|NN|C and|CC|CC IL-10|NN|C secretion|NN|O 
+autoimmune|JJ|C ,|,|CC allergic|JJ|C ,|,|CC infectious|JJ|C ,|,|CC or|CC|CC neoplastic|JJ|C diseases|NNS|O 
+Treponema|FW|C pallidum|FW|C and|CC|CC Borrelia|FW|C burgdorferi|FW|C lipoproteins|NNS|O 
+lipopolysaccharide|NN|C (|(|C LPS|NN|C )|)|C -|:|C and|CC|CC lipoprotein-lipopeptide-|*|C induced|JJ|O immune|JJ|O cell|NN|O signaling|NN|O events|NNS|O 
+VP16|NN|C and|CC|CC E1A|NN|C viral|JJ|O transactivation|NN|O domains|NNS|O 
+IL-2-|NN|C ,|,|CC IL-12-|NN|C ,|,|CC and|CC|CC IFN-alpha-|*|C mediated|JJ|O signaling|NN|O pathways|NNS|O 
+tyrosine|NN|C and|CC|CC serine|NN|C phosphorylation|NN|O 
+preactivated|JJ|O primary|JJ|O NK|NN|C and|CC|CC NK3.3|NN|C cells|NNS|O 
+purified|VBN|O CD4+|JJ|C or|CC|CC CD8+|JJ|C T|NN|O cells|NNS|O 
+CD4+|JJ|C or|CC|CC CD8+|JJ|C cells|NNS|O 
+T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+Vitamin|NN|C D3-|NN|C and|CC|CC retinoic|JJ|C acid-|*|C induced|JJ|O monocytic|JJ|O differentiation|NN|O 
+RA|NN|C and|CC|CC VitD3|NN|C receptor|NN|O network|NN|O 
+T-cell|NN|O receptor|NN|O alpha-|NN|C and|CC|CC delta-|*|C chains|NNS|O 
+peripheral|JJ|O white|JJ|C blood|NN|C cell|NN|C and|CC|CC granulocyte|NN|C 
+HIV-1|NN|O mRNA|NN|C and|CC|CC virus|NN|C production|NN|O 
+AP-1|NN|C and|CC|CC Elf-1|NN|C sites|NNS|O 
+antiproliferative|JJ|C and|CC|CC apoptotic|JJ|C effects|NNS|O 
+T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+interleukin|NN|C (|(|C IL|NN|C )|)|C -10|CD|C and|CC|CC IL-6|*|C -type|JJ|O cytokines|NNS|O 
+B-|NN|C ,|,|CC T-|NN|C ,|,|CC and|CC|CC NK-|*|C cell|NN|O lineages|NNS|O 
+C-terminal|JJ|O activating|VBG|C and|CC|CC inhibitory|JJ|C domains|NNS|O 
+promoter|NN|C and|CC|CC enhancer|NN|C positions|NNS|O 
+positively|RB|C and|CC|CC negatively|RB|C acting|VBG|O sequences|NNS|O 
+activating|VBG|C and|CC|CC inhibitory|JJ|C sequences|NNS|O 
+PC-3|NN|C and|CC|CC DU-145|NN|C cell|NN|O lines|NNS|O 
+collagens|NNS|O type|NN|O I|CD|C and|CC|CC IV|CD|C 
+peptide|NN|O binding|NN|C and|CC|CC recognition|NN|C 
+T-cell-|NN|C and|CC|CC B-cell-|*|C specific|JJ|O transcription|NN|O factors|NNS|O 
+L428|NN|C and|CC|CC HDLM-1|NN|C cells|NNS|O 
+cultured|VBN|O human|JJ|C and|CC|CC murine|JJ|C cell|NN|O lines|NNS|O 
+Raf-1|NN|C and|CC|CC MEK1|NN|C expression|NN|O 
+recombinant|JJ|O and|CC|CC nuclear|JJ|O NF-kappaB|NN|C proteins|NNS|O 
+B-cell|NN|C and|CC|CC T-cell|NN|C differentiation|NN|O 
+B-lymphocyte|NN|C and|CC|CC T-lymphocyte|NN|C differentiation|NN|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C lineage|NN|O cells|NNS|O 
+Fos|NN|C and|CC|CC Jun|NN|C family|NN|O proteins|NNS|O 
+G1-|NN|C and|CC|CC G2/M-|*|C phase|NN|O nuclear|JJ|O p62c-fos|NN|C and|CC|CC p39c-jun|NN|C 
+cytoplasmic|JJ|O p62c-fos|NN|C and|CC|CC p39c-jun|NN|C 
+myeloid|JJ|C and|CC|CC B|NN|C cells|NNS|O B|NN|C cell|NN|C and|CC|CC myeloid|JJ|C genes|NNS|O 
+acute|JJ|C and|CC|CC chronic|JJ|C inflammation|NN|O 
+5'|JJ|C and|CC|CC 3'|JJ|C untranslated|JJ|O regions|NNS|O 
+viral|JJ|C and|CC|CC cellular|JJ|C genes|NNS|O 
+5S|NN|C rRNA|NN|C and|CC|CC tRNA|NN|C gene|NN|O transcription|NN|O 
+normal|JJ|C and|CC|CC leukemic|JJ|C cells|NNS|O 
+type|NN|O A|NN|C and|CC|CC B|NN|C transcripts|NNS|O 
+immature|JJ|C and|CC|CC mature|JJ|C lymphoid|JJ|O T-cell|NN|O proliferations|NNS|O 
+homodimer|NN|C and|CC|CC heterodimer|NN|C formation|NN|O 
+mRNA|NN|C and|CC|CC protein|NN|C level|NN|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C mRNA|NN|O 
+CD44|NN|O mRNA|NN|O expression|NN|C and|CC|CC transcription|NN|C levels|NNS|O EGR1|*|O -expressing|JJ|C but|CC|CC not|RB|CC in|IN|CC nonexpressing|JJ|C subclones|NNS|O 
+human|JJ|O T-cell|NN|O leukemia|NN|O virus|NN|O type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C Tax|NN|O proteins|NNS|O 
+5'|JJ|C or|CC|CC 3'|JJ|C NF-kappaB|NN|O sites|NNS|O 
+N|NN|C or|CC|CC C|NN|C terminus|NN|O 
+hematopoietic|JJ|C and|CC|CC nonhematopoietic|JJ|C cell|NN|O types|NNS|O 
+interleukin-13|NN|C and|CC|CC interleukin-4|NN|C genes|NNS|O 
+IL-13|NN|C and|CC|CC IL-4|NN|C genes|NNS|O 
+IL-4|NN|C and|CC|CC IL-13|NN|C promoters|NNS|O 
+granulocyte-macrophage|JJ|C colony-stimulating|JJ|C factor|NN|C (|(|C GM-CSF|NN|C )|)|C -|:|C or|CC|CC interleukin-3|NN|C (|(|C IL-3|NN|C )|)|C -|*|C induced|JJ|O GM|NN|O colony|NN|O formation|NN|O 
+normal|JJ|C myeloid|JJ|C and|CC|CC erythroid|JJ|C progenitor|NN|C cell|NN|O growth|NN|O 
+normal|JJ|C bone|NN|C marrow|NN|C myeloid|JJ|C and|CC|CC erythroid|JJ|C progenitor|NN|C cells|NNS|O 
+leukocyte|NN|C alkaline|NN|C phosphatase|NN|C ,|,|CC CD11b|NN|C ,|,|CC CD33|NN|C ,|,|CC and|CC|CC G-CSF|NN|C receptor|NN|C mRNA|NN|O 
+human|JJ|C osteocalcin|NN|C and|CC|CC the|DT|CC mouse|NN|C osteopontin|NN|C gene|NN|O promoters|NNS|O 
+Resting|VBG|O B|NN|C and|CC|CC T|NN|C lymphocytes|NNS|O 
+anti-|*|O IgM|JJ|C or|CC|CC IgD|NN|C antibodies|NNS|O 
+cyclin-dependent-kinase-|*|O 4|NN|C and|CC|CC 6|CD|C 
+cyclin-dependent|JJ|O kinases|NNS|O 4|CD|C and|CC|CC 6|CD|C 
+MOLT-4|NN|C and|CC|CC CEM|NN|C cells|NNS|O 
+MOLT-4|NN|C and|CC|CC CEM|NN|C cells|NNS|O 
+NFAT|NN|C and|CC|CC NF-kappaB|NN|C targets|NNS|O 
+B.pertussis|FW|C ,|,|CC V.cholera.|FW|C or|CC|CC C.botulinum|FW|C toxin|NN|O 
+cAMP-|NN|C and|CC|CC cGMP-|*|C dependent|JJ|O protein|NN|O kinases|NNS|O 
+beta-casein|NN|C and|CC|CC IRF-1|NN|C gene|NN|O promoters|NNS|O 
+STAT5-|NN|C and|CC|CC STAT1-|*|C related|JJ|O factors|NNS|O STAT1-|NN|C ,|,|CC STAT3-|NN|C ,|,|CC and|CC|CC STAT5-|*|C related|JJ|O proteins|NNS|O 
+383-bp|JJ|C (|(|C delta383|NN|C )|)|C and|CC|CC 99-bp|JJ|C (|(|C delta99|NN|C )|)|C sequences|NNS|O 
+human|JJ|C fetal|JJ|C (|(|C A|NN|C gamma-|NN|C )|)|C globin|NN|C (|(|C HBG1|NN|C )|)|C or|CC|CC simian|JJ|C virus|NN|C 40|CD|C (|(|C SV40|NN|C )|)|C promoters|NNS|O 
+clinical|JJ|C ,|,|CC cytogenetic|JJ|C ,|,|CC and|CC|CC molecular|JJ|C data|NNS|O 
+deltaspi-B|NN|C and|CC|CC spi-B|NN|C mRNAs|NNS|O 
+NF-kappaB|NN|C and|CC|CC Sp1|NN|C binding|NN|O elements|NNS|O 
+NF-kappaB|NN|C and|CC|CC four|CD|C Spl|NN|C binding|NN|O elements|NNS|O 
+U3|NN|C and|CC|CC R|NN|C regions|NNS|O 
+NF-kappaB|NN|C and|CC|CC Sp1|NN|C sites|NNS|O 
+NF-kappaB|NN|C and|CC|CC Sp1|NN|C binding|NN|O site|NN|O mutants|NNS|O 
+human|JJ|O B-|NN|C or|CC|CC T-|*|C cell|NN|O lines|NNS|O 
+N|NN|C and|CC|CC the|DT|CC C|NN|C termini|NNS|O 
+neutrophilic|JJ|C and|CC|CC eosinophilic|JJ|C granulocytes|NNS|O 
+anti-inflammatory|JJ|C and|CC|CC anti-allergic|*|C /hypereosinophilic|JJ|O agents|NNS|O 
+B|NN|C and|CC|CC T|NN|C lymphocytes|NNS|O 
+anti-CD3-|JJ|C and|CC|CC anti-CD28-|JJ|C treated|JJ|O Rel-/-|JJ|O T|NN|O cells|NNS|O 
+normal|JJ|C and|CC|CC hypopigmented|JJ|C skin|NN|O samples|NNS|O 
+mRNA|NN|C and|CC|CC protein|NN|C levels|NNS|O 
+Oct-1|NN|C and|CC|CC Oct-2|NN|C DNA|NN|O binding|NN|O activity|NN|O 
+CD45-|NN|C or|CC|CC Lck-|*|C deficient|JJ|O cell|NN|O lines|NNS|O 
+fetal|JJ|C or|CC|CC the|DT|CC adult|JJ|C globin|NN|O gene|NN|CC program|NN|O 
+fetal|JJ|C or|CC|CC the|DT|CC adult|JJ|C globin|NN|O developmental|JJ|O program|NN|O 
+fetal|JJ|C or|CC|CC the|DT|CC adult|JJ|C globin|NN|O program|NN|O 
+CACCC|NN|C and|CC|CC CCAAT|NN|C motifs|NNS|O 
+Agamma-|NN|C and|CC|CC the|DT|CC beta-|*|C globin|NN|O genes|NNS|O 
+gamma-|NN|C and|CC|CC beta-|*|C globin|NN|O gene|NN|O promoters|NNS|O fetal|JJ|C or|CC|CC the|DT|CC adult|JJ|C globin|NN|O gene|NN|O 
+antiproliferative|JJ|C and|CC|CC differentiating|VBG|C agent|NN|O 
+B|NN|C and|CC|CC T|NN|C lymphocytes|NNS|O 
+S1T|NN|C and|CC|CC ATL-1K|NN|C cell|NN|O lines|NNS|O 
+resident|JJ|C and|CC|CC inflammatory|JJ|C cells|NNS|O 
+human|JJ|C (|(|C U937|NN|C )|)|C and|CC|CC murine|JJ|C (|(|C J774|NN|C )|)|C monocytic|JJ|O cell|NN|O lines|NNS|O 
+LPS-|NN|C or|CC|CC zymosan-|*|C mediated|JJ|O transcriptional|JJ|O induction|NN|O 
+jun|NN|C and|CC|CC fos|NN|C gene|NN|O families|NNS|O 
+p46|NN|C and|CC|CC p54|NN|C isoforms|NNS|O 
+CD14-|NN|C and|CC|CC protein|NN|C tyrosine|NN|C phosphorylation-|*|C dependent|JJ|O event|NN|O 
+Truncated|VBN|O c-Jun|NN|C and|CC|CC c-Fos|NN|C mutant|JJ|O proteins|NNS|O dimerization|NN|C and|CC|CC DNA|NN|C binding|NN|C domains|NNS|O 
+latently|RB|C and|CC|CC acutely|RB|C infected|JJ|O cells|NNS|O 
+DQ2|NN|O homo|*|C -|JJ|CC and|CC|CC hetero|*|C zygous|JJ|O B-|*|O LCLs|NNS|O 
+IL-6-|NN|C and|CC|CC IFN-gamma-|*|C induced|JJ|O reporter|NN|O gene|NN|O activity|NN|O 
+T|NN|C and|CC|CC B|NN|C cell|NN|O lines|NNS|O 
+wild-type|JJ|C or|CC|CC mutant|JJ|C kappaB|NN|O sites|NNS|O 
+estradiol|NN|C and|CC|CC progesterone|NN|C receptor|NN|O levels|NNS|O 
+IL-10-|NN|C and|CC|CC IFN-gamma-|*|C activated|JJ|O STAT|NN|O molecules|NNS|O 
+atopic|JJ|C and|CC|CC nonatopic|JJ|C individuals|NNS|O 
+inflammatory|JJ|C and|CC|CC immune|JJ|C processes|NNS|O 
+inflammatory|JJ|C or|CC|CC immune|JJ|C processes|NNS|O 
+apoptotic|JJ|C or|CC|CC necrotic|JJ|C cell|NN|O death|NN|O 
+Mouse|NN|C ,|,|CC rat|NN|C ,|,|CC hamster|NN|C ,|,|CC and|CC|CC human|JJ|C cells|NNS|O CL-induced|JJ|C and|CC|CC chemically|RB|C induced|VBN|C apoptosis|NN|O 
+IL-1beta-|NN|C ,|,|CC IL-6-|NN|C and|CC|CC TNF-alpha-|*|C mRNA|NN|O 
+NF|NN|C kappa|NN|C B|NN|C or|CC|CC Sp-1|NN|C elements|NNS|O Tat-|NN|C or|CC|CC mitogen-|*|C mediated|JJ|O LTR|NN|O transcription|NN|O 
+acetaminophen-|NN|C and|CC|CC CCl4-|*|C induced|JJ|O hepatotoxicity|NN|O 
+HIV|*|C -|NN|CC but|CC|CC not|RB|CC phorbol|NN|C myristate|NN|C acetate-|NN|C or|CC|CC lipopolysaccharide-|*|C mediated|JJ|O activation|NN|O 
+c-Jun|NN|C and|CC|CC JunD|NN|C genes|NNS|O 
+tyrosine|NN|C ,|,|CC and|CC|CC serine|NN|C phosphorylation|NN|O 
+tyrosine|NN|C and|CC|CC serine|NN|C phosphorylation|NN|O 
+natural|JJ|C and|CC|CC synthetic|JJ|C PPARgamma|NN|O agonists|NNS|O 
+c-jun|NN|C but|CC|CC not|RB|CC c-fos|NN|C mRNA|NN|O 
+Lck/Fyn-|NN|C or|CC|CC zap-70-|*|C dependent|JJ|O signaling|NN|O pathways|NNS|O 
+CD45-|NN|C or|CC|CC CD3-|*|C negative|JJ|O variants|NNS|O 
+transcriptional|JJ|C and|CC|CC posttranscriptional|JJ|C regulation|NN|O 
+tumour|NN|C and|CC|CC non|JJ|C tumour|NN|C cells|NNS|O 
+Monocyte|NN|O migration|NN|C and|CC|CC activation|NN|C 
+tumor|NN|C and|CC|CC constitutional|JJ|C (|(|C lymphocyte|NN|C )|)|C DNA|NN|O 
+cytoskeletal|JJ|C and|CC|CC cell-surface|JJ|C proteins|NNS|O signaling|NN|C ,|,|CC chemokine|NN|C ,|,|CC and|CC|CC IFN-gamma-inducible|JJ|C genes|NNS|O 
+HL-60-|NN|C and|CC|CC THP-1-|*|C derived|JJ|O macrophages|NNS|O 
+pre-B|NN|C and|CC|CC immature|JJ|C B|NN|C cells|NNS|O 
+calcineurin|NN|O A|NN|C and|CC|CC B|NN|C subunits|NNS|O 
+Categories|NNS|O Va|NN|C ,|,|CC VI|NN|C and|CC|CC DFR|NN|C but|CC|CC not|RB|CC Category|NN|O III|CD|O cells|NNS|C 
+B|NN|O cell|NN|O proliferation|NN|C and|CC|CC differentiation|NN|C 
+B-|NN|C and|CC|CC myeloid|JJ|C cell|NN|O markers|NNS|O 
+acute|JJ|C and|CC|CC chronic|JJ|C inflammation|NN|C 
+acute|JJ|C and|CC|CC persistent|JJ|C adenovirus|NN|O infections|NNS|O 
+eosinophilic|JJ|C and|CC|CC neutrophilic|JJ|C differentiation|NN|O 
+C/EBP-|NN|C and|CC|CC GATA-|*|C binding|JJ|O sites|NNS|O 
+C/EBPbeta|NN|C and|CC|CC GATA-1|NN|C expression|NN|O vectors|NNS|O 
+erythroid|JJ|C and|CC|CC megakaryocyte|NN|C lineages|NNS|O 
+Sp1|NN|C ,|,|CC Sp1/AP-2|NN|C ,|,|CC and|CC|CC cAMP|NN|C response|NN|C element|NN|C (|(|C CRE|NN|C )|)|C binding|NN|O sites|NNS|O Sp1|NN|C ,|,|CC NRE-2a|NN|C ,|,|CC TCF-1/LEF-1|NN|C ,|,|CC and|CC|CC Sp1/NF-AT|NN|C binding|NN|O sites|NNS|O 
+Extracellular|JJ|C signal-regulated|JJ|C protein|NN|C kinase|NN|C (|(|C ERK|NN|C )|)|C -dependent|JJ|C and|CC|CC ERK-independent|JJ|C pathways|NNS|O 
+ERK-dependent|JJ|C and|CC|CC ERK-independent|JJ|C pathways|NNS|O 
+GATA|*|O -1|NN|C and|CC|CC -2|CD|C or|CC|CC GATA|*|O -1|NN|C and|CC|CC -3|CD|C gene|NN|C products|NNS|C GATA|*|O -1|NN|C and|CC|CC -2|CD|C GATA|*|O -1|NN|C and|CC|CC -3|CD|C 
+MBP-|NN|C or|CC|CC GST-|*|C HBD|NN|O 
+amino-|NN|O (|(|C 729-766|CD|C )|)|C or|CC|CC carboxy-|*|O terminal|JJ|C (|(|C 940-984|CD|C )|)|C region|NN|O 
+Gender|NN|C and|CC|CC vascular|JJ|C reactivity|NN|C 
+vascular|JJ|C endothelial|JJ|C and|CC|CC smooth|VB|C muscle|NN|C cells|NNS|O 
+IKK|*|O alpha|NN|C and|CC|CC -beta|NN|C 
+human|JJ|C and|CC|CC murine|JJ|C B|NN|O lymphocytes|NNS|O 
+TATA|NN|C or|CC|CC a|DT|CC CAAT|NN|C box|NN|O 
+SP1|NN|C ,|,|CC ETS|NN|C ,|,|CC OCT|NN|C ,|,|CC and|CC|CC IKAROS/LYF-1|NN|C transcription|NN|O factor|NN|O motifs|NNS|O 
+granulocytic|JJ|C or|CC|CC monocytic|JJ|C lineage|NN|O 
+mononuclear|JJ|C (|(|C MNC|NN|C )|)|C and|CC|CC polymorphonuclear|JJ|C leucocytes|NNS|O 
+time-|NN|C and|CC|CC dose-|*|C dependent|JJ|O manner|NN|O 
+IKK|*|O -alpha|NN|C and|CC|CC -beta|NN|C activity|NN|O 
+LPS-|NN|C and|CC|CC TNF-|*|C induced|JJ|O signaling|NN|O 
+TNFalpha-|NN|C and|CC|CC IL-10-|*|C pretreated|JJ|O U937|NN|O cells|NNS|O 
+tetanus|NN|O toxoid|NN|O antigen-specific|JJ|O T|NN|O cell|NN|O proliferation|NN|C and|CC|CC expansion|NN|C 
+Rheumatoid|JJ|O arthritis|NN|O synovial|JJ|C fluid|NN|C and|CC|CC blood|NN|C 
+rheumatoid|JJ|O synovial|JJ|O fluid|NN|O monocytes|*|C /macrophages|NNS|C ,|,|CC but|CC|CC not|RB|CC in|IN|CC lymphocytes|NNS|C or|CC|CC neutrophils|NNS|C 
+normal|JJ|C or|CC|CC rheumatoid|JJ|C peripheral|JJ|O blood|NN|O 
+hematopoietic|JJ|O transcription|NN|O factors|NNS|O PU.1|NN|C and|CC|CC GATA-1|NN|C 
+lymphoid|JJ|C and|CC|CC myeloid|JJ|C lineages|NNS|O 
+beta-globin|NN|O promoter|NN|C and|CC|CC gene|NN|C 
+128|CD|C and|CC|CC 246|CD|C aa|NN|O 
+NF-ATc|*|O /|*|CC B|NN|C and|CC|CC -|*|CC C|NN|C NF-ATc|*|O /|*|CC B|NN|C and|*|CC -|CC|C C|NN|C 
+B|NN|C and|CC|CC T|NN|C cell|NN|O development|NN|O 
+B|NN|C cell|NN|C antigen-receptor|NN|C (|(|C BCR|NN|C )|)|C -|:|C and|CC|CC TCR-|*|C mediated|JJ|O signaling|NN|O thresholds|NNS|O 
+EBV-negative|JJ|C Burkitt|NN|C lymphoma|NN|C or|CC|CC human|JJ|C embryonic|JJ|C kidney|NN|C 293|CD|C cells|NNS|O 
+B-lymphocyte|NN|O activation|NN|C and|CC|CC growth|NN|C 
+caspase|*|O -1|NN|C and|CC|CC -3|CD|C 
+STATs|*|O 1|NN|C ,|,|CC 3|CD|C ,|,|CC and|CC|CC 6|CD|C 
+42-|CD|C and|CC|CC 44-|*|C kDa|JJ|O proteins|NNS|O 
+ERK|NN|C or|CC|CC p38|NN|C pathway|NN|O 
+interleukin|NN|C (|(|C IL|NN|C )|)|C -2-stimulated|JJ|C or|CC|CC IL-2-deprived|JJ|C cells|NNS|O 
+atopic|JJ|C and|CC|CC nonatopic|JJ|C asthma|NN|O 
+NF-kappa|NN|C B|NN|C and|CC|CC AP-1|NN|C activation|NN|O 
+IL-2R|NN|O alpha-|NN|C and|CC|CC gamma-|*|C chains|NNS|O 
+c-myc|NN|C and|CC|CC bcl-2|NN|C mRNA|NN|O induction|NN|O 
+STAT1|NN|C and|CC|CC STAT5|NN|C genes|NNS|O 
+STAT1|NN|C ,|,|CC STAT3|NN|C and|CC|CC STAT5|NN|C RNA|NN|O 
+STAT1|NN|C ,|,|CC STAT3|NN|C and|CC|CC STAT5|NN|C mRNAs|NNS|O 
+IL-2|NN|C or|CC|CC IL-4|NN|C genes|NNS|O 
+IL|*|O -10|NN|C and|CC|CC -11|CD|C 
+matrix|NN|O metalloproteinases|NNS|O 1|CD|C and|CC|CC 3|CD|C 
+B-cell|NN|O expansion|NN|C and|CC|CC maturation|NN|C 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C pathways|NNS|O 
+intestinal|JJ|O calcium|NN|C and|CC|CC phosphate|NN|C absorption|NN|O 
+B-cell|NN|O activation|NN|C ,|,|CC differentiation|NN|C or|CC|CC function|NN|C 
+Notch|NN|C and|CC|CC NF-kappaB|NN|C signaling|NN|O pathways|NNS|O 
+West|JJ|C African|JJ|C and|CC|CC East|JJ|C African|JJ|C populations|NNS|O 
+Hepa-1|NN|C wild-type|JJ|C and|CC|CC Ah|NN|C receptor|NN|C deficient|JJ|C c12|NN|C cell|NN|O lines|NNS|O 
+TCR|*|O alpha|NN|C beta|NN|C and|CC|CC gamma|NN|C delta|NN|C cells|NNS|O 
+TCR|*|O alpha|NN|C beta|NN|C and|CC|CC gamma|NN|C delta|NN|C cells|NNS|O 
+LT-beta|NN|C and|CC|CC TNF-alpha|NN|C receptors|NNS|O 
+IL-4-|NN|C ,|,|CC IL-5-|NN|C ,|,|CC or|CC|CC ionomycin-|*|C stimulated|JJ|O eosinophils|NNS|O 
+IL-4-|NN|C or|CC|CC IL-5-|*|C stimulated|JJ|O eosinophils|NNS|O 
+immune|JJ|C and|CC|CC clinical|JJ|C parameters|NNS|O 
+NFATp/c|NN|C and|CC|CC an|DT|C activating|VBG|C protein|NN|C 1|CD|C (|(|C AP-1|NN|C )|)|C binding|NN|O site|NN|O 
+coding|NN|C and|CC|CC intronic|JJ|C sequences|NNS|O 
+ER-negative|JJ|C and|CC|CC ER-positive|JJ|C human|JJ|O breast|NN|O cancer|NN|O cell|NN|O lines|NNS|O 
+physiological|JJ|C and|CC|CC pathological|JJ|C conditions|NNS|O 
+cellular|JJ|C and|CC|CC viral|JJ|C genes|NNS|O 
+fibronectin-|NN|C or|CC|CC laminin-|*|C coated|JJ|O flasks|NNS|O 
+PML|NN|C and|CC|CC Rb|NN|C proteins|NNS|O 
+unilineage|JJ|O erythroid|JJ|C or|CC|CC granulocytic|JJ|C differentiation|NN|O 
+erythroid|JJ|C and|CC|CC granulocytic|JJ|C colonies|NNS|O 
+PML|NN|C and|CC|CC Rb|NN|C protein|NN|O expression|NN|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C cells|NNS|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C cells|NNS|O 
+primitive|JJ|C and|CC|CC definitive|JJ|C erythroid|JJ|O cells|NNS|O 
+CD4(+)|JJ|C and|CC|CC CD8(+)|JJ|C T|NN|O lymphocytes|NNS|O 
+NF-kappaB|NN|C or|CC|CC CREB/ATF|NN|C pathway|NN|O 
+dominant|JJ|O negative|JJ|O Rac|NN|C and|CC|CC Cdc42|NN|C proteins|NNS|O 
+ezrin|*|C /|*|CC moesin|*|C /|*|CC radixin|NN|C proteins|NNS|O 
+Th1|NN|C and|CC|CC Th2|NN|C type|NN|O cytokines|NNS|O 
+lymphocytic|JJ|C leukemia|NN|C and|CC|CC lymphoma|NN|C cells|NNS|O 
+G0|NN|C and|CC|CC G1|NN|C phases|NNS|O 
+proapoptotic|JJ|C and|CC|CC antiapoptotic|JJ|C regulatory|JJ|O factor|NN|O 
+proapoptotic|JJ|C and|CC|CC antiapoptotic|JJ|C functions|NNS|O 
+FOS|NN|C and|CC|CC JUN|NN|C proteins|NNS|O 
+immune|JJ|O system|NN|O regulatory|JJ|C and|CC|CC effector|NN|C cells|NNS|O 
+lymphoid|JJ|C and|CC|CC nonlymphoid|JJ|C components|NNS|O 
+site|NN|O alpha|NN|C and|CC|CC beta|NN|C 
+site|NN|O alpha-|NN|C and|CC|CC beta-|*|C binding|JJ|O activities|NNS|O 
+CD4+CD28null|NN|C and|CC|CC CD8+CD28null|NN|C T|NN|O cells|NNS|O alpha-|NN|C and|CC|CC beta-|*|C bound|JJ|O complexes|NNS|O 
+virus-infected|JJ|C or|CC|CC tumor|JJ|C cells|NNS|O 
+HTLV-I(+)|JJ|C ,|,|CC IL-2-independent|JJ|C and|CC|CC IL-2-dependent|JJ|C cell|NN|O lines|NNS|O 
+cytogenetic|JJ|C or|CC|CC molecular|JJ|C abnormalities|NNS|O 
+rapamycin-resistant|JJ|C and|CC|CC rapamycin-sensitive|JJ|C components|NNS|O 
+Fe2+|*|C /Cu2+|JJ|C ions|NNS|O 
+gene|NN|C targeting|NN|C and|CC|CC transgenic|JJ|C experiments|NNS|O 
+genetic|JJ|C and|CC|CC pharmacological|JJ|C manipulation|NN|O 
+T|NN|O cell|NN|O development|NN|C and|CC|CC activation|NN|C 
+immunosuppressive|JJ|C and/or|CC|CC anti-inflammatory|JJ|C cytokine|NN|O 
+LPS-induced|JJ|C IL-6|NN|C and|CC|CC spontaneous|JJ|C IL-1ra|NN|C production|NN|O 
+mammalian|JJ|O MCM5|NN|C and|CC|CC MCM6|NN|C genes|NNS|O 
+Human|JJ|O MCM5|NN|C and|CC|CC MCM6|NN|C promoters|NNS|O 
+mammalian|JJ|O MCM5|NN|C and|CC|CC MCM6|NN|C genes|NNS|O 
+hematopoietic|JJ|O stem|NN|C and|CC|CC progenitor|NN|C cells|NNS|O 
+serum|NN|O amylase|NN|C and|CC|CC lipase|NN|C 
+mRNA|NN|C and|CC|CC protein|NN|C levels|NNS|O 
+Fas/APO-1/CD95-|NN|C and|CC|CC TCR-|*|C mediated|JJ|O apoptosis|NN|O 
+Stat1-dependent|JJ|C ,|,|CC Stat4-dependent|JJ|C and|CC|CC Stat4-independent|JJ|C phases|NNS|O 
+IL-12R|NN|O beta|NN|C 1|CD|C and|CC|CC beta|NN|C 2|CD|C subunits|NNS|O 
+estrogen|NN|C receptor|NN|C alpha|NN|C (|(|C ER-alpha|NN|C )|)|C ,|,|CC ER-beta|NN|C ,|,|CC and|CC|CC progesterone|NN|C receptor|NN|C (|(|C PR|NN|C )|)|C mRNAs|NNS|O 
+Erk|*|O 1|NN|C and|CC|CC 2|CD|C 
+c-Jun|NN|C and|CC|CC ATF-2|NN|C proteins|NNS|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C characteristics|NNS|O 
+beta-|NN|C and|CC|CC gamma-|*|C globin|NN|O 
+Interferon|*|O -alpha|NN|C and|CC|CC -beta|NN|C 
+bone|NN|C morphogenetic|JJ|C protein-|NN|C and|CC|CC activin-|*|C mediated|JJ|O growth|NN|O arrest|NN|O 
+bone|NN|C morphogenetic|JJ|C protein-2-|NN|C and|CC|CC activin|NN|C A-|*|C mediated|JJ|O signaling|NN|O 
+adhesion|NN|C molecule|NN|C and|CC|CC Hsp|NN|C expression|NN|O 
+immunosuppressive|JJ|C and|CC|CC immunosuppression-inducing|JJ|C capacities|NNS|CC 
+IL-2R|NN|O alpha-|NN|C ,|,|CC beta-|NN|C ,|,|CC and|CC|CC gamma-|*|C chain|NN|O expression|NN|O 
+Jak1|NN|C ,|,|CC Jak3|NN|C ,|,|CC Stat1|NN|C ,|,|CC Stat3|NN|C ,|,|CC and|CC|CC Stat5|NN|C expression|NN|O 
+Jak1|NN|C ,|,|CC Jak3|NN|C ,|,|CC Stat1|NN|C ,|,|CC Stat3|NN|C ,|,|CC and|CC|CC Stat5|NN|C expression|NN|O 
+FasL-|NN|C and|CC|CC a|DT|C consensus|NN|C NF-kappaB-|*|C reporter|NN|O construct|NN|O 
+young|JJ|C and|CC|CC elderly|JJ|C donors|NNS|O 
+type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C interferons|NNS|O 
+type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C IL-1|NN|O receptors|NNS|O 
+IL-4-|NN|C and|CC|CC IL-13-|*|C induced|JJ|O gene|NN|O expression|NN|O 
+type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C IFNs|NNS|O 
+type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C IFNs|NNS|O 
+dominant-negative|JJ|O cdk4|NN|C and|CC|CC cdk6|NN|C constructs|NNS|O 
+immunosuppressive|JJ|C and|CC|CC antiinflammatory|JJ|C properties|NNS|O 
+purine-box/ARRE/NF-AT|NN|C and|CC|CC NF-kappaB|NN|C target|NN|O DNA|NN|O sequences|NNS|O 
+erythrocytic|JJ|C and|CC|CC megakaryocytic|JJ|C markers|NNS|O 
+erythrocytic|JJ|C (|(|C globins|NNS|C )|)|C and|CC|CC megakaryocytic|JJ|C markers|NNS|O 
+Spi-1|NN|C and|CC|CC Fli-1|NN|C genes|NNS|O 
+Spi-1|NN|C and/or|CC|CC Fli-1|NN|C genes|NNS|O 
+normal|JJ|C resting|VBG|C or|CC|CC activated|VBN|C 
+immunosuppressive|JJ|C and|CC|CC antineoplastic|JJ|C agents|NNS|O 
+immune|JJ|C and|CC|CC inflammatory|JJ|C responses|NNS|O 
+young|JJ|C and|CC|CC old|JJ|C donors|NNS|O 
+pre-B|JJ|C cell|NN|C and|CC|CC plasma|NN|C cell|NN|C lines|NNS|O 
+p50/p50|NN|C and|CC|CC p50/p65|NN|C heterodimers|NNS|O 
+STATs|*|O 1|NN|C ,|,|CC -3|CD|C DNA|NN|O binding|NN|O and|CC|CC growth|NN|O arrest|NN|O STATs|*|O 1|NN|C ,|,|CC -3|CD|C 
+antiviral|JJ|C and|CC|CC antiproliferative|JJ|C effects|NNS|O 
+STATs|*|O 1|NN|C and|CC|CC -3|CD|C 
+NF-kappa|NN|C B|NN|C and|CC|CC STAT-6|NN|C binding|NN|O sites|NNS|O 
+CD40L|NN|C and|CC|CC IL-4|NN|C responsive|JJ|O elements|NNS|O 
+tumor|NN|O necrosis|NN|CC factor|NN|CC receptor-associated|JJ|CC factor|NN|CC (|(|O TRAF|NN|O )|)|O 1|CD|C ,|,|CC 2|CD|C ,|,|CC or|CC|CC 3|CD|C 
+MHC|NN|O class|NN|C I|CD|C and|CC|CC class|NN|C II|CD|C molecules|NNS|O 
+regulatory|JJ|C and|CC|CC catalytic|JJ|C subunits|NNS|O euthymic|JJ|C ,|,|CC manic|JJ|C ,|,|CC and|CC|CC depressed|JJ|C patients|NNS|O 
+euthymic|JJ|C ,|,|CC depressed|JJ|C ,|,|CC and|CC|CC manic|JJ|C patients|NNS|O 
+Th1|NN|C and|CC|CC Th2|NN|C immune|JJ|O responses|NNS|O infectious|JJ|C ,|,|CC autoimmune|JJ|C ,|,|CC and|CC|CC allergic|JJ|C diseases|NNS|O 
+T|NN|C cell|NN|C receptor-|NN|C and|CC|CC phytohemagglutinin-|*|C mediated|JJ|O activation|NN|O 
+ERK1/2|NN|C and|CC|CC JNK|NN|C proteins|NNS|O 
+myeloid|JJ|C and|CC|CC megakaryocyte|NN|C progenitor|NN|O proliferation|NN|O 
+p21|NN|C (|(|C WAF1/CIP1|NN|C )|)|C and|CC|CC p27|NN|C (|(|C KIP1|NN|C )|)|C mRNA|NN|O 
+phase|NN|O 1|CD|C and|CC|CC 2|CD|C neutrophil|NN|O adhesion|NN|O responses|NNS|O 
+eutopic|JJ|C and|CC|CC ectopic|JJ|C implantation|NN|O sites|NNS|O 
+BCL-2+|JJ|C ,|,|CC CD56+|JJ|C ,|,|CC CD3+|JJ|C ,|,|CC CD8+|JJ|C and|CC|CC CD68+|JJ|C cells|NNS|O 
+ectopic|JJ|C and|CC|CC uterine|JJ|C pregnancies|NNS|O 
+supershift|NN|C and|CC|CC competition|NN|C experiments|NNS|O 
+endothelial|JJ|C and/or|CC|CC leukocyte|NN|C adhesion|NN|O molecules|NNS|O beta1|NN|C and|CC|CC beta2|NN|C integrins|NNS|O 
+low|JJ|O THE/THF|NN|C and|CC|CC alpha|NN|C THF/THF|NN|C ratios|NNS|O 
+N-hydroxy|NN|C (|(|C SMX-NHOH|NN|C )|)|C and|CC|CC nitroso|NN|C (|(|C SMX-NO|NN|C )|)|C metabolites|NNS|O 
+DNA-|*|O binding|JJ|C and|CC|CC dimerization|NN|C domains|NNS|O 
+Ig|NN|O enhancer|NN|C and|CC|CC promoter|NN|C 
+multipotent|JJ|C progenitor|NN|C (|(|C EML|NN|C )|)|C or|CC|CC committed|VBN|C promyelocyte|JJ|C (|(|C MPRO|NN|C )|)|C stages|NNS|O 
+mitogen-|NN|C or|CC|CC CD3-|*|C activated|JJ|O T|NN|O cells|NNS|O 
+NF-kappa|NN|C B|NN|C and|CC|CC AP-1|NN|C activation|NN|O 
+human|JJ|C and|CC|CC mouse|NN|C fibroblasts|NNS|O G0|NN|C and|CC|CC G1|NN|C phases|NNS|O E2F|*|O 1|NN|C and|CC|CC -3|CD|C 
+DP|*|O 1|NN|C and|CC|CC -2|CD|C 
+G1|NN|C and|CC|CC S|NN|C phases|NNS|O 
+JunB|NN|C ,|,|CC FosB|NN|C ,|,|CC and|CC|CC c-Fos|NN|C transcription|NN|O 
+TNF|NN|O receptors|NNS|O 1|CD|C and|CC|CC 2|CD|C PKC|NN|O isoforms|NNS|O alpha|NN|C ,|,|CC beta|NN|C I|CD|C ,|,|CC beta|NN|C II|CD|C ,|,|CC and|CC|CC mu|NN|C 
+murine|JJ|O T|NN|C and|CC|CC mast|NN|C cells|NNS|O 
+tissue-|NN|C and|CC|CC gene-|*|C specific|JJ|O functions|NNS|O 
+T|NN|C and|CC|CC mast|NN|C cell|NN|O lines|NNS|O 
+viral|JJ|C ,|,|CC self|NN|C ,|,|CC and|CC|CC bacterial|JJ|C peptides|NNS|O 
+viral|JJ|C and|CC|CC self|NN|C peptides|NNS|O 
+self|NN|C and|CC|CC bacterial|JJ|C peptides|NNS|O 
+Th1|NN|C or|CC|CC Th2|NN|C differentiation|NN|O 
+anti-CD28|JJ|C mAb|NN|C and|CC|CC CHO-CD80|NN|C stimulation|NN|O 
+Th1|NN|C or|CC|CC Th2|NN|C differentiation|NN|O 
+silencers|NNS|O I|CD|C and|CC|CC II|CD|C 
+B-cell-specific|JJ|C and|CC|CC gamma|NN|C interferon-inducible|JJ|C fashion|NN|O 
+T|NN|O cell|NN|O activation|NN|C and|CC|CC differentiation|NN|C 
+primary|JJ|C and|CC|CC secondary|JJ|C stimulations|NNS|O 
+AML|NN|C and|CC|CC Ets|NN|C proteins|NNS|O 
+AML|NN|C and|CC|CC Ets|NN|C proteins|NNS|O basal|JJ|C and|CC|CC TGF-beta-inducible|JJ|C promoter|NN|O activity|NN|O 
+aberrant|JJ|C double-negative|JJ|C lpr|NN|C and|CC|CC gld|NN|C T|NN|O cells|NNS|O 
+lpr/lpr|NN|C and|CC|CC gld/gld|NN|C mice|NNS|O 
+MRL-lpr/lpr|NN|C and|CC|CC C3H-gld/gld|JJ|C CD4(-)|JJ|C CD8(-)|JJ|C T|NN|O cells|NNS|O 
+Egr|*|O -1|NN|C ,|,|CC -2|CD|C ,|,|CC and|CC|CC -3|CD|C 
+MRL-lpr/lpr|NN|C and|CC|CC C3H-gld/gld|JJ|C CD4(-)|JJ|C CD8(-)|JJ|C T|NN|O cells|NNS|O 
+lpr/lpr|NN|C and|CC|CC gld/gld|NN|C CD4(-)|JJ|C CD8(-)|JJ|C T|NN|O cells|NNS|O 
+humoral-|JJ|C and|CC|CC cellular-|*|C mediated|JJ|O immune|JJ|O responses|NNS|O 
+HTLV-I|NN|O basal|JJ|C transcription|NN|C and|CC|CC expression|NN|C 
+basal|JJ|C and|CC|CC Tax-mediated|JJ|C transcription|NN|O 
+delta-|NN|C and|CC|CC kappa-|*|C opioid|JJ|O receptors|NNS|O thymic|JJ|C and|CC|CC peripheral|JJ|C T|NN|O lymphocytes|NNS|O 
+AP-1-|NN|C and|CC|CC NF-AT/AP-1-|*|C binding|JJ|O sites|NNS|O 
+murine|JJ|C and|CC|CC human|JJ|C p40|NN|O genes|NNS|O 
+murine|JJ|C and|CC|CC human|JJ|C p40|NN|O promoter|NN|O regions|NNS|O 
+hematopoietic|JJ|C and|CC|CC non-hematopoietic|JJ|C cells|NNS|O 
+5'-|JJ|C and|CC|CC 3'-|*|C ends|NNS|O 
+monocytic|JJ|C or|CC|CC epithelial|JJ|C cells|NNS|O 
+Morphologic|JJ|C and|CC|CC cytofluorometry|NN|C analysis|NN|O 
+T|NN|C helper|NN|C 1|CD|C (|(|C Th1|NN|C )|)|C and|CC|CC T|NN|C helper|NN|C 2|CD|C (|(|C Th2|NN|C )|)|C cells|NNS|O 
+Thr|*|O 102|NN|C and|CC|CC -|*|CC 104|CD|C 
+diploid|JJ|C or|CC|CC tetraploid|JJ|C B|NN|O cells|NNS|O 
+Th1|NN|C and|CC|CC Th2|NN|C clones|NNS|O Th1|NN|C and|CC|CC Th2|NN|C clones|NNS|O 
+transcriptional|JJ|C and|CC|CC post-transcriptional|JJ|C levels|NNS|O 
+upstream|JJ|C and|CC|CC downstream|JJ|C sequences|NNS|O 
+paternal|JJ|C or|CC|CC biallelic|JJ|C expression|NN|O maternal|JJ|C or|CC|CC biallelic|JJ|C expression|NN|O 
+OM10.1|NN|C and|CC|CC Ach2|NN|C cells|NNS|O 
+OM10.1|NN|C and|CC|CC Ach2|NN|C cells|NNS|O 
+HpaII|NN|C and|CC|CC Hha|NN|C I|CD|C sites|NNS|O 
+transcriptional|JJ|C and|CC|CC posttranslational|JJ|C levels|NNS|O 
+activated|VBN|O T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+FasL|NN|O transcription|NN|C and|CC|CC expression|NN|C 
+heparin-like|JJ|C ,|,|CC and|CC|CC therefore|RB|CC cytokine-binding|JJ|C ,|,|CC GAGs|NNS|O 
+nervous|JJ|C and|CC|CC immune|JJ|C systems|NNS|O 
+physico-chemical|JJ|C and|CC|CC functional|JJ|C parameters|NNS|O BP-|*|O 14|NN|C ,|,|CC 18|CD|C ,|,|CC 19|CD|C kDs|NNS|O splenic|JJ|C and|CC|CC brain|NN|C cells|NNS|O 
+pim-1|NN|cell_type ,|,|cell_type and|CC|cell_type IRF-1|NN|cell_type 
+IL-2-|NN|C and|CC|CC IFNgamma-|*|C dependent|JJ|O transcription|NN|O 
+CD4(+)|JJ|C and|CC|CC CD8(+)|JJ|C subsets|NNS|O 
+natural|JJ|C or|CC|CC synthetic|JJ|C ligands|NNS|O 
+various|JJ|O synthetic|JJ|C or|CC|CC natural|JJ|C agonists|NNS|O 
+wild-type|JJ|C or|CC|CC mutated|VBN|C human|JJ|O retinoic|JJ|O acid|NN|O receptor|NN|O alpha|NN|O 
+allergic|JJ|C and|CC|CC atopic|JJ|C immune|JJ|O responses|NNS|O 
+interferon|NN|C alpha-|NN|C and|CC|CC interferon|NN|C gamma-|*|C induced|JJ|O genes|NNS|O 
+IFNgamma-|NN|C and|CC|CC IFNalpha-|*|C induced|JJ|O gene|NN|O expression|NN|O 
+IFNalpha-|NN|C and|CC|CC IFNgamma-|*|C inducible|JJ|O genes|NNS|O 
+IFNalpha-|NN|C and|CC|CC IFNgamma-|*|C induced|JJ|O DNA|NN|O binding|NN|O complexes|NNS|O 
+primary|JJ|C and|CC|CC secondary|JJ|C immune|JJ|O responses|NNS|O 
+IL-1|NN|O receptor|NN|O type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C gene|NN|O expression|NN|O 
+type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C IL-1|NN|O receptors|NNS|O 
+type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C IL-1R|NN|O gene|NN|O expression|NN|O 
+basal|JJ|C and|CC|CC IL-4|*|C /|*|C IL-13|*|C -induced|JJ|C IL-1R|NN|O gene|NN|CC expression|NN|O 
+IL-1RI|NN|C and|CC|CC IL-1RII|NN|C mRNA|NN|O levels|NNS|O 
+Th1|NN|C and|CC|CC Th2|NN|C cells|NNS|O 
+CREB|NN|C ,|,|CC CTF|NN|C ,|,|CC OTF-1|NN|C ,|,|CC OFT-2|NN|C ,|,|CC and|CC|CC NF-kappa|NN|C B|NN|C genes|NNS|O 
+p53|NN|C ,|,|CC Bax|NN|C ,|,|CC or|CC|CC Bak|NN|C gene|NN|O expression|NN|O 
+ERK1/2|NN|C and|CC|CC p38|NN|C cascades|NNS|O 
+LPS-|NN|C and|CC|CC IL-1beta-|*|C induced|JJ|O IL-6|NN|O production|NN|O 
+BcLF1|NN|C and|CC|CC BFRF3|NN|C promoters|NNS|O 
+core-|NN|C and|CC|CC O-side|JJ|C chain-|*|C specific|JJ|O mAbs|NNS|O 
+anti-inflammatory|JJ|C and|CC|CC proinflammatory|JJ|C functions|NNS|O 
+element-specific|JJ|C and|CC|CC common|JJ|C complexes|NNS|O 
+c-fos|NN|C ,|,|CC c-jun|NN|C ,|,|CC and|CC|CC NF|NN|C kappa|NN|C B|NN|C mRNA|NN|O 
+Fetal|JJ|C and|CC|CC neonatal|JJ|C lymphocytes|NNS|O 
+fetal|JJ|C and|CC|CC term|JJ|C neonatal|JJ|C cord|NN|O bloods|NNS|O 
+NFATp|NN|C and|CC|CC NFATc|NN|C family|NN|O members|NNS|O 
+neoplastic|JJ|C and|CC|CC normal|JJ|C B|NN|O cells|NNS|O 
+benign|JJ|C ,|,|CC and|CC|CC malignant|JJ|C tumors|NNS|O 
+-70|CD|C to|TO|C -65|CD|C and|CC|CC -121|CD|C to|TO|C -103|CD|C regions|NNS|O 
+-70|CD|C to|TO|C -65|CD|C and|CC|CC -121|CD|C to|TO|C -103|CD|C regions|NNS|O 
+CD11c|NN|C and|CC|CC CD11b|NN|C promoters|NNS|O 
+GATA|NN|C and|CC|CC CACCC|NN|C sites|NNS|O H5|NN|O promoter|NN|C and|CC|CC enhancer|NN|C 
+cyclin|NN|C E-Cdk2-|NN|C and|CC|CC cyclin|NN|C A-Cdk2-|*|C dependent|JJ|O phosphorylation|NN|O homo|*|C -|JJ|CC or|CC|CC hetero|*|C dimer|NN|O complex|NN|O formation|NN|O 
+Cdk2|NN|C and|CC|CC Id-bHLH|JJ|C functions|NNS|O 
+immune|JJ|C and|CC|CC inflammatory|JJ|C responses|NNS|O 
+AP-1|NN|C and|CC|CC CREB/ATF|NN|C proteins|NNS|O 
+c-Rel|NN|C and|CC|CC p65|NN|C subunits|NNS|O 
+sites|NNS|O 1|CD|C ,|,|CC 2|CD|C ,|,|CC and|CC|CC 3|CD|C 
+STATs|NNS|O 3|CD|C and|CC|CC 5|CD|C 
+XPB|NN|C and|CC|CC XPD|NN|C genes|NNS|O 
+XPB|NN|C or|CC|CC XPD|NN|C gene|NN|O 
+XP-B|NN|C and|CC|CC XP-D|NN|C cells|NNS|O 
+XP-B|NN|C and|CC|CC XP-D|NN|C lymphoblastoid|JJ|O cells|NNS|O 
+XP-B|NN|C and|CC|CC XP-D|NN|C lymphoblastoid|JJ|O cells|NNS|O 
+XP-B|NN|C or|CC|CC XP-D|NN|C patients|NNS|O 
+murine|JJ|C and|CC|CC human|JJ|C cDNAs|NNS|O 
+Murine|JJ|C and|CC|CC human|JJ|C MZF-2|NN|O proteins|NNS|O 
+MZF-1|NN|C and|CC|CC MZF-2|NN|C mRNAs|NNS|O 
+lineage|NN|C and|CC|CC stage|*|C -specific|JJ|O expression|NN|O 
+hypercortisolemic|JJ|C and|CC|CC cortisol-resistant|JJ|C patients|NNS|O 
+plasma|NN|C and|CC|CC urinary|JJ|C cortisol|NN|O concentrations|NNS|O 
+IFN-gamma|NN|C and|CC|CC IL-2|NN|C mRNA|NN|O accumulation|NN|O 
+p65|NN|C or|CC|CC c-Rel|NN|C subunits|NNS|O 
+TSG101|NN|C and|CC|CC FHIT|NN|C genes|NNS|O 
+truncated|VBN|O TSG101|NN|C and|CC|CC FHIT|NN|C transcripts|NNS|O 
+human|JJ|C and|CC|CC rat|NN|C T|NN|O lymphocytes|NNS|O 
+antitumor|JJ|C ,|,|CC antiinflammatory|JJ|C ,|,|CC and|CC|CC antiinfectious|JJ|C activities|NNS|O 
+fos|NN|C and|CC|CC jun|NN|C proteins|NNS|O 
+heavy|JJ|C and|CC|CC light|JJ|C chain|NN|O genes|NNS|O gamma|NN|C and|CC|CC lambda|NN|C genes|NNS|O 
+A|NN|C or|CC|CC B|NN|C Epstein-Barr|JJ|O virus|NN|O infection|NN|O 
+type|NN|C A|NN|C and|CC|CC type|NN|C B|NN|C EBV|NN|O carriers|NNS|O 
+B|NN|C and|CC|CC not|RB|CC T|NN|C cells|NNS|O 
+B|NN|C ,|,|CC but|CC|CC not|RB|CC T|NN|C ,|,|CC cell|NN|O lines|NNS|O 
+Fas|NN|C and|CC|CC CD23|NN|C expression|NN|O 
+I|NN|C kappa|NN|C B|NN|C alpha|NN|C and|CC|CC I|NN|C kappa|NN|C B|NN|C beta|NN|C stability|NN|O 
+type|NN|C A|NN|C and|CC|CC one|CD|C with|IN|C type|NN|C B|NN|C EBV|NN|O 
+Polyclonal|JJ|C and|CC|CC clonal|JJ|C CTL|NN|O 
+type|NN|C A|NN|C or|CC|CC type|NN|C B|NN|C EBV|NN|O infection|NN|O 
+phase|*|O -1|JJ|C and|CC|CC -2|CD|C neutrophil|NN|O adhesion|NN|O responses|NNS|O 
+wild-type|JJ|C or|CC|CC mutant|JJ|C human|JJ|C CD40|NN|O 
+CD40-|NN|C or|CC|CC pervanadate-|*|C mediated|JJ|O I|NN|O kappa|NN|O B|NN|O tyrosine|NN|O phosphorylation|NN|O 
+tumor|NN|O necrosis|NN|O factor|NN|O (|(|C TNF|NN|O )|)|C receptors|NNS|O I|CD|C (|(|C p55|NN|C )|)|C and|CC|CC II|CD|C (|(|C p75|NN|C )|)|C 
+IL-2-|NN|C and|CC|CC IL-7-|*|C induced|JJ|O activation|NN|O 
+IL-2-|NN|C or|CC|CC IL-7-|*|C treated|JJ|O cells|NNS|O 
+nuclear|JJ|O matrix|NN|C and|CC|CC nonmatrix|JJ|C compartments|NNS|O 
+ATF1-|NN|C and|CC|CC CREB-|*|C induced|JJ|O trans-activation|NN|O 
+distal|JJ|C and|CC|CC proximal|JJ|C promoter|NN|O elements|NNS|O 
+HLA-DQ|NN|C and|CC|CC DR|NN|C haplotypes|NNS|O 
+bacterial|JJ|C or|CC|CC viral|JJ|C superantigen|NN|O 
+male|NN|C and|CC|CC female|JJ|C subjects|NNS|O 
+human|JJ|C and|CC|CC mouse|NN|C lymphocytes|NNS|O 
+big|JJ|C T|NN|C and|CC|CC small|JJ|C t|NN|C allele|NN|O 
+extracellular|JJ|C and|CC|CC intracellular|JJ|C pH|NN|O 
+HL-60|NN|C and|CC|CC NB4|NN|C cells|NNS|O 
+tumor|NN|C necrosis|NN|C factor-alpha|NN|C and|CC|CC interleukin-1|NN|C beta|NN|C genes|NNS|O 
+tumor|NN|C necrosis|NN|C factor|NN|C (|(|C TNF|NN|C )|)|C -|:|C and|CC|CC Fas-|*|C mediated|JJ|O apoptosis|NN|O 
+TNF-|NN|C and|CC|CC anti-Fas-|*|C induced|JJ|O activation|NN|O 
+TNF-|NN|C and/or|CC|CC anti-Fas-|*|C induced|JJ|O cell|NN|O death|NN|O 
+B|NN|C and|CC|CC T|NN|C cells|NNS|O 
+B|NN|C and|CC|CC T|NN|C lymphocytes|NNS|O 
+B|NN|C and|CC|CC T|NN|C cells|NNS|O 
+Ets|NN|C and|CC|CC SP1|NN|C motifs|NNS|O 
+B|NN|C and|CC|CC T|NN|C cells|NNS|O 
+noncanonical|JJ|O Egr|NN|C and|CC|CC Sp1|NN|C binding|NN|O sites|NNS|O 
+TCR|NN|O alpha|NN|C beta|NN|C or|CC|CC -gamma|NN|C delta|NN|C chains|NNS|O 
+HLA-DMA|NN|C and|CC|CC HLA-DMB|NN|C gene|NN|O expression|NN|O 
+X|NN|C and|CC|CC Y|NN|C boxes|NNS|O 
+hepatocyte|NN|O nuclear|JJ|O factor|*|O -3alpha|NN|C ,|,|CC -3beta|NN|C ,|,|CC -3gamma|NN|C ,|,|CC -4gamma|NN|C ,|,|CC and|CC|CC -6|CD|C 
+HNF|*|O -3alpha|NN|C ,|,|CC -3beta|NN|C ,|,|CC -3gamma|NN|C ,|,|CC -4gamma|NN|C ,|,|CC and|CC|CC -6|CD|C 
+monomorphic|JJ|C or|CC|CC polymorphic|JJ|C determinants|NNS|O 
+tumor|NN|C necrosis|NN|C factor|NN|C alpha|NN|C (|(|C TNF-alpha|NN|C )|)|C and|CC|CC IL-6|NN|C mRNAs|NNS|O 
+TNF-alpha|NN|C and|CC|CC IL-6|NN|C mRNAs|NNS|O 
+granulocytic|JJ|C and|CC|CC monocytic|JJ|C lineages|NNS|O 
+TNF-alpha-|NN|C and|CC|CC NF-kappaB-|*|C dependent|JJ|O mechanism|NN|O 
+hematopoietic|JJ|C and|CC|CC epithelial|JJ|C cells|NNS|O 
+NFkappaB|NN|C ,|,|CC AP1|NN|C and|CC|CC ETS|*|C -like|JJ|O binding|VBG|O motifs|NNS|O 
+CRE|NN|C and|CC|CC POS|NN|C sites|NNS|O 
+E-selectin|NN|C or|CC|CC VCAM-1|NN|C mRNA|NN|O 
+AP-1-|NN|C and|CC|CC NF-kappaB-|*|C binding|JJ|O sites|NNS|O 
+AP-1-|NN|C and|CC|CC NF-kappaB|NN|C factor-|*|C binding|JJ|O elements|NNS|O 
+IL-12|NN|C and|CC|CC B7.1|NN|C cDNAs|NNS|O 
+IFN-alpha|NN|C and|CC|CC IFN-gamma|NN|C stimulation|NN|O 
+E2A|NN|C and|CC|CC PBX1|NN|C genes|NNS|O 
+GABP|NN|O alpha|NN|C and|CC|CC -beta|NN|C 
+Egr-1|NN|C and|CC|CC kappaB3|NN|C sites|NNS|O 
+CRE|NN|C and|CC|CC kappaB3|NN|C sites|NNS|O 
+Th0|NN|C ,|,|CC Th1|NN|C ,|,|CC and|CC|CC Th2|NN|C clones|NNS|O 
+IFN|*|O -alpha|NN|C and|CC|CC -beta|NN|C 
+N-|NN|C and|CC|CC C-|*|C terminal|JJ|O SH2|NN|O domains|NNS|O 
+CD45RA|NN|C and|CC|CC CD45R0|NN|C T|NN|O helper|NN|O subsets|NNS|O 
+primary|JJ|O CD45RA|NN|C and|CC|CC CD45R0|NN|C CD4+|JJ|O T|NN|O cell|NN|O subsets|NNS|O 
+CD45RA|NN|C and|CC|CC CD45R0|NN|C T|NN|O helper|NN|O subsets|NNS|O 
+heterologous|JJ|O acidic|JJ|C ,|,|CC proline-rich|JJ|C ,|,|CC or|CC|CC glutamine-rich|JJ|C activation|NN|O domain|NN|O 
+serine/threonine|NN|O phosphatases|*|O -1|NN|C and|CC|CC -2A|NN|C 
+CREB/ATF|NN|C and|CC|CC Sp1|NN|C factors|NNS|O 
+alpha|NN|C and|CC|CC beta|NN|C subunits|NNS|O 
+human|JJ|O GM-CSF|NN|O receptor|NN|O alpha|NN|C and|CC|CC beta|NN|C subunits|NNS|O GM-CSFR|*|C alpha|NN|O and|CC|CC beta|NN|C 
+alpha|NN|C and|CC|CC delta|NN|C gene|NN|O segments|NNS|O 
+viral|JJ|O gene|NN|O expression|NN|C and|CC|CC replication|NN|C viral|JJ|O transcription|NN|O initiation|NN|C and|CC|CC elongation|NN|C 
+tumor|NN|C necrosis|NN|C factor|NN|C alpha-induced|JJ|C and|CC|CC protein|NN|C kinase|NN|C C|NN|C (|(|C PKC|NN|C )|)|C -dependent|JJ|C activation|NN|O 
+Rel|NN|C ,|,|CC Fos|NN|C ,|,|CC and|CC|CC Jun|NN|C proteins|NNS|O 
+HLA|*|O -DR|NN|C ,|,|CC -DQ|NN|C ,|,|CC and|CC|CC -DP|NN|C 
+HLA|*|O -DR|NN|C or|CC|CC -DP|NN|C transcription|NN|O 
+extracellular|JJ|C and|CC|CC transmembrane|JJ|C domains|NNS|O 
+CREB/ATF|NN|C and|CC|CC SRF|NN|C pathways|NNS|O 
+PyG|NN|C and|CC|CC AT|NN|C boxes|NNS|O 
+PyG|NN|C and|CC|CC GC|NN|C boxes|NNS|O 
+EBF|NN|C and|CC|CC E47|NN|C binding|NN|O sites|NNS|O 
+T|NN|C and|CC|CC NK|NN|C cells|NNS|O 
+cytoplasmic|JJ|C and|CC|CC transmembrane|JJ|C domains|NNS|O 
+c-fos|NN|C and|CC|CC c-myc|NN|C proto-oncogenes|NNS|O 
+nonproductive|JJ|C (|(|C latent|JJ|C )|)|C and|CC|CC productive|JJ|C (|(|C lytic|JJ|C )|)|C infections|NNS|O 
+immediate|JJ|C early|JJ|C and|CC|CC early|JJ|C proteins|NNS|O 
+alpha-|NN|C and|CC|CC beta-|*|C herpesvirus|NN|O systems|NNS|O immediate|JJ|C early|JJ|C and|CC|CC early|JJ|C proteins|NNS|O 
+homotypic|JJ|O aggregation|NN|C and|CC|CC proliferation|NN|C 
+murine|JJ|O Th1|NN|C and|CC|CC Th2|NN|C cells|NNS|O 
+Th1-|NN|C and|CC|CC Th2-|*|C specific|JJ|O gene|NN|O expression|NN|O 
+Th1-|NN|C and|CC|CC Th2-|*|C type|JJ|O cytokines|NNS|O 
+antigen-|JJ|C or|CC|CC cAMP-|*|C stimulated|JJ|O IL-5|NN|O promoter|NN|O activation|NN|O 
+beta-|NN|C versus|CC|CC alpha-|*|C globin|NN|O chains|NNS|O 
+CD3|NN|C and|CC|CC CD28|NN|C molecules|NNS|O 
+human|JJ|C and|CC|CC mouse|NN|C primary|JJ|O T|NN|O lymphocytes|NNS|O 
+medium|NN|C and|CC|CC large|*|C -sized|JJ|O arteries|NNS|O 
+IL-2|NN|C ,|,|CC IL-1beta|NN|C ,|,|CC and|CC|CC IL-6|NN|C mRNA|NN|O 
+Western|NN|C and|CC|CC supershift|NN|C analyses|NNS|O functional|JJ|O Jun|NN|C and|CC|CC Fos|NN|C proteins|NNS|O 
+vertebral|NN|C and|CC|CC hip|NN|C bone|NN|O density|NN|O 
+human|JJ|C and|CC|CC murine|JJ|C T-ALL|NN|O cell|NN|O lines|NNS|O 
+cytoplasmic|JJ|C and|CC|CC nuclear|JJ|C membranes|NNS|O 
+Sp1|NN|C and|CC|CC CREB|NN|C binding|NN|O site|NN|O oligonucleotides|NNS|O 
+U1B|NN|C and|CC|CC U2|NN|C formation|NN|O 
+Lineage-|NN|C and|CC|CC stage-|*|C specific|JJ|O expression|NN|O primitive|JJ|C and|CC|CC definitive|JJ|C hematopoiesis|NN|O 
+normal|JJ|C and|CC|CC leukemic|JJ|C hematopoiesis|NN|O 
+fetal|JJ|other_name and|CC|other_name adult|JJ|other_name hematopoietic|JJ|other_name 
+activated|VBN|O T|NN|C lymphoid|JJ|C and|CC|CC monocytic|JJ|C cells|NNS|O 
+T|NN|C lymphoblastoid|NN|C (|(|C Jurkat|NN|C )|)|C and|CC|CC monocytic|JJ|C (|(|C U937|NN|C )|)|C cell|NN|O lines|NNS|O 
+lymphocytic|JJ|C ,|,|CC hemopoietic|JJ|C systems|NNS|O 
+AP-1|NN|C and|CC|CC Sp1|NN|C proteins|NNS|O 
+unstimulated|JJ|C and|CC|CC LPS-stimulated|JJ|C cells|NNS|O 
+immune|JJ|C and|CC|CC endocrine|JJ|C systems|NNS|O 
+inflammatory|JJ|C and|CC|CC immune|JJ|C responses|NNS|O 
+immune|JJ|C and|CC|CC nervous|JJ|C systems|NNS|O 
+lymphocytic|JJ|C ,|,|CC monocytic|JJ|C ,|,|CC neuronal|JJ|C ,|,|CC and|CC|CC glial|JJ|C cell|NN|O origin|NN|O 
+naive|JJ|C and|CC|CC memory|NN|C T|NN|O cells|NNS|O 
+growth-|NN|C and|CC|CC cell|NN|C cycle-|*|C controlling|JJ|O genes|NNS|O 
+mRNA|NN|C or|CC|CC protein|NN|C level|NN|O 
+c-fos|NN|C and/or|CC|CC c-jun|NN|C mRNA|NN|O 
+resting|VBG|C and|CC|CC stimulated|VBN|C T|NN|O cells|NNS|O 
+c-jun|NN|cell_type TRE|NN|cell_type and|CC|cell_type c-fos|NN|cell_type SRE|NN|cell_type 
+T|NN|C and|CC|CC B|NN|C cell|NN|O function|NN|O 
+coronary|JJ|C and|CC|CC carotid|JJ|C arteries|NNS|CC 
+viral|JJ|C and|CC|CC cellular|JJ|C genes|NNS|O 
+inflammatory|JJ|C and|CC|CC immune|JJ|C processes|NNS|O 
+IL-6|NN|C chloramphenicol|NN|C acetyl|NN|C transferase|NN|C (|(|C CAT|NN|C )|)|C or|CC|CC IL-6|NN|C luciferase|NN|C constructs|NNS|O 
+CAT|NN|C and|CC|CC IL-6|NN|C luciferase|NN|C assays|NNS|O 
+Nuclear|JJ|O Rel-A|NN|C and|CC|CC c-Rel|NN|C protein|NN|O complexes|NNS|O 
+immune|JJ|C and|CC|CC inflammatory|JJ|C responses|NNS|O 
+p50/p65|NN|C and|CC|CC p50/c-Rel|NN|C complexes|NNS|O 
+p65|NN|C ,|,|CC p50|NN|C ,|,|CC and|CC|CC c-Rel|NN|C activities|NNS|O CD4-|NN|C and|CC|CC CD8-|*|C positive|JJ|O thymocytes|NNS|O 
+p65|NN|C and|CC|CC c-Rel|NN|C complexes|NNS|O 
+erythroid|JJ|C and/or|CC|CC megakaryocytic|JJ|C lineages|NNS|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C differentiation|NN|O 
+human|JJ|C and|CC|CC mouse|NN|C cells|NNS|O 
+Th1|NN|C and|CC|CC Th2|NN|C cells|NNS|O 
+PU.1|NN|C ,|,|CC Ikaros|NN|C and|CC|CC GATA-3|NN|C genes|NNS|O B|NN|C and|CC|CC T|NN|C lymphoid|JJ|O lineages|NNS|O 
+B|NN|C and|CC|CC T|NN|C lymphocyte|NN|O function|NN|O 
+virus-encoded|JJ|C and|CC|CC cellular|JJ|C proteins|NNS|O 
+membrane-bound|JJ|C and|CC|CC cytosolic|JJ|C enzyme|NN|O 
+follicular|JJ|C ,|,|CC mixed|JJ|C small|JJ|C and|CC|CC large|JJ|C cell|NN|O lymphomas|NNS|O 
+Jak1|NN|C ,|,|CC Jak2|NN|C ,|,|CC Jak3|NN|C ,|,|CC and|CC|CC Fes|NN|C tyrosine|NN|O kinases|NNS|O 
+immune|JJ|C and|CC|CC inflammatory|JJ|C responses|NNS|O 
+cis-|JJ|C and|CC|CC trans|*|C acting|VBG|O factors|NNS|O 
+human|JJ|O inflammatory|JJ|C and|CC|CC immunological|JJ|C diseases|NNS|O 
+anti-inflammatory|JJ|C and|CC|CC immunosuppressive|JJ|C effects|NNS|O 
+CD3|NN|C and|CC|CC CD28|NN|C receptors|NNS|O 
+p50/p65|NN|C and|CC|CC p50/RelB|NN|C heterodimers|NNS|O 
+TNF-alpha-|NN|C or|CC|CC PMA-|*|C induced|JJ|O stimulation|NN|O 
+Oct|NN|C and|CC|CC NFAT|NN|C elements|NNS|O 
+Oct-|NN|C and|CC|CC NFATp/c-|*|C binding|JJ|O sites|NNS|O 
+Oct|NN|C and|CC|CC NFAT|NN|C family|NN|O proteins|NNS|O 
+wild-type|JJ|C and|CC|CC dl337-infected|JJ|C cells|NNS|O 
+nt|NN|O 1333|CD|C ,|,|CC 1367|CD|C ,|,|CC or|CC|CC 1419|CD|C 
+proliferation|NN|C and|CC|CC cytotoxicity|NN|C assays|NNS|O 
+Residues|NNS|O 432|CD|C ,|,|CC 435|CD|C ,|,|CC 437|CD|C ,|,|CC 438|CD|C ,|,|CC and|CC|CC 440|CD|C position|NN|O P1|NN|C ,|,|CC P4|NN|C ,|,|CC P6|NN|C ,|,|CC P7|NN|C ,|,|CC and|CC|CC P9|NN|C residues|NNS|O 431|CD|C ,|,|CC 433|CD|C ,|,|CC 434|CD|C ,|,|CC and|CC|CC 436|CD|C positions|NNS|O P|NN|C 1|CD|C ,|,|CC P2|NN|C ,|,|CC P3|NN|C ,|,|CC and|CC|CC P5|NN|C 
+binding|NN|C and|CC|CC signal|NN|C transducing|NN|C component|NN|O human|JJ|O Th1|NN|C but|CC|CC not|RB|CC Th2|NN|C clones|NNS|O Th1|NN|C but|CC|CC not|RB|CC the|DT|CC Th2|NN|C pathway|NN|O 
+type|NN|C I|CD|C but|CC|CC not|RB|CC type|NN|C II|CD|C interferons|NNS|O 
+p105|NN|C and|CC|CC p100|NN|C inhibitors|NNS|O 
+pro-|JJ|C ,|,|CC pre-|JJ|C ,|,|CC and|CC|CC mature|JJ|C B-cell|NN|O lines|NNS|O pro-B-cell|JJ|C or|CC|CC T-cell|NN|C lines|NNS|O 
+cytotoxic|JJ|C and|CC|CC NF-kappa|NN|C B|NN|C activation|NN|O 
+serines|NNS|O 32|CD|C and|CC|CC 36|CD|C 
+serines|NNS|C 32|CD|C and|CC|CC 36|CD|C 
+Tax-expressing|JJ|C and|CC|CC type|NN|C I|CD|C human|JJ|C T-cell|NN|C leukemia|NN|C virus-infected|JJ|C human|JJ|C T|NN|O cells|NNS|O 
+Tax-expressing|JJ|C and|CC|CC HTLV-I-transformed|JJ|C T|NN|O cells|NNS|O 
+Ets|NN|C and|CC|CC NF-kappaB/NFAT|NN|C proteins|NNS|O 
+Ets|NN|C and|CC|CC NF-kappaB/NFAT|NN|C families|NNS|O 
+NF-kappaB/NFAT|NN|C and|CC|CC Ets|NN|C binding|NN|O sites|NNS|O human|JJ|O immunodeficiency|NN|O viruses|NNS|O types|NNS|O 1|CD|C and|CC|CC 2|CD|C 
+Ets|NN|C and|CC|CC NF-kappaB/NFAT|NN|C proteins|NNS|O 
+Ets|NN|C and|CC|CC NF-kappaB/NFAT|NN|C proteins|NNS|O 
+HIV-1|NN|C and|CC|CC HIV-2|NN|C enhancers|NNS|O HIV-1|NN|C and|CC|CC HIV-2|NN|C enhancers|NNS|O 
+Ets|NN|C and|CC|CC NF-kappaB/NFAT|NN|C proteins|NNS|O 
+immunosuppressive|JJ|C and|CC|CC antiviral|JJ|C therapies|NNS|O 
+(8;21)(q22;q22)|NN|C and|CC|CC (3;21)(q26;q22)|NN|C translocations|NNS|O 
+inflammatory|JJ|C and|CC|CC immunoregulatory|JJ|C responses|NNS|O 
+CD8+|JJ|C and|CC|CC CD4+|JJ|C T|NN|O cells|NNS|O 
+positions|NNS|O -30|CD|C ,|,|CC -44|CD|C ,|,|CC -213|CD|C ,|,|CC and|CC|CC -579|CD|C 
+adenovirus|NN|C E1A|NN|C and|CC|CC hexon|NN|C genes|NNS|O 
+E1A|NN|C and|CC|CC hexon|NN|C primers|NNS|O 
+promyelocyte|NN|C and|CC|CC late-myeloblast-like|JJ|C cell|NN|O lines|NNS|O 
+myeloid-cell-specific|JJ|C c-mim|NN|C and|CC|CC human|JJ|C myeloperoxidase|JJ|C promoters|NNS|O 
+human|JJ|O CD4+|JJ|C but|CC|CC not|RB|CC CD8+|JJ|C T|NN|O cells|NNS|O 
+CD4+|JJ|C and|CC|CC CD8+|JJ|C T|NN|O cells|NNS|O 
+IL-2|NN|C and|CC|CC IL-2R|NN|C genes|NNS|O 
+CD4+|JJ|C and|CC|CC CD8+|JJ|C T|NN|O cell|NN|O subpopulations|NNS|O 
+owl|NN|C monkey|NN|C and|CC|CC cotton-top|JJ|C tamarin|NN|C receptors|NNS|O 
+human|JJ|C ,|,|CC squirrel|NN|C monkey|NN|C ,|,|CC owl|NN|C monkey|NN|C ,|,|CC and|CC|CC cotton-top|JJ|C tamarin|NN|C receptors|NNS|O 
+IL|*|O -2|NN|C ,|,|CC -4|CD|C ,|,|CC -7|CD|C ,|,|CC -9|CD|C ,|,|CC and|CC|CC -15|CD|C 
+Ig-silenced|JJ|C (|(|C common|JJ|C )|)|C and|CC|CC Ig-expressing|JJ|C (|(|C rare|JJ|C )|)|C hybrids|NNS|O 
+NFAT|NN|C or|CC|CC AP-1|NN|C sites|NNS|O 
+NFAT|NN|C or|CC|CC AP-1|NN|C elements|NNS|O 
+monocytic|JJ|C and|CC|CC erythroid|JJ|C differentiation|NN|O 
+lymphocyte|NN|O development|NN|C and|CC|CC homeostasis|NN|C 
+T|NN|C cell|NN|C and|CC|CC B|NN|C cell|NN|C specification|NN|O 
+lymphoid-restricted|JJ|C and|CC|CC structurally|RB|C related|JJ|C gene|NN|O 
+tumor|NN|O necrosis|NN|O factor|NN|O receptor-associated|JJ|O factors|NNS|O (|(|O TRAFs|NNS|O )|)|O 1|CD|C ,|,|CC 2|CD|C ,|,|CC 3|CD|C ,|,|CC 5|CD|C ,|,|CC and|CC|CC 6|CD|C 
+TRAFs|NNS|O 1|CD|C ,|,|CC 2|CD|C ,|,|CC 3|CD|O ,|,|CC and|CC|CC 5|CD|C 
+P1|NN|C ,|,|CC P2|NN|C ,|,|CC and|CC|CC P4|NN|C NFAT|NN|O elements|NNS|O 
+c-Jun|NN|C and|CC|CC GST-pi|NN|C expression|NN|O 
+c-Jun-|NN|C and|CC|CC GST-pi-|*|C positive|JJ|O plasma|NN|O cells|NNS|O 
+allergic|JJ|C and|CC|CC parasitic|JJ|C disorders|NNS|O 
+CREB|NN|C and|CC|CC ATF1|NN|C proteins|NNS|O 
+CD4+|JJ|C and|CC|CC CD8+|JJ|C T|NN|O lymphocytes|NNS|O 
+homogeneous|JJ|O CD4+|JJ|C and|CC|CC CD8+|JJ|C lymphocytes|NNS|O 
+T|NN|O rosetting|NN|O CD4+|JJ|C and|CC|CC CD8+|JJ|C T|NN|O lymphocytes|NNS|O 
+BZLF1|NN|C and|CC|CC BRLF1|NN|C immediate-early|JJ|O transcripts|NNS|O CD4+|JJ|C and|CC|CC CD8+|JJ|C T|NN|O cells|NNS|O 
+T-cell|NN|C and|CC|CC dendritic|JJ|C cell|NN|C development|NN|O 
+I|NN|C kappa|NN|C B|NN|C alpha|NN|C and|CC|CC IL-2|NN|C gene|NN|O expression|NN|O 
+E-selectin|NN|C or|CC|CC interleukin|NN|C (|(|C IL|NN|C )|)|C -8|CD|C promoters|NNS|O 
+CD2|NN|C but|CC|CC not|RB|CC CD3|NN|C receptor|NN|O cross-linking|NN|O 
+herbimycin|NN|C A|NN|C and|CC|CC Rp-cAMP-|*|C sensitive|JJ|O pathway|NN|O 
+IL-4|NN|O receptor|NN|O subunits|NNS|O alpha|NN|C and|CC|CC gamma|NN|C 
+interleukin|NN|O (|(|O IL|NN|O )|)|O -8|CD|C and|CC|CC -6|CD|C 
+TNF-|NN|C and|CC|CC cytokine-|*|C receptor|JJ|O 
+AP-1|NN|C and|CC|CC Ikaros|NN|C sites|NNS|O 
+NGAL|NN|O mRNA|NN|C and|CC|CC protein|NN|C levels|NNS|O 
+immature|JJ|C and|CC|CC mature|JJ|C normal|JJ|O myeloid|JJ|O cells|NNS|O 
+vimentin|NN|O mRNA|NN|C and|CC|CC protein|NN|C levels|NNS|O 
+immunoblot|NN|C and|CC|CC immunofluorescence|NN|C assays|NNS|O 
+heat-|NN|C and|CC|CC cadmium-|*|C pretreated|JJ|O cells|NNS|O 
+AES|NN|O peptides|NNS|O G75|NN|C (|(|C 128-135|CD|C )|)|C and|CC|CC G76|NN|C (|(|C 128-135|CD|C )|)|C (|(|C L128G|NN|O )|)|C 
+type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C interferons|NNS|O 
+PML|NN|O transcript|NN|C and|CC|CC protein|NN|C expression|NN|O 
+B|NN|C and|CC|CC T|NN|C cells|NNS|O 
+IL-10|NN|C and|CC|CC TGF-beta|NN|C gene|NN|O promoters|NNS|O 
+calcineurin-|*|O dependent|JJ|C and|CC|CC independent|JJ|C pathways|NNS|O 
+eosinophil|NN|C and|CC|CC neutrophil|NN|C differentiation|NN|O 
+first|JJ|C or|CC|CC the|DT|CC third|JJ|C intron|NN|O 
+anti-inflammatory|JJ|C ,|,|CC immunosuppressive|JJ|C or|CC|CC anti-tumoral|JJ|C agents|NNS|O 
+E1A|NN|C N-terminal|JJ|C and|CC|CC Stat1|NN|C C-terminal|JJ|C residues|NNS|O 
+antiestrogens|NNS|O H1285|NN|C and|CC|CC ICI|NN|C 182|CD|C ,|,|C 780|CD|C 
+humoral|JJ|C or|CC|CC cellular|JJ|C immunity|NN|O 
+p50|NN|C and|CC|CC p65|NN|C proteins|NNS|O 
+TAL1-|NN|C and|CC|CC LMO-|*|C dependent|JJ|O transcriptional|JJ|O activation|NN|O 
+nervous|JJ|C and|CC|CC immune|JJ|C tissues|NNS|O 
+nervous|JJ|C and|CC|CC immune|JJ|C systems|NNS|O 
+immune|JJ|C or|CC|CC inflammatory|JJ|C response|NN|O 
+synovial|JJ|C and|CC|CC peripheral|JJ|C T|NN|O cells|NNS|O 
+genetic|JJ|C or|CC|CC neoplastic|JJ|C familial|JJ|O disorders|NNS|O 
+NF-E2|NN|C and|CC|CC tandem|JJ|C GATA|NN|C binding|NN|O sites|NNS|O 
+NF-E2|NN|C and|CC|CC tandem|JJ|C ,|,|C inverted|JJ|C GATA|NN|C binding|NN|O sites|NNS|O 
+NF-E2|NN|C and|CC|CC tandem|JJ|C GATA|NN|C sites|NNS|O 
+human|JJ|O HSs|NNS|O 2|CD|C and|CC|CC 3|CD|C NF-E2|NN|C and|CC|CC GATA|NN|C sites|NNS|O 
+erythroid|JJ|O differentiation|NN|C and|CC|CC maturation|NN|C 
+CIITA|NN|C and|CC|CC MHC|NN|C class|NN|C II|CD|C gene|NN|O expression|NN|O macrophage|NN|C and|CC|CC epithelial|JJ|C cell|NN|O lines|NNS|O 
+mouse|NN|O macrophage|NN|C and|CC|CC fibrosarcoma|NN|C cell|NN|O lines|NNS|O 
+eutopic|JJ|C and|CC|CC ectopic|JJ|C endometrium|NN|O 
+EBV|NN|O nuclear|JJ|O proteins|NNS|O 2|CD|C ,|,|CC 3|CD|C ,|,|CC 4|CD|C ,|,|CC and|CC|CC 6|CD|C genes|NNS|O 
+EBV|NN|C nuclear|JJ|C proteins|NNS|C 3|CD|C and|CC|CC 6|CD|C 
+Flow|NN|C cytometric|JJ|C and|CC|CC morphological|JJ|C analyses|NNS|O 
+p40|NN|C and|CC|CC p35|NN|C mRNA|NN|O p40|NN|C and|CC|CC p70|NN|C production|NN|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C mRNA|NN|O expression|NN|O activated|VBN|C cord|NN|C and|CC|CC adult|JJ|C lymphocytes|NNS|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C mRNA|NN|O expression|NN|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C expression|NN|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C mRNA|NN|O expression|NN|O 
+basic|JJ|O leucine|NN|O zipper|NN|O (|(|O bZIP|NN|O )|)|O DNA-binding|NN|C and|CC|CC protein|NN|C dimerization|NN|C domain|NN|O 
+estrogen-dependent|JJ|C and|CC|CC tissue-specific|JJ|C regulation|NN|O 
+primary|JJ|O human|JJ|O T|NN|C and|CC|CC NK|NN|C cells|NNS|O 
+human|JJ|O peripheral|JJ|C blood|NN|C T|NN|C and|CC|CC NK|NN|C cell|NN|O activation|NN|O 
+primary|JJ|O human|JJ|O T|NN|C and|CC|CC NK|NN|C cells|NNS|O 
+C|NN|C epsilon-|NN|C ,|,|CC Fc|NN|C gamma|NN|C RI-|NN|C ,|,|CC and|CC|CC SIE|NN|C GAS|NN|O motif|NN|O 
+NK|NN|C and|CC|CC T|NN|C cells|NNS|O 
+IL|*|O -2|NN|C ,|,|CC -7|CD|C ,|,|CC and|CC|CC -15|CD|C 
+T|NN|C and|CC|CC NK|NN|C cells|NNS|O 
+NK|NN|C and|CC|CC T|NN|C cells|NNS|O 
+voltage-gated|JJ|C and|CC|CC calcium-activated|JJ|C K+|NN|O channels|NNS|O 
+lymphocyte|NN|O Ca2+|NN|C and|CC|CC Cl-|NN|C channels|NNS|O 
+T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+type-|NN|C and|CC|CC differentiation-|*|C specific|JJ|O expression|NN|O 
+immediate-early|JJ|C and|CC|CC early|JJ|C classes|NNS|O of|IN|O viral|JJ|O genes|NNS|O 
+alpha|NN|C and|CC|CC beta|NN|C subunits|NNS|O 
+tetanus|NN|C toxoid|NN|C specific|JJ|C and|CC|CC HLA-DR-restricted|JJ|C T|NN|O lymphocytes|NNS|O 
+Th1|NN|C and|CC|CC Th2|NN|C effector|NN|O functions|NNS|O 
+PKC/Ras-|NN|C and|CC|CC CaM/CN-|*|C mediated|JJ|O pathways|NNS|O 
+non-transformed|JJ|O murine|JJ|O Th1|NN|C and|CC|CC Th2|NN|C clones|NNS|O 
+NF-kappaB|*|O -dependent|JJ|C and|CC|CC -independent|JJ|C signaling|NN|O pathways|NNS|O 
+viral|JJ|C and|CC|CC host|NN|C cellular|JJ|C factors|NNS|O 
+NF-kappaB|*|O -dependent|JJ|C and|CC|CC -independent|JJ|C signaling|NN|O pathways|NNS|O 
+neonatal|JJ|C and|CC|CC adult|JJ|C T|NN|O cells|NNS|O 
+neonatal|JJ|C and|CC|CC adult|JJ|C T|NN|O cells|NNS|O 
+B|NN|C and|CC|CC T|NN|C cells|NNS|O transcription|NN|C and|CC|CC differentiation|NN|C factors|NNS|O 
+B|NN|C and|CC|CC T|NN|C cell|NN|O differentiation|NN|O 
+B|NN|C and|CC|CC T|NN|C cell|NN|O activation|NN|O nonstimulated|JJ|O Ramos|NN|C and|CC|CC Jurkat|NN|C cells|NNS|O 
+transcription|NN|C ,|,|CC differentiation|NN|C and|CC|CC proliferation|NN|C factors|NNS|O 
+Interleukin|NN|O 2|CD|C and|CC|CC 15|CD|C 
+patient|NN|O 's|POS|O elbow|NN|C and|CC|CC genital|JJ|C regions|NNS|O 
+tumor|NN|C necrosis|NN|C factor|NN|C alpha|NN|C (|(|C TNF-alpha|NN|C )|)|C -|CC|C and|CC|CC phorbol|NN|C 12-myristate|NN|C 13-acetate|NN|C (|(|C PMA|NN|C )|)|C -|*|C induced|JJ|O HIV-1|NN|O replication|NN|O 
+TNF-alpha-|NN|C and|CC|CC PMA-|*|C stimulated|JJ|O U1|NN|O cells|NNS|O 
+p50/p65-|NN|C and|CC|CC c-Rel-|*|C responsive|JJ|O promoters|NNS|O 
+monocytic|JJ|C or|CC|CC neutrophilic|JJ|C lineages|NNS|O 
+monocytic|JJ|C or|CC|CC neutrophil|NN|C lineages|NNS|O 
+bronchial|JJ|C and|CC|CC alveolar|JJ|C cells|NNS|O 
+W-X-Y|NN|C or|CC|CC X-Y|NN|C regulatory|JJ|O elements|NNS|O 
+W-X-Y|NN|C but|CC|CC not|RB|CC the|DT|CC X-Y|NN|C elements|NNS|O 
+fatty|JJ|C acid|NN|C and|CC|CC lipid|NN|C metabolism|NN|O 
+zinc|NN|C finger|NN|C and|CC|CC POU|NN|C families|NNS|O 
+Interleukin|*|O -4|NN|C and|CC|CC -13|CD|C 
+IL-4-|NN|C and|CC|CC IFN-gamma-|*|C activated|JJ|O factors|NNS|O homodimeric|JJ|C or|CC|CC heterodimeric|JJ|C forms|NNS|O 
+T|NN|O lymphocyte|NN|O differentiation|NN|C and|CC|CC activation|NN|C 
+exons|NNS|O 2|CD|C ,|,|CC 5|CD|C and|CC|CC 7|CD|C 
+exons|NNS|O 2|CD|C and|CC|CC 7|CD|C 
+haematopoietic|JJ|C and|CC|CC solid|JJ|C tumours|NNS|O 
+IL-5|NN|C and|CC|CC IL-4|NN|C genes|NNS|O 
+Th2|NN|C but|CC|CC not|RB|CC Th1|NN|C cells|NNS|O 
+positions|NNS|O -585|CD|C and|CC|CC -650|CD|C 
+FY*A|NN|C and|CC|CC FY*B|NN|C alleles|NNS|O 
+EBV-positive|JJ|C and|CC|CC EBV-negative|JJ|C primary|JJ|O effusion|NN|O lymphoma|NN|O cell|NN|O lines|NNS|O 
+calcium-|NN|C and|CC|CC calmodulin-|*|C dependent|JJ|O phosphatase|NN|O 
+CD45RO+|JJ|C and|CC|CC CD45RA+|JJ|C T|NN|O cell|NN|O subsets|NNS|O 
+memory|NN|C (|(|C CD45RO+|JJ|C )|)|C and|CC|CC naive|JJ|C (|(|C CD45RA+|JJ|C )|)|C T|NN|O cell|NN|O subsets|NNS|O 
+memory|NN|C and|CC|CC naive|JJ|C T|NN|O cell|NN|O subsets|NNS|O 
+memory|NN|C and|CC|CC naive|JJ|C T|NN|O cells|NNS|O 
+memory|NN|C and|CC|CC naive|JJ|C T|NN|O cells|NNS|O subsets|NNS|O 
+insulin|*|O -dependent|JJ|C and|CC|CC -independent|JJ|C PI|NN|O 3-kinase|NN|O activation|NN|O 
+dying|VBG|C or|CC|CC infected|JJ|C cells|NNS|O 
+human|JJ|C adenovirus|NN|C type|NN|C 5|CD|C early|JJ|C regions|NNS|C E1A|NN|C and|CC|CC E1B|NN|C 
+E1A-|NN|C or|CC|CC E1B-|*|C specific|JJ|O CTLs|NNS|O 
+cross-prime|VB|O E1A-|NN|C and|CC|CC E1B-|*|C specific|JJ|O CTLs|NNS|O 
+lymphoblastoid|JJ|O T-cell-line-expressing|JJ|O wild-type|JJ|C and|CC|CC mutated|VBN|C CD4|NN|O receptors|NNS|CC 
+wild-type|JJ|C and|CC|CC mutated|VBN|C receptors|NNS|O 
+specific|JJ|C and|CC|CC non-specific|JJ|C immunoreaction|NN|O 
+p35|NN|C and|CC|CC p40|NN|C chains|NNS|O 
+control|JJ|C and|CC|CC infected|JJ|C cells|NNS|O 
+immature|JJ|C ,|,|CC or|CC|CC primitive|JJ|C erythroid|JJ|O tissues|NNS|O 
+delta|NN|C and|CC|CC beta|NN|C 5'|JJ|O flanking|NN|O regions|NNS|O delta|NN|C or|CC|CC beta|NN|C fragment|NN|O proximal|JJ|O beta|NN|C or|CC|CC delta|NN|C sequence|NN|O 
+repressor|NN|O proteins|NNS|O BP1|NN|C and|CC|CC BP2|NN|C 
+tetanus|NN|C toxoid|NN|C (|(|C TT|NN|C )|)|C -|:|C and|CC|CC myelin|JJ|C basic|JJ|C protein|NN|C (|(|C MBP|NN|C )|)|C -|*|C specific|JJ|O human|JJ|O T|NN|O cell|NN|O lines|NNS|O 
+murine|JJ|C and|CC|CC human|JJ|C tumor|NN|O cell|NN|O lines|NNS|O 
+RA|NN|O receptors|NNS|O alpha|NN|C ,|,|CC beta|NN|C ,|,|CC and|CC|CC gamma|NN|C 
+RA|NN|O receptor|NN|O alpha|NN|C ,|,|CC beta|NN|C ,|,|CC and|CC|CC gamma|NN|C 
+HTLV-1-infected|JJ|C and|CC|CC Tax-expressing|JJ|C T-cell|NN|O lines|NNS|O 
+human|JJ|O Jurkat|NN|C T|NN|C or|CC|CC 293|CD|C cells|NNS|O 
+TNF-alpha|NN|C and|CC|CC IL-1|NN|C signaling|NN|O pathways|NNS|O 
+TRAF2|NN|C and|CC|CC TRAF6|NN|C adaptors|NNS|O 
+immune|JJ|C and|CC|CC inflammatory|JJ|C responses|NNS|O 
+erythroid|JJ|C and|CC|CC nonerythroid|JJ|C cells|NNS|O 
+MEL|NN|C and|CC|CC NIH3T3|NN|C cells|NNS|O 
+erythroid|JJ|C and|CC|CC nonerythroid|JJ|C cells|NNS|O 
+MCP-1|NN|C and|CC|CC ICAM-1|NN|C promoter-dependent|JJ|O transcription|NN|O 
+STAT1alpha|NN|C and|CC|CC IP-10|NN|C expression|NN|O 
+gamma-globin|NN|C and|CC|CC erythroid-specific|JJ|C 5-aminolevulinate|JJ|C synthetase|NN|C transcripts|NNS|O 
+Oct-1|NN|C and|CC|CC OCA-B|NN|C function|NN|O 
+IL-2R|*|O alpha|NN|C and|CC|CC beta|NN|C chains|NNS|O 
+Sp1|NN|C and|CC|CC Ap2|NN|C binding|NN|O site/s|NNS|O TATA|NN|C or|CC|CC CAAT|NN|C motifs|NNS|O 
+SLA-DR|NN|C and|CC|CC SLA-DQ|NN|C expression|NN|O 
+constitutive|JJ|O SLA-DR|NN|C and|CC|CC SLA-DQ|NN|C antigen|NN|O expression|NN|O 
+TGF-alpha|NN|C and|CC|CC TGF-beta1|NN|C expression|NN|O 
+TGF|*|O -alpha|NN|C and|CC|CC -beta1|NN|C 
+CALM|NN|C and|CC|CC MLL|NN|C rearrangements|NNS|O 
+B-|NN|C and|CC|CC T-|*|C lymphocyte|NN|O development|NN|O 
+B-|NN|C and|CC|CC T-|*|C lymphocyte|NN|O development|NN|O 
+IL-1-|NN|C and|CC|CC IL-18-|*|C mediated|JJ|O function|NN|O 
+metallothionein|NN|O enhancer|NN|C and|CC|CC promoter|NN|C regions|NNS|O 
+c-fos|NN|C ,|,|CC c-jun|NN|C ,|,|CC c-myc|NN|C ,|,|CC junB|NN|C ,|,|CC and|CC|CC fra-1|NN|C mRNAs|NNS|O 
+HL-60|NN|C and|CC|CC NB4|NN|C cells|NNS|O 
+fetal|JJ|C and|CC|CC adult|JJ|C Hb|NN|O synthesis|NN|O embryonic|JJ|C ,|,|CC fetal|JJ|C ,|,|CC and|CC|CC adult|JJ|C Hb|NN|O synthesis|NN|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C cells|NNS|O 
+primary|JJ|O human|JJ|O NK|NN|C and|CC|CC T|NN|C cells|NNS|O 
+human|JJ|O B|NN|C cell|NN|C and|CC|CC monocyte|NN|C functions|NNS|O 
+primary|JJ|O human|JJ|O NK|NN|C and|CC|CC T|NN|C cells|NNS|O 
+IL-2-induced|JJ|O NK|NN|O cytolytic|JJ|C and|CC|CC proliferative|JJ|C activities|NNS|O 
+anti-CD3|JJ|C mAb/IL-2-|NN|C or|CC|CC PHA-|*|C mediated|JJ|O IFN-gamma|NN|O production|NN|O 
+NK|NN|C and|CC|CC T|NN|C cell|NN|O activation|NN|O 
+fetal|JJ|C and|CC|CC adult|JJ|C B-lymphopoiesis|NN|O 
+humoral|JJ|C and|CC|CC CD8|NN|C responses|NNS|O 
+genes|NNS|O UL49|NN|C and|CC|CC UL50|NN|C 
+PML/RAR|NN|C alpha|NN|C or|CC|CC AML1/ETO|NN|C mRNA|NN|O possible|JJ|O T|NN|C and|CC|CC natural|JJ|C killer|NN|C cells|NNS|O 
+possible|JJ|O T-cell|NN|C and|CC|CC natural|JJ|C killer|NN|CC (|(|C T/NK|NN|C )|)|C populations|NNS|O 
+CD4|*|C +|JJ|C ,|,|CC CD8|*|C +|JJ|C and|CC|CC CD56|*|C +|JJ|C cell|NN|O populations|NNS|O 
+clinical|JJ|C and|CC|CC molecular|JJ|C remission|NN|O 
+autocrine|JJ|C or|CC|CC paracrine|JJ|C action|NN|O 
+human|JJ|O glial|JJ|C cells|NNS|C and|CC|CC lymphocytes|NNS|C 
+neuroglial|JJ|C and|CC|CC lymphocytic|JJ|C origin|NN|O 
+LEF-1|NN|C and|CC|CC distal|JJ|C NF-kappaB|NN|C transcription|NN|C factor|NN|C binding|NN|O sites|NNS|O 
+CNS|NN|C and|CC|CC immune|JJ|C system|NN|C origin|NN|O 
+polyclonal|JJ|C and|CC|CC clonal|JJ|C CD3-CD16+|JJ|O natural|JJ|O killer|NN|CC (|(|CC NK|NN|CC )|)|CC cell|NN|CC lines|NNS|O 
+AP-1|NN|C ,|,|CC NF-AT|NN|C ,|,|CC and|CC|CC NF-kB|NN|C motifs|NNS|O 
+nuclear|JJ|C and|CC|CC cytoplasmic|JJ|C components|NNS|O 
+55-|CD|C and|CC|CC 85-|*|C kDa|JJ|O proteins|NNS|O 
+LAM-|NN|C ,|,|CC LPS-|NN|C ,|,|CC or|CC|CC TNF-alpha-|*|C stimulated|JJ|O THP-1|NN|O cells|NNS|O 
+SRE-|NN|C and|CC|CC NF-Y-|*|C binding|JJ|O sites|NNS|O 
+SRE-|NN|C and|CC|CC NF-Y-|*|C binding|JJ|O site|NN|O 
+human|JJ|C T-cell|NN|C leukemia|NN|C virus|NN|C type|NN|C I|CD|C (|(|C HTLV-I|NN|C )|)|C and|CC|CC HTLV-II|NN|C Tax|NN|O proteins|NNS|O 
+HTLV-I|NN|C and|CC|CC HTLV-II|NN|C Tax|NN|O 
+PTHrP|NN|C and|CC|CC IL2R|NN|C alpha|NN|C promoters|NNS|O 
+CD3|NN|C antigen-|NN|C and|CC|CC CD2|NN|C antigen-|*|C derived|JJ|O signals|NNS|O 
+NF-AT1|NN|C ,|,|CC AP-1|NN|C ,|,|CC and|CC|CC NF-kB|NN|C sites|NNS|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C transcription|NN|O factors|NNS|O 
+erythroid|JJ|C ,|,|CC mast|NN|C and|CC|CC megakaryocyte|NN|C lineages|NNS|O 
+megakaryocyte|NN|C or|CC|CC lymphoid|JJ|C markers|NNS|O 
+CD2|NN|C and|CC|CC CD28|NN|C adhesion|NN|O molecules|NNS|O 
+proIL-1|NN|C beta|NN|C and|CC|CC the|DT|CC simian|JJ|C virus|NN|C 40|CD|C enhancer|NN|O elements|NNS|O 
+persistent|JJ|C or|CC|CC recurrent|JJ|C inflammatory|JJ|O arthritis|NN|O 
+persistent|JJ|C or|CC|CC recurrent|JJ|C inflammatory|JJ|O arthritis|NN|O 
+persistent|JJ|C or|CC|CC recurrent|JJ|C inflammatory|JJ|O arthritis|NN|O 
+resting|VBG|C and|CC|CC stimulated|VBN|C granulocytes|NNS|O 
+carcinoma|NN|C and|CC|CC lymphoid|JJ|C cells|NNS|O 
+extracellular|JJ|C and|CC|CC transmembrane|NN|C regions|NNS|O 
+AP-1-|NN|C and|CC|CC octamer-|*|C binding|JJ|O proteins|NNS|O 
+CD3|NN|C and|CC|CC CD2|NN|C receptor|NN|O stimulation|NN|O 
+AP-2|NN|C and|CC|CC Sp1|NN|C binding|NN|O motifs|NNS|O 
+human|JJ|O T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+T|NN|C and|CC|CC B|NN|C cells|NNS|O 
+Jun|NN|C and|CC|CC Fos|NN|C proteins|NNS|O 
+B|NN|C and|CC|CC T|NN|C cells|NNS|O 
+T|NN|C and|CC|CC B|NN|C cells|NNS|O 
+T|NN|C and|CC|CC B|NN|C cells|NNS|O 
+human|JJ|O T-|NN|C and|CC|CC B-|*|C cell|NN|O lines|NNS|O 
+nuclear|JJ|C factor|NN|CC kappa|NN|CC B|NN|CC (|(|C NF-kappa|NN|C B|NN|CC )|)|C -|:|C and|CC|CC Sp1|*|C -binding|JJ|O sites|NNS|O 
+rat|NN|C and|CC|CC mouse|NN|C TIS11|NN|O genes|NNS|O 
+human|JJ|C and|CC|CC mouse|NN|C genomic|JJ|O sequences|NNS|O 
+cis-|JJ|C and|CC|CC trans-|*|C acting|JJ|O elements|NNS|O 
+wild-type|JJ|C and|CC|CC class|NN|C II-deficient|JJ|C B|NN|O cells|NNS|O 
+H9|NN|C and|CC|CC CEM|NN|C cells|NNS|O 
+protein-tyrosine|NN|O kinase|NN|CC inhibitors|NNS|O genistein|NN|C and|CC|CC herbimycin|NN|C A|NN|C 
+adenovirus|NN|C E1A|NN|CC and|CC|CC hexon|NN|C genes|NNS|O 
+E1A|NN|C and|CC|CC hexon|NN|C primers|NNS|O 
+Epo|NN|C and|CC|CC erythroid|JJ|C differentiation|NN|O 
+beta-|NN|C and|CC|CC gamma-|*|C globin|NN|O genes|NNS|O beta-|NN|C and|CC|CC gamma-|*|C specific|JJ|O antibodies|NNS|O 
+protein|NN|O phosphatase|NN|O 1|CD|C and|CC|CC 2A|NN|C inhibitors|NNS|O 
+Protein|NN|O phosphatases|NNS|O 1|CD|C and|CC|CC 2A|NN|C 
+protein|NN|O phosphatase|NN|O 1|CD|C and|CC|CC 2A|NN|C inhibitors|NNS|O 
+erythroid|JJ|C ,|,|CC megakaryocytic|JJ|C ,|,|CC and|CC|CC mastocytic/basophilic|JJ|C lineages|NNS|O 
+GATA-1|NN|C and|CC|CC tal-1|NN|C genes|NNS|O 
+erythroid|JJ|C and|CC|CC megakaryocytic|JJ|C terminal|JJ|O maturation|NN|O 
+tal-1|NN|C and|CC|CC GATA-1|NN|C genes|NNS|O 
+most|RBS|C primitive|JJ|C and|CC|CC committed|VBN|C progenitors|NNS|C cells|NNS|O 
+erythroid|JJ|C ,|,|CC megakaryocytic|JJ|C ,|,|CC and|CC|CC basosophilic|JJ|C lineages|NNS|O 
+major|JJ|O histocompatibility|NN|O complex|NN|O classes|NNS|O I|CD|C and|CC|CC II|CD|C 
+major|JJ|O histocompatibility|NN|O complex|NN|O class|NN|O I|CD|C or|CC|CC II|CD|C MHC|NN|O I|CD|C or|CC|CC II|CD|C 
+MHC|NN|O I|CD|C and|CC|CC II|CD|C 
+CD14|NN|C and|CC|CC CD23|NN|C expression|NN|O 
+basal|JJ|C ,|,|CC PMA-|NN|C ,|,|CC and|CC|CC RA-|*|C inducible|JJ|O CD23|NN|O expression|NN|O 
+CD14|NN|O cell|NN|C surface|NN|C or|CC|CC mRNA|NN|C expression|NN|O 
+VitD3|*|C -|NN|CC and|CC|CC the|DT|CC PMA|*|C -induced|JJ|O CD14|NN|O expression|NN|O 
+CD14|NN|C and|CC|CC CD23|NN|C gene|NN|O expression|NN|O 
+amino-|NN|C or|CC|CC carboxyl-|*|C terminal|JJ|O domains|NNS|O 
+c-jun|NN|C ,|,|CC jun-B|NN|C ,|,|CC or|CC|CC jun-D|NN|C expression|NN|O vectors|NNS|O 
+human|JJ|O B|NN|O cell|NN|O proliferation|NN|C and|CC|CC differentiation|NN|C 
+cellular|JJ|C and|CC|CC viral|JJ|C genes|NNS|O 
+inflammatory|JJ|C and|CC|CC immune|JJ|C mediated|JJ|C reactions|NNS|O 
+T|NN|C lymphocytic|JJ|C and|CC|CC mononuclear|JJ|C phagocytic|JJ|C lineage|NN|O 
+pre-B|JJ|C and|CC|CC B|NN|C lymphocyte-specific|JJ|O mb-1|NN|O gene|NN|O 
+c-jun|NN|C and|CC|CC c-fos|NN|C messenger|NN|O RNA|NN|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C messenger|NN|O RNA|NN|O 
+c-fos|NN|C and|CC|CC the|DT|CC c-jun|NN|C mRNA|NN|O expression|NN|O 
+HIV-1-|NN|C and|CC|CC interleukin|NN|C 2-|*|C directed|JJ|O gene|NN|O expression|NN|O 
+HIV-1|NN|C and|CC|CC interleukin|NN|C 2|CD|C promoters|NNS|O 
+c-fos|NN|C ,|,|CC c-jun|NN|C and|CC|CC jun|NN|C B|NN|C proto-oncogenes|NNS|O 
+c-fos|NN|C or|CC|CC jun|NN|C B|NN|C mRNA|NN|O expression|NN|O 
+c-jun|NN|C and|CC|CC jun|NN|C B|NN|C mRNA|NN|O expression|NN|O 
+human|JJ|C and|CC|CC mouse|NN|C CD19|NN|O genes|NNS|O 
+USF-|NN|C and|CC|CC Sp1-|*|C regulated|JJ|O promoters|NNS|O 
+tissue-|NN|C ,|,|CC promoter-|NN|C ,|,|CC and|CC|CC factor-|*|C specific|JJ|O coactivator|NN|O 
+erythroid|JJ|C ,|,|CC megakaryocyte|NN|C and|CC|CC mast|NN|C cell|NN|O populations|NNS|O 
+immunoglobulin|NN|C and|CC|CC interleukin-2|NN|C genes|NNS|O 
+nontransformed|JJ|O human|JJ|C and|CC|CC mouse|NN|C T|NN|O cells|NNS|O 
+CD4+|JJ|C and|CC|CC CD8+|JJ|C T|NN|O cells|NNS|O 
+topoisomerases|NNS|O I|CD|C and|CC|CC II|CD|C 
+ER+|JJ|C and|CC|CC ER-|*|C cells|NNS|O 
+control|NN|C ,|,|CC E2-treated|JJ|C ,|,|CC and|CC|CC TAM-treated|JJ|C ER+|JJ|C and|CC|CC ER-|*|C cells|NNS|O ER+|JJ|C and|CC|CC ER-|*|C cells|NNS|O 
+phosphatases|NNS|O 1|CD|C and|CC|CC 2A|NN|C 
+multiple|JJ|O DNA|NN|O binding|NN|O homo-|JJ|C and|CC|CC hetero|*|C dimer|NN|O complexes|NNS|O 
+1st|JJ|C and|CC|CC the|DT|CC 2nd|JJ|C exon|NN|O 
+Plasma|NN|C cortisol|NN|C and|CC|CC aldosterone|NN|C levels|NNS|O 
+type|NN|C I|CD|C and|CC|CC type|NN|C II|CD|C receptors|NNS|O 
+multiple|JJ|O positive|JJ|C and|CC|CC negative|JJ|C transcriptional|JJ|O regulatory|JJ|O elements|NNS|O 
+human|JJ|C T|NN|C and|CC|CC monocytic|JJ|C cell|NN|O lines|NNS|O 
+unstimulated|JJ|C and|CC|CC PMA-|NN|C or|CC|CC TNF-|*|C stimulated|JJ|O cells|NNS|O 
+homo-|JJ|C or|CC|CC hetero|*|C dimer|NN|O formation|NN|O 
+p50-|NN|C and|CC|CC c-Rel-|*|C selected|JJ|O sequences|NNS|O 
+p50-|NN|C or|CC|CC p65-|*|C selected|JJ|O kappa|NN|O B|NN|O motif|NN|O 
+p65|*|C -|NN|CC and|CC|CC p50|*|C -selected|JJ|O motifs|NNS|O 
+PKC|NN|O isoenzymes|NNS|O alpha|NN|C and|CC|CC beta|NN|C 
+normal|JJ|C and|CC|CC malignant|JJ|C cells|NNS|O 
+basal|JJ|C and|CC|CC PMA|NN|C induced|JJ|C activity|NN|O 
+AP-2-|NN|C and|CC|CC AP-1-|*|C like|JJ|O consensus|NN|O sequences|NNS|O 
+basal|JJ|C and|CC|CC PMA|*|C -induced|JJ|C promoter|NN|O activity|NN|O 
+type|NN|O 1|CD|C and|CC|CC 2A|NN|C protein|NN|O phosphatases|NNS|O 
+IL-2|NN|C and|CC|CC IL-4|NN|C genes|NNS|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C gene|NN|O transcription|NN|O 
+proto-oncogenes|NNS|O c-jun|NN|C and|CC|CC c-fos|NN|C 
+humoral|JJ|C or|CC|CC cell-mediated|JJ|C immunity|NN|O 
+growth|NN|C hormone|NN|C and|CC|CC prolactin|NN|C genes|NNS|O 
+c-Fos|NN|C and|CC|CC Jun|NN|C immunoreactivity|NN|O 
+glucocorticoid|NN|C and|CC|CC beta-adrenergic|JJ|C receptors|NNS|O 
+Y|NN|C ,|,|CC X1|NN|C ,|,|CC and|CC|CC X2|NN|C boxes|NNS|O 
+X1|NN|O and|CC|CC X2|NN|O box|NN|C protein-DNA|JJ|O interactions|NNS|O 
+estrogen|NN|O type|NN|C I|CD|C (|(|C high|JJ|C affinity|NN|C ,|,|C low|JJ|C capacity|NN|C )|)|C and|CC|CC type|NN|C II|CD|C (|(|C low|JJ|C affinity|NN|C ,|,|C high|JJ|C capacity|NN|C )|)|C binding|NN|O sites|NNS|O 
+alpha|NN|C and|CC|CC beta|NN|C isozymes|NNS|O 
+NFAT|NN|C and|CC|CC Oct|NN|C sites|NNS|O 
+gluco-|JJ|C and|CC|CC mineralo|*|C corticoid|NN|O receptors|NNS|O 
+red|JJ|C cell|NN|C ,|,|CC platelet|NN|C and|CC|CC granulocyte|NN|C antibodies|NNS|O 
+B-|NN|C and|CC|CC T-|*|C cell|NN|O development|NN|O 
+lymphocyte|NN|C and|CC|CC macrophage|NN|C receptor|NN|O isoforms|NNS|O 
+glucocorticoid|NN|C and|CC|CC mineralocorticoid|NN|C receptors|NNS|O 
+glucocorticoid|NN|C and|CC|CC mineralocorticoid|NN|C binding|NN|O sites|NNS|O 
+granulocytic|JJ|C or|CC|CC monocytic|JJ|C differentiation|NN|O 
+IFN-beta|NN|C and|CC|CC IFN-alpha|NN|C RNA|NN|O 
+cytoplasmic|JJ|C and/or|CC|CC nuclear|JJ|C receptor|NN|O 
+CD3|NN|C and|CC|CC CD25|NN|C (|(|C IL-2R|NN|C )|)|C receptors|NNS|O 
+phosphatases|NNS|O 1|CD|C and|CC|CC 2A|NN|C 
+binding|NN|C ,|,|CC reconstitution|NN|C and|CC|CC cotransfection|NN|C experiments|NNS|O 
+Cellular|JJ|O immune|JJ|C and|CC|CC cytokine|NN|C pathways|NNS|O 
+TF|NN|C and|CC|CC other|JJ|C inflammatory|JJ|C genes|NNS|O 
+erythroid|JJ|C or|CC|CC granulocyte-macrophage|JJ|C pathway|NN|O 
+phytohemagglutinin-|NN|C and|CC|CC phorbol|NN|C ester-|*|C activated|JJ|O Jurkat|NN|O cells|NNS|O 
+T|NN|O cell|NN|O activation|NN|C and|CC|CC growth|NN|C 
+human|JJ|C and|CC|CC murine|JJ|C interleukin-2|NN|O enhancers|NNS|O 
+resting|VBG|C and|CC|CC activated|VBN|C T|NN|O cells|NNS|O 
+erythroid|JJ|C and|CC|CC non-erythroid|JJ|C nuclear|JJ|O proteins|NNS|O 
+NF-AT|NN|C and|CC|CC AP-1|NN|C sites|NNS|O 
+Jurkat|NN|C and|CC|CC NC2.10|NN|C induction|NN|O 85|CD|C ,|,|CC 75|CD|C ,|,|CC and|CC|CC 54|CD|C kDa|NN|O 
+normal|JJ|C and|CC|CC dex-resistant|JJ|C CEM|NN|O cells|NNS|O 
+human|JJ|O T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O 
+M-CSF|NN|C and|CC|CC c-fms|NN|C expression|NN|O 
+c-rel|NN|C and|CC|CC v-rel|NN|C (|(|O proto|NN|O )|)|O oncogenes|NNS|O 
+c-|NN|C and|CC|CC v-|*|C rel|NN|O 
+corticosteroid-sensitive|JJ|C (|(|C CS|JJ|C )|)|C and|CC|CC corticosteroid-resistant|JJ|C (|(|C CR|JJ|C )|)|C asthmatic|JJ|O subjects|NNS|O 
+sensitive|JJ|C and|CC|CC resistant|JJ|C patients|NNS|O 
+c-jun|NN|C and|CC|CC c-fos|NN|C early|JJ|O response|NN|O genes|NNS|O 
+c-jun|NN|C and|CC|CC c-fos|NN|C mRNA|NN|O levels|NNS|O 
+lamin|NN|C A|NN|C ,|,|CC lamin|NN|C C|NN|C ,|,|CC and|CC|CC vimentin|NN|C transcripts|NNS|O 
+c-jun|NN|C and|CC|CC c-fos|NN|C expression|NN|O 
+AP-1|NN|C ,|,|CC AP-2|NN|C ,|,|CC and|CC|CC NF|NN|C kappa|NN|C B|NN|C sequence|NN|O 
+human|JJ|C and|CC|CC murine|JJ|C TNF|NN|O genes|NNS|O 
+IgM|NN|C ,|,|CC IgD|NN|C ,|,|CC kappa|NN|C L|NN|C chain|NN|C ,|,|CC and|CC|CC lambda|NN|C L|NN|C chain|NN|C expression|NN|O 
+kappa|NN|C and|CC|CC lambda|NN|C L|NN|O chain|NN|O mRNA|NN|O levels|NNS|O 
+mu|NN|C and|CC|CC gamma|NN|C mRNA|NN|O 
+Murine|JJ|C and|CC|CC human|JJ|C T-lymphocyte|NN|O GATA-3|NN|O factors|NNS|O 
+human|JJ|C and|CC|CC murine|JJ|C GATA-3|NN|O factors|NNS|O 
+murine|JJ|C and|CC|CC human|JJ|C factors|NNS|O 
+murine|JJ|C and|CC|CC human|JJ|C GATA-3|NN|O proteins|NNS|O 
+proliferating|VBG|C and|CC|CC nonproliferating|JJ|C hematopoietic|JJ|O cells|NNS|O 
+c-jun|NN|C ,|,|CC jun|NN|C B|NN|C and|CC|CC jun|NN|C D|NN|C mRNA|NN|O 
+c-jun|NN|C ,|,|CC jun|NN|C B|NN|C and|CC|CC jun|NN|C D|NN|C transcripts|NNS|O 
+human|JJ|O herpesvirus|NN|CC 6|CD|CC (|(|O HHV-6|NN|O )|)|O strains|VBZ|O GS|NN|C and|CC|CC Z-29|NN|C 
+thymus|NN|C or|CC|CC T|NN|C cell|NN|O lines|NNS|O 
+CREB-|NN|C and|CC|CC NF-kappa|NN|C B-|*|C like|JJ|O factors|NNS|O 
+stimulated|VBD|O T|NN|C and|CC|CC B|NN|C cell|NN|O lines|NNS|O 
+T|NN|C and|CC|CC B|NN|C cell|NN|O lines|NNS|O 
+B|NN|C (|(|C Raji|NN|C )|)|C ,|,|CC but|CC|CC not|RB|CC a|DT|CC T|NN|C (|(|C HUT78|NN|C )|)|C cell|NN|O line|NN|O 
+estrogen|NN|C and|CC|CC progesterone|NN|C receptors|NNS|O Ki-67|NN|C and|CC|CC p-145|NN|C antigens|NNS|O blood|NN|C and|CC|CC pleural|JJ|C effusions|NNS|O 
+TCR|NN|C beta|NN|C and|CC|CC TCR|NN|C delta|NN|C enhancers|NNS|O 
+ferritin|NN|C or|CC|CC transferrin|NN|C receptor|NN|O mRNAs|NNS|O 
+jun|NN|C and|CC|CC fos|NN|C gene|NN|O expression|NN|O 
+jun|NN|C and|CC|CC fos|NN|C early|JJ|O response|NN|O genes|NNS|O 
+IL-2|NN|C and|CC|CC the|DT|CC IL-2-R|NN|C alpha|NN|C genes|NNS|O Ag|NN|C or|CC|CC mitogen|NN|C activation|NN|O 
+IL-2|NN|C and|CC|CC IL-2-R|NN|C alpha|NN|C genes|NNS|O IL-2|NN|C and|CC|CC IL-2-R|NN|C alpha|NN|C genes|NNS|O 
+IL-2|NN|C and|CC|CC IL-2-R|NN|C alpha|NN|C promoters|NNS|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C transcripts|NNS|O 
+TPA-induced|JJ|O c-fos|NN|C and|CC|CC c-jun|NN|C gene|NN|O expression|NN|O 
+autoradiographic|JJ|C and|CC|CC immunohistochemical|JJ|C techniques|NNS|O 
+B|NN|C and|CC|CC T|NN|C lymphocytes|NNS|O 
+jun|NN|C and|CC|CC fos|NN|C gene|NN|O family|NN|O members|NNS|O 
+jun|NN|C and|CC|CC fos|NN|C gene|NN|O family|NN|O members|NNS|O 
+type|NN|O 1|CD|C and|CC|CC 2A|NN|C phosphatases|NNS|O 
+jun|NN|C and|CC|CC fos|NN|C family|NN|O 
+protein|NN|O phosphatases|NNS|O 1|CD|C and|CC|CC 2A|NN|C 
+CD3-epsilon|NN|C and|CC|CC T|NN|C cell|NN|C receptor|NN|C alpha|NN|C enhancers|NNS|O 
+Murine|JJ|C and|CC|CC human|JJ|C TCF-1|NN|O 
+Recombinant|JJ|O murine|JJ|C and|CC|CC human|JJ|C TCF-1|NN|O 
+TCR-alpha|NN|C and|CC|CC CD3-epsilon|NN|C enhancers|NNS|O 
+mammalian|JJ|C and|CC|CC Drosophila|NN|C homeodomains|NNS|O 
+Positive|JJ|C and|CC|CC negative|JJ|C regulation|NN|O 
+E4|NN|C and|CC|CC the|DT|CC octamerlike|JJ|C motifs|NNS|O 
+human|JJ|O T|NN|C or|CC|CC B|NN|C cell|NN|O 
+T|NN|C or|CC|CC B|NN|C cell|NN|O 
+B|NN|C and|CC|CC T|NN|C lymphocyte|NN|O activation|NN|O 
+Human|JJ|O T|NN|C and|CC|CC B|NN|C lymphocytes|NNS|O early|JJ|C and|CC|CC transient|JJ|C hyperpolarization|NN|O 
+B|NN|C and|CC|CC T|NN|C cells|NNS|O 
+B|NN|O and|CC|CC T|NN|O lymphocyte|NN|C activation|NN|C and|CC|CC mitogenesis|NN|C B|NN|C and|CC|CC T|NN|C lymphocyte|NN|O 
+cathepsin|NN|O B|NN|C ,|,|CC L|NN|C ,|,|CC and|CC|CC D|NN|C 
+cathepsin|NN|O B|NN|C ,|,|CC L|NN|C ,|,|CC and|CC|CC D|NN|C 
+S2|NN|C ,|,|CC S1|NN|C ,|,|CC S1'|NN|C ,|,|CC and|CC|CC S2'|NN|C subsites|NNS|O cathepsin|NN|O B|NN|C and|CC|CC L|NN|C 
+NF-kappa|NN|C B|NN|C and|CC|CC Sp1|NN|C binding|NN|O sites|NNS|O NF-kappa|NN|C B|NN|C and|CC|CC Sp1|NN|C elements|NNS|O 
+52|CD|C and|CC|CC 45|CD|C kilodaltons|NNS|O (|(|O kD|NN|O )|)|O 
+PRDII|NN|C and|CC|CC tetrahexamer|NN|C binding|NN|O proteins|NNS|O 
+human|JJ|O chromosomes|NNS|O 11p15|NN|C and|CC|CC 11p13|NN|C 
+Human|JJ|C and|CC|CC mouse|NN|C Rhom-2|NN|O 
+purified|VBN|O human|JJ|O monocytes|NNS|C and|CC|CC macrophages|NNS|C 
+nuclear|JJ|O protein-|*|O dependent|JJ|C and|CC|CC independent|JJ|C complexes|NNS|O 
+human|JJ|C immunodeficiency|NN|C virus|NN|C and|CC|CC beta|NN|C interferon|NN|C promoters|NNS|O 
+U937|NN|C and|CC|CC Jurkat|NN|C T|NN|C lymphoid|JJ|C cells|NNS|O 
+X|NN|C and|CC|CC Y|NN|C boxes|NNS|O 
+Megakaryocytic|JJ|C and|CC|CC erythrocytic|JJ|C lineages|NNS|O 
+megakaryocytic|JJ|C and|CC|CC erythroid|JJ|C cell|NN|O lines|NNS|O 
+erythrocytic|JJ|C and|CC|CC the|DT|CC megakaryocytic|JJ|C lineages|NNS|O erythrocytic|JJ|C and|CC|CC megakaryocytic|JJ|C lineages|NNS|O erythroblastic|JJ|C and|CC|CC megakaryoblastic|JJ|C permanent|JJ|O cell|NN|O lines|NNS|O 
+protein|NN|O synthesis|*|O -dependent|JJ|C and|CC|CC -independent|JJ|C pathways|NNS|O 
+normal|JJ|C and|CC|CC malignant|JJ|C cells|NNS|O 
+T-|NN|C and|CC|CC 0-|*|C lymphocytes|NNS|O 
+protein|NN|C and|CC|CC RNA|NN|C synthesis|NN|O 
+Stage|NN|O I|CD|C and|CC|CC II|CD|C breast|NN|O cancer|NN|O patients|NNS|O 
+human|JJ|O epsilon-|NN|C or|CC|CC beta-|*|C globin|NN|O genes|NNS|O 
+water|NN|C and|CC|CC electrolyte|NN|C balances|NNS|O 
+intracellular|JJ|O Na+|NN|C ,|,|CC K+|NN|C and|CC|CC Ca2+|NN|C concentrations|NNS|O 
+water|NN|C and|CC|CC electrolyte|NN|C balance|NN|O 
+EBV|NN|O transcription|NN|O factors|NNS|O R|NN|C and|CC|CC Z|NN|C 
+hyper-|JJ|C and|CC|CC hypo|*|C thyroidism|NN|O 
+hyper-|JJ|C and|CC|CC hypo|*|C thyroid|JJ|O patients|NNS|O 
+Transcriptional|JJ|C and|CC|CC post-transcriptional|JJ|C regulation|NN|O 
+transcriptional|JJ|C and|CC|CC post-transcriptional|JJ|C mechanisms|NNS|O 
+tissue-specific|JJ|O late|JJ|O histone|NN|O H2A-2|NN|C and|CC|CC H2B-2|NN|C genes|NNS|O 
+pre-B-|JJ|C and|CC|CC mature|JJ|C B-|*|C cell|NN|O stages|NNS|O 
+immunoglobulin|NN|C and|CC|CC class|NN|C II|CD|C major|JJ|C histocompatibility|NN|C (|(|C MHC|NN|C )|)|C genes|NNS|O 
+blood|NN|O plasma|NN|O triidothyronine|NN|C and|CC|CC thyroxine|JJ|C concentration|NN|O 
+Cardiac|JJ|C and|CC|CC adrenergic|JJ|C diseases|NNS|O 
+cytoskeletal|JJ|C ,|,|CC and|CC|CC extracellular|JJ|C matrix|NN|C genes|NNS|O 
+actin|NN|C and|CC|CC fibronectin|NN|C receptor|NN|C mRNA|NN|O 
+mature|JJ|C and|CC|CC immature|JJ|C T-cell|NN|O lines|NNS|O 
+immunoglobulin|NN|O heavy-|JJ|C and|CC|CC light-|*|C chain|JJ|O genes|NNS|O 
+octamer|NN|C and|CC|CC heptamer|NN|C sites|NNS|O 
+B-cell|NN|C and|CC|CC HeLa-cell|JJ|C extracts|NNS|O 
+interleukin-2|NN|C receptor|NN|C alpha-chain|NN|C and|CC|CC interleukin-2|NN|C genes|NNS|O 
+cis-|JJ|C and|CC|CC trans-|*|C rotamers|NNS|O 
+c-fos|NN|C ,|,|CC c-jun|NN|C ,|,|CC and|CC|CC EGR2|NN|C mRNA|NN|O 
+c-fos|NN|C ,|,|CC c-jun|NN|C ,|,|CC EGR2|NN|C ,|,|CC and|CC|CC PDGF(B)|NN|C mRNA|NN|O 
+IgA+|JJ|C and|CC|CC IgG+|JJ|C plasma|NN|O cells|NNS|O 
+CD8+|JJ|C and|CC|CC CD4+|JJ|C cells|NNS|O 
+mitogenic|JJ|C or|CC|CC alloantigenic|JJ|C stimuli|NNS|O 
+c-erbB2|NN|C ,|,|CC int-2|NN|C ,|,|CC and|CC|CC c-myc|NN|C gene|NN|O amplification|NN|O 
+cell-type-specific|JJ|C and|CC|CC ubiquitous|JJ|C transcriptional|JJ|O regulators|NNS|O 
+premenopausal|JJ|C and|CC|CC postmenopausal|JJ|C patients|NNS|O 
+32|CD|C ,|,|CC 36|CD|C to|TO|C 42|CD|C and|CC|CC 110|CD|C kD|NN|O proteins|NNS|O 
+immunoglobulin|NN|O heavy|JJ|C and|CC|CC kappa|NN|C light|JJ|C chain|NN|O gene|NN|O enhancers|NNS|O 
+heavy|JJ|C and|CC|CC kappa|NN|C light|JJ|C chain|NN|O enhancers|NNS|O 
+abnormal|JJ|O cAMP|NN|C and|CC|CC cAMP-phosphodiesterase|NN|C activity|NN|O 
+interleukin-1|NN|C and|CC|CC MHC|NN|C class|NN|C II|CD|C genes|NNS|O immune|JJ|C and|CC|CC nervous|JJ|C systems|NNS|O 
+human|JJ|O glioblastoma|NN|C and|CC|CC neuroblastoma|NN|C cell|NN|O lines|NNS|O 
+serum-supplemented|JJ|C and|CC|CC serum-free|JJ|C cultures|NNS|O 
+serum-free|JJ|C or|CC|CC serum|NN|C containing|NN|C media|NNS|O 
+human|JJ|O peripheral|JJ|O mononuclear|JJ|C and|CC|CC polymorphonuclear|JJ|C leucocytes|NNS|O 
+mononuclear|JJ|C (|(|C MNL|NN|C )|)|C and|CC|CC polymorphonuclear|NN|C (|(|C PML|NN|C )|)|C leucocytes|NNS|O 
+intracellular|JJ|O sodium|NN|C and|CC|CC potassium|NN|C concentrations|NNS|O 
+octamer|NN|C or|CC|CC kappa|NN|C B|NN|C consensus|NN|O sequences|NNS|O 
+simian|JJ|C virus|NN|C 40|CD|C or|CC|CC Moloney|NN|C murine|JJ|C leukemia|NN|C virus|NN|C promoters|NNS|O 
+c-fos|NN|C and|CC|CC c-jun|NN|C mRNA|NN|O levels|NNS|O pre-B|JJ|C (|(|C Hyon|NN|C )|)|C and|CC|CC T|NN|C (|(|C DND-41|NN|C )|)|C cell|NN|O lines|NNS|O 
+acute|JJ|C and|CC|CC chronic|JJ|C HBV|NN|O infection|NN|O 
+immunofluorescence|NN|C and|CC|CC immunoblot|NN|C assays|NNS|O 
+HIV-1|NN|C or|CC|CC HIV-2|NN|C enhancers|NNS|O 
+estrogen-|NN|C or|CC|CC thyroid|NN|C hormone-|*|C response|NN|O elements|NNS|O 
+70-|CD|C and|CC|CC 90-|*|C kilodalton|JJ|O heat|NN|O shock|NN|O proteins|NNS|O 
+untransformed|JJ|O progestin|NN|C ,|,|CC estrogen|NN|C ,|,|CC androgen|NN|C ,|,|CC and|CC|CC glucocorticoid|NN|C receptor|NN|O complexes|NNS|O rabbit|NN|O uterine|NN|C and|CC|CC liver|NN|C cytosols|NNS|O 
+70-|CD|C and|CC|CC 90-|*|C kDa|JJ|O heat|NN|O shock|NN|O proteins|NNS|O 
+follicular|JJ|C and|CC|CC luteal|JJ|C phases|NNS|O 
+cytosolic|JJ|C and|CC|CC nuclear|JJ|C compartments|NNS|O 
+nonhematopoietic|JJ|C and|CC|CC hematopoietic|JJ|C cell|NN|O lines|NNS|O 
+biochemical|JJ|C and|CC|CC cell|NN|C biological|JJ|C properties|NNS|O 
+NFATp-|NN|C and|CC|CC NFATc-|*|C specific|JJ|O antibodies|NNS|O 
+nuclear|JJ|C and|CC|CC cytoplasmic|JJ|C extracts|NNS|O 
+c-fos|NN|C ,|,|CC c-myc|NN|C ,|,|CC p53|NN|C and|CC|CC the|DT|C hybrid|NN|C bcr/abl|NN|C mRNA|NN|O levels|NNS|O 
+monocyte|NN|C and|CC|CC lymphocyte|NN|C counts|NNS|O 
+IL-2|NN|O receptor|NN|O (|(|O IL-2R|NN|O )|)|O beta|NN|C and|CC|CC gamma|NN|C chains|NNS|O 
+Jak|NN|O 1|CD|C and|CC|CC 3|CD|C 
+ferrous|JJ|C or|CC|CC ferric|JJ|C chloride|NN|O 
+T|NN|O cell|NN|O receptor|NN|O alpha|NN|C and|CC|CC -beta|NN|C 
+follicular|JJ|C and|CC|CC luteal|JJ|C phases|NNS|O 
+protein|NN|C and|CC|CC mRNA|NN|C levels|NNS|O 
+constitutive|JJ|C and|CC|CC inducible|JJ|C expression|NN|O 
+basal|JJ|C and|CC|CC phorbol|NN|C 12-myristate|NN|CC 13-acetate|*|CC -inducible|JJ|C transcription|NN|O 
+stage|NN|O I|CD|C and|CC|CC II|CD|C breast|NN|O cancer|NN|O patients|NNS|O 
+animal|NN|C and|CC|CC human|JJ|C populations|NNS|O 
+Helices|NNS|O I|CD|C and|CC|CC II|CD|C 
+helices|NNS|O I|CD|C and|CC|CC II|CD|C 
+cellular|JJ|C and|CC|CC viral|JJ|C anti-apoptotic|JJ|O proteins|NNS|O 
+normal|JJ|C and|CC|CC neoplastic|JJ|C T-lineage|JJ|O lymphocytes|NNS|O 
+NF|NN|C kappa|NN|C B|NN|C and|CC|CC IL-2|NN|C levels|NNS|O 
+T-|*|O acute|JJ|C and|CC|CC -|*|CC chronic|JJ|C leukemias|NNS|O 
+myelomonocytic|JJ|C and|CC|CC eosinophilic|JJ|C cells|NNS|O 
+Nb2|NN|C and|CC|CC C196|NN|C T|NN|O cell|NN|O lines|NNS|O 
+PRL-|NN|C and|CC|CC IL-2-|*|C induced|JJ|O factors|NNS|O 
+thyroid|NN|O hormone|NN|CC receptors|NNS|CC (|(|O TR|NN|O )|)|O alpha|NN|C and|CC|CC beta|NN|C 
+overt|JJ|C hypo|*|C -|JJ|CC or|CC|CC hyper|*|C thyroidism|NN|O 
+hypo|*|C -|JJ|CC ,|,|CC eu|*|C -|JJ|CC and|CC|CC hyper|*|C thyroid|JJ|O patients|NNS|O 
+positive|JJ|C and|CC|CC negative|JJ|C cis-acting|JJ|O DNA|NN|O elements|NNS|O 
+pro-B|JJ|C ,|,|CC pre-B|JJ|C ,|,|CC and|CC|CC mature|JJ|C B|NN|C cells|NNS|O 
+N-|NN|C and|CC|CC C-|*|C terminal|JJ|O residues|NNS|O 
+mouse|NN|C and|CC|CC human|JJ|C BOB.1/OBF.1|NN|O 
+NH2-|NN|C and|CC|CC COOH-|*|C terminal|JJ|O domains|NNS|O 
+proximal|JJ|C and|CC|CC remote|JJ|C positions|NNS|O 
+tarsal|JJ|C and|CC|CC bulbar|JJ|C conjunctival|JJ|O biopsies|NNS|O severe|JJ|C and|CC|CC symptomatic|JJ|C VKC|NN|O 
+tarsal|JJ|C and|CC|CC bulbar|JJ|C conjunctiva|NN|O 
+constitutive|JJ|C and|CC|CC IFN|NN|C inducible|JJ|C expression|NN|O 
+type|NN|O 1|CD|C and|CC|CC 2|CD|C T|NN|O helper|NN|O cell|NN|O cytokine|NN|O production|NN|O 
+Stat1|NN|C and|CC|CC Stat3|NN|C transcriptional|JJ|O activity|NN|O 
+myeloid|JJ|C and|CC|CC B|NN|C cell|NN|C extracts|VBZ|O 
+transcriptional|JJ|C and|CC|CC post-transcription|JJ|C regulation|NN|O 
+concanavalin|NN|C A|NN|C (|(|C Con|NN|C A|NN|C )|)|C -|:|C and|CC|CC phytohemagglutinin|NN|C (|(|C PHA|NN|C )|)|C -|*|C induced|JJ|O T-cell|NN|O proliferation|NN|O 
+human|JJ|O papillomavirus-|NN|C or|CC|CC adenovirus-|*|C transformed|JJ|O cells|NNS|O 
+human|JJ|C fibroblastic|JJ|C or|CC|CC keratinocyte-derived|JJ|C human|JJ|C cells|NNS|O 
+PKC-|NN|C and|CC|CC Ca(2+)-|*|C dependent|JJ|O signal|NN|O transduction|NN|O pathways|NNS|O 
+Ca(2+)-|NN|C and|CC|CC PKC-|NN|C dependent|JJ|O pathways|NNS|O 
+anti-inflammatory|JJ|C and|CC|CC immunosuppressive|JJ|C agents|NNS|O 
+interleukin|NN|C 2|CD|C (|(|C IL-2|NN|C )|)|C ,|,|CC gamma|NN|C interferon|NN|C ,|,|CC and|CC|CC granulocyte-macrophage|JJ|C colony-stimulating|JJ|C factor|NN|C mRNA|NN|O levels|NNS|O 
+Oct1|NN|C and|CC|CC NF-AT|NN|C DNA|NN|O binding|NN|O activity|NN|O 
+pre|JJ|O and|CC|CC post|*|O menopausal|JJ|C women|NNS|O 
+Id2|NN|C and|CC|CC Id3|NN|C mRNA|NN|O 
+Id2|NN|C and|CC|CC Id3|NN|C mRNA|NN|O 
+human|JJ|O T-cell|NN|O leukemia|NN|O virus|NN|O type|NN|C I|CD|C (|(|C HTLV-I|NN|C )|)|C (|(|C ATL-1k|NN|C ,|,|C MT-2|NN|C ,|,|C S-LB1|NN|C )|)|C and|CC|CC type|NN|C II|CD|C (|(|C Mo|NN|C )|)|C 
+quiescent|JJ|C and|CC|CC stimulated|VBN|C cells|NNS|O 
+mitogen-|NN|C and|CC|CC anti-CD3-|*|C treated|JJ|O peripheral|JJ|O blood|NN|O lymphocytes|NNS|O 
+LEF-1|NN|C and|CC|CC Ets-1|NN|C sites|NNS|O 
