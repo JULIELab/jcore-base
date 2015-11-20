@@ -1,0 +1,45 @@
+This is BibTeX, Version 0.99c (Web2C 7.5.6)
+The top-level auxiliary file: jules-opennlp-parser-ae.aux
+The style file: alpha.bst
+Database file #1: /home/buyko/coling/papers/biblio/paper.bib
+You've used 2 entries,
+            2543 wiz_defined-function locations,
+            574 strings with 5364 characters,
+and the built_in function-call counts, 1258 in all, are:
+= -- 122
+> -- 74
+< -- 2
++ -- 27
+- -- 26
+* -- 92
+:= -- 209
+add.period$ -- 8
+call.type$ -- 2
+change.case$ -- 15
+chr.to.int$ -- 2
+cite$ -- 2
+duplicate$ -- 48
+empty$ -- 85
+format.name$ -- 28
+if$ -- 266
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 2
+newline$ -- 13
+num.names$ -- 10
+pop$ -- 17
+preamble$ -- 1
+purify$ -- 17
+quote$ -- 0
+skip$ -- 42
+stack$ -- 0
+substring$ -- 63
+swap$ -- 18
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 16
+warning$ -- 0
+while$ -- 14
+width$ -- 4
+write$ -- 30

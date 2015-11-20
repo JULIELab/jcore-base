@@ -81,6 +81,7 @@
 		<module>jcore-mstparser-ae</module>
 		<module>jcore-muc7-reader</module>
 		<module>jcore-opennlp-chunk-ae</module>
+		<module>jcore-opennlp-parser-ae</module>
 		<module>jcore-opennlp-postag-ae</module>
 		<module>jcore-opennlp-sentence-ae</module>
 		<module>jcore-opennlp-token-ae</module>
