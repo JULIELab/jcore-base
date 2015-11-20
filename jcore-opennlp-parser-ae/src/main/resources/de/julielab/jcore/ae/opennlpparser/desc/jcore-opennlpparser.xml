@@ -80,13 +80,13 @@
 <nameValuePair>
 <name>modelDir</name>
 <value>
-<string>src/test/resources/models/</string>
+<string>src/main/resources/de/julielab/jcore/ae/opennlp/model/</string>
 </value>
 </nameValuePair>
 <nameValuePair>
 <name>tagset</name>
 <value>
-<string>de.julielab.jules.types.GENIAConstituent</string>
+<string>de.julielab.jcore.types.GENIAConstituent</string>
 </value>
 </nameValuePair>
 <nameValuePair>
@@ -134,11 +134,11 @@
 <capabilities>
 <capability>
 <inputs>
-<type allAnnotatorFeatures="true">de.julielab.jules.types.Token</type>
-<type allAnnotatorFeatures="true">de.julielab.jules.types.Sentence</type>
+<type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
+<type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
 </inputs>
 <outputs>
-<type allAnnotatorFeatures="true">de.julielab.jules.types.Constituent</type>
+<type allAnnotatorFeatures="true">de.julielab.jcore.types.Constituent</type>
 </outputs>
 <languagesSupported/>
 </capability>
