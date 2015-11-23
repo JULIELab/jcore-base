@@ -80,7 +80,7 @@
 <nameValuePair>
 <name>modelDir</name>
 <value>
-<string>src/test/resources/de/julielab/jcore/ae/opennlpparser/model/genia2009.bin</string>
+<string>src/test/resources/de/julielab/jcore/ae/opennlpparser/model/testmodel.bin</string>
 </value>
 </nameValuePair>
 <nameValuePair>
