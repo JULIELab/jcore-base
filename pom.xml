@@ -1,66 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+	                         http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
+	
+	<!-- Basics & Project Information -->
+	<parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-parent</artifactId>
+        <version>2.1.0-SNAPSHOT</version>
+    </parent>
 	<artifactId>jcore-base</artifactId>
 	<packaging>pom</packaging>
+	
+	<name>JCoRe Base</name>
 	<description>The POM for the JCoRe Base projects.</description>
 	<organization>
 		<name>JULIE Lab, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
-	<parent>
-		<groupId>de.julielab</groupId>
-		<artifactId>jcore-parent</artifactId>
-		<version>2.0.0</version>
-	</parent>
-	<name>JCoRe Base</name>
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, Version 3.0</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.html</url>
+        </license>
+    </licenses>
+    <url>https://github.com/JULIELab/jcore-base</url>
+	
     <dependencies>
-       <dependency>
-           <groupId>org.apache.uima</groupId>
-           <artifactId>uimaj-core</artifactId>
-           <version>${uima-version}</version>
-       </dependency>
-       <dependency>
-           <groupId>org.apache.uima</groupId>
-           <artifactId>uimafit-core</artifactId>
-           <version>${uimafit-version}</version>
-       </dependency>
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uimaj-core</artifactId>
+            <version>${uima-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uimafit-core</artifactId>
+            <version>${uimafit-version}</version>
+        </dependency>
     </dependencies>
-    <build>
-	  <plugins>
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-source-plugin</artifactId>
-	      <version>2.2.1</version>
-
-	      <executions>
-	        <execution>
-	          <id>attach-sources</id>
-	          <phase>package</phase>
-	          <goals>
-	            <goal>jar-no-fork</goal>
-	          </goals>
-	        </execution>
-	      </executions>
-	    </plugin>
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-javadoc-plugin</artifactId>
-	      <version>2.9.1</version>
-	      <executions>
-	        <execution>
-	          <id>attach-javadocs</id>
-	          <phase>package</phase>
-	          <goals>
-	            <goal>jar</goal>
-	          </goals>
-	        </execution>
-	      </executions>
-	    </plugin>
-	  </plugins>
-	</build>
+    
 	<modules>
 		<module>jcore-ace-reader</module>
 		<module>jcore-acronym-ae</module>
@@ -68,8 +49,8 @@
 		<module>jcore-bionlp09event-reader</module>
 		<module>jcore-biosem-ae</module>
 		<module>jcore-cas2iob-consumer</module>
+<!--        <module>jcore-coordination-ae</module> -->
 		<module>jcore-coordination-baseline-ae</module>
-<!-- 		<module>jcore-coordination-ae</module> -->
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
 		<module>jcore-jnet-ae</module>
@@ -88,10 +69,12 @@
 		<module>jcore-stanford-lemmatizer</module>
 		<module>jcore-types</module>
 		<module>jcore-utilities</module>
+        <module>jcore-xml-mapper</module>
+        <module>jcore-xml-reader</module>
 		<module>jcore-xmi-writer</module>
-		<module>jcore-xml-mapper</module>
-		<module>jcore-xml-reader</module>
 	</modules>
+	
+	<!-- Environment Settings -->
 	<scm>
         <connection>scm:git:git@github.com:JULIELab/jcore-base.git</connection>
         <developerConnection>scm:git:git@github.com:JULIELab/jcore-base.git</developerConnection>
