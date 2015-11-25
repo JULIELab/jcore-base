@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jcore-jtbd-ae</artifactId>
 	<packaging>jar</packaging>
-	<description>UIMA Wrapper for JULIE Token Boundary Detector</description>
+	<description>UIMA Wrapper for the JULIE Token Boundary Detector.</description>
 
 	<parent>
 		<groupId>de.julielab</groupId>
@@ -100,7 +100,5 @@
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
-	<scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-jtbd-ae</url>
-    </scm>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-jtbd-ae</url>
 </project>

@@ -7,7 +7,7 @@
   </parent>
   <artifactId>jcore-stanford-lemmatizer</artifactId>
   <name>JCoRe Stanford Lemmatizer</name>
-  <description>UIMA Wrapper for Stanford CoreNLP Lemmatizer</description>
+  <description>UIMA Wrapper for the Stanford CoreNLP Lemmatizer.</description>
   <dependencies>
     <dependency>
             <groupId>de.julielab</groupId>
@@ -39,7 +39,5 @@
             <url>http://www.gnu.org/licenses/gpl.html</url>
         </license>
     </licenses>
-    <scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-stanford-lemmatizer</url>
-    </scm>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-stanford-lemmatizer</url>
 </project>

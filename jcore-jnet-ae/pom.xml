@@ -5,7 +5,7 @@
 	<artifactId>jcore-jnet-ae</artifactId>
 	<packaging>jar</packaging>
 	<name>JCoRe JNET AE</name>
-	<description>Named Entity Tagger. Wrapper for JNET</description>
+	<description>Named Entity Tagger and its UIMA wrapper.</description>
 
 	<parent>
 		<groupId>de.julielab</groupId>
@@ -116,7 +116,5 @@
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
-	<scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-jnet-ae</url>
-    </scm>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-jnet-ae</url>
 </project>

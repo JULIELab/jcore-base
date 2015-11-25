@@ -5,7 +5,7 @@
   <artifactId>jcore-coordination-baseline-ae</artifactId>
   <packaging>jar</packaging>
   <name>JCoRe Coordination Tagger Baseline</name>
-  <description>This is the baseline to the JCoRe Coordination Resolution</description>
+  <description>This is a baseline approach to the Coordination Resolution problem. It is used in our jcore-coordination-ae, that is only accessible on GitHub due to being in an unfinished state.</description>
 
   <parent>
 	<groupId>de.julielab</groupId>
@@ -38,7 +38,5 @@
   	<name>JULIE Lab Jena, Germany</name>
   	<url>http://www.julielab.de</url>
   </organization>
-  <scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-coordination-baseline-ae</url>
-    </scm>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-coordination-baseline-ae</url>
 </project>

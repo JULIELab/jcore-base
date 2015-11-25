@@ -5,7 +5,7 @@
 	<artifactId>jcore-xml-mapper</artifactId>
 	<packaging>jar</packaging>
 	<name>JCoRe XML Mapper</name>
-	<description>A generic XML mapper to create CAS instances reflecting contents of XML documents. Especially created to read	PubMed/Medline XML.</description>
+	<description>A generic XML mapper to create CAS instances reflecting contents of XML documents. Especially created to read PubMed/Medline XML.</description>
 
 	<parent>
 		<groupId>de.julielab</groupId>
@@ -69,7 +69,5 @@
 		<url>http://www.julielab.de</url>
 	</organization>
 	<version>2.0.1</version>
-	<scm>
-	   <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xml-mapper</url>
-	</scm>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xml-mapper</url>
 </project>

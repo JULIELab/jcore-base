@@ -4,8 +4,9 @@
   <artifactId>jcore-mstparser-ae</artifactId>
   <packaging>jar</packaging>
   <name>JCoRe MST Parser AE</name>
-  <description> This dependency parser determines all syntactic dependencies between words within a sentence. Certain level of adaptation of the original source code was necessary to neatly integrate the parser in UIMA.</description>
-  <url>http://maven.apache.org</url>
+  <description>Slightly modified version of the MST parser to fit into the UIMA framework.
+This dependency parser determines all syntactic dependencies between words within a sentence. Certain level of adaptation of the original source code was necessary to neatly integrate the parser in UIMA.</description>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-mstparser-ae</url>
   
   <parent>
     <groupId>de.julielab</groupId>

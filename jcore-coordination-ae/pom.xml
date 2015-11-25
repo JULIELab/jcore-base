@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jcore-coordination-ae</artifactId>
   <packaging>jar</packaging>
-  <name>JCoRe Coordination tagger</name>
+  <name>JCoRe Coordination Tagger</name>
   <description>This tagger deals with the recognition and resolution of elliptical entity expressions (EEEs). The tagger incorporates two parts: the rule-based baseline algorithm and the machine learning approach.</description>
 
   <parent>
@@ -47,7 +47,5 @@
   	<name>JULIE Lab Jena, Germany</name>
   	<url>http://www.julielab.de</url>
   </organization>
-  <scm>
-  	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-coordination-ae</url>
-  </scm>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-coordination-ae</url>
 </project>

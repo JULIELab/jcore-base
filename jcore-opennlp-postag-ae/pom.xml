@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jcore-opennlp-postag-ae</artifactId>
 	<packaging>jar</packaging>
-	<description>Wrapper for OpenNLP POS Tagger</description>
+	<description>UIMA wrapper for the OpenNLP POS Tagger. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe components.</description>
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
@@ -72,7 +72,5 @@
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>
 	</organization>
-	<scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-opennlp-postag-ae</url>
-    </scm>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-opennlp-postag-ae</url>
 </project>

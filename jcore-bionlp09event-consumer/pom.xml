@@ -33,7 +33,6 @@
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
     </organization>
-    <scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bionlp09event-consumer</url>
-    </scm>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bionlp09event-consumer</url>
+    <description>This consumer is used to generate BioNLP-ST (2009) compliant data from a CAS.</description>
 </project>

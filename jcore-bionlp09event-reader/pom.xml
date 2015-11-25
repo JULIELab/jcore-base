@@ -43,7 +43,6 @@
   	<url>http://www.julielab.de</url>
   </organization>
   <name>JCoRe BioNLP 09 Event Reader</name>
-  <scm>
-    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bionlp09event-reader</url>
-  </scm>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bionlp09event-reader</url>
+  <description>This reader generates CAS' from data that adheres to the BioNLP-ST (2009) format.</description>
 </project>

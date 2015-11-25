@@ -8,7 +8,8 @@
 	</parent>
 	<artifactId>jcore-biosem-ae</artifactId>
 	<name>JCoRe BioSem Event Annotator</name>
-	<description>A UIMA wrapper around the BioSem Event Extractor from the University of Amsterdam.</description>
+	<description>A UIMA wrapper around the BioSem Event Extractor from the University of Amsterdam.
+http://www.ncbi.nlm.nih.gov/pubmed/22859502</description>
 	<dependencies>
 		<dependency>
 			<groupId>de.julielab</groupId>
@@ -43,7 +44,6 @@
             <version>${jcore-version}</version>
         </dependency>
 	</dependencies>
-	<url>http://www.ncbi.nlm.nih.gov/pubmed/22859502</url>
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>
@@ -54,8 +54,6 @@
             <url>http://www.gnu.org/licenses/agpl-3.0.en.html</url>
         </license>
     </licenses>
-    <scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-biosem-ae</url>
-    </scm>
     <version>2.0.1</version>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-biosem-ae</url>
 </project>

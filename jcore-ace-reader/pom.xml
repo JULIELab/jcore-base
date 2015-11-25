@@ -35,7 +35,5 @@ A Collection Reader that converts ACE-XML files to CAS objects.</description>
   	<name>JULIE Lab Jena, Germany</name>
   	<url>http://www.julielab.de</url>
   </organization>
-  <scm>
-  	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-ace-reader</url>
-  </scm>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-ace-reader</url>
 </project>

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jcore-opennlp-token-ae</artifactId>
 	<packaging>jar</packaging>
-	<description>Wrapper for OpenNLP Tokenizer. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed is is thus compatible to other JCoRe components.</description>	
+	<description>UIMA wrapper for OpenNLP Tokenizer. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe components.</description>	
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
@@ -42,7 +42,5 @@
     	</dependency>
 	</dependencies>
 	<name>JCoRe OpenNLP Tokenizer</name>
-	<scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-opennlp-token-ae</url>
-    </scm>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-opennlp-token-ae</url>
 </project>

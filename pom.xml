@@ -76,8 +76,8 @@
 	
 	<!-- Environment Settings -->
 	<scm>
-        <connection>scm:git:git@github.com:JULIELab/jcore-base.git</connection>
-        <developerConnection>scm:git:git@github.com:JULIELab/jcore-base.git</developerConnection>
-        <url>https://github.com/JULIELab/jcore-base</url>
+        <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
+        <developerConnection>scm:git:git://github.com/JULIELab/jcore-base.git</developerConnection>
+        <url>scm:git:https://github.com/JULIELab/jcore-base</url>
     </scm>
 </project>

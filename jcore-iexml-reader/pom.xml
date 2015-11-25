@@ -81,12 +81,10 @@
 			<version>${jcore-version}</version>
 		</dependency>
 	</dependencies>
-	<description>Reader for IEXML files as used in the mantra project/challenge</description>
+	<description>Reader for IEXML files as used in the Mantra project/challenge</description>
 	<organization>
 		<url>http://www.julielab.de</url>
 		<name>JULIE Lab, Germany</name>
 	</organization>
-	<scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-iexml-reader</url>
-    </scm>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-iexml-reader</url>
 </project>

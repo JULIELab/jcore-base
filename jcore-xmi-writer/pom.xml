@@ -6,7 +6,7 @@
 	<artifactId>jules-xmi-writer</artifactId>
 	<packaging>jar</packaging>
 	<name>JCoRe XMI Writer</name>
-	<description>JULES XMI Writer. A CAS consumer that writes converts CAS objects to XMI files.</description>
+	<description>JCoRe XMI Writer. A CAS consumer that writes/converts CAS objects to XMI files.</description>
 
 	<parent>
 		<groupId>de.julielab</groupId>
@@ -34,8 +34,6 @@
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
 	</organization>
-	<scm>
-        <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-writer</url>
-    </scm>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-writer</url>
 </project>
 
