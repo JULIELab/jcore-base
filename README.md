@@ -13,7 +13,9 @@ A description for each individual component can be found in their respective `RE
 In order to use our components you need at least [JDK 7](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)(Java SE Development Kit 7), [UIMA 2.6](https://uima.apache.org/index.html) & [Maven 3.0](https://maven.apache.org/). We also recommend using [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/) as your Java IDE, since it comes with the Maven Plugin.
 
 ### UIMA's Collection Processing Engine (CPE)
-For more detailed information see [UIMA's CPE Documentation](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tutorials_and_users_guides/tutorials_and_users_guides.html#ugr.tug.cpe)
+For more detailed information see [UIMA's CPE Documentation](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tutorials_and_users_guides/tutorials_and_users_guides.html#ugr.tug.cpe).
+
+*(some more information about utilizing components the CPE way)*
 
 ### Maven Artifacts
 If not stated otherwise, all the components found in this project are at least in their latest release version also available as Maven artifacts:
@@ -40,3 +42,10 @@ The version variable `${jcore-version}` is defined in the jcore-parent pom and s
     <version>2.0.1</version>
 </dependency>
 ```
+*(some more information on using components the Java/Maven way)*
+
+### Components with pretrained models
+For some components the "Base" version is not sufficient if you're not planning on training your own model but rather want to using them out-of-the-box. *(some more description)*
+* List of
+* said components
+* here
