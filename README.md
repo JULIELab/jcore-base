@@ -7,10 +7,10 @@ Base modules of JCoRe as described in:
 ### Objective
 These are the base components of the JULIE Lab Component Repository (JCoRe), an open software repository for full-scale natural language processing based on the UIMA middleware framework. JCoRe offers a broad range of text analytics (mostly) for English-language scientific abstracts and full-text articles, especially for the biology domain.
 In order to automate the builds of complex NLP pipelines and properly represent and track dependencies of the underlying Java code, all our components are also available as artifacts from Maven Central.
-A descrition for each individual component can be found in their respective `README.md`.
+A description for each individual component can be found in their respective `README.md`.
 
 ### Dependencies
-In order to use our components you need at least [Java 7](http://java.com/en/), [UIMA 2.6](https://uima.apache.org/index.html) & [Maven 3.0](https://maven.apache.org/) or higher.
+In order to use our components you need at least [JDK 7](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)(Java SE Development Kit 7), [UIMA 2.6](https://uima.apache.org/index.html) & [Maven 3.0](https://maven.apache.org/). We also recommend using [Eclipse for Developers](http://www.eclipse.org/downloads/) as your Java IDE, since it comes with the Maven Plugin.
 
 ### UIMA's Collection Processing Engine (CPE)
 For more detailed information see [UIMA's CPE Documentation](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tutorials_and_users_guides/tutorials_and_users_guides.html#ugr.tug.cpe)
