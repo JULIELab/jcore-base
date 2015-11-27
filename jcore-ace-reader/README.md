@@ -22,7 +22,7 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
 | inputDirectory | valid Path to the ACE files | `data/ACEData` |
-| generateJcoreTypes| boolean Variable | true |
+| generateJcoreTypes| boolean Variable | `true` |
 
 So if you want to use this CR out-of-the-box (as a Maven Dependency in another project or as Component in a CPE) make sure to either put the data in the predefined inputDirectory or change this parameter to your liking.
 
