@@ -9,7 +9,7 @@ These are the base components of the JULIE Lab Component Repository (JCoRe), an 
 In order to automate the builds of complex NLP pipelines and properly represent and track dependencies of the underlying Java code, all our components are also available as artifacts from Maven Central.
 A description for each individual component can be found in their respective `README.md`.
 
-### Dependencies
+### Requirements & Dependencies
 In order to use our components you need at least [JDK 7](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)(Java SE Development Kit 7), [UIMA 2.6](https://uima.apache.org/index.html) & [Maven 3.0](https://maven.apache.org/). We also recommend using [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/) as your Java IDE, since it comes with the Maven Plugin.
 
 ### UIMA's Collection Processing Engine (CPE)
