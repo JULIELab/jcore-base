@@ -217,7 +217,7 @@ public class ChunkAnnotator extends JCasAnnotator_ImplBase {
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 
-		LOGGER.info("[OpenNLP Chunk Annotator] processing document ...");		
+		LOGGER.debug("[OpenNLP Chunk Annotator] processing document ...");		
 
 		JFSIndexRepository indexes = aJCas.getJFSIndexRepository();		
 		AnnotationIndex<Annotation> sentenceIndex = indexes.getAnnotationIndex(Sentence.type);
@@ -362,7 +362,7 @@ public class ChunkAnnotator extends JCasAnnotator_ImplBase {
 				break;
 			default: 
 				chunk = new Chunk(aJCas); 
-				LOGGER.info("Chunk type " + chunkValue + " is not in the list of predefined mappings.");
+				LOGGER.debug("Chunk type " + chunkValue + " is not in the list of predefined mappings.");
 			}
 
 			//	        if (chunkValue.equals("NP")){
@@ -402,13 +402,13 @@ public class ChunkAnnotator extends JCasAnnotator_ImplBase {
 				// look for a class name in mappingsTable
 				String className = (String) mappingsTable.get(chunkValue);
 				if (className != null) {
-					Class myNewClass = Class.forName(className);
-					Constructor myConstructor = myNewClass.getConstructor(new Class[] { JCas.class });
+					Class<?> myNewClass = Class.forName(className);
+					Constructor<?> myConstructor = myNewClass.getConstructor(new Class[] { JCas.class });
 					chunk = (Chunk) myConstructor.newInstance(aJCas);
 				} 
 				else {
 					chunk = new Chunk(aJCas);
-					LOGGER.info("Chunk " + chunkValue + " is not in mapping file.");				
+					LOGGER.debug("Chunk " + chunkValue + " is not in mapping file.");				
 				}
 			} catch (SecurityException e) {
 				LOGGER.error("[OpenNLP Chunk Annotator]" + e.getMessage());
