@@ -220,7 +220,7 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 	}
 
 	public void process(JCas aJCas) {
-		LOGGER.info("[JACRO] processing document...");
+		LOGGER.debug("[JACRO] processing document...");
 		try {
 			JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
 			FSIterator sentenceIter = indexes.getAnnotationIndex(Sentence.type).iterator();
