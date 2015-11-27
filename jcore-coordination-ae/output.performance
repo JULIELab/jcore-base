@@ -1,9 +1,0 @@
-Cross-validation results:
-Number of sentences in evaluation data set: 1488
-Number of sentences for training in each/last round: 148/156
-
-Overall performance: avg (standard deviation)
-Recall: 0,943(0,010)
-Precision: 0,940(0,012)
-F1-Score: 0,941(0,011)
-
