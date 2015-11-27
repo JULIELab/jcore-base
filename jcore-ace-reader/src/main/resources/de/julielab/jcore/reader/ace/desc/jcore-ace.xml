@@ -16,8 +16,8 @@
         <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>generateJulesTypes</name>
-        <description>Determines if JULIE Lab Types (julie-semantics- ace-types.xml) should be generated in addition to types from julie-ace-types.xml</description>
+        <name>generateJcoreTypes</name>
+        <description>Determines if JULIE Lab Types (jcore-semantics-ace-types.xml) should be generated in addition to types from jcore-ace-types.xml</description>
         <type>Boolean</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
@@ -25,7 +25,7 @@
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>generateJulesTypes</name>
+        <name>generateJcoreTypes</name>
         <value>
           <boolean>true</boolean>
         </value>
