@@ -119,4 +119,5 @@
 	<scm>
         <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-jnet-ae</url>
     </scm>
+	<version>2.0.1</version>
 </project>

@@ -1,9 +1,9 @@
 /** 
  * ConsistencyPreservation.java
  * 
- * Copyright (c) 2015, JULIE Lab.
+ * Copyright (c) 2008, JULIE Lab. 
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the Common Public License v1.0 
  *
  * Author: tomanek
  * 
@@ -17,15 +17,22 @@ package de.julielab.jcore.ae.jnet.uima;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,17 +41,15 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 
 public class ConsistencyPreservation {
 
-	private static final String COMPONENT_ID = "de.julielab.jcore.ae.netagger.ConsistencyPreservation";
+	private static final String COMPONENT_ID = "JNET ConsistencyPreservation";
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(ConsistencyPreservation.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyPreservation.class);
 
 	public static final String MODE_ACRO2FULL = "acro2full";
 	public static final String MODE_FULL2ACRO = "full2acro";
@@ -60,8 +65,7 @@ public class ConsistencyPreservation {
 	 *            coma-separated list of modes to be used
 	 * @throws AnalysisEngineProcessException
 	 */
-	public ConsistencyPreservation(final String modesString)
-			throws ResourceInitializationException {
+	public ConsistencyPreservation(final String modesString) throws ResourceInitializationException {
 		activeModes = new TreeSet<String>();
 		final String[] modes = modesString.split(",");
 		for (final String mode2 : modes) {
@@ -92,15 +96,13 @@ public class ConsistencyPreservation {
 	 *            the entity mention class names to be considered
 	 * @throws AnalysisEngineProcessException
 	 */
-	public void acroMatch(final JCas aJCas,
-			final TreeSet<String> entityMentionClassnames)
+	public void acroMatch(final JCas aJCas, final TreeSet<String> entityMentionClassnames)
 			throws AnalysisEngineProcessException {
 
 		// check whether any mode enabled
 		if ((activeModes == null)
 				|| (activeModes.size() == 0)
-				|| !(activeModes
-						.contains(ConsistencyPreservation.MODE_FULL2ACRO) || activeModes
+				|| !(activeModes.contains(ConsistencyPreservation.MODE_FULL2ACRO) || activeModes
 						.contains(ConsistencyPreservation.MODE_ACRO2FULL)))
 			return;
 
@@ -153,13 +155,11 @@ public class ConsistencyPreservation {
 			// check whether abbreviation was identified as an entity mention of
 			// interest
 			for (final EntityMention mention : entityMentionTypes)
-				mentionList.addAll(UIMAUtils.getAnnotations(aJCas, abbrev,
-						mention.getClass()));
+				mentionList.addAll(UIMAUtils.getAnnotations(aJCas, abbrev, mention.getClass()));
 			if ((mentionList == null) || (mentionList.size() == 0)) {
 
 				// check whether full2acro mode is enabled
-				if (activeModes
-						.contains(ConsistencyPreservation.MODE_FULL2ACRO)) {
+				if (activeModes.contains(ConsistencyPreservation.MODE_FULL2ACRO)) {
 
 					// if the abbreviation has no entity annotation of the types
 					// of interest
@@ -170,37 +170,28 @@ public class ConsistencyPreservation {
 						// check whether respective full form does have an
 						// entity annotation of
 						// interest. Important: exact match ! Theses below...
-						fullFormMentionList.addAll(UIMAUtils
-								.getExactAnnotations(aJCas, fullFormAnnotation,
-										mention.getClass()));
+						fullFormMentionList.addAll(UIMAUtils.getExactAnnotations(aJCas,
+								fullFormAnnotation, mention.getClass()));
 
-					if ((fullFormMentionList != null)
-							&& (fullFormMentionList.size() > 0)) {
+					if ((fullFormMentionList != null) && (fullFormMentionList.size() > 0)) {
 						// if we found an entity mention on the full form (exact
 						// match!), add first entity mention
 						// to abbreviation
-						final EntityMention refEntityMention = fullFormMentionList
-								.get(0);
+						final EntityMention refEntityMention = fullFormMentionList.get(0);
 						LOGGER.debug("doAbbreviationBased() -  but found entity mention on full form");
 						LOGGER.debug("doAbbreviationBased() -  adding annotation to unlabeled entity mention");
 						try {
 							final EntityMention newEntityMention = (EntityMention) JCoReAnnotationTools
-									.getAnnotationByClassName(aJCas,
-											refEntityMention.getClass()
-													.getName());
+									.getAnnotationByClassName(aJCas, refEntityMention.getClass()
+											.getName());
 							newEntityMention.setBegin(abbrev.getBegin());
 							newEntityMention.setEnd(abbrev.getEnd());
-							newEntityMention.setSpecificType(refEntityMention
-									.getSpecificType());
-							newEntityMention
-									.setResourceEntryList(refEntityMention
-											.getResourceEntryList());
-							newEntityMention.setConfidence(refEntityMention
-									.getConfidence());
-							newEntityMention.setTextualRepresentation(abbrev
-									.getCoveredText());
-							newEntityMention.setComponentId(COMPONENT_ID
-									+ " Abbrev");
+							newEntityMention.setSpecificType(refEntityMention.getSpecificType());
+							newEntityMention.setResourceEntryList(refEntityMention
+									.getResourceEntryList());
+							newEntityMention.setConfidence(refEntityMention.getConfidence());
+							newEntityMention.setTextualRepresentation(abbrev.getCoveredText());
+							newEntityMention.setComponentId(COMPONENT_ID + " Abbrev");
 							newEntityMention.addToIndexes();
 						} catch (final Exception e) {
 							LOGGER.error("doAbbreviationBased() - could not get create new entity mention annotation: "
@@ -218,36 +209,26 @@ public class ConsistencyPreservation {
 						// check whether respective full form does have an
 						// entity annotation of
 						// interest
-						fullFormMentionList.addAll(UIMAUtils.getAnnotations(
-								aJCas, fullFormAnnotation, mention.getClass()));
+						fullFormMentionList.addAll(UIMAUtils.getAnnotations(aJCas,
+								fullFormAnnotation, mention.getClass()));
 
-					if ((fullFormMentionList == null)
-							|| (fullFormMentionList.size() == 0)) {
+					if ((fullFormMentionList == null) || (fullFormMentionList.size() == 0)) {
 						// if full form has none, add one
-						final EntityMention refEntityMention = mentionList
-								.get(0);
+						final EntityMention refEntityMention = mentionList.get(0);
 						LOGGER.debug("doAbbreviationBased() -  but reference full form has no entity mentions of interest");
 						LOGGER.debug("doAbbreviationBased() -  adding annotation to unlabeled entity mention");
 						try {
 							final EntityMention newEntityMention = (EntityMention) JCoReAnnotationTools
-									.getAnnotationByClassName(aJCas,
-											refEntityMention.getClass()
-													.getName());
-							newEntityMention.setBegin(fullFormAnnotation
-									.getBegin());
-							newEntityMention
-									.setEnd(fullFormAnnotation.getEnd());
-							newEntityMention.setSpecificType(refEntityMention
-									.getSpecificType());
-							newEntityMention
-									.setResourceEntryList(refEntityMention
-											.getResourceEntryList());
-							newEntityMention.setConfidence(refEntityMention
-									.getConfidence());
-							newEntityMention.setTextualRepresentation(abbrev
-									.getCoveredText());
-							newEntityMention.setComponentId(COMPONENT_ID
-									+ " Abbrev");
+									.getAnnotationByClassName(aJCas, refEntityMention.getClass()
+											.getName());
+							newEntityMention.setBegin(fullFormAnnotation.getBegin());
+							newEntityMention.setEnd(fullFormAnnotation.getEnd());
+							newEntityMention.setSpecificType(refEntityMention.getSpecificType());
+							newEntityMention.setResourceEntryList(refEntityMention
+									.getResourceEntryList());
+							newEntityMention.setConfidence(refEntityMention.getConfidence());
+							newEntityMention.setTextualRepresentation(abbrev.getCoveredText());
+							newEntityMention.setComponentId(COMPONENT_ID + " Abbrev");
 							newEntityMention.addToIndexes();
 						} catch (final Exception e) {
 							LOGGER.error("doAbbreviationBased() - could not get create new entity mention annotation: "
@@ -272,8 +253,7 @@ public class ConsistencyPreservation {
 	 * @param confidenceThresholdForConsistencyPreservation
 	 * @throws AnalysisEngineProcessException
 	 */
-	public void stringMatch(final JCas aJCas,
-			final TreeSet<String> entityMentionClassnames,
+	public void stringMatch(final JCas aJCas, final TreeSet<String> entityMentionClassnames,
 			double confidenceThresholdForConsistencyPreservation)
 			throws AnalysisEngineProcessException {
 
@@ -284,39 +264,82 @@ public class ConsistencyPreservation {
 
 		final String text = aJCas.getDocumentText();
 
+		final Map<String, TreeSet<EntityMention>> overlapIndex = new HashMap<>();
+		final TypeSystem ts = aJCas.getTypeSystem();
+		Comparator<EntityMention> overlapComparator = new Comparator<EntityMention>() {
+
+			@Override
+			public int compare(EntityMention o1, EntityMention o2) {
+				int b1 = o1.getBegin();
+				int e1 = o1.getEnd();
+				int b2 = o2.getBegin();
+				int e2 = o2.getEnd();
+
+				if ((b1 <= b2) && (e1 >= e2)) {
+					return 0;
+				} else if ((b1 >= b2) && (e1 <= e2)) {
+					return 0;
+				}
+				//
+				else if ((b1 < e2) && (e1 > e2)) {
+					return 0;
+				} else if ((b1 < b2) && (e1 > b2)) {
+					return 0;
+				}
+				return b1 - b2;
+			}
+		};
+
 		for (final String entityMentionClassname : entityMentionClassnames) {
-			// loop over all entity types to be considered
-
-			LOGGER.debug("doStringBased() - checking consistency for type: "
-					+ entityMentionClassname);
-			final Multimap<String, EntityMention> entityMap = HashMultimap
-					.create();
-			final JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
-
+			// we use the index entity class wise; we don't want one class to
+			// interfer with another
+			overlapIndex.clear();
 			try {
-				final EntityMention myEntity = (EntityMention) JCoReAnnotationTools
+				// loop over all entity types to be considered
+				EntityMention mentionForOffsetComparison = (EntityMention) JCoReAnnotationTools
 						.getAnnotationByClassName(aJCas, entityMentionClassname);
+
+				LOGGER.debug("doStringBased() - checking consistency for type: "
+						+ entityMentionClassname);
+				final Multimap<String, EntityMention> entityMap = HashMultimap.create();
+
+				// final EntityMention myEntity = (EntityMention)
+				// JCoReAnnotationTools
+				// .getAnnotationByClassName(aJCas, entityMentionClassname);
+				final Type entityType = ts.getType(entityMentionClassname);
+				if (null == entityType)
+					throw new IllegalArgumentException("Entity type \"" + entityMentionClassname
+							+ "\" was not found in the type system.");
 
 				// loop over all entity annotations in document and put them in
 				// hashmap
 				LOGGER.debug("doStringBased() - building entity map");
-				final Iterator<org.apache.uima.jcas.tcas.Annotation> entityIter = indexes
-						.getAnnotationIndex(myEntity.getTypeIndexID())
+				final Iterator<Annotation> entityIter = aJCas.getAnnotationIndex(entityType)
 						.iterator();
 				while (entityIter.hasNext()) {
-					final EntityMention entity = (EntityMention) entityIter
-							.next();
+					final EntityMention entity = (EntityMention) entityIter.next();
 					entityMap.put(entity.getCoveredText(), entity);
+					// additionally, add the entities into the overlap index so
+					// we can later quickly lookup whether there is already an
+					// entity with the same specific type at a certain location
+					String specificType = "<null>";
+					if (!StringUtils.isBlank(entity.getSpecificType()))
+						specificType = entity.getSpecificType();
+					TreeSet<EntityMention> set = overlapIndex.get(specificType);
+					if (null == set) {
+						set = new TreeSet<>(overlapComparator);
+						overlapIndex.put(specificType, set);
+					}
+					set.add(entity);
+
 				}
 
 				// now search for strings not detected as this kind of entity
 				LOGGER.debug("doStringBased() - searching for missed entities...");
 				for (final String entityString : entityMap.keySet()) {
-					final EntityMention entity = entityMap.get(entityString)
-							.iterator().next();
+					final EntityMention entity = entityMap.get(entityString).iterator().next();
 
-					LOGGER.debug("doStringBased() - checking entity string: "
-							+ entityString);
+					LOGGER.debug("doStringBased() - checking entity string: " + entityString);
 
 					int pos = 0;
 					int length = 0;
@@ -324,55 +347,65 @@ public class ConsistencyPreservation {
 					while ((pos = text.indexOf(entityString, (pos + length))) > -1) {
 						// for each position where we have found this entity
 						// string
-						LOGGER.debug("doStringBased() - found string at pos: "
-								+ pos);
+						LOGGER.debug("doStringBased() - found string at pos: " + pos);
 
 						// check whether there is already an annotation of this
 						// type
-						EntityMention refEntity = (EntityMention) JCoReAnnotationTools
-								.getOverlappingAnnotation(aJCas,
-										entityMentionClassname, pos, pos
-												+ entityString.length());
+						// this older approach had the issue that only one
+						// overlapping annotation of entityMentionClassname was
+						// returned; but this type could be the wrong one in
+						// that the returned had a different specific type but
+						// another existed with the same specificType as the
+						// sought entity
+						// EntityMention refEntity = (EntityMention)
+						// JCoReAnnotationTools
+						// .getOverlappingAnnotation(aJCas,
+						// entityMentionClassname, pos, pos
+						// + entityString.length());
 
-						if (refEntity == null
-								|| (refEntity.getSpecificType() == null ^ entity
-										.getSpecificType() == null)
-								|| (refEntity.getSpecificType() != null
-										&& entity.getSpecificType() != null && !refEntity
-										.getSpecificType().equals(
-												entity.getSpecificType()))) {
+						mentionForOffsetComparison.setBegin(pos);
+						mentionForOffsetComparison.setEnd(pos + length);
+						String specificType = "<null>";
+						if (!StringUtils.isBlank(entity.getSpecificType()))
+							specificType = entity.getSpecificType();
+						TreeSet<EntityMention> overlapSet = overlapIndex.get(specificType);
+						boolean overlappingExists = overlapSet.contains(mentionForOffsetComparison);
+
+						// if (refEntity == null
+						// || (refEntity.getSpecificType() == null ^
+						// entity.getSpecificType() == null)
+						// || (refEntity.getSpecificType() != null
+						// && entity.getSpecificType() != null && !refEntity
+						// .getSpecificType().equals(entity.getSpecificType())))
+						// {
+						if (!overlappingExists) {
 							// if there is no annotation of same type on this
 							// text span yet...
 							LOGGER.debug("doStringBased() - adding annotation to unlabeled entity mention");
-							refEntity = (EntityMention) JCoReAnnotationTools
-									.getAnnotationByClassName(aJCas,
-											entityMentionClassname);
+							EntityMention refEntity = (EntityMention) JCoReAnnotationTools
+									.getAnnotationByClassName(aJCas, entityMentionClassname);
 							// We will not directly just annotate the found
 							// string but extend it to offsets of
 							// overlapped tokens.
 							List<Token> overlappingTokens = JCoReAnnotationTools
-									.getNearestOverlappingAnnotations(aJCas,
-											new Annotation(entity.getCAS()
-													.getJCas(), pos, pos
-													+ entityString.length()),
+									.getNearestOverlappingAnnotations(aJCas, new Annotation(entity
+											.getCAS().getJCas(), pos, pos + entityString.length()),
 											Token.class);
-							int begin = overlappingTokens.size() > 0 ? overlappingTokens
-									.get(0).getBegin() : pos;
-							int end = overlappingTokens.size() > 0 ? overlappingTokens
-									.get(overlappingTokens.size() - 1).getEnd()
-									: pos + entityString.length();
+							int begin = overlappingTokens.size() > 0 ? overlappingTokens.get(0)
+									.getBegin() : pos;
+							int end = overlappingTokens.size() > 0 ? overlappingTokens.get(
+									overlappingTokens.size() - 1).getEnd() : pos
+									+ entityString.length();
 							// If we would have to adjust the offsets too much,
 							// we have most like just hit some
 							// substring of a larger token by coincidence.
 							refEntity.setBegin(begin);
 							refEntity.setEnd(end);
 							refEntity.setSpecificType(entity.getSpecificType());
-							refEntity.setResourceEntryList(entity
-									.getResourceEntryList());
+							refEntity.setResourceEntryList(entity.getResourceEntryList());
 							refEntity.setConfidence(entity.getConfidence());
-							refEntity.setTextualRepresentation(entity
-									.getTextualRepresentation());
-							refEntity.setComponentId(COMPONENT_ID + " String");
+							refEntity.setTextualRepresentation(entity.getTextualRepresentation());
+							refEntity.setComponentId(COMPONENT_ID + " String (" + entity.getCoveredText() + ", " + begin + "-" + end + ")");
 							stringMatchedEntities.add(refEntity);
 
 						} else
@@ -389,24 +422,21 @@ public class ConsistencyPreservation {
 					// un-commenting the following code
 
 					// If confidenceThresholdForConsistencyPreservation is given
-					// (value != -1) 
+					// (value != -1)
 					// only add the new entities if there is enough evidence by
-					// originally found entities with the same string that 
+					// originally found entities with the same string that
 					// this is indeed an entity we would like to find.
 					if (confidenceThresholdForConsistencyPreservation > 0) {
 						if (!stringMatchedEntities.isEmpty()) {
 
 							double meanConfidence = 0;
-							for (EntityMention recognizedEntity : entityMap
-									.get(entityString)) {
+							for (EntityMention recognizedEntity : entityMap.get(entityString)) {
 								if (null != entity.getConfidence()) {
-									meanConfidence += Double
-											.parseDouble(recognizedEntity
-													.getConfidence());
+									meanConfidence += Double.parseDouble(recognizedEntity
+											.getConfidence());
 								}
 							}
-							meanConfidence /= entityMap.get(entityString)
-									.size();
+							meanConfidence /= entityMap.get(entityString).size();
 
 							int allMatches = stringMatchedEntities.size()
 									+ entityMap.get(entityString).size();
@@ -429,8 +459,7 @@ public class ConsistencyPreservation {
 				}
 
 			} catch (final Exception e) {
-				LOGGER.error("doStringBased() - exception occured: "
-						+ e.getMessage());
+				LOGGER.error("doStringBased() - exception occured: " + e.getMessage());
 				throw new AnalysisEngineProcessException();
 			}
 
