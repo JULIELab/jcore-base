@@ -287,6 +287,48 @@ public class ConsistencyPreservationTest extends TestCase {
 		}
 		assertEquals(3, count);
 	}
+	
+	public void testStringMatch3() throws Exception {
+		// This test checks whether the consistence preservation algorithm
+		// correctly detects already existing annotations even when there are
+		// multiple annotations of the sought entity type at the same location
+		// but and the ones with the correct specific type are not up front
+		// (that was an issue in the past).
+		String text = "BMP-6 inhibits growth of mature B cells. Also, BMP-6 has other effects on something.";
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		jCas.setDocumentText(text);
+		// g1 is not relevant to the consistency preseveration and should be
+		// ignored
+		Gene g1 = new Gene(jCas, 0, 5);
+		Gene g2 = new Gene(jCas, 0, 5);
+		Gene g3 = new Gene(jCas, 32, 33);
+
+		g1.setSpecificType("DECOY");
+		g2.setSpecificType("GENE");
+		g3.setSpecificType("GENE");
+		g1.addToIndexes();
+		g2.addToIndexes();
+		g3.addToIndexes();
+
+		final String modeString = ConsistencyPreservation.MODE_STRING;
+		final ConsistencyPreservation consistencyPreservation = new ConsistencyPreservation(
+				modeString);
+		final TreeSet<String> entityMentionClassnames = new TreeSet<String>();
+		entityMentionClassnames.add("de.julielab.jcore.types.Gene");
+		consistencyPreservation.stringMatch(jCas, entityMentionClassnames, 0);
+
+		FSIterator<org.apache.uima.jcas.tcas.Annotation> it = jCas.getAnnotationIndex(Gene.type)
+				.iterator();
+		// we should find the original three annotations and an extension to the
+		// second mention of BMP-6
+		int count = 0;
+		while (it.hasNext()) {
+			@SuppressWarnings("unused")
+			Gene g = (Gene) it.next();
+			count++;
+		}
+		assertEquals(4, count);
+	}
 
 	/*
 	 * helper functions

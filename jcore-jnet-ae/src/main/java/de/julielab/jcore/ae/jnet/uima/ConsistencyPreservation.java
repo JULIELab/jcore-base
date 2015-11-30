@@ -264,8 +264,17 @@ public class ConsistencyPreservation {
 
 		final String text = aJCas.getDocumentText();
 
-		final Map<String, TreeSet<EntityMention>> overlapIndex = new HashMap<>();
 		final TypeSystem ts = aJCas.getTypeSystem();
+		// This map stores the EntityMentions that share the same specificType.
+		// We want to use the TreeSet to check - for a given specificType - if
+		// there is already an annotation overlapping a specific text offset.
+		// See the comparator below.
+		final Map<String, TreeSet<EntityMention>> overlapIndex = new HashMap<>();
+		// This Comparator checks whether two Entities overlap in any way. If
+		// so, they are deemed "equal". The idea is to use this Comparator with
+		// a TreeSet in which we store all existing entities. Then, we can
+		// efficiently check for a specific span if there already exists any
+		// overlapping entity.
 		Comparator<EntityMention> overlapComparator = new Comparator<EntityMention>() {
 
 			@Override
@@ -338,6 +347,10 @@ public class ConsistencyPreservation {
 				LOGGER.debug("doStringBased() - searching for missed entities...");
 				for (final String entityString : entityMap.keySet()) {
 					final EntityMention entity = entityMap.get(entityString).iterator().next();
+					String specificType = "<null>";
+					if (!StringUtils.isBlank(entity.getSpecificType()))
+						specificType = entity.getSpecificType();
+					TreeSet<EntityMention> overlapSet = overlapIndex.get(specificType);
 
 					LOGGER.debug("doStringBased() - checking entity string: " + entityString);
 
@@ -365,10 +378,6 @@ public class ConsistencyPreservation {
 
 						mentionForOffsetComparison.setBegin(pos);
 						mentionForOffsetComparison.setEnd(pos + length);
-						String specificType = "<null>";
-						if (!StringUtils.isBlank(entity.getSpecificType()))
-							specificType = entity.getSpecificType();
-						TreeSet<EntityMention> overlapSet = overlapIndex.get(specificType);
 						boolean overlappingExists = overlapSet.contains(mentionForOffsetComparison);
 
 						// if (refEntity == null
@@ -405,7 +414,8 @@ public class ConsistencyPreservation {
 							refEntity.setResourceEntryList(entity.getResourceEntryList());
 							refEntity.setConfidence(entity.getConfidence());
 							refEntity.setTextualRepresentation(entity.getTextualRepresentation());
-							refEntity.setComponentId(COMPONENT_ID + " String (" + entity.getCoveredText() + ", " + begin + "-" + end + ")");
+							refEntity.setComponentId(COMPONENT_ID + " String ("
+									+ entity.getCoveredText() + ", " + begin + "-" + end + ")");
 							stringMatchedEntities.add(refEntity);
 
 						} else
@@ -443,6 +453,11 @@ public class ConsistencyPreservation {
 							if (entityMap.get(entityString).size() >= allMatches / 3d) {
 								if (meanConfidence > confidenceThresholdForConsistencyPreservation) {
 									for (EntityMention refEntity : stringMatchedEntities) {
+										// we have to add the new entities to
+										// the overlap-index to avoid duplicates
+										// by other entities that are a
+										// substring of the current entity
+										overlapSet.add(refEntity);
 										refEntity.addToIndexes();
 									}
 								}
@@ -453,6 +468,11 @@ public class ConsistencyPreservation {
 					// all occurrences
 					else {
 						for (EntityMention refEntity : stringMatchedEntities) {
+							// we have to add the new entities to the
+							// overlap-index to avoid duplicates by other
+							// entities that are a substring of the current
+							// entity
+							overlapSet.add(refEntity);
 							refEntity.addToIndexes();
 						}
 					}
