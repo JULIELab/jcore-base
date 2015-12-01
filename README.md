@@ -49,3 +49,9 @@ For some components the "Base" version is not sufficient if you're not planning 
 * List of
 * said components
 * here
+
+### Prebuilt pipelines
+Link and information to/about prebuilt pipelines here.
+* add names
+* and links
+* here
