@@ -32,7 +32,6 @@ This reader takes as input a folder with `txt`,`a1` & `a2` files - format of the
 | de.julielab.jcore.types.AbstractText |  | `+` |
 | de.julielab.jcore.types.Annotation |  | `+` |
 | de.julielab.jcore.types.ArgumentMention |  | `+` |
-| de.julielab.jcore.types.CorefRelation |  | `+` |
 | de.julielab.jcore.types.Entity |  | `+` |
 | de.julielab.jcore.types.EntityMention |  | `+` |
 | de.julielab.jcore.types.EventMention |  | `+` |
