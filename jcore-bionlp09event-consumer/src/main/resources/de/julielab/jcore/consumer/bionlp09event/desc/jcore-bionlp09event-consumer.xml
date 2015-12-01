@@ -9,7 +9,7 @@
     <vendor/>
     <configurationParameters>
       <configurationParameter>
-        <name>Directory</name>
+        <name>outDirectory</name>
         <description>The directory where the consumer writes the files.</description>
         <type>String</type>
         <multiValued>false</multiValued>
@@ -30,9 +30,9 @@
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>Directory</name>
+        <name>outDirectory</name>
         <value>
-          <string>bionlp-09-event-output</string>
+          <string>data/BioNLPoutData</string>
         </value>
       </nameValuePair>
       <nameValuePair>
@@ -44,7 +44,7 @@
       <nameValuePair>
         <name>a2FileString</name>
         <value>
-          <string>BLOEDSINN_derParameterWirdNichtGebrauchtGlaubeIch</string>
+          <string>ONLY_USED_IN_CONJUNCTION_WITH_BIOEVENTSERVICEMODE</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
@@ -63,7 +63,11 @@
     <fsIndexCollection/>
     <capabilities>
       <capability>
-        <inputs/>
+        <inputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Gene</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EventTrigger</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EntityMention</type>
+        </inputs>
         <outputs/>
         <languagesSupported/>
       </capability>

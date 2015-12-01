@@ -1,8 +1,8 @@
- /**
-  * Copyright (c) 2015, JULIE Lab.
-  * All rights reserved. This program and the accompanying materials 
-  * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
-  */
+/**
+ * Copyright (c) 2015, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ */
 
 package de.julielab.jcore.consumer.bionlp09event.utils;
 
@@ -12,48 +12,46 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Protein;
 
 public class ProteinWriter {
 
-	private Writer writer;
-	private String documentText;
-	private Set<String> writtenIds;
-	
-	public Writer getFileWriter() {
-		return writer;
-	}
+    private Writer writer;
+    private String documentText;
+    private Set<String> writtenIds;
 
-	public void setFileWriter(Writer writer) {
-		this.writer = writer;
-	}
+    public Writer getFileWriter() {
+        return writer;
+    }
 
-	public ProteinWriter(Writer writer, String documentText) {
-		super();
-		this.writer = writer;
-		this.documentText = documentText;
-		this.writtenIds = new HashSet<String>();
-	}
+    public void setFileWriter(Writer writer) {
+        this.writer = writer;
+    }
 
-	public void writeProtein(Gene protein) throws IOException {
-		String id = protein.getId();
-		if( !writtenIds.contains(id) )
-			writtenIds.add(id);
+    public ProteinWriter(Writer writer, String documentText) {
+        super();
+        this.writer = writer;
+        this.documentText = documentText;
+        this.writtenIds = new HashSet<String>();
+    }
 
-		String line = protein.getId() + "\tProtein " + 
-		protein.getBegin() + " " + 
-		protein.getEnd() + "\t"+
-		documentText.substring(protein.getBegin(), protein.getEnd()) + "\n";
+    public void writeProtein(Gene protein) throws IOException {
+        String id = protein.getId();
+        if (!writtenIds.contains(id)) {
+            writtenIds.add(id);
+        }
 
-		writer.write(line);
-	}
+        String line = protein.getId() + "\tProtein " + protein.getBegin() + " " + protein.getEnd() + "\t"
+                + documentText.substring(protein.getBegin(), protein.getEnd()) + "\n";
 
-	public void close() throws IOException {
-		writer.close();
-	}
+        writer.write(line);
+    }
 
-	public boolean isWritten(Gene protein) {
-		return writtenIds.contains(protein.getId());
-	}
+    public void close() throws IOException {
+        writer.close();
+    }
+
+    public boolean isWritten(Gene protein) {
+        return writtenIds.contains(protein.getId());
+    }
 
 }
