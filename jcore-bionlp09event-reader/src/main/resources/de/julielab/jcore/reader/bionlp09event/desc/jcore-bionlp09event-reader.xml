@@ -9,11 +9,11 @@
     <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
-        <name>Directory</name>
+        <name>inDirectory</name>
         <description>The path to the directory containing source files.</description>
         <type>String</type>
         <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
+        <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
         <name>bioEventServiceMode</name>
@@ -42,9 +42,9 @@
         </value>
       </nameValuePair>
       <nameValuePair>
-        <name>Directory</name>
+        <name>inDirectory</name>
         <value>
-          <string>input/stdata/</string>
+          <string>data/BioNLPinData</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
@@ -57,6 +57,7 @@
         <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
         <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
         <import name="de.julielab.jcore.types.jcore-semantics-concept-types"/>
+      <import name="de.julielab.jcore.types.jcore-discourse-types"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
@@ -64,7 +65,20 @@
     <capabilities>
       <capability>
         <inputs/>
-        <outputs/>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Title</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Gene</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EventTrigger</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EventMention</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EntityMention</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Entity</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.ArgumentMention</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Annotation</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AbstractText</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.CorefRelation</type>
+        <type allAnnotatorFeatures="true">de.julielab.jcore.CorefExpression</type>
+        </outputs>
         <languagesSupported/>
       </capability>
     </capabilities>

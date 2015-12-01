@@ -32,7 +32,7 @@ import de.julielab.jcore.types.Annotation;
 public class EventReader extends CollectionReader_ImplBase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventReader.class);
-    public static final String DIRECTORY_PARAM = "Directory";
+    public static final String DIRECTORY_PARAM = "inDirectory";
     public static final String PROTEIN_FILE_PARAM = "proteinFile";
     public static final String ABSTRACT_FILE_PARAM = "abstractFile";
     public static final String BIOEVENT_SERVICE_MODE_PARAM = "bioEventServiceMode";
@@ -42,13 +42,13 @@ public class EventReader extends CollectionReader_ImplBase {
     private AnnotationFileMapper annotationFileMapper;
     private AbstractFileMapper abstractFileMapper;
 
-    @ConfigurationParameter(name = DIRECTORY_PARAM, mandatory = false)
+    @ConfigurationParameter(name = DIRECTORY_PARAM, mandatory = true)
     private String directoryName;
     @ConfigurationParameter(name = PROTEIN_FILE_PARAM, mandatory = false)
     private String proteinFileString;
     @ConfigurationParameter(name = ABSTRACT_FILE_PARAM, mandatory = false)
     private String abstractFileString;
-    @ConfigurationParameter(name = BIOEVENT_SERVICE_MODE_PARAM, mandatory = true)
+    @ConfigurationParameter(name = BIOEVENT_SERVICE_MODE_PARAM, mandatory = false)
     private boolean bioEventServiceMode;
 
     private File directory;
