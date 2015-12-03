@@ -38,11 +38,6 @@
         	<groupId>org.slf4j</groupId>
         	<artifactId>slf4j-api</artifactId>
         </dependency>
-		<dependency>
-			<groupId>net.sf.trove4j</groupId>
-			<artifactId>trove4j</artifactId>
-			<version>3.0.3</version>
-		</dependency>
 	</dependencies>
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>

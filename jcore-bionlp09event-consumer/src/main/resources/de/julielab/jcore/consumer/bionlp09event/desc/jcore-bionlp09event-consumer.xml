@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>de.julielab.jcore.consumer.bionlp09event.main.EventConsumer</implementationName>
-  <processingResourceMetaData>
-    <name>BioNLP 09 Event Consumer</name>
-    <description>Writes a CAS to three separate text files: a abstract, a protein and a event file.</description>
-    <version>2.0.0</version>
+  <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.consumer.bionlp09event.main.EventConsumer</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe BioNLP Event Consumer</name>
+    <description/>
+    <version>2.1.0</version>
     <vendor/>
     <configurationParameters>
       <configurationParameter>
@@ -48,17 +48,7 @@
         </value>
       </nameValuePair>
     </configurationParameterSettings>
-    <typeSystemDescription>
-      <imports>
-        <import name="de.julielab.jcore.types.jcore-basic-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
-        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
-        <import name="de.julielab.jcore.types.jcore-semantics-concept-types"/>
-        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
-      </imports>
-    </typeSystemDescription>
+    <typeSystemDescription/>
     <typePriorities/>
     <fsIndexCollection/>
     <capabilities>
@@ -72,11 +62,11 @@
         <languagesSupported/>
       </capability>
     </capabilities>
-    <operationalProperties>
-      <modifiesCas>false</modifiesCas>
-      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
-  </processingResourceMetaData>
+  </analysisEngineMetaData>
   <resourceManagerConfiguration/>
-</casConsumerDescription>
+</analysisEngineDescription>

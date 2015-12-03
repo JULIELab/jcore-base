@@ -29,7 +29,7 @@ public class StanfordLemmatizer extends JCasAnnotator_ImplBase {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		LOGGER.info("[JULES Stanford Lemmatizer] processing document ...");
+		LOGGER.debug("[JULES Stanford Lemmatizer] processing document ...");
 		FSIterator tokenIterator = aJCas.getAnnotationIndex(Token.type)
 				.iterator();
 

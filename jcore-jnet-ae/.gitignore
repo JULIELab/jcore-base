@@ -9,3 +9,4 @@
 # /doc/
 /doc/*.gz
 /doc/*.aux
+/pom.xml.orig
