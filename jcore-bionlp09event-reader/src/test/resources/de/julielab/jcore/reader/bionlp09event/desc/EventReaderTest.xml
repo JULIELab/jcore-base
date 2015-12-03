@@ -9,7 +9,7 @@
     <vendor/>
     <configurationParameters>
       <configurationParameter>
-        <name>Directory</name>
+        <name>inDirectory</name>
         <description>The path to the directory containing source files.</description>
         <type>String</type>
         <multiValued>false</multiValued>
@@ -36,7 +36,7 @@
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>Directory</name>
+        <name>inDirectory</name>
         <value>
           <string></string>
         </value>
