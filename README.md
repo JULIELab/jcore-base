@@ -46,10 +46,19 @@ The version variable `${jcore-version}` is defined in the jcore-parent pom and s
 *(some more information on using components the Java/Maven way)*
 
 ### Components with pretrained models
-For some components the "Base" version is not sufficient if you're not planning on training your own model but rather want to using them out-of-the-box. *(some more description)*
-* List of
-* said components
-* here
+For some components the "Base" version is not sufficient if you're **not** planning on training your own model but rather want to use them out-of-the-box. As of now the following components have a specialized project with pretrained models (available from [here](https://github.com/JULIELab/jcore-projects)):
+* jcore-biosem-ae
+* jcore-jnet-ae
+* jcore-jpos-ae
+* jcore-jsbd-ae
+* jcore-jtbd-ae
+* jcore-mstparser-ae
+* jcore-opennlp-chunk-ae
+* jcore-opennlp-parser-ae
+* jcore-opennlp-postag-ae
+* jcore-opennlp-sentence-ae
+* jcore-opennlp-token-ae
+* jcore-xml-reader
 
 ### Prebuilt pipelines
 Link and information to/about prebuilt pipelines here.
