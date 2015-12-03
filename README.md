@@ -16,7 +16,7 @@ In order to use our components you need at least [JDK 7](http://www.oracle.com/t
 UIMA features a relatively easy way to combine UIMA components together in order to analyze a collection of artifacts. If you're not firm or willing to deal with Java Code, the usage of a CPE might be the right choice.
 For more detailed information see [UIMA's CPE Documentation](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tutorials_and_users_guides/tutorials_and_users_guides.html#ugr.tug.cpe).
 
-*(some more information about utilizing components the CPE way if when using pre-built pipelines)*
+*(some more information about utilizing components the CPE way when not using pre-built pipelines)*
 
 ### Maven Artifacts
 If not stated otherwise, all the components found in this project are at least in their latest release version also available as Maven artifacts:
