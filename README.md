@@ -46,7 +46,7 @@ The version variable `${jcore-version}` is defined in the jcore-parent pom and s
 *(some more information on using components the Java/Maven way)*
 
 ### Components with pretrained models
-For some components the "Base" version is not sufficient if you're **not** planning on training your own model but rather want to use them out-of-the-box. As of now the following components have a specialized project with pretrained models (available from [here](https://github.com/JULIELab/jcore-projects)):
+For some components the "Base" version won't be sufficient if you're **not** planning on training your own model but rather want to use them out-of-the-box in a prediction pipeline. As of now all of the following components have a specialized project with pretrained models (available from the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-projects)):
 * jcore-biosem-ae
 * jcore-jnet-ae
 * jcore-jpos-ae
@@ -60,8 +60,8 @@ For some components the "Base" version is not sufficient if you're **not** plann
 * jcore-opennlp-token-ae
 * jcore-xml-reader
 
+Please refer to the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-projects) for information on how to use them in your pipeline.
+
 ### Prebuilt pipelines
-Link and information to/about prebuilt pipelines here.
-* add names
-* and links
-* here
+For illustration purposes we provide some pipelines that utilize our components and can be used as a template if you want to build your own either with a UIMA CPE or as a Java project. As of now, these pipelines exist:
+* [BioSEM Relation Extraction Pipeline; BioNLP ST11 model](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline)
