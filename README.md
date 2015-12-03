@@ -10,12 +10,13 @@ In order to automate the builds of complex NLP pipelines and properly represent 
 A description for each individual component can be found in their respective `README.md`.
 
 ### Requirements & Dependencies
-In order to use our components you need at least [JDK 7](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)(Java SE Development Kit 7), [UIMA 2.6](https://uima.apache.org/index.html) & [Maven 3.0](https://maven.apache.org/). We also recommend using [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/) as your Java IDE, since it comes with the Maven Plugin.
+In order to use our components you need at least [JDK 7](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)(Java SE Development Kit 7), [UIMA 2.6](https://uima.apache.org/index.html) & [Maven 3.0](https://maven.apache.org/). We also recommend using [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/) as your Java IDE, since it comes with the Maven Plugin. However, you're free to try it with different versions than those mentioned, but we can't make promises for a flawless functioning of our components in these cases.
 
 ### UIMA's Collection Processing Engine (CPE)
+UIMA features a relatively easy way to combine UIMA components together in order to analyze a collection of artifacts. If you're not firm or willing to deal with Java Code, the usage of a CPE might be the right choice.
 For more detailed information see [UIMA's CPE Documentation](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tutorials_and_users_guides/tutorials_and_users_guides.html#ugr.tug.cpe).
 
-*(some more information about utilizing components the CPE way)*
+*(some more information about utilizing components the CPE way if when using pre-built pipelines)*
 
 ### Maven Artifacts
 If not stated otherwise, all the components found in this project are at least in their latest release version also available as Maven artifacts:
