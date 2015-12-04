@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jcore.reader.file.main.FileReader</implementationName>
+  <processingResourceMetaData>
+    <name>JCoRe File Reader</name>
+    <description/>
+    <version>1.0</version>
+    <vendor>JULIELab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>InputDirectory</name>
+        <description>The directory where the text files reside.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>UseFilenameAsDocId</name>
+        <description>If set to true, the filename is used as document ID (without extension).</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>PublicatonDatesFile</name>
+        <description>The file that maps each article id (e.g. pubmed id) of the files in the input directory to the corresponding publication date (can be created using julielab/jules/ae/genemapper/utils/PubMedID2PublicationDate)</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>UseFilenameAsDocId</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>InputDirectory</name>
+        <value>
+          <string>data/files</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration/>
+</collectionReaderDescription>

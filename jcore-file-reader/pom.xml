@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.julielab</groupId>
+    <artifactId>jcore-base</artifactId>
+    <version>2.1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jcore-file-reader</artifactId>
+  <name>JCoRe File Reader</name>
+  <description>Reads simple text files; derived from UIMA example "FileSystemCollectionReader"</description>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-file-reader</url>
+  <organization>
+  	<name>JULIE Lab Jena, Germany</name>
+  	<url>http://www.julielab.de</url>
+  </organization>
+  <dependencies>
+  	<dependency>
+  		<groupId>de.julielab</groupId>
+  		<artifactId>jcore-types</artifactId>
+  		<version>${jcore-version}</version>
+  	</dependency>
+  </dependencies>
+</project>
