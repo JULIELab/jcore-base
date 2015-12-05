@@ -72,6 +72,7 @@
         <module>jcore-xml-mapper</module>
         <module>jcore-xml-reader</module>
 		<module>jcore-xmi-writer</module>
+		<module>jcore-file-reader</module>
 	</modules>
 	
 	<!-- Environment Settings -->
