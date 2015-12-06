@@ -30,11 +30,11 @@
         <mandatory>false</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>outFileName</name>
-        <description>Path of IOB-file to be written.</description>
+        <name>outFolder</name>
+        <description>Path to folder where IOB-files should be written to.</description>
         <type>String</type>
         <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
+        <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
         <name>typePath</name>
@@ -75,9 +75,9 @@
         </value>
       </nameValuePair>
       <nameValuePair>
-        <name>outFileName</name>
+        <name>outFolder</name>
         <value>
-          <string>tmp/iob/casToIOB.iob</string>
+          <string>data/outFiles</string>
         </value>
       </nameValuePair>
       <nameValuePair>

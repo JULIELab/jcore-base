@@ -30,7 +30,7 @@
         <mandatory>false</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>outFileName</name>
+        <name>outFolder</name>
         <description>Path of IOB-file to be written.</description>
         <type>String</type>
         <multiValued>false</multiValued>
@@ -75,9 +75,9 @@
         </value>
       </nameValuePair>
       <nameValuePair>
-        <name>outFileName</name>
+        <name>outFolder</name>
         <value>
-          <string>src/test/resources/output/casToIOB.iob</string>
+          <string>src/test/resources/testxmis/iob</string>
         </value>
       </nameValuePair>
       <nameValuePair>

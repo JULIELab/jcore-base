@@ -25,6 +25,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +35,9 @@ import java.util.TreeMap;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.collection.CasConsumer_ImplBase;
 import org.apache.uima.jcas.JCas;
@@ -49,6 +52,7 @@ import de.julielab.jcore.consumer.cas2iob.utils.UIMAUtils;
 import de.julielab.jcore.types.Paragraph;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.segmentationEvaluator.IOBToken;
 import de.julielab.segmentationEvaluator.IOToken;
@@ -65,13 +69,15 @@ public class ToIOBConsumer extends CasConsumer_ImplBase {
 	private final String PARAGRAPH_END_MARK = "PARAGRAPH_END_MARKER"; // there will be 2 empty lines for each sentence marker
 	String mode = null;
 
-	String outFileName = null;
+	String outFolder = null;
 	String typePath = null;
 	String[] labels = null;
 
 	HashMap<String, String> objNameMethMap = null;
 
 	HashMap<String, String> labelIOBMap = null;
+	
+	int id = 1;
 
 	public void initialize() throws ResourceInitializationException {
 
@@ -81,7 +87,7 @@ public class ToIOBConsumer extends CasConsumer_ImplBase {
 
 		labels = (String[]) getConfigParameterValue("labels");
 
-		outFileName = (String) getConfigParameterValue("outFileName");
+		outFolder = (String) getConfigParameterValue("outFolder");
 
 		final String[] labelNameMethods = (String[]) getConfigParameterValue("labelNameMethods");
 
@@ -138,9 +144,9 @@ public class ToIOBConsumer extends CasConsumer_ImplBase {
 		LOGGER.info("Writing IO(B) file...");
 
 		BufferedWriter bw;
-
+		String outPathName = Paths.get(outFolder, getDocumentId(cas)).toString()+".iob";
 		try {
-			bw = new BufferedWriter(new FileWriter(outFileName));
+			bw = new BufferedWriter(new FileWriter(outPathName));
 			for (IOToken token : ioTokens) {
 				if (token.getText().equals("") || token.getText().equals(SENTENCE_END_MARK)) {
 					// empty line for sentence break
@@ -158,7 +164,7 @@ public class ToIOBConsumer extends CasConsumer_ImplBase {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		LOGGER.info("The IO(B) file was written to " + outFileName);
+		LOGGER.info("The IO(B) file was written to " + outPathName);
 	}
 
 	/**
@@ -464,4 +470,26 @@ public class ToIOBConsumer extends CasConsumer_ImplBase {
 
 		return ret;
 	}
+	
+    private String getDocumentId(CAS cas) {
+        Header header = null;
+        Type headerType = cas.getTypeSystem().getType(Header.class.getCanonicalName());
+        Iterator<org.apache.uima.jcas.tcas.Annotation> iterator;
+        try {
+            iterator = cas.getJCas().getAnnotationIndex(Header.type).iterator();
+            
+            if (iterator.hasNext()) {
+            	header = (Header) iterator.next();
+            }
+        } catch (CASRuntimeException e) {
+            e.printStackTrace();
+        } catch (CASException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        if (header != null) {
+            return header.getDocId();
+        }
+        return new Integer(id++).toString();
+    }
 }
