@@ -110,9 +110,9 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			log.debug("BioSemException occurred: ", e);
 		} catch (Exception e) {
 			log.error(
-					"CRITICAL exception (i.e. exception is reported to the UIMA framework and might cause this processing thread to be cancelled) occurred in document "
+					"Error occurred in document "
 							+ docId + ":", e);
-			throw new AnalysisEngineProcessException(e);
+//			throw new AnalysisEngineProcessException(e);
 		}
 	}
 
