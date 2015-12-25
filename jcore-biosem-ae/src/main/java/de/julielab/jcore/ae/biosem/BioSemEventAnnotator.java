@@ -71,6 +71,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 		} else {
 			docId = "<unknown ID>";
 		}
+		DBUtils docDb = null;
 		try {
 			log.debug("Processing document {}", docId);
 			Map<String, Gene> proteins = enumerateProteins(aJCas);
@@ -78,7 +79,6 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 				log.debug("Debug");
 			}
 			List<String> proteinLines = getProteinLines(proteins);
-			DBUtils docDb;
 			// Sometimes we have problems creating the text database.
 			// Unfortunately, I'm not sure why this is. However, we'd rather
 			// want to skip those cases instead of letting the pipeline fail as
@@ -108,18 +108,21 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			log.debug("Got {} triggers from BioSem.", triggers.size());
 			log.debug("Got {} events from BioSem.", events.size());
 			addEventsToIndexes(events, proteins, triggers, aJCas);
-			try {
-				docDb.closeDB();
-			} catch (Exception e) {
-				log.debug(
-						"Exception while shutting down document database for document {}. Since events have already been extracted, this is a minor error taken for itself. However it could lead to subsequent errors in the HSQL database system which could be critical.",
-						docId);
-			}
 		} catch (BioSemException e) {
 			log.debug("BioSemException occurred: ", e);
 		} catch (Exception e) {
 			log.error("Error occurred in document " + docId + ":", e);
 			// throw new AnalysisEngineProcessException(e);
+		} finally {
+			try {
+				if (docDb != null)
+					docDb.closeDB();
+			} catch (Exception e) {
+				log.debug(
+						"Exception while shutting down document database for document {}. Since events have already been extracted, this is a minor error taken for itself. However it could lead to subsequent errors in the HSQL database system which could be critical.",
+						docId);
+			}
+
 		}
 	}
 
