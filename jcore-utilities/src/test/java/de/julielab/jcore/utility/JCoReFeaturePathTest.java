@@ -1,10 +1,11 @@
 package de.julielab.jcore.utility;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -465,5 +466,41 @@ public class JCoReFeaturePathTest {
 		fp = new JCoReFeaturePath();
 		fp.initialize("/resourceEntryList:coveredText()");
 		assertEquals("IL-2, mTOR", fp.getValueAsString(g));
+	}
+	
+	@Test
+	public void testGetIncompleteValues() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		jcas.setDocumentText("IL-2 mTOR");
+
+		List<AuthorInfo> authors = new ArrayList<>();
+		AuthorInfo ai = new AuthorInfo(jcas);
+		ai.setForeName("Hans");
+		ai.setLastName("Gruber");
+		authors.add(ai);
+		
+		ai = new AuthorInfo(jcas);
+		// no first name
+		ai.setLastName("Smith");
+		authors.add(ai);
+		
+		ai = new AuthorInfo(jcas);
+		ai.setForeName("Heike");
+		ai.setLastName("Makatsch");
+		authors.add(ai);
+		
+		FSArray fsArray = new FSArray(jcas, authors.size());
+		for (int i = 0; i < authors.size(); ++i)
+			fsArray.set(i, authors.get(i));
+		Header h = new Header(jcas);
+		h.setAuthors(fsArray);
+		h.addToIndexes();
+
+		JCoReFeaturePath fp = new JCoReFeaturePath();
+		fp.initialize("/authors/foreName");
+		
+		String[] array = fp.getValueAsStringArray(h);
+		assertEquals(3, array.length);
+		assertNull(array[1]);
 	}
 }

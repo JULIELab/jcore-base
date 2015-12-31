@@ -110,8 +110,8 @@ public class JCoReFeaturePath implements FeaturePath {
 	/**
 	 * The sequence of features given in the feature path. For example, the
 	 * feature path <tt>/argument[0]/resourceEntryList[1]/entryId</tt> would
-	 * contain three features <tt>argument</tt>, <tt>resourceEntryList</tt> and
-	 * </tt>entryId</tt>.
+	 * contain three features <tt>argument</tt>, <tt>resourceEntryList</tt>
+	 * and </tt>entryId</tt>.
 	 */
 	private Feature[] features;
 	/**
@@ -188,7 +188,8 @@ public class JCoReFeaturePath implements FeaturePath {
 		if (builtInFunctionSplit.length > 1) {
 			this.featurePath[this.featurePath.length - 1] = builtInFunctionSplit[0];
 			this.builtInFunction = builtInFunctionSplit[1];
-			log.debug("Found in-built function {} to apply on the feature structure pointed to by the feature path.", builtInFunction);
+			log.debug("Found in-built function {} to apply on the feature structure pointed to by the feature path.",
+					builtInFunction);
 		}
 		this.getterMap = new HashMap<>();
 		this.setterMap = new HashMap<>();
@@ -205,7 +206,8 @@ public class JCoReFeaturePath implements FeaturePath {
 	@Override
 	public void typeInit(Type featurePathType) throws CASException {
 		if (featurePathChanged || null == currentType || !currentType.equals(featurePathType)) {
-			log.debug("Initializing internal structure for feature path {} on type {}.", featurePathString, featurePathType.getName());
+			log.debug("Initializing internal structure for feature path {} on type {}.", featurePathString,
+					featurePathType.getName());
 			Type currentFeatureType = featurePathType;
 			features = new Feature[this.featurePath.length];
 			featureBaseNames = new String[this.featurePath.length];
@@ -230,19 +232,22 @@ public class JCoReFeaturePath implements FeaturePath {
 					featureBaseNames[i] = featureName;
 					Feature feature = currentFeatureType.getFeatureByBaseName(featureName);
 					if (null == feature) {
-						log.debug("Feature \"{}\" is not defined for type \"{}\". It is checked whether the feature is defined on one or more subtypes.",
+						log.debug(
+								"Feature \"{}\" is not defined for type \"{}\". It is checked whether the feature is defined on one or more subtypes.",
 								featureName, currentFeatureType);
 						TypeSystem typeSystem = ((TypeImpl) featurePathType).getTypeSystem();
 						// We get all possible features only to check whether
 						// there is a single - and thus canonical -
 						// feature, none or even multiple candidates.
-						Set<Feature> featuresOfSubtypes = searchFeatureInSubtypes(featureName, currentFeatureType, typeSystem);
+						Set<Feature> featuresOfSubtypes = searchFeatureInSubtypes(featureName, currentFeatureType,
+								typeSystem);
 						if (featuresOfSubtypes.size() == 1)
 							feature = featuresOfSubtypes.iterator().next();
 						else
 							featureCandidates.set(i, featuresOfSubtypes);
 						if (null == feature && featuresOfSubtypes.isEmpty())
-							throw new CASException(CASException.UNDEFINED_FEATURE, new Object[] { featureName, currentFeatureType });
+							throw new CASException(CASException.UNDEFINED_FEATURE,
+									new Object[] { featureName, currentFeatureType });
 					}
 					if (null != feature) {
 						features[i] = feature;
@@ -259,8 +264,9 @@ public class JCoReFeaturePath implements FeaturePath {
 						log.debug("Determined type \"{}\" for feature \"{}\".", currentFeatureType, featureName);
 					}
 				} catch (Exception e) {
-					log.error("Error happened while initializing feature path \"{}\" on type \"{}\". Path element index: {} (\"{}\").", new Object[] {
-							this.featurePathString, featurePathType, i, featureName });
+					log.error(
+							"Error happened while initializing feature path \"{}\" on type \"{}\". Path element index: {} (\"{}\").",
+							new Object[] { this.featurePathString, featurePathType, i, featureName });
 					throw e;
 				}
 			}
@@ -277,7 +283,8 @@ public class JCoReFeaturePath implements FeaturePath {
 		for (Type subtype : subtypes) {
 			Feature foundFeature = subtype.getFeatureByBaseName(featureName);
 			if (null != foundFeature) {
-				log.debug("Determined feature \"{}\" to actually belong to subtype \"{}\" (and possible others).", featureName, type);
+				log.debug("Determined feature \"{}\" to actually belong to subtype \"{}\" (and possible others).",
+						featureName, type);
 				returnFeatures.add(foundFeature);
 			}
 			returnFeatures.addAll(searchFeatureInSubtypes(featureName, subtype, typeSystem));
@@ -326,8 +333,8 @@ public class JCoReFeaturePath implements FeaturePath {
 			FeatureStructure currentFs = fs;
 			for (int i = startFeatureIndex; i < features.length; i++) {
 				Feature currentFeature = features[i];
-				log.trace("Now traversing feature {} on type {}, beginning at position {} of the feature path.", new Object[] { currentFeature, fs.getType(),
-						startFeatureIndex });
+				log.trace("Now traversing feature {} on type {}, beginning at position {} of the feature path.",
+						new Object[] { currentFeature, fs.getType(), startFeatureIndex });
 				// If the feature is null this means, there are multiple
 				// candidates for the feature OR there were
 				// multiple candidates before and thus we don't know what comes
@@ -336,14 +343,17 @@ public class JCoReFeaturePath implements FeaturePath {
 				if (null == currentFeature)
 					currentFeature = currentFs.getType().getFeatureByBaseName(featureBaseNames[i]);
 				if (null == currentFeature)
-					throw new CASException(CASException.UNDEFINED_FEATURE, new Object[] { featureBaseNames[i], currentFs.getType() });
+					throw new CASException(CASException.UNDEFINED_FEATURE,
+							new Object[] { featureBaseNames[i], currentFs.getType() });
 				if (currentFeature.getRange().isPrimitive()) {
 					if (i < features.length - 1) {
-						log.warn("The value of the feature \"{}\" is primitive. However, the feature path \"{}\" has not yet come to an end. The current feature value is returned, the rest of the feature path is ignored.");
+						log.warn(
+								"The value of the feature \"{}\" is primitive. However, the feature path \"{}\" has not yet come to an end. The current feature value is returned, the rest of the feature path is ignored.");
 						break;
 					}
 					featureValue = getFeatureValueFromFeatureStructure(currentFs, currentFeature, replacements);
-					log.trace("Feature {} identified as primitive-valued. The value is: \"{}\"", currentFeature, featureValue);
+					log.trace("Feature {} identified as primitive-valued. The value is: \"{}\"", currentFeature,
+							featureValue);
 				} else if (currentFeature.getRange().isArray()) {
 					log.trace("Feature {} identified as array-valued.", currentFeature);
 					FeatureStructure array = currentFs.getFeatureValue(currentFeature);
@@ -357,11 +367,14 @@ public class JCoReFeaturePath implements FeaturePath {
 						log.trace("Value of feature  {} is a {}.", currentFeature, arrayClass.getSimpleName());
 						FSArray fsArray = (FSArray) array;
 						if (index >= fsArray.size()) {
-							log.trace("Array index is {} which is greater than the array has entries. Nothing is returned for this feature structure.", index);
+							log.trace(
+									"Array index is {} which is greater than the array has entries. Nothing is returned for this feature structure.",
+									index);
 							// Nothing to get for this fs
 							break;
 						} else if (index == Integer.MIN_VALUE) {
-							log.trace("No particular index to access has been given. Returning values for all elements in the array.");
+							log.trace(
+									"No particular index to access has been given. Returning values for all elements in the array.");
 							// No index given on an array feature; thus we
 							// collect all values in the array.
 							List<Object> valueList = new ArrayList<>();
@@ -374,7 +387,9 @@ public class JCoReFeaturePath implements FeaturePath {
 								if (i == features.length - 1) {
 									// End of the feature path
 									valueList.add(element);
-									log.trace("Retrieved value \"{}\" for element at position {}. This is the end of the feature path.", element, j);
+									log.trace(
+											"Retrieved value \"{}\" for element at position {}. This is the end of the feature path.",
+											element, j);
 								} else {
 									// The feature path continues, thus we now
 									// have to recursively collect the feature
@@ -389,15 +404,13 @@ public class JCoReFeaturePath implements FeaturePath {
 									// it is a List - i.e. the remainder of the
 									// feature path also contained array-valued
 									// features - or a single value.
-									if (null != elementValue) {
-										if (elementValue.getClass() == ArrayList.class) {
-											log.trace("Adding values to result list.");
-											List<?> remainderPathValues = (ArrayList<?>) elementValue;
-											valueList.addAll(remainderPathValues);
-										} else {
-											log.trace("Adding value to result list.");
-											valueList.add(elementValue);
-										}
+									if (null != elementValue && elementValue.getClass() == ArrayList.class) {
+										log.trace("Adding values to result list.");
+										List<?> remainderPathValues = (ArrayList<?>) elementValue;
+										valueList.addAll(remainderPathValues);
+									} else {
+										log.trace("Adding value to result list.");
+										valueList.add(elementValue);
 									}
 								}
 							}
@@ -412,7 +425,8 @@ public class JCoReFeaturePath implements FeaturePath {
 							if (effectiveIndex < 0)
 								effectiveIndex = fsArray.size() + index;
 							if (effectiveIndex < 0 || effectiveIndex >= fsArray.size()) {
-								log.trace("Array index {} is out of bounds for array found for feature, returning null", effectiveIndex, currentFeature);
+								log.trace("Array index {} is out of bounds for array found for feature, returning null",
+										effectiveIndex, currentFeature);
 								return null;
 							}
 							FeatureStructure arrayElement = fsArray.get(effectiveIndex);
@@ -423,7 +437,8 @@ public class JCoReFeaturePath implements FeaturePath {
 								if (null != replacements)
 									throw new IllegalArgumentException(
 											"Replacements of feature values is only supported for primitive feature types. However, the feature path "
-													+ featurePathString + " points to the feature value " + featureValue);
+													+ featurePathString + " points to the feature value "
+													+ featureValue);
 							}
 						}
 					} else {
@@ -436,7 +451,8 @@ public class JCoReFeaturePath implements FeaturePath {
 								// are the next two lines necessary?
 								// if (null == featureValue)
 								// break;
-							} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							} catch (NoSuchMethodException | SecurityException | IllegalAccessException
+									| IllegalArgumentException | InvocationTargetException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
@@ -476,13 +492,14 @@ public class JCoReFeaturePath implements FeaturePath {
 			if (builtInFunction.equals("coveredText()"))
 				functionValue = ((Annotation) value).getCoveredText();
 			else
-				throw new NotImplementedException("Built-in function " + builtInFunction + " is currently not supported by the JCoReFeaturePath");
+				throw new NotImplementedException(
+						"Built-in function " + builtInFunction + " is currently not supported by the JCoReFeaturePath");
 		}
 		return functionValue;
 	}
 
-	private Object getArrayValue(CommonArrayFS sa, int index, Map<?, ?> replacements) throws NoSuchMethodException, SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	private Object getArrayValue(CommonArrayFS sa, int index, Map<?, ?> replacements) throws NoSuchMethodException,
+			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Object featureValue;
 
 		Method getter = getterMap.get(sa.getClass());
@@ -501,7 +518,9 @@ public class JCoReFeaturePath implements FeaturePath {
 		}
 
 		if (index >= sa.size()) {
-			log.trace("Array index is {} which is greater than the array has entries. Nothing is returned for this feature structure.", index);
+			log.trace(
+					"Array index is {} which is greater than the array has entries. Nothing is returned for this feature structure.",
+					index);
 			// Nothing to get for this fs
 			return null;
 		} else if (index == Integer.MIN_VALUE) {
@@ -520,8 +539,8 @@ public class JCoReFeaturePath implements FeaturePath {
 		return featureValue;
 	}
 
-	protected Object getArrayElement(CommonArrayFS sa, Map<?, ?> replacements, Method getter, Method setter, int index) throws IllegalAccessException,
-			InvocationTargetException {
+	protected Object getArrayElement(CommonArrayFS sa, Map<?, ?> replacements, Method getter, Method setter, int index)
+			throws IllegalAccessException, InvocationTargetException {
 		int effectiveIndex = index;
 		if (effectiveIndex < 0)
 			effectiveIndex = sa.size() + effectiveIndex;
@@ -538,10 +557,12 @@ public class JCoReFeaturePath implements FeaturePath {
 			} else {
 				if (null == replacement) {
 					replacement = defaultReplacementValue;
-					log.trace("No mapped value found for feature value {}, using default value {} instead.", value, defaultReplacementValue);
+					log.trace("No mapped value found for feature value {}, using default value {} instead.", value,
+							defaultReplacementValue);
 				}
 				// replace the original value with the mapped value
-				log.trace("Replacing array value at position {}: {} --> {}", new Object[] { effectiveIndex, value, replacement });
+				log.trace("Replacing array value at position {}: {} --> {}",
+						new Object[] { effectiveIndex, value, replacement });
 				value = replacement;
 				setter.invoke(sa, effectiveIndex, value);
 			}
@@ -589,7 +610,8 @@ public class JCoReFeaturePath implements FeaturePath {
 			featureValue = fs.getShortValue(feature);
 			break;
 		default:
-			throw new IllegalArgumentException("The type " + rangeType + " is currently not supported as feature value type.");
+			throw new IllegalArgumentException(
+					"The type " + rangeType + " is currently not supported as feature value type.");
 		}
 		if (null != replacements && !alreadyReplaced.contains(fs)) {
 			Object replacement = replacements.get(featureValue);
@@ -600,9 +622,11 @@ public class JCoReFeaturePath implements FeaturePath {
 			} else {
 				if (null == replacement) {
 					replacement = defaultReplacementValue;
-					log.trace("No mapped value found for feature value {}, using default value {} instead.", featureValue, defaultReplacementValue);
+					log.trace("No mapped value found for feature value {}, using default value {} instead.",
+							featureValue, defaultReplacementValue);
 				}
-				log.trace("Replacing value for feature {}: {} --> {}", new Object[] { feature.getName(), featureValue, replacement });
+				log.trace("Replacing value for feature {}: {} --> {}",
+						new Object[] { feature.getName(), featureValue, replacement });
 				featureValue = replacement;
 				// This is certainly not optimal concerning runtime, but it's
 				// quite concisely written...
@@ -610,7 +634,8 @@ public class JCoReFeaturePath implements FeaturePath {
 				alreadyReplaced.add(fs);
 			}
 		} else if (null != replacements && alreadyReplaced.contains(fs)) {
-			log.trace("Value {} for feature {} is not replaced because the respective feature structure {} was already subject to a replacement.",
+			log.trace(
+					"Value {} for feature {} is not replaced because the respective feature structure {} was already subject to a replacement.",
 					new Object[] { featureValue, feature.getName(), fs.toString() });
 			// for (Object o : alreadyReplaced) {
 			// FeatureStructure f = (FeatureStructure) o;
@@ -701,6 +726,8 @@ public class JCoReFeaturePath implements FeaturePath {
 	 * @return
 	 */
 	protected String getObjectValueAsString(Object objectValue) {
+		if (null == objectValue)
+			return null;
 		String stringValue = null;
 		if (objectValue.getClass() == String.class) {
 			stringValue = (String) objectValue;
@@ -872,7 +899,8 @@ public class JCoReFeaturePath implements FeaturePath {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static Map<String, String> readReplacementsFromFile(String replacementsFile) throws FileNotFoundException, IOException {
+	public static Map<String, String> readReplacementsFromFile(String replacementsFile)
+			throws FileNotFoundException, IOException {
 		try (FileInputStream fis = new FileInputStream(replacementsFile)) {
 			return readReplacementsFromInputStream(fis);
 		}
@@ -888,7 +916,8 @@ public class JCoReFeaturePath implements FeaturePath {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static Map<String, String> readReplacementsFromInputStream(InputStream is) throws FileNotFoundException, IOException {
+	public static Map<String, String> readReplacementsFromInputStream(InputStream is)
+			throws FileNotFoundException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		try {
 			Map<String, String> replacements = new HashMap<>();
@@ -899,8 +928,8 @@ public class JCoReFeaturePath implements FeaturePath {
 				String[] split = line.split("=");
 				if (split.length != 2)
 					throw new IllegalArgumentException(
-							"Format error in replacements file: Expected format is 'originalValue=replacementValue' but the input line '" + line + "' has "
-									+ split.length + " columns.");
+							"Format error in replacements file: Expected format is 'originalValue=replacementValue' but the input line '"
+									+ line + "' has " + split.length + " columns.");
 				replacements.put(split[0].trim(), split[1].trim());
 			}
 			return replacements;
