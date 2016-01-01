@@ -219,7 +219,6 @@ public class XMLMapperTest {
 		assertTrue(at.getCoveredText().startsWith("Neuronal development requires"));
 		assertTrue(at.getCoveredText().endsWith("in the neocortex."));
 		assertEquals(2, at.getStructuredAbstractParts().size());
-		XmiCasSerializer.serialize(jCas.getCas(), new FileOutputStream("meincas.xmi"));
 	}
 	
 	@Test
