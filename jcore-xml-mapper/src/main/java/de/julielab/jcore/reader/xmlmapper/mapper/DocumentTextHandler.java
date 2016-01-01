@@ -77,15 +77,6 @@ public class DocumentTextHandler {
 			for (int j = 0; j < textPartStrs.size(); ++j) {
 				String textPartStr = textPartStrs.get(j);
 				if (textPartStr.length() > 0) {
-					// Important: First compute offset, then add the new text
-					// part. Otherwise, the new text part will be treated as the
-					// former
-					// text part and there will be an offset increment although
-					// it is
-					// incorrect.
-					// if (i - 1 >= 0 && i - 1 < textPartList.size() &&
-					// textPartList.get(i - 1).length() > 0)
-					// offset += 1;
 					// accommodate for the line break after each text part
 					// inserted at the end of the method
 					if (!textPartList.isEmpty())
@@ -125,7 +116,7 @@ public class DocumentTextHandler {
 		// LOGGER.warn("no match for xPath " + part.getXPath()
 		// + " in document with identifier " + new String(identifier));
 		while (i != -1) {
-			textPart = MapperUtils.getElementText(vn);
+			textPart = MapperUtils.getElementText(vn).trim();
 			textParts.add(textPart);
 			i = ap.evalXPath();
 		}
