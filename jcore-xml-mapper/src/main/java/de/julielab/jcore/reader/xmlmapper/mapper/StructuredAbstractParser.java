@@ -2,6 +2,7 @@ package de.julielab.jcore.reader.xmlmapper.mapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +75,7 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
 			if (newlineBetweenSections) {
 				// in case the last section was empty, we delete the trailing
 				// newline
-				if (sb.length() > 0 && StringUtils.isBlank(abstractSectionText)){
+				if (sb.length() > 0 && StringUtils.isBlank(abstractSectionText)) {
 					sb.deleteCharAt(sb.length() - 1);
 					--sectionOffset;
 				}
@@ -109,15 +110,19 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
 			}
 		}
 
-		AbstractText abstractText = new AbstractText(jCas, offset, sectionOffset);
-		if (abstractParts.size() > 0) {
-			FSArray sectionsArray = new FSArray(jCas, abstractParts.size());
-			for (int i = 0; i < abstractParts.size(); ++i)
-				sectionsArray.set(i, abstractParts.get(i));
-			abstractText.setStructuredAbstractParts(sectionsArray);
+		// only create an abstract annotation if there actually is an abstract
+		if (sectionOffset > offset) {
+			AbstractText abstractText = new AbstractText(jCas, offset, sectionOffset);
+			if (abstractParts.size() > 0) {
+				FSArray sectionsArray = new FSArray(jCas, abstractParts.size());
+				for (int i = 0; i < abstractParts.size(); ++i)
+					sectionsArray.set(i, abstractParts.get(i));
+				abstractText.setStructuredAbstractParts(sectionsArray);
+			}
+			abstractText.addToIndexes();
+			return Arrays.asList(sb.toString());
 		}
-		abstractText.addToIndexes();
-		return Arrays.asList(sb.toString());
+		return Collections.emptyList();
 	}
 
 	public String getDocumentText() {

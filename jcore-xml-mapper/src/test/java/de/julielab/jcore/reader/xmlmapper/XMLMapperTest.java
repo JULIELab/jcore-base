@@ -176,7 +176,7 @@ public class XMLMapperTest {
 	@Test
 	public void testStructuredAbstract2()throws Exception {
 		Map<String, String> readerConfig = new HashMap<String, String>();
-		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/25556833.xml");
+		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/medlineTest/25556833.xml");
 		Map<String, String> readerExtRes = new HashMap<String, String>();
 		readerExtRes.put(EXT_RES_KEY, XMLReader.RESOURCE_MAPPING_FILE);
 		readerExtRes.put(EXT_RES_NAME, "MappingFile");
@@ -245,6 +245,28 @@ public class XMLMapperTest {
 		assertTrue(at.getCoveredText().startsWith("In the last few years,"));
 		assertTrue(at.getCoveredText().endsWith("antigen-presenting cells."));
 		
+	}
+	
+	@Test
+	public void testDocumentWithoutAbstract()throws Exception {
+		Map<String, String> readerConfig = new HashMap<String, String>();
+		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/medlineTest/19536169.xml");
+		Map<String, String> readerExtRes = new HashMap<String, String>();
+		readerExtRes.put(EXT_RES_KEY, XMLReader.RESOURCE_MAPPING_FILE);
+		readerExtRes.put(EXT_RES_NAME, "MappingFile");
+		readerExtRes.put(EXT_RES_URL, "file:medlineMappingFileStructuredAbstract.xml");
+		CollectionReader xmlReader = createCollectionReaderWithDescriptor(TEST_DESC_PATH, readerConfig, readerExtRes);
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlReader.getMetaData());
+		assertTrue(xmlReader.hasNext());
+
+		xmlReader.getNext(cas);
+		JCas jCas = cas.getJCas();
+		
+		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractSection.type).iterator();
+		assertFalse(it.hasNext());
+		
+		it = jCas.getAnnotationIndex(AbstractText.type).iterator();
+		assertFalse(it.hasNext());
 	}
 
 	/**
