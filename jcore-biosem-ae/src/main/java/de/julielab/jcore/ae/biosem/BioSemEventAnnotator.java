@@ -75,9 +75,6 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 		try {
 			log.debug("Processing document {}", docId);
 			Map<String, Gene> proteins = enumerateProteins(aJCas);
-			if ("PMC-1064873-04-Materials_and_methods-03".equals(docId)) {
-				log.debug("Debug");
-			}
 			List<String> proteinLines = getProteinLines(proteins);
 			// Sometimes we have problems creating the text database.
 			// Unfortunately, I'm not sure why this is. However, we'd rather
@@ -87,14 +84,16 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 				docDb = loader.Txt2Db(docId, text, proteinLines);
 			} catch (NullPointerException e) {
 				log.debug(
-						"Could not create text database for document {} due to NullPointerException during creation. Trying again.",
+						"Could not create text database for document {} due to NullPointerException during creation. Trying to close the DB and open it again after a short delay",
 						docId);
+				docDb.closeDB();
+				Thread.sleep(10000);
 				try {
-					docDb = loader.Txt2Db(docId, text, proteinLines);
+					docDb = loader.Txt2Db(docId + "-secondtry", text, proteinLines);
 				} catch (Exception e2) {
 					log.error("Repeatedly failed to create text database for document " + docId
 							+ ". This document will be skipped. Exception was: ", e2);
-					return;
+					throw e2;
 				}
 			}
 			if (null == xtr) {
@@ -112,13 +111,13 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			log.debug("BioSemException occurred: ", e);
 		} catch (Exception e) {
 			log.error("Error occurred in document " + docId + ":", e);
-			// throw new AnalysisEngineProcessException(e);
+			throw new AnalysisEngineProcessException(e);
 		} finally {
 			try {
 				if (docDb != null)
 					docDb.closeDB();
 			} catch (Exception e) {
-				log.debug(
+				log.warn(
 						"Exception while shutting down document database for document {}. Since events have already been extracted, this is a minor error taken for itself. However it could lead to subsequent errors in the HSQL database system which could be critical.",
 						docId);
 			}
