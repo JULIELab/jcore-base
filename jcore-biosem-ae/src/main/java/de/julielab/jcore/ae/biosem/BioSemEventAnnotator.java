@@ -48,6 +48,16 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 
 	private EventExtraction xtr;
 
+	/**
+	 * We use this static object to synchronize open and close calls to the
+	 * document database between multiple threads. This stuff should be thread
+	 * safe but pipelines get stuck on a regular basis on database opening which
+	 * in turn ends up in HSQLDB where in a static HashMap all databases are
+	 * stored. The access is synchronized and everything should be alright, but
+	 * obviously, it isn't.
+	 */
+	private static Object lock = new Object();
+
 	@Override
 	public void initialize(UimaContext aContext) throws ResourceInitializationException {
 		super.initialize(aContext);
@@ -80,20 +90,21 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			// Unfortunately, I'm not sure why this is. However, we'd rather
 			// want to skip those cases instead of letting the pipeline fail as
 			// a whole.
-			try {
-				docDb = loader.Txt2Db(docId, text, proteinLines);
-			} catch (NullPointerException e) {
-				log.debug(
-						"Could not create text database for document {} due to NullPointerException during creation. Trying to close the DB and open it again after a short delay",
-						docId);
-				docDb.closeDB();
-				Thread.sleep(10000);
+			synchronized (lock) {
 				try {
-					docDb = loader.Txt2Db(docId + "-secondtry", text, proteinLines);
-				} catch (Exception e2) {
-					log.error("Repeatedly failed to create text database for document " + docId
-							+ ". This document will be skipped. Exception was: ", e2);
-					throw e2;
+					docDb = loader.Txt2Db(docId, text, proteinLines);
+				} catch (NullPointerException e) {
+					log.debug(
+							"Could not create text database for document {} due to NullPointerException during creation. Trying to close the DB and open it again after a short delay",
+							docId);
+					Thread.sleep(10000);
+					try {
+						docDb = loader.Txt2Db(docId + "-secondtry", text, proteinLines);
+					} catch (Exception e2) {
+						log.error("Repeatedly failed to create text database for document " + docId
+								+ ". This document will be skipped. Exception was: ", e2);
+						throw e2;
+					}
 				}
 			}
 			if (null == xtr) {
@@ -114,8 +125,11 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			throw new AnalysisEngineProcessException(e);
 		} finally {
 			try {
-				if (docDb != null)
-					docDb.closeDB();
+				if (docDb != null) {
+					synchronized (lock) {
+						docDb.closeDB();
+					}
+				}
 			} catch (Exception e) {
 				log.warn(
 						"Exception while shutting down document database for document {}. Since events have already been extracted, this is a minor error taken for itself. However it could lead to subsequent errors in the HSQL database system which could be critical.",
