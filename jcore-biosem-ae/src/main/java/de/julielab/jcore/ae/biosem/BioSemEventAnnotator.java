@@ -85,6 +85,11 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 		try {
 			log.debug("Processing document {}", docId);
 			Map<String, Gene> proteins = enumerateProteins(aJCas);
+			if (proteins.isEmpty()) {
+				log.debug(
+						"Skipping event extraction for this document because no proteins have been found that could be involved in an event.");
+				return;
+			}
 			List<String> proteinLines = getProteinLines(proteins);
 			// Sometimes we have problems creating the text database.
 			// Unfortunately, I'm not sure why this is. However, we'd rather
