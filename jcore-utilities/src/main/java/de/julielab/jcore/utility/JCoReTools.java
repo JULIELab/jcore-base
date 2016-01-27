@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.collection.CollectionReader;
@@ -260,7 +261,10 @@ public class JCoReTools {
 	 */
 	public static String getPubmedId(JCas aJCas) {
 		AnnotationIndex<Annotation> headerIndex = aJCas.getAnnotationIndex(Header.type);
-		Header header = (Header) headerIndex.iterator().next();
+		FSIterator<Annotation> it = headerIndex.iterator();
+		if (!it.hasNext())
+			return null;
+		Header header = (Header) it.next();
 		String pubmedId = header.getDocId();
 		return pubmedId;
 	}
