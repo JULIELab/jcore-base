@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>de.julielab.jcore.consumer.xmi.CasToXmiConsumer</implementationName>
-  <processingResourceMetaData>
-    <name>JCoRe XMI Writer</name>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.julielab.jcore.consumer.xmi.CasToXmiConsumer</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>XMIWriter</name>
     <description/>
-    <version>2.0.0</version>
+    <version>Test</version>
     <vendor/>
     <configurationParameters>
       <configurationParameter>
@@ -56,29 +57,16 @@ Default is false.</description>
       <nameValuePair>
         <name>OutputDirectory</name>
         <value>
-          <string>xmi-output</string>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>Compress</name>
-        <value>
-          <boolean>false</boolean>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>FileNameType</name>
-        <value>
-          <string>de.julielab.jcore.types.Header</string>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>FileNameFeature</name>
-        <value>
-          <string>docId</string>
+          <string>src/test/resources/output-xmi</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
-    <typeSystemDescription/>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-basic-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+      </imports>
+    </typeSystemDescription>
     <typePriorities/>
     <fsIndexCollection/>
     <capabilities>
@@ -93,6 +81,6 @@ Default is false.</description>
       <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
-  </processingResourceMetaData>
+  </analysisEngineMetaData>
   <resourceManagerConfiguration/>
-</casConsumerDescription>
+</analysisEngineDescription>

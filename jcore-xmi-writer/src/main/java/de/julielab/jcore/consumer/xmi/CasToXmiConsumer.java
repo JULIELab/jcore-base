@@ -34,15 +34,17 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.uima.UimaContext;
+import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.XmiCasSerializer;
-import org.apache.uima.collection.CasConsumer_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -57,12 +59,12 @@ import org.xml.sax.SAXException;
  * 
  * @author tomanek, muehlhausen
  */
-public class CasToXmiConsumer extends CasConsumer_ImplBase {
+public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 
 	private Logger LOGGER = LoggerFactory.getLogger(CasToXmiConsumer.class);
 
-	private static final String PARAM_OUTPUTDIR = "OutputDirectory";
-	private static final String CREATE_BATCH_SUBDIRS = "CreateBatchSubDirs";
+	public static final String PARAM_OUTPUTDIR = "OutputDirectory";
+	public static final String CREATE_BATCH_SUBDIRS = "CreateBatchSubDirs";
 	private static final String PARAM_COMPRESS = "Compress";
 	private static final String PARAM_COMPRESS_SINGLE = "CompressSingle";
 	private static final String PARAM_FILE_NAME_TYPE = "FileNameType";
@@ -78,11 +80,13 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 
 	private static Set<Integer> randomNumbers = new HashSet<Integer>();
 
+	@ConfigurationParameter(name = PARAM_OUTPUTDIR, mandatory = true)
 	private File outputDir;
 	private File currentSubDir;
 	private int doc;
 	private boolean compress;
 	private boolean compressSingle;
+	@ConfigurationParameter(name = CREATE_BATCH_SUBDIRS, mandatory = false)
 	private boolean createBatchSubdirs;
 	private String fileNameTypeName;
 	private String fileNameFeatureName;
@@ -95,9 +99,9 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 	// SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
 	@Override
-	public void initialize() throws ResourceInitializationException {
+	public void initialize(UimaContext aContext) throws ResourceInitializationException {
 		LOGGER.info("initializing CasToXmiConsumer...");
-		outputDir = new File((String) getConfigParameterValue(PARAM_OUTPUTDIR));
+		outputDir = new File((String) aContext.getConfigParameterValue(PARAM_OUTPUTDIR));
 		if (outputDir == null) {
 			LOGGER.error("Mandatory parameter " + PARAM_OUTPUTDIR
 					+ " is missing.");
@@ -108,20 +112,20 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 		}
 		LOGGER.info("Writing XMI files to output directory '" + outputDir + "'");
 
-		if (getConfigParameterValue(CREATE_BATCH_SUBDIRS) != null) {
-			createBatchSubdirs = (Boolean) getConfigParameterValue(CREATE_BATCH_SUBDIRS);
+		if (aContext.getConfigParameterValue(CREATE_BATCH_SUBDIRS) != null) {
+			createBatchSubdirs = (Boolean) aContext.getConfigParameterValue(CREATE_BATCH_SUBDIRS);
 		} else {
 			createBatchSubdirs = DEFAULT_CREATE_BATCH_SUBDIRS;
 		}
 		LOGGER.info("creating subdirectories / giant zip files for each batch: "
 				+ createBatchSubdirs);
 
-		fileNameTypeName = (String) getConfigParameterValue(PARAM_FILE_NAME_TYPE);
+		fileNameTypeName = (String) aContext.getConfigParameterValue(PARAM_FILE_NAME_TYPE);
 		if (fileNameTypeName == null) {
 			fileNameTypeName = DEFAULT_FILE_NAME_TYPE;
 		}
 
-		fileNameFeatureName = (String) getConfigParameterValue(PARAM_FILE_NAME_FEATURE);
+		fileNameFeatureName = (String) aContext.getConfigParameterValue(PARAM_FILE_NAME_FEATURE);
 		if (fileNameFeatureName == null) {
 			fileNameFeatureName = DEFAULT_FILE_NAME_FEATURE;
 		}
@@ -129,8 +133,8 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 		LOGGER.info("trying to read file name from " + fileNameTypeName + "."
 				+ fileNameFeatureName);
 
-		if (getConfigParameterValue(PARAM_COMPRESS_SINGLE) != null) {
-			compressSingle = (Boolean) getConfigParameterValue(PARAM_COMPRESS_SINGLE);
+		if (aContext.getConfigParameterValue(PARAM_COMPRESS_SINGLE) != null) {
+			compressSingle = (Boolean) aContext.getConfigParameterValue(PARAM_COMPRESS_SINGLE);
 		} else {
 			compressSingle = DEFAULT_COMPRESS_SINGLE;
 		}
@@ -145,8 +149,8 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 			zipReady = false; // new zip file is set up in process method
 		} else {
 			// get compress parameter
-			if (getConfigParameterValue(PARAM_COMPRESS) != null) {
-				compress = (Boolean) getConfigParameterValue(PARAM_COMPRESS);
+			if (aContext.getConfigParameterValue(PARAM_COMPRESS) != null) {
+				compress = (Boolean) aContext.getConfigParameterValue(PARAM_COMPRESS);
 			} else {
 				compress = DEFAULT_COMPRESS;
 			}
@@ -219,14 +223,11 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 	 * @throws ResourceProcessException
 	 *             if there is an error in processing the Resource
 	 */
-	public void processCas(CAS aCAS) throws ResourceProcessException {
+	@Override
+	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		doc++;
-		JCas jcas;
-		try {
-			jcas = aCAS.getJCas();
-		} catch (CASException e) {
-			throw new ResourceProcessException(e);
-		}
+		CAS aCAS;
+		aCAS = jcas.getCas();
 		StringBuilder outFileName = new StringBuilder();
 		Type fileNameType = aCAS.getTypeSystem().getType(fileNameTypeName);
 		if (fileNameType != null) {
@@ -260,7 +261,12 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 						}
 					} catch (CASRuntimeException e) { // unschoen
 						LOGGER.warn("Choose feature with String value!");
-						throw new ResourceProcessException();
+						try {
+							throw new ResourceProcessException();
+						} catch (ResourceProcessException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 				} else {
 					LOGGER.debug("No annotation found of type "
@@ -288,9 +294,22 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 			writeXmi(jcas.getCas(), fileName);
 			LOGGER.info(" Wrote file " + fileName);
 		} catch (IOException e) {
-			throw new ResourceProcessException(e);
+			try {
+				throw new ResourceProcessException(e);
+			} catch (ResourceProcessException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		} catch (SAXException e) {
-			throw new ResourceProcessException(e);
+			try {
+				throw new ResourceProcessException(e);
+			} catch (ResourceProcessException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} catch (ResourceProcessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -342,7 +361,6 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 
 	}
 
-	@Override
 	public void batchProcessComplete(ProcessTrace processTrace)
 			throws IOException, ResourceProcessException {
 		if (createBatchSubdirs) {
@@ -375,7 +393,6 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 		}
 	}
 
-	@Override
 	public void collectionProcessComplete(ProcessTrace processTrace)
 			throws IOException {
 		if (compressSingle) {
@@ -389,5 +406,4 @@ public class CasToXmiConsumer extends CasConsumer_ImplBase {
 			}
 		}
 	}
-
 }
