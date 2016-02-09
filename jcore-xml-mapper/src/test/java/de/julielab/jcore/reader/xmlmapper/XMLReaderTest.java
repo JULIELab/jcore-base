@@ -481,6 +481,9 @@ public class XMLReaderTest {
 			if (filename == null) {
 				filename = "" + fileNameCount++;
 			}
+			File outputDir = new File(DIR_CAS_OUTPUT);
+			if (!outputDir.exists())
+				outputDir.mkdirs();
 			String filePath = DIR_CAS_OUTPUT + filename + ".xmi";
 			LOGGER.debug("Writing file " + filePath);
 			XmiCasSerializer.serialize(cas, new FileOutputStream(new File(

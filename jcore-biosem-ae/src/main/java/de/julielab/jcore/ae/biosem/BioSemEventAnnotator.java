@@ -48,6 +48,16 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 
 	private EventExtraction xtr;
 
+	/**
+	 * We use this static object to synchronize open and close calls to the
+	 * document database between multiple threads. This stuff should be thread
+	 * safe but pipelines get stuck on a regular basis on database opening which
+	 * in turn ends up in HSQLDB where in a static HashMap all databases are
+	 * stored. The access is synchronized and everything should be alright, but
+	 * obviously, it isn't.
+	 */
+	private static Object lock = new Object();
+
 	@Override
 	public void initialize(UimaContext aContext) throws ResourceInitializationException {
 		super.initialize(aContext);
@@ -71,27 +81,35 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 		} else {
 			docId = "<unknown ID>";
 		}
+		DBUtils docDb = null;
 		try {
 			log.debug("Processing document {}", docId);
 			Map<String, Gene> proteins = enumerateProteins(aJCas);
-			if ("PMC-1064873-04-Materials_and_methods-03".equals(docId)) {
-				log.debug("Debug");
+			if (proteins.isEmpty()) {
+				log.debug(
+						"Skipping event extraction for this document because no proteins have been found that could be involved in an event.");
+				return;
 			}
 			List<String> proteinLines = getProteinLines(proteins);
-			DBUtils docDb;
 			// Sometimes we have problems creating the text database.
 			// Unfortunately, I'm not sure why this is. However, we'd rather
 			// want to skip those cases instead of letting the pipeline fail as
 			// a whole.
-			try {
-				docDb = loader.Txt2Db(docId, text, proteinLines);
-			} catch (NullPointerException e) {
-				log.debug("Could not create text database for document {} due to NullPointerException during creation. Trying again.", docId);
+			synchronized (lock) {
 				try {
 					docDb = loader.Txt2Db(docId, text, proteinLines);
-				} catch (Exception e2) {
-					log.error("Repeatedly failed to create text database for document " + docId + ". This document will be skipped. Exception was: ", e2);
-					return;
+				} catch (NullPointerException e) {
+					log.debug(
+							"Could not create text database for document {} due to NullPointerException during creation. Trying to close the DB and open it again after a short delay",
+							docId);
+					Thread.sleep(10000);
+					try {
+						docDb = loader.Txt2Db(docId + "-secondtry", text, proteinLines);
+					} catch (Exception e2) {
+						log.error("Repeatedly failed to create text database for document " + docId
+								+ ". This document will be skipped. Exception was: ", e2);
+						throw e2;
+					}
 				}
 			}
 			if (null == xtr) {
@@ -105,14 +123,24 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			log.debug("Got {} triggers from BioSem.", triggers.size());
 			log.debug("Got {} events from BioSem.", events.size());
 			addEventsToIndexes(events, proteins, triggers, aJCas);
-			docDb.closeDB();
 		} catch (BioSemException e) {
 			log.debug("BioSemException occurred: ", e);
 		} catch (Exception e) {
-			log.error(
-					"CRITICAL exception (i.e. exception is reported to the UIMA framework and might cause this processing thread to be cancelled) occurred in document "
-							+ docId + ":", e);
+			log.error("Error occurred in document " + docId + ":", e);
 			throw new AnalysisEngineProcessException(e);
+		} finally {
+			try {
+				if (docDb != null) {
+					synchronized (lock) {
+						docDb.closeDB();
+					}
+				}
+			} catch (Exception e) {
+				log.warn(
+						"Exception while shutting down document database for document {}. Since events have already been extracted, this is a minor error taken for itself. However it could lead to subsequent errors in the HSQL database system which could be critical.",
+						docId);
+			}
+
 		}
 	}
 
@@ -139,19 +167,22 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 					Header h = (Header) it.next();
 					docId = h.getDocId();
 				}
-				log.error("Exception occured in document " + docId + ". The respective event will be skipped. Error was: ", e);
+				log.error("Exception occured in document " + docId
+						+ ". The respective event will be skipped. Error was: ", e);
 			}
 		}
 
 	}
 
 	private EventMention addEventToIndexes(PData event, Map<String, Gene> proteinMap, Map<String, Word> triggerMap,
-			HashMap<String, EventMention> eventAnnotations, HashMap<String, EventTrigger> triggerAnnotations, JCas aJCas) throws UnknownProteinIdException {
+			HashMap<String, EventMention> eventAnnotations, HashMap<String, EventTrigger> triggerAnnotations,
+			JCas aJCas) throws UnknownProteinIdException {
 		EventTrigger uimaTrigger = triggerAnnotations.get(event.trig_ID);
 		if (null == uimaTrigger) {
 			Word trg = triggerMap.get(event.getTrigger().TID);
 			if (null == trg) {
-				throw new IllegalStateException("BioSem event \"" + event + "\" refers to trigger with ID " + event.trig_ID + " which could not be found.");
+				throw new IllegalStateException("BioSem event \"" + event + "\" refers to trigger with ID "
+						+ event.trig_ID + " which could not be found.");
 			}
 			uimaTrigger = addTriggerToIndexes(trg, aJCas);
 		}
@@ -171,16 +202,20 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			// Begin at the LAST argument! This way we don't have to bother so
 			// much with the FSArray holding the arguments.
 			if (null != protArg2) {
-				addUimaEventArgument(uimaEvent, protArg2, 2, proteinMap, triggerMap, eventAnnotations, triggerAnnotations, aJCas);
+				addUimaEventArgument(uimaEvent, protArg2, 2, proteinMap, triggerMap, eventAnnotations,
+						triggerAnnotations, aJCas);
 			}
 			if (null != eventArg2) {
-				addUimaEventArgument(uimaEvent, eventArg2, 2, proteinMap, triggerMap, eventAnnotations, triggerAnnotations, aJCas);
+				addUimaEventArgument(uimaEvent, eventArg2, 2, proteinMap, triggerMap, eventAnnotations,
+						triggerAnnotations, aJCas);
 			}
 			if (null != protArg1) {
-				addUimaEventArgument(uimaEvent, protArg1, 1, proteinMap, triggerMap, eventAnnotations, triggerAnnotations, aJCas);
+				addUimaEventArgument(uimaEvent, protArg1, 1, proteinMap, triggerMap, eventAnnotations,
+						triggerAnnotations, aJCas);
 			}
 			if (null != eventArg1) {
-				addUimaEventArgument(uimaEvent, eventArg1, 1, proteinMap, triggerMap, eventAnnotations, triggerAnnotations, aJCas);
+				addUimaEventArgument(uimaEvent, eventArg1, 1, proteinMap, triggerMap, eventAnnotations,
+						triggerAnnotations, aJCas);
 			}
 			uimaEvent.addToIndexes();
 			eventAnnotations.put(event.PID, uimaEvent);
@@ -210,10 +245,12 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	 *            with
 	 * @throws UnknownProteinIdException
 	 */
-	private void addUimaEventArgument(EventMention uimaEvent, Object bioSemArg, int argPos, Map<String, Gene> proteinMap, Map<String, Word> triggerMap,
-			HashMap<String, EventMention> eventAnnotations, HashMap<String, EventTrigger> triggerAnnotations, JCas aJCas) throws UnknownProteinIdException {
+	private void addUimaEventArgument(EventMention uimaEvent, Object bioSemArg, int argPos,
+			Map<String, Gene> proteinMap, Map<String, Word> triggerMap, HashMap<String, EventMention> eventAnnotations,
+			HashMap<String, EventTrigger> triggerAnnotations, JCas aJCas) throws UnknownProteinIdException {
 		if (null == bioSemArg) {
-			throw new IllegalArgumentException("An argument that should be added to the event " + uimaEvent + " at position " + argPos + " was null.");
+			throw new IllegalArgumentException("An argument that should be added to the event " + uimaEvent
+					+ " at position " + argPos + " was null.");
 		}
 		// Create the UIMA ArgumentMention
 		ArgumentMention uimaArg = null;
@@ -231,7 +268,8 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 				// is not really known but seems rare enough to ignore for
 				// the moment.
 				throw new UnknownProteinIdException("BioSem returned a protein event argument with ID " + wordArg.TID
-						+ " which is no valid gene/protein annotation ID in this CAS. Protein keys: " + proteinMap.keySet() + ". Word: " + wordArg.word
+						+ " which is no valid gene/protein annotation ID in this CAS. Protein keys: "
+						+ proteinMap.keySet() + ". Word: " + wordArg.word
 						+ ". This event is skipped. This error should be examined. It hasn't yet due to time reasons...");
 
 			}
@@ -249,17 +287,19 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			// EventMention first. This is a recursive call to the method that
 			// called this method in the first place.
 			if (null == uimaEventArg) {
-				uimaEventArg = addEventToIndexes(eventArg, proteinMap, triggerMap, eventAnnotations, triggerAnnotations, aJCas);
+				uimaEventArg = addEventToIndexes(eventArg, proteinMap, triggerMap, eventAnnotations, triggerAnnotations,
+						aJCas);
 			}
 			if (null == uimaEventArg) {
-				throw new IllegalStateException("Creating UIMA EventMention annotation for BioSem event \"" + eventArg.toString()
-						+ "\" failed, the UIMA EventMention is null.");
+				throw new IllegalStateException("Creating UIMA EventMention annotation for BioSem event \""
+						+ eventArg.toString() + "\" failed, the UIMA EventMention is null.");
 			}
 			uimaArg = new ArgumentMention(aJCas, uimaEventArg.getBegin(), uimaEventArg.getEnd());
 			uimaArg.setRef(uimaEventArg);
 			uimaArg.setRole(determineArgumentRole(uimaEvent, uimaArg, argPos));
 		} else {
-			throw new IllegalArgumentException("Unsupported event argument was passed for the creation of a UIMA ArgumentMention: " + bioSemArg);
+			throw new IllegalArgumentException(
+					"Unsupported event argument was passed for the creation of a UIMA ArgumentMention: " + bioSemArg);
 		}
 		// End of UIMA ArgumentMention creation
 
@@ -271,14 +311,16 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 		FSArray uimaArgs = uimaEvent.getArguments();
 		if (uimaArgs != null && argPos <= uimaArgs.size()) {
 			if (uimaArgs.get(argPos - 1) != null) {
-				throw new IllegalStateException("The UIMA ArgumentMention " + uimaArg + " should be put on position " + (argPos - 1) + " of UIMA event "
-						+ uimaEvent + ". But there is already an argument there: " + uimaArgs.get(argPos - 1));
+				throw new IllegalStateException("The UIMA ArgumentMention " + uimaArg + " should be put on position "
+						+ (argPos - 1) + " of UIMA event " + uimaEvent + ". But there is already an argument there: "
+						+ uimaArgs.get(argPos - 1));
 			}
 			uimaArgs.set(argPos - 1, uimaArg);
 		} else if (null != uimaArgs) {
-			throw new IllegalStateException("The UIMA ArgumentMention " + uimaArg + " should be put on position position " + (argPos - 1) + " of UIMA event "
-					+ uimaEvent + ". However, there already exists an argument FSArray but it is too small (size: " + uimaArgs.size()
-					+ " to take the new argument. This shouldn't happen by design of the code.");
+			throw new IllegalStateException("The UIMA ArgumentMention " + uimaArg
+					+ " should be put on position position " + (argPos - 1) + " of UIMA event " + uimaEvent
+					+ ". However, there already exists an argument FSArray but it is too small (size: "
+					+ uimaArgs.size() + " to take the new argument. This shouldn't happen by design of the code.");
 		} else {
 			uimaArgs = new FSArray(aJCas, argPos);
 			uimaArgs.set(argPos - 1, uimaArg);
@@ -291,7 +333,8 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	 * @param uimaEvent
 	 * @param uimaArg
 	 * @param argPos
-	 * @return <ul>
+	 * @return
+	 * 		<ul>
 	 *         <li><em>Theme</em> if <tt>argPos</tt> is 1</li>
 	 *         <li><em>Theme2</em> when it's the second argument and it's a
 	 *         protein (actually: when the argument is not another
@@ -336,7 +379,8 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			String id = proteinEntry.getKey();
 			Gene gene = proteinEntry.getValue();
 			try {
-				proteinLines.add(id + "\tProtein\t" + gene.getBegin() + "\t" + gene.getEnd() + "\t" + gene.getCoveredText());
+				proteinLines.add(
+						id + "\tProtein\t" + gene.getBegin() + "\t" + gene.getEnd() + "\t" + gene.getCoveredText());
 			} catch (Exception e) {
 				e.printStackTrace();
 				log.error("Failed to process Protein with its values.");

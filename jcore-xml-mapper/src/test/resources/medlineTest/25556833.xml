@@ -1,0 +1,542 @@
+<MedlineCitation Owner="NLM" Status="MEDLINE">
+<PMID Version="1">25556833</PMID>
+<DateCreated>
+<Year>2015</Year>
+<Month>01</Month>
+<Day>23</Day>
+</DateCreated>
+<DateCompleted>
+<Year>2015</Year>
+<Month>03</Month>
+<Day>24</Day>
+</DateCompleted>
+<DateRevised>
+<Year>2015</Year>
+<Month>05</Month>
+<Day>20</Day>
+</DateRevised>
+<Article PubModel="Print-Electronic">
+<Journal>
+<ISSN IssnType="Electronic">1097-4199</ISSN>
+<JournalIssue CitedMedium="Internet">
+<Volume>85</Volume>
+<Issue>2</Issue>
+<PubDate>
+<Year>2015</Year>
+<Month>Jan</Month>
+<Day>21</Day>
+</PubDate>
+</JournalIssue>
+<Title>Neuron</Title>
+<ISOAbbreviation>Neuron</ISOAbbreviation>
+</Journal>
+<ArticleTitle>DeCoN: genome-wide analysis of in vivo transcriptional dynamics during pyramidal neuron fate selection in neocortex.</ArticleTitle>
+<Pagination>
+<MedlinePgn>275-88</MedlinePgn>
+</Pagination>
+<ELocationID EIdType="doi" ValidYN="Y">10.1016/j.neuron.2014.12.024</ELocationID>
+<ELocationID EIdType="pii" ValidYN="Y">S0896-6273(14)01133-7</ELocationID>
+<Abstract>
+<AbstractText Label="UNLABELLED">Neuronal development requires a complex choreography of transcriptional decisions to obtain specific cellular identities. Realizing the ultimate goal of identifying genome-wide signatures that define and drive specific neuronal fates has been hampered by enormous complexity in both time and space during development. Here, we have paired high-throughput purification of pyramidal neuron subclasses with deep profiling of spatiotemporal transcriptional dynamics during corticogenesis to resolve lineage choice decisions. We identified numerous features ranging from spatial and temporal usage of alternative mRNA isoforms and promoters to a host of mRNA genes modulated during fate specification. Notably, we uncovered numerous long noncoding RNAs with restricted temporal and cell-type-specific expression. To facilitate future exploration, we provide an interactive online database to enable multidimensional data mining and dissemination. This multifaceted study generates a powerful resource and informs understanding of the transcriptional regulation underlying pyramidal neuron diversity in the neocortex.</AbstractText>
+<AbstractText Label="VIDEO ABSTRACT" NlmCategory="UNASSIGNED"/>
+<CopyrightInformation>Copyright © 2015 Elsevier Inc. All rights reserved.</CopyrightInformation>
+</Abstract>
+<AuthorList CompleteYN="Y">
+<Author ValidYN="Y">
+<LastName>Molyneaux</LastName>
+<ForeName>Bradley J</ForeName>
+<Initials>BJ</Initials>
+<AffiliationInfo>
+<Affiliation>Department of Stem Cell and Regenerative Biology, Harvard University, Cambridge, MA 02138, USA.</Affiliation>
+</AffiliationInfo>
+</Author>
+<Author ValidYN="Y">
+<LastName>Goff</LastName>
+<ForeName>Loyal A</ForeName>
+<Initials>LA</Initials>
+<AffiliationInfo>
+<Affiliation>Department of Stem Cell and Regenerative Biology, Harvard University, Cambridge, MA 02138, USA; Broad Institute of MIT and Harvard, Cambridge, MA 02139, USA; Computer Science and Artificial Intelligence Laboratory, Massachusetts Institute of Technology, Cambridge, MA 02139, USA.</Affiliation>
+</AffiliationInfo>
+</Author>
+<Author ValidYN="Y">
+<LastName>Brettler</LastName>
+<ForeName>Andrea C</ForeName>
+<Initials>AC</Initials>
+<AffiliationInfo>
+<Affiliation>Department of Stem Cell and Regenerative Biology, Harvard University, Cambridge, MA 02138, USA.</Affiliation>
+</AffiliationInfo>
+</Author>
+<Author ValidYN="Y">
+<LastName>Chen</LastName>
+<ForeName>Hsu-Hsin</ForeName>
+<Initials>HH</Initials>
+<AffiliationInfo>
+<Affiliation>Department of Stem Cell and Regenerative Biology, Harvard University, Cambridge, MA 02138, USA.</Affiliation>
+</AffiliationInfo>
+</Author>
+<Author ValidYN="Y">
+<LastName>Brown</LastName>
+<ForeName>Juliana R</ForeName>
+<Initials>JR</Initials>
+<AffiliationInfo>
+<Affiliation>Department of Stem Cell and Regenerative Biology, Harvard University, Cambridge, MA 02138, USA.</Affiliation>
+</AffiliationInfo>
+</Author>
+<Author ValidYN="Y">
+<LastName>Hrvatin</LastName>
+<ForeName>Siniša</ForeName>
+<Initials>S</Initials>
+<AffiliationInfo>
+<Affiliation>Department of Stem Cell and Regenerative Biology, Harvard University, Cambridge, MA 02138, USA.</Affiliation>
+</AffiliationInfo>
+</Author>
+<Author ValidYN="Y">
+<LastName>Rinn</LastName>
+<ForeName>John L</ForeName>
+<Initials>JL</Initials>
+<AffiliationInfo>
+<Affiliation>Department of Stem Cell and Regenerative Biology, Harvard University, Cambridge, MA 02138, USA; Broad Institute of MIT and Harvard, Cambridge, MA 02139, USA; Department of Pathology, Beth Israel Deaconess Medical Center, Harvard Medical School, Boston, MA 02115, USA. Electronic address: john_rinn@harvard.edu.</Affiliation>
+</AffiliationInfo>
+</Author>
+<Author ValidYN="Y">
+<LastName>Arlotta</LastName>
+<ForeName>Paola</ForeName>
+<Initials>P</Initials>
+<AffiliationInfo>
+<Affiliation>Department of Stem Cell and Regenerative Biology, Harvard University, Cambridge, MA 02138, USA; Broad Institute of MIT and Harvard, Cambridge, MA 02139, USA. Electronic address: paola_arlotta@harvard.edu.</Affiliation>
+</AffiliationInfo>
+</Author>
+</AuthorList>
+<Language>eng</Language>
+<DataBankList CompleteYN="Y">
+<DataBank>
+<DataBankName>GEO</DataBankName>
+<AccessionNumberList>
+<AccessionNumber>GSE63482</AccessionNumber>
+</AccessionNumberList>
+</DataBank>
+</DataBankList>
+<GrantList CompleteYN="Y">
+<Grant>
+<GrantID>DP2OD006670</GrantID>
+<Acronym>OD</Acronym>
+<Agency>NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>NIH R01 MH102416</GrantID>
+<Acronym>MH</Acronym>
+<Agency>NIMH NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>NS062489</GrantID>
+<Acronym>NS</Acronym>
+<Agency>NINDS NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>NS073124</GrantID>
+<Acronym>NS</Acronym>
+<Agency>NINDS NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>NS078164</GrantID>
+<Acronym>NS</Acronym>
+<Agency>NINDS NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>P01 GM099117</GrantID>
+<Acronym>GM</Acronym>
+<Agency>NIGMS NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>P01 GM099117</GrantID>
+<Acronym>GM</Acronym>
+<Agency>NIGMS NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>P50 HG006193-01</GrantID>
+<Acronym>HG</Acronym>
+<Agency>NHGRI NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>R01 MH101268</GrantID>
+<Acronym>MH</Acronym>
+<Agency>NIMH NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>R01 MH102416</GrantID>
+<Acronym>MH</Acronym>
+<Agency>NIMH NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+<Grant>
+<GrantID>R01 NS078164</GrantID>
+<Acronym>NS</Acronym>
+<Agency>NINDS NIH HHS</Agency>
+<Country>United States</Country>
+</Grant>
+</GrantList>
+<PublicationTypeList>
+<PublicationType UI="D016428">Journal Article</PublicationType>
+<PublicationType UI="D052061">Research Support, N.I.H., Extramural</PublicationType>
+<PublicationType UI="D013485">Research Support, Non-U.S. Gov't</PublicationType>
+<PublicationType UI="D013486">Research Support, U.S. Gov't, Non-P.H.S.</PublicationType>
+</PublicationTypeList>
+<ArticleDate DateType="Electronic">
+<Year>2014</Year>
+<Month>12</Month>
+<Day>31</Day>
+</ArticleDate>
+</Article>
+<MedlineJournalInfo>
+<Country>United States</Country>
+<MedlineTA>Neuron</MedlineTA>
+<NlmUniqueID>8809320</NlmUniqueID>
+<ISSNLinking>0896-6273</ISSNLinking>
+</MedlineJournalInfo>
+<ChemicalList>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance UI="C511143">Bcl11b protein, mouse</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance UI="D036961">Matrix Attachment Region Binding Proteins</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance UI="D062085">RNA, Long Noncoding</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance UI="D012333">RNA, Messenger</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance UI="D012097">Repressor Proteins</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance UI="C501473">SATB2 protein, mouse</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance UI="C434949">Tle4 protein, mouse</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance UI="D014157">Transcription Factors</NameOfSubstance>
+</Chemical>
+<Chemical>
+<RegistryNumber>0</RegistryNumber>
+<NameOfSubstance UI="D025521">Tumor Suppressor Proteins</NameOfSubstance>
+</Chemical>
+</ChemicalList>
+<CitationSubset>IM</CitationSubset>
+<CommentsCorrectionsList>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nature. 2011 Oct 27;478(7370):483-9</RefSource>
+<PMID Version="1">22031440</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Genes Dev. 2011 Sep 15;25(18):1915-27</RefSource>
+<PMID Version="1">21890647</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Eur J Hum Genet. 2012 Jun;20(6):645-9</RefSource>
+<PMID Version="1">22258533</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nature. 2012 Sep 20;489(7416):391-9</RefSource>
+<PMID Version="1">22996553</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nucleic Acids Res. 2013 Jan;41(Database issue):D1083-8</RefSource>
+<PMID Version="1">23087376</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Biotechnol. 2013 Jan;31(1):46-53</RefSource>
+<PMID Version="1">23222703</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Dev Cell. 2013 Jan 28;24(2):206-14</RefSource>
+<PMID Version="1">23369715</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>PLoS One. 2014;9(3):e89459</RefSource>
+<PMID Version="1">24594682</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Elife. 2013;2:e01749</RefSource>
+<PMID Version="1">24381249</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Proc Natl Acad Sci U S A. 2013 Feb 26;110(9):3387-92</RefSource>
+<PMID Version="1">23401553</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Cell Rep. 2014 Mar 13;6(5):938-50</RefSource>
+<PMID Version="1">24561256</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Bioinformatics. 2014 Apr 1;30(7):1003-5</RefSource>
+<PMID Version="1">24227676</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Neurosci. 2014 Aug;17(8):1046-54</RefSource>
+<PMID Version="1">24997765</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Genome Biol. 2013;14(4):R36</RefSource>
+<PMID Version="1">23618408</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>J Neurosci. 2014 Sep 3;34(36):11929-47</RefSource>
+<PMID Version="1">25186741</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Struct Mol Biol. 2013 Mar;20(3):300-7</RefSource>
+<PMID Version="1">23463315</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Cell Stem Cell. 2013 May 2;12(5):616-28</RefSource>
+<PMID Version="1">23583100</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Cereb Cortex. 2013 Jun;23(6):1473-83</RefSource>
+<PMID Version="1">22628460</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Neuron. 2013 Aug 21;79(4):680-95</RefSource>
+<PMID Version="1">23911104</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Neuron. 2013 Oct 30;80(3):602-12</RefSource>
+<PMID Version="1">24183013</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Methods. 2013 Dec;10(12):1177-84</RefSource>
+<PMID Version="1">24185837</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Cereb Cortex. 2015 Feb;25(2):433-49</RefSource>
+<PMID Version="1">24014670</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Dev Dyn. 2003 Mar;226(3):460-9</RefSource>
+<PMID Version="1">12619132</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Genome Biol. 2004;5(10):R80</RefSource>
+<PMID Version="1">15461798</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>J Comp Neurol. 2004 Nov 8;479(2):168-80</RefSource>
+<PMID Version="1">15452856</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Proc Natl Acad Sci U S A. 1990 Jan;87(1):187-90</RefSource>
+<PMID Version="1">2153287</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Cereb Cortex. 1997 Sep;7(6):476-86</RefSource>
+<PMID Version="1">9276173</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Cell Mol Biol (Noisy-le-grand). 1999 Jul;45(5):687-708</RefSource>
+<PMID Version="1">10512199</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Neuron. 2005 Jan 20;45(2):207-21</RefSource>
+<PMID Version="1">15664173</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Neuron. 2005 Sep 15;47(6):817-31</RefSource>
+<PMID Version="1">16157277</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Proc Natl Acad Sci U S A. 2005 Oct 25;102(43):15545-50</RefSource>
+<PMID Version="1">16199517</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Neurosci. 2006 Jan;9(1):99-107</RefSource>
+<PMID Version="1">16369481</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Neurosci. 2006 Mar;9(3):443-52</RefSource>
+<PMID Version="1">16491081</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nature. 2007 Jan 11;445(7124):168-76</RefSource>
+<PMID Version="1">17151600</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Rev Neurosci. 2007 Jun;8(6):427-37</RefSource>
+<PMID Version="1">17514196</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Proc Natl Acad Sci U S A. 2008 Jan 15;105(2):716-21</RefSource>
+<PMID Version="1">18184812</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Neuron. 2008 Feb 7;57(3):364-77</RefSource>
+<PMID Version="1">18255030</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Genome Res. 2008 Sep;18(9):1433-45</RefSource>
+<PMID Version="1">18562676</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Neurosci. 2008 Nov;11(11):1271-82</RefSource>
+<PMID Version="1">18849986</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Cell. 2008 Nov 14;135(4):738-48</RefSource>
+<PMID Version="1">19013281</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Cell. 2008 Nov 14;135(4):749-62</RefSource>
+<PMID Version="1">19013282</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Rev Genet. 2009 Mar;10(3):155-9</RefSource>
+<PMID Version="1">19188922</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Cell. 2009 Feb 20;136(4):629-41</RefSource>
+<PMID Version="1">19239885</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Neuron. 2009 May 28;62(4):494-509</RefSource>
+<PMID Version="1">19477152</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>PLoS Genet. 2009 Aug;5(8):e1000617</RefSource>
+<PMID Version="1">19696892</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>J Neurosci. 2009 Sep 30;29(39):12343-54</RefSource>
+<PMID Version="1">19793993</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Biotechnol. 2010 May;28(5):511-5</RefSource>
+<PMID Version="1">20436464</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Neuron. 2011 Jul 14;71(1):35-48</RefSource>
+<PMID Version="1">21745636</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Mol Cell. 2011 Aug 19;43(4):624-37</RefSource>
+<PMID Version="1">21855801</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Neuron. 2011 Aug 25;71(4):605-16</RefSource>
+<PMID Version="1">21867878</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Proc Natl Acad Sci U S A. 2011 Sep 6;108(36):14950-5</RefSource>
+<PMID Version="1">21873192</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nature. 2011 Sep 15;477(7364):295-300</RefSource>
+<PMID Version="1">21874018</PMID>
+</CommentsCorrections>
+<CommentsCorrections RefType="Cites">
+<RefSource>Nat Protoc. 2012 Mar;7(3):562-78</RefSource>
+<PMID Version="1">22383036</PMID>
+</CommentsCorrections>
+</CommentsCorrectionsList>
+<MeshHeadingList>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D000818">Animals</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D001483">Base Sequence</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D002454">Cell Differentiation</DescriptorName>
+<QualifierName MajorTopicYN="Y" UI="Q000235">genetics</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D003337">Corpus Callosum</DescriptorName>
+<QualifierName MajorTopicYN="N" UI="Q000166">cytology</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D005434">Flow Cytometry</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D020869">Gene Expression Profiling</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D018507">Gene Expression Regulation, Developmental</DescriptorName>
+<QualifierName MajorTopicYN="Y" UI="Q000235">genetics</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D036961">Matrix Attachment Region Binding Proteins</DescriptorName>
+<QualifierName MajorTopicYN="N" UI="Q000378">metabolism</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D051379">Mice</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D008969">Molecular Sequence Data</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D009046">Motor Neurons</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D019579">Neocortex</DescriptorName>
+<QualifierName MajorTopicYN="Y" UI="Q000378">metabolism</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D055495">Neurogenesis</DescriptorName>
+<QualifierName MajorTopicYN="N" UI="Q000235">genetics</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D009474">Neurons</DescriptorName>
+<QualifierName MajorTopicYN="N" UI="Q000378">metabolism</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D017966">Pyramidal Cells</DescriptorName>
+<QualifierName MajorTopicYN="Y" UI="Q000378">metabolism</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D011712">Pyramidal Tracts</DescriptorName>
+<QualifierName MajorTopicYN="N" UI="Q000166">cytology</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D062085">RNA, Long Noncoding</DescriptorName>
+<QualifierName MajorTopicYN="Y" UI="Q000235">genetics</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D012333">RNA, Messenger</DescriptorName>
+<QualifierName MajorTopicYN="Y" UI="Q000235">genetics</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D012097">Repressor Proteins</DescriptorName>
+<QualifierName MajorTopicYN="N" UI="Q000378">metabolism</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D014157">Transcription Factors</DescriptorName>
+<QualifierName MajorTopicYN="N" UI="Q000378">metabolism</QualifierName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="Y" UI="D059467">Transcriptome</DescriptorName>
+</MeshHeading>
+<MeshHeading>
+<DescriptorName MajorTopicYN="N" UI="D025521">Tumor Suppressor Proteins</DescriptorName>
+<QualifierName MajorTopicYN="N" UI="Q000378">metabolism</QualifierName>
+</MeshHeading>
+</MeshHeadingList>
+<OtherID Source="NLM">NIHMS650392 [Available on 01/21/16]</OtherID>
+<OtherID Source="NLM">PMC4430475 [Available on 01/21/16]</OtherID>
+</MedlineCitation>

@@ -2,11 +2,13 @@ package de.julielab.jcore.reader.xmlmapper.mapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 
@@ -37,8 +39,10 @@ import de.julielab.xml.JulieXMLTools;
 public class StructuredAbstractParser implements DocumentTextPartParser {
 
 	private String documentText;
+	public static final boolean newlineBetweenSections = true;
 
-	public List<String> parseDocumentPart(VTDNav vn, PartOfDocument docTextPart, int offset, JCas jCas, byte[] identifier) throws VTDException {
+	public List<String> parseDocumentPart(VTDNav vn, PartOfDocument docTextPart, int offset, JCas jCas,
+			byte[] identifier) throws VTDException {
 		String baseXPath = docTextPart.getXPath();
 
 		List<Map<String, String>> fields = new ArrayList<>();
@@ -56,7 +60,8 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
 		field.put(JulieXMLConstants.NAME, "AbstractText");
 		field.put(JulieXMLConstants.XPATH, ".");
 		fields.add(field);
-		Iterator<Map<String, Object>> rowIterator = JulieXMLTools.constructRowIterator(vn, baseXPath + "/AbstractText", fields, new String(identifier));
+		Iterator<Map<String, Object>> rowIterator = JulieXMLTools.constructRowIterator(vn, baseXPath + "/AbstractText",
+				fields, new String(identifier));
 		List<AbstractSection> abstractParts = new ArrayList<>();
 		// for the text contents
 		StringBuilder sb = new StringBuilder();
@@ -67,6 +72,14 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
 			String label = (String) abstractSectionData.get("Label");
 			String nlmCategory = (String) abstractSectionData.get("NlmCategory");
 			String abstractSectionText = (String) abstractSectionData.get("AbstractText");
+			if (newlineBetweenSections) {
+				// in case the last section was empty, we delete the trailing
+				// newline
+				if (sb.length() > 0 && StringUtils.isBlank(abstractSectionText)) {
+					sb.deleteCharAt(sb.length() - 1);
+					--sectionOffset;
+				}
+			}
 			sb.append(abstractSectionText);
 
 			// if label and nlmCategory are null, there is no section heading;
@@ -91,20 +104,25 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
 			}
 
 			// let's insert a line break after each section text
-			if (rowIterator.hasNext()) {
+			if (newlineBetweenSections && rowIterator.hasNext()) {
 				sb.append("\n");
 				++sectionOffset;
 			}
 		}
-		AbstractText abstractText = new AbstractText(jCas, offset, sectionOffset);
-		if (abstractParts.size() > 0) {
-			FSArray sectionsArray = new FSArray(jCas, abstractParts.size());
-			for (int i = 0; i < abstractParts.size(); ++i)
-				sectionsArray.set(i, abstractParts.get(i));
-			abstractText.setStructuredAbstractParts(sectionsArray);
+
+		// only create an abstract annotation if there actually is an abstract
+		if (sectionOffset > offset) {
+			AbstractText abstractText = new AbstractText(jCas, offset, sectionOffset);
+			if (abstractParts.size() > 0) {
+				FSArray sectionsArray = new FSArray(jCas, abstractParts.size());
+				for (int i = 0; i < abstractParts.size(); ++i)
+					sectionsArray.set(i, abstractParts.get(i));
+				abstractText.setStructuredAbstractParts(sectionsArray);
+			}
+			abstractText.addToIndexes();
+			return Arrays.asList(sb.toString());
 		}
-		abstractText.addToIndexes();
-		return Arrays.asList(sb.toString());
+		return Collections.emptyList();
 	}
 
 	public String getDocumentText() {
