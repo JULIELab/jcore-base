@@ -2,7 +2,7 @@
 
 Base modules of JCoRe as described in:
 
-```[to do]```
+```Udo Hahn, Franz Matthies, Johannes Hellrich, Erik Fässler. UIMA-Based JCoRe 2.0 Goes GitHub and Maven Central — Towards State-of-the-Art Software Engineering of BioNLP Pipelines. LREC 2016 [accepted]```
 
 ### Objective
 These are the base components of the JULIE Lab Component Repository (JCoRe), an open software repository for full-scale natural language processing based on the UIMA middleware framework. JCoRe offers a broad range of text analytics (mostly) for English-language scientific abstracts and full-text articles, especially for the biology domain.
