@@ -26,7 +26,7 @@ This consumer writes annotations in a UIMA CAS out to the IOB format. If two ann
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
-| labels | list of label names | ```Gene<br>EventTrigger```|
+| labels | list of label names | `Gene`<br />`EventTrigger`|
 | labelNameMethods | list of annotation types | `EntityMention` |
 | iobLabelNames | list of label name pairs | `de.julielab.jcore.types.EntityMention=Entity` |
 | outFolder | valid path to an output location | `data/outFiles` |
