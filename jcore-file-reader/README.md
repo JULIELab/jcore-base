@@ -1,7 +1,7 @@
  JCoRe File Reader for reading in text files.
 
 ### Objective
- This is a reader for simply reading in text files for providing the text for further processing.
+ This is a reader for reading in text files, providing them to UIMA for further processing.
 
 ### Requirement and Dependencies
  The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
