@@ -14,15 +14,26 @@ JTBD is based on a slightly modified version of the machine learning toolkit MAL
 
 **1. Parameters**
 
-`To Do`
+| Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
+|----------------|----------------|-----------|-------------|-------------|
+| ModelFilename | String | yes | no | filename of trained model for JSBD |
+| Postprocessing| Boolean | no | no | Indicates whether postprocessing should be run. Default: no postprocessing |
+| ProcessingScope | String | no | no | The UIMA annotation type over which to iterate for doing the sentence segmentation. If nothing is given, the document text from the CAS is taken as scope! This is recommended as default! |
 
 **2. Predefined Settings**
 
-`To Do`
+| Parameter Name | Parameter Syntax | Example |
+|----------------|------------------|---------|
+| ModelFilename | valid path to a model file | `de/julielab/jcore/ae/jsbd/model/jsbd-2.0.gz`* |
+| Postprocessing| Boolean Variable | `true` |
+| ProcessingScope | Boolean Variable | `none` |
+\* a model is not included; see the [biomed-project](https://github.com/JULIELab/jcore-projects/tree/master/jcore-jsbd-ae-biomedical-english) fro a pre-built one 
 
 **3. Capabilities**
 
-`To Do`
+| Type | Input | Output |
+|------|:-----:|:------:|
+| de.julielab.jcore.types.Sentence |  | `+` |
 
 ### Manual
 An extensive documentation can be found under `doc/`.
