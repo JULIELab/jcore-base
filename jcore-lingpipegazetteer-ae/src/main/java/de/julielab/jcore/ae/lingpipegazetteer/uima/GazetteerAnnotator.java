@@ -39,6 +39,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -675,10 +676,11 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 			if (emFullform != null)
 				type = emFullform.getClass().getCanonicalName();
 
-			// ConceptMention emAcronym = AnnotationRetrieval.getMatchingAnnotation(aJCas, abbrev,
-			// ConceptMention.class);
-			ConceptMention emAcronym = JCoReAnnotationTools.getPartiallyOverlappingAnnotation(aJCas, abbrev,
-					ConceptMention.class);
+			 ConceptMention emAcronym = AnnotationRetrieval.getMatchingAnnotation(aJCas, abbrev,
+			 ConceptMention.class);
+			 // this is really slow, really a pain with full texts
+//			ConceptMention emAcronym = JCoReAnnotationTools.getPartiallyOverlappingAnnotation(aJCas, abbrev,
+//					ConceptMention.class);
 
 			// if type of the entity is equal to the output type for this
 			// annotator
