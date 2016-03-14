@@ -16,7 +16,7 @@
         <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>generateJulesTypes</name>
+        <name>generateJcoreTypes</name>
         <type>Boolean</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
@@ -24,7 +24,7 @@
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>generateJulesTypes</name>
+        <name>generateJcoreTypes</name>
         <value>
           <boolean>true</boolean>
         </value>
