@@ -41,7 +41,7 @@
       <nameValuePair>
         <name>ModelFilename</name>
         <value>
-          <string>de/julielab/jcore/ae/jsbd/model/jsbd-2.0-biomed.gz</string>
+          <string>de/julielab/jcore/ae/jsbd/model/jsbd-2.0.gz</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
