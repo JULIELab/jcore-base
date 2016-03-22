@@ -24,6 +24,21 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 | inputDirectory | valid Path to the ACE files | `data/ACEData` |
 | generateJcoreTypes| boolean Variable | `true` |
 
+**3. Capabilities**
+
+| Type | Input | Output |
+|------|:-----:|:------:|
+| de.julielab.jcore.types.ArgumentMention |  | `+` |
+| de.julielab.jcore.types.ace.EntityMention |  | `+` |
+| de.julielab.jcore.types.ace.EventMention |  | `+` |
+| de.julielab.jcore.types.ace.EventMentionArgument |  | `+` |
+| de.julielab.jcore.types.ace.RelationMention |  | `+` |
+| de.julielab.jcore.types.ace.RelationMentionArgument |  | `+` |
+| de.julielab.jcore.types.ace.Timex2 |  | `+` |
+| de.julielab.jcore.types.ace.Timex2Mention |  | `+` |
+| de.julielab.jcore.types.ace.Value |  | `+` |
+| de.julielab.jcore.types.ace.ValueMention |  | `+` |
+
 So if you want to use this CR out-of-the-box (as a Maven Dependency in another project or as Component in a CPE) make sure to either put the data in the predefined inputDirectory or change this parameter to your liking.
 
 ### Reference
