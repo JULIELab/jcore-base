@@ -24,3 +24,10 @@
 | InputDirectory | valid Path to the files to read in | `data/files/` |
 | UseFilenameAsDocId | boolean Variable | `false` |
 | PublicationDatesAsFile | valid Path to the ACE files | `data/publicationDates` |
+
+**3. Capabilities**
+
+| Type | Input | Output |
+|------|:-----:|:------:|
+| de.julielab.jcore.types.Date |  | `+` |
+| de.julielab.jcore.types.pubmed.Header |  | `+` |

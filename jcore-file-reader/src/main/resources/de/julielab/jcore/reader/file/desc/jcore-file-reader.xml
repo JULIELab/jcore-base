@@ -54,7 +54,10 @@
     <capabilities>
       <capability>
         <inputs/>
-        <outputs/>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Date</type>
+        </outputs>
         <languagesSupported/>
       </capability>
     </capabilities>

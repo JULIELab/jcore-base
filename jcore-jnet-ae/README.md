@@ -22,15 +22,45 @@ JNET offers the following functionalities:
 
 **1. Parameters**
 
- `TODO`
+| Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
+|----------------|----------------|-----------|-------------|-------------|
+| ModelFilename | String | yes | no |  |
+| EntityTypes| String | yes | yes |  |
+| ExpandAbbreviations | Boolean | no | no |  |
+| ShowSegmentConfidence| Boolean | no | no | whether a confidence should be estimated for each entity or not |
+| IgnoreNotIntroducedAbbreviations | Boolean | no | no | hether labels predicted by JNET on strings which represent abbreviations ([A-Z]{2,3}) but were not introduced in the text should be ignored |
+| NegativeList | String | no | no | a list with entity mentions (covered text) and label which when found is ignore, i.e., not written to the CAS. Format: one entry per line, within the line: entityMention@label if no label is given, also @ should not be given!
+Example:
+--------------
+IL-2@gene
+IL-2 receptor
+HDA1@protein
+-------------- |
+| ConsistencyPreservation| String | no | no | Coma-separated list of active modes.
+Available modes are:
+ - string
+ - full2acro
+ - acro2full |
 
 **2. Predefined Settings**
 
- `TODO`
+| Parameter Name | Parameter Syntax | Example |
+|----------------|------------------|---------|
+| ModelFilename |  | `de/julielab/jcore/ae/jnet/model/jnet-pennbio.gz` |
+| EntityTypes|  | `gene-protein=de.julielab.jcore.types.EntityMention` |
+| ExpandAbbreviations | Boolean Value | `true` |
+| ShowSegmentConfidence| Boolean Value | `false` |
+| IgnoreNotIntroducedAbbreviations | Boolean Value | `true` |
+| NegativeList |  | `` |
+| ConsistencyPreservation|  | `string,full2acro,acro2full` |
 
 **3. Capabilities**
 
- `TODO`
+| Type | Input | Output |
+|------|:-----:|:------:|
+| de.julielab.jcore.types.Sentence | `+` |  |
+| de.julielab.jcore.types.Token | `+` |  |
+| de.julielab.jcore.types.EntityMention |  | `+` |
 
 ### Manual
 AN extensive documentation can be found under `doc/`
