@@ -10,7 +10,7 @@
 <vendor>JULIE Lab Jena, Germany</vendor>
 <configurationParameters>
 <configurationParameter>
-<name>modelFile</name>
+<name>modelDir</name>
 <type>String</type>
 <multiValued>false</multiValued>
 <mandatory>true</mandatory>
@@ -78,7 +78,7 @@
 </value>
 </nameValuePair>
 <nameValuePair>
-<name>modelFile</name>
+<name>modelDir</name>
 <value>
 <string>src/test/resources/de/julielab/jcore/ae/opennlpparser/model/testmodel.bin</string>
 </value>
