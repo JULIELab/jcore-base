@@ -54,9 +54,9 @@
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Gene</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EventMention</type>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.EventTrigger</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EntityMention</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.ArgumentMention</type>
         </inputs>
         <outputs/>
         <languagesSupported/>

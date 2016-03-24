@@ -25,7 +25,7 @@
       </configurationParameter>
       <configurationParameter>
         <name>FileNameType</name>
-        <description>Fully specified name of type from which / feature of which xmi file name is taken. Default is 'de.julielab.jules.types.Header'.</description>
+        <description>Fully specified name of type from which feature / of which xmi file name is taken. Default is 'de.julielab.jules.types.Header'.</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
@@ -57,7 +57,7 @@ Default is false.</description>
       <nameValuePair>
         <name>OutputDirectory</name>
         <value>
-          <string>src/test/resources/output-xmi</string>
+          <string>data/output-xmi</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
