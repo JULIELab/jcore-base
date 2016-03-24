@@ -10,10 +10,10 @@
 <vendor>JULIE Lab Jena, Germany</vendor>
 <configurationParameters>
 <configurationParameter>
-<name>modelDir</name>
+<name>modelFile</name>
 <type>String</type>
 <multiValued>false</multiValued>
-<mandatory>false</mandatory>
+<mandatory>true</mandatory>
 </configurationParameter>
 <configurationParameter>
 <name>useTagdict</name>
@@ -78,9 +78,9 @@
 </value>
 </nameValuePair>
 <nameValuePair>
-<name>modelDir</name>
+<name>modelFile</name>
 <value>
-<string>src/main/resources/de/julielab/jcore/ae/opennlp/model/</string>
+<string>src/main/resources/de/julielab/jcore/ae/opennlp/model/model.bin</string>
 </value>
 </nameValuePair>
 <nameValuePair>

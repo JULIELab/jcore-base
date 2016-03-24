@@ -12,6 +12,8 @@ As of now our Parser depends on a modified version of `trove` namely `jules-trov
 
 As part of our relaunch of JCoRe we tried to move from our modified `trove` version to the one on Maven Central `trove4j`, but to no avail as the accuracy of the parser dropped by around 10 points! To complicate things further, we were not able to get access to the sourcecode of our modified trove and there is no documentation on what was changed so we're not able to reproduce it and have to ship it like this.
 
+#### Shared Ressource Config
+
 ### To Do
 Investigate what causes the issues with `trove4j` and try to solve it to get the MST parser working with it.
 
