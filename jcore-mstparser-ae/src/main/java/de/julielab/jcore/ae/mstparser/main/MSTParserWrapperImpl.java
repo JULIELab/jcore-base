@@ -17,11 +17,13 @@
 package de.julielab.jcore.ae.mstparser.main;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
@@ -157,9 +159,11 @@ public class MSTParserWrapperImpl implements MSTParserWrapper, SharedResourceObj
 
     @Override
     public void load(DataResource resource) throws ResourceInitializationException {
-        File configFile = new File(resource.getUri());
+        //File configFile = new File(resource.getUri());
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(configFile));
+            //BufferedReader reader = new BufferedReader(new FileReader(configFile));
+        	DataInputStream in = new DataInputStream(resource.getInputStream());
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String value_modelFileName = reader.readLine();
             String value_format = reader.readLine();
             try {
@@ -170,7 +174,8 @@ public class MSTParserWrapperImpl implements MSTParserWrapper, SharedResourceObj
                 LOGGER.error("Can't load Model from file " + value_modelFileName);
             }
         } catch (IOException e) {
-            LOGGER.error("Can't read parameters from Config File " + configFile);
+            //LOGGER.error("Can't read parameters from Config File " + configFile);
+        	LOGGER.error("Can't read parameters from Config File ");
         }
     }
 
