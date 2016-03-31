@@ -17,7 +17,9 @@
 package de.julielab.jcore.ae.opennlpparser.main;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -140,21 +142,20 @@ public class ParseAnnotator extends JCasAnnotator_ImplBase {
         // Initialize Parser
         try {
             File modelFile = new File(model);
-            String modelFileName = null;
+            InputStream is;
             if (!modelFile.exists()) {
                 LOGGER.debug("File \"{}\" does not exist. Searching for the model as a classpath resource.", model);
-                modelFileName = this.getClass().getResource(model.startsWith("/") ? model : "/" + model).getFile();
-                if (modelFileName.isEmpty()) {
+                String resourceLocation = model.startsWith("/") ? model : "/" + model;
+    			is = getClass().getResourceAsStream(resourceLocation);
+                if (is.equals(null)) {
                     throw new IllegalArgumentException("The model file \"" + model
                             + "\" could be found neither in the file system nor in the classpath.");
                 }
-                modelFile = new File(modelFileName);
+                
             }
-            // else {
-            // modelFileName = modelFile.toString();
-            // }
-            // parser = TreebankParser.getParser(modelFileName, useTagdict, caseSensitive, beamSize, advancePercentage);
-            parser = ParserFactory.create(new ParserModel(modelFile), beamSize, advancePercentage);
+            else { is = new FileInputStream(modelFile); }
+
+            parser = ParserFactory.create(new ParserModel(is), beamSize, advancePercentage);
         } catch (IOException e) {
             LOGGER.error("[OpenNLP Parser] Could not load Parser models: " + e.getMessage());
             e.printStackTrace();
