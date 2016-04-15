@@ -162,4 +162,5 @@
         </license>
     </licenses>
 	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-lingpipe-gazetteer-ae</url>
+	<version>2.1.1-SNAPSHOT</version>
 </project>
