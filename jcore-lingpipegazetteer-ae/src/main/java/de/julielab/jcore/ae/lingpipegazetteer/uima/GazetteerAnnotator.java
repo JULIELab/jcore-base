@@ -70,32 +70,40 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 	private static final String COMPONENT_ID = GazetteerAnnotator.class.getCanonicalName();
 	private static final Logger LOGGER = LoggerFactory.getLogger(GazetteerAnnotator.class);
 	public static final String CHUNKER_RESOURCE_NAME = "DictionaryChunkerProvider";
-	// public final static String PARAM_USE_APPROXIMATE_MATCHING = "UseApproximateMatching";
+	// public final static String PARAM_USE_APPROXIMATE_MATCHING =
+	// "UseApproximateMatching";
 	public final static String PARAM_CHECK_ACRONYMS = "CheckAcronyms";
 	public final static String PARAM_OUTPUT_TYPE = "OutputType";
 	/**
-	 * Only required to set to false as an annotator parameter when using approximate matching and the ChunkerProvider
-	 * is set to CaseSensitive false. That is because the approximate chunker is always case sensitive.
+	 * Only required to set to false as an annotator parameter when using
+	 * approximate matching and the ChunkerProvider is set to CaseSensitive
+	 * false. That is because the approximate chunker is always case sensitive.
 	 */
 	// public final static String PARAM_CASE_SENSITIVE = "CaseSensitive";
 	private static final String PARAM_USE_MANTRA_MODE = "MantraMode";
 	/**
-	 * Parameter to indicate whether text - CAS document text for this class - should be normalized by completely
-	 * removing dashes, parenthesis, genitive 's and perhaps more. This is meant to replace the generation of term
-	 * variants and cannot be used together with variation generation. If this is switched on here, it must also be
-	 * switched on in the external resource configuration for the ChunkerProvider! Can only be used with alternative
+	 * Parameter to indicate whether text - CAS document text for this class -
+	 * should be normalized by completely removing dashes, parenthesis, genitive
+	 * 's and perhaps more. This is meant to replace the generation of term
+	 * variants and cannot be used together with variation generation. If this
+	 * is switched on here, it must also be switched on in the external resource
+	 * configuration for the ChunkerProvider! Can only be used with alternative
 	 * ChunkerProviderImplAlt implementation.
 	 */
 	// public final static String PARAM_NORMALIZE_TEXT = "NormalizeText";
 	/**
-	 * Parameter to indicate whether text - CAS document text for this class - should be transliterated, i.e. whether
-	 * accents and other character variations should be stripped. If this is switched on here, it must also be switched
-	 * on in the external resource configuration for the ChunkerProvider! Can only be used with alternative
-	 * ChunkerProviderImplAlt implementation.
+	 * Parameter to indicate whether text - CAS document text for this class -
+	 * should be transliterated, i.e. whether accents and other character
+	 * variations should be stripped. If this is switched on here, it must also
+	 * be switched on in the external resource configuration for the
+	 * ChunkerProvider! Can only be used with alternative ChunkerProviderImplAlt
+	 * implementation.
 	 */
-	// public final static String PARAM_TRANSLITERATE_TEXT = "TransliterateText";
+	// public final static String PARAM_TRANSLITERATE_TEXT =
+	// "TransliterateText";
 
-	// @ConfigurationParameter(name = PARAM_USE_APPROXIMATE_MATCHING, defaultValue = "false")
+	// @ConfigurationParameter(name = PARAM_USE_APPROXIMATE_MATCHING,
+	// defaultValue = "false")
 	private boolean useApproximateMatching = false;
 	@ConfigurationParameter(name = PARAM_USE_MANTRA_MODE, defaultValue = "false")
 	private boolean mantraMode = false;
@@ -105,9 +113,11 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 	private boolean checkAcronyms = true;
 	@ConfigurationParameter(name = PARAM_OUTPUT_TYPE)
 	private String outputType = null;
-	// @ConfigurationParameter(name = PARAM_TRANSLITERATE_TEXT, defaultValue = "false")
+	// @ConfigurationParameter(name = PARAM_TRANSLITERATE_TEXT, defaultValue =
+	// "false")
 	private boolean transliterate;
-	// @ConfigurationParameter(name = PARAM_NORMALIZE_TEXT, defaultValue = "false")
+	// @ConfigurationParameter(name = PARAM_NORMALIZE_TEXT, defaultValue =
+	// "false")
 	private boolean normalize;
 
 	@ExternalResource(key = CHUNKER_RESOURCE_NAME, mandatory = true)
@@ -139,18 +149,18 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 					"besides", "between", "beyond", "bill", "both", "bottom", "but", "by", "call", "can", "cannot",
 					"cant", "co", "computer", "con", "could", "couldnt", "cry", "de", "describe", "detail", "do",
 					"done", "down", "due", "during", "each", "eg", "eight", "either", "eleven", "else", "elsewhere",
-					"empty", "enough", "etc", "even", "ever", "every", "everyone", "everything", "everywhere",
-					"except", "few", "fifteen", "fify", "fill", "find", "fire", "first", "five", "for", "former",
-					"formerly", "forty", "found", "four", "from", "front", "full", "further", "get", "give", "go",
-					"had", "has", "hasnt", "have", "he", "hence", "her", "here", "hereafter", "hereby", "herein",
-					"hereupon", "hers", "herself", "high", "him", "himself", "his", "how", "however", "hundred", "i",
-					"ie", "if", "in", "inc", "indeed", "interest", "into", "is", "it", "its", "itself", "keep", "last",
-					"latter", "latterly", "least", "less", "ltd", "made", "many", "may", "me", "meanwhile", "might",
-					"mill", "mine", "more", "moreover", "most", "mostly", "move", "much", "must", "my", "myself",
-					"name", "namely", "neither", "never", "nevertheless", "next", "nine", "no", "nobody", "none",
-					"noone", "nor", "not", "nothing", "now", "nowhere", "of", "off", "often", "on", "once", "one",
-					"only", "onto", "or", "other", "others", "otherwise", "our", "ours", "ourselves", "out", "over",
-					"own", "part", "per", "perhaps", "please", "put", "rather", "re", "same", "see", "seem", "seemed",
+					"empty", "enough", "etc", "even", "ever", "every", "everyone", "everything", "everywhere", "except",
+					"few", "fifteen", "fify", "fill", "find", "fire", "first", "five", "for", "former", "formerly",
+					"forty", "found", "four", "from", "front", "full", "further", "get", "give", "go", "had", "has",
+					"hasnt", "have", "he", "hence", "her", "here", "hereafter", "hereby", "herein", "hereupon", "hers",
+					"herself", "high", "him", "himself", "his", "how", "however", "hundred", "i", "ie", "if", "in",
+					"inc", "indeed", "interest", "into", "is", "it", "its", "itself", "keep", "last", "latter",
+					"latterly", "least", "less", "ltd", "made", "many", "may", "me", "meanwhile", "might", "mill",
+					"mine", "more", "moreover", "most", "mostly", "move", "much", "must", "my", "myself", "name",
+					"namely", "neither", "never", "nevertheless", "next", "nine", "no", "nobody", "none", "noone",
+					"nor", "not", "nothing", "now", "nowhere", "of", "off", "often", "on", "once", "one", "only",
+					"onto", "or", "other", "others", "otherwise", "our", "ours", "ourselves", "out", "over", "own",
+					"part", "per", "perhaps", "please", "put", "rather", "re", "same", "see", "seem", "seemed",
 					"seeming", "seems", "serious", "several", "she", "should", "show", "side", "since", "sincere",
 					"six", "sixty", "so", "some", "somehow", "someone", "something", "sometime", "sometimes",
 					"somewhere", "still", "such", "system", "take", "ten", "than", "that", "the", "their", "them",
@@ -220,12 +230,13 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 			throw new ResourceInitializationException();
 		}
 
-		mantraMode = aContext.getConfigParameterValue(PARAM_USE_MANTRA_MODE) != null ? (Boolean) aContext
-				.getConfigParameterValue(PARAM_USE_MANTRA_MODE) : false;
+		mantraMode = aContext.getConfigParameterValue(PARAM_USE_MANTRA_MODE) != null
+				? (Boolean) aContext.getConfigParameterValue(PARAM_USE_MANTRA_MODE) : false;
 	}
 
 	/**
-	 * process the CAS, there are two subroutines: one for exact and one for approximate matching.
+	 * process the CAS, there are two subroutines: one for exact and one for
+	 * approximate matching.
 	 */
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		String docText = aJCas.getDocumentText();
@@ -248,12 +259,13 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 		LOGGER.debug("Gazetteer annotation done.");
 		if (useApproximateMatching) {
 			/*
-			 * handle matches found by approx matching: this means especially overlapping matches with different scores
-			 * (doesn't happen with exact matches)
+			 * handle matches found by approx matching: this means especially
+			 * overlapping matches with different scores (doesn't happen with
+			 * exact matches)
 			 */
 			List<Chunk> chunkList = filterChunking(chunking);
-			List<OverlappingChunk> overlappingChunks = groupOverlappingChunks(chunkList, chunking.charSequence()
-					.toString());
+			List<OverlappingChunk> overlappingChunks = groupOverlappingChunks(chunkList,
+					chunking.charSequence().toString());
 			// now add the best chunk of all overlappingChunks to the CAS
 			LOGGER.debug("all overlapping chunks:\n");
 			Set<Chunk> bestChunksSet = new HashSet<>();
@@ -266,9 +278,11 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 					Chunk bestChunk = bestChunks.get(i);
 					LOGGER.debug("Nr. " + i + " best chunk: " + bestChunk.start() + " - " + bestChunk.end() + ": "
 							+ bestChunk.score() + " ; type: " + bestChunk.type());
-					// TODO this check and the corresponding set may be removed when this exception hasn't been thrown
+					// TODO this check and the corresponding set may be removed
+					// when this exception hasn't been thrown
 					// in a
-					// while. Its currently just to be sure, this should not happen any more since the chunks are sorted
+					// while. Its currently just to be sure, this should not
+					// happen any more since the chunks are sorted
 					// by
 					// offset in the grouping method.
 					if (bestChunksSet.contains(bestChunk)) {
@@ -337,7 +351,7 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
 	static boolean filterParenthesis(String chunkText) {
 		Stack<Character> parenthesisStack = new Stack<>();
-		//Map<ParenthesisType, Integer> pMap = new HashMap<>();
+		// Map<ParenthesisType, Integer> pMap = new HashMap<>();
 		for (int i = 0; i < chunkText.length(); i++) {
 			char current = chunkText.charAt(i);
 			if (isParentheses(current)) {
@@ -360,12 +374,8 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 		ParenthesisType char1ParenthesisType = getParenthesisType(char2);
 		ParenthesisType char2ParenthesisType = getParenthesisType(char1);
 		if (char1ParenthesisType == ParenthesisType.NONE || char2ParenthesisType == ParenthesisType.NONE)
-			throw new IllegalArgumentException(
-					"The two characters '"
-							+ char1
-							+ "' and '"
-							+ char2
-							+ "' were given in order to determine whether they are compatible parenthesis counterparts, but at least one of those characters is no parentheses.");
+			throw new IllegalArgumentException("The two characters '" + char1 + "' and '" + char2
+					+ "' were given in order to determine whether they are compatible parenthesis counterparts, but at least one of those characters is no parentheses.");
 		return char1ParenthesisType.equals(char2ParenthesisType);
 	}
 
@@ -475,7 +485,8 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 		List<OverlappingChunk> overlappingChunks = new ArrayList<OverlappingChunk>();
 		for (Chunk chunk : chunkList) {
 			// for debugging
-			// System.out.println("chunking.add(ChunkFactory.createChunk(" + chunk.start() + ", " + chunk.end() +
+			// System.out.println("chunking.add(ChunkFactory.createChunk(" +
+			// chunk.start() + ", " + chunk.end() +
 			// ", 0d));");
 			boolean added = false;
 			for (OverlappingChunk over : overlappingChunks) {
@@ -504,9 +515,10 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 	// + " score=" + score);
 	// ------------ INFO ..........
 	/**
-	 * checks whether a chunk (= dictionary match) is an acronym. If yes, checks whether respective full form (obtained
-	 * via abbr textReference) is ConceptMention and has same specificType as chunk If these conditions are not
-	 * fulfilled, no entity annotation will be made.
+	 * checks whether a chunk (= dictionary match) is an acronym. If yes, checks
+	 * whether respective full form (obtained via abbr textReference) is
+	 * ConceptMention and has same specificType as chunk If these conditions are
+	 * not fulfilled, no entity annotation will be made.
 	 */
 	private boolean isAcronymWithSameFullFormSpecificType(JCas aJCas, Chunk chunk, NormalizedString normalizedDocText) {
 		Annotation anno;
@@ -530,8 +542,8 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 		Annotation textRef = abbr.getTextReference();
 		ConceptMention em = AnnotationRetrieval.getMatchingAnnotation(aJCas, textRef, ConceptMention.class);
 		if (em == null) {
-			LOGGER.debug(chunk
-					+ " chunk \"{}\" is an abbreviation but respective full \"{}\" form is no ConceptMention\n",
+			LOGGER.debug(
+					chunk + " chunk \"{}\" is an abbreviation but respective full \"{}\" form is no ConceptMention\n",
 					anno.getCoveredText(), textRef.getCoveredText());
 			return false;
 		}
@@ -539,23 +551,23 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 		// String specType = em.getSpecificType();
 		// if (specType.equals(chunk.type())) {
 		// LOGGER.debug(chunk
-		// + " chunk is an abbreviation and respective full form is ConceptMention with same specificType\n");
+		// + " chunk is an abbreviation and respective full form is
+		// ConceptMention with same specificType\n");
 		// return true;
 		// }
 
-		// checks whether full form annotation matches the type to be annotated here
+		// checks whether full form annotation matches the type to be annotated
+		// here
 		String emType = em.getClass().getCanonicalName();
 		if (emType.equals(outputType)) {
 			LOGGER.debug(
-					chunk
-							+ " chunk \"{}\" is an abbreviation and respective full form \"{}\" is ConceptMention with same type as OutputType\n",
+					chunk + " chunk \"{}\" is an abbreviation and respective full form \"{}\" is ConceptMention with same type as OutputType\n",
 					anno.getCoveredText(), em.getCoveredText());
 			return true;
 		}
 
 		LOGGER.debug(
-				chunk
-						+ " chunk \"{}\" is an abbreviation but respective full form \"{}\" is ConceptMention without the correct OutputType (is: {}; OutputType: {})\n",
+				chunk + " chunk \"{}\" is an abbreviation but respective full form \"{}\" is ConceptMention without the correct OutputType (is: {}; OutputType: {})\n",
 				new Object[] { anno.getCoveredText(), em.getCoveredText(), emType, outputType });
 		return false;
 	}
@@ -580,9 +592,11 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
 		try {
 			if (mantraMode) {
-				// the "type" string is used to transport all data needed for the MAN-XML format
+				// the "type" string is used to transport all data needed for
+				// the MAN-XML format
 				for (String term : chunk.type().split("@@TERM@@")) {
-					// @@ is used to separate source, cui, type(s) and group (in this order!)
+					// @@ is used to separate source, cui, type(s) and group (in
+					// this order!)
 					String[] info = term.split("@@");
 					Entity newEntity = (Entity) JCoReAnnotationTools.getAnnotationByClassName(aJCas,
 							"de.julielab.jcore.types.mantra.Entity");
@@ -600,7 +614,8 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 					newEntity.addToIndexes();
 				}
 			} else {
-				ConceptMention newEntity = (ConceptMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, outputType);
+				ConceptMention newEntity = (ConceptMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas,
+						outputType);
 				newEntity.setBegin(start);
 				newEntity.setEnd(end);
 
@@ -640,66 +655,86 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 			Abbreviation abbrev = (Abbreviation) abbrevIter.next();
 			Annotation fullFormAnnotation = abbrev.getTextReference();
 			LOGGER.debug("annotateAcronymsWithFullFormEntity() - checking abbreviation: " + abbrev.getCoveredText());
-			// ConceptMention emFullform = AnnotationRetrieval.getMatchingAnnotation(aJCas, fullFormAnnotation,
-			// ConceptMention.class);
-			ConceptMention emFullform = null;
-			List<ConceptMention> conceptsInFullform = JCoReAnnotationTools.getIncludedAnnotations(aJCas, fullFormAnnotation,
+			ConceptMention emFullform = AnnotationRetrieval.getMatchingAnnotation(aJCas, fullFormAnnotation,
 					ConceptMention.class);
-			if (conceptsInFullform.size() == 1) {
-				emFullform = conceptsInFullform.get(0);
-				LOGGER.debug("Found a single ConceptMention included in the full form: {}", emFullform.getCoveredText());
-			} else if (conceptsInFullform.size() > 1) {
-				// If there are multiple ConceptMentions found in the full form, take that largest right-most candidate.
-				int maxSize = -1;
-				for (ConceptMention em : conceptsInFullform) {
-					int emSize = em.getEnd() - em.getBegin();
-					if (emSize > maxSize) {
-						emFullform = em;
-						maxSize = emSize;
-					}
-				}
-				LOGGER.debug("Found multiple ConceptMentions included in the full form \"{}\", returning the longest.",
-						fullFormAnnotation.getCoveredText());
-				if (LOGGER.isTraceEnabled()) {
-					LOGGER.trace("All found ConceptMentions:");
-					for (ConceptMention cm : conceptsInFullform) {
-						LOGGER.trace("Text: {}; offsets: {}-{}",
-								new Object[] { cm.getCoveredText(), cm.getBegin(), cm.getEnd() });
-					}
-				}
-			} else {
-				LOGGER.debug("No ConceptMention in the span of acronym fullform \"{}\" found.",
-						fullFormAnnotation.getCoveredText());
-			}
+
+			// The following code was once introduced for gene tagging. There,
+			// the acronym fullforms sometimes miss minor parts of an annotated
+			// gene, leading to non-annotated acronyms that would have been
+			// correct.
+			// However, for general-purpose concept recognition this approach
+			// can be quite harmful. Example: "Anaphase-promoting complex (APC)"
+			// where only "anaphase" is recognized as concept. Now, "APC" would
+			// be annotated as an acronym for "anaphase". Here, a better
+			// recognition of the abbreviation span is required.
+			// ConceptMention emFullform = null;
+			// List<ConceptMention> conceptsInFullform =
+			// JCoReAnnotationTools.getIncludedAnnotations(aJCas,
+			// fullFormAnnotation,
+			// ConceptMention.class);
+			// if (conceptsInFullform.size() == 1) {
+			// emFullform = conceptsInFullform.get(0);
+			// LOGGER.debug("Found a single ConceptMention included in the full
+			// form: {}", emFullform.getCoveredText());
+			// } else if (conceptsInFullform.size() > 1) {
+			// // If there are multiple ConceptMentions found in the full form,
+			// take that largest right-most candidate.
+			// int maxSize = -1;
+			// for (ConceptMention em : conceptsInFullform) {
+			// int emSize = em.getEnd() - em.getBegin();
+			// if (emSize > maxSize) {
+			// emFullform = em;
+			// maxSize = emSize;
+			// }
+			// }
+			// LOGGER.debug("Found multiple ConceptMentions included in the full
+			// form \"{}\", returning the longest.",
+			// fullFormAnnotation.getCoveredText());
+			// if (LOGGER.isTraceEnabled()) {
+			// LOGGER.trace("All found ConceptMentions:");
+			// for (ConceptMention cm : conceptsInFullform) {
+			// LOGGER.trace("Text: {}; offsets: {}-{}",
+			// new Object[] { cm.getCoveredText(), cm.getBegin(), cm.getEnd()
+			// });
+			// }
+			// }
+			// } else {
+			// LOGGER.debug("No ConceptMention in the span of acronym fullform
+			// \"{}\" found.",
+			// fullFormAnnotation.getCoveredText());
+			// }
 
 			String type = null;
 			if (emFullform != null)
 				type = emFullform.getClass().getCanonicalName();
 
-			 ConceptMention emAcronym = AnnotationRetrieval.getMatchingAnnotation(aJCas, abbrev,
-			 ConceptMention.class);
-			 // this is really slow, really a pain with full texts
-//			ConceptMention emAcronym = JCoReAnnotationTools.getPartiallyOverlappingAnnotation(aJCas, abbrev,
-//					ConceptMention.class);
+			ConceptMention emAcronym = AnnotationRetrieval.getMatchingAnnotation(aJCas, abbrev, ConceptMention.class);
+			// This is really slow, really a pain with full texts.
+			// It was originally introduced to push recall for gene recognition.
+			// So now we will lose (a bit) of recognition performance there.
+			// ConceptMention emAcronym =
+			// JCoReAnnotationTools.getPartiallyOverlappingAnnotation(aJCas,
+			// abbrev,
+			// ConceptMention.class);
 
 			// if type of the entity is equal to the output type for this
 			// annotator
 			if (type != null && type.equals(outputType)) {
 				if (emFullform == null) {
-					LOGGER.debug("annotateAcronymsWithFullFormEntity() - fullform of abbreviation has no ConceptMention\n");
+					LOGGER.debug(
+							"annotateAcronymsWithFullFormEntity() - fullform of abbreviation has no ConceptMention\n");
 					continue;
 				}
-				if (emFullform.getComponentId() != null
-						&& emFullform.getComponentId().equals(COMPONENT_ID)
-						&& (emAcronym == null || !emAcronym.getClass().getName()
-								.equals(emFullform.getClass().getName()))) {
+				if (emFullform.getComponentId() != null && emFullform.getComponentId().equals(COMPONENT_ID)
+						&& (emAcronym == null
+								|| !emAcronym.getClass().getName().equals(emFullform.getClass().getName()))) {
 
 					try {
 						LOGGER.debug("annotateAcronymsWithFullFormEntity() - fullform of abbreviation ("
 								+ abbrev.getCoveredText() + " [begin=" + abbrev.getBegin() + "; end=" + abbrev.getEnd()
 								+ "]) has ConceptMention: " + emFullform.toString());
-						ConceptMention newEntityOnAcronym = (ConceptMention) JCoReAnnotationTools.getAnnotationByClassName(
-								aJCas, outputType);
+						ConceptMention newEntityOnAcronym = (ConceptMention) JCoReAnnotationTools
+								.getAnnotationByClassName(aJCas, outputType);
 						newEntityOnAcronym.setBegin(abbrev.getBegin());
 						newEntityOnAcronym.setEnd(abbrev.getEnd());
 						newEntityOnAcronym.setTextualRepresentation(newEntityOnAcronym.getCoveredText());
