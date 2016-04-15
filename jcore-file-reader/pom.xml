@@ -21,4 +21,5 @@
   		<version>${jcore-version}</version>
   	</dependency>
   </dependencies>
+  <version>2.1.1-SNAPSHOT</version>
 </project>
