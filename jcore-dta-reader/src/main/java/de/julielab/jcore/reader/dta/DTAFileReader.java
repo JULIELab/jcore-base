@@ -8,18 +8,31 @@
  *
  */
 
-package de.julielab.jcore.reader.iexml;
+package de.julielab.jcore.reader.dta;
 
 import de.julielab.jcore.types.Date;
+import de.julielab.xml.FileTooBigException;
+import de.julielab.xml.JulieXMLConstants;
+import de.julielab.xml.JulieXMLTools;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.XMLConstants;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.impl.ListUtils;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.jcas.JCas;
@@ -29,6 +42,14 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
+import com.ximpleware.AutoPilot;
+import com.ximpleware.NavException;
+import com.ximpleware.ParseException;
+import com.ximpleware.PilotException;
+import com.ximpleware.VTDNav;
 
 public class DTAFileReader extends CollectionReader_ImplBase {
 
@@ -186,6 +207,42 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		counter++;
 
 	}
+	
+	
+	public static String getDocumentText(String xmlFile, boolean normalize) throws ParseException, FileTooBigException, FileNotFoundException{
+		List<Map<String,String>> fields = new ArrayList<>();
+		List<String> tokens = new ArrayList<>();
+
+		
+		Map<String,String> id2token = new HashMap<>();
+		String tokenName = "token";
+		String idName ="ID";
+		fields.clear();
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, tokenName, JulieXMLConstants.XPATH, "."));
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, idName, JulieXMLConstants.XPATH, "@ID"));
+		Iterator<Map<String, Object>> tokenIterator = JulieXMLTools.constructRowIterator(xmlFile, 1024, "/D-Spin/TextCorpus/tokens/token", fields, false);
+		while (tokenIterator.hasNext()) {
+			Map<String, Object> token = tokenIterator
+					.next();
+			id2token.put((String) token.get(idName), (String)token.get(tokenName));
+		}
+		
+		StringBuilder text = new StringBuilder();
+		fields.clear();
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "tokenIDs", JulieXMLConstants.XPATH, "@tokenIDs"));
+		Iterator<Map<String, Object>> sentenceIterator = JulieXMLTools.constructRowIterator(xmlFile, 1024, "/D-Spin/TextCorpus/sentences/sentence", fields, false);
+		while (sentenceIterator.hasNext()) {
+			for(Object tokenID : sentenceIterator
+					.next().values()){
+				System.out.println(tokenID);
+				tokens.add(id2token.get((String) tokenID));
+			}
+			tokens.clear();
+			text.append(Joiner.on(" ").join(tokens)).append("\n");
+		}
+		return text.toString();
+	}
+	
 
 	@Override
 	public boolean hasNext() throws IOException, CollectionException {
