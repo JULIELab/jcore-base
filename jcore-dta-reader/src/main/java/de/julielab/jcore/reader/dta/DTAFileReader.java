@@ -153,7 +153,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 				Unit unit = new Unit(jcas, offset, end - 1);
 				unit.setId(u.getId());
 				unit.addToIndexes();
-				
+
 				for (generated.E xmlE : u.getE()) {
 					Entity entity = new Entity(jcas);
 					int begin = xmlE.getOffset().intValue() + offset;
@@ -164,85 +164,111 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 					entity.setSource(xmlE.getSrc());
 					entity.setCui(xmlE.getCui());
 					entity.setSemanticType(xmlE.getType());
-					entity.setSemanticGroup(xmlE.getGrp().value());		
-					
+					entity.setSemanticGroup(xmlE.getGrp().value());
+
 					String entityText = null;
 					List<NER> ners = new ArrayList<NER>();
-					for(Serializable x : xmlE.getContent()){
-						if(x instanceof generated.NER){
+					for (Serializable x : xmlE.getContent()) {
+						if (x instanceof generated.NER) {
 							NER ner = new NER(jcas);
-							ner.setSemanticGroup(((generated.NER)x).getGroup().value());
-							ner.setProbability(((generated.NER)x).getProbability());
+							ner.setSemanticGroup(((generated.NER) x).getGroup()
+									.value());
+							ner.setProbability(((generated.NER) x)
+									.getProbability());
 							ner.addToIndexes();
 							ners.add(ner);
-						}
-						else if(x instanceof String)
+						} else if (x instanceof String)
 							entityText = (String) x;
 					}
-					if(!ners.isEmpty()){
+					if (!ners.isEmpty()) {
 						FSArray nerArray = new FSArray(jcas, ners.size());
-						for(int i=0; i<ners.size(); ++i){
+						for (int i = 0; i < ners.size(); ++i) {
 							nerArray.set(i, ners.get(i));
-						}		
+						}
 						nerArray.addToIndexes();
 						entity.setNer(nerArray);
 					}
-					
+
 					entity.addToIndexes();
-					
-			
-					String originalText = text.substring(xmlE.getOffset().intValue(), xmlE.getOffset().intValue()+xmlE.getLen().intValue());
-					if(!originalText.equals(entityText))
-						LOGGER.error("Error in input file, Entity "+entity.getId()+" has wrong offset/len or text!");
+
+					String originalText = text.substring(xmlE.getOffset()
+							.intValue(), xmlE.getOffset().intValue()
+							+ xmlE.getLen().intValue());
+					if (!originalText.equals(entityText))
+						LOGGER.error("Error in input file, Entity "
+								+ entity.getId()
+								+ " has wrong offset/len or text!");
 				}
-				
-				//TODO handle W annotations here!
+
+				// TODO handle W annotations here!
 
 				offset = end;
 			}
 
 		}
 		jcas.setDocumentText(textB.toString());
-		
+
 		counter++;
 
 	}
-	
-	
+
 	public static String getDocumentText(String xmlFile, boolean normalize) throws ParseException, FileTooBigException, FileNotFoundException{
 		List<Map<String,String>> fields = new ArrayList<>();
-		List<String> tokens = new ArrayList<>();
 
-		
+		//<token ID="w1">Des</token>
 		Map<String,String> id2token = new HashMap<>();
 		String tokenName = "token";
-		String idName ="ID";
+		String tokenIdName ="ID";
 		fields.clear();
 		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, tokenName, JulieXMLConstants.XPATH, "."));
-		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, idName, JulieXMLConstants.XPATH, "@ID"));
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, tokenIdName, JulieXMLConstants.XPATH, "@ID"));
 		Iterator<Map<String, Object>> tokenIterator = JulieXMLTools.constructRowIterator(xmlFile, 1024, "/D-Spin/TextCorpus/tokens/token", fields, false);
 		while (tokenIterator.hasNext()) {
 			Map<String, Object> token = tokenIterator
 					.next();
-			id2token.put((String) token.get(idName), (String)token.get(tokenName));
+			id2token.put((String) token.get(tokenIdName), (String)token.get(tokenName));
 		}
+		
+		//<tag tokenIDs="w1">ART</tag>  
+		//TODO: check if STTS <POStags tagset="stts">
+		Map<String,String> id2pos = new HashMap<>();
+		String tagName = "tag";
+		String tagIdName ="ID";
+		fields.clear();
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, tagName, JulieXMLConstants.XPATH, "."));
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, tagIdName, JulieXMLConstants.XPATH, "@tokenIDs"));
+		Iterator<Map<String, Object>> tagIterator = JulieXMLTools.constructRowIterator(xmlFile, 1024, "/D-Spin/TextCorpus/POStags/tag", fields, false);
+		while (tagIterator.hasNext()) {
+			Map<String, Object> tag = tagIterator
+					.next();
+			id2pos.put((String) tag.get(tagIdName), (String)tag.get(tagName));
+		}
+		System.out.println(id2pos);
 		
 		StringBuilder text = new StringBuilder();
 		fields.clear();
 		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "tokenIDs", JulieXMLConstants.XPATH, "@tokenIDs"));
 		Iterator<Map<String, Object>> sentenceIterator = JulieXMLTools.constructRowIterator(xmlFile, 1024, "/D-Spin/TextCorpus/sentences/sentence", fields, false);
 		while (sentenceIterator.hasNext()) {
-			for(Object tokenID : sentenceIterator
-					.next().values()){
-				System.out.println(tokenID);
-				tokens.add(id2token.get((String) tokenID));
-			}
-			tokens.clear();
-			text.append(Joiner.on(" ").join(tokens)).append("\n");
+			boolean first = true;
+			for(Object tokenIDs : sentenceIterator
+					.next().values())
+				for(String tokenID : ((String)tokenIDs).split(" ")){
+					if(! id2token.containsKey(tokenID))
+						throw new IllegalArgumentException("Token ID \""+tokenID+"\" has no associated token!");
+					if(! id2pos.containsKey(tokenID))
+						throw new IllegalArgumentException("Token \""+id2token.get(tokenID)+ "\" with ID \""+tokenID+"\" has no POS information!");
+					if(!first || ! (id2pos.get(tokenID).equals("$,") || id2pos.get(tokenID).equals("$.")) ){
+						text.append(" ");
+						first = false;
+					}
+		
+					text.append(id2token.get(tokenID));
+				}
+			text.append("\n");
 		}
 		return text.toString();
 	}
-	
 
 	@Override
 	public boolean hasNext() throws IOException, CollectionException {
