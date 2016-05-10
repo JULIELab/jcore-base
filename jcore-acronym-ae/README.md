@@ -9,7 +9,9 @@ During the processing of documents, this UIMA annotator takes `jcore.types.Sente
 The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
 
 ### Using the AE - Descriptor Configuration
-In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is available under `src/main/resources/de/julielab/jcore/ae/acronymtagger/desc` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
+In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is available under `src/main/resources/de/julielab/jcore/ae/acronymtagger/desc` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information. The import by name location of the default descriptor is
+
+`src/main.resources.de.julielab.jcore.ae.acronymtagger.desc.jcore-acronym-ae`
 
 **1. Parameters**
 
