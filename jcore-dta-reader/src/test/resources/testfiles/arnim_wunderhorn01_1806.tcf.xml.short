@@ -49,7 +49,7 @@
       <sentence ID="s5" tokenIDs="w20 w21 w22 w23 w24 w25 w26"/>
     </sentences>
     <lemmas>
-      <lemma tokenIDs="w1">d</lemma>
+<lemma tokenIDs="w1">d</lemma>
       <lemma tokenIDs="w2">Knabe</lemma>
       <lemma tokenIDs="w3">Wunderhorn</lemma>
       <lemma tokenIDs="w4">.</lemma>
@@ -58,6 +58,12 @@
       <lemma tokenIDs="w7">Lied</lemma>
       <lemma tokenIDs="w8">sammeln</lemma>
       <lemma tokenIDs="w9">von</lemma>
+      <lemma tokenIDs="wa">L.</lemma>
+      <lemma tokenIDs="wb">A.</lemma>
+      <lemma tokenIDs="wc">v.</lemma>
+      <lemma tokenIDs="wd">Arnim</lemma>
+      <lemma tokenIDs="we">und</lemma>
+      <lemma tokenIDs="wf">Clemens</lemma>
       <lemma tokenIDs="w10">Brentano</lemma>
       <lemma tokenIDs="w11">.</lemma>
       <lemma tokenIDs="w12">d</lemma>
@@ -68,6 +74,12 @@
       <lemma tokenIDs="w17">Lied</lemma>
       <lemma tokenIDs="w18">L.</lemma>
       <lemma tokenIDs="w19">Achim</lemma>
+      <lemma tokenIDs="w1a">v.</lemma>
+      <lemma tokenIDs="w1b">Arnim</lemma>
+      <lemma tokenIDs="w1c">.</lemma>
+      <lemma tokenIDs="w1d">clemens</lemma>
+      <lemma tokenIDs="w1e">brentano</lemma>
+      <lemma tokenIDs="w1f">.</lemma>
       <lemma tokenIDs="w20">Heidelberg</lemma>
       <lemma tokenIDs="w21">,</lemma>
       <lemma tokenIDs="w22">bei</lemma>
@@ -86,6 +98,12 @@
       <tag tokenIDs="w7">NN</tag>
       <tag tokenIDs="w8">VVPP</tag>
       <tag tokenIDs="w9">APPR</tag>
+      <tag tokenIDs="wa">NE</tag>
+      <tag tokenIDs="wb">NE</tag>
+      <tag tokenIDs="wc">APPR</tag>
+      <tag tokenIDs="wd">NE</tag>
+      <tag tokenIDs="we">KON</tag>
+      <tag tokenIDs="wf">NE</tag>
       <tag tokenIDs="w10">NE</tag>
       <tag tokenIDs="w11">$.</tag>
       <tag tokenIDs="w12">ART</tag>
@@ -96,6 +114,12 @@
       <tag tokenIDs="w17">NN</tag>
       <tag tokenIDs="w18">NE</tag>
       <tag tokenIDs="w19">NE</tag>
+      <tag tokenIDs="w1a">APPRART</tag>
+      <tag tokenIDs="w1b">NE</tag>
+      <tag tokenIDs="w1c">$.</tag>
+      <tag tokenIDs="w1d">FM.la</tag>
+      <tag tokenIDs="w1e">FM.la</tag>
+      <tag tokenIDs="w1f">$.</tag>
       <tag tokenIDs="w20">NE</tag>
       <tag tokenIDs="w21">$,</tag>
       <tag tokenIDs="w22">APPR</tag>
