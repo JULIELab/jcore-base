@@ -10,29 +10,25 @@
 
 package de.julielab.jcore.reader.dta;
 
-import de.julielab.jcore.types.Date;
+import de.julielab.jcore.types.Lemma;
+import de.julielab.jcore.types.STTSPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import de.julielab.xml.FileTooBigException;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.impl.ListUtils;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.jcas.JCas;
@@ -43,15 +39,12 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
 import com.ximpleware.ParseException;
-import com.ximpleware.PilotException;
-import com.ximpleware.VTDNav;
 
 public class DTAFileReader extends CollectionReader_ImplBase {
+	
+	static final String COMPONENT_ID = DTAFileReader.class.getCanonicalName();
 
 	public static final String DESCRIPTOR_PARAMTER_INPUTFILE = "inputFile";
 
@@ -74,27 +67,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 		filename = (String) getConfigParameterValue(DESCRIPTOR_PARAMTER_INPUTFILE);
 
-		Integer maxRecordsCount = (Integer) getConfigParameterValue(DESCRIPTOR_PARAMTER_MAXRECORDSCOUNT);
-
 		inputFile = new File(filename);
 
 		if (!inputFile.exists()) {
 			new Exception("DIRECTORY_NOT_FOUND!");
 		}
-
-		xmlCorpus = JAXB.unmarshal(inputFile, generated.Corpus.class);
-
-		if (xmlCorpus == null) {
-			try {
-				throw new Exception("Reading configuration from " + inputFile
-						+ " failed.");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		xmlDocs = xmlCorpus.getDocument();
-		fileCount = xmlDocs.size();
 
 		LOGGER.info("Input file contains " + fileCount + " documents.");
 
@@ -115,98 +92,6 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		}
 
 		LOGGER.info("Document-Number:" + counter);
-
-		generated.Document doc = xmlDocs.get(counter);
-
-		Document docInfo = new Document(jcas);
-		docInfo.setId(doc.getId());
-		docInfo.addToIndexes();
-
-		Corpus corpus = new Corpus(jcas);
-
-		corpus.setDocType(xmlCorpus.getDocType());
-		corpus.setId(xmlCorpus.getId());
-		corpus.setLanguage(xmlCorpus.getLang().name().toLowerCase());
-
-		XMLGregorianCalendar xmlDate = xmlCorpus.getCreationDate();
-		Date date = new Date(jcas);
-		date.setDay(xmlDate.getDay());
-		date.setMonth(xmlDate.getMonth());
-		date.setYear(xmlDate.getYear());
-		corpus.setCreationDate(date);
-
-		corpus.addToIndexes();
-
-		jcas.setDocumentLanguage(xmlCorpus.getLang().name().toLowerCase());
-
-		StringBuilder textB = new StringBuilder();
-		int offset = 0;
-
-		for (generated.Unit u : doc.getUnit()) {
-			Text t = u.getText();
-
-			for (Object o : t.getContent()) {
-				String text = (String) o;
-				// inserted \n is not part of the unit itself!
-				textB.append(text).append("\n");
-				int end = offset + text.length() + 1;
-				Unit unit = new Unit(jcas, offset, end - 1);
-				unit.setId(u.getId());
-				unit.addToIndexes();
-
-				for (generated.E xmlE : u.getE()) {
-					Entity entity = new Entity(jcas);
-					int begin = xmlE.getOffset().intValue() + offset;
-					entity.setBegin(begin);
-					entity.setEnd(begin + xmlE.getLen().intValue());
-
-					entity.setId(xmlE.getId());
-					entity.setSource(xmlE.getSrc());
-					entity.setCui(xmlE.getCui());
-					entity.setSemanticType(xmlE.getType());
-					entity.setSemanticGroup(xmlE.getGrp().value());
-
-					String entityText = null;
-					List<NER> ners = new ArrayList<NER>();
-					for (Serializable x : xmlE.getContent()) {
-						if (x instanceof generated.NER) {
-							NER ner = new NER(jcas);
-							ner.setSemanticGroup(((generated.NER) x).getGroup()
-									.value());
-							ner.setProbability(((generated.NER) x)
-									.getProbability());
-							ner.addToIndexes();
-							ners.add(ner);
-						} else if (x instanceof String)
-							entityText = (String) x;
-					}
-					if (!ners.isEmpty()) {
-						FSArray nerArray = new FSArray(jcas, ners.size());
-						for (int i = 0; i < ners.size(); ++i) {
-							nerArray.set(i, ners.get(i));
-						}
-						nerArray.addToIndexes();
-						entity.setNer(nerArray);
-					}
-
-					entity.addToIndexes();
-
-					String originalText = text.substring(xmlE.getOffset()
-							.intValue(), xmlE.getOffset().intValue()
-							+ xmlE.getLen().intValue());
-					if (!originalText.equals(entityText))
-						LOGGER.error("Error in input file, Entity "
-								+ entity.getId()
-								+ " has wrong offset/len or text!");
-				}
-
-				// TODO handle W annotations here!
-
-				offset = end;
-			}
-
-		}
-		jcas.setDocumentText(textB.toString());
 
 		counter++;
 
@@ -236,62 +121,94 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		return attribute2text;
 	}
 
-	public static String getDocumentText(String xmlFile, boolean normalize)
-			throws ParseException, FileTooBigException, FileNotFoundException {
-		List<Map<String, String>> fields = new ArrayList<>();
+	static void getDocumentText(JCas jcas, String xmlFile,
+			boolean normalize) throws ParseException, FileTooBigException,
+			FileNotFoundException {
 
 		//<token ID="w1">Des</token>
 		Map<String, String> id2token = getMapping(xmlFile,
 				"/D-Spin/TextCorpus/tokens/token", "@ID");
 
+		//<lemmas>
+		//<lemma tokenIDs="w1">d</lemma>
+		Map<String, String> id2lemma = getMapping(xmlFile,
+				"/D-Spin/TextCorpus/lemmas/lemma", "@tokenIDs");
+
 		//<tag tokenIDs="w1">ART</tag>  
 		//TODO: check if STTS <POStags tagset="stts">
 		Map<String, String> id2pos = getMapping(xmlFile,
 				"/D-Spin/TextCorpus/POStags/tag", "@tokenIDs");
-		
-	    //<orthography>
-	    // <correction tokenIDs="w6" operation="replace">deutsche</correction>
+
+		//<orthography>
+		// <correction tokenIDs="w6" operation="replace">deutsche</correction>
 		Map<String, String> id2correction = normalize ? getMapping(xmlFile,
-				"/D-Spin/TextCorpus/orthography/correction", "@tokenIDs") : null;
-		
+				"/D-Spin/TextCorpus/orthography/correction", "@tokenIDs")
+				: null;
+
 		StringBuilder text = new StringBuilder();
-		fields.clear();
+		List<Map<String, String>> fields = new ArrayList<>();
 		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "tokenIDs",
 				JulieXMLConstants.XPATH, "@tokenIDs"));
 		Iterator<Map<String, Object>> sentenceIterator = JulieXMLTools
 				.constructRowIterator(xmlFile, 1024,
 						"/D-Spin/TextCorpus/sentences/sentence", fields, false);
-		int offset = 0;
+		int sentenceStart = 0;
 		while (sentenceIterator.hasNext()) {
 			boolean first = true;
 			for (Object tokenIDs : sentenceIterator.next().values())
-				for (String tokenID : ((String) tokenIDs).split(" ")) {
-					if (!id2token.containsKey(tokenID))
+				for (String id : ((String) tokenIDs).split(" ")) {
+					if (!id2token.containsKey(id))
 						throw new IllegalArgumentException("Token ID \""
-								+ tokenID + "\" has no associated token!");
-					if (!id2pos.containsKey(tokenID))
+								+ id + "\" has no associated token!");
+					if (!id2pos.containsKey(id))
 						throw new IllegalArgumentException("Token \""
-								+ id2token.get(tokenID) + "\" with ID \""
-								+ tokenID + "\" has no POS information!");
+								+ id2token.get(id) + "\" with ID \""
+								+ id + "\" has no POS information!");
+					if (!id2lemma.containsKey(id))
+						throw new IllegalArgumentException("Token \""
+								+ id2token.get(id) + "\" with ID \""
+								+ id + "\" has no lemma information!");
 					if (first)
 						first = false;
-					else if (!(id2pos.get(tokenID).equals("$,") || id2pos.get(
-							tokenID).equals("$."))){
+					else if (!(id2pos.get(id).equals("$,") || id2pos.get(
+							id).equals("$."))) {
 						text.append(" ");
-						offset++;
 					}
-					String s;
-					if(normalize && id2correction.containsKey(tokenID))
-						s = id2correction.get(tokenID);
+
+					int begin = text.length();
+					if (normalize && id2correction.containsKey(id))
+						text.append(id2correction.get(id));
 					else
-						s = id2token.get(tokenID);
-					text.append(s);
-					offset += s.length();
+						text.append(id2token.get(id));
+					int end = text.length();
+					
+					Token token = new Token(jcas, begin, end);
+					token.setComponentId(COMPONENT_ID);
+
+					Lemma lemma = new Lemma(jcas, begin, end);
+					lemma.setValue(id2lemma.get(id));
+					lemma.addToIndexes();
+					token.setLemma(lemma);
+					
+					STTSPOSTag tag = new STTSPOSTag(jcas, begin, end);
+					tag.setValue(id2pos.get(id));
+					tag.setBegin(begin);
+					tag.setEnd(end);
+					tag.setComponentId(COMPONENT_ID);
+		            tag.addToIndexes();
+		            FSArray postags = new FSArray(jcas, 1);
+					postags.set(0, tag);
+					token.setPosTag(postags);
+					
+					token.addToIndexes();
 				}
+			Sentence sentence = new Sentence(jcas, sentenceStart, text.length());
+			sentence.setComponentId(COMPONENT_ID);
+			sentence.addToIndexes();
 			text.append("\n");
+			sentenceStart = text.length();
 		}
-		text.delete(text.length() - 1, text.length()); //No final newline
-		return text.toString();
+		jcas.setDocumentText(text.subSequence(0, text.length() - 1).toString()); //No final newline
 	}
 
 	@Override

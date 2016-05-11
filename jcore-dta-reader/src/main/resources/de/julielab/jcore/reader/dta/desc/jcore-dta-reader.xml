@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>de.julielab.jcore.reader.iexml.IEXMLFileReader</implementationName>
+  <implementationName>de.julielab.jcore.reader.dta.DTAFileReader</implementationName>
   <processingResourceMetaData>
-    <name>JCoRe IEXML Reader</name>
+    <name>JCoRe DTA Reader</name>
     <description/>
     <version>2.0.0</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
