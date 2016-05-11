@@ -1,7 +1,7 @@
 /**
- * Copyright (c) 2015, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * Copyright (c) 2015, JULIE Lab. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the GNU Lesser
+ * General Public License (LGPL) v3.0
  *
  * 
  * @author hellrich
@@ -212,61 +212,85 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	}
 
-	public static String getDocumentText(String xmlFile, boolean normalize) throws ParseException, FileTooBigException, FileNotFoundException{
-		List<Map<String,String>> fields = new ArrayList<>();
+	static Map<String, String> getMapping(String xmlFile, String forEachXpath,
+			String attributeXpath) {
+		Map<String, String> attribute2text = new HashMap<>();
+
+		final String text = "text";
+		final String attribute = "attribute";
+		List<Map<String, String>> fields = new ArrayList<>();
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, text,
+				JulieXMLConstants.XPATH, "."));
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, attribute,
+				JulieXMLConstants.XPATH, attributeXpath));
+
+		Iterator<Map<String, Object>> tokenIterator = JulieXMLTools
+				.constructRowIterator(xmlFile, 1024, forEachXpath, fields,
+						false);
+		while (tokenIterator.hasNext()) {
+			Map<String, Object> token = tokenIterator.next();
+			attribute2text.put((String) token.get(attribute),
+					(String) token.get(text));
+		}
+
+		return attribute2text;
+	}
+
+	public static String getDocumentText(String xmlFile, boolean normalize)
+			throws ParseException, FileTooBigException, FileNotFoundException {
+		List<Map<String, String>> fields = new ArrayList<>();
 
 		//<token ID="w1">Des</token>
-		Map<String,String> id2token = new HashMap<>();
-		String tokenName = "token";
-		String tokenIdName ="ID";
-		fields.clear();
-		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, tokenName, JulieXMLConstants.XPATH, "."));
-		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, tokenIdName, JulieXMLConstants.XPATH, "@ID"));
-		Iterator<Map<String, Object>> tokenIterator = JulieXMLTools.constructRowIterator(xmlFile, 1024, "/D-Spin/TextCorpus/tokens/token", fields, false);
-		while (tokenIterator.hasNext()) {
-			Map<String, Object> token = tokenIterator
-					.next();
-			id2token.put((String) token.get(tokenIdName), (String)token.get(tokenName));
-		}
-		
+		Map<String, String> id2token = getMapping(xmlFile,
+				"/D-Spin/TextCorpus/tokens/token", "@ID");
+
 		//<tag tokenIDs="w1">ART</tag>  
 		//TODO: check if STTS <POStags tagset="stts">
-		Map<String,String> id2pos = new HashMap<>();
-		String tagName = "tag";
-		String tagIdName ="ID";
-		fields.clear();
-		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, tagName, JulieXMLConstants.XPATH, "."));
-		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, tagIdName, JulieXMLConstants.XPATH, "@tokenIDs"));
-		Iterator<Map<String, Object>> tagIterator = JulieXMLTools.constructRowIterator(xmlFile, 1024, "/D-Spin/TextCorpus/POStags/tag", fields, false);
-		while (tagIterator.hasNext()) {
-			Map<String, Object> tag = tagIterator
-					.next();
-			id2pos.put((String) tag.get(tagIdName), (String)tag.get(tagName));
-		}
-		System.out.println(id2pos);
+		Map<String, String> id2pos = getMapping(xmlFile,
+				"/D-Spin/TextCorpus/POStags/tag", "@tokenIDs");
+		
+	    //<orthography>
+	    // <correction tokenIDs="w6" operation="replace">deutsche</correction>
+		Map<String, String> id2correction = normalize ? getMapping(xmlFile,
+				"/D-Spin/TextCorpus/orthography/correction", "@tokenIDs") : null;
 		
 		StringBuilder text = new StringBuilder();
 		fields.clear();
-		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "tokenIDs", JulieXMLConstants.XPATH, "@tokenIDs"));
-		Iterator<Map<String, Object>> sentenceIterator = JulieXMLTools.constructRowIterator(xmlFile, 1024, "/D-Spin/TextCorpus/sentences/sentence", fields, false);
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "tokenIDs",
+				JulieXMLConstants.XPATH, "@tokenIDs"));
+		Iterator<Map<String, Object>> sentenceIterator = JulieXMLTools
+				.constructRowIterator(xmlFile, 1024,
+						"/D-Spin/TextCorpus/sentences/sentence", fields, false);
+		int offset = 0;
 		while (sentenceIterator.hasNext()) {
 			boolean first = true;
-			for(Object tokenIDs : sentenceIterator
-					.next().values())
-				for(String tokenID : ((String)tokenIDs).split(" ")){
-					if(! id2token.containsKey(tokenID))
-						throw new IllegalArgumentException("Token ID \""+tokenID+"\" has no associated token!");
-					if(! id2pos.containsKey(tokenID))
-						throw new IllegalArgumentException("Token \""+id2token.get(tokenID)+ "\" with ID \""+tokenID+"\" has no POS information!");
-					if(!first || ! (id2pos.get(tokenID).equals("$,") || id2pos.get(tokenID).equals("$.")) ){
-						text.append(" ");
+			for (Object tokenIDs : sentenceIterator.next().values())
+				for (String tokenID : ((String) tokenIDs).split(" ")) {
+					if (!id2token.containsKey(tokenID))
+						throw new IllegalArgumentException("Token ID \""
+								+ tokenID + "\" has no associated token!");
+					if (!id2pos.containsKey(tokenID))
+						throw new IllegalArgumentException("Token \""
+								+ id2token.get(tokenID) + "\" with ID \""
+								+ tokenID + "\" has no POS information!");
+					if (first)
 						first = false;
+					else if (!(id2pos.get(tokenID).equals("$,") || id2pos.get(
+							tokenID).equals("$."))){
+						text.append(" ");
+						offset++;
 					}
-		
-					text.append(id2token.get(tokenID));
+					String s;
+					if(normalize && id2correction.containsKey(tokenID))
+						s = id2correction.get(tokenID);
+					else
+						s = id2token.get(tokenID);
+					text.append(s);
+					offset += s.length();
 				}
 			text.append("\n");
 		}
+		text.delete(text.length() - 1, text.length()); //No final newline
 		return text.toString();
 	}
 
