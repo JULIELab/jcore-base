@@ -26,7 +26,7 @@ import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReTools;
 
 public class DTAFileReaderTest {
-	static final String TEST_FILE = "src/test/resources/testfiles/arnim_wunderhorn01_1806.tcf.xml.short";
+	static final String TEST_FILE = "src/test/resources/testfiles/arnim_wunderhorn01_1806.tcf.short.xml";
 	static final String READER_DESC = "src/main/resources/de/julielab/jcore/reader/dta/desc/jcore-dta-reader.xml";
 
 	static private CollectionReader getReader()
