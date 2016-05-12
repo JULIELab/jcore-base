@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jcore.reader.ign.IGNReader</implementationName>
+  <processingResourceMetaData>
+    <name>JCoRe IGN Reader</name>
+    <description>The IGNReader reads IGN corpus files in BioC-format.
+
+There are XML files comprising the actual text (as well as passage and sentence annotations) and there are separate XML files comprising the annotations.</description>
+    <version>2.2.0-SNAPSHOT</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>InputDirectoryText</name>
+        <description>String parameter indicating path to the directory containing files in BioC-format that comprise the actual text.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>InputDirectoryAnnotations</name>
+        <description>String parameter indicating path to the directory containing files in BioC-format that comprise the annotations.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>PublicationDatesFile</name>
+        <description>a file containing a listed mapping between pubmed ids and their articles publication dates
+If provided, a date annotation will be added to the produced cas and timestamp filtering can be applied by the geno gene mapper.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>PublicationDatesFile</name>
+        <value>
+          <string>/de/julielab/jcore/reader/ign/pubdates/IGN_publicationDates</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration/>
+</collectionReaderDescription>
