@@ -2,14 +2,17 @@ package de.julielab.jcore.reader.dta;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -45,8 +48,20 @@ public class DTAFileReaderTest {
 			ResourceInitializationException, InvalidXMLException, CASException,
 			IOException {
 		JCas jcas = getJCas();
-		DTAFileReader.readDocument(jcas, TEST_FILE, normalize);
+		DTAFileReader.readDocument(jcas, new File(TEST_FILE), normalize);
 		return jcas;
+	}
+	
+	@Test
+	public void testDoProcess() throws ResourceInitializationException, InvalidXMLException, CASException, IOException, CollectionException{
+		CollectionReader reader = getReader();
+		reader.setConfigParameterValue(DTAFileReader.DESCRIPTOR_PARAMTER_INPUTFILE, TEST_FILE);
+		CAS cas = getJCas().getCas();
+		while(reader.hasNext())
+		{
+			reader.getNext(cas);System.out.println(cas.getDocumentText());
+		}
+			
 	}
 
 	@Test
@@ -135,10 +150,5 @@ public class DTAFileReaderTest {
 			e.printStackTrace();
 			fail();
 		}
-	}
-	
-	@Test
-	public void testFormatOk(){
-		assertTrue(DTAFileReader.formatOk(TEST_FILE));
 	}
 }

@@ -10,15 +10,15 @@
     <configurationParameters>
       <configurationParameter>
         <name>inputFile</name>
-        <description>the Mantra xml input file</description>
+        <description>the input file or folder of input files</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>maxRecordsCount</name>
-        <description>Non-mandatory parameter that allows you to read only a limited number of records into the CAS.</description>
-        <type>Integer</type>
+        <name>normalize</name>
+        <description>Non-mandatory flag to normalize text, default true.</description>
+        <type>Boolean</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
@@ -30,7 +30,13 @@
           <string>/enter/your/path/here</string>
         </value>
       </nameValuePair>
-    </configurationParameterSettings>
+      <nameValuePair>
+        <name>normalize</name>
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>  
     <typeSystemDescription>
       <imports>
         <import name="de.julielab.jcore.types.jcore-all-types"/>

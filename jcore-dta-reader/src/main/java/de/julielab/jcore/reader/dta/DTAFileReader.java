@@ -14,18 +14,18 @@ import de.julielab.jcore.types.Lemma;
 import de.julielab.jcore.types.STTSPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import de.julielab.xml.FileTooBigException;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -40,16 +40,20 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import com.ximpleware.ParseException;
+import com.ximpleware.VTDNav;
 
 public class DTAFileReader extends CollectionReader_ImplBase {
 
 	static final String COMPONENT_ID = DTAFileReader.class.getCanonicalName();
 
-	public static final String DESCRIPTOR_PARAMTER_INPUTFILE = "inputFile";
+	static final String DESCRIPTOR_PARAMTER_INPUTFILE = "inputFile";
+	static final String DESCRIPTOR_PARAMTER_NORMALIZE = "normalize";
 
 	private final List<File> inputFiles = new ArrayList<>();
 
 	private int counter = 0;
+
+	private boolean normalize = false;
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(DTAFileReader.class);
@@ -57,6 +61,10 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	public void initialize() throws ResourceInitializationException {
 
 		String filename = (String) getConfigParameterValue(DESCRIPTOR_PARAMTER_INPUTFILE);
+		Object o = getConfigParameterValue(DESCRIPTOR_PARAMTER_NORMALIZE);
+		if (o != null)
+			normalize = (boolean) o;
+		normalize = true;
 
 		File inputFile = new File(filename);
 
@@ -80,16 +88,17 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	public void getNext(CAS aCAS) throws CollectionException {
 		try {
 			JCas jcas = aCAS.getJCas();
-			LOGGER.info("File:" + counter);
-
+			readDocument(jcas, inputFiles.get(counter), normalize);
 			counter++;
-		} catch (CASException e) {
+			LOGGER.info("Read file:" + counter);
+		} catch (CASException | ParseException | IOException e) {
 			throw new CollectionException(e);
 		}
 	}
 
-	static Iterable<String> getAttributeForEach(final String xmlFile,
-			final String forEachXpath, final String attributeXpath) {
+	static Iterable<String> getAttributeForEach(final String xmlFileName,
+			final VTDNav nav, final String forEachXpath,
+			final String attributeXpath) {
 		return new Iterable<String>() {
 
 			@Override
@@ -106,8 +115,8 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 						fields.add(ImmutableMap.of(JulieXMLConstants.NAME,
 								attribute, JulieXMLConstants.XPATH,
 								attributeXpath));
-						tokenIterator = JulieXMLTools.constructRowIterator(
-								xmlFile, 1024, forEachXpath, fields, false);
+						tokenIterator = JulieXMLTools.constructRowIterator(nav,
+								forEachXpath, fields, xmlFileName);
 					}
 
 					@Override
@@ -130,8 +139,8 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	}
 
-	static Map<String, String> mapAttribute2Text(String xmlFile,
-			String forEachXpath, String attributeXpath,
+	static Map<String, String> mapAttribute2Text(String xmlFileName,
+			VTDNav nav, String forEachXpath, String attributeXpath,
 			String conditionAttributeXpath, String conditionAttributeValue) {
 		Map<String, String> attribute2text = new HashMap<>();
 
@@ -148,8 +157,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 					conditionAttribute, JulieXMLConstants.XPATH,
 					conditionAttributeXpath));
 		Iterator<Map<String, Object>> tokenIterator = JulieXMLTools
-				.constructRowIterator(xmlFile, 1024, forEachXpath, fields,
-						false);
+				.constructRowIterator(nav, forEachXpath, fields, xmlFileName);
 		while (tokenIterator.hasNext()) {
 			Map<String, Object> token = tokenIterator.next();
 			if (conditionAttributeXpath == null
@@ -162,38 +170,44 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		return attribute2text;
 	}
 
-	static Map<String, String> mapAttribute2Text(String xmlFile,
-			String forEachXpath, String attributeXpath) {
-		return mapAttribute2Text(xmlFile, forEachXpath, attributeXpath, null,
-				null);
+	static Map<String, String> mapAttribute2Text(String xmlFileName,
+			VTDNav nav, String forEachXpath, String attributeXpath) {
+		return mapAttribute2Text(xmlFileName, nav, forEachXpath,
+				attributeXpath, null, null);
 	}
 
-	static void readDocument(JCas jcas, String xmlFile, boolean normalize)
-			throws ParseException, FileTooBigException, FileNotFoundException {
+	static void readDocument(JCas jcas, File file, boolean normalize)
+			throws ParseException, IOException {
+
+		VTDNav nav = JulieXMLTools.getVTDNav(new FileInputStream(file), 1024);
+		String xmlFileName = file.getCanonicalPath();
+		if (!formatOk(xmlFileName, nav))
+			throw new IllegalArgumentException(xmlFileName
+					+ " does not conform to assumptions!");
 
 		//<token ID="w1">Des</token>
-		Map<String, String> id2token = mapAttribute2Text(xmlFile,
+		Map<String, String> id2token = mapAttribute2Text(xmlFileName, nav,
 				"/D-Spin/TextCorpus/tokens/token", "@ID");
 
 		//<lemmas>
 		//<lemma tokenIDs="w1">d</lemma>
-		Map<String, String> id2lemma = mapAttribute2Text(xmlFile,
+		Map<String, String> id2lemma = mapAttribute2Text(xmlFileName, nav,
 				"/D-Spin/TextCorpus/lemmas/lemma", "@tokenIDs");
 
 		//<tag tokenIDs="w1">ART</tag>  
 		//TODO: check if STTS <POStags tagset="stts">
-		Map<String, String> id2pos = mapAttribute2Text(xmlFile,
+		Map<String, String> id2pos = mapAttribute2Text(xmlFileName, nav,
 				"/D-Spin/TextCorpus/POStags/tag", "@tokenIDs");
 
 		//<orthography>
 		// <correction tokenIDs="w6" operation="replace">deutsche</correction>
 		Map<String, String> id2correction = normalize ? mapAttribute2Text(
-				xmlFile, "/D-Spin/TextCorpus/orthography/correction",
+				xmlFileName, nav, "/D-Spin/TextCorpus/orthography/correction",
 				"@tokenIDs", "@operation", "replace") : null;
 
 		StringBuilder text = new StringBuilder();
 		int sentenceStart = 0;
-		for (String tokenIDs : getAttributeForEach(xmlFile,
+		for (String tokenIDs : getAttributeForEach(xmlFileName, nav,
 				"/D-Spin/TextCorpus/sentences/sentence", "@tokenIDs")) {
 			boolean first = true;
 			for (String id : ((String) tokenIDs).split(" ")) {
@@ -266,13 +280,12 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	public void close() throws IOException {
 	}
 
-	static boolean formatOk(String xmlFile) {
+	static boolean formatOk(String xmlFileName, VTDNav nav) {
 		// Tagset <POStags tagset="stts">
-		for (String tagset : mapAttribute2Text(xmlFile,
+		for (String tagset : mapAttribute2Text(xmlFileName, nav,
 				"/D-Spin/TextCorpus/POStags", "@tagset").keySet())
 			if (!tagset.equals("stts"))
 				return false;
-
 		return true;
 	}
 }
