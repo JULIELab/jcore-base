@@ -97,6 +97,7 @@
       <imports>
         <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
         <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
