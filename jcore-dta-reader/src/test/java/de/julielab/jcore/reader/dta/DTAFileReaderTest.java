@@ -31,58 +31,54 @@ import de.julielab.jcore.utility.JCoReTools;
 
 public class DTAFileReaderTest {
 	private static final String TEST_DIR = "src/test/resources/testfiles/";
-	static final String TEST_FILE = TEST_DIR+"short-arnim_wunderhorn01_1806.tcf.xml";
+	static final String TEST_FILE = TEST_DIR + "short-arnim_wunderhorn01_1806.tcf.xml";
 	static final String READER_DESC = "src/main/resources/de/julielab/jcore/reader/dta/desc/jcore-dta-reader.xml";
 
 	static private CollectionReader getReader()
-			throws ResourceInitializationException, InvalidXMLException,
-			IOException, CASException {
+			throws ResourceInitializationException, InvalidXMLException, IOException, CASException {
 		return JCoReTools.getCollectionReader(READER_DESC);
 	}
-	
-	static private CollectionReader getReader(String parameter, Object value)
-			throws ResourceInitializationException, InvalidXMLException,
-			IOException, CASException, ResourceConfigurationException {
+
+	static private CollectionReader getReader(String parameter, Object value) throws ResourceInitializationException,
+			InvalidXMLException, IOException, CASException, ResourceConfigurationException {
 		CollectionReader reader = getReader();
 		reader.setConfigParameterValue(parameter, value);
 		reader.reconfigure();
 		return reader;
 	}
 
-	static private JCas getJCas() throws ResourceInitializationException,
-			InvalidXMLException, IOException, CASException {
-		return CasCreationUtils.createCas(
-				(AnalysisEngineMetaData) getReader().getMetaData()).getJCas();
+	static private JCas getJCas()
+			throws ResourceInitializationException, InvalidXMLException, IOException, CASException {
+		return CasCreationUtils.createCas((AnalysisEngineMetaData) getReader().getMetaData()).getJCas();
 	}
 
-	static private JCas process(boolean normalize) throws ParseException,
-			ResourceInitializationException, InvalidXMLException, CASException,
-			IOException {
+	static private JCas process(boolean normalize)
+			throws ParseException, ResourceInitializationException, InvalidXMLException, CASException, IOException {
 		JCas jcas = getJCas();
 		DTAFileReader.readDocument(jcas, new File(TEST_FILE), normalize);
 		return jcas;
 	}
-	
+
 	@Test
-	public void testDoProcessDirectory() throws ResourceInitializationException, InvalidXMLException, CASException, IOException, CollectionException, ResourceConfigurationException{
+	public void testDoProcessDirectory() throws ResourceInitializationException, InvalidXMLException, CASException,
+			IOException, CollectionException, ResourceConfigurationException {
 		CollectionReader reader = getReader(DTAFileReader.DESCRIPTOR_PARAMTER_INPUTFILE, TEST_DIR);
 		CAS cas = getJCas().getCas();
 		int processed = 0;
-		while(reader.hasNext())
-		{
+		while (reader.hasNext()) {
 			reader.getNext(cas);
 			processed++;
 		}
 		assertEquals(1, processed);
 	}
-	
+
 	@Test
-	public void testDoProcessFile() throws ResourceInitializationException, InvalidXMLException, CASException, IOException, CollectionException, ResourceConfigurationException{
+	public void testDoProcessFile() throws ResourceInitializationException, InvalidXMLException, CASException,
+			IOException, CollectionException, ResourceConfigurationException {
 		CollectionReader reader = getReader(DTAFileReader.DESCRIPTOR_PARAMTER_INPUTFILE, TEST_FILE);
 		CAS cas = getJCas().getCas();
 		int processed = 0;
-		while(reader.hasNext())
-		{
+		while (reader.hasNext()) {
 			reader.getNext(cas);
 			processed++;
 		}
@@ -93,8 +89,8 @@ public class DTAFileReaderTest {
 	public void testGetDocumentText() {
 		String expected = "Des Knaben Wunderhorn."
 				+ "\nAlte deutſche Lieder geſammelt von L. A. v. Arnim und Clemens Brentano."
-				+ "\nDes Knaben Wunderhorn Alte deutſche Lieder L. Achim v. Arnim."
-				+ "\nClemens Brentano." + "\nHeidelberg, beÿ Mohr u. Zimmer.";
+				+ "\nDes Knaben Wunderhorn Alte deutſche Lieder L. Achim v. Arnim." + "\nClemens Brentano."
+				+ "\nHeidelberg, beÿ Mohr u. Zimmer.";
 		try {
 			JCas jcas = process(false);
 			assertEquals(expected, jcas.getDocumentText());
@@ -108,8 +104,8 @@ public class DTAFileReaderTest {
 	public void testGetDocumentTextWithCorrection() {
 		String expected = "Des Knaben Wunderhorn."
 				+ "\nAlte deutsche Lieder gesammelt von L. A. v. Arnim und Clemens Brentano."
-				+ "\nDes Knaben Wunderhorn Alte deutsche Lieder L. Achim v. Arnim."
-				+ "\nClemens Brentano." + "\nHeidelberg, bei Mohr u. Zimmer.";
+				+ "\nDes Knaben Wunderhorn Alte deutsche Lieder L. Achim v. Arnim." + "\nClemens Brentano."
+				+ "\nHeidelberg, bei Mohr u. Zimmer.";
 		try {
 			JCas jcas = process(true);
 			assertEquals(expected, jcas.getDocumentText());
@@ -121,15 +117,14 @@ public class DTAFileReaderTest {
 
 	@Test
 	public void testPOS() {
-		String expected = "ART NN NN $. ADJA ADJA NN VVPP APPR NE NE APPR NE KON NE NE $. ART NN NN ADJA ADJA NN NE NE APPRART NE $. FM.la FM.la $. NE $, APPR NN APPR NN $.";
+		String expected = "ART NN NN $. ADJA ADJA NN VVPP APPR NE NE APPR NE KON NE NE $. "
+				+ "ART NN NN ADJA ADJA NN NE NE APPRART NE $. FM.la FM.la $. NE $, APPR NN APPR NN $.";
 		StringBuilder actual = new StringBuilder();
 		try {
 			JCas jcas = process(true);
-			FSIterator<Annotation> iter = jcas.getAnnotationIndex(
-					STTSPOSTag.type).iterator();
+			FSIterator<Annotation> iter = jcas.getAnnotationIndex(STTSPOSTag.type).iterator();
 			while (iter.hasNext())
-				actual.append(((STTSPOSTag) iter.next()).getValue())
-						.append(" ");
+				actual.append(((STTSPOSTag) iter.next()).getValue()).append(" ");
 			assertEquals(expected, actual.substring(0, actual.length() - 1));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -139,12 +134,13 @@ public class DTAFileReaderTest {
 
 	@Test
 	public void testLemmata() {
-		String expected = "d Knabe Wunderhorn . alt deutsch Lied sammeln von L. A. v. Arnim und Clemens Brentano . d Knabe Wunderhorn alt deutsch Lied L. Achim v. Arnim . clemens brentano . Heidelberg , bei Mohr u. Zimmer .";
+		String expected = "d Knabe Wunderhorn . alt deutsch Lied sammeln von L. A. v. Arnim und "
+				+ "Clemens Brentano . d Knabe Wunderhorn alt deutsch Lied L. Achim v. Arnim . "
+				+ "clemens brentano . Heidelberg , bei Mohr u. Zimmer .";
 		StringBuilder actual = new StringBuilder();
 		try {
 			JCas jcas = process(true);
-			FSIterator<Annotation> iter = jcas.getAnnotationIndex(Lemma.type)
-					.iterator();
+			FSIterator<Annotation> iter = jcas.getAnnotationIndex(Lemma.type).iterator();
 			while (iter.hasNext())
 				actual.append(((Lemma) iter.next()).getValue()).append(" ");
 			assertEquals(expected, actual.substring(0, actual.length() - 1));
@@ -156,17 +152,14 @@ public class DTAFileReaderTest {
 
 	@Test
 	public void testSentences() {
-		List<String> expected = Arrays
-				.asList(new String[] {
-						"Des Knaben Wunderhorn.",
-						"Alte deutsche Lieder gesammelt von L. A. v. Arnim und Clemens Brentano.",
-						"Des Knaben Wunderhorn Alte deutsche Lieder L. Achim v. Arnim.",
-						"Clemens Brentano.", "Heidelberg, bei Mohr u. Zimmer." });
+		List<String> expected = Arrays.asList(new String[] { "Des Knaben Wunderhorn.",
+				"Alte deutsche Lieder gesammelt von L. A. v. Arnim und Clemens Brentano.",
+				"Des Knaben Wunderhorn Alte deutsche Lieder L. Achim v. Arnim.", "Clemens Brentano.",
+				"Heidelberg, bei Mohr u. Zimmer." });
 		List<String> actual = new ArrayList<>();
 		try {
 			JCas jcas = process(true);
-			FSIterator<Annotation> iter = jcas
-					.getAnnotationIndex(Sentence.type).iterator();
+			FSIterator<Annotation> iter = jcas.getAnnotationIndex(Sentence.type).iterator();
 			while (iter.hasNext()) {
 				actual.add(iter.next().getCoveredText());
 			}

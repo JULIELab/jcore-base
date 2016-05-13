@@ -55,8 +55,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	private boolean normalize = false;
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(DTAFileReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DTAFileReader.class);
 
 	public void initialize() throws ResourceInitializationException {
 
@@ -70,13 +69,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 		if (!inputFile.exists()) {
 			new Exception(filename + " does not exist!");
-		} else if (inputFile.isFile()
-				&& inputFile.getName().endsWith(".tcf.xml"))
+		} else if (inputFile.isFile() && inputFile.getName().endsWith(".tcf.xml"))
 			inputFiles.add(inputFile);
 		else {
 			for (File f : inputFile.listFiles())
-				if (f.isFile()
-						&& f.getName().endsWith(".tcf.xml"))
+				if (f.isFile() && f.getName().endsWith(".tcf.xml"))
 					inputFiles.add(f);
 		}
 
@@ -96,8 +93,21 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		}
 	}
 
-	static Iterable<String> getAttributeForEach(final String xmlFileName,
-			final VTDNav nav, final String forEachXpath,
+	@Override
+	public boolean hasNext() throws IOException, CollectionException {
+		return counter < inputFiles.size();
+	}
+
+	@Override
+	public Progress[] getProgress() {
+		return new Progress[] { new ProgressImpl(counter, inputFiles.size(), Progress.ENTITIES) };
+	}
+
+	@Override
+	public void close() throws IOException {
+	}
+
+	static Iterable<String> getAttributeForEach(final String xmlFileName, final VTDNav nav, final String forEachXpath,
 			final String attributeXpath) {
 		return new Iterable<String>() {
 
@@ -110,13 +120,10 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 					final Iterator<Map<String, Object>> tokenIterator;
 
 					{
-						fields.add(ImmutableMap.of(JulieXMLConstants.NAME,
-								text, JulieXMLConstants.XPATH, "."));
-						fields.add(ImmutableMap.of(JulieXMLConstants.NAME,
-								attribute, JulieXMLConstants.XPATH,
+						fields.add(ImmutableMap.of(JulieXMLConstants.NAME, text, JulieXMLConstants.XPATH, "."));
+						fields.add(ImmutableMap.of(JulieXMLConstants.NAME, attribute, JulieXMLConstants.XPATH,
 								attributeXpath));
-						tokenIterator = JulieXMLTools.constructRowIterator(nav,
-								forEachXpath, fields, xmlFileName);
+						tokenIterator = JulieXMLTools.constructRowIterator(nav, forEachXpath, fields, xmlFileName);
 					}
 
 					@Override
@@ -139,93 +146,84 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	}
 
-	static Map<String, String> mapAttribute2Text(String xmlFileName,
-			VTDNav nav, String forEachXpath, String attributeXpath,
-			String conditionAttributeXpath, String conditionAttributeValue) {
+	static boolean formatOk(String xmlFileName, VTDNav nav) {
+		// Tagset <POStags tagset="stts">
+		for (String tagset : mapAttribute2Text(xmlFileName, nav, "/D-Spin/TextCorpus/POStags", "@tagset").keySet())
+			if (!tagset.equals("stts"))
+				return false;
+		return true;
+	}
+
+	static Map<String, String> mapAttribute2Text(String xmlFileName, VTDNav nav, String forEachXpath,
+			String attributeXpath, String conditionAttributeXpath, String conditionAttributeValue) {
 		Map<String, String> attribute2text = new HashMap<>();
 
 		final String text = "text";
 		final String attribute = "attribute";
 		final String conditionAttribute = "conditionAttribute";
 		List<Map<String, String>> fields = new ArrayList<>();
-		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, text,
-				JulieXMLConstants.XPATH, "."));
-		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, attribute,
-				JulieXMLConstants.XPATH, attributeXpath));
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, text, JulieXMLConstants.XPATH, "."));
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, attribute, JulieXMLConstants.XPATH, attributeXpath));
 		if (conditionAttributeXpath != null && conditionAttributeValue != null)
-			fields.add(ImmutableMap.of(JulieXMLConstants.NAME,
-					conditionAttribute, JulieXMLConstants.XPATH,
+			fields.add(ImmutableMap.of(JulieXMLConstants.NAME, conditionAttribute, JulieXMLConstants.XPATH,
 					conditionAttributeXpath));
-		Iterator<Map<String, Object>> tokenIterator = JulieXMLTools
-				.constructRowIterator(nav, forEachXpath, fields, xmlFileName);
+		Iterator<Map<String, Object>> tokenIterator = JulieXMLTools.constructRowIterator(nav, forEachXpath, fields,
+				xmlFileName);
 		while (tokenIterator.hasNext()) {
 			Map<String, Object> token = tokenIterator.next();
-			if (conditionAttributeXpath == null
-					|| token.get(conditionAttribute).equals(
-							conditionAttributeValue))
-				attribute2text.put((String) token.get(attribute),
-						(String) token.get(text));
+			if (conditionAttributeXpath == null || token.get(conditionAttribute).equals(conditionAttributeValue))
+				attribute2text.put((String) token.get(attribute), (String) token.get(text));
 		}
 
 		return attribute2text;
 	}
 
-	static Map<String, String> mapAttribute2Text(String xmlFileName,
-			VTDNav nav, String forEachXpath, String attributeXpath) {
-		return mapAttribute2Text(xmlFileName, nav, forEachXpath,
-				attributeXpath, null, null);
+	static Map<String, String> mapAttribute2Text(String xmlFileName, VTDNav nav, String forEachXpath,
+			String attributeXpath) {
+		return mapAttribute2Text(xmlFileName, nav, forEachXpath, attributeXpath, null, null);
 	}
 
-	static void readDocument(JCas jcas, File file, boolean normalize)
-			throws ParseException, IOException {
+	static void readDocument(JCas jcas, File file, boolean normalize) throws ParseException, IOException {
 
 		VTDNav nav = JulieXMLTools.getVTDNav(new FileInputStream(file), 1024);
 		String xmlFileName = file.getCanonicalPath();
 		if (!formatOk(xmlFileName, nav))
-			throw new IllegalArgumentException(xmlFileName
-					+ " does not conform to assumptions!");
+			throw new IllegalArgumentException(xmlFileName + " does not conform to assumptions!");
 
-		//<token ID="w1">Des</token>
-		Map<String, String> id2token = mapAttribute2Text(xmlFileName, nav,
-				"/D-Spin/TextCorpus/tokens/token", "@ID");
+		// <token ID="w1">Des</token>
+		Map<String, String> id2token = mapAttribute2Text(xmlFileName, nav, "/D-Spin/TextCorpus/tokens/token", "@ID");
 
-		//<lemmas>
-		//<lemma tokenIDs="w1">d</lemma>
-		Map<String, String> id2lemma = mapAttribute2Text(xmlFileName, nav,
-				"/D-Spin/TextCorpus/lemmas/lemma", "@tokenIDs");
+		// <lemmas>
+		// <lemma tokenIDs="w1">d</lemma>
+		Map<String, String> id2lemma = mapAttribute2Text(xmlFileName, nav, "/D-Spin/TextCorpus/lemmas/lemma",
+				"@tokenIDs");
 
-		//<tag tokenIDs="w1">ART</tag>  
-		//TODO: check if STTS <POStags tagset="stts">
-		Map<String, String> id2pos = mapAttribute2Text(xmlFileName, nav,
-				"/D-Spin/TextCorpus/POStags/tag", "@tokenIDs");
+		// <tag tokenIDs="w1">ART</tag>
+		// TODO: check if STTS <POStags tagset="stts">
+		Map<String, String> id2pos = mapAttribute2Text(xmlFileName, nav, "/D-Spin/TextCorpus/POStags/tag", "@tokenIDs");
 
-		//<orthography>
+		// <orthography>
 		// <correction tokenIDs="w6" operation="replace">deutsche</correction>
-		Map<String, String> id2correction = normalize ? mapAttribute2Text(
-				xmlFileName, nav, "/D-Spin/TextCorpus/orthography/correction",
-				"@tokenIDs", "@operation", "replace") : null;
+		Map<String, String> id2correction = normalize ? mapAttribute2Text(xmlFileName, nav,
+				"/D-Spin/TextCorpus/orthography/correction", "@tokenIDs", "@operation", "replace") : null;
 
 		StringBuilder text = new StringBuilder();
 		int sentenceStart = 0;
-		for (String tokenIDs : getAttributeForEach(xmlFileName, nav,
-				"/D-Spin/TextCorpus/sentences/sentence", "@tokenIDs")) {
+		for (String tokenIDs : getAttributeForEach(xmlFileName, nav, "/D-Spin/TextCorpus/sentences/sentence",
+				"@tokenIDs")) {
 			boolean first = true;
 			for (String id : ((String) tokenIDs).split(" ")) {
 				if (!id2token.containsKey(id))
-					throw new IllegalArgumentException("Token ID \"" + id
-							+ "\" has no associated token!");
+					throw new IllegalArgumentException("Token ID \"" + id + "\" has no associated token!");
 				if (!id2pos.containsKey(id))
-					throw new IllegalArgumentException("Token \""
-							+ id2token.get(id) + "\" with ID \"" + id
-							+ "\" has no POS information!");
+					throw new IllegalArgumentException(
+							"Token \"" + id2token.get(id) + "\" with ID \"" + id + "\" has no POS information!");
 				if (!id2lemma.containsKey(id))
-					throw new IllegalArgumentException("Token \""
-							+ id2token.get(id) + "\" with ID \"" + id
-							+ "\" has no lemma information!");
+					throw new IllegalArgumentException(
+							"Token \"" + id2token.get(id) + "\" with ID \"" + id + "\" has no lemma information!");
 				if (first)
 					first = false;
-				else if (!(id2pos.get(id).equals("$,") || id2pos.get(id)
-						.equals("$."))) {
+				else if (!(id2pos.get(id).equals("$,") || id2pos.get(id).equals("$."))) {
 					text.append(" ");
 				}
 
@@ -262,30 +260,9 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 			text.append("\n");
 			sentenceStart = text.length();
 		}
-		jcas.setDocumentText(text.subSequence(0, text.length() - 1).toString()); //No final newline
+		jcas.setDocumentText(text.subSequence(0, text.length() - 1).toString()); // No
+																					// final
+																					// newline
 	}
 
-	@Override
-	public boolean hasNext() throws IOException, CollectionException {
-		return counter < inputFiles.size();
-	}
-
-	@Override
-	public Progress[] getProgress() {
-		return new Progress[] { new ProgressImpl(counter, inputFiles.size(),
-				Progress.ENTITIES) };
-	}
-
-	@Override
-	public void close() throws IOException {
-	}
-
-	static boolean formatOk(String xmlFileName, VTDNav nav) {
-		// Tagset <POStags tagset="stts">
-		for (String tagset : mapAttribute2Text(xmlFileName, nav,
-				"/D-Spin/TextCorpus/POStags", "@tagset").keySet())
-			if (!tagset.equals("stts"))
-				return false;
-		return true;
-	}
 }
