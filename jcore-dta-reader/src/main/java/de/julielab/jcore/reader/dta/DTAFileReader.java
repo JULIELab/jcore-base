@@ -75,8 +75,8 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 			inputFiles.add(inputFile);
 		else {
 			for (File f : inputFile.listFiles())
-				if (inputFile.isFile()
-						&& inputFile.getName().endsWith(".tcf.xml"))
+				if (f.isFile()
+						&& f.getName().endsWith(".tcf.xml"))
 					inputFiles.add(f);
 		}
 

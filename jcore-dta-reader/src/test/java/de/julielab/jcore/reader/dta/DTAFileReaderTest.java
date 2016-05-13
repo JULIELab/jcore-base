@@ -16,6 +16,7 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
@@ -29,13 +30,23 @@ import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReTools;
 
 public class DTAFileReaderTest {
-	static final String TEST_FILE = "src/test/resources/testfiles/short-arnim_wunderhorn01_1806.tcf.xml";
+	private static final String TEST_DIR = "src/test/resources/testfiles/";
+	static final String TEST_FILE = TEST_DIR+"short-arnim_wunderhorn01_1806.tcf.xml";
 	static final String READER_DESC = "src/main/resources/de/julielab/jcore/reader/dta/desc/jcore-dta-reader.xml";
 
 	static private CollectionReader getReader()
 			throws ResourceInitializationException, InvalidXMLException,
 			IOException, CASException {
 		return JCoReTools.getCollectionReader(READER_DESC);
+	}
+	
+	static private CollectionReader getReader(String parameter, Object value)
+			throws ResourceInitializationException, InvalidXMLException,
+			IOException, CASException, ResourceConfigurationException {
+		CollectionReader reader = getReader();
+		reader.setConfigParameterValue(parameter, value);
+		reader.reconfigure();
+		return reader;
 	}
 
 	static private JCas getJCas() throws ResourceInitializationException,
@@ -53,15 +64,29 @@ public class DTAFileReaderTest {
 	}
 	
 	@Test
-	public void testDoProcess() throws ResourceInitializationException, InvalidXMLException, CASException, IOException, CollectionException{
-		CollectionReader reader = getReader();
-		reader.setConfigParameterValue(DTAFileReader.DESCRIPTOR_PARAMTER_INPUTFILE, TEST_FILE);
+	public void testDoProcessDirectory() throws ResourceInitializationException, InvalidXMLException, CASException, IOException, CollectionException, ResourceConfigurationException{
+		CollectionReader reader = getReader(DTAFileReader.DESCRIPTOR_PARAMTER_INPUTFILE, TEST_DIR);
 		CAS cas = getJCas().getCas();
+		int processed = 0;
 		while(reader.hasNext())
 		{
-			reader.getNext(cas);System.out.println(cas.getDocumentText());
+			reader.getNext(cas);
+			processed++;
 		}
-			
+		assertEquals(1, processed);
+	}
+	
+	@Test
+	public void testDoProcessFile() throws ResourceInitializationException, InvalidXMLException, CASException, IOException, CollectionException, ResourceConfigurationException{
+		CollectionReader reader = getReader(DTAFileReader.DESCRIPTOR_PARAMTER_INPUTFILE, TEST_FILE);
+		CAS cas = getJCas().getCas();
+		int processed = 0;
+		while(reader.hasNext())
+		{
+			reader.getNext(cas);
+			processed++;
+		}
+		assertEquals(1, processed);
 	}
 
 	@Test
