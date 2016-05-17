@@ -8,14 +8,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.Type;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.jcas.JCas;
@@ -29,10 +29,12 @@ import org.junit.Test;
 import com.ximpleware.ParseException;
 import com.ximpleware.VTDNav;
 
-import de.julielab.jcore.types.DocumentClass;
 import de.julielab.jcore.types.Lemma;
 import de.julielab.jcore.types.STTSPOSTag;
 import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.extensions.dta.DTABelletristik;
+import de.julielab.jcore.types.extensions.dta.DWDS1Belletristik;
+import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.FileTooBigException;
 import de.julielab.xml.JulieXMLTools;
@@ -188,8 +190,23 @@ public class DTAFileReaderTest {
 		JCas jcas = getJCas();
 		DTAFileReader.extractMetaInformation(jcas, getNav(),
 		TEST_FILE);
-		FSIterator<Annotation> i = jcas.getAnnotationIndex(DocumentClass.type).iterator();
-		while(i.hasNext())
-			System.out.println(i.next());
+		FSIterator<Annotation> i = jcas.getAnnotationIndex(DocumentClassification.type).iterator();
+		Set<DocumentClassification> classes = new HashSet<>();
+		while(i.hasNext()){
+			classes.add((DocumentClassification) i.next());
+		}
+		assertEquals(2, classes.size());
+		
+		boolean hasDwds = false;
+		for(DocumentClassification dc : classes)
+			if(dc instanceof DWDS1Belletristik)
+				hasDwds = true;
+		assertTrue(hasDwds);
+		
+		boolean hasDta = false;
+		for(DocumentClassification dc : classes)
+			if(dc instanceof DTABelletristik)
+				hasDta = true;
+		assertTrue(hasDta);
 	}
 }
