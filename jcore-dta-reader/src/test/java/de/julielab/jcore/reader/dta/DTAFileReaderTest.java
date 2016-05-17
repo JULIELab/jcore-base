@@ -3,6 +3,8 @@ package de.julielab.jcore.reader.dta;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +14,8 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.Type;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.jcas.JCas;
@@ -23,11 +27,15 @@ import org.apache.uima.util.InvalidXMLException;
 import org.junit.Test;
 
 import com.ximpleware.ParseException;
+import com.ximpleware.VTDNav;
 
+import de.julielab.jcore.types.DocumentClass;
 import de.julielab.jcore.types.Lemma;
 import de.julielab.jcore.types.STTSPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReTools;
+import de.julielab.xml.FileTooBigException;
+import de.julielab.xml.JulieXMLTools;
 
 public class DTAFileReaderTest {
 	private static final String TEST_DIR = "src/test/resources/testfiles/";
@@ -46,6 +54,10 @@ public class DTAFileReaderTest {
 		reader.reconfigure();
 		return reader;
 	}
+	
+	private static VTDNav getNav() throws ParseException, FileTooBigException, FileNotFoundException {
+		return JulieXMLTools.getVTDNav(new FileInputStream(new File(TEST_FILE)), 1024);
+	}
 
 	static private JCas getJCas()
 			throws ResourceInitializationException, InvalidXMLException, IOException, CASException {
@@ -55,7 +67,7 @@ public class DTAFileReaderTest {
 	static private JCas process(boolean normalize)
 			throws ParseException, ResourceInitializationException, InvalidXMLException, CASException, IOException {
 		JCas jcas = getJCas();
-		DTAFileReader.readDocument(jcas, new File(TEST_FILE), normalize);
+		DTAFileReader.readDocument(jcas, getNav(), TEST_FILE, normalize);
 		return jcas;
 	}
 
@@ -168,5 +180,16 @@ public class DTAFileReaderTest {
 			e.printStackTrace();
 			fail();
 		}
+	}
+
+	@Test
+	public void testExtractMetaInformation() throws ResourceInitializationException, InvalidXMLException, CASException,
+			ParseException, FileTooBigException, FileNotFoundException, IOException {
+		JCas jcas = getJCas();
+		DTAFileReader.extractMetaInformation(jcas, getNav(),
+		TEST_FILE);
+		FSIterator<Annotation> i = jcas.getAnnotationIndex(DocumentClass.type).iterator();
+		while(i.hasNext())
+			System.out.println(i.next());
 	}
 }

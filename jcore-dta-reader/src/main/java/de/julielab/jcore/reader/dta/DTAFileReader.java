@@ -10,6 +10,7 @@
 
 package de.julielab.jcore.reader.dta;
 
+import de.julielab.jcore.types.DocumentClass;
 import de.julielab.jcore.types.Lemma;
 import de.julielab.jcore.types.STTSPOSTag;
 import de.julielab.jcore.types.Sentence;
@@ -38,6 +39,7 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.ximpleware.ParseException;
 import com.ximpleware.VTDNav;
@@ -85,7 +87,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	public void getNext(CAS aCAS) throws CollectionException {
 		try {
 			JCas jcas = aCAS.getJCas();
-			readDocument(jcas, inputFiles.get(counter), normalize);
+			File file = inputFiles.get(counter);
+			VTDNav nav = JulieXMLTools.getVTDNav(new FileInputStream(file), 1024);
+			String xmlFileName = file.getCanonicalPath();
+			readDocument(jcas, nav, xmlFileName, normalize);
+			extractMetaInformation(jcas, nav, xmlFileName);
 			counter++;
 			LOGGER.info("Read file:" + counter);
 		} catch (CASException | ParseException | IOException e) {
@@ -155,7 +161,8 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	}
 
 	static Map<String, String> mapAttribute2Text(String xmlFileName, VTDNav nav, String forEachXpath,
-			String attributeXpath, String conditionAttributeXpath, String conditionAttributeValue) {
+			String attributeXpath, String conditionAttributeXpath, String conditionAttributeValue,
+			Function<String, String> attributeTransformation) {
 		Map<String, String> attribute2text = new HashMap<>();
 
 		final String text = "text";
@@ -172,7 +179,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		while (tokenIterator.hasNext()) {
 			Map<String, Object> token = tokenIterator.next();
 			if (conditionAttributeXpath == null || token.get(conditionAttribute).equals(conditionAttributeValue))
-				attribute2text.put((String) token.get(attribute), (String) token.get(text));
+				if (attributeTransformation == null)
+					attribute2text.put((String) token.get(attribute), (String) token.get(text));
+				else
+					attribute2text.put(attributeTransformation.apply((String) token.get(attribute)),
+							(String) token.get(text));
 		}
 
 		return attribute2text;
@@ -180,13 +191,32 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	static Map<String, String> mapAttribute2Text(String xmlFileName, VTDNav nav, String forEachXpath,
 			String attributeXpath) {
-		return mapAttribute2Text(xmlFileName, nav, forEachXpath, attributeXpath, null, null);
+		return mapAttribute2Text(xmlFileName, nav, forEachXpath, attributeXpath, null, null, null);
 	}
 
-	static void readDocument(JCas jcas, File file, boolean normalize) throws ParseException, IOException {
+	static void extractMetaInformation(JCas jcas, VTDNav nav, String xmlFileName) {
+		Map<String, String> classInfo = mapAttribute2Text(xmlFileName, nav,
+				"/D-Spin/MetaData/source/CMD/Components/teiHeader/profileDesc/textClass/classCode", "@scheme", null,
+				null, new Function<String, String>() {
 
-		VTDNav nav = JulieXMLTools.getVTDNav(new FileInputStream(file), 1024);
-		String xmlFileName = file.getCanonicalPath();
+					@Override
+					public String apply(String arg0) {
+						if (arg0.contains("#")) {
+							String[] parts = arg0.split("#");
+							if (parts.length == 2)
+								return parts[1];
+						}
+						throw new IllegalArgumentException(arg0 + " not formatted as expected");
+					}
+				});
+		DocumentClass dc = new DocumentClass(jcas);
+		dc.setClassname(classInfo.toString());
+		dc.addToIndexes();
+	//	dtasub=Lyrik, dtamain=Belletristik, dwds1sub=Lyrik, DTACorpus=mts, dwds1main=Belletristik
+	}
+
+	static void readDocument(JCas jcas, VTDNav nav, String xmlFileName, boolean normalize)
+			throws ParseException, IOException {
 		if (!formatOk(xmlFileName, nav))
 			throw new IllegalArgumentException(xmlFileName + " does not conform to assumptions!");
 
@@ -205,7 +235,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		// <orthography>
 		// <correction tokenIDs="w6" operation="replace">deutsche</correction>
 		Map<String, String> id2correction = normalize ? mapAttribute2Text(xmlFileName, nav,
-				"/D-Spin/TextCorpus/orthography/correction", "@tokenIDs", "@operation", "replace") : null;
+				"/D-Spin/TextCorpus/orthography/correction", "@tokenIDs", "@operation", "replace", null) : null;
 
 		StringBuilder text = new StringBuilder();
 		int sentenceStart = 0;
@@ -260,9 +290,8 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 			text.append("\n");
 			sentenceStart = text.length();
 		}
-		jcas.setDocumentText(text.subSequence(0, text.length() - 1).toString()); // No
-																					// final
-																					// newline
+		// No final newline
+		jcas.setDocumentText(text.subSequence(0, text.length() - 1).toString());
 	}
 
 }
