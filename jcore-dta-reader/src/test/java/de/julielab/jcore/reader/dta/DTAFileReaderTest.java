@@ -66,10 +66,13 @@ public class DTAFileReaderTest {
 		return CasCreationUtils.createCas((AnalysisEngineMetaData) getReader().getMetaData()).getJCas();
 	}
 
-	static private JCas process(boolean normalize)
+	public static JCas process(boolean normalize)
 			throws ParseException, ResourceInitializationException, InvalidXMLException, CASException, IOException {
 		JCas jcas = getJCas();
-		DTAFileReader.readDocument(jcas, getNav(), TEST_FILE, normalize);
+		VTDNav nav = getNav();
+		DTAFileReader.readDocument(jcas, nav, TEST_FILE, normalize);
+		DTAFileReader.extractMetaInformation(jcas, nav,
+		TEST_FILE);
 		return jcas;
 	}
 
@@ -187,9 +190,7 @@ public class DTAFileReaderTest {
 	@Test
 	public void testExtractMetaInformation() throws ResourceInitializationException, InvalidXMLException, CASException,
 			ParseException, FileTooBigException, FileNotFoundException, IOException {
-		JCas jcas = getJCas();
-		DTAFileReader.extractMetaInformation(jcas, getNav(),
-		TEST_FILE);
+		JCas jcas = process(true);
 		FSIterator<Annotation> i = jcas.getAnnotationIndex(DocumentClassification.type).iterator();
 		Set<DocumentClassification> classes = new HashSet<>();
 		while(i.hasNext()){
