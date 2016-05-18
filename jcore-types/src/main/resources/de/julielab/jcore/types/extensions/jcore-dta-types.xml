@@ -5,6 +5,40 @@
 	<version>1.0</version>
 	<vendor/>
 	<types>
+			<typeDescription>
+			<name>de.julielab.jcore.types.extensions.dta.Header</name>
+			<description/>
+			<supertypeName>uima.tcas.Annotation</supertypeName>
+			 <features>
+        <featureDescription>
+          <name>Title</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>Subtitle</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>Volume</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>Authors</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jcore.types.extensions.dta.PersonInfo</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>Editors</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jcore.types.extensions.dta.PersonInfo</elementType>
+        </featureDescription>
+      </features>
+    </typeDescription>
 		<typeDescription>
 			<name>de.julielab.jcore.types.extensions.dta.DocumentClassification</name>
 			<description/>
@@ -112,5 +146,27 @@
 			<description/>
 			<supertypeName>de.julielab.jcore.types.extensions.dta.DTAClassification</supertypeName>
 		</typeDescription>
-	</types>
+	<typeDescription>
+      <name>de.julielab.jcore.types.extensions.dta.PersonInfo</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>forname</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>surename</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>idno</name>
+          <description>dnb link</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
 </typeSystemDescription>

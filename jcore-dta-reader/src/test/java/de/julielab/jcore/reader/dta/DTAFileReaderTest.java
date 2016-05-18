@@ -35,6 +35,7 @@ import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.extensions.dta.DTABelletristik;
 import de.julielab.jcore.types.extensions.dta.DWDS1Belletristik;
 import de.julielab.jcore.types.extensions.dta.DocumentClassification;
+import de.julielab.jcore.types.extensions.dta.Header;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.FileTooBigException;
 import de.julielab.xml.JulieXMLTools;
@@ -188,7 +189,7 @@ public class DTAFileReaderTest {
 	}
 
 	@Test
-	public void testExtractMetaInformation() throws ResourceInitializationException, InvalidXMLException, CASException,
+	public void testClassification() throws ResourceInitializationException, InvalidXMLException, CASException,
 			ParseException, FileTooBigException, FileNotFoundException, IOException {
 		JCas jcas = process(true);
 		FSIterator<Annotation> i = jcas.getAnnotationIndex(DocumentClassification.type).iterator();
@@ -209,5 +210,26 @@ public class DTAFileReaderTest {
 			if(dc instanceof DTABelletristik)
 				hasDta = true;
 		assertTrue(hasDta);
+	}
+	
+	@Test
+	public void testHeader() throws ResourceInitializationException, InvalidXMLException, CASException,
+			ParseException, FileTooBigException, FileNotFoundException, IOException {
+		JCas jcas = process(true);
+		FSIterator<Annotation> i = jcas.getAnnotationIndex(Header.type).iterator();
+		Set<Header> header = new HashSet<>();
+		while(i.hasNext()){
+			header.add((Header) i.next());
+		}
+		assertEquals(1, header.size());
+	}
+	
+	@Test
+	public void testTitle() throws ResourceInitializationException, InvalidXMLException, CASException,
+			ParseException, FileTooBigException, FileNotFoundException, IOException {
+		JCas jcas = process(true);
+		Header h = (Header) jcas.getAnnotationIndex(Header.type).iterator().next();
+		assertEquals("Des Knaben Wunderhorn", h.getTitle());
+		assertEquals("Alte deutsche Lieder", h.getSubtitle());
 	}
 }
