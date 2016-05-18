@@ -231,5 +231,6 @@ public class DTAFileReaderTest {
 		Header h = (Header) jcas.getAnnotationIndex(Header.type).iterator().next();
 		assertEquals("Des Knaben Wunderhorn", h.getTitle());
 		assertEquals("Alte deutsche Lieder", h.getSubtitle());
+		assertEquals("1", h.getVolume());
 	}
 }

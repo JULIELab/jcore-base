@@ -205,54 +205,55 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	}
 
 	static void extractMetaInformation(JCas jcas, VTDNav nav, String xmlFileName) {
-		//header
-		Map<String, String> titles = mapAttribute2Text(xmlFileName, nav, 
-				"/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/title", "@type");
-		
-		
-//		Map<String, String> authors = mapAttribute2Text(xmlFileName, nav, 
-//				"/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/title", "type");
-//		<author>
-//		<persName>
-//			<surname>Arnim</surname>
-//			<forename>Achim von</forename>
-//			<idno>
-//				<idno type="PND">http://d-nb.info/gnd/118504177</idno>
-//			</idno>
-//		</persName>
-//	</author>
-//	<author>
-//		<persName>
-//			<surname>Brentano</surname>
-//			<forename>Clemens</forename>
-//			<idno>
-//				<idno type="PND">http://d-nb.info/gnd/118515055</idno>
-//			</idno>
-//		</persName>
-//	</author>
-//	<editor>
-
+		// header
 		Header h = new Header(jcas);
-		System.out.println(titles);
+		Map<String, String> titles = mapAttribute2Text(xmlFileName, nav,
+				"/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/title", "@type");
 		String titleString = titles.get("main");
-		if(titleString == null)
-			throw new IllegalArgumentException(xmlFileName+ " has not title!");
+		if (titleString == null)
+			throw new IllegalArgumentException(xmlFileName + " has not title!");
 		h.setTitle(titleString);
-		
 		String subTitleString = titles.get("sub");
-		if(subTitleString != null)
+		if (subTitleString != null)
 			h.setSubtitle(subTitleString);
-	//TODO: volume	<title type="volume" n="1"></title>
-		
+
+		// bit hacky, yet works
+		Map<String, String> volumeMap = mapAttribute2Text(xmlFileName, nav,
+				"/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/title", "@n", "@type", "volume",
+				null);
+		String volume = volumeMap.keySet().iterator().next();
+		h.setVolume(volume);
+
+
+		// Map<String, String> authors = mapAttribute2Text(xmlFileName, nav,
+		// "/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/title",
+		// "type");
+		// <author>
+		// <persName>
+		// <surname>Arnim</surname>
+		// <forename>Achim von</forename>
+		// <idno>
+		// <idno type="PND">http://d-nb.info/gnd/118504177</idno>
+		// </idno>
+		// </persName>
+		// </author>
+		// <author>
+		// <persName>
+		// <surname>Brentano</surname>
+		// <forename>Clemens</forename>
+		// <idno>
+		// <idno type="PND">http://d-nb.info/gnd/118515055</idno>
+		// </idno>
+		// </persName>
+		// </author>
+		// <editor>
+
 		h.addToIndexes();
-		
-	        
-		//classification
-		Map<String, String> classInfo = mapAttribute2Text(
-				xmlFileName,
-				nav,
-				"/D-Spin/MetaData/source/CMD/Components/teiHeader/profileDesc/textClass/classCode",
-				"@scheme", null, null, new Function<String, String>() {
+
+		// classification
+		Map<String, String> classInfo = mapAttribute2Text(xmlFileName, nav,
+				"/D-Spin/MetaData/source/CMD/Components/teiHeader/profileDesc/textClass/classCode", "@scheme", null,
+				null, new Function<String, String>() {
 
 					@Override
 					public String apply(String arg0) {
@@ -261,8 +262,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 							if (parts.length == 2)
 								return parts[1];
 						}
-						throw new IllegalArgumentException(arg0
-								+ " not formatted as expected");
+						throw new IllegalArgumentException(arg0 + " not formatted as expected");
 					}
 				});
 		if (classInfo.containsKey("dtamain")) {
@@ -300,9 +300,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 				classification = new DWDS1Zeitung(jcas);
 				break;
 			default:
-				throw new IllegalArgumentException(
-						"Unsupported DWDS classification "
-								+ classInfo.get("dwds1main"));
+				throw new IllegalArgumentException("Unsupported DWDS classification " + classInfo.get("dwds1main"));
 			}
 			classification.setClassification(classInfo.get("dwds1main"));
 			classification.setSubClassification(classInfo.get("dwds1sub"));
