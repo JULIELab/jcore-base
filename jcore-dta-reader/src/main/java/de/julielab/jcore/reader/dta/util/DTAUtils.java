@@ -7,14 +7,14 @@ import org.apache.uima.jcas.tcas.Annotation;
 import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 
 public class DTAUtils {
-	public static boolean hasAnyClassification(JCas jcas, Class<?>... classes){
-		FSIterator<Annotation> it = jcas.getAnnotationIndex(DocumentClassification.type).iterator();
-		while(it.hasNext()){
-			DocumentClassification classification = (DocumentClassification) it.next();
-			for(Class<?> c : classes)			
-				if(c.isInstance(classification))
-					return true;
-		}
-		return false;
-	}
+    public static boolean hasAnyClassification(final JCas jcas, final Class<?>... classes) {
+        final FSIterator<Annotation> it = jcas.getAnnotationIndex(DocumentClassification.type).iterator();
+        while (it.hasNext()) {
+            final DocumentClassification classification = (DocumentClassification) it.next();
+            for (final Class<?> c : classes)
+                if (c.isInstance(classification))
+                    return true;
+        }
+        return false;
+    }
 }
