@@ -16,9 +16,11 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -36,6 +38,7 @@ import de.julielab.jcore.types.extensions.dta.DTABelletristik;
 import de.julielab.jcore.types.extensions.dta.DWDS1Belletristik;
 import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 import de.julielab.jcore.types.extensions.dta.Header;
+import de.julielab.jcore.types.extensions.dta.PersonInfo;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.FileTooBigException;
 import de.julielab.xml.JulieXMLTools;
@@ -222,15 +225,20 @@ public class DTAFileReaderTest {
 			header.add((Header) i.next());
 		}
 		assertEquals(1, header.size());
-	}
-	
-	@Test
-	public void testTitle() throws ResourceInitializationException, InvalidXMLException, CASException,
-			ParseException, FileTooBigException, FileNotFoundException, IOException {
-		JCas jcas = process(true);
-		Header h = (Header) jcas.getAnnotationIndex(Header.type).iterator().next();
+		Header h = header.iterator().next();
+		
+		//title
 		assertEquals("Des Knaben Wunderhorn", h.getTitle());
 		assertEquals("Alte deutsche Lieder", h.getSubtitle());
 		assertEquals("1", h.getVolume());
+		
+		//persons
+		assertEquals(2, h.getAuthors().size());
+		assertEquals(6, h.getEditors().size());
+		PersonInfo arnim = (PersonInfo) h.getAuthors().get(0);
+		assertEquals("Arnim", arnim.getSurename());
+		assertEquals("Achim von", arnim.getForename());
+		assertEquals("http://d-nb.info/gnd/118504177", arnim.getIdno());
+			
 	}
 }

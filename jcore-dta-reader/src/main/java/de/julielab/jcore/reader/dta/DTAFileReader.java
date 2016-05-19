@@ -25,6 +25,7 @@ import de.julielab.jcore.types.extensions.dta.DWDS1Gebrauchsliteratur;
 import de.julielab.jcore.types.extensions.dta.DWDS1Wissenschaft;
 import de.julielab.jcore.types.extensions.dta.DWDS1Zeitung;
 import de.julielab.jcore.types.extensions.dta.Header;
+import de.julielab.jcore.types.extensions.dta.PersonInfo;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
 
@@ -51,8 +52,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
+import com.ximpleware.AutoPilot;
+import com.ximpleware.NavException;
 import com.ximpleware.ParseException;
+import com.ximpleware.PilotException;
 import com.ximpleware.VTDNav;
+import com.ximpleware.XPathParseException;
 
 public class DTAFileReader extends CollectionReader_ImplBase {
 
@@ -171,29 +176,22 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	}
 
 	static Map<String, String> mapAttribute2Text(String xmlFileName, VTDNav nav, String forEachXpath,
-			String attributeXpath, String conditionAttributeXpath, String conditionAttributeValue,
-			Function<String, String> attributeTransformation) {
+			String attributeXpath, Function<String, String> attributeTransformation) {
 		Map<String, String> attribute2text = new HashMap<>();
 
 		final String text = "text";
 		final String attribute = "attribute";
-		final String conditionAttribute = "conditionAttribute";
 		List<Map<String, String>> fields = new ArrayList<>();
 		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, text, JulieXMLConstants.XPATH, "."));
 		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, attribute, JulieXMLConstants.XPATH, attributeXpath));
-		if (conditionAttributeXpath != null && conditionAttributeValue != null)
-			fields.add(ImmutableMap.of(JulieXMLConstants.NAME, conditionAttribute, JulieXMLConstants.XPATH,
-					conditionAttributeXpath));
 		Iterator<Map<String, Object>> iterator = JulieXMLTools.constructRowIterator(nav, forEachXpath, fields,
 				xmlFileName);
 		while (iterator.hasNext()) {
 			Map<String, Object> row = iterator.next();
-			if (conditionAttributeXpath == null || row.get(conditionAttribute).equals(conditionAttributeValue))
-				if (attributeTransformation == null)
-					attribute2text.put((String) row.get(attribute), (String) row.get(text));
-				else
-					attribute2text.put(attributeTransformation.apply((String) row.get(attribute)),
-							(String) row.get(text));
+			if (attributeTransformation == null)
+				attribute2text.put((String) row.get(attribute), (String) row.get(text));
+			else
+				attribute2text.put(attributeTransformation.apply((String) row.get(attribute)), (String) row.get(text));
 		}
 
 		return attribute2text;
@@ -201,7 +199,33 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	static Map<String, String> mapAttribute2Text(String xmlFileName, VTDNav nav, String forEachXpath,
 			String attributeXpath) {
-		return mapAttribute2Text(xmlFileName, nav, forEachXpath, attributeXpath, null, null, null);
+		return mapAttribute2Text(xmlFileName, nav, forEachXpath, attributeXpath,null);
+	}
+
+	static FSArray getPersons(JCas jcas, VTDNav vn, String xmlFileName, PersonType personType){
+		List<PersonInfo> personList = new ArrayList<>();
+		String forEachXpath = "/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/" + personType
+				+ "/persName";
+
+		List<Map<String, String>> fields = new ArrayList<>();
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "surname", JulieXMLConstants.XPATH, "surname"));
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "forename", JulieXMLConstants.XPATH, "forename"));
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "idno", JulieXMLConstants.XPATH, "idno/idno[@type='PND']"));
+		Iterator<Map<String, Object>> iterator = JulieXMLTools.constructRowIterator(vn, forEachXpath, fields,
+				xmlFileName);
+		while (iterator.hasNext()){
+			PersonInfo person = new PersonInfo(jcas);
+			Map<String, Object> row = iterator.next();
+			person.setSurename((String) row.get("surname"));
+			person.setForename((String) row.get("forename"));
+			person.setIdno((String) row.get("idno"));
+			person.addToIndexes();
+			personList.add(person);
+		}
+		FSArray personArray = new FSArray(jcas, personList.size());
+		personArray.copyFromArray(personList.toArray(new PersonInfo[personList.size()]),0,0, personList.size());
+		personArray.addToIndexes();
+		return personArray;
 	}
 
 	static void extractMetaInformation(JCas jcas, VTDNav nav, String xmlFileName) {
@@ -219,41 +243,18 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 		// bit hacky, yet works
 		Map<String, String> volumeMap = mapAttribute2Text(xmlFileName, nav,
-				"/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/title", "@n", "@type", "volume",
-				null);
+				"/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/title[@type='volume']", "@n");
 		String volume = volumeMap.keySet().iterator().next();
 		h.setVolume(volume);
-
-
-		// Map<String, String> authors = mapAttribute2Text(xmlFileName, nav,
-		// "/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/title",
-		// "type");
-		// <author>
-		// <persName>
-		// <surname>Arnim</surname>
-		// <forename>Achim von</forename>
-		// <idno>
-		// <idno type="PND">http://d-nb.info/gnd/118504177</idno>
-		// </idno>
-		// </persName>
-		// </author>
-		// <author>
-		// <persName>
-		// <surname>Brentano</surname>
-		// <forename>Clemens</forename>
-		// <idno>
-		// <idno type="PND">http://d-nb.info/gnd/118515055</idno>
-		// </idno>
-		// </persName>
-		// </author>
-		// <editor>
-
+		h.setAuthors(getPersons(jcas, nav, xmlFileName, PersonType.author));
+		h.setEditors(getPersons(jcas, nav, xmlFileName, PersonType.editor));
+		
 		h.addToIndexes();
 
+		
 		// classification
 		Map<String, String> classInfo = mapAttribute2Text(xmlFileName, nav,
-				"/D-Spin/MetaData/source/CMD/Components/teiHeader/profileDesc/textClass/classCode", "@scheme", null,
-				null, new Function<String, String>() {
+				"/D-Spin/MetaData/source/CMD/Components/teiHeader/profileDesc/textClass/classCode", "@scheme", new Function<String, String>() {
 
 					@Override
 					public String apply(String arg0) {
@@ -328,7 +329,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		// <orthography>
 		// <correction tokenIDs="w6" operation="replace">deutsche</correction>
 		Map<String, String> id2correction = normalize ? mapAttribute2Text(xmlFileName, nav,
-				"/D-Spin/TextCorpus/orthography/correction", "@tokenIDs", "@operation", "replace", null) : null;
+				"/D-Spin/TextCorpus/orthography/correction[@operation='replace']", "@tokenIDs") : null;
 
 		StringBuilder text = new StringBuilder();
 		int sentenceStart = 0;
