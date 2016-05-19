@@ -191,6 +191,7 @@
 										<forename>Achim von</forename>
 										<idno>
 											<idno type="PND">http://d-nb.info/gnd/118504177</idno>
+											<idno type="FOO">BAR</idno>
 										</idno>
 									</persName>
 								</author>
