@@ -11,31 +11,42 @@
 			<supertypeName>uima.tcas.Annotation</supertypeName>
 			 <features>
         <featureDescription>
-          <name>Title</name>
+          <name>title</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
-          <name>Subtitle</name>
+          <name>subtitle</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
-          <name>Volume</name>
+          <name>volume</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
-          <name>Authors</name>
+          <name>authors</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>de.julielab.jcore.types.extensions.dta.PersonInfo</elementType>
         </featureDescription>
         <featureDescription>
-          <name>Editors</name>
+          <name>editors</name>
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>de.julielab.jcore.types.extensions.dta.PersonInfo</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>isCoreCorpus</name>
+          <description/>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>classifications</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jcore.types.extensions.dta.DocumentClassification</elementType>
         </featureDescription>
       </features>
     </typeDescription>
@@ -45,19 +56,14 @@
 			<supertypeName>uima.tcas.Annotation</supertypeName>
 		<features>
         <featureDescription>
-          <name>SubClassification</name>
+          <name>subClassification</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
-          <name>Classification</name>
+          <name>classification</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-      <featureDescription>
-          <name>isCore</name>
-          <description/>
-          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
