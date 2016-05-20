@@ -110,6 +110,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
             .build();
 
     private static void addClassification(final JCas jcas,
+            final String xmlFileName,
             final List<DocumentClassification> classifications,
             final Map<String, String[]> classInfo,
             final String mainClassification, final String subClassification,
@@ -121,13 +122,15 @@ public class DTAFileReader extends CollectionReader_ImplBase {
         if (classInfo.containsKey(mainClassification)) {
             if (classInfo.get(mainClassification).length != 1)
                 throw new IllegalArgumentException(
-                        "More than 1 " + mainClassification + " class");
+                        "More than 1 " + mainClassification
+                                + " classification in " + xmlFileName);
             if (classInfo.get(subClassification) == null)
                 throw new IllegalArgumentException(
-                        "No " + subClassification + "!");
+                        "No " + subClassification + " in " + xmlFileName);
             if (classInfo.get(subClassification).length != 1)
                 throw new IllegalArgumentException(
-                        "More than 1 " + subClassification + " class");
+                        "More than 1 " + subClassification
+                                + " classification in " + xmlFileName);
             final String mainClass = classInfo.get(mainClassification)[0];
             final String subClass = classInfo.get(subClassification)[0];
 
@@ -136,7 +139,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
             if (aClass == null) {
                 if (defaultClass == null)
                     throw new IllegalArgumentException(
-                            mainClass + " not supported!");
+                            mainClass + " not supported in " + xmlFileName);
                 else {
                     aClass = defaultClass;
                 }
@@ -219,35 +222,35 @@ public class DTAFileReader extends CollectionReader_ImplBase {
     /**
      * Gets entry for id out of map if it contains exactly 1 string
      */
-    private static String getEntry(final String id,
+    private static String getEntry(final String xmlFile, final String id,
             final Map<String, String[]> map1) {
-        return getEntry(id, map1, null);
+        return getEntry(xmlFile, id, map1, null);
     }
 
     /**
      * Gets entry for id out of map2 if it is not null and contains exactly 1
      * string, otherwise entry out of map1 if exactly 1 string
      */
-    private static String getEntry(final String id,
+    private static String getEntry(final String xmlFile, final String id,
             final Map<String, String[]> map1,
             final Map<String, String[]> map2) {
         if (map2 != null) {
             final String[] s = map2.get(id);
             if (s != null) {
                 if (s.length != 1)
-                    throw new IllegalArgumentException(
-                            "ID \"" + id + "\" has not exactly one entry!");
+                    throw new IllegalArgumentException("ID \"" + id
+                            + "\" has not exactly one entry in " + xmlFile);
                 return s[0];
             }
         }
         final String[] s = map1.get(id);
         if (s == null)
             throw new IllegalArgumentException(
-                    "ID \"" + id + "\" has no associated entry!");
+                    "ID \"" + id + "\" has no associated entry in " + xmlFile);
 
         if (s.length != 1)
-            throw new IllegalArgumentException(
-                    "ID \"" + id + "\" has not exactly one entry!");
+            throw new IllegalArgumentException("ID \"" + id
+                    + "\" has not exactly one entry in " + xmlFile);
         return s[0];
     }
 
@@ -349,10 +352,10 @@ public class DTAFileReader extends CollectionReader_ImplBase {
                 XPATH_TEXT_CORPUS + "sentences/sentence", "@tokenIDs")) {
             boolean first = true;
             for (final String id : tokenIDs.split(" ")) {
-                final String tokenString = getEntry(id, id2token,
+                final String tokenString = getEntry(xmlFileName, id, id2token,
                         id2correction);
-                final String posString = getEntry(id, id2pos);
-                final String lemmaString = getEntry(id, id2lemma);
+                final String posString = getEntry(xmlFileName, id, id2pos);
+                final String lemmaString = getEntry(xmlFileName, id, id2lemma);
 
                 if (first) {
                     first = false;
@@ -415,7 +418,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
         // titles
         final Map<String, String[]> titles = mapAttribute2Text(xmlFileName, nav,
                 XPATH_TITLE_STMT + "title", "@type");
-        h.setTitle(getEntry("main", titles));
+        h.setTitle(getEntry(xmlFileName, "main", titles));
         final String[] subTitle = titles.get("sub");
         if (subTitle != null) {
             if (subTitle.length > 1)
@@ -446,17 +449,18 @@ public class DTAFileReader extends CollectionReader_ImplBase {
                         .contains("core"));
 
         final List<DocumentClassification> classifications = new ArrayList<>();
-        addClassification(jcas, classifications, classInfo,
+        addClassification(jcas, xmlFileName, classifications, classInfo,
                 CLASIFICATION_DTA_MAIN, CLASIFICATION_DTA_SUB, DTAOther.class,
                 DTA_MAPPING);
-        addClassification(jcas, classifications, classInfo,
+        addClassification(jcas, xmlFileName, classifications, classInfo,
                 CLASIFICATION_DWDS1_MAIN, CLASIFICATION_DWDS1_SUB, null,
                 DWDS1_MAPPING);
-        addClassification(jcas, classifications, classInfo,
+        addClassification(jcas, xmlFileName, classifications, classInfo,
                 CLASIFICATION_DWDS2_MAIN, CLASIFICATION_DWDS2_SUB, null,
                 DWDS2_MAPPING);
         if (classifications.isEmpty())
-            throw new IllegalArgumentException("Missing classification!");
+            throw new IllegalArgumentException(
+                    xmlFileName + " missing classification!");
         final FSArray classificationsArray = new FSArray(jcas,
                 classifications.size());
         classificationsArray.copyFromArray(
