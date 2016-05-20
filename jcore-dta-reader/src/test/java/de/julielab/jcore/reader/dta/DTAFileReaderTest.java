@@ -32,6 +32,7 @@ import de.julielab.jcore.types.STTSPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.extensions.dta.DTABelletristik;
 import de.julielab.jcore.types.extensions.dta.DWDS1Belletristik;
+import de.julielab.jcore.types.extensions.dta.DWDS2Wissenschaft;
 import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 import de.julielab.jcore.types.extensions.dta.Header;
 import de.julielab.jcore.types.extensions.dta.PersonInfo;
@@ -79,7 +80,7 @@ public class DTAFileReaderTest {
         while (i.hasNext()) {
             classes.add((DocumentClassification) i.next());
         }
-        assertEquals(2, classes.size());
+        assertEquals(3, classes.size());
 
         boolean hasDwds = false;
         for (final DocumentClassification dc : classes)
@@ -87,6 +88,13 @@ public class DTAFileReaderTest {
                 hasDwds = true;
             }
         assertTrue(hasDwds);
+        
+        boolean has2Dwds = false;
+        for (final DocumentClassification dc : classes)
+            if (dc instanceof DWDS2Wissenschaft) {
+                has2Dwds = true;
+            }
+        assertTrue(has2Dwds);
 
         boolean hasDta = false;
         for (final DocumentClassification dc : classes)

@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +51,13 @@ import de.julielab.jcore.types.extensions.dta.DWDS1Classification;
 import de.julielab.jcore.types.extensions.dta.DWDS1Gebrauchsliteratur;
 import de.julielab.jcore.types.extensions.dta.DWDS1Wissenschaft;
 import de.julielab.jcore.types.extensions.dta.DWDS1Zeitung;
+import de.julielab.jcore.types.extensions.dta.DWDS2Belletristik;
+import de.julielab.jcore.types.extensions.dta.DWDS2Classification;
+import de.julielab.jcore.types.extensions.dta.DWDS2Gebrauchsliteratur;
+import de.julielab.jcore.types.extensions.dta.DWDS2Roman;
+import de.julielab.jcore.types.extensions.dta.DWDS2Traktat;
+import de.julielab.jcore.types.extensions.dta.DWDS2Wissenschaft;
+import de.julielab.jcore.types.extensions.dta.DWDS2Zeitung;
 import de.julielab.jcore.types.extensions.dta.Header;
 import de.julielab.jcore.types.extensions.dta.PersonInfo;
 import de.julielab.xml.JulieXMLConstants;
@@ -57,6 +65,12 @@ import de.julielab.xml.JulieXMLTools;
 
 public class DTAFileReader extends CollectionReader_ImplBase {
 
+    private static final String DTASUB = "dtasub";
+    private static final String DTAMAIN = "dtamain";
+    private static final String DWDS1SUB = "dwds1sub";
+    private static final String DWDS1MAIN = "dwds1main";
+    private static final String DWDS2SUB = "dwds2sub";
+    private static final String DWDS2MAIN = "dwds2main";
     static final String COMPONENT_ID = DTAFileReader.class.getCanonicalName();
     static final String DESCRIPTOR_PARAMTER_INPUTFILE = "inputFile";
     static final String DESCRIPTOR_PARAMTER_NORMALIZE = "normalize";
@@ -75,16 +89,17 @@ public class DTAFileReader extends CollectionReader_ImplBase {
             final String xmlFileName) {
         // header
         final Header h = new Header(jcas);
-        final Map<String, String> titles = mapAttribute2Text(xmlFileName, nav,
+        final Map<String, String[]> titles = mapAttribute2Text(xmlFileName, nav,
                 XPATH_TITLE_STMT + "title", "@type");
-        final String titleString = titles.get("main");
-        if (titleString == null)
-            throw new IllegalArgumentException(xmlFileName + " has not title!");
-        h.setTitle(titleString);
-        final String subTitleString = titles.get("sub");
-        if (subTitleString != null) {
-            h.setSubtitle(subTitleString);
-        }
+        if (titles.get("main").length != 1)
+            throw new IllegalArgumentException(
+                    xmlFileName + " has no or more than one title!");
+        h.setTitle(titles.get("main")[0]);
+        final String[] subTitle = titles.get("sub");
+        if (subTitle.length > 1)
+            throw new IllegalArgumentException(
+                    xmlFileName + " has no more than one sub title!");
+        h.setSubtitle(subTitle[0]);
         h.setVolume(getAttributeForEach(xmlFileName, nav,
                 XPATH_TITLE_STMT + "title[@type='volume']", "@n").iterator()
                         .next());
@@ -94,7 +109,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
         h.addToIndexes();
 
         // classification
-        final Map<String, String> classInfo = mapAttribute2Text(xmlFileName,
+        final Map<String, String[]> classInfo = mapAttribute2Text(xmlFileName,
                 nav, XPATH_PROFILE_DESC + "textClass/classCode", "@scheme",
                 new Function<String, String>() {
 
@@ -109,9 +124,17 @@ public class DTAFileReader extends CollectionReader_ImplBase {
                                 arg0 + " not formatted as expected");
                     }
                 });
-        if (classInfo.containsKey("dtamain")) {
+        if (classInfo.containsKey(DTAMAIN)) {
             DTAClassification classification;
-            switch (classInfo.get("dtamain")) {
+            if (classInfo.get(DTAMAIN).length != 1)
+                throw new IllegalArgumentException(
+                        "More than 1 " + DTAMAIN + " class");
+            if (classInfo.get(DTASUB).length != 1)
+                throw new IllegalArgumentException(
+                        "More than 1 " + DTASUB + " class");
+            final String mainClass = classInfo.get(DTAMAIN)[0];
+            final String subClass = classInfo.get(DTASUB)[0];
+            switch (mainClass) {
             case "Belletristik":
                 classification = new DTABelletristik(jcas);
                 break;
@@ -124,13 +147,21 @@ public class DTAFileReader extends CollectionReader_ImplBase {
             default:
                 classification = new DTAOther(jcas);
             }
-            classification.setClassification(classInfo.get("dtamain"));
-            classification.setSubClassification(classInfo.get("dtasub"));
+            classification.setClassification(mainClass);
+            classification.setSubClassification(subClass);
             classification.addToIndexes();
         }
-        if (classInfo.containsKey("dwds1main")) {
+        if (classInfo.containsKey(DWDS1MAIN)) {
             DWDS1Classification classification;
-            switch (classInfo.get("dwds1main")) {
+            if (classInfo.get(DWDS1MAIN).length != 1)
+                throw new IllegalArgumentException(
+                        "More than 1 " + DWDS1MAIN + " class");
+            if (classInfo.get(DWDS1SUB).length != 1)
+                throw new IllegalArgumentException(
+                        "More than 1 " + DWDS1SUB + " class");
+            final String mainClass = classInfo.get(DWDS1MAIN)[0];
+            final String subClass = classInfo.get(DWDS1SUB)[0];
+            switch (mainClass) {
             case "Wissenschaft":
                 classification = new DWDS1Wissenschaft(jcas);
                 break;
@@ -145,11 +176,47 @@ public class DTAFileReader extends CollectionReader_ImplBase {
                 break;
             default:
                 throw new IllegalArgumentException(
-                        "Unsupported DWDS classification "
-                                + classInfo.get("dwds1main"));
+                        "Unsupported DWDS classification " + mainClass);
             }
-            classification.setClassification(classInfo.get("dwds1main"));
-            classification.setSubClassification(classInfo.get("dwds1sub"));
+            classification.setClassification(mainClass);
+            classification.setSubClassification(subClass);
+            classification.addToIndexes();
+        }
+        if (classInfo.containsKey(DWDS2MAIN)) {
+            DWDS2Classification classification;
+            if (classInfo.get(DWDS2MAIN).length != 1)
+                throw new IllegalArgumentException(
+                        "More than 1 " + DWDS2MAIN + " class");
+            if (classInfo.get(DWDS2SUB).length != 1)
+                throw new IllegalArgumentException(
+                        "More than 1 " + DWDS2SUB + " class");
+            final String mainClass = classInfo.get(DWDS2MAIN)[0];
+            final String subClass = classInfo.get(DWDS2SUB)[0];
+            switch (mainClass) {
+            case "Wissenschaft":
+                classification = new DWDS2Wissenschaft(jcas);
+                break;
+            case "Gebrauchsliteratur":
+                classification = new DWDS2Gebrauchsliteratur(jcas);
+                break;
+            case "Belletristik":
+                classification = new DWDS2Belletristik(jcas);
+                break;
+            case "Zeitung":
+                classification = new DWDS2Zeitung(jcas);
+                break;
+            case "Traktat":
+                classification = new DWDS2Traktat(jcas);
+                break;
+            case "Roman":
+                classification = new DWDS2Roman(jcas);
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Unsupported DWDS classification " + mainClass);
+            }
+            classification.setClassification(mainClass);
+            classification.setSubClassification(subClass);
             classification.addToIndexes();
         }
     }
@@ -163,9 +230,9 @@ public class DTAFileReader extends CollectionReader_ImplBase {
                 XPATH_TEXT_CORPUS + "POStags", "@tagset").keySet())
             if (!tagset.equals("stts"))
                 return false;
-        for (final String language : mapAttribute2Text(xmlFileName, nav,
+        for (final String[] language : mapAttribute2Text(xmlFileName, nav,
                 XPATH_PROFILE_DESC + "langUsage/language", ".").values())
-            if (!language.equals("German"))
+            if ((language.length != 1) || !language[0].equals("German"))
                 return false;
         return true;
     }
@@ -219,6 +286,41 @@ public class DTAFileReader extends CollectionReader_ImplBase {
     }
 
     /**
+     * Gets entry for id out of map if it contains exactly 1 string
+     */
+    private static String getEntry(final String id,
+            final Map<String, String[]> map1) {
+        return getEntry(id, map1, null);
+    }
+
+    /**
+     * Gets entry for id out of map2 if it is not null and contains exactly 1
+     * string, otherwise entry out of map1 if exaclty 1 string
+     */
+    private static String getEntry(final String id,
+            final Map<String, String[]> map1,
+            final Map<String, String[]> map2) {
+        if (map2 != null) {
+            final String[] s = map2.get(id);
+            if (s != null) {
+                if (s.length != 1)
+                    throw new IllegalArgumentException(
+                            "ID \"" + id + "\" has no exactly one entry!");
+                return s[0];
+            }
+        }
+        final String[] s = map1.get(id);
+        if (s == null)
+            throw new IllegalArgumentException(
+                    "ID \"" + id + "\" has no associated entry!");
+
+        if (s.length != 1)
+            throw new IllegalArgumentException(
+                    "ID \"" + id + "\" has no exactly one entry!");
+        return s[0];
+    }
+
+    /**
      * Extracts PersonInfo for a PersonType, all already added to indexes
      */
     static FSArray getPersons(final JCas jcas, final VTDNav vn,
@@ -256,7 +358,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
      * Uses JulieXMLTools.constructRowIterator to provide a mapping from an
      * attribute to text for each matched element
      */
-    static Map<String, String> mapAttribute2Text(final String xmlFileName,
+    static Map<String, String[]> mapAttribute2Text(final String xmlFileName,
             final VTDNav nav, final String forEachXpath,
             final String attributeXpath) {
         return mapAttribute2Text(xmlFileName, nav, forEachXpath, attributeXpath,
@@ -268,11 +370,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
      * attribute to text for each matched element, transforming the attribute
      * while doing so
      */
-    static Map<String, String> mapAttribute2Text(final String xmlFileName,
+    static Map<String, String[]> mapAttribute2Text(final String xmlFileName,
             final VTDNav nav, final String forEachXpath,
             final String attributeXpath,
             final Function<String, String> attributeTransformation) {
-        final Map<String, String> attribute2text = new HashMap<>();
+        final Map<String, String[]> attribute2text = new HashMap<>();
 
         final String text = "text";
         final String attribute = "attribute";
@@ -285,17 +387,21 @@ public class DTAFileReader extends CollectionReader_ImplBase {
                 .constructRowIterator(nav, forEachXpath, fields, xmlFileName);
         while (iterator.hasNext()) {
             final Map<String, Object> row = iterator.next();
-            if (attributeTransformation == null) {
-                attribute2text.put((String) row.get(attribute),
-                        (String) row.get(text));
+            final String attributeValue = attributeTransformation == null
+                    ? (String) row.get(attribute)
+                    : attributeTransformation
+                            .apply((String) row.get(attribute));
+            if (attribute2text.containsKey(attributeValue)) {
+                // hopefully rare case
+                final String[] old = attribute2text.get(attributeValue);
+                final String[] newOne = Arrays.copyOf(old, old.length + 1);
+                newOne[old.length] = (String) row.get(text);
+                attribute2text.put(attributeValue, newOne);
             } else {
-                attribute2text.put(
-                        attributeTransformation
-                                .apply((String) row.get(attribute)),
-                        (String) row.get(text));
+                attribute2text.put(attributeValue,
+                        new String[] { (String) row.get(text) });
             }
         }
-
         return attribute2text;
     }
 
@@ -309,22 +415,13 @@ public class DTAFileReader extends CollectionReader_ImplBase {
             throw new IllegalArgumentException(
                     xmlFileName + " does not conform to assumptions!");
 
-        // <token ID="w1">Des</token>
-        final Map<String, String> id2token = mapAttribute2Text(xmlFileName, nav,
-                XPATH_TEXT_CORPUS + "tokens/token", "@ID");
-
-        // <lemmas>
-        // <lemma tokenIDs="w1">d</lemma>
-        final Map<String, String> id2lemma = mapAttribute2Text(xmlFileName, nav,
-                XPATH_TEXT_CORPUS + "lemmas/lemma", "@tokenIDs");
-
-        // <tag tokenIDs="w1">ART</tag>
-        final Map<String, String> id2pos = mapAttribute2Text(xmlFileName, nav,
+        final Map<String, String[]> id2token = mapAttribute2Text(xmlFileName,
+                nav, XPATH_TEXT_CORPUS + "tokens/token", "@ID");
+        final Map<String, String[]> id2lemma = mapAttribute2Text(xmlFileName,
+                nav, XPATH_TEXT_CORPUS + "lemmas/lemma", "@tokenIDs");
+        final Map<String, String[]> id2pos = mapAttribute2Text(xmlFileName, nav,
                 XPATH_TEXT_CORPUS + "POStags/tag", "@tokenIDs");
-
-        // <orthography>
-        // <correction tokenIDs="w6" operation="replace">deutsche</correction>
-        final Map<String, String> id2correction = normalize
+        final Map<String, String[]> id2correction = normalize
                 ? mapAttribute2Text(xmlFileName, nav,
                         XPATH_TEXT_CORPUS
                                 + "orthography/correction[@operation='replace']",
@@ -337,42 +434,32 @@ public class DTAFileReader extends CollectionReader_ImplBase {
                 XPATH_TEXT_CORPUS + "sentences/sentence", "@tokenIDs")) {
             boolean first = true;
             for (final String id : tokenIDs.split(" ")) {
-                if (!id2token.containsKey(id))
-                    throw new IllegalArgumentException(
-                            "Token ID \"" + id + "\" has no associated token!");
-                if (!id2pos.containsKey(id))
-                    throw new IllegalArgumentException(
-                            "Token \"" + id2token.get(id) + "\" with ID \"" + id
-                                    + "\" has no POS information!");
-                if (!id2lemma.containsKey(id))
-                    throw new IllegalArgumentException(
-                            "Token \"" + id2token.get(id) + "\" with ID \"" + id
-                                    + "\" has no lemma information!");
+                final String tokenString = getEntry(id, id2token,
+                        id2correction);
+                final String posString = getEntry(id, id2pos);
+                final String lemmaString = getEntry(id, id2lemma);
+
                 if (first) {
                     first = false;
-                } else if (!(id2pos.get(id).equals("$,")
-                        || id2pos.get(id).equals("$."))) {
+                } else if (!(posString.equals("$,")
+                        || posString.equals("$."))) {
                     text.append(" ");
                 }
 
                 final int begin = text.length();
-                if (normalize && id2correction.containsKey(id)) {
-                    text.append(id2correction.get(id));
-                } else {
-                    text.append(id2token.get(id));
-                }
+                text.append(tokenString);
                 final int end = text.length();
 
                 final Token token = new Token(jcas, begin, end);
                 token.setComponentId(COMPONENT_ID);
 
                 final Lemma lemma = new Lemma(jcas, begin, end);
-                lemma.setValue(id2lemma.get(id));
+                lemma.setValue(lemmaString);
                 lemma.addToIndexes();
                 token.setLemma(lemma);
 
                 final STTSPOSTag tag = new STTSPOSTag(jcas, begin, end);
-                tag.setValue(id2pos.get(id));
+                tag.setValue(posString);
                 tag.setBegin(begin);
                 tag.setEnd(end);
                 tag.setComponentId(COMPONENT_ID);
