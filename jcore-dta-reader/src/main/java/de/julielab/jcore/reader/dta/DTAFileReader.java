@@ -13,6 +13,8 @@ package de.julielab.jcore.reader.dta;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.jcas.JCas;
@@ -32,7 +34,6 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.ximpleware.ParseException;
 import com.ximpleware.VTDNav;
@@ -42,35 +43,41 @@ import de.julielab.jcore.types.STTSPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.extensions.dta.DTABelletristik;
-import de.julielab.jcore.types.extensions.dta.DTAClassification;
 import de.julielab.jcore.types.extensions.dta.DTAFachtext;
 import de.julielab.jcore.types.extensions.dta.DTAGebrauchsliteratur;
 import de.julielab.jcore.types.extensions.dta.DTAOther;
 import de.julielab.jcore.types.extensions.dta.DWDS1Belletristik;
-import de.julielab.jcore.types.extensions.dta.DWDS1Classification;
 import de.julielab.jcore.types.extensions.dta.DWDS1Gebrauchsliteratur;
 import de.julielab.jcore.types.extensions.dta.DWDS1Wissenschaft;
 import de.julielab.jcore.types.extensions.dta.DWDS1Zeitung;
 import de.julielab.jcore.types.extensions.dta.DWDS2Belletristik;
-import de.julielab.jcore.types.extensions.dta.DWDS2Classification;
 import de.julielab.jcore.types.extensions.dta.DWDS2Gebrauchsliteratur;
 import de.julielab.jcore.types.extensions.dta.DWDS2Roman;
 import de.julielab.jcore.types.extensions.dta.DWDS2Traktat;
 import de.julielab.jcore.types.extensions.dta.DWDS2Wissenschaft;
 import de.julielab.jcore.types.extensions.dta.DWDS2Zeitung;
+import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 import de.julielab.jcore.types.extensions.dta.Header;
 import de.julielab.jcore.types.extensions.dta.PersonInfo;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
 
 public class DTAFileReader extends CollectionReader_ImplBase {
-
-    private static final String DTASUB = "dtasub";
-    private static final String DTAMAIN = "dtamain";
-    private static final String DWDS1SUB = "dwds1sub";
-    private static final String DWDS1MAIN = "dwds1main";
-    private static final String DWDS2SUB = "dwds2sub";
-    private static final String DWDS2MAIN = "dwds2main";
+    private static final String CLASIFICATION = "http://www.deutschestextarchiv.de/doku/klassifikation#";
+    private static final String CLASIFICATION_DTA_CORPUS = CLASIFICATION
+            + "DTACorpus";
+    private static final String CLASIFICATION_DTA_SUB = CLASIFICATION
+            + "dtasub";
+    private static final String CLASIFICATION_DTA_MAIN = CLASIFICATION
+            + "dtamain";
+    private static final String CLASIFICATION_DWDS1_SUB = CLASIFICATION
+            + "dwds1sub";
+    private static final String CLASIFICATION_DWDS1_MAIN = CLASIFICATION
+            + "dwds1main";
+    private static final String CLASIFICATION_DWDS2_SUB = CLASIFICATION
+            + "dwds2sub";
+    private static final String CLASIFICATION_DWDS2_MAIN = CLASIFICATION
+            + "dwds2main";
     static final String COMPONENT_ID = DTAFileReader.class.getCanonicalName();
     static final String DESCRIPTOR_PARAMTER_INPUTFILE = "inputFile";
     static final String DESCRIPTOR_PARAMTER_NORMALIZE = "normalize";
@@ -81,143 +88,67 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(DTAFileReader.class);
+    private static final Map<String, Class<? extends DocumentClassification>> DTA_MAPPING = ImmutableMap
+            .<String, Class<? extends DocumentClassification>> builder()
+            .put("Belletristik", DTABelletristik.class)
+            .put("Fachtext", DTAFachtext.class)
+            .put("Gebrauchsliteratur", DTAGebrauchsliteratur.class).build();
+    private static final Map<String, Class<? extends DocumentClassification>> DWDS1_MAPPING = ImmutableMap
+            .<String, Class<? extends DocumentClassification>> builder()
+            .put("Wissenschaft", DWDS1Wissenschaft.class)
+            .put("Gebrauchsliteratur", DWDS1Gebrauchsliteratur.class)
+            .put("Belletristik", DWDS1Belletristik.class)
+            .put("Zeitung", DWDS1Zeitung.class).build();
 
-    /**
-     * Extracts meta information from header
-     */
-    static void extractMetaInformation(final JCas jcas, final VTDNav nav,
-            final String xmlFileName) {
-        // header
-        final Header h = new Header(jcas);
-        final Map<String, String[]> titles = mapAttribute2Text(xmlFileName, nav,
-                XPATH_TITLE_STMT + "title", "@type");
-        if (titles.get("main").length != 1)
-            throw new IllegalArgumentException(
-                    xmlFileName + " has no or more than one title!");
-        h.setTitle(titles.get("main")[0]);
-        final String[] subTitle = titles.get("sub");
-        if (subTitle.length > 1)
-            throw new IllegalArgumentException(
-                    xmlFileName + " has no more than one sub title!");
-        h.setSubtitle(subTitle[0]);
-        h.setVolume(getAttributeForEach(xmlFileName, nav,
-                XPATH_TITLE_STMT + "title[@type='volume']", "@n").iterator()
-                        .next());
-        h.setAuthors(getPersons(jcas, nav, xmlFileName, PersonType.author));
-        h.setEditors(getPersons(jcas, nav, xmlFileName, PersonType.editor));
+    private static final Map<String, Class<? extends DocumentClassification>> DWDS2_MAPPING = ImmutableMap
+            .<String, Class<? extends DocumentClassification>> builder()
+            .put("Wissenschaft", DWDS2Wissenschaft.class)
+            .put("Gebrauchsliteratur", DWDS2Gebrauchsliteratur.class)
+            .put("Belletristik", DWDS2Belletristik.class)
+            .put("Zeitung", DWDS2Zeitung.class)
+            .put("Traktat", DWDS2Traktat.class).put("Roman", DWDS2Roman.class)
+            .build();
 
-        h.addToIndexes();
-
-        // classification
-        final Map<String, String[]> classInfo = mapAttribute2Text(xmlFileName,
-                nav, XPATH_PROFILE_DESC + "textClass/classCode", "@scheme",
-                new Function<String, String>() {
-
-                    @Override
-                    public String apply(final String arg0) {
-                        if (arg0.contains("#")) {
-                            final String[] parts = arg0.split("#");
-                            if (parts.length == 2)
-                                return parts[1];
-                        }
-                        throw new IllegalArgumentException(
-                                arg0 + " not formatted as expected");
-                    }
-                });
-        if (classInfo.containsKey(DTAMAIN)) {
-            DTAClassification classification;
-            if (classInfo.get(DTAMAIN).length != 1)
+    private static void addClassification(final JCas jcas,
+            final List<DocumentClassification> classifications,
+            final Map<String, String[]> classInfo,
+            final String mainClassification, final String subClassification,
+            final Class<? extends DocumentClassification> defaultClass,
+            final Map<String, Class<? extends DocumentClassification>> classification2class)
+            throws NoSuchMethodException, SecurityException,
+            InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        if (classInfo.containsKey(mainClassification)) {
+            if (classInfo.get(mainClassification).length != 1)
                 throw new IllegalArgumentException(
-                        "More than 1 " + DTAMAIN + " class");
-            if (classInfo.get(DTASUB).length != 1)
+                        "More than 1 " + mainClassification + " class");
+            if (classInfo.get(subClassification) == null)
                 throw new IllegalArgumentException(
-                        "More than 1 " + DTASUB + " class");
-            final String mainClass = classInfo.get(DTAMAIN)[0];
-            final String subClass = classInfo.get(DTASUB)[0];
-            switch (mainClass) {
-            case "Belletristik":
-                classification = new DTABelletristik(jcas);
-                break;
-            case "Fachtext":
-                classification = new DTAFachtext(jcas);
-                break;
-            case "Gebrauchsliteratur":
-                classification = new DTAGebrauchsliteratur(jcas);
-                break;
-            default:
-                classification = new DTAOther(jcas);
+                        "No " + subClassification + "!");
+            if (classInfo.get(subClassification).length != 1)
+                throw new IllegalArgumentException(
+                        "More than 1 " + subClassification + " class");
+            final String mainClass = classInfo.get(mainClassification)[0];
+            final String subClass = classInfo.get(subClassification)[0];
+
+            Class<? extends DocumentClassification> aClass = classification2class
+                    .get(mainClass);
+            if (aClass == null) {
+                if (defaultClass == null)
+                    throw new IllegalArgumentException(
+                            mainClass + " not supported!");
+                else {
+                    aClass = defaultClass;
+                }
             }
+            final Constructor<? extends DocumentClassification> constructor = aClass
+                    .getConstructor(new Class[] { JCas.class });
+            final DocumentClassification classification = constructor
+                    .newInstance(jcas);
             classification.setClassification(mainClass);
             classification.setSubClassification(subClass);
             classification.addToIndexes();
-        }
-        if (classInfo.containsKey(DWDS1MAIN)) {
-            DWDS1Classification classification;
-            if (classInfo.get(DWDS1MAIN).length != 1)
-                throw new IllegalArgumentException(
-                        "More than 1 " + DWDS1MAIN + " class");
-            if (classInfo.get(DWDS1SUB).length != 1)
-                throw new IllegalArgumentException(
-                        "More than 1 " + DWDS1SUB + " class");
-            final String mainClass = classInfo.get(DWDS1MAIN)[0];
-            final String subClass = classInfo.get(DWDS1SUB)[0];
-            switch (mainClass) {
-            case "Wissenschaft":
-                classification = new DWDS1Wissenschaft(jcas);
-                break;
-            case "Gebrauchsliteratur":
-                classification = new DWDS1Gebrauchsliteratur(jcas);
-                break;
-            case "Belletristik":
-                classification = new DWDS1Belletristik(jcas);
-                break;
-            case "Zeitung":
-                classification = new DWDS1Zeitung(jcas);
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Unsupported DWDS classification " + mainClass);
-            }
-            classification.setClassification(mainClass);
-            classification.setSubClassification(subClass);
-            classification.addToIndexes();
-        }
-        if (classInfo.containsKey(DWDS2MAIN)) {
-            DWDS2Classification classification;
-            if (classInfo.get(DWDS2MAIN).length != 1)
-                throw new IllegalArgumentException(
-                        "More than 1 " + DWDS2MAIN + " class");
-            if (classInfo.get(DWDS2SUB).length != 1)
-                throw new IllegalArgumentException(
-                        "More than 1 " + DWDS2SUB + " class");
-            final String mainClass = classInfo.get(DWDS2MAIN)[0];
-            final String subClass = classInfo.get(DWDS2SUB)[0];
-            switch (mainClass) {
-            case "Wissenschaft":
-                classification = new DWDS2Wissenschaft(jcas);
-                break;
-            case "Gebrauchsliteratur":
-                classification = new DWDS2Gebrauchsliteratur(jcas);
-                break;
-            case "Belletristik":
-                classification = new DWDS2Belletristik(jcas);
-                break;
-            case "Zeitung":
-                classification = new DWDS2Zeitung(jcas);
-                break;
-            case "Traktat":
-                classification = new DWDS2Traktat(jcas);
-                break;
-            case "Roman":
-                classification = new DWDS2Roman(jcas);
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Unsupported DWDS classification " + mainClass);
-            }
-            classification.setClassification(mainClass);
-            classification.setSubClassification(subClass);
-            classification.addToIndexes();
+            classifications.add(classification);
         }
     }
 
@@ -295,7 +226,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
     /**
      * Gets entry for id out of map2 if it is not null and contains exactly 1
-     * string, otherwise entry out of map1 if exaclty 1 string
+     * string, otherwise entry out of map1 if exactly 1 string
      */
     private static String getEntry(final String id,
             final Map<String, String[]> map1,
@@ -305,7 +236,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
             if (s != null) {
                 if (s.length != 1)
                     throw new IllegalArgumentException(
-                            "ID \"" + id + "\" has no exactly one entry!");
+                            "ID \"" + id + "\" has not exactly one entry!");
                 return s[0];
             }
         }
@@ -316,7 +247,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
         if (s.length != 1)
             throw new IllegalArgumentException(
-                    "ID \"" + id + "\" has no exactly one entry!");
+                    "ID \"" + id + "\" has not exactly one entry!");
         return s[0];
     }
 
@@ -361,19 +292,6 @@ public class DTAFileReader extends CollectionReader_ImplBase {
     static Map<String, String[]> mapAttribute2Text(final String xmlFileName,
             final VTDNav nav, final String forEachXpath,
             final String attributeXpath) {
-        return mapAttribute2Text(xmlFileName, nav, forEachXpath, attributeXpath,
-                null);
-    }
-
-    /**
-     * Uses JulieXMLTools.constructRowIterator to provide a mapping from an
-     * attribute to text for each matched element, transforming the attribute
-     * while doing so
-     */
-    static Map<String, String[]> mapAttribute2Text(final String xmlFileName,
-            final VTDNav nav, final String forEachXpath,
-            final String attributeXpath,
-            final Function<String, String> attributeTransformation) {
         final Map<String, String[]> attribute2text = new HashMap<>();
 
         final String text = "text";
@@ -387,10 +305,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
                 .constructRowIterator(nav, forEachXpath, fields, xmlFileName);
         while (iterator.hasNext()) {
             final Map<String, Object> row = iterator.next();
-            final String attributeValue = attributeTransformation == null
-                    ? (String) row.get(attribute)
-                    : attributeTransformation
-                            .apply((String) row.get(attribute));
+            final String attributeValue = (String) row.get(attribute);
             if (attribute2text.containsKey(attributeValue)) {
                 // hopefully rare case
                 final String[] old = attribute2text.get(attributeValue);
@@ -481,6 +396,78 @@ public class DTAFileReader extends CollectionReader_ImplBase {
         jcas.setDocumentText(text.subSequence(0, text.length() - 1).toString());
     }
 
+    /**
+     * Extracts meta information from header
+     *
+     * @throws InvocationTargetException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     */
+    static void readHeader(final JCas jcas, final VTDNav nav,
+            final String xmlFileName) throws NoSuchMethodException,
+            SecurityException, InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        final Header h = new Header(jcas);
+
+        // titles
+        final Map<String, String[]> titles = mapAttribute2Text(xmlFileName, nav,
+                XPATH_TITLE_STMT + "title", "@type");
+        h.setTitle(getEntry("main", titles));
+        final String[] subTitle = titles.get("sub");
+        if (subTitle != null) {
+            if (subTitle.length > 1)
+                throw new IllegalArgumentException(
+                        xmlFileName + " has more than one sub title!");
+            h.setSubtitle(subTitle[0]);
+        }
+        boolean moreThanOne = false;
+        for (final String volume : getAttributeForEach(xmlFileName, nav,
+                XPATH_TITLE_STMT + "title[@type='volume']", "@n")) {
+            if (moreThanOne)
+                throw new IllegalArgumentException(
+                        xmlFileName + " has more than one volume!");
+            h.setVolume(volume);
+            moreThanOne = true;
+        }
+
+        // author
+        h.setAuthors(getPersons(jcas, nav, xmlFileName, PersonType.author));
+        h.setEditors(getPersons(jcas, nav, xmlFileName, PersonType.editor));
+
+        // classification
+        final Map<String, String[]> classInfo = mapAttribute2Text(xmlFileName,
+                nav, XPATH_PROFILE_DESC + "textClass/classCode", "@scheme");
+
+        h.setIsCoreCorpus(classInfo.containsKey(CLASIFICATION_DTA_CORPUS)
+                && Arrays.asList(classInfo.get(CLASIFICATION_DTA_CORPUS))
+                        .contains("core"));
+
+        final List<DocumentClassification> classifications = new ArrayList<>();
+        addClassification(jcas, classifications, classInfo,
+                CLASIFICATION_DTA_MAIN, CLASIFICATION_DTA_SUB, DTAOther.class,
+                DTA_MAPPING);
+        addClassification(jcas, classifications, classInfo,
+                CLASIFICATION_DWDS1_MAIN, CLASIFICATION_DWDS1_SUB, null,
+                DWDS1_MAPPING);
+        addClassification(jcas, classifications, classInfo,
+                CLASIFICATION_DWDS2_MAIN, CLASIFICATION_DWDS2_SUB, null,
+                DWDS2_MAPPING);
+        if (classifications.isEmpty())
+            throw new IllegalArgumentException("Missing classification!");
+        final FSArray classificationsArray = new FSArray(jcas,
+                classifications.size());
+        classificationsArray.copyFromArray(
+                classifications
+                        .toArray(new FeatureStructure[classifications.size()]),
+                0, 0, classifications.size());
+        h.setClassifications(classificationsArray);
+
+        h.addToIndexes();
+    }
+
     private final List<File> inputFiles = new ArrayList<>();
 
     private int counter = 0;
@@ -500,10 +487,10 @@ public class DTAFileReader extends CollectionReader_ImplBase {
                     .getVTDNav(new FileInputStream(file), 1024);
             final String xmlFileName = file.getCanonicalPath();
             readDocument(jcas, nav, xmlFileName, this.normalize);
-            extractMetaInformation(jcas, nav, xmlFileName);
+            readHeader(jcas, nav, xmlFileName);
             this.counter++;
             LOGGER.info("Read file:" + this.counter);
-        } catch (CASException | ParseException | IOException e) {
+        } catch (final Exception e) {
             throw new CollectionException(e);
         }
     }

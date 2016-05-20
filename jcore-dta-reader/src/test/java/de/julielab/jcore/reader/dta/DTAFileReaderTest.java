@@ -19,6 +19,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.util.CasCreationUtils;
@@ -68,40 +69,8 @@ public class DTAFileReaderTest {
         final JCas jcas = getJCas();
         final VTDNav nav = getNav();
         DTAFileReader.readDocument(jcas, nav, TEST_FILE, normalize);
-        DTAFileReader.extractMetaInformation(jcas, nav, TEST_FILE);
+        DTAFileReader.readHeader(jcas, nav, TEST_FILE);
         return jcas;
-    }
-
-    @Test
-    public void testClassification() throws Exception {
-        final JCas jcas = process(true);
-        final FSIterator<Annotation> i = jcas.getAnnotationIndex(DocumentClassification.type).iterator();
-        final Set<DocumentClassification> classes = new HashSet<>();
-        while (i.hasNext()) {
-            classes.add((DocumentClassification) i.next());
-        }
-        assertEquals(3, classes.size());
-
-        boolean hasDwds = false;
-        for (final DocumentClassification dc : classes)
-            if (dc instanceof DWDS1Belletristik) {
-                hasDwds = true;
-            }
-        assertTrue(hasDwds);
-        
-        boolean has2Dwds = false;
-        for (final DocumentClassification dc : classes)
-            if (dc instanceof DWDS2Wissenschaft) {
-                has2Dwds = true;
-            }
-        assertTrue(has2Dwds);
-
-        boolean hasDta = false;
-        for (final DocumentClassification dc : classes)
-            if (dc instanceof DTABelletristik) {
-                hasDta = true;
-            }
-        assertTrue(hasDta);
     }
 
     @Test
@@ -183,6 +152,21 @@ public class DTAFileReaderTest {
         assertEquals("Arnim", arnim.getSurename());
         assertEquals("Achim von", arnim.getForename());
         assertEquals("http://d-nb.info/gnd/118504177", arnim.getIdno());
+        
+        //classification
+        FSArray classes = h.getClassifications();
+        assertEquals(3, classes.size());
+        assertTrue(containsClassification(classes, DTABelletristik.class));
+        assertTrue(containsClassification(classes, DWDS1Belletristik.class));
+        assertTrue(containsClassification(classes, DWDS2Wissenschaft.class));
+        assertTrue(h.getIsCoreCorpus());
+    }
+    
+    private boolean containsClassification(FSArray classes, Class<? extends DocumentClassification> dc){
+        for(int i = 0; i< classes.size(); ++i )
+            if(dc.isInstance(classes.get(i)))
+                return true;
+        return false;
     }
 
     @Test
