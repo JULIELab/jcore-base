@@ -359,10 +359,7 @@
 						</fileDesc>
 						<encodingDesc>
 							<editorialDecl>
-								<p>Dieses Werk wurde gemäß den
-            DTA-Transkriptionsrichtlinien
-            im Double-Keying-Verfahren von Muttersprachlern erfasst und in XML/TEI P5 nach
-            DTA-Basisformat kodiert.</p>
+								<p>Totally bogus test file!</p>
 							</editorialDecl>
 
 						</encodingDesc>
@@ -379,6 +376,10 @@
 									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dwds1main">Belletristik</classCode>
 								<classCode
 									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dwds1sub">Lyrik</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dwds2main">Wissenschaft</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dwds2sub">Geographie</classCode>
 								<classCode
 									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#DTACorpus">core</classCode>
 								<classCode
