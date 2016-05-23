@@ -63,21 +63,6 @@ import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
 
 public class DTAFileReader extends CollectionReader_ImplBase {
-    private static final String CLASIFICATION = "http://www.deutschestextarchiv.de/doku/klassifikation#";
-    private static final String CLASIFICATION_DTA_CORPUS = CLASIFICATION
-            + "DTACorpus";
-    private static final String CLASIFICATION_DTA_SUB = CLASIFICATION
-            + "dtasub";
-    private static final String CLASIFICATION_DTA_MAIN = CLASIFICATION
-            + "dtamain";
-    private static final String CLASIFICATION_DWDS1_SUB = CLASIFICATION
-            + "dwds1sub";
-    private static final String CLASIFICATION_DWDS1_MAIN = CLASIFICATION
-            + "dwds1main";
-    private static final String CLASIFICATION_DWDS2_SUB = CLASIFICATION
-            + "dwds2sub";
-    private static final String CLASIFICATION_DWDS2_MAIN = CLASIFICATION
-            + "dwds2main";
     static final String COMPONENT_ID = DTAFileReader.class.getCanonicalName();
     static final String DESCRIPTOR_PARAMTER_INPUTFILE = "inputFile";
     static final String DESCRIPTOR_PARAMTER_NORMALIZE = "normalize";
@@ -88,72 +73,6 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(DTAFileReader.class);
-    private static final Map<String, Class<? extends DocumentClassification>> DTA_MAPPING = ImmutableMap
-            .<String, Class<? extends DocumentClassification>> builder()
-            .put("Belletristik", DTABelletristik.class)
-            .put("Fachtext", DTAFachtext.class)
-            .put("Gebrauchsliteratur", DTAGebrauchsliteratur.class).build();
-    private static final Map<String, Class<? extends DocumentClassification>> DWDS1_MAPPING = ImmutableMap
-            .<String, Class<? extends DocumentClassification>> builder()
-            .put("Wissenschaft", DWDS1Wissenschaft.class)
-            .put("Gebrauchsliteratur", DWDS1Gebrauchsliteratur.class)
-            .put("Belletristik", DWDS1Belletristik.class)
-            .put("Zeitung", DWDS1Zeitung.class).build();
-
-    private static final Map<String, Class<? extends DocumentClassification>> DWDS2_MAPPING = ImmutableMap
-            .<String, Class<? extends DocumentClassification>> builder()
-            .put("Wissenschaft", DWDS2Wissenschaft.class)
-            .put("Gebrauchsliteratur", DWDS2Gebrauchsliteratur.class)
-            .put("Belletristik", DWDS2Belletristik.class)
-            .put("Zeitung", DWDS2Zeitung.class)
-            .put("Traktat", DWDS2Traktat.class).put("Roman", DWDS2Roman.class)
-            .build();
-
-    private static void addClassification(final JCas jcas,
-            final String xmlFileName,
-            final List<DocumentClassification> classifications,
-            final Map<String, String[]> classInfo,
-            final String mainClassification, final String subClassification,
-            final Class<? extends DocumentClassification> defaultClass,
-            final Map<String, Class<? extends DocumentClassification>> classification2class)
-            throws NoSuchMethodException, SecurityException,
-            InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException {
-        if (classInfo.containsKey(mainClassification)) {
-            if (classInfo.get(mainClassification).length != 1)
-                throw new IllegalArgumentException(
-                        "More than 1 " + mainClassification
-                                + " classification in " + xmlFileName);
-            if (classInfo.get(subClassification) == null)
-                throw new IllegalArgumentException(
-                        "No " + subClassification + " in " + xmlFileName);
-            if (classInfo.get(subClassification).length != 1)
-                throw new IllegalArgumentException(
-                        "More than 1 " + subClassification
-                                + " classification in " + xmlFileName);
-            final String mainClass = classInfo.get(mainClassification)[0];
-            final String subClass = classInfo.get(subClassification)[0];
-
-            Class<? extends DocumentClassification> aClass = classification2class
-                    .get(mainClass);
-            if (aClass == null) {
-                if (defaultClass == null)
-                    throw new IllegalArgumentException(
-                            mainClass + " not supported in " + xmlFileName);
-                else {
-                    aClass = defaultClass;
-                }
-            }
-            final Constructor<? extends DocumentClassification> constructor = aClass
-                    .getConstructor(new Class[] { JCas.class });
-            final DocumentClassification classification = constructor
-                    .newInstance(jcas);
-            classification.setClassification(mainClass);
-            classification.setSubClassification(subClass);
-            classification.addToIndexes();
-            classifications.add(classification);
-        }
-    }
 
     /**
      * Checks some assumptions about xml file, e.g., tagset and language
@@ -444,29 +363,18 @@ public class DTAFileReader extends CollectionReader_ImplBase {
         final Map<String, String[]> classInfo = mapAttribute2Text(xmlFileName,
                 nav, XPATH_PROFILE_DESC + "textClass/classCode", "@scheme");
 
-        h.setIsCoreCorpus(classInfo.containsKey(CLASIFICATION_DTA_CORPUS)
-                && Arrays.asList(classInfo.get(CLASIFICATION_DTA_CORPUS))
-                        .contains("core"));
+        h.setIsCoreCorpus(MappingService.isCoreCorpus(classInfo));
 
-        final List<DocumentClassification> classifications = new ArrayList<>();
-        addClassification(jcas, xmlFileName, classifications, classInfo,
-                CLASIFICATION_DTA_MAIN, CLASIFICATION_DTA_SUB, DTAOther.class,
-                DTA_MAPPING);
-        addClassification(jcas, xmlFileName, classifications, classInfo,
-                CLASIFICATION_DWDS1_MAIN, CLASIFICATION_DWDS1_SUB, null,
-                DWDS1_MAPPING);
-        addClassification(jcas, xmlFileName, classifications, classInfo,
-                CLASIFICATION_DWDS2_MAIN, CLASIFICATION_DWDS2_SUB, null,
-                DWDS2_MAPPING);
-        if (classifications.isEmpty())
+       FeatureStructure[] classifications = MappingService.
+        if (classifications == null)
             throw new IllegalArgumentException(
                     xmlFileName + " missing classification!");
         final FSArray classificationsArray = new FSArray(jcas,
                 classifications.size());
         classificationsArray.copyFromArray(
-                classifications
-                        .toArray(new FeatureStructure[classifications.size()]),
-                0, 0, classifications.size());
+                classifications,
+                0, 0, classifications.length;
+        classificationsArray.addToIndexes();
         h.setClassifications(classificationsArray);
 
         h.addToIndexes();
