@@ -1,73 +1,44 @@
-package de.julielab.jcore.reader.dta.mapping
+package de.julielab.jcore.reader.dta.mapping;
 
-public abstract class MappingService{
-    static final String CLASIFICATION = "http://www.deutschestextarchiv.de/doku/klassifikation#";
-    private static final String CLASIFICATION_DTA_CORPUS = CLASIFICATION
-            + "DTACorpus";
-    static final AbstractMapper[] mappers = new AbstractMapper[]{new DTAMapper(), new DWDS1Mapper(), new DWDS2Mapper()};
-    
-public static boolean isCoreCorpus(final Map<String, String[]> classInfo){
-    return classInfo.containsKey(CLASIFICATION_DTA_CORPUS)
-                && Arrays.asList(classInfo.get(CLASIFICATION_DTA_CORPUS))
-                        .contains("core")
-}
-  
-  public static FeatureStructure[] getClassifications(final JCas jcas,
-            final String xmlFileName,
-            final Map<String, String[]> classInfo){
-      ArrayList<? extends DocumentClassification> classificationList = new ArrayList<>();
-      for(AbstractMapper : mappers){
-          DocumentClassification classification = getClassification(jcas, xmlFileName, classInfo);
-          if(classification != null)
-            classifications.add(classification);
-      }
-      if(classificationList.isEmpty())
-        return null;
-      return classifications
-                        .toArray(new FeatureStructure[classificationList.size()]);
-  }
-  
-  static void getClassification(final JCas jcas,
-            final String xmlFileName,
-            final Map<String, String[]> classInfo
-        )
-            throws NoSuchMethodException, SecurityException,
-            InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException {
-        if (classInfo.containsKey(mainClassification)) {
-            if (classInfo.get(mainClassification).length != 1)
-                throw new IllegalArgumentException(
-                        "More than 1 " + mainClassification
-                                + " classification in " + xmlFileName);
-            if (classInfo.get(subClassification) == null)
-                throw new IllegalArgumentException(
-                        "No " + subClassification + " in " + xmlFileName);
-            if (classInfo.get(subClassification).length != 1)
-                throw new IllegalArgumentException(
-                        "More than 1 " + subClassification
-                                + " classification in " + xmlFileName);
-            final String mainClass = classInfo.get(mainClassification)[0];
-            final String subClass = classInfo.get(subClassification)[0];
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
-            Class<? extends DocumentClassification> aClass = classification2class
-                    .get(mainClass);
-            if (aClass == null) {
-                if (defaultClass == null)
-                    throw new IllegalArgumentException(
-                            mainClass + " not supported in " + xmlFileName);
-                else {
-                    aClass = defaultClass;
-                }
-            }
-            final Constructor<? extends DocumentClassification> constructor = aClass
-                    .getConstructor(new Class[] { JCas.class });
-            final DocumentClassification classification = constructor
-                    .newInstance(jcas);
-            classification.setClassification(mainClass);
-            classification.setSubClassification(subClass);
-            classification.addToIndexes();
-            return classification;
-        }
-        return null;
-    }
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
+
+import de.julielab.jcore.types.extensions.dta.DocumentClassification;
+
+public abstract class MappingService {
+	static final String CLASIFICATION = "http://www.deutschestextarchiv.de/doku/klassifikation#";
+	private static final String CLASIFICATION_DTA_CORPUS = CLASIFICATION + "DTACorpus";
+	private static final AbstractMapper[] mappers = new AbstractMapper[] { new DTAMapper(), new DWDS1Mapper(),
+			new DWDS2Mapper() };
+
+	public static boolean isCoreCorpus(final Map<String, String[]> classInfo) {
+		return classInfo.containsKey(CLASIFICATION_DTA_CORPUS)
+				&& Arrays.asList(classInfo.get(CLASIFICATION_DTA_CORPUS)).contains("core");
+	}
+
+	public static FSArray getClassifications(final JCas jcas, final String xmlFileName,
+			final Map<String, String[]> classInfo) throws NoSuchMethodException, SecurityException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		ArrayList<DocumentClassification> classificationsList = new ArrayList<>();
+		for (AbstractMapper mapper : mappers) {
+			DocumentClassification classification = mapper.getClassification(jcas, xmlFileName, classInfo);
+			if (classification != null)
+				classificationsList.add(classification);
+		}
+		if (classificationsList.isEmpty())
+			return null;
+		FeatureStructure[] classificationsArray = classificationsList
+				.toArray(new FeatureStructure[classificationsList.size()]);
+		final FSArray classificationsFSArray = new FSArray(jcas, classificationsArray.length);
+		classificationsFSArray.copyFromArray(classificationsArray, 0, 0, classificationsArray.length);
+		classificationsFSArray.addToIndexes();
+		return classificationsFSArray;
+	}
+
 }

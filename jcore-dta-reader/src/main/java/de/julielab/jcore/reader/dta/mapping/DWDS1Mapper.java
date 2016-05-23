@@ -1,6 +1,14 @@
-package de.julielab.jcore.reader.dta.mapping
+package de.julielab.jcore.reader.dta.mapping;
 
-public class DWDS1Mapper extends Mapper {
+import com.google.common.collect.ImmutableMap;
+
+import de.julielab.jcore.types.extensions.dta.DWDS1Belletristik;
+import de.julielab.jcore.types.extensions.dta.DWDS1Gebrauchsliteratur;
+import de.julielab.jcore.types.extensions.dta.DWDS1Wissenschaft;
+import de.julielab.jcore.types.extensions.dta.DWDS1Zeitung;
+import de.julielab.jcore.types.extensions.dta.DocumentClassification;
+
+public class DWDS1Mapper extends AbstractMapper {
   
     DWDS1Mapper() {
           super("dwds1main", "dwds1sub", ImmutableMap
