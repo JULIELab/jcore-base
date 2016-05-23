@@ -2,6 +2,8 @@ package de.julielab.jcore.reader.dta.mapping
 
 public abstract class MappingService{
     static final String CLASIFICATION = "http://www.deutschestextarchiv.de/doku/klassifikation#";
+    private static final String CLASIFICATION_DTA_CORPUS = CLASIFICATION
+            + "DTACorpus";
     static final AbstractMapper[] mappers = new AbstractMapper[]{new DTAMapper(), new DWDS1Mapper(), new DWDS2Mapper()};
     
 public static boolean isCoreCorpus(final Map<String, String[]> classInfo){
@@ -10,7 +12,7 @@ public static boolean isCoreCorpus(final Map<String, String[]> classInfo){
                         .contains("core")
 }
   
-  public static DocumentClassification[] getClassifications(final JCas jcas,
+  public static FeatureStructure[] getClassifications(final JCas jcas,
             final String xmlFileName,
             final Map<String, String[]> classInfo){
       ArrayList<? extends DocumentClassification> classificationList = new ArrayList<>();
@@ -21,7 +23,8 @@ public static boolean isCoreCorpus(final Map<String, String[]> classInfo){
       }
       if(classificationList.isEmpty())
         return null;
-      return classificationList.asArray(new DocumentClassification[classificationList.size()]);
+      return classifications
+                        .toArray(new FeatureStructure[classificationList.size()]);
   }
   
   static void getClassification(final JCas jcas,
