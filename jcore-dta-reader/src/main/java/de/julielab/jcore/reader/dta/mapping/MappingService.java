@@ -3,6 +3,12 @@ package de.julielab.jcore.reader.dta.mapping
 public abstract class MappingService{
     static final String CLASIFICATION = "http://www.deutschestextarchiv.de/doku/klassifikation#";
     static final AbstractMapper[] mappers = new AbstractMapper[]{new DTAMapper(), new DWDS1Mapper(), new DWDS2Mapper()};
+    
+public static boolean isCoreCorpus(final Map<String, String[]> classInfo){
+    return classInfo.containsKey(CLASIFICATION_DTA_CORPUS)
+                && Arrays.asList(classInfo.get(CLASIFICATION_DTA_CORPUS))
+                        .contains("core")
+}
   
   public static DocumentClassification[] getClassifications(final JCas jcas,
             final String xmlFileName,
