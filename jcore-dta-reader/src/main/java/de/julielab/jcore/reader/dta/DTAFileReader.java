@@ -32,6 +32,7 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.ximpleware.ParseException;
 import com.ximpleware.VTDNav;
@@ -56,6 +57,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	private static final String XPATH_TITLE_STMT = "/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DTAFileReader.class);
+	private static Joiner newLineJoiner = Joiner.on("\n");
 
 	/**
 	 * Checks some assumptions about xml file, e.g., tagset and language
@@ -294,9 +296,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		h.setTitle(getEntry(xmlFileName, "main", titles));
 		final String[] subTitle = titles.get("sub");
 		if (subTitle != null) {
-			if (subTitle.length > 1)
-				throw new IllegalArgumentException(xmlFileName + " has more than one sub title!");
-			h.setSubtitle(subTitle[0]);
+			h.setSubtitle(newLineJoiner.join(subTitle));
 		}
 		boolean moreThanOne = false;
 		for (final String volume : getAttributeForEach(xmlFileName, nav, XPATH_TITLE_STMT + "title[@type='volume']",
