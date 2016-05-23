@@ -57,7 +57,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	private static final String XPATH_TITLE_STMT = "/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DTAFileReader.class);
-	private static Joiner newLineJoiner = Joiner.on("\n");
+	private static final Joiner NEW_LINE_JOINER = Joiner.on("\n");
 
 	/**
 	 * Checks some assumptions about xml file, e.g., tagset and language
@@ -214,9 +214,6 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	 */
 	static void readDocument(final JCas jcas, final VTDNav nav, final String xmlFileName, final boolean normalize)
 			throws ParseException, IOException {
-		if (!formatIsOk(xmlFileName, nav))
-			throw new IllegalArgumentException(xmlFileName + " does not conform to assumptions!");
-
 		final Map<String, String[]> id2token = mapAttribute2Text(xmlFileName, nav, XPATH_TEXT_CORPUS + "tokens/token",
 				"@ID");
 		final Map<String, String[]> id2lemma = mapAttribute2Text(xmlFileName, nav, XPATH_TEXT_CORPUS + "lemmas/lemma",
@@ -296,7 +293,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		h.setTitle(getEntry(xmlFileName, "main", titles));
 		final String[] subTitle = titles.get("sub");
 		if (subTitle != null) {
-			h.setSubtitle(newLineJoiner.join(subTitle));
+			h.setSubtitle(NEW_LINE_JOINER.join(subTitle));
 		}
 		boolean moreThanOne = false;
 		for (final String volume : getAttributeForEach(xmlFileName, nav, XPATH_TITLE_STMT + "title[@type='volume']",
@@ -337,14 +334,18 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	@Override
 	public void getNext(final CAS aCAS) throws CollectionException {
 		try {
+			this.counter++;
 			final JCas jcas = aCAS.getJCas();
 			final File file = this.inputFiles.get(this.counter);
 			final VTDNav nav = JulieXMLTools.getVTDNav(new FileInputStream(file), 1024);
 			final String xmlFileName = file.getCanonicalPath();
-			readDocument(jcas, nav, xmlFileName, this.normalize);
-			readHeader(jcas, nav, xmlFileName);
-			this.counter++;
-			LOGGER.info("Read file:" + this.counter);
+			if (!formatIsOk(xmlFileName, nav)) {
+				LOGGER.info("Skipping file:" + this.counter + " - " + xmlFileName);
+			} else {
+				readDocument(jcas, nav, xmlFileName, this.normalize);
+				readHeader(jcas, nav, xmlFileName);
+				LOGGER.info("Read file:" + this.counter + " - " + xmlFileName);
+			}
 		} catch (final Exception e) {
 			throw new CollectionException(e);
 		}
