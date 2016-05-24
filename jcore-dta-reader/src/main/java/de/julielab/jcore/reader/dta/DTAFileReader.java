@@ -334,7 +334,6 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	@Override
 	public void getNext(final CAS aCAS) throws CollectionException {
 		try {
-			this.counter++;
 			final JCas jcas = aCAS.getJCas();
 			final File file = this.inputFiles.get(this.counter);
 			final VTDNav nav = JulieXMLTools.getVTDNav(new FileInputStream(file), 1024);
@@ -346,6 +345,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 				readHeader(jcas, nav, xmlFileName);
 				LOGGER.info("Read file:" + this.counter + " - " + xmlFileName);
 			}
+			this.counter++;
 		} catch (final Exception e) {
 			throw new CollectionException(e);
 		}
