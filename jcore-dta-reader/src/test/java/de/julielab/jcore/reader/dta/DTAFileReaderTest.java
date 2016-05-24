@@ -104,7 +104,7 @@ public class DTAFileReaderTest {
         final String expected = "Des Knaben Wunderhorn."
                 + "\nAlte deutſche Lieder geſammelt von L. A. v. Arnim und Clemens Brentano."
                 + "\nDes Knaben Wunderhorn Alte deutſche Lieder L. Achim v. Arnim." + "\nClemens Brentano."
-                + "\nHeidelberg, beÿ Mohr u. Zimmer.";
+                + "\nHeidelberg, beÿ Mohr u. Zimmer.bar";
         try {
             final JCas jcas = process(false);
             assertEquals(expected, jcas.getDocumentText());

@@ -41,13 +41,14 @@
 			<token ID="w24">u.</token>
 			<token ID="w25">Zimmer</token>
 			<token ID="w26">.</token>
+			<token ID="w27">bar</token>
 		</tokens>
 		<sentences>
 			<sentence ID="s1" tokenIDs="w1 w2 w3 w4" />
 			<sentence ID="s2" tokenIDs="w5 w6 w7 w8 w9 wa wb wc wd we wf w10 w11" />
 			<sentence ID="s3" tokenIDs="w12 w13 w14 w15 w16 w17 w18 w19 w1a w1b w1c" />
 			<sentence ID="s4" tokenIDs="w1d w1e w1f" />
-			<sentence ID="s5" tokenIDs="w20 w21 w22 w23 w24 w25 w26" />
+			<sentence ID="s5" tokenIDs="w20 w21 w22 w23 w24 w25 w26 w27" />
 		</sentences>
 		<lemmas>
 			<lemma tokenIDs="w1">d</lemma>
@@ -88,6 +89,7 @@
 			<lemma tokenIDs="w24">u.</lemma>
 			<lemma tokenIDs="w25">Zimmer</lemma>
 			<lemma tokenIDs="w26">.</lemma>
+			<lemma tokenIDs="w27">foo</lemma>
 		</lemmas>
 		<POStags tagset="stts">
 			<tag tokenIDs="w1">ART</tag>
@@ -128,12 +130,14 @@
 			<tag tokenIDs="w24">APPR</tag>
 			<tag tokenIDs="w25">NN</tag>
 			<tag tokenIDs="w26">$.</tag>
+			<tag tokenIDs="w27">$.</tag>
 		</POStags>
 		<orthography>
 			<correction tokenIDs="w6" operation="replace">deutsche</correction>
 			<correction tokenIDs="w8" operation="replace">gesammelt</correction>
 			<correction tokenIDs="w16" operation="replace">deutsche</correction>
 			<correction tokenIDs="w22" operation="replace">bei</correction>
+			<correction tokenIDs="w27" operation="replace"/>
 		</orthography>
 	</TextCorpus>
 

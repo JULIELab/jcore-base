@@ -230,6 +230,8 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 			boolean first = true;
 			for (final String id : tokenIDs.split(" ")) {
 				final String tokenString = getEntry(xmlFileName, id, id2token, id2correction);
+				if(tokenString.length() == 0)
+					continue;
 				final String posString = getEntry(xmlFileName, id, id2pos);
 				final String lemmaString = getEntry(xmlFileName, id, id2lemma);
 
