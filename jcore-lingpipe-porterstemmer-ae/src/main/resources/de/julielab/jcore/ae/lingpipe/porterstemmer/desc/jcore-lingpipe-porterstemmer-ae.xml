@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.ae.lingpipe.porterstemmer.LingpipePorterstemmerAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe Lingpipe Porterstemmer AE</name>
+    <description>Adds a StemmedForm to each token in the CAS. The offsets and the value feature of each StemmedForm are set to the stem as returned by the Porter stemmer algorithm as implemented by Lingpipe.</description>
+    <version>2.2.0-SNAPSHOT</version>
+    <vendor>JULIE Lab, Germany</vendor>
+    <configurationParameters/>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>
