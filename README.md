@@ -65,5 +65,5 @@ Please refer to the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-pro
 
 ### Prebuilt pipelines
 For illustration purposes we provide some pipelines that utilize our components and can be used as a template if you want to build your own either with a UIMA CPE or as a Java project. As of now, these pipelines exist:
-* [BioSEM Relation Extraction Pipeline; BioNLP ST11 model](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline)
-* [Biomedical Named Entity Tagger Pipeline](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-named-entity-pipeline)
+* [BioSEM Relation Extraction Pipeline; BioNLP ST11 model](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline) *(Java ad CPE pipeine)*
+* [Biomedical Named Entity Tagger Pipeline](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-named-entity-pipeline) *(CPE pipeline)*
