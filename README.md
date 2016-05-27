@@ -27,11 +27,12 @@ If not stated otherwise, all the components found in this project are at least i
     <version>${jcore-version}</version>
 </dependency>
 ```
-For instance, to get the BioSEM Annotator, include this in your Maven dependencies:
+Where `#COMPONENT-NAME` is exactly the same as the name on GitHub.
+For instance, to get the Acronym Resolver, include this in your Maven dependencies:
 ```
 <dependency>
     <groupId>de.julielab</groupId>
-    <artifactId>jcore-biosem-ae</artifactId>
+    <artifactId>jcore-acronym-ae</artifactId>
     <version>${jcore-version}</version>
 </dependency>
 ```
