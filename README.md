@@ -36,11 +36,11 @@ For instance, to get the Acronym Resolver, include this in your Maven dependenci
     <version>${jcore-version}</version>
 </dependency>
 ```
-The version variable `${jcore-version}` is defined in the jcore-parent pom and should not be edited manually, as it ensures compatibility. An exemption from this rule are bugfix version, which might also be available from Maven Central. If for instance we deployed a first bugfix version for the `jcore-biosem-ae` from the `2.0.0` release, the Maven coordinates would be the following:
+The version variable `${jcore-version}` is defined in the jcore-parent pom and should not be edited manually, as it ensures compatibility. An exemption from this rule are bugfix version, which might also be available from Maven Central. If for instance we deployed a first bugfix version for the `jcore-acronym-ae` from the `2.0.0` release, the Maven coordinates would be the following:
 ```
 <dependency>
     <groupId>de.julielab</groupId>
-    <artifactId>jcore-biosem-ae</artifactId>
+    <artifactId>jcore-acronym-ae</artifactId>
     <version>2.0.1</version>
 </dependency>
 ```
