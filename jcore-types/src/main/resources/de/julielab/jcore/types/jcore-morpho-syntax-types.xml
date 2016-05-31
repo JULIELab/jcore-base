@@ -161,7 +161,7 @@
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Acronym</name>
-      <description>Abbreviation includes acronyms â&#128;&#156;written as the initial letter or letters of words, and pronounced on the basis of this abbreviated written form.â&#128;&#157;</description>
+      <description>Abbreviation includes acronyms written as the initial letter or letters of words, and pronounced on the basis of this abbreviated written form.</description>
       <supertypeName>de.julielab.jcore.types.Abbreviation</supertypeName>
     </typeDescription>
     <typeDescription>
