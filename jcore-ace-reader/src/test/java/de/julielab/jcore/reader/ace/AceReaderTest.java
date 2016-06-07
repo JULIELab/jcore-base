@@ -68,7 +68,7 @@ public class AceReaderTest extends TestCase {
 	/**
 	 * Path to the MedlineReader descriptor
 	 */
-	private static final String ACE_READER_DESCRIPTOR = "src/test/resources/de/julielab/jcore/reader/ace/desc/jcore-ace.xml";
+	private static final String ACE_READER_DESCRIPTOR = "src/test/resources/de/julielab/jcore/reader/ace/desc/jcore-ace-reader.xml";
 
 	/**
 	 * Path to SGM file

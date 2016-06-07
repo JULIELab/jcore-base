@@ -25,4 +25,5 @@ A Collection Reader that converts MUC-7 files to CAS objects (only corefs).</des
   	<url>http://www.julielab.de</url>
   </organization>
   <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-muc7-reader</url>
+  <version>2.1.1</version>
 </project>

@@ -38,7 +38,7 @@ public class MUC7ReaderTest extends TestCase {
 	/**
 	 * Path to the MedlineReader descriptor
 	 */
-	private static final String MUC7_READER_DESCRIPTOR = "src/test/resources/de/julielab/jcore/reader/muc7/desc/jcore-muc7.xml";
+	private static final String MUC7_READER_DESCRIPTOR = "src/test/resources/de/julielab/jcore/reader/muc7/desc/jcore-muc7-reader.xml";
 
 	/**
 	 * Object to be tested
