@@ -500,7 +500,7 @@ public class MUC7Reader extends CollectionReader_ImplBase {
 			beginEnd = getBeginEndOfSequence(text, textToBeProcessed, startPosition);
 			startPosition = beginEnd[1];
 			// annotating other things that occur in this section
-			// buildCorefHashMap(al.get(i), beginEnd);
+			buildCorefHashMap(al.get(i), beginEnd);
 			annotateENAMEX(al.get(i), beginEnd);
 			annotateTIMEX(al.get(i), beginEnd);
 			annotateNUMEX(al.get(i), beginEnd);
@@ -782,8 +782,10 @@ public class MUC7Reader extends CollectionReader_ImplBase {
 			int corefID = c.getId();
 			int refID = corefHashMap.get(corefID).getRefID();
 			if (refID > -1) {
-				Coref refCoref = getCorefFromCAS(corefHashMap.get(refID).getBegin(), corefHashMap.get(refID).getEnd());
-				c.setRef(refCoref);
+				if (corefHashMap.containsKey(refID)) {
+					Coref refCoref = getCorefFromCAS(corefHashMap.get(refID).getBegin(), corefHashMap.get(refID).getEnd());
+					c.setRef(refCoref);
+				}
 			}
 		}
 	}

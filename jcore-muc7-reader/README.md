@@ -2,7 +2,9 @@
 Reader that converts MUC-7 (Message Understanding Conference) files to CAS objects
 
 ### Objective
-
+The MUC7 Reader reads in the data from the Message Understanding Conference (MUC) 7 Corpus.
+However, be aware that this reader only accepts well formed XML and not the SGML files from the Linguistic Data Consortium (LDC). There is a Python script in the `scripts` folder that converts a MUC7 SGML to an XML:  
+`python muc7_SGML2XML.py FILE`
 
 ### Requirement and Dependencies
  The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
@@ -29,7 +31,12 @@ Reader that converts MUC-7 (Message Understanding Conference) files to CAS objec
 | Type | Input | Output |
 |------|:-----:|:------:|
 | de.julielab.jcore.types.muc7.Coref |  | `+` |
-| de.julielab.jcore.types.muc7.ENAMEX |  | `+` |
 | de.julielab.jcore.types.muc7.MUC7Header |  | `+` |
+
+**3.1 Capabilities in Preparation**
+
+| Type | Input | Output |
+|------|:-----:|:------:|
+| de.julielab.jcore.types.muc7.ENAMEX |  | `+` |
 | de.julielab.jcore.types.muc7.NUMEX |  | `+` |
 | de.julielab.jcore.types.muc7.TIMEX |  | `+` |
