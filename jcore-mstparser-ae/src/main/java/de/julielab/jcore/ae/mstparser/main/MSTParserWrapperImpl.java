@@ -23,11 +23,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.util.Properties;
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -48,7 +51,8 @@ import edu.upenn.seas.mstparser.ParserOptions;
 public class MSTParserWrapperImpl implements MSTParserWrapper, SharedResourceObject {
 
     static Random random = new Random(System.currentTimeMillis());
-
+	public final static String PARAM_MODEL_FILE = "modelURL";
+	public final static String PARAM_FORMAT = "format";
     public static final String COMPONENT_ID = "de.julielab.jcore.ae.mstparser.main.MSTParserWrapper";
 
     private static Alphabet dataAlphabet;
@@ -159,24 +163,59 @@ public class MSTParserWrapperImpl implements MSTParserWrapper, SharedResourceObj
 
     @Override
     public void load(DataResource resource) throws ResourceInitializationException {
-        //File configFile = new File(resource.getUri());
-        try {
-            //BufferedReader reader = new BufferedReader(new FileReader(configFile));
-        	DataInputStream in = new DataInputStream(resource.getInputStream());
-        	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String value_modelFileName = reader.readLine();
-            String value_format = reader.readLine();
-            try {
-                if (checkParameters(value_modelFileName, value_format)) {
-                    loadModelParts(value_modelFileName, value_format);
-                }
-            } catch (Exception e) {
-                LOGGER.error("Can't load Model from file " + value_modelFileName);
-            }
-        } catch (IOException e) {
-            //LOGGER.error("Can't read parameters from Config File " + configFile);
-        	LOGGER.error("Can't read parameters from Config File ");
-        }
+//        //File configFile = new File(resource.getUri());
+//        try {
+//            //BufferedReader reader = new BufferedReader(new FileReader(configFile));
+//        	DataInputStream in = new DataInputStream(resource.getInputStream());
+//        	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//            String value_modelFileName = reader.readLine();
+//            String value_format = reader.readLine();
+//            try {
+//                if (checkParameters(value_modelFileName, value_format)) {
+//                    loadModelParts(value_modelFileName, value_format);
+//                }
+//            } catch (Exception e) {
+//                LOGGER.error("Can't load Model from file " + value_modelFileName);
+//            }
+//        } catch (IOException e) {
+//            //LOGGER.error("Can't read parameters from Config File " + configFile);
+//        	LOGGER.error("Can't read parameters from Config File ");
+//        }
+		LOGGER.info("Loading configuration file from URI \"{}\" (URL: \"{}\").", resource.getUri(), resource.getUrl());
+		Properties properties = new Properties();
+		try {
+			InputStream is;
+			try {
+				is = resource.getInputStream();
+			} catch (NullPointerException e) {
+				LOGGER.info("Couldn't get InputStream from UIMA. Trying to load the resource by classpath lookup.");
+				String cpAddress = resource.getUri().toString();
+				is = getClass().getResourceAsStream(cpAddress.startsWith("/") ? cpAddress : "/" + cpAddress);
+				if (null == is) {
+					String err =
+							"Couldn't find the resource at \"" + resource.getUri()
+									+ "\" neither as an UIMA external resource file nor as a classpath resource.";
+					LOGGER.error(err);
+					throw new ResourceInitializationException(new IllegalArgumentException(err));
+				}
+			}
+			properties.load(is);
+		} catch (IOException e) {
+			LOGGER.error("Error while loading properties file", e);
+			throw new ResourceInitializationException(e);
+		}
+		
+		String value_modelFileName = properties.getProperty(PARAM_MODEL_FILE);
+		if (value_modelFileName == null)
+			throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT,
+					new Object[] { PARAM_MODEL_FILE });
+
+		String value_format = properties.getProperty(PARAM_FORMAT);
+		if (value_format == null)
+			throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT,
+					new Object[] { PARAM_FORMAT });
+		
+		loadModelParts(value_modelFileName, value_format);
     }
 
     private static synchronized void loadModelParts(String modelFilename, String format) {
@@ -187,7 +226,8 @@ public class MSTParserWrapperImpl implements MSTParserWrapper, SharedResourceObj
             ObjectInputStream in;
             try {
                 LOGGER.info("Loading model...");
-                gzin = new GZIPInputStream(new FileInputStream(modelFilename));
+//                gzin = new GZIPInputStream(new FileInputStream(modelFilename));
+                gzin = new GZIPInputStream(readStreamFromFileSystemOrClassPath(modelFilename));
                 in = new ObjectInputStream(gzin);
                 parameters = (double[]) in.readObject();
                 dataAlphabet = (Alphabet) in.readObject();
@@ -245,5 +285,24 @@ public class MSTParserWrapperImpl implements MSTParserWrapper, SharedResourceObj
         }
         return parameters_valid;
     }
-
+	private static InputStream readStreamFromFileSystemOrClassPath(String filePath) {
+		InputStream is = null;
+		File file = new File(filePath);
+		if (file.exists()) {
+			try {
+				is = new FileInputStream(file);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		} else {
+			is = MSTParserWrapperImpl.class.getResourceAsStream(filePath.startsWith("/") ? filePath : "/" + filePath);
+		}
+//		if (filePath.endsWith(".gz") || filePath.endsWith(".gzip"))
+//			try {
+//				is = new GZIPInputStream(is);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+		return is;
+	}
 }

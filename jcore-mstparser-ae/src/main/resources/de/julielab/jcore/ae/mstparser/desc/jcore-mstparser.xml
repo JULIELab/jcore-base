@@ -57,7 +57,7 @@
         <name>SharedModelName</name>
         <description>The implementation of the model loader</description>
         <fileResourceSpecifier>
-          <fileUrl>de/julielab/jcore/ae/mstparser/config/modelConfig.cfg</fileUrl>
+          <fileUrl>file:de/julielab/jcore/ae/mstparser/config/modelConfig.cfg</fileUrl>
         </fileResourceSpecifier>
         <implementationName>de.julielab.jcore.ae.mstparser.main.MSTParserWrapperImpl</implementationName>
       </externalResource>
