@@ -12,22 +12,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.collection.CollectionReader;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.XMLInputSource;
 import org.junit.Test;
 
 import com.ximpleware.VTDNav;
 
+import de.julielab.jcore.reader.dta.util.DTAUtils;
 import de.julielab.jcore.types.Lemma;
 import de.julielab.jcore.types.STTSPOSTag;
 import de.julielab.jcore.types.Sentence;
@@ -53,16 +50,11 @@ public class DTAFileReaderTest {
     }
 
     static private CollectionReader getReader() throws Exception {
-        return getReader(TEST_FILE);
+        return DTAUtils.getReader(READER_DESC, TEST_FILE);
     }
 
-    static private CollectionReader getReader(final String file) throws Exception {
-        final CollectionReaderDescription readerDescription = UIMAFramework.getXMLParser()
-                .parseCollectionReaderDescription(new XMLInputSource(READER_DESC));
-        final ConfigurationParameterSettings params = readerDescription.getMetaData()
-                .getConfigurationParameterSettings();
-        params.setParameterValue("inputFile", file);
-        return UIMAFramework.produceCollectionReader(readerDescription);
+    static private CollectionReader getReader(final String testFile) throws Exception {
+        return DTAUtils.getReader(READER_DESC, testFile);
     }
 
     public static JCas process(final boolean normalize) throws Exception {
