@@ -58,4 +58,18 @@ public class DTAUtils {
         params.setParameterValue("inputFile", inputFile);
         return UIMAFramework.produceCollectionReader(readerDescription);
     }
+    
+    public static CollectionReader getReader(final String descriptor, final String inputFile, boolean normalize) throws InvalidXMLException, IOException, ResourceInitializationException{
+        final CollectionReaderDescription readerDescription = UIMAFramework.getXMLParser()
+                .parseCollectionReaderDescription(new XMLInputSource(descriptor));
+        final ConfigurationParameterSettings params = readerDescription.getMetaData()
+                .getConfigurationParameterSettings();
+        params.setParameterValue("inputFile", inputFile);
+        params.setParameterValue("normalize", normalize);
+        return UIMAFramework.produceCollectionReader(readerDescription);
+    }
+    
+    public static CollectionReader getReader(final String inputFile, boolean normalize) throws InvalidXMLException, IOException, ResourceInitializationException{
+        return getReader("src/main/resources/de/julielab/jcore/reader/dta/desc/jcore-dta-reader.xml", inputFile, normalize);
+    }
 }
