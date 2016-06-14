@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -49,9 +50,16 @@ import de.julielab.xml.JulieXMLTools;
 
 public class DTAFileReader extends CollectionReader_ImplBase {
 	static final String COMPONENT_ID = DTAFileReader.class.getCanonicalName();
-	static final String DESCRIPTOR_PARAMTER_INPUTFILE = "inputFile";
-	static final String DESCRIPTOR_PARAMTER_NORMALIZE = "normalize";
+	
 
+	public static final String PARAM_INPUTFILE = "inputFile";
+	@ConfigurationParameter(name = PARAM_INPUTFILE)
+	private String inputFile;
+	
+	public static final String PARAM_NORMALIZE = "normalize";
+	@ConfigurationParameter(name = PARAM_NORMALIZE)
+	private boolean normalize;
+	
 	private static final String XPATH_TEXT_CORPUS = "/D-Spin/TextCorpus/";
 	private static final String XPATH_PROFILE_DESC = "/D-Spin/MetaData/source/CMD/Components/teiHeader/profileDesc/";
 	private static final String XPATH_TITLE_STMT = "/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/";
@@ -327,8 +335,6 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	private int counter = 0;
 
-	private boolean normalize = false;
-
 	@Override
 	public void close() throws IOException {
 	}
@@ -365,8 +371,8 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	@Override
 	public void initialize() throws ResourceInitializationException {
-		final String filename = (String) this.getConfigParameterValue(DESCRIPTOR_PARAMTER_INPUTFILE);
-		final Object o = this.getConfigParameterValue(DESCRIPTOR_PARAMTER_NORMALIZE);
+		final String filename = (String) this.getConfigParameterValue(PARAM_INPUTFILE);
+		final Object o = this.getConfigParameterValue(PARAM_NORMALIZE);
 		if (o != null) {
 			this.normalize = (boolean) o;
 		}
