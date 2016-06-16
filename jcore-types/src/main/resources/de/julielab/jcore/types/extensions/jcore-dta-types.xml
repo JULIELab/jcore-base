@@ -48,6 +48,11 @@
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>de.julielab.jcore.types.extensions.dta.DocumentClassification</elementType>
         </featureDescription>
+      <featureDescription>
+          <name>published</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
 		<typeDescription>

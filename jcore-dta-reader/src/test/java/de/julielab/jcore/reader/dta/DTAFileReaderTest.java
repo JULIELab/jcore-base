@@ -142,6 +142,9 @@ public class DTAFileReaderTest {
 		assertTrue(containsClassification(classes, DWDS1Belletristik.class));
 		assertTrue(containsClassification(classes, DWDS2Wissenschaft.class));
 		assertTrue(h.getIsCoreCorpus());
+		
+		//year
+		assertEquals("1806", h.getPublished());
 	}
 
 	private boolean containsClassification(FSArray classes,

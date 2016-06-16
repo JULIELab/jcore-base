@@ -61,8 +61,10 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	private boolean normalize;
 	
 	private static final String XPATH_TEXT_CORPUS = "/D-Spin/TextCorpus/";
-	private static final String XPATH_PROFILE_DESC = "/D-Spin/MetaData/source/CMD/Components/teiHeader/profileDesc/";
-	private static final String XPATH_TITLE_STMT = "/D-Spin/MetaData/source/CMD/Components/teiHeader/fileDesc/titleStmt/";
+	private static final String XPATH_TEI_HEADER="/D-Spin/MetaData/source/CMD/Components/teiHeader/";
+	private static final String XPATH_PROFILE_DESC = XPATH_TEI_HEADER+"profileDesc/";
+	private static final String XPATH_TITLE_STMT = XPATH_TEI_HEADER+"fileDesc/titleStmt/";
+	private static final String XPATH_YEAR = XPATH_TEI_HEADER+"fileDesc/sourceDesc/biblFull/publicationStmt/date";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DTAFileReader.class);
 	private static final Joiner NEW_LINE_JOINER = Joiner.on("\n");
@@ -328,6 +330,12 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		if (classifications == null)
 			throw new IllegalArgumentException(xmlFileName + " missing classification!");
 		h.setClassifications(classifications);
+		
+		//TODO: year!				
+		final Map<String, String[]> yearInfo = mapAttribute2Text(xmlFileName, nav,
+				XPATH_YEAR, "@type");
+		h.setPublished(getEntry(xmlFileName, "publication", yearInfo));
+		
 		h.addToIndexes();
 	}
 
