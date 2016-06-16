@@ -49,8 +49,8 @@
           <elementType>de.julielab.jcore.types.extensions.dta.DocumentClassification</elementType>
         </featureDescription>
       <featureDescription>
-          <name>published</name>
-          <description/>
+          <name>year</name>
+          <description>Creation year if available, publication otherwise.</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>

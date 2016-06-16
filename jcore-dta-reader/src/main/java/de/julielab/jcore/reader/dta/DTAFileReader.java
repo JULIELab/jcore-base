@@ -138,20 +138,20 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	}
 
 	/**
-	 * Gets entry for id out of map2 if it is not null and contains exactly 1
-	 * string, otherwise entry out of map1 if exactly 1 string
+	 * Gets entry for id out of preferredMap if it is not null and contains exactly 1
+	 * string, otherwise entry out of backupMap if exactly 1 string
 	 */
-	private static String getEntry(final String xmlFile, final String id, final Map<String, String[]> map1,
-			final Map<String, String[]> map2) {
-		if (map2 != null) {
-			final String[] s = map2.get(id);
+	private static String getEntry(final String xmlFile, final String id, final Map<String, String[]> backupMap,
+			final Map<String, String[]> preferredMap) {
+		if (preferredMap != null) {
+			final String[] s = preferredMap.get(id);
 			if (s != null) {
 				if (s.length != 1)
 					throw new IllegalArgumentException("ID \"" + id + "\" has not exactly one entry in " + xmlFile);
 				return s[0];
 			}
 		}
-		final String[] s = map1.get(id);
+		final String[] s = backupMap.get(id);
 		if (s == null)
 			throw new IllegalArgumentException("ID \"" + id + "\" has no associated entry in " + xmlFile);
 
@@ -331,10 +331,18 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 			throw new IllegalArgumentException(xmlFileName + " missing classification!");
 		h.setClassifications(classifications);
 		
-		//TODO: year!				
 		final Map<String, String[]> yearInfo = mapAttribute2Text(xmlFileName, nav,
 				XPATH_YEAR, "@type");
-		h.setPublished(getEntry(xmlFileName, "publication", yearInfo));
+		String[] year = null;
+		if(yearInfo.containsKey("creation"))
+			year=yearInfo.get("creation");
+		else if(yearInfo.containsKey("publication"))
+			year=yearInfo.get("publication");
+		if(year == null)
+			throw new IllegalArgumentException(xmlFileName + " has no creation/publication year!");
+		if(year.length > 1)
+			throw new IllegalArgumentException(xmlFileName + " has multiple creation/publication years!");
+		h.setYear(year[0]);
 		
 		h.addToIndexes();
 	}

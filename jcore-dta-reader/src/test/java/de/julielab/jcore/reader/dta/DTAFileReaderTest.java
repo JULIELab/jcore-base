@@ -144,7 +144,7 @@ public class DTAFileReaderTest {
 		assertTrue(h.getIsCoreCorpus());
 		
 		//year
-		assertEquals("1806", h.getPublished());
+		assertEquals("1806", h.getYear());
 	}
 
 	private boolean containsClassification(FSArray classes,
