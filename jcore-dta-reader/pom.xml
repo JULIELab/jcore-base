@@ -78,11 +78,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimafit-core</artifactId>
-			<version>2.2.0</version>
-		</dependency>
-		<dependency>
 			<groupId>de.julielab</groupId>
 			<artifactId>jcore-utilities</artifactId>
 			<version>${jcore-version}</version>
