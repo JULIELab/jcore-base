@@ -1013,7 +1013,7 @@ public class MUC7Reader extends CollectionReader_ImplBase {
 			annotatePreamble(docNode, textToBeProcessed);
 			annotateText(docNode, textToBeProcessed);
 			annotateTrailer(docNode, textToBeProcessed);
-//			annotateCorefs();
+			annotateCorefs();
 		}
 	}
 
