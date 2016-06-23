@@ -12,12 +12,21 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.InvalidXMLException;
+
 import de.julielab.jcore.reader.dta.DTAFileReader;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 
 public class DTAUtils {
+	public static CollectionReader getReader(final String inputFile,
+			final boolean normalize) throws InvalidXMLException, IOException,
+			ResourceInitializationException {
+		return CollectionReaderFactory.createReader(DTAFileReader.class,
+				DTAFileReader.PARAM_INPUTFILE, inputFile,
+				DTAFileReader.PARAM_NORMALIZE, normalize);
+	}
+
 	public static boolean hasAnyClassification(final JCas jcas,
 			final Class<?>... classes) {
 		final FSIterator<Annotation> it = jcas.getAnnotationIndex(
@@ -33,30 +42,24 @@ public class DTAUtils {
 	}
 
 	public static List<List<String>> slidingSymetricWindow(final JCas jcas,
-			int windowPerSide) {
-		List<List<String>> list = new ArrayList<>();
-		FSIterator<Annotation> sentences = jcas.getAnnotationIndex(
+			final int windowPerSide) {
+		final List<List<String>> list = new ArrayList<>();
+		final FSIterator<Annotation> sentences = jcas.getAnnotationIndex(
 				Sentence.type).iterator();
 		while (sentences.hasNext()) {
-			Sentence sentence = (Sentence) sentences.next();
-			List<Token> tokens = JCasUtil.selectCovered(Token.class, sentence);
-			if (tokens.size() < windowPerSide * 2 + 1)
+			final Sentence sentence = (Sentence) sentences.next();
+			final List<Token> tokens = JCasUtil.selectCovered(Token.class,
+					sentence);
+			if (tokens.size() < ((windowPerSide * 2) + 1))
 				continue; // to short
-			for (int i = windowPerSide; i < tokens.size() - windowPerSide; ++i) {
-				List<String> inWindow = new ArrayList<>(windowPerSide * 2 + 1);
+			for (int i = windowPerSide; i < (tokens.size() - windowPerSide); ++i) {
+				final List<String> inWindow = new ArrayList<>(
+						(windowPerSide * 2) + 1);
 				list.add(inWindow);
-				for (int j = i - windowPerSide; j < i + windowPerSide + 1; ++j)
+				for (int j = i - windowPerSide; j < (i + windowPerSide + 1); ++j)
 					inWindow.add(tokens.get(j).getCoveredText());
 			}
 		}
 		return list;
-	}
-
-	public static CollectionReader getReader(final String inputFile,
-			boolean normalize) throws InvalidXMLException, IOException,
-			ResourceInitializationException {
-		return CollectionReaderFactory.createReader(DTAFileReader.class,
-				DTAFileReader.PARAM_INPUTFILE, inputFile,
-				DTAFileReader.PARAM_NORMALIZE, normalize);
 	}
 }

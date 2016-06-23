@@ -28,7 +28,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
-import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
@@ -54,15 +53,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	static final String COMPONENT_ID = DTAFileReader.class.getCanonicalName();
 
 	public static final String PARAM_INPUTFILE = "inputFile";
-	@ConfigurationParameter(name = PARAM_INPUTFILE)
-	private String inputFile;
-
 	public static final String PARAM_NORMALIZE = "normalize";
-	@ConfigurationParameter(name = PARAM_NORMALIZE)
-	private boolean normalize;
 
 	private static final String XPATH_TEXT_CORPUS = "/D-Spin/TextCorpus/";
 	private static final String XPATH_TEI_HEADER = "/D-Spin/MetaData/source/CMD/Components/teiHeader/";
+
 	private static final String XPATH_PROFILE_DESC = XPATH_TEI_HEADER
 			+ "profileDesc/";
 	private static final String XPATH_TITLE_STMT = XPATH_TEI_HEADER
@@ -70,7 +65,6 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	static final String XPATH_PUBLICATION_STMT = XPATH_TEI_HEADER
 			+ "fileDesc/sourceDesc/biblFull/publicationStmt/";
 	private static final String XPATH_YEAR = XPATH_PUBLICATION_STMT + "date";
-
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(DTAFileReader.class);
 	private static final Joiner NEW_LINE_JOINER = Joiner.on("\n");
@@ -109,25 +103,23 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 					final Iterator<Map<String, Object>> tokenIterator;
 
 					{
-						this.fields.add(ImmutableMap.of(JulieXMLConstants.NAME,
-								this.text, JulieXMLConstants.XPATH, "."));
-						this.fields.add(ImmutableMap.of(JulieXMLConstants.NAME,
-								this.attribute, JulieXMLConstants.XPATH,
+						fields.add(ImmutableMap.of(JulieXMLConstants.NAME,
+								text, JulieXMLConstants.XPATH, "."));
+						fields.add(ImmutableMap.of(JulieXMLConstants.NAME,
+								attribute, JulieXMLConstants.XPATH,
 								attributeXpath));
-						this.tokenIterator = JulieXMLTools
-								.constructRowIterator(nav, forEachXpath,
-										this.fields, xmlFileName);
+						tokenIterator = JulieXMLTools.constructRowIterator(nav,
+								forEachXpath, fields, xmlFileName);
 					}
 
 					@Override
 					public boolean hasNext() {
-						return this.tokenIterator.hasNext();
+						return tokenIterator.hasNext();
 					}
 
 					@Override
 					public String next() {
-						return (String) this.tokenIterator.next().get(
-								this.attribute);
+						return (String) tokenIterator.next().get(attribute);
 					}
 
 					@Override
@@ -210,6 +202,26 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	}
 
 	/**
+	 * Uses JulieXMLTools.constructRowIterator to get all text entries for a
+	 * given xpath
+	 */
+	static List<String> getTexts(final String xmlFileName, final VTDNav nav,
+			final String forEachXpath) {
+		final List<String> texts = new ArrayList<>();
+
+		final String text = "text";
+		final List<Map<String, String>> fields = new ArrayList<>();
+		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, text,
+				JulieXMLConstants.XPATH, "."));
+		final Iterator<Map<String, Object>> iterator = JulieXMLTools
+				.constructRowIterator(nav, forEachXpath, fields, xmlFileName);
+		while (iterator.hasNext())
+			texts.add((String) iterator.next().get(text));
+
+		return texts;
+	}
+
+	/**
 	 * Uses JulieXMLTools.constructRowIterator to provide a mapping from an
 	 * attribute to text for each matched element
 	 */
@@ -236,32 +248,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 				final String[] newOne = Arrays.copyOf(old, old.length + 1);
 				newOne[old.length] = (String) row.get(text);
 				attribute2text.put(attributeValue, newOne);
-			} else {
+			} else
 				attribute2text.put(attributeValue,
 						new String[] { (String) row.get(text) });
-			}
 		}
 		return attribute2text;
-	}
-
-	/**
-	 * Uses JulieXMLTools.constructRowIterator to get all text entries for a
-	 * given xpath
-	 */
-	static List<String> getTexts(final String xmlFileName, final VTDNav nav,
-			final String forEachXpath) {
-		final List<String> texts = new ArrayList<>();
-
-		final String text = "text";
-		final List<Map<String, String>> fields = new ArrayList<>();
-		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, text,
-				JulieXMLConstants.XPATH, "."));
-		final Iterator<Map<String, Object>> iterator = JulieXMLTools
-				.constructRowIterator(nav, forEachXpath, fields, xmlFileName);
-		while (iterator.hasNext())
-			texts.add((String) iterator.next().get(text));
-
-		return texts;
 	}
 
 	/**
@@ -269,7 +260,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	 */
 	static void readDocument(final JCas jcas, final VTDNav nav,
 			final String xmlFileName, final boolean normalize)
-			throws ParseException, IOException {
+					throws ParseException, IOException {
 		final Map<String, String[]> id2token = mapAttribute2Text(xmlFileName,
 				nav, XPATH_TEXT_CORPUS + "tokens/token", "@ID");
 		final Map<String, String[]> id2lemma = mapAttribute2Text(xmlFileName,
@@ -278,61 +269,60 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 				nav, XPATH_TEXT_CORPUS + "POStags/tag", "@tokenIDs");
 		final Map<String, String[]> id2correction = normalize ? mapAttribute2Text(
 				xmlFileName, nav, XPATH_TEXT_CORPUS
-						+ "orthography/correction[@operation='replace']",
+				+ "orthography/correction[@operation='replace']",
 				"@tokenIDs") : null;
 
-		final StringBuilder text = new StringBuilder();
-		int sentenceStart = 0;
-		for (final String tokenIDs : getAttributeForEach(xmlFileName, nav,
-				XPATH_TEXT_CORPUS + "sentences/sentence", "@tokenIDs")) {
-			boolean first = true;
-			for (final String id : tokenIDs.split(" ")) {
-				final String tokenString = getEntry(xmlFileName, id, id2token,
-						id2correction);
-				if (tokenString.length() == 0)
-					continue;
-				final String posString = getEntry(xmlFileName, id, id2pos);
-				final String lemmaString = getEntry(xmlFileName, id, id2lemma);
+				final StringBuilder text = new StringBuilder();
+				int sentenceStart = 0;
+				for (final String tokenIDs : getAttributeForEach(xmlFileName, nav,
+						XPATH_TEXT_CORPUS + "sentences/sentence", "@tokenIDs")) {
+					boolean first = true;
+					for (final String id : tokenIDs.split(" ")) {
+						final String tokenString = getEntry(xmlFileName, id, id2token,
+								id2correction);
+						if (tokenString.length() == 0)
+							continue;
+						final String posString = getEntry(xmlFileName, id, id2pos);
+						final String lemmaString = getEntry(xmlFileName, id, id2lemma);
 
-				if (first) {
-					first = false;
-				} else if (!(posString.equals("$,") || posString.equals("$."))) {
-					text.append(" ");
+						if (first)
+							first = false;
+						else if (!(posString.equals("$,") || posString.equals("$.")))
+							text.append(" ");
+
+						final int begin = text.length();
+						text.append(tokenString);
+						final int end = text.length();
+
+						final Token token = new Token(jcas, begin, end);
+						token.setComponentId(COMPONENT_ID);
+
+						final Lemma lemma = new Lemma(jcas, begin, end);
+						lemma.setValue(lemmaString);
+						lemma.addToIndexes();
+						token.setLemma(lemma);
+
+						final STTSPOSTag tag = new STTSPOSTag(jcas, begin, end);
+						tag.setValue(posString);
+						tag.setBegin(begin);
+						tag.setEnd(end);
+						tag.setComponentId(COMPONENT_ID);
+						tag.addToIndexes();
+						final FSArray postags = new FSArray(jcas, 1);
+						postags.set(0, tag);
+						token.setPosTag(postags);
+
+						token.addToIndexes();
+					}
+					final Sentence sentence = new Sentence(jcas, sentenceStart,
+							text.length());
+					sentence.setComponentId(COMPONENT_ID);
+					sentence.addToIndexes();
+					text.append("\n");
+					sentenceStart = text.length();
 				}
-
-				final int begin = text.length();
-				text.append(tokenString);
-				final int end = text.length();
-
-				final Token token = new Token(jcas, begin, end);
-				token.setComponentId(COMPONENT_ID);
-
-				final Lemma lemma = new Lemma(jcas, begin, end);
-				lemma.setValue(lemmaString);
-				lemma.addToIndexes();
-				token.setLemma(lemma);
-
-				final STTSPOSTag tag = new STTSPOSTag(jcas, begin, end);
-				tag.setValue(posString);
-				tag.setBegin(begin);
-				tag.setEnd(end);
-				tag.setComponentId(COMPONENT_ID);
-				tag.addToIndexes();
-				final FSArray postags = new FSArray(jcas, 1);
-				postags.set(0, tag);
-				token.setPosTag(postags);
-
-				token.addToIndexes();
-			}
-			final Sentence sentence = new Sentence(jcas, sentenceStart,
-					text.length());
-			sentence.setComponentId(COMPONENT_ID);
-			sentence.addToIndexes();
-			text.append("\n");
-			sentenceStart = text.length();
-		}
-		// No final newline
-		jcas.setDocumentText(text.subSequence(0, text.length() - 1).toString());
+				// No final newline
+				jcas.setDocumentText(text.subSequence(0, text.length() - 1).toString());
 	}
 
 	/**
@@ -356,9 +346,8 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 				nav, XPATH_TITLE_STMT + "title", "@type");
 		h.setTitle(getEntry(xmlFileName, "main", titles));
 		final String[] subTitle = titles.get("sub");
-		if (subTitle != null) {
+		if (subTitle != null)
 			h.setSubtitle(NEW_LINE_JOINER.join(subTitle));
-		}
 		boolean moreThanOne = false;
 		for (final String volume : getAttributeForEach(xmlFileName, nav,
 				XPATH_TITLE_STMT + "title[@type='volume']", "@n")) {
@@ -379,7 +368,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 		h.setIsCoreCorpus(MappingService.isCoreCorpus(classInfo));
 
-		FSArray classifications = MappingService.getClassifications(jcas,
+		final FSArray classifications = MappingService.getClassifications(jcas,
 				xmlFileName, classInfo);
 		if (classifications == null)
 			throw new IllegalArgumentException(xmlFileName
@@ -403,16 +392,21 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		h.setYear(year[0]);
 
 		//publication
-		final List<String> publicationPlaces = DTAFileReader.getTexts(xmlFileName, nav, DTAFileReader.XPATH_PUBLICATION_STMT+"pubPlace");
-		StringArray pubArray = new StringArray(jcas, publicationPlaces.size());
-		for(int i=0;i< publicationPlaces.size(); ++i)
+		final List<String> publicationPlaces = DTAFileReader.getTexts(
+				xmlFileName, nav, DTAFileReader.XPATH_PUBLICATION_STMT
+						+ "pubPlace");
+		final StringArray pubArray = new StringArray(jcas,
+				publicationPlaces.size());
+		for (int i = 0; i < publicationPlaces.size(); ++i)
 			pubArray.set(i, publicationPlaces.get(i));
 		pubArray.addToIndexes();
 		h.setPublicationPlaces(pubArray);
-		
-		final List<String> publisher = DTAFileReader.getTexts(xmlFileName, nav, DTAFileReader.XPATH_PUBLICATION_STMT+"publisher/name");
-		StringArray publisherArray = new StringArray(jcas, publisher.size());
-		for(int i=0;i< publisher.size(); ++i)
+
+		final List<String> publisher = DTAFileReader.getTexts(xmlFileName, nav,
+				DTAFileReader.XPATH_PUBLICATION_STMT + "publisher/name");
+		final StringArray publisherArray = new StringArray(jcas,
+				publisher.size());
+		for (int i = 0; i < publisher.size(); ++i)
 			publisherArray.set(i, publisher.get(i));
 		publisherArray.addToIndexes();
 		h.setPublishers(publisherArray);
@@ -420,6 +414,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		h.addToIndexes();
 	}
 
+	@ConfigurationParameter(name = PARAM_INPUTFILE)
+	private String inputFile;
+
+	@ConfigurationParameter(name = PARAM_NORMALIZE)
+	private boolean normalize;
 
 	private final List<File> inputFiles = new ArrayList<>();
 
@@ -433,19 +432,18 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	public void getNext(final CAS aCAS) throws CollectionException {
 		try {
 			final JCas jcas = aCAS.getJCas();
-			final File file = this.inputFiles.get(this.counter);
+			final File file = inputFiles.get(counter);
 			final VTDNav nav = JulieXMLTools.getVTDNav(
 					new FileInputStream(file), 1024);
 			final String xmlFileName = file.getCanonicalPath();
-			if (!formatIsOk(xmlFileName, nav)) {
-				LOGGER.info("Skipping file:" + this.counter + " - "
-						+ xmlFileName);
-			} else {
-				readDocument(jcas, nav, xmlFileName, this.normalize);
+			if (!formatIsOk(xmlFileName, nav))
+				LOGGER.info("Skipping file:" + counter + " - " + xmlFileName);
+			else {
+				readDocument(jcas, nav, xmlFileName, normalize);
 				readHeader(jcas, nav, xmlFileName);
-				LOGGER.info("Read file:" + this.counter + " - " + xmlFileName);
+				LOGGER.info("Read file:" + counter + " - " + xmlFileName);
 			}
-			this.counter++;
+			counter++;
 		} catch (final Exception e) {
 			throw new CollectionException(e);
 		}
@@ -453,13 +451,13 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	@Override
 	public Progress[] getProgress() {
-		return new Progress[] { new ProgressImpl(this.counter,
-				this.inputFiles.size(), Progress.ENTITIES) };
+		return new Progress[] { new ProgressImpl(counter, inputFiles.size(),
+				Progress.ENTITIES) };
 	}
 
 	@Override
 	public boolean hasNext() throws IOException, CollectionException {
-		return this.counter < this.inputFiles.size();
+		return counter < inputFiles.size();
 	}
 
 	@Override
@@ -467,29 +465,27 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		final String filename = (String) this
 				.getConfigParameterValue(PARAM_INPUTFILE);
 		final Object o = this.getConfigParameterValue(PARAM_NORMALIZE);
-		if (o != null) {
-			this.normalize = (boolean) o;
-		}
-		this.normalize = true;
+		if (o != null)
+			normalize = (boolean) o;
+		normalize = true;
 
 		final File inputFile = new File(filename);
 
 		if (!inputFile.exists())
 			throw new IllegalArgumentException(filename + " does not exist!");
-		else if (inputFile.isFile() && inputFile.getName().endsWith(".tcf.xml")) {
-			this.inputFiles.add(inputFile);
-		} else {
+		else if (inputFile.isFile() && inputFile.getName().endsWith(".tcf.xml"))
+			inputFiles.add(inputFile);
+		else {
 			final File[] files = inputFile.listFiles();
 			if (files == null)
 				throw new IllegalArgumentException("Unsure if " + filename
 						+ " is a directroy...");
 			for (final File f : files)
-				if (f.isFile() && f.getName().endsWith(".tcf.xml")) {
-					this.inputFiles.add(f);
-				}
+				if (f.isFile() && f.getName().endsWith(".tcf.xml"))
+					inputFiles.add(f);
 		}
 
-		LOGGER.info("Input contains " + this.inputFiles.size() + " xml files.");
+		LOGGER.info("Input contains " + inputFiles.size() + " xml files.");
 
 	}
 

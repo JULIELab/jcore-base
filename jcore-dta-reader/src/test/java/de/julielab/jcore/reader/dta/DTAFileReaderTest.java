@@ -53,6 +53,14 @@ public class DTAFileReaderTest {
 		return jcas;
 	}
 
+	private boolean containsClassification(final FSArray classes,
+			final Class<? extends DocumentClassification> dc) {
+		for (int i = 0; i < classes.size(); ++i)
+			if (dc.isInstance(classes.get(i)))
+				return true;
+		return false;
+	}
+
 	@Test
 	public void testDoProcessDirectory() throws Exception {
 		final CollectionReader reader = DTAUtils.getReader(TEST_DIR, true);
@@ -111,14 +119,22 @@ public class DTAFileReaderTest {
 	}
 
 	@Test
+	public void testGetTexts() throws Exception {
+		final List<String> expected = Arrays.asList(new String[] {
+				"Heidelberg", "Frankfurt" });
+		final List<String> actual = DTAFileReader.getTexts(TEST_FILE, getNav(),
+				DTAFileReader.XPATH_PUBLICATION_STMT + "pubPlace");
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void testHeader() throws Exception {
 		final JCas jcas = process(true);
 		final FSIterator<Annotation> i = jcas.getAnnotationIndex(Header.type)
 				.iterator();
 		final Set<Header> header = new HashSet<>();
-		while (i.hasNext()) {
+		while (i.hasNext())
 			header.add((Header) i.next());
-		}
 		assertEquals(1, header.size());
 		final Header h = header.iterator().next();
 
@@ -136,28 +152,20 @@ public class DTAFileReaderTest {
 		assertEquals("http://d-nb.info/gnd/118504177", arnim.getIdno());
 
 		//classification
-		FSArray classes = h.getClassifications();
+		final FSArray classes = h.getClassifications();
 		assertEquals(3, classes.size());
 		assertTrue(containsClassification(classes, DTABelletristik.class));
 		assertTrue(containsClassification(classes, DWDS1Belletristik.class));
 		assertTrue(containsClassification(classes, DWDS2Wissenschaft.class));
 		assertTrue(h.getIsCoreCorpus());
-		
+
 		//year
 		assertEquals("1806", h.getYear());
-		
+
 		//publisher
 		assertEquals("Heidelberg", h.getPublicationPlaces(0));
 		assertEquals("Frankfurt", h.getPublicationPlaces(1));
 		assertEquals("Mohr u: Zimmer", h.getPublishers().get(0));
-	}
-
-	private boolean containsClassification(FSArray classes,
-			Class<? extends DocumentClassification> dc) {
-		for (int i = 0; i < classes.size(); ++i)
-			if (dc.isInstance(classes.get(i)))
-				return true;
-		return false;
 	}
 
 	@Test
@@ -170,9 +178,8 @@ public class DTAFileReaderTest {
 			final JCas jcas = process(true);
 			final FSIterator<Annotation> iter = jcas.getAnnotationIndex(
 					Lemma.type).iterator();
-			while (iter.hasNext()) {
+			while (iter.hasNext())
 				actual.append(((Lemma) iter.next()).getValue()).append(" ");
-			}
 			assertEquals(expected, actual.substring(0, actual.length() - 1));
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -189,24 +196,14 @@ public class DTAFileReaderTest {
 			final JCas jcas = process(true);
 			final FSIterator<Annotation> iter = jcas.getAnnotationIndex(
 					STTSPOSTag.type).iterator();
-			while (iter.hasNext()) {
+			while (iter.hasNext())
 				actual.append(((STTSPOSTag) iter.next()).getValue())
-						.append(" ");
-			}
+				.append(" ");
 			assertEquals(expected, actual.substring(0, actual.length() - 1));
 		} catch (final Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-	}
-	
-	@Test
-	public void testGetTexts() throws Exception{
-		final List<String> expected = Arrays
-				.asList(new String[] {
-						"Heidelberg", "Frankfurt"});
-		final List<String> actual = DTAFileReader.getTexts(TEST_FILE, getNav(), DTAFileReader.XPATH_PUBLICATION_STMT+"pubPlace");
-		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -222,9 +219,8 @@ public class DTAFileReaderTest {
 			final JCas jcas = process(true);
 			final FSIterator<Annotation> iter = jcas.getAnnotationIndex(
 					Sentence.type).iterator();
-			while (iter.hasNext()) {
+			while (iter.hasNext())
 				actual.add(iter.next().getCoveredText());
-			}
 			assertEquals(expected, actual);
 		} catch (final Exception e) {
 			e.printStackTrace();
