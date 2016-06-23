@@ -436,6 +436,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 			final VTDNav nav = JulieXMLTools.getVTDNav(
 					new FileInputStream(file), 1024);
 			final String xmlFileName = file.getCanonicalPath();
+			LOGGER.info("Reading file:" + counter + " - " + xmlFileName);
 			if (!formatIsOk(xmlFileName, nav))
 				LOGGER.info("Skipping file:" + counter + " - " + xmlFileName);
 			else {
