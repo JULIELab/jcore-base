@@ -145,6 +145,11 @@ public class DTAFileReaderTest {
 		
 		//year
 		assertEquals("1806", h.getYear());
+		
+		//publisher
+		assertEquals("Heidelberg", h.getPublicationPlaces(0));
+		assertEquals("Frankfurt", h.getPublicationPlaces(1));
+		assertEquals("Mohr u: Zimmer", h.getPublishers().get(0));
 	}
 
 	private boolean containsClassification(FSArray classes,
@@ -193,6 +198,15 @@ public class DTAFileReaderTest {
 			e.printStackTrace();
 			fail();
 		}
+	}
+	
+	@Test
+	public void testGetTexts() throws Exception{
+		final List<String> expected = Arrays
+				.asList(new String[] {
+						"Heidelberg", "Frankfurt"});
+		final List<String> actual = DTAFileReader.getTexts(TEST_FILE, getNav(), DTAFileReader.XPATH_PUBLICATION_STMT+"pubPlace");
+		assertEquals(expected, actual);
 	}
 
 	@Test
