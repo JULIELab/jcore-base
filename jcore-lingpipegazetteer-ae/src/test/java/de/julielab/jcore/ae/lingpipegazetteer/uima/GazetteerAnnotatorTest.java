@@ -400,7 +400,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 			it.next();
 			counter++;
 		}
-		assertEquals("Wrong entity count: ", new Integer(2), counter);
+		assertEquals("Wrong entity count: ", new Integer(1), counter);
 
 		jCas.reset();
 		jCas.setDocumentText(
@@ -438,7 +438,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 			}
 			assertEquals("GENE", next.getSpecificType());
 		}
-		assertEquals("Wrong entity count: ", new Integer(2), counter);
+		assertEquals("Wrong entity count: ", new Integer(1), counter);
 	}
 
 	@Test

@@ -29,6 +29,13 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>AllowedFileExtensions</name>
+        <description>A list of file name extensions to restrict the read files in the InputDirectory. All files will be read if this parameter is left blank.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
