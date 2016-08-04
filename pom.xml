@@ -1,16 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-	                         http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                           http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 	
-	<!-- Basics & Project Information -->
+	
 	<parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-parent</artifactId>
-        <version>2.1.0</version>
+        <version>2.2.0-SNAPSHOT</version>
     </parent>
 	<artifactId>jcore-base</artifactId>
 	<packaging>pom</packaging>
@@ -49,10 +46,11 @@
 		<module>jcore-bionlp09event-reader</module>
 		<module>jcore-biosem-ae</module>
 		<module>jcore-cas2iob-consumer</module>
-<!--        <module>jcore-coordination-ae</module> -->
+
 		<module>jcore-coordination-baseline-ae</module>
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
+		<module>jcore-ign-reader</module>
 		<module>jcore-jnet-ae</module>
 		<module>jcore-jpos-ae</module>
 		<module>jcore-jsbd-ae</module>
@@ -73,9 +71,10 @@
         <module>jcore-xml-reader</module>
 		<module>jcore-xmi-writer</module>
 		<module>jcore-file-reader</module>
+		<module>jcore-lingpipe-porterstemmer-ae</module>
 	</modules>
 	
-	<!-- Environment Settings -->
+	
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
         <developerConnection>scm:git:git://github.com/JULIELab/jcore-base.git</developerConnection>
