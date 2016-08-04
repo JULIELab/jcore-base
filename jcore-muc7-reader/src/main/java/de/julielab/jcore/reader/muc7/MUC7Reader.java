@@ -126,10 +126,10 @@ public class MUC7Reader extends CollectionReader_ImplBase {
 	/**
 	 * XML elements comprised in an object list
 	 */
-	// public static final String[] ELEMENT_TEXT_TO_BE_PROCESSED = { ELEMENT_SLUG, ELEMENT_DATE,
-	// ELEMENT_NWORDS,
-	// ELEMENT_PREAMBLE, ELEMENT_TEXT, ELEMENT_TRAILER };
-	public static final String[] ELEMENT_TEXT_TO_BE_PROCESSED = { ELEMENT_TEXT };
+	 public static final String[] ELEMENT_TEXT_TO_BE_PROCESSED = { ELEMENT_SLUG, ELEMENT_DATE,
+	 ELEMENT_NWORDS,
+	 ELEMENT_PREAMBLE, ELEMENT_TEXT, ELEMENT_TRAILER };
+//	public static final String[] ELEMENT_TEXT_TO_BE_PROCESSED = { ELEMENT_TEXT };
 	/**
 	 * the position in the text to always get the correct offset
 	 */
@@ -282,7 +282,7 @@ public class MUC7Reader extends CollectionReader_ImplBase {
 		if (!exist) {
 			Section section = new Section(jcas);
 			section.setSectionType("Slug");
-			section.setBegin(beginEnd[0] - 1);
+			section.setBegin(beginEnd[0]);
 			section.setEnd(beginEnd[1]);
 			section.addToIndexes(jcas);
 		}
@@ -1007,12 +1007,12 @@ public class MUC7Reader extends CollectionReader_ImplBase {
 			startPosition = 0;
 			// important: keep this sequence!
 			annotateHeader(docNode);
-//			annotateSlug(docNode, textToBeProcessed);
-//			annotateDate(docNode, textToBeProcessed);
-//			annotateNumOfWords(docNode, textToBeProcessed);
-//			annotatePreamble(docNode, textToBeProcessed);
+			annotateSlug(docNode, textToBeProcessed);
+			annotateDate(docNode, textToBeProcessed);
+			annotateNumOfWords(docNode, textToBeProcessed);
+			annotatePreamble(docNode, textToBeProcessed);
 			annotateText(docNode, textToBeProcessed);
-//			annotateTrailer(docNode, textToBeProcessed);
+			annotateTrailer(docNode, textToBeProcessed);
 			annotateCorefs();
 		}
 	}

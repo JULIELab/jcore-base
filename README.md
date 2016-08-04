@@ -2,7 +2,7 @@
 
 Base modules of JCoRe as described in:
 
-```Udo Hahn, Franz Matthies, Johannes Hellrich, Erik Fässler. UIMA-Based JCoRe 2.0 Goes GitHub and Maven Central — Towards State-of-the-Art Software Engineering of BioNLP Pipelines. LREC 2016 [accepted]```
+```Udo Hahn, Franz Matthies, Erik Faessler and Johannes Hellrich: UIMA-Based JCoRe 2.0 Goes GitHub and Maven Central ― State-of-the-Art Software Resource Engineering and Distribution of NLP Pipelines. In: Nicoletta Calzolari (Conference Chair), Khalid Choukri, Thierry Declerck, Marko Grobelnik, Bente Maegaard, Joseph Mariani, Asuncion Moreno, Jan Odijk, Stelios Piperidis (Eds.): Proceedings of the Tenth International Conference on Language Resources and Evaluation (LREC 2016), 2016. Portorož, Slovenia.``` [[Full Text](http://www.lrec-conf.org/proceedings/lrec2016/pdf/774_Paper.pdf)]
 
 ### Objective
 These are the base components of the JULIE Lab Component Repository (JCoRe), an open software repository for full-scale natural language processing based on the UIMA middleware framework. JCoRe offers a broad range of text analytics (mostly) for English-language scientific abstracts and full-text articles, especially for the biology domain.
@@ -16,7 +16,7 @@ In order to use our components you need at least [JDK 7](http://www.oracle.com/t
 UIMA features a relatively easy way to combine UIMA components together in order to analyze a collection of artifacts. If you're not firm or willing to deal with Java Code, the usage of a CPE might be the right choice.
 For more detailed information see [UIMA's CPE Documentation](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tutorials_and_users_guides/tutorials_and_users_guides.html#ugr.tug.cpe).
 
-*(some more information about utilizing components the CPE way when not using pre-built pipelines)*
+We're also working on a simple [Python script](https://github.com/JULIELab/jcore-misc/tree/master/jcore-cpe-builder) that builds rudimentary and preconfigured CPEs of your choice. It's working but still work in progress so please bear with us and post issues.
 
 ### Maven Artifacts
 If not stated otherwise, all the components found in this project are at least in their latest release version also available as Maven artifacts:
@@ -27,19 +27,20 @@ If not stated otherwise, all the components found in this project are at least i
     <version>${jcore-version}</version>
 </dependency>
 ```
-For instance, to get the BioSEM Annotator, include this in your Maven dependencies:
+Where `#COMPONENT-NAME` is exactly the same as the name on GitHub.
+For instance, to get the Acronym Resolver, include this in your Maven dependencies:
 ```
 <dependency>
     <groupId>de.julielab</groupId>
-    <artifactId>jcore-biosem-ae</artifactId>
+    <artifactId>jcore-acronym-ae</artifactId>
     <version>${jcore-version}</version>
 </dependency>
 ```
-The version variable `${jcore-version}` is defined in the jcore-parent pom and should not be edited manually, as it ensures compatibility. An exemption from this rule are bugfix version, which might also be available from Maven Central. If for instance we deployed a first bugfix version for the `jcore-biosem-ae` from the `2.0.0` release, the Maven coordinates would be the following:
+The version variable `${jcore-version}` is defined in the jcore-parent pom and should not be edited manually, as it ensures compatibility. An exemption from this rule are bugfix version, which might also be available from Maven Central. If for instance we deployed a first bugfix version for the `jcore-acronym-ae` from the `2.0.0` release, the Maven coordinates would be the following:
 ```
 <dependency>
     <groupId>de.julielab</groupId>
-    <artifactId>jcore-biosem-ae</artifactId>
+    <artifactId>jcore-acronym-ae</artifactId>
     <version>2.0.1</version>
 </dependency>
 ```
@@ -64,4 +65,5 @@ Please refer to the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-pro
 
 ### Prebuilt pipelines
 For illustration purposes we provide some pipelines that utilize our components and can be used as a template if you want to build your own either with a UIMA CPE or as a Java project. As of now, these pipelines exist:
-* [BioSEM Relation Extraction Pipeline; BioNLP ST11 model](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline)
+* [BioSEM Relation Extraction Pipeline; BioNLP ST11 model](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline) *(Java and CPE pipeine)*
+* [Biomedical Named Entity Tagger Pipeline](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-named-entity-pipeline) *(CPE pipeline)*
