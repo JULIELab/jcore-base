@@ -106,8 +106,7 @@ This dependency parser determines all syntactic dependencies between words withi
    	<name>JULIE Lab Jena, Germany</name>
    	<url>http://www.julielab.de</url>
    </organization>
-<<<<<<< HEAD
-   <version>2.1.2</version>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
 </project>
 =======
    <version>2.1.1</version>
