@@ -1,0 +1,15 @@
+<assembly>
+	<id>resources</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>src/main/resources/desc/primitive
+			</directory>
+			<outputDirectory>resources/system/desc/primitive</outputDirectory>
+			<fileMode>0750</fileMode>
+		</fileSet>		
+	</fileSets>
+</assembly>

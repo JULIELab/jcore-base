@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>jcore-dta-reader</artifactId>
+	<packaging>jar</packaging>
+	<name>JCoRe DTA Reader</name>
+
+	<parent>
+		<groupId>de.julielab</groupId>
+		<artifactId>jcore-base</artifactId>
+		<version>2.1.0</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources/de/julielab/jcore/reader/dta/desc</directory>
+				<includes>
+					<include>jcore-dta-reader.xml</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								copy-dependency plugin
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<outputDirectory>${project.build.directory}/lib</outputDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.4.3</version>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.julielab</groupId>
+			<artifactId>jcore-utilities</artifactId>
+			<version>${jcore-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.julielab</groupId>
+			<artifactId>jcore-types</artifactId>
+			<version>${jcore-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.julielab</groupId>
+			<artifactId>julie-xml-tools</artifactId>
+			<version>0.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+	</dependencies>
+	<description>Reader for DTA files (German digital humanities corpus)</description>
+	<organization>
+		<url>http://www.julielab.de</url>
+		<name>JULIE Lab, Germany</name>
+	</organization>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-dta-reader</url>
+</project>
