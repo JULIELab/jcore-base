@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<D-Spin xmlns="http://www.dspin.de/data" version="0.4">
+	<TextCorpus xmlns="http://www.dspin.de/data/textcorpus"
+		lang="de">
+		<tokens>
+			<token ID="w1">Des</token>
+			<token ID="w2">Knaben</token>
+			<token ID="w3">Wunderhorn</token>
+			<token ID="w4">.</token>
+			<token ID="w5">Alte</token>
+			<token ID="w6">deut&#x017F;che</token>
+			<token ID="w7">Lieder</token>
+			<token ID="w8">ge&#x017F;ammelt</token>
+			<token ID="w9">von</token>
+			<token ID="wa">L.</token>
+			<token ID="wb">A.</token>
+			<token ID="wc">v.</token>
+			<token ID="wd">Arnim</token>
+			<token ID="we">und</token>
+			<token ID="wf">Clemens</token>
+			<token ID="w10">Brentano</token>
+			<token ID="w11">.</token>
+			<token ID="w12">Des</token>
+			<token ID="w13">Knaben</token>
+			<token ID="w14">Wunderhorn</token>
+			<token ID="w15">Alte</token>
+			<token ID="w16">deut&#x017F;che</token>
+			<token ID="w17">Lieder</token>
+			<token ID="w18">L.</token>
+			<token ID="w19">Achim</token>
+			<token ID="w1a">v.</token>
+			<token ID="w1b">Arnim</token>
+			<token ID="w1c">.</token>
+			<token ID="w1d">Clemens</token>
+			<token ID="w1e">Brentano</token>
+			<token ID="w1f">.</token>
+			<token ID="w20">Heidelberg</token>
+			<token ID="w21">,</token>
+			<token ID="w22">beÿ</token>
+			<token ID="w23">Mohr</token>
+			<token ID="w24">u.</token>
+			<token ID="w25">Zimmer</token>
+			<token ID="w26">.</token>
+			<token ID="w27">bar</token>
+		</tokens>
+		<sentences>
+			<sentence ID="s1" tokenIDs="w1 w2 w3 w4" />
+			<sentence ID="s2" tokenIDs="w5 w6 w7 w8 w9 wa wb wc wd we wf w10 w11" />
+			<sentence ID="s3" tokenIDs="w12 w13 w14 w15 w16 w17 w18 w19 w1a w1b w1c" />
+			<sentence ID="s4" tokenIDs="w1d w1e w1f" />
+			<sentence ID="s5" tokenIDs="w20 w21 w22 w23 w24 w25 w26 w27" />
+		</sentences>
+		<lemmas>
+			<lemma tokenIDs="w1">d</lemma>
+			<lemma tokenIDs="w2">Knabe</lemma>
+			<lemma tokenIDs="w3">Wunderhorn</lemma>
+			<lemma tokenIDs="w4">.</lemma>
+			<lemma tokenIDs="w5">alt</lemma>
+			<lemma tokenIDs="w6">deutsch</lemma>
+			<lemma tokenIDs="w7">Lied</lemma>
+			<lemma tokenIDs="w8">sammeln</lemma>
+			<lemma tokenIDs="w9">von</lemma>
+			<lemma tokenIDs="wa">L.</lemma>
+			<lemma tokenIDs="wb">A.</lemma>
+			<lemma tokenIDs="wc">v.</lemma>
+			<lemma tokenIDs="wd">Arnim</lemma>
+			<lemma tokenIDs="we">und</lemma>
+			<lemma tokenIDs="wf">Clemens</lemma>
+			<lemma tokenIDs="w10">Brentano</lemma>
+			<lemma tokenIDs="w11">.</lemma>
+			<lemma tokenIDs="w12">d</lemma>
+			<lemma tokenIDs="w13">Knabe</lemma>
+			<lemma tokenIDs="w14">Wunderhorn</lemma>
+			<lemma tokenIDs="w15">alt</lemma>
+			<lemma tokenIDs="w16">deutsch</lemma>
+			<lemma tokenIDs="w17">Lied</lemma>
+			<lemma tokenIDs="w18">L.</lemma>
+			<lemma tokenIDs="w19">Achim</lemma>
+			<lemma tokenIDs="w1a">v.</lemma>
+			<lemma tokenIDs="w1b">Arnim</lemma>
+			<lemma tokenIDs="w1c">.</lemma>
+			<lemma tokenIDs="w1d">clemens</lemma>
+			<lemma tokenIDs="w1e">brentano</lemma>
+			<lemma tokenIDs="w1f">.</lemma>
+			<lemma tokenIDs="w20">Heidelberg</lemma>
+			<lemma tokenIDs="w21">,</lemma>
+			<lemma tokenIDs="w22">bei</lemma>
+			<lemma tokenIDs="w23">Mohr</lemma>
+			<lemma tokenIDs="w24">u.</lemma>
+			<lemma tokenIDs="w25">Zimmer</lemma>
+			<lemma tokenIDs="w26">.</lemma>
+			<lemma tokenIDs="w27">foo</lemma>
+		</lemmas>
+		<POStags tagset="stts">
+			<tag tokenIDs="w1">ART</tag>
+			<tag tokenIDs="w2">NN</tag>
+			<tag tokenIDs="w3">NN</tag>
+			<tag tokenIDs="w4">$.</tag>
+			<tag tokenIDs="w5">ADJA</tag>
+			<tag tokenIDs="w6">ADJA</tag>
+			<tag tokenIDs="w7">NN</tag>
+			<tag tokenIDs="w8">VVPP</tag>
+			<tag tokenIDs="w9">APPR</tag>
+			<tag tokenIDs="wa">NE</tag>
+			<tag tokenIDs="wb">NE</tag>
+			<tag tokenIDs="wc">APPR</tag>
+			<tag tokenIDs="wd">NE</tag>
+			<tag tokenIDs="we">KON</tag>
+			<tag tokenIDs="wf">NE</tag>
+			<tag tokenIDs="w10">NE</tag>
+			<tag tokenIDs="w11">$.</tag>
+			<tag tokenIDs="w12">ART</tag>
+			<tag tokenIDs="w13">NN</tag>
+			<tag tokenIDs="w14">NN</tag>
+			<tag tokenIDs="w15">ADJA</tag>
+			<tag tokenIDs="w16">ADJA</tag>
+			<tag tokenIDs="w17">NN</tag>
+			<tag tokenIDs="w18">NE</tag>
+			<tag tokenIDs="w19">NE</tag>
+			<tag tokenIDs="w1a">APPRART</tag>
+			<tag tokenIDs="w1b">NE</tag>
+			<tag tokenIDs="w1c">$.</tag>
+			<tag tokenIDs="w1d">FM.la</tag>
+			<tag tokenIDs="w1e">FM.la</tag>
+			<tag tokenIDs="w1f">$.</tag>
+			<tag tokenIDs="w20">NE</tag>
+			<tag tokenIDs="w21">$,</tag>
+			<tag tokenIDs="w22">APPR</tag>
+			<tag tokenIDs="w23">NN</tag>
+			<tag tokenIDs="w24">APPR</tag>
+			<tag tokenIDs="w25">NN</tag>
+			<tag tokenIDs="w26">$.</tag>
+			<tag tokenIDs="w27">$.</tag>
+		</POStags>
+		<orthography>
+			<correction tokenIDs="w6" operation="replace">deutsche</correction>
+			<correction tokenIDs="w8" operation="replace">gesammelt</correction>
+			<correction tokenIDs="w16" operation="replace">deutsche</correction>
+			<correction tokenIDs="w22" operation="replace">bei</correction>
+			<correction tokenIDs="w27" operation="replace"/>
+		</orthography>
+	</TextCorpus>
+
+	<MetaData xmlns="http://www.dspin.de/data/metadata">
+		<source>
+			<CMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation="http://www.clarin.eu/cmd/ http://media.dwds.de/dta/media/schema/cmdi-header.xsd"
+				xmlns="http://www.clarin.eu/cmd/" CMDVersion="1.1">
+				<Header>
+					<MdCreator>Deutsches Textarchiv</MdCreator>
+					<MdCreationDate>2016-05-11</MdCreationDate>
+					<MdSelfLink>http://www.deutschestextarchiv.de/api/cmdi/arnim_wunderhorn01_1806</MdSelfLink>
+					<MdProfile>clarin.eu:cr1:p_1381926654438</MdProfile>
+					<MdCollectionDisplayName>Deutsches Textarchiv (1600–1900)</MdCollectionDisplayName>
+				</Header>
+				<Resources>
+					<ResourceProxyList>
+						<ResourceProxy id="dta-arnim_wunderhorn01_1806.xml">
+							<ResourceType mimetype="application/xml">Resource</ResourceType>
+							<ResourceRef>http://www.deutschestextarchiv.de/book/download_xml/arnim_wunderhorn01_1806</ResourceRef>
+						</ResourceProxy>
+						<ResourceProxy id="dta-arnim_wunderhorn01_1806.xhtml">
+							<ResourceType mimetype="application/xhtml+xml">Resource</ResourceType>
+							<ResourceRef>http://www.deutschestextarchiv.de/book/download_html/arnim_wunderhorn01_1806</ResourceRef>
+						</ResourceProxy>
+						<ResourceProxy id="dta-arnim_wunderhorn01_1806.text">
+							<ResourceType mimetype="text/plain">Resource</ResourceType>
+							<ResourceRef>http://www.deutschestextarchiv.de/book/download_txt/arnim_wunderhorn01_1806</ResourceRef>
+						</ResourceProxy>
+						<ResourceProxy id="dta-arnim_wunderhorn01_1806.landing_page">
+							<ResourceType>LandingPage</ResourceType>
+							<ResourceRef>http://www.deutschestextarchiv.de/arnim_wunderhorn01_1806</ResourceRef>
+						</ResourceProxy>
+						<ResourceProxy id="dta-arnim_wunderhorn01_1806.search">
+							<ResourceType mimetype="application/sru+xml">SearchService</ResourceType>
+							<ResourceRef>http://dspin.dwds.de:8088/ddc-sru/dta/</ResourceRef>
+						</ResourceProxy>
+					</ResourceProxyList>
+					<JournalFileProxyList></JournalFileProxyList>
+					<ResourceRelationList>
+					</ResourceRelationList>
+					<IsPartOfList>
+					</IsPartOfList>
+				</Resources>
+				<Components>
+					<teiHeader>
+						<fileDesc>
+							<titleStmt>
+								<title type="main">Des Knaben Wunderhorn</title>
+								<title type="sub">Alte deutsche Lieder</title>
+								<title type="volume" n="1"></title>
+								<author>
+									<persName>
+										<surname>Arnim</surname>
+										<forename>Achim von</forename>
+										<idno>
+											<idno type="PND">http://d-nb.info/gnd/118504177</idno>
+											<idno type="FOO">BAR</idno>
+										</idno>
+									</persName>
+								</author>
+								<author>
+									<persName>
+										<surname>Brentano</surname>
+										<forename>Clemens</forename>
+										<idno>
+											<idno type="PND">http://d-nb.info/gnd/118515055</idno>
+										</idno>
+									</persName>
+								</author>
+								<editor>
+									<persName>
+										<surname>Geyken</surname>
+										<forename>Alexander</forename>
+										<idno>
+											<idno type="PND">http://d-nb.info/gnd/115266127</idno>
+										</idno>
+									</persName>
+								</editor>
+								<editor>
+									<persName>
+										<surname>Haaf</surname>
+										<forename>Susanne</forename>
+										<idno>
+											<idno type="PND">http://d-nb.info/gnd/1018099549</idno>
+										</idno>
+									</persName>
+								</editor>
+								<editor>
+									<persName>
+										<surname>Jurish</surname>
+										<forename>Bryan</forename>
+										<idno>
+											<idno type="PND">http://d-nb.info/gnd/1019062681</idno>
+										</idno>
+									</persName>
+								</editor>
+								<editor>
+									<persName>
+										<surname>Boenig</surname>
+										<forename>Matthias</forename>
+									</persName>
+								</editor>
+								<editor>
+									<persName>
+										<surname>Thomas</surname>
+										<forename>Christian</forename>
+									</persName>
+								</editor>
+								<editor>
+									<persName>
+										<surname>Wiegand</surname>
+										<forename>Frank</forename>
+									</persName>
+								</editor>
+								<respStmt>
+									<orgName>
+										<orgName>CLARIN-D</orgName>
+									</orgName>
+									<resp>
+										<note type="remarkResponsibility">Langfristige Bereitstellung der DTA-Ausgabe</note>
+										<ref target="http://fedora.dwds.de" />
+									</resp>
+								</respStmt>
+							</titleStmt>
+							<editionStmt>
+								<edition>Vollständige digitalisierte Ausgabe.</edition>
+							</editionStmt>
+							<extent>
+								<measure type="images">492</measure>
+								<measure type="tokens">68433</measure>
+								<measure type="types">11943</measure>
+								<measure type="characters">440779</measure>
+							</extent>
+							<publicationStmt>
+
+								<pubPlace>Berlin</pubPlace>
+								<date type="publication">2016-05-11T10:39:38Z</date>
+								<publisher>
+									<email>dta.de</email>
+									<orgName>
+										<orgName role="project">Deutsches Textarchiv</orgName>
+										<orgName role="hostingInstitution" xml:lang="en">Berlin-Brandenburg Academy of Sciences and Humanities (BBAW)</orgName>
+										<orgName role="hostingInstitution" xml:lang="de">Berlin-Brandenburgische Akademie der Wissenschaften (BBAW)</orgName>
+									</orgName>
+									<address>
+										<addrLine>Jägerstr. 22/23, 10117 Berlin</addrLine>
+										<country>Germany</country>
+									</address>
+								</publisher>
+								<availability>
+									<licence target="http://creativecommons.org/licenses/by-nc/3.0/de/">
+										<p>Distributed under the Creative Commons Attribution-NonCommercial 3.0 Unported License.</p>
+									</licence>
+								</availability>
+								<idno>
+									<idno type="URLWeb">http://www.deutschestextarchiv.de/arnim_wunderhorn01_1806</idno>
+									<idno type="URLXML">http://www.deutschestextarchiv.de/book/download_xml/arnim_wunderhorn01_1806</idno>
+									<idno type="URLHTML">http://www.deutschestextarchiv.de/book/download_html/arnim_wunderhorn01_1806</idno>
+									<idno type="URLText">http://www.deutschestextarchiv.de/book/download_text/arnim_wunderhorn01_1806</idno>
+									<idno type="DTADirName">arnim_wunderhorn01_1806</idno>
+									<idno type="DTAID">16523</idno>
+									<idno type="URN">urn:nbn:de:kobv:b4-20090519157</idno>
+								</idno>
+							</publicationStmt>
+							<sourceDesc>
+								<bibl type="MM">Arnim, Achim von; Brentano, Clemens: Des Knaben Wunderhorn. Bd. 1. Heidelberg, 1806.</bibl>
+								<biblFull>
+									<titleStmt>
+										<title level="m" type="main">Des Knaben Wunderhorn</title>
+										<title level="m" type="sub">Alte deutsche Lieder</title>
+										<title level="m" type="volume" n="1"></title>
+										<author>
+											<persName>
+												<surname>Arnim</surname>
+												<forename>Achim von</forename>
+												<idno>
+													<idno type="PND">http://d-nb.info/gnd/118504177</idno>
+												</idno>
+											</persName>
+										</author>
+										<author>
+											<persName>
+												<surname>Brentano</surname>
+												<forename>Clemens</forename>
+												<idno>
+													<idno type="PND">http://d-nb.info/gnd/118515055</idno>
+												</idno>
+											</persName>
+										</author>
+									</titleStmt>
+									<editionStmt>
+										<edition n="1" />
+									</editionStmt>
+									<extent>
+										<measure type="pages">470 S.</measure>
+									</extent>
+									<publicationStmt>
+
+										<pubPlace>Heidelberg</pubPlace>
+										<pubPlace>Frankfurt</pubPlace>
+										<date type="publication">1806</date>
+										<publisher>
+											<name>Mohr u: Zimmer</name>
+										</publisher>
+									</publicationStmt>
+								</biblFull>
+								<msDesc>
+									<msIdentifier>
+										<repository>Staatsbibliothek zu Berlin – Preußischer Kulturbesitz</repository>
+										<idno>
+											<idno type="shelfmark">SBB-PK, 19 ZZ 2004-1 R</idno>
+											<idno type="URLCatalogue">http://stabikat.de/DB=1/SET=12/TTL=1/CMD?ACT=SRCHA&amp;IKT=1016&amp;SRT=YOP&amp;TRM=658289845</idno>
+										</idno>
+									</msIdentifier>
+									<physDesc>
+										<typeDesc>
+											<p>Fraktur</p>
+										</typeDesc>
+									</physDesc>
+								</msDesc>
+							</sourceDesc>
+						</fileDesc>
+						<encodingDesc>
+							<editorialDecl>
+								<p>Totally bogus test file!</p>
+							</editorialDecl>
+
+						</encodingDesc>
+						<profileDesc>
+							<langUsage>
+								<language ident="deu">German</language>
+							</langUsage>
+							<textClass>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dtamain">Belletristik</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dtasub">Lyrik</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dwds1main">Belletristik</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dwds1sub">Lyrik</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dwds2main">Wissenschaft</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#dwds2sub">Geographie</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#DTACorpus">core</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#DTACorpus">ready</classCode>
+								<classCode
+									scheme="http://www.deutschestextarchiv.de/doku/klassifikation#DTACorpus">mts</classCode>
+							</textClass>
+						</profileDesc>
+					</teiHeader>
+				</Components>
+			</CMD>
+		</source>
+	</MetaData>
+
+</D-Spin>
