@@ -46,8 +46,9 @@
 		<module>jcore-bionlp09event-reader</module>
 		<module>jcore-biosem-ae</module>
 		<module>jcore-cas2iob-consumer</module>
-
 		<module>jcore-coordination-baseline-ae</module>
+		<module>jcore-dta-reader</module>
+		<module>jcore-file-reader</module>
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
 		<module>jcore-ign-reader</module>
@@ -56,6 +57,7 @@
 		<module>jcore-jsbd-ae</module>
 		<module>jcore-jtbd-ae</module>
 		<module>jcore-lingpipegazetteer-ae</module>
+		<module>jcore-lingpipe-porterstemmer-ae</module>
 		<module>jcore-mantra-xml-types</module>
 		<module>jcore-mstparser-ae</module>
 		<module>jcore-muc7-reader</module>
@@ -67,11 +69,9 @@
 		<module>jcore-stanford-lemmatizer</module>
 		<module>jcore-types</module>
 		<module>jcore-utilities</module>
-        <module>jcore-xml-mapper</module>
-        <module>jcore-xml-reader</module>
+		<module>jcore-xml-mapper</module>
+		<module>jcore-xml-reader</module>
 		<module>jcore-xmi-writer</module>
-		<module>jcore-file-reader</module>
-		<module>jcore-lingpipe-porterstemmer-ae</module>
 	</modules>
 	
 	
