@@ -25,5 +25,6 @@
     <import location="extensions/jcore-semantics-mention-extension-types.xml"/>
     <import location="extensions/jcore-semantics-stemnet-types.xml"/>
     <import location="extensions/jcore-wikipedia-types.xml"/>
+    <import location="extensions/jcore-dta-types.xml"/>
   </imports>
 </typeSystemDescription>

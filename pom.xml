@@ -73,8 +73,6 @@
 		<module>jcore-xml-reader</module>
 		<module>jcore-xmi-writer</module>
 	</modules>
-	
-	
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
         <developerConnection>scm:git:git://github.com/JULIELab/jcore-base.git</developerConnection>
