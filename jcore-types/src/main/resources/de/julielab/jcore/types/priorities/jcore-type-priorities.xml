@@ -10,10 +10,17 @@
     <type>de.julielab.jcore.types.Token</type>
   </priorityList>
   <priorityList>
+<<<<<<< HEAD
   <type>de.julielab.jcore.types.AbstractText</type>
   <type>de.julielab.jcore.types.AbstractSection</type> 
   <type>de.julielab.jcore.types.Sentence</type>
   <type>de.julielab.jcore.types.Token</type>
+=======
+    <type>de.julielab.jcore.types.AbstractText</type>
+    <type>de.julielab.jcore.types.AbstractSection</type> 
+    <type>de.julielab.jcore.types.Sentence</type>
+    <type>de.julielab.jcore.types.Token</type>
+>>>>>>> 2.2
   </priorityList>
     <priorityList>
   <type>de.julielab.jcore.types.Section</type>
