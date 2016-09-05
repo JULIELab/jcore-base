@@ -70,11 +70,6 @@
 		</pluginManagement>
 	</build>
 	<dependencies>
-        <dependency>
-            <groupId>de.julielab</groupId>
-            <artifactId>jcore-types</artifactId>
-            <version>${jcore-version}</version>
-        </dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -86,13 +81,13 @@
 		</dependency>
 		<dependency>
 			<groupId>de.julielab</groupId>
-			<artifactId>jcore-mallet-2.0.9</artifactId>
+			<artifactId>jcore-types</artifactId>
 			<version>${jcore-version}</version>
 		</dependency>
 		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-types</artifactId>
-			<version>${jcore-version}</version>
+			<groupId>cc.mallet</groupId>
+			<artifactId>mallet</artifactId>
+			<version>2.0.8</version>
 		</dependency>
 	</dependencies>
 	<name>JCoRe Token Annotator</name>
