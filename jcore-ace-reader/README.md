@@ -1,5 +1,10 @@
 # JCoRe ACE Collection Reader
-A Collection Reader that converts ACE-XML ([Automatic Content Extraction](https://www.ldc.upenn.edu/collaborations/past-projects/ace)) files to CAS objects.
+A Collection Reader that converts ACE-XML ([Automatic Content Extraction](https://www.ldc.upenn.edu/collaborations/past-projects/ace)) files to CAS objects.  
+
+**Descriptor Path**:
+```
+de.julielab.jcore.reader.ace.desc.jcore-ace-reader
+```
 
 ### Objective
 The JULIE Lab ACE Reader is a UIMA Collection Reader (CR). It reads the English section of the ACE 2005 Multilingual Training Corpus data, which is given as XML files, and converts it to types defined in the UIMA type system that we provide as well.

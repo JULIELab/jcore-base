@@ -1,5 +1,10 @@
 # JCoRe BioNLP 09 Event Reader
-Reader that converts [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) formatted files to CAS objects.
+Reader that converts [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) formatted files to CAS objects.  
+
+**Descriptor Path**:
+```
+Path
+```
 
 ### Objective
 This reader takes as input a folder with `txt`,`a1` & `a2` files - format of the [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) - and creates CAS annotations as described in **Capabilities**. Therefore it serves e.g. as reader in [relation extraction pipelines](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline).

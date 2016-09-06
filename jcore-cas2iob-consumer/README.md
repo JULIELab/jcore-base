@@ -1,5 +1,10 @@
 # JCoRe CAS2IOB Consumer
-Consumer that generates IOB formatted files for specified annotations.
+Consumer that generates IOB formatted files for specified annotations.  
+
+**Descriptor Path**:
+```
+Path
+```
 
 ### Objective
 This consumer writes annotations in a UIMA CAS out to the IOB format. If two annotations are concurring for the same token, the annotation with the longer span is preferred.
