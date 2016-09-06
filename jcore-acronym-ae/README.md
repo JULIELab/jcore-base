@@ -3,7 +3,7 @@ This is a reimplementation of the Schwartz and Hearst Algorithm for the resoluti
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.ae.acronymtagger.desc.jcore-acronym-ae
 ```
 
 ### Objective
