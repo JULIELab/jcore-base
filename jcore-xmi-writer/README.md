@@ -2,5 +2,5 @@
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.consumer.xmi.desc.jcore-xmi-writer
 ```

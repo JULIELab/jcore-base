@@ -4,7 +4,7 @@ DTA uses a TEI variant, cf. http://www.deutschestextarchiv.de/doku/basisformat
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.reader.dta.desc.jcore-dta-reader
 ```
 
 ### Objective

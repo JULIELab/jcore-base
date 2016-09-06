@@ -3,7 +3,7 @@ Reader for IEXML files as used in the mantra project/challenge
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.reader.iexml.desc.jcore-iexml-reader
 ```
 
 ### Objective

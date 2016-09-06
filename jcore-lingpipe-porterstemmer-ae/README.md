@@ -2,5 +2,5 @@
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.ae.lingpipe.porterstemmer.desc.jcore-lingpipe-porterstemmer-ae
 ```

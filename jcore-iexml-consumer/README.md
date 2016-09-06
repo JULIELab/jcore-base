@@ -3,5 +3,5 @@ Consumer that generates stand-off IEXML files as used in the mantra project/chal
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.consumer.iexml.desc.jcore-iexml-consumer
 ```

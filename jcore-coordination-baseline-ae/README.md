@@ -3,7 +3,10 @@ This is the baseline to the [JCoRe Coordination Analysis Engine](https://github.
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-conjunct
+de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-coordination
+de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-eee
+de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-ellipsis
 ```
 
 ### Objective

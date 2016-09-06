@@ -2,7 +2,7 @@
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.reader.file.desc.jcore-file-reader
 ```
 
 ### Objective

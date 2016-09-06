@@ -3,7 +3,7 @@ Consumer that writes CAS annotations into the [BioNLP Shared Task](http://www.na
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.consumer.bionlp09event.desc.jcore-bionlp09event-consumer
 ```
  
 ### Objective

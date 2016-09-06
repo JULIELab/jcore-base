@@ -3,7 +3,7 @@ Reader that converts MUC-7 (Message Understanding Conference) files to CAS objec
 
 **Descriptor Path**:
 ```
-Path
+de.julielab.jcore.reader.muc7.desc.jcore-muc7-reader
 ```
 
 ### Objective
