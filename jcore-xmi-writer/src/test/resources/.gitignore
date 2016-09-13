@@ -1,1 +1,2 @@
-/output-xmi
+output-xmi/*.xmi
+output-xmi/*.gz
