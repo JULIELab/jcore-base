@@ -68,17 +68,18 @@ public class MUC7ReaderTest extends TestCase {
 	// The reader was changed so that only header, text & corefs are annotated (slug, date, numofwords, preamble, trailer
 	// all fell away).
 	// The test data wasn't updated accordingly.
+	// --> 09/16: the latter remark is not valid anymore
 	/**
 	 * Test data
 	 */
-//	private final String[] givenENAMEXData = {"PANTEX", "PANTEX", "FAA", "PANHANDLE", "NYTimes News Service clients", "HOLLACE WEINER", "Fort Worth Star-Telegram", "Federal Aviation Administration", "Pantex Weapons Plant", "Amarillo", "Texas", "Energy Department", "FAA", "Amarillo International Airport", "Defense Nuclear Facilities Safety Board", "Energy", "Pantex", "Trish Neusch", "Amarillo", "Mike McNulty", "FAA", "Amarillo International", "Pantex", "Energy Department", "Amarillo airport", "McNulty", "Air Force", "Texas", "Oklahoma", "Kansas", "New Mexico", "McNulty", "McNulty", "Dallas/Fort Worth Airport", "Amarillo", "McNulty", "Oklahoma", "McNulty"};
-	private final String[] givenENAMEXData = {"Federal Aviation Administration", "Pantex Weapons Plant", "Amarillo", "Texas", "Energy Department", "FAA", "Amarillo International Airport", "Defense Nuclear Facilities Safety Board", "Energy", "Pantex", "Trish Neusch", "Amarillo", "Mike McNulty", "FAA", "Amarillo International", "Pantex", "Energy Department", "Amarillo airport", "McNulty", "Air Force", "Texas", "Oklahoma", "Kansas", "New Mexico", "McNulty", "McNulty", "Dallas/Fort Worth Airport", "Amarillo", "McNulty", "Oklahoma", "McNulty"};
+	private final String[] givenENAMEXData = {"PANTEX", "PANTEX", "FAA", "PANHANDLE", "NYTimes News Service clients", "HOLLACE WEINER", "Fort Worth Star-Telegram", "Federal Aviation Administration", "Pantex Weapons Plant", "Amarillo", "Texas", "Energy Department", "FAA", "Amarillo International Airport", "Defense Nuclear Facilities Safety Board", "Energy", "Pantex", "Trish Neusch", "Amarillo", "Mike McNulty", "FAA", "Amarillo International", "Pantex", "Energy Department", "Amarillo airport", "McNulty", "Air Force", "Texas", "Oklahoma", "Kansas", "New Mexico", "McNulty", "McNulty", "Dallas/Fort Worth Airport", "Amarillo", "McNulty", "Oklahoma", "McNulty"};
+//	private final String[] givenENAMEXData = {"Federal Aviation Administration", "Pantex Weapons Plant", "Amarillo", "Texas", "Energy Department", "FAA", "Amarillo International Airport", "Defense Nuclear Facilities Safety Board", "Energy", "Pantex", "Trish Neusch", "Amarillo", "Mike McNulty", "FAA", "Amarillo International", "Pantex", "Energy Department", "Amarillo airport", "McNulty", "Air Force", "Texas", "Oklahoma", "Kansas", "New Mexico", "McNulty", "McNulty", "Dallas/Fort Worth Airport", "Amarillo", "McNulty", "Oklahoma", "McNulty"};
 
 	/**
 	 * Test data
 	 */
-//	private final String[] givenTIMEXData = {"02-14", "1996", "later this year", "May 2", "late 1994", "For the past 14 months", "late summer", "early fall", "02-14-96", "2111EST"};
-	private final String[] givenTIMEXData = {"later this year", "May 2", "late 1994", "For the past 14 months", "late summer", "early fall"};
+	private final String[] givenTIMEXData = {"02-14", "1996", "later this year", "May 2", "late 1994", "For the past 14 months", "late summer", "early fall", "02-14-96", "2111EST"};
+//	private final String[] givenTIMEXData = {"later this year", "May 2", "late 1994", "For the past 14 months", "late summer", "early fall"};
 	
 	/**
 	 * Test data
