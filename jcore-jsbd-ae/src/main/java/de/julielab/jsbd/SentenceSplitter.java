@@ -137,7 +137,7 @@ public class SentenceSplitter {
 		CRFTrainerByLabelLikelihood crfTrainer = new CRFTrainerByLabelLikelihood(model);
 
 		// do the training with unlimited amount of iterations
-		boolean b = crfTrainer.trainOptimized(instList);
+		boolean b = crfTrainer.train(instList);
 		LOGGER.info("SentencesSplitter training: model converged: " + b);
 
 		long s2 = System.currentTimeMillis();

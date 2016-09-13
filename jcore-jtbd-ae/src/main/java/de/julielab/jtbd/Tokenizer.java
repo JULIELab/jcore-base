@@ -312,7 +312,7 @@ public class Tokenizer {
 				model);
 
 		// do the training with unlimited amount of iterations
-		final boolean b = crfTrainer.trainOptimized(instList);
+		final boolean b = crfTrainer.train(instList);
 		LOGGER.info("Tokenizer training: model converged: " + b);
 
 		final long s2 = System.currentTimeMillis();
