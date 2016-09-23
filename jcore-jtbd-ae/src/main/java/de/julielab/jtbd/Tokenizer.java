@@ -312,6 +312,8 @@ public class Tokenizer {
 				model);
 
 		// do the training with unlimited amount of iterations
+		// --> refrained from using modified version of mallet;
+		// it's now the original source
 		final boolean b = crfTrainer.train(instList);
 		LOGGER.info("Tokenizer training: model converged: " + b);
 

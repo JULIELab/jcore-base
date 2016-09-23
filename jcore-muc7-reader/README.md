@@ -1,5 +1,10 @@
 # JCoRe MUC7 Collection Reader
-Reader that converts MUC-7 (Message Understanding Conference) files to CAS objects
+Reader that converts MUC-7 (Message Understanding Conference) files to CAS objects  
+
+**Descriptor Path**:
+```
+de.julielab.jcore.reader.muc7.desc.jcore-muc7-reader
+```
 
 ### Objective
 The MUC7 Reader reads in the data from the Message Understanding Conference (MUC) 7 Corpus.

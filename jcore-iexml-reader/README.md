@@ -1,5 +1,10 @@
 # JCoRe IEXML Collection Reader
-Reader for IEXML files as used in the mantra project/challenge
+Reader for IEXML files as used in the mantra project/challenge  
+
+**Descriptor Path**:
+```
+de.julielab.jcore.reader.iexml.desc.jcore-iexml-reader
+```
 
 ### Objective
 
