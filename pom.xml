@@ -51,7 +51,6 @@
 		<module>jcore-file-reader</module>
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
-		<module>jcore-ign-reader</module>
 		<module>jcore-jnet-ae</module>
 		<module>jcore-jpos-ae</module>
 		<module>jcore-jsbd-ae</module>
@@ -59,7 +58,6 @@
 		<module>jcore-lingpipegazetteer-ae</module>
 		<module>jcore-lingpipe-porterstemmer-ae</module>
 		<module>jcore-mantra-xml-types</module>
-		
 		<module>jcore-muc7-reader</module>
 		<module>jcore-opennlp-chunk-ae</module>
 		<module>jcore-opennlp-parser-ae</module>
