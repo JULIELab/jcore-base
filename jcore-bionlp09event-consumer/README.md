@@ -1,5 +1,10 @@
 # JCoRe BioNLP 09 Event Consumer
-Consumer that writes CAS annotations into the [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) format.
+Consumer that writes CAS annotations into the [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) format.  
+
+**Descriptor Path**:
+```
+de.julielab.jcore.consumer.bionlp09event.desc.jcore-bionlp09event-consumer
+```
  
 ### Objective
 This consumer takes the annotations specified in **Capabilities** and outputs three seperate text files for each document to `outDirectory`. The text files follow the format of the [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) and are therefore applicable for being evaluated by their eval tool or the online evaluation of the test files.

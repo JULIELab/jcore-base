@@ -1,6 +1,11 @@
 # JCoRe DTA Collection Reader
 Reader for DTA files (German digital humanties corpus).
-DTA uses a TEI variant, cf. http://www.deutschestextarchiv.de/doku/basisformat
+DTA uses a TEI variant, cf. http://www.deutschestextarchiv.de/doku/basisformat  
+
+**Descriptor Path**:
+```
+de.julielab.jcore.reader.dta.desc.jcore-dta-reader
+```
 
 ### Objective
 

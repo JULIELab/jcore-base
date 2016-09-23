@@ -1,5 +1,13 @@
 # JCoRe Coordination Baseline Analysis Engine
-This is the baseline to the [JCoRe Coordination Analysis Engine](https://github.com/JULIELab/jcore-base/tree/issue7-coordFix/jcore-coordination-ae). As of now the Coordination AE is only available in its baseline form for the JCoRe package. The full-fledged AE is work-in-progress and not yet ready for distribution (see issue 7).
+This is the baseline to the [JCoRe Coordination Analysis Engine](https://github.com/JULIELab/jcore-base/tree/issue7-coordFix/jcore-coordination-ae). As of now the Coordination AE is only available in its baseline form for the JCoRe package. The full-fledged AE is work-in-progress and not yet ready for distribution (see issue 7).  
+
+**Descriptor Path**:
+```
+de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-conjunct
+de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-coordination
+de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-eee
+de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-ellipsis
+```
 
 ### Objective
 

@@ -51,7 +51,7 @@
 		<module>jcore-file-reader</module>
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
-		<module>jcore-ign-reader</module>
+<!-- 		<module>jcore-ign-reader</module> -->
 		<module>jcore-jnet-ae</module>
 		<module>jcore-jpos-ae</module>
 		<module>jcore-jsbd-ae</module>

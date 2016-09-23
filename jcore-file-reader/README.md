@@ -1,4 +1,9 @@
- JCoRe File Reader for reading in text files.
+ JCoRe File Reader for reading in text files.  
+
+**Descriptor Path**:
+```
+de.julielab.jcore.reader.file.desc.jcore-file-reader
+```
 
 ### Objective
  This is a reader for reading in text files, providing them to UIMA for further processing.

@@ -1,5 +1,10 @@
 # JCoRe Acronym Analysis Engine
-This is a reimplementation of the Schwartz and Hearst Algorithm for the resolution of acronyms (short form → long form).
+This is a reimplementation of the Schwartz and Hearst Algorithm for the resolution of acronyms (short form → long form).  
+
+**Descriptor Path**:
+```
+de.julielab.jcore.ae.acronymtagger.desc.jcore-acronym-ae
+```
 
 ### Objective
 JULIE Lab Acronym Annotator (JACRO) is an UIMA Analysis Engine that annotates acronyms with their full-forms when locally introduced in the current document. The functionality of the engine is based on the simple algorithm for abbreviation recognition by Schwartz and Hearst. We have reimplemented the algorithm and extended it with respect to some pattern definitions and normalizations.
