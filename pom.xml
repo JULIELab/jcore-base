@@ -70,9 +70,6 @@
 		<module>jcore-xml-mapper</module>
 		<module>jcore-xml-reader</module>
 		<module>jcore-xmi-writer</module>
-		<module>jcore-file-reader</module>
-		<module>jcore-lingpipe-porterstemmer-ae</module>
-		<module>jcore-dta-reader</module>
 	</modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
