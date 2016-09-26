@@ -14,10 +14,6 @@
 		<type>de.julielab.jcore.types.AbstractSection</type> 
 		<type>de.julielab.jcore.types.Sentence</type>
 		<type>de.julielab.jcore.types.Token</type>
-		<type>de.julielab.jcore.types.AbstractText</type>
-		<type>de.julielab.jcore.types.AbstractSection</type> 
-		<type>de.julielab.jcore.types.Sentence</type>
-		<type>de.julielab.jcore.types.Token</type>
 	</priorityList>
 	<priorityList>
 		<type>de.julielab.jcore.types.Section</type>
