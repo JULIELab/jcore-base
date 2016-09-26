@@ -65,10 +65,10 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 
 	public static final String PARAM_OUTPUTDIR = "OutputDirectory";
 	public static final String CREATE_BATCH_SUBDIRS = "CreateBatchSubDirs";
-	private static final String PARAM_COMPRESS = "Compress";
-	private static final String PARAM_COMPRESS_SINGLE = "CompressSingle";
-	private static final String PARAM_FILE_NAME_TYPE = "FileNameType";
-	private static final String PARAM_FILE_NAME_FEATURE = "FileNameFeature";
+	public static final String PARAM_COMPRESS = "Compress";
+	public static final String PARAM_COMPRESS_SINGLE = "CompressSingle";
+	public static final String PARAM_FILE_NAME_TYPE = "FileNameType";
+	public static final String PARAM_FILE_NAME_FEATURE = "FileNameFeature";
 	private static final String XMI_EXTENSION = ".xmi";
 	private static final String GZIP_EXTENSION = ".gz";
 
@@ -82,14 +82,19 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 
 	@ConfigurationParameter(name = PARAM_OUTPUTDIR, mandatory = true)
 	private File outputDir;
-	private File currentSubDir;
-	private int doc;
+	@ConfigurationParameter(name = PARAM_COMPRESS, mandatory = false)
 	private boolean compress;
+	@ConfigurationParameter(name = PARAM_COMPRESS_SINGLE, mandatory = false)
 	private boolean compressSingle;
 	@ConfigurationParameter(name = CREATE_BATCH_SUBDIRS, mandatory = false)
 	private boolean createBatchSubdirs;
+	@ConfigurationParameter(name = PARAM_FILE_NAME_TYPE, mandatory = false)
 	private String fileNameTypeName;
+	@ConfigurationParameter(name = PARAM_FILE_NAME_FEATURE, mandatory = false)
 	private String fileNameFeatureName;
+	
+	private File currentSubDir;
+	private int doc;
 
 	private ZipOutputStream zipOutStream;
 	private BufferedOutputStream outStream;

@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
-		<version>2.2.x-BUGFIXES</version>
+		<version>2.2.0</version>
 	</parent>
 
 	<dependencies>
@@ -34,4 +34,5 @@
 		<url>http://www.julielab.de</url>
 	</organization>
 	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-writer</url>
+	<version>2.2.1</version>
 </project>
