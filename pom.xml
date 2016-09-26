@@ -7,7 +7,7 @@
 	<parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-parent</artifactId>
-        <version>2.3.0-SNAPSHOT</version>
+        <version>2.2.0</version>
     </parent>
 	<artifactId>jcore-base</artifactId>
 	<packaging>pom</packaging>
@@ -51,7 +51,7 @@
 		<module>jcore-file-reader</module>
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
-<!-- 		<module>jcore-ign-reader</module> -->
+
 		<module>jcore-jnet-ae</module>
 		<module>jcore-jpos-ae</module>
 		<module>jcore-jsbd-ae</module>
