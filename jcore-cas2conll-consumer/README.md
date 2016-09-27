@@ -1,0 +1,1 @@
+`de.julielab.jcore.consumer.cas2conll.jcore-cas2conll-consumer`
