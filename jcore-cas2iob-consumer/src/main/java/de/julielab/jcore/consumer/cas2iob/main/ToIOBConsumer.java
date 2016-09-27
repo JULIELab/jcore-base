@@ -21,10 +21,13 @@
 package de.julielab.jcore.consumer.cas2iob.main;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -145,6 +148,9 @@ public class ToIOBConsumer extends CasConsumer_ImplBase {
 
 		BufferedWriter bw;
 		String outPathName = Paths.get(outFolder, getDocumentId(cas)).toString()+".iob";
+		if (Files.notExists(Paths.get(outFolder))) {
+			(new File(outFolder)).mkdirs();
+		}
 		try {
 			bw = new BufferedWriter(new FileWriter(outPathName));
 			for (IOToken token : ioTokens) {

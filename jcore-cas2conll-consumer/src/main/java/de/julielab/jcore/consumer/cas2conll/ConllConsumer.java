@@ -19,6 +19,8 @@ package de.julielab.jcore.consumer.cas2conll;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -162,7 +164,9 @@ public class ConllConsumer extends JCasAnnotator_ImplBase {
 
 	private void writeSentences2File(String fileId, ArrayList<String> sentences) {
 		try {
-			(new File(outputDir)).mkdirs(); 
+			if (Files.notExists(Paths.get(outputDir))) {
+				(new File(outputDir)).mkdirs();
+			}
 			IOUtils.arraylist_to_file(sentences, new File(outputDir + fileId + ".CONLL"));
 			LOGGER.info("wrote file " + outputDir + fileId + ".CONLL");
 		} catch (IOException e) {
