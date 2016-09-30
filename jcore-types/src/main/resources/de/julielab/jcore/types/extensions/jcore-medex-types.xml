@@ -6,6 +6,7 @@
     <vendor/>
   <imports>
     <import name="de.julielab.jcore.types.jcore-basic-types"/>
+  <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
   </imports>
   <types>
     <typeDescription>
@@ -95,7 +96,7 @@
   <typeDescription>
       <name>de.julielab.jcore.types.medex.DrugMention</name>
       <description/>
-      <supertypeName>de.julielab.jcore.types.medex.MedexType</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
     </typeDescription>
   </types>
 </typeSystemDescription>

@@ -16,15 +16,16 @@
     <import location="jcore-semantics-concept-types.xml"/>
     <import location="jcore-semantics-mention-types.xml"/>
     <import location="extensions/jcore-ace-types.xml"/>
+    <import location="extensions/jcore-dta-types.xml"/>
     <import location="extensions/jcore-evaluation-types.xml"/>
-    <import location="extensions/jcore-semantics-bootstrep-types.xml"/>
     <import location="extensions/jcore-mantra-types.xml"/>
+    <import location="extensions/jcore-medex-types.xml"/>
     <import location="extensions/jcore-mmax-types.xml"/>
     <import location="extensions/jcore-muc7-types.xml"/>
     <import location="extensions/jcore-semantics-ace-types.xml"/>
+    <import location="extensions/jcore-semantics-bootstrep-types.xml"/>
     <import location="extensions/jcore-semantics-mention-extension-types.xml"/>
     <import location="extensions/jcore-semantics-stemnet-types.xml"/>
     <import location="extensions/jcore-wikipedia-types.xml"/>
-    <import location="extensions/jcore-dta-types.xml"/>
   </imports>
 </typeSystemDescription>
