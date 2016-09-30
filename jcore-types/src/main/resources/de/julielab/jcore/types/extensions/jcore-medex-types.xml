@@ -92,5 +92,10 @@
         </featureDescription>
       </features>
     </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jcore.types.medex.DrugMention</name>
+      <description/>
+      <supertypeName>de.julielab.jcore.types.medex.MedexType</supertypeName>
+    </typeDescription>
   </types>
 </typeSystemDescription>
