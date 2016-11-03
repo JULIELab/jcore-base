@@ -31,7 +31,9 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
@@ -42,6 +44,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.julielab.jcore.types.Date;
+import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.pubmed.Header;
 
 public class FileReaderTest {
@@ -65,18 +68,35 @@ public class FileReaderTest {
 			+ " bacterial killing and tissue damage is required for survival. Understanding the balance between IL-12, IL-23 and"
 			+ " IL-27 is crucial to the development of immune intervention in tuberculosis. ";
 
-	private static final String FILE_ARTIFACT = "data/files/8563171.txt";
+	private static final String FILE_ARTIFACT_1 = "data/files1/8563171.txt";
+	
+	private final static String ARTIFACT_2 = "Our understanding of the role of interleukin (IL)-12 in controlling"
+			+ " tuberculosis has expanded because of increased interest in other members of the IL-12 family of cytokines.\n"
+			+ "Recent data show that IL-12, IL-23 and IL-27 have specific roles in the initiation, expansion and control of"
+			+ " the cellular response to tuberculosis.\n"
+			+ "Specifically, IL-12, and to a lesser degree IL-23, generates protective"
+			+ " cellular responses and promotes survival, whereas IL-27 moderates the inflammatory response and is required for"
+			+ " long-term survival.\n"
+			+ "Paradoxically, IL-27 also limits bacterial control, suggesting that a balance between"
+			+ " bacterial killing and tissue damage is required for survival.\n"
+			+ "Understanding the balance between IL-12, IL-23 and"
+			+ " IL-27 is crucial to the development of immune intervention in tuberculosis.";
+	
+	private static final String FILE_ARTIFACT_2 = "data/files2/755.txt";
+	
+	private static final Integer S_GOLD_COUNT = new Integer(5); // number of sentences in ARTIFACT_2
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		writeArtifact(ARTIFACT_1);
+		writeArtifact(ARTIFACT_1, FILE_ARTIFACT_1);
+		writeArtifact(ARTIFACT_2, FILE_ARTIFACT_2);
 	}
 
 	@Test
 	public void testDocumentTextPresent() throws CASException, Exception {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
 		fileReader.setConfigParameterValue("InputDirectory",
-				FILE_ARTIFACT.substring(0, FILE_ARTIFACT.lastIndexOf("/")));
+				FILE_ARTIFACT_1.substring(0, FILE_ARTIFACT_1.lastIndexOf("/")));
 		fileReader.setConfigParameterValue("UseFilenameAsDocId", true);
 		fileReader.setConfigParameterValue("PublicationDatesFile", "src/test/resources/data/BC2_publicationDates");
 		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[]{"txt"});
@@ -101,6 +121,31 @@ public class FileReaderTest {
 		System.out.println(
 				"pubmed-id: " + header.getDocId() + ", publication date: " + date.getYear() + "/" + date.getMonth());
 
+	}
+	
+	@Test
+	public void testSentencePerLineMode() throws CASException, Exception  {
+		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
+		fileReader.setConfigParameterValue("InputDirectory",
+				FILE_ARTIFACT_2.substring(0, FILE_ARTIFACT_2.lastIndexOf("/")));
+		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
+		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[]{"txt"});
+		fileReader.setConfigParameterValue("SentencePerLine", true);
+		fileReader.reconfigure();
+		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
+		assertTrue(fileReader.hasNext());
+		fileReader.getNext(cas);
+		assertTrue(cas.getDocumentText().equals(ARTIFACT_2));
+		
+		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
+		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
+		Integer scount = 0;
+		while (sentIt.hasNext()) {
+			scount += 1;
+			System.out.println("sent "+ scount + ": " + ((Sentence) sentIt.next()).getCoveredText());
+		}
+		System.out.println("Sentences counted: " + scount.toString() + " -- Gold: " + S_GOLD_COUNT);
+		assertEquals(S_GOLD_COUNT, scount);
 	}
 
 	/**
@@ -136,11 +181,11 @@ public class FileReaderTest {
 	 * @param artifact
 	 *            Text to be written to file
 	 */
-	private static void writeArtifact(String artifact) {
+	private static void writeArtifact(String artifact, String file_name) {
 
-		File artifactFile = new File(FILE_ARTIFACT);
+		File artifactFile = new File(file_name);
 		try (FileOutputStream outputStream = new FileOutputStream(artifactFile)){
-			outputStream.write(ARTIFACT_1.getBytes());
+			outputStream.write(artifact.getBytes());
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -151,7 +196,10 @@ public class FileReaderTest {
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		File artifactFile = new File(FILE_ARTIFACT);
-		artifactFile.delete();
+		File artifactFile1 = new File(FILE_ARTIFACT_1);
+		artifactFile1.delete();
+		
+		File artifactFile2 = new File(FILE_ARTIFACT_2);
+		artifactFile2.delete();
 	}
 }
