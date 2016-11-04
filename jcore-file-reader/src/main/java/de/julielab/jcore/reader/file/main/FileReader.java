@@ -33,6 +33,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -45,19 +46,41 @@ import de.julielab.jcore.types.Sentence;
 
 public class FileReader extends CollectionReader_ImplBase {
 
+	/**
+	 * Folder with docments; as of now (11/2016) no subdir's are crawled.
+	 */
 	public static final String DIRECTORY_INPUT = "InputDirectory";
+	/**
+	 * 
+	 */
 	public static final String FILENAME_AS_DOC_ID = "UseFilenameAsDocId";
+	/**
+	 * 
+	 */
 	public static final String PUBLICATION_DATES_FILE = "PublicationDatesFile";
+	/**
+	 * 
+	 */
 	public static final String ALLOWED_FILE_EXTENSIONS = "AllowedFileExtensions";
+	/**
+	 * 
+	 */
 	public static final String SENTENCE_PER_LINE = "SentencePerLine";
 
 	private ArrayList<File> files;
 
 	private int fileIndex;
 
+	@ConfigurationParameter(name = DIRECTORY_INPUT, mandatory = true)
+	private File inputDirectory;
+	@ConfigurationParameter(name = FILENAME_AS_DOC_ID, mandatory = false)
 	private boolean useFilenameAsDocId;
+	@ConfigurationParameter(name = PUBLICATION_DATES_FILE, mandatory = false)
 	private File publicationDatesFile;
+	@ConfigurationParameter(name = SENTENCE_PER_LINE, mandatory = false)
 	private boolean sentencePerLine;
+	@ConfigurationParameter(name = ALLOWED_FILE_EXTENSIONS, mandatory = false)
+	private String[] allowedExtensionsArray;
 
 	/**
 	 * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -65,7 +88,7 @@ public class FileReader extends CollectionReader_ImplBase {
 	@Override
 	public void initialize() throws ResourceInitializationException {
 
-		File inputDirectory = new File(((String) getConfigParameterValue(DIRECTORY_INPUT)).trim());
+		inputDirectory = new File(((String) getConfigParameterValue(DIRECTORY_INPUT)).trim());
 		if (getConfigParameterValue(PUBLICATION_DATES_FILE) != null) {
 			publicationDatesFile = new File(((String) getConfigParameterValue(PUBLICATION_DATES_FILE)).trim());
 		}
@@ -84,7 +107,7 @@ public class FileReader extends CollectionReader_ImplBase {
 			useFilenameAsDocId = filenameAsDocId;
 		}
 		
-		String[] allowedExtensionsArray = (String[]) getConfigParameterValue(ALLOWED_FILE_EXTENSIONS);
+		allowedExtensionsArray = (String[]) getConfigParameterValue(ALLOWED_FILE_EXTENSIONS);
 		final Set<String> allowedExtensions = new HashSet<>();
 		if (null != allowedExtensionsArray) {
 			for (int i = 0; i < allowedExtensionsArray.length; i++) {
