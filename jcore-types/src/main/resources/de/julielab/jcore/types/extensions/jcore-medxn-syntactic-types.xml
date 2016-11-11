@@ -62,7 +62,7 @@ Equivalent to OHNLP: org.ohnlp.typesystem.type.syntax.NumToken</description>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jcor.types.ohnlp.PunctuationToken</name>
+      <name>de.julielab.jcore.types.ohnlp.PunctuationToken</name>
       <description>Differentiates a token as being punctuation rather than a contraction, symbol, newline, word, or number. 
 Equivalent to OHNLP: org.ohnlp.typesystem.type.syntax.PunctuationToken</description>
       <supertypeName>de.julielab.jcore.types.Token</supertypeName>

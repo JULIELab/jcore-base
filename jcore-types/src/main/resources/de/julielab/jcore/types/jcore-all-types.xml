@@ -26,5 +26,9 @@
     <import location="extensions/jcore-semantics-mention-extension-types.xml"/>
     <import location="extensions/jcore-semantics-stemnet-types.xml"/>
     <import location="extensions/jcore-wikipedia-types.xml"/>
+  	<import location="extensions/jcore-medxn-reference-types.xml"/>
+  	<import location="extensions/jcore-medxn-semantics-types.xml"/>
+  	<import location="extensions/jcore-medxn-structure-types.xml"/>
+  	<import location="extensions/jcore-medxn-syntactic-types.xml"/>
   </imports>
 </typeSystemDescription>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>jcore-medxn-general-types</name>
+    <description/>
+    <version>1.0</version>
+    <vendor/>
+  <imports>
+    <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+  </imports>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.Match</name>
+      <description/>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>value</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>foundByRule</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>sentence</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.Sentence</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>
