@@ -60,6 +60,7 @@
 		<module>jcore-lingpipegazetteer-ae</module>
 		<module>jcore-lingpipe-porterstemmer-ae</module>
 		<module>jcore-mantra-xml-types</module>
+		<module>jcore-medtagger</module>
 		<module>jcore-mstparser-ae</module>
 		<module>jcore-muc7-reader</module>
 		<module>jcore-opennlp-chunk-ae</module>

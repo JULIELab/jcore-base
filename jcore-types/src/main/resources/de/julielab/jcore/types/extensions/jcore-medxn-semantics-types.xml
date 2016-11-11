@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>jcore-semantic-medxn-types</name>
+    <description/>
+    <version>1.0</version>
+    <vendor/>
+  <imports>
+    <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+  </imports>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.RomanNumeralAnnotation</name>
+      <description>Adapted from OHNLP: org.ohnlp.typesystem.type.textsem.RomanNumeralAnnotation</description>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.FractionAnnotation</name>
+      <description>Adapted from OHNLP: org.ohnlp.typesystem.type.textsem.FractionAnnotation</description>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.DateAnnotation</name>
+      <description>Adapted from OHNLP: org.ohnlp.typesystem.type.textsem.DateAnnotation</description>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.TimeAnnotation</name>
+      <description>Adapted from OHNLP: org.ohnlp.typesystem.type.textsem.TimeAnnotation</description>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.RangeAnnotation</name>
+      <description>Adapted from OHNLP: org.ohnlp.typesystem.type.textsem.RangeAnnotation</description>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.MeasurementAnnotation</name>
+      <description>Adapted from OHNLP: org.ohnlp.typesystem.type.textsem.MeasurementAnnotation</description>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.PersonTitleAnnotation</name>
+      <description>Adapted from OHNLP: org.ohnlp.typesystem.type.textsem.PersonTitleAnnotation</description>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+    	<name>de.julielab.jcore.types.ohnlp.ContextAnnotation</name>
+    	<description>Contextual information of an entity. Adapted from: OHNLP org.ohnlp.typesystem.type.textsem.ContextAnnotation</description>
+    	<supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+    	<features>
+    		<featureDescription>
+    			<name>FocusText</name>
+    			<description/>
+    			<rangeTypeName>uima.cas.String</rangeTypeName>
+    		</featureDescription>
+    		<featureDescription>
+    			<name>Scope</name>
+    			<description/>
+    			<rangeTypeName>uima.cas.String</rangeTypeName>
+    		</featureDescription>
+    	</features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

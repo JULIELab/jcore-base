@@ -19,7 +19,6 @@
     <import location="extensions/jcore-dta-types.xml"/>
     <import location="extensions/jcore-evaluation-types.xml"/>
     <import location="extensions/jcore-mantra-types.xml"/>
-    <import location="extensions/jcore-medex-types.xml"/>
     <import location="extensions/jcore-mmax-types.xml"/>
     <import location="extensions/jcore-muc7-types.xml"/>
     <import location="extensions/jcore-semantics-ace-types.xml"/>
