@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>jcore-medxn-all-types</name>
+    <description/>
+    <version>1.0</version>
+    <vendor/>
+  <imports>
+    <import name="de.julielab.jcore.types.extensions.jcore-medxn-general-types"/>
+    <import name="de.julielab.jcore.types.extensions.jcore-medxn-reference-types"/>
+    <import name="de.julielab.jcore.types.extensions.jcore-medxn-semantics-types"/>
+    <import name="de.julielab.jcore.types.extensions.jcore-medxn-structure-types"/>
+    <import name="de.julielab.jcore.types.extensions.jcore-medxn-syntactic-types"/>
+  </imports>
+</typeSystemDescription>

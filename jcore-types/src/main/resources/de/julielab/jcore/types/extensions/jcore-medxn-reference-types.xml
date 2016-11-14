@@ -428,7 +428,7 @@ More qualifying information on how the procedure was done. Adapted from: OHNLP o
   <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.TemporalRelation</name>
       <description>Based on ISO TimeML's TLINK.</description>
-      <supertypeName>de.julielab.jcore.types.Relation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ohnlp.ElementRelation</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.Procedure</name>
@@ -485,7 +485,7 @@ More qualifying information on how the procedure was done. Adapted from: OHNLP o
     <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.LocationOf</name>
       <description>A UMLS relation between clinical elements. Adapted from: OHNLP org.ohnlp.typesystem.type.relation.LocationOf</description>
-      <supertypeName>de.julielab.jcore.types.RelationMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ohnlp.ElementRelation</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.Time</name>
@@ -626,7 +626,7 @@ More qualifying information on how the procedure was done. Adapted from: OHNLP o
     <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.ManifestationOf</name>
       <description>A UMLS relation between clinical elements. Adapted from: OHNLP org.ohnlp.typesystem.type.relation.ManifestationOf</description>
-      <supertypeName>de.julielab.jcore.types.RelationMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ohnlp.ElementRelation</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.Lab</name>
@@ -668,12 +668,12 @@ More qualifying information on how the procedure was done. Adapted from: OHNLP o
     <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.Affects</name>
       <description>A UMLS relation between clinical elements.</description>
-      <supertypeName>de.julielab.jcore.types.RelationMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ohnlp.ElementRelation</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.AttributeRelation</name>
       <description>A real-world relationship between an Element and an Attribute. Adapted from: OHNLP org.ohnlp.typesystem.type.relation.AttributeRelation</description>
-      <supertypeName>de.julielab.jcore.types.RelationMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Relation</supertypeName>
       <features>
         <featureDescription>
           <name>arg1</name>
@@ -719,7 +719,24 @@ More qualifying information on how the procedure was done. Adapted from: OHNLP o
   <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.ResultOf</name>
       <description>A UMLS relation between clinical elements.</description>
-      <supertypeName>de.julielab.jcore.types.RelationMention</supertypeName>
+      <supertypeName>de.julielab.jcore.types.ohnlp.ElementRelation</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.ElementRelation</name>
+      <description/>
+      <supertypeName>de.julielab.jcore.types.Relation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>arg1</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.Element</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>arg2</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.Element</rangeTypeName>
+        </featureDescription>
+      </features>
     </typeDescription>
   </types>
 </typeSystemDescription>

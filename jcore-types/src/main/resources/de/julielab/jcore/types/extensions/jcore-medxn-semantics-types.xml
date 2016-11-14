@@ -6,6 +6,7 @@
     <vendor/>
   <imports>
     <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+  <import name="de.julielab.jcore.types.extensions.jcore-medxn-reference-types"/>
   </imports>
   <types>
     <typeDescription>
@@ -59,6 +60,116 @@
     			<rangeTypeName>uima.cas.String</rangeTypeName>
     		</featureDescription>
     	</features>
+    </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.EntityMention</name>
+      <description/>
+      <supertypeName>de.julielab.jcore.types.EntityMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>entity</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.Entity</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.EventMention</name>
+      <description/>
+      <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>event</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.Event</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.TimeMention</name>
+      <description/>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>time</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.Time</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>timeClass</name>
+          <description>DATE, DURATION, QUANTIFIER, PREPOSTEXP, etc.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.Modifier</name>
+      <description/>
+      <supertypeName>de.julielab.jcore.types.ConceptMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>normalizedForm</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.Attribute</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>category</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.MedicationEventMention</name>
+      <description>A text string (EventMention and therefore ConceptMention) that refers to a (Medication) Event. Adapted from: OHNLP org.ohnlp.typesystem.type.textsem.MedicationEventMention</description>
+      <supertypeName>de.julielab.jcore.types.ohnlp.EventMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>medicationFrequency</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.MedicationFrequency</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>medicationDuration</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.MedicationDuration</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>medicationRoute</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.MedicationRoute</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>medicationStatusChange</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.MedicationStatusChange</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>medicationDosage</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.MedicationDosage</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>medicationStrength</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.MedicationStrength</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>medicationForm</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.MedicationForm</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>startDate</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.Date</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>endDate</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.Date</rangeTypeName>
+        </featureDescription>
+      </features>
     </typeDescription>
   </types>
 </typeSystemDescription>
