@@ -21,7 +21,7 @@
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
  *******************************************************************************/
-package org.ohnlp.medtagger.context;
+package org.ohnlp.medtagger.general.context;
 
 
 import java.util.ArrayList;
@@ -34,12 +34,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import org.ohnlp.medtagger.type.ConceptMention;
+import de.julielab.jcore.types.ohnlp.ConceptMention;
 
-import org.ohnlp.typesystem.type.textspan.Sentence;
-import org.ohnlp.medtagger.context.impl.ConText;
-import org.ohnlp.medtagger.context.impl.ConText.NegationContext;
-import org.ohnlp.medtagger.context.impl.ConText.TemporalityContext;
+import de.julielab.jcore.types.Sentence;
+import org.ohnlp.medtagger.general.context.impl.ConText;
+import org.ohnlp.medtagger.general.context.impl.ConText.NegationContext;
+import org.ohnlp.medtagger.general.context.impl.ConText.TemporalityContext;
 
 
 public class RuleContextAnnotator extends JCasAnnotator_ImplBase {

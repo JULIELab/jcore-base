@@ -340,5 +340,17 @@ document: title of the document</description>
         </value>
       </allowedValues>
     </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jcore.types.Segment</name>
+      <description>A segment is comparable to "de.julielab.jcore.types.Section" but for medical document (e.g. discharge summaries) we want a distinction between these types</description>
+      <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+      <features>
+        <featureDescription>
+          <name>value</name>
+          <description>SecTag reference??</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
   </types>
 </typeSystemDescription>

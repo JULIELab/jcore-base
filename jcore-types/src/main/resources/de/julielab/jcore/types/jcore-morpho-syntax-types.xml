@@ -6,6 +6,7 @@
   <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
     <import location="jcore-basic-types.xml"/>
+  <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
   </imports>
   <types>
     <typeDescription>
@@ -713,6 +714,13 @@
       <name>de.julielab.jcore.types.Sentence</name>
       <description>This annotation marks the span of a sentence.</description>
       <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
+    <features>
+        <featureDescription>
+          <name>segment</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.Segment</rangeTypeName>
+        </featureDescription>
+      </features>
     </typeDescription>
   <typeDescription>
       <name>de.julielab.jcore.types.PrunedDependencyRelation</name>

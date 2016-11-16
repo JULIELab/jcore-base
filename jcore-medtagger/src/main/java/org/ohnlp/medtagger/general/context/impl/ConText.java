@@ -21,7 +21,7 @@
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
  *******************************************************************************/
-package org.ohnlp.medtagger.context.impl;
+package org.ohnlp.medtagger.general.context.impl;
 
 import java.io.File;
 import java.io.FileNotFoundException;

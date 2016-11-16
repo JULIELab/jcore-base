@@ -26,19 +26,6 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>de.julielab.jcore.types.ohnlp.Segment</name>
-      <description>A section of a clinical text, e.g., Diagnosis, Current Medications, Problem List.  Different segments often have differing sublanguages and clinical relevance.     
-Equivalent to OHNLP: org.ohnlp.typesystem.type.textspan.Segment</description>
-      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
-      <features>
-        <featureDescription>
-          <name>value</name>
-          <description>preferred name of section</description>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-      </features>
-    </typeDescription>
-    <typeDescription>
       <name>de.julielab.jcore.types.ohnlp.Demographics</name>
       <description>Demographic information about the patient in a clinical document.  Typically comes from structured metadata.
       Equivalent to OHNLP: org.ohnlp.typesystem.type.structured.Demographics</description>

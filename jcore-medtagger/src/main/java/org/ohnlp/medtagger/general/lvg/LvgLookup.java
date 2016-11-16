@@ -21,7 +21,7 @@
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
  *******************************************************************************/
-package org.ohnlp.medtagger.lvg;
+package org.ohnlp.medtagger.general.lvg;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,7 +40,7 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import org.ohnlp.typesystem.type.syntax.WordToken;
+import de.julielab.jcore.types.ohnlp.WordToken;
 
 public class LvgLookup extends JCasAnnotator_ImplBase {
 

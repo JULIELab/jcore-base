@@ -22,7 +22,7 @@
  *  limitations under the License. 
  *******************************************************************************/
 
-package org.ohnlp.medtagger.sectag;
+package org.ohnlp.medtagger.general.sectag;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -42,9 +42,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 //import org.ohnlp.medtagger.type.ConceptMention;
 
-import org.ohnlp.typesystem.type.textspan.Segment;
-import org.ohnlp.typesystem.type.textspan.Sentence;
-import org.ohnlp.medtagger.lvg.LvgLookup;
+import de.julielab.jcore.types.Segment;
+import de.julielab.jcore.types.Sentence;
+import org.ohnlp.medtagger.general.lvg.LvgLookup;
 
 /**
  * @author Hongfang Liu
