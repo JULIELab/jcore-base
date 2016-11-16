@@ -41,12 +41,12 @@ import org.ohnlp.medtagger.ml.type.i2b2Event;
 import org.ohnlp.medtagger.ml.type.i2b2Token;
 import org.ohnlp.medtagger.ml.type.shareSlot;
 import org.ohnlp.medtagger.ml.type.shareToken;
-import org.ohnlp.medtagger.type.ConceptMention;
-import org.ohnlp.typesystem.type.syntax.BaseToken;
-import org.ohnlp.typesystem.type.syntax.NewlineToken;
-import org.ohnlp.typesystem.type.syntax.WordToken;
-import org.ohnlp.typesystem.type.textspan.Segment;
-import org.ohnlp.typesystem.type.textspan.Sentence;
+import de.julielab.jcore.types.ohnlp.ConceptMention;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.ohnlp.NewlineToken;
+import de.julielab.jcore.types.ohnlp.WordToken;
+import de.julielab.jcore.types.Segment;
+import de.julielab.jcore.types.Sentence;
 import org.ohnlp.medtagger.ml.crfsuite.CRFSuiteWrapper;
 
 public class FeatureGenerator {
@@ -69,7 +69,7 @@ public class FeatureGenerator {
 			FSIterator it = aJCas.getAnnotationIndex(DocumentAnnotation.type).iterator();
 			AnnotationIndex segIndex = aJCas.getAnnotationIndex(Segment.type);
 			AnnotationIndex senIndex = aJCas.getAnnotationIndex(Sentence.type);
-			AnnotationIndex tokenIndex = aJCas.getAnnotationIndex(BaseToken.type);
+			AnnotationIndex tokenIndex = aJCas.getAnnotationIndex(Token.type);
 			AnnotationIndex annotIndex = null;
 			if(type.equals("i2b2"))
 				annotIndex = aJCas.getAnnotationIndex(i2b2Event.type);
@@ -97,20 +97,20 @@ public class FeatureGenerator {
 
 				while (senIter.hasNext()) {
 					Sentence sen=(Sentence) senIter.next();
-					FSIterator baseTokenIter = tokenIndex.subiterator(sen);
+					FSIterator TokenIter = tokenIndex.subiterator(sen);
 					FSIterator cmIter = cmIndex.subiterator(sen);
-					List<BaseToken> baseTokenList = new ArrayList<BaseToken>();
+					List<Token> TokenList = new ArrayList<Token>();
 					List<ConceptMention> cmList = new ArrayList<ConceptMention>();
 
-					while (baseTokenIter.hasNext()) 
-						baseTokenList.add((BaseToken) baseTokenIter.next());
+					while (TokenIter.hasNext()) 
+						TokenList.add((Token) TokenIter.next());
 
 					while (cmIter.hasNext()) 
 						cmList.add((ConceptMention) cmIter.next());
 
 
-					for(int li=0; li < baseTokenList.size(); li++){
-						BaseToken bt= (BaseToken) baseTokenList.get(li);
+					for(int li=0; li < TokenList.size(); li++){
+						Token bt= (Token) TokenList.get(li);
 						if(bt instanceof NewlineToken) continue;
 						String ctext=bt.getCoveredText();
 						if(ctext.equals(":")) ctext="PUNC_COLON";
@@ -122,8 +122,8 @@ public class FeatureGenerator {
 
 						for(int j=li-leftWindow; j<=li+rightWindow; j++ ){
 							int ws=j-li;
-							if(j>=0 && j< baseTokenList.size()){
-								printStream.print(getTokenString((BaseToken) baseTokenList.get(j), ws));          
+							if(j>=0 && j< TokenList.size()){
+								printStream.print(getTokenString((Token) TokenList.get(j), ws));          
 							}
 							else if(j<0) printStream.print("\ttok["+ws+"]SSSSS");
 							else printStream.print("\ttok["+ws+"]EEEEE");
@@ -151,14 +151,14 @@ public class FeatureGenerator {
 		File featureFile = File.createTempFile("features", ".crfsuite");
 		// System.out.println(featureFile.toString()); 
 		featureFile.deleteOnExit();
-		HashMap<Integer,BaseToken> tokenIndexes=new HashMap<Integer,BaseToken>();
+		HashMap<Integer,Token> tokenIndexes=new HashMap<Integer,Token>();
 		HashMap<Integer,Sentence> sentIndexes=new HashMap<Integer,Sentence>();
 		int featureIndex=0;
 		int tagSize=0;
 		try {
 			FSIterator it = aJCas.getAnnotationIndex(DocumentAnnotation.type).iterator();
 			AnnotationIndex senIndex = aJCas.getAnnotationIndex(Sentence.type);
-			AnnotationIndex tokenIndex = aJCas.getAnnotationIndex(BaseToken.type);
+			AnnotationIndex tokenIndex = aJCas.getAnnotationIndex(Token.type);
 			AnnotationIndex cmIndex = aJCas.getAnnotationIndex(ConceptMention.type);
 
 			DocumentAnnotation docInfo;
@@ -173,18 +173,18 @@ public class FeatureGenerator {
 			while (senIter.hasNext()) {
 				Sentence sen=(Sentence) senIter.next();
 				if(sen.getCoveredText().equals("")) continue;
-				FSIterator baseTokenIter = tokenIndex.subiterator(sen);
+				FSIterator TokenIter = tokenIndex.subiterator(sen);
 				FSIterator cmIter = cmIndex.subiterator(sen);
-				List<BaseToken> baseTokenList = new ArrayList<BaseToken>();
+				List<Token> TokenList = new ArrayList<Token>();
 				List<ConceptMention> cmList = new ArrayList<ConceptMention>();
 
-				while (baseTokenIter.hasNext()) 
-					baseTokenList.add((BaseToken) baseTokenIter.next());
+				while (TokenIter.hasNext()) 
+					TokenList.add((Token) TokenIter.next());
 				while (cmIter.hasNext()) 
 					cmList.add((ConceptMention) cmIter.next());
 
-				for(int li=0; li < baseTokenList.size(); li++){
-					BaseToken bt= (BaseToken) baseTokenList.get(li);
+				for(int li=0; li < TokenList.size(); li++){
+					Token bt= (Token) TokenList.get(li);
 					if(bt instanceof NewlineToken) continue;
 					if(bt.getCoveredText().length()==0) continue;
 					printStream.print("U");
@@ -201,8 +201,8 @@ public class FeatureGenerator {
 
 					for(int j=li-leftWindow; j<=li+rightWindow; j++ ){
 						int ws=j-li;
-						if(j>=0 && j< baseTokenList.size()){
-							printStream.print(getTokenString((BaseToken) baseTokenList.get(j), ws));          
+						if(j>=0 && j< TokenList.size()){
+							printStream.print(getTokenString((Token) TokenList.get(j), ws));          
 						}
 						else if(j<0) printStream.print("\ttok["+ws+"]SSSSS");
 						else printStream.print("\ttok["+ws+"]EEEEE");
@@ -229,7 +229,7 @@ public class FeatureGenerator {
 		ConceptMention cm=null;
 		int lastEnd=-1;
 		for(int li=0; li<result.size(); li++){
-			BaseToken bt=tokenIndexes.get(li);
+			Token bt=tokenIndexes.get(li);
 			String rstr=result.get(li).trim();
 			//  if(bt==null || rstr.equals("")) {inE=false; continue;}
 			if(rstr.equals("O") || bt.getCoveredText().equals(",")) {
@@ -268,7 +268,7 @@ public class FeatureGenerator {
 	}
 
 
-	private String getTokenString(BaseToken bt, int ws){
+	private String getTokenString(Token bt, int ws){
 		String featStr="";
 		if(bt.getClass().equals(shareToken.class) || bt.getClass().equals(i2b2Token.class) || bt.getClass().equals(WordToken.class)){ 
 			WordToken wordToken=(WordToken) bt;
@@ -288,7 +288,7 @@ public class FeatureGenerator {
 		return featStr.replaceAll("  "," ");
 	}
 
-	private String getAnnotString(BaseToken bt, String type, List annotl){
+	private String getAnnotString(Token bt, String type, List annotl){
 		int size=annotl.size();
 		if(type.equals("share")){
 			if(bt instanceof shareToken) {
@@ -339,7 +339,7 @@ public class FeatureGenerator {
 		return "O";
 	}
 
-	private String getCMString(BaseToken bt, List<ConceptMention> cl){
+	private String getCMString(Token bt, List<ConceptMention> cl){
 		String msg="";
 		for(int j=0; j<cl.size(); j++) {
 			ConceptMention cm=(ConceptMention) cl.get(j);
@@ -399,12 +399,12 @@ public class FeatureGenerator {
 		FileOutputStream out = null;
 		File featureFile = File.createTempFile("features", ".crfsuite");
 		featureFile.deleteOnExit();
-		HashMap<Integer,BaseToken> tokenIndexes=new HashMap<Integer,BaseToken>();
+		HashMap<Integer,Token> tokenIndexes=new HashMap<Integer,Token>();
 		int featureIndex=0;    
 		try {
 			FSIterator it = aJCas.getAnnotationIndex(DocumentAnnotation.type).iterator();
 			AnnotationIndex senIndex = aJCas.getAnnotationIndex(Sentence.type);
-			AnnotationIndex tokenIndex = aJCas.getAnnotationIndex(BaseToken.type);
+			AnnotationIndex tokenIndex = aJCas.getAnnotationIndex(Token.type);
 			AnnotationIndex cmIndex = aJCas.getAnnotationIndex(ConceptMention.type);
 
 			DocumentAnnotation docInfo;
@@ -418,19 +418,19 @@ public class FeatureGenerator {
 			FSIterator senIter= senIndex.subiterator(docInfo);
 			while (senIter.hasNext()) {
 				Sentence sen=(Sentence) senIter.next();
-				FSIterator baseTokenIter = tokenIndex.subiterator(sen);
+				FSIterator TokenIter = tokenIndex.subiterator(sen);
 				FSIterator cmIter = cmIndex.subiterator(sen);
-				List<BaseToken> baseTokenList = new ArrayList<BaseToken>();
+				List<Token> TokenList = new ArrayList<Token>();
 				List<ConceptMention> cmList = new ArrayList<ConceptMention>();
 
-				while (baseTokenIter.hasNext()) 
-					baseTokenList.add((BaseToken) baseTokenIter.next());
+				while (TokenIter.hasNext()) 
+					TokenList.add((Token) TokenIter.next());
 				while (cmIter.hasNext()) 
 					cmList.add((ConceptMention) cmIter.next());
 
 
-				for(int li=0; li < baseTokenList.size(); li++){
-					BaseToken bt= (BaseToken) baseTokenList.get(li);
+				for(int li=0; li < TokenList.size(); li++){
+					Token bt= (Token) TokenList.get(li);
 					tokenIndexes.put(featureIndex, bt);
 					featureIndex++;
 					printStream.print("U");
@@ -442,8 +442,8 @@ public class FeatureGenerator {
 
 					for(int j=li-leftWindow; j<=li+rightWindow; j++ ){
 						int ws=j-li;
-						if(j>=0 && j< baseTokenList.size()){
-							printStream.print(getTokenString((BaseToken) baseTokenList.get(j), ws));          
+						if(j>=0 && j< TokenList.size()){
+							printStream.print(getTokenString((Token) TokenList.get(j), ws));          
 						}
 						else if(j<0) printStream.print("\ttok["+ws+"]SSSSS");
 						else printStream.print("\ttok["+ws+"]EEEEE");
@@ -468,7 +468,7 @@ public class FeatureGenerator {
 		shareSlot ss=null;
 		int lastEnd=-1;
 		for(int li=0; li<result.size(); li++){
-			BaseToken bt=tokenIndexes.get(li);
+			Token bt=tokenIndexes.get(li);
 			String rstr=result.get(li).trim();
 			if(bt==null || rstr.equals("")) {inE=false;}
 			if(rstr.equals("O")) {

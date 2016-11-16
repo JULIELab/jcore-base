@@ -43,7 +43,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.julielab.jcore.types.ohnlp.Match;
-import de.julielab.jcore.types.ConceptMention;
+import de.julielab.jcore.types.ohnlp.ConceptMention;
 import org.ohnlp.medtagger.ie.util.ResourceUtilManager;
 import de.julielab.jcore.types.Sentence;
 

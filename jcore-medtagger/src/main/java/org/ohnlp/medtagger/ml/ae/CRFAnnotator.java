@@ -35,7 +35,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 
 import org.ohnlp.medtagger.ml.util.FeatureGenerator;
-import org.ohnlp.medtagger.type.ConceptMention;
+import de.julielab.jcore.types.ohnlp.ConceptMention;
 
 /**
  * Focus on sentence-level sequential labeling assignment
