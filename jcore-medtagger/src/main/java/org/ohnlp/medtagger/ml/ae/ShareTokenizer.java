@@ -34,10 +34,10 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 
-import org.ohnlp.typesystem.type.syntax.BaseToken;
-import org.ohnlp.typesystem.type.syntax.NewlineToken;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.ohnlp.NewlineToken;
 
-import org.ohnlp.medtagger.ml.type.shareToken;
+import de.julielab.jcore.types.ohnlp.shareToken;
 
 /*
  * in java if the substring is indexed as x,y
@@ -50,14 +50,14 @@ public class ShareTokenizer extends JCasAnnotator_ImplBase {
     
    public void process(JCas jCas) throws AnalysisEngineProcessException {
 		JFSIndexRepository indexes = jCas.getJFSIndexRepository();
-		Iterator<?> tokenItr = indexes.getAnnotationIndex(BaseToken.type)
+		Iterator<?> tokenItr = indexes.getAnnotationIndex(Token.type)
 				.iterator();
 		int lineTokenCounter=0;
 		int tokenCounter=0;
-		List<BaseToken> shareTokenList = new ArrayList<BaseToken>();
+		List<Token> shareTokenList = new ArrayList<Token>();
 
 		while (tokenItr.hasNext()) {
-					BaseToken token = (BaseToken) tokenItr.next();
+					Token token = (Token) tokenItr.next();
 					if (! ( token instanceof NewlineToken)) {
 						int x=token.getBegin();
 						int y=token.getEnd();	
@@ -66,7 +66,7 @@ public class ShareTokenizer extends JCasAnnotator_ImplBase {
 					  	sstoken.setLineNumber(lineTokenCounter);
 	                	sstoken.setShareBegin(x-lineTokenCounter);
 	                	sstoken.setShareEnd(y-lineTokenCounter);
-	                	sstoken.setTokenNumber(tokenCounter++);
+	                	sstoken.setId(Integer.toBinaryString(tokenCounter++));
 	                	sstoken.addToIndexes();
 						}
 					
@@ -76,7 +76,7 @@ public class ShareTokenizer extends JCasAnnotator_ImplBase {
 				}
 		
 		for (int i = 0; i < shareTokenList.size() - 1; i++) {
-			BaseToken t = (BaseToken) shareTokenList.get(i);
+			Token t = (Token) shareTokenList.get(i);
 			t.removeFromIndexes(jCas);
 		}
    }

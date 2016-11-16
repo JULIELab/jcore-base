@@ -37,10 +37,10 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
-import org.ohnlp.medtagger.ml.type.i2b2Event;
-import org.ohnlp.medtagger.ml.type.i2b2Token;
-import org.ohnlp.medtagger.ml.type.shareSlot;
-import org.ohnlp.medtagger.ml.type.shareToken;
+import de.julielab.jcore.types.ohnlp.i2b2Event;
+import de.julielab.jcore.types.ohnlp.i2b2Token;
+import de.julielab.jcore.types.ohnlp.shareSlot;
+import de.julielab.jcore.types.ohnlp.shareToken;
 import de.julielab.jcore.types.ohnlp.ConceptMention;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.ohnlp.NewlineToken;
@@ -280,7 +280,7 @@ public class FeatureGenerator {
 
 			featStr="\ttok["+ws+"]="+ctext+"\tnorm"+"["+ws+"]="+norm
 					+"\tcapital"+"["+ws+"]="+wordToken.getCapitalization()
-					+"\tpos"+"["+ws+"]="+wordToken.getPartOfSpeech()
+					+"\tpos"+"["+ws+"]="+wordToken.getPosTag(0) // TODO: it just gets the first item ; what if there are more
 					+getOtherFeatures(wordToken.getCoveredText(), ws) 
 					+getPrefixAndSuffix(wordToken.getCoveredText(), ws);   
 		}

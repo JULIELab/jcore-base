@@ -31,10 +31,10 @@ import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
-import org.ohnlp.typesystem.type.syntax.BaseToken;
-import org.ohnlp.typesystem.type.syntax.NewlineToken;
-import org.ohnlp.typesystem.type.syntax.WordToken;
-import org.ohnlp.medtagger.ml.type.i2b2Token;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.ohnlp.NewlineToken;
+import de.julielab.jcore.types.ohnlp.WordToken;
+import de.julielab.jcore.types.ohnlp.i2b2Token;
 
 /*
  * in java if the substring is indexed as x,y
@@ -53,12 +53,12 @@ public class I2B2Tokenizer extends JCasAnnotator_ImplBase {
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
             jcas = aJCas;
             JFSIndexRepository indexes = jcas.getJFSIndexRepository();
-            Iterator<?> btItr = indexes.getAnnotationIndex(BaseToken.type)
+            Iterator<?> btItr = indexes.getAnnotationIndex(Token.type)
     				.iterator();
     		String docText=jcas.getDocumentText();
-    		ArrayList <BaseToken> btList=new ArrayList<BaseToken>();
+    		ArrayList <Token> btList=new ArrayList<Token>();
     			while (btItr.hasNext()) {
-    		   BaseToken bt= (BaseToken) btItr.next();
+    		   Token bt= (Token) btItr.next();
     		   btList.add(bt);				
     		}
           
@@ -68,7 +68,7 @@ public class I2B2Tokenizer extends JCasAnnotator_ImplBase {
 	  int startToken=1;
 	   docText+="\n";
 		char[] charArray=docText.toCharArray(); 
-		BaseToken cbt=(BaseToken) btList.get(0);
+		Token cbt=(Token) btList.get(0);
 		cbt.removeFromIndexes();
 		int cbtIndex=0;
     	
@@ -85,7 +85,7 @@ public class I2B2Tokenizer extends JCasAnnotator_ImplBase {
 				  int y=charPos-1;
      
                 	i2b2Token token = new i2b2Token(jcas,x , y);
-                	token.setPartOfSpeech(cbt.getPartOfSpeech());
+                	token.setPosTag(cbt.getPosTag());
                 	if(cbt instanceof WordToken){
                 		WordToken lwt=(WordToken) cbt;
                 		token.setCanonicalForm(lwt.getCanonicalForm());
@@ -94,7 +94,7 @@ public class I2B2Tokenizer extends JCasAnnotator_ImplBase {
                 	token.setLineNumber(newlineCounter);
                 	token.setI2b2Begin(x+1);
                 	token.setI2b2End(y+1);
-                	token.setTokenNumber(tokenCounter++);
+                	token.setId(Integer.toString(tokenCounter++));
                 	token.setLineTokenNumber(lineTokenCounter++);
                 	token.addToIndexes();
                 	
