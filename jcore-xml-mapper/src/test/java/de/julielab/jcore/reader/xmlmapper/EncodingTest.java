@@ -16,8 +16,8 @@ public class EncodingTest {
 	    String xmlDocument = "";
 	    xmlDocument += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	    xmlDocument += "<root>";
-//	    xmlDocument += "<token>emoji\uD83C\uDDE7</token>";
-	    xmlDocument += "<token>"+new String(Character.toChars(0x1F1E7))+"</token>";
+	    xmlDocument += "<token>emoji\uD83C\uDDE7</token>";
+//	    xmlDocument += "<token>"+new String(Character.toChars(0x1F1E7))+"</token>";
 	    xmlDocument += "</root>";
 	    VTDGen vg = new VTDGen();
 	    vg.setDoc(xmlDocument.getBytes("UTF-8"));

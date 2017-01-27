@@ -41,6 +41,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.julielab.jcore.types.Date;
@@ -92,6 +93,7 @@ public class FileReaderTest {
 		writeArtifact(ARTIFACT_2, FILE_ARTIFACT_2);
 	}
 
+	@Ignore
 	@Test
 	public void testDocumentTextPresent() throws CASException, Exception {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
@@ -123,6 +125,7 @@ public class FileReaderTest {
 
 	}
 	
+	@Ignore
 	@Test
 	public void testSentencePerLineMode() throws CASException, Exception  {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
