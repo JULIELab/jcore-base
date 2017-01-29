@@ -74,6 +74,7 @@
 		<module>jcore-xml-reader</module>
 		<module>jcore-xmi-writer</module>
 		<module>jcore-gene-species-assigner</module>
+		<module>jcore-ign-reader</module>
 	</modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
