@@ -30,5 +30,22 @@
         </featureDescription>
       </features>
     </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.MedAttr</name>
+      <description>Medication name and attributes that simply hold string and offset</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>tag</name>
+          <description>semantic tag - eg, med, freq,...</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.LookupWindow</name>
+      <description>lookup window for drug attributes</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+    </typeDescription>
   </types>
 </typeSystemDescription>

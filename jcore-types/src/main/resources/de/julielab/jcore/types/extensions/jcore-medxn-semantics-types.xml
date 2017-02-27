@@ -7,6 +7,7 @@
   <imports>
     <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
   <import name="de.julielab.jcore.types.extensions.jcore-medxn-reference-types"/>
+  <import name="de.julielab.jcore.types.extensions.jcore-medxn-general-types"/>
   </imports>
   <types>
 	<typeDescription>
@@ -217,6 +218,29 @@
           <name>endDate</name>
           <description/>
           <rangeTypeName>de.julielab.jcore.types.ohnlp.Date</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jcore.types.ohnlp.Drug</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>attrs</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jcore.types.ohnlp.MedAttr</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>name</name>
+          <description/>
+          <rangeTypeName>de.julielab.jcore.types.ohnlp.ConceptMention</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>normDrug</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
