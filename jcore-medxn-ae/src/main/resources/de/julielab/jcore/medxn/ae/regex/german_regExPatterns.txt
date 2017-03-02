@@ -7,21 +7,23 @@
 ## First occurred string will be matched in regular expression pattern using OR ("|"). So, use a longer before a shorter string (eg, months|month)	
 
 ## Avoid overlaps between dosage_form and strength_unit
-@STRENGTH_UNIT@::mg/dl|mg/ml|g/l|milligrams|milligram|mg|grams|gram|g|micrograms|microgram|mcg|meq|iu|cc|units|unit|tablespoons|tablespoon|teaspoons|teaspoon
-@DOSAGE_FORM@::tablet|tab|capsule|caplet|cap|pill|lozenge|packet|patch|puff|squirt|gel|softgel
-@DURATION_UNIT@::hours|hour|hrs|days|day|weeks|week|months|month|mons|mon|years|year|yrs|yr
-@STR_NUM@::half|one|two|three|four|five|six|seven|eight|nine|ten|twelve
-@MEAL@::breakfast|lunch|dinner|supper|meals|meal
-@DAYTIME@::am|pm|a\\.m\\.|p\\.m\\.|morning|afternoon|noon|evening|night|daytime|nighttime|bedtime|h\\.s\\.|hs
-@DAYS@::monday|mon|tuesday|tues|wednesday|wed|thursday|thurs|friday|fri|saturday|sat|sunday|sun|day|mondays|tuesdays|wednesdays|thursdays|fridays|saturdays|sundays
-@TIME_UNIT@::hour|hr|h|minute|min|hours|hrs|minutes|mins
-@DAY_UNIT@::day|d|week|wk|month|mon|days|weeks|wks|months|mons
-@PER_UNIT@::(?:(?:a|one|per)(?:\\s+|-)(?:day|week|wk|month|mon))|nightly|daily|weekly|monthly 
-@ASNEED@::as necessary|as needed|as-needed|as directed|as-directed|prn|p\\.r\\.n\\.
-@NUMBER@::(?:half|one three|one fourth|one|two|three|four|five|six|seven|eight|nine|ten|\\d/\\d|\\d\\.\\d|\\d+)(?:(?: |-)?(?:-|to)(?: |-)?(?:half|one three|one fourth|one|two|three|four|five|six|seven|eight|nine|ten|\\d/\\d|\\d\\.\\d|\\d+))?
+@STRENGTH_UNIT@::µg|mg|g||ml|l|ie|i.e.|mikrogramm?s?|microgramm?s?|milligramm?s?|gramm?s?|millilitern?|litern?
+@STRENGTH_UNIT_ADD@::min\\.?|h|d|minuten?|stunden?|tag(?:en)?|die|o2\\s+/\\s+min\.?(?:ute)?
+@STR_NUM@::(?:ein)?viertel|halbe|dreiviertel|ganze|eine?|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf
+@DOSAGE_FORM@::trpf\\.?|tropfen|tabl?\\.?|tabletten?|amp\\.?|ampullen?|hub|kapseln?|kaps\\.?|kps\\.?|hochdosis
+@DURATION_UNIT@::m(?:in)?\\.?|minuten?|h|stunden?|d|tage?n?|w|wochen?|m|monate?n?|y|jahre?n?
+@DURATION_BREAK@::beendet|pausiert|ende|pause|beendigung|pausierung|kurzzeitig|lebenslang
+@MEAL@::frühstück|mittag|abendbrot|mittagessen|abendessen|mahlzeit(?:en)?
+@DAYTIME@::morgens?|mittags?|abends?|nachts?|uhr|h|schlafengehen
+@DAYS@::montags?|mo|dienstags?|di|mittwochs?|mi|donnerstags|do|freitags?|fr|samstags?|sonnabends?|sa|sonntags?|so
+@TIME_UNIT@::stunden?|h|minuten?|mins?
+@NUMBER@::(?:(?:ein)?viertel|halbe|dreiviertel|ganze|eine?|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf|\\d/\\d|\\d\\.\\d|\\d+)(?:(?: |-)?(?:-|to)(?: |-)?(?:(?:ein)?viertel|halbe|dreiviertel|ganze|eine?|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf|\\d/\\d|\\d\\.\\d|\\d+))?
+@DAY_UNIT@::d|tage?n?|w|wochen?|m|monate?n?
+@PER_UNIT@::(?:(?:am|im|(?:in\\sder)|pro)(?:\\s+|-)(?:tag|woche|monat))|nächtlich|täglich|wöchentlich|monatlich
+@ASNEED@::(?:b(?:ei|\\.))? bedarf|wie (?:ver|vorge|be)schrieben|wie (?:an|vor)?gegeben
 @DECIMAL_NUM@::(?:\\d+,)?\\d+(?:\\.\\d+)?(?:(?: |-)?(?:-|to)(?: |-)?(?:\\d+,)?\\d+(?:\\.\\d+)?)?
 @FREQ_LATIN@::tid|bd|bid|bis|qd|qhs|qad|qam|qpm|qds|qh|qid|qqh|od|t\\.i\\.d\\.|b\\.d\\.|b\\.i\\.d.|q\\.d\\.|q\\.h\\.s\\.|q\\.a\\.d\\.|q\\.a\\.m\\.|q\\.p\\.m\\.|q\\.d\\.s\\.|q\\.h\\.|q\\.i\\.d\\.|q\\.q\\.h\\.|o\\.d\\.
-@ROUTE@::subcutaneously|sq|intervenous|intervenously|injected|transdermal|gastric|duodental|skin|pv|topical|topically|vaginally|po|p\\.o\\.|mouth|oral|orally|rectally|anally|pr|p\\.r\\.|ou|o\\.u\\.|iv|nostril|intramuscular
+@ROUTE@::nasensonde|stents?|maske|infusion(?:en)?|inhalation|injektion(?:en)?|subkutane?n?|orale?n?|intravenöse?n?
 
 ##== Define regular expressions here ==##
 ## Format: 	"tag::regex" or "tag%group_number_in_regex::regex"
@@ -31,8 +33,6 @@
 
 ## cf)(\W|$) at the end is to take care of abbreviation with period
 
-## form - use @EXTENED_DF@ at the beginning
-form::\b(@EXTENED_DF@|@DOSAGE_FORM@|cream|nebulizer|neb|supplement|supplementation|aerosol|elixir|emulsion|enema|gel|implant|inhalant|injection|liquid|lotion|ointment|powder|shampoo|soap|solution|spray|suppository|syrup|gttae|gtts)(s|es)?\b
 route%1::\b(@ROUTE@)(\W|$)
 strength::\b(@DECIMAL_NUM@/)?(@DECIMAL_NUM@)(\s+|-)?(@STRENGTH_UNIT@)\b
 strength::\b(@DECIMAL_NUM@/)?(@DECIMAL_NUM@)\s?%

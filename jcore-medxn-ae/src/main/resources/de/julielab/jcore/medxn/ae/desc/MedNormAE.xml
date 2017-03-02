@@ -4,7 +4,7 @@
   <primitive>true</primitive>
   <annotatorImplementationName>org.ohnlp.medxn.ae.MedNormAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
-    <name>org.ohnlp.medxn.aes.MedNormAE</name>
+    <name>de.julielab.jcore.medxn.ae.desc.MedNormAE</name>
     <description>make a normalized medication description based on  RxNorm standard </description>
     <version>1.0</version>
     <vendor/>
@@ -12,7 +12,7 @@
     <configurationParameterSettings/>
     <typeSystemDescription>
       <imports>
-         <import name="org.ohnlp.medxn.types.MedXNTypes"/>
+         <import name="de.julielab.jcore.types.jcore-all-types"/>
      </imports>
     </typeSystemDescription>
     <typePriorities/>
