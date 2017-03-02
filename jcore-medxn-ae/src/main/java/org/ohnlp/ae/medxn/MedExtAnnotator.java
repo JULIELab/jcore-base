@@ -21,7 +21,7 @@
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
  *******************************************************************************/
-package org.ohnlp.medxn.ae;
+package org.ohnlp.ae.medxn;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,7 +46,7 @@ import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.ohnlp.ConceptMention;
 import de.julielab.jcore.types.ohnlp.Drug;
 import de.julielab.jcore.types.ohnlp.LookupWindow;
-import de.julielab.jcore.types.ohnlp.MedAttr;
+import de.julielab.jcore.types.medical.GeneralAttributeMention;
 
 
 
@@ -57,7 +57,7 @@ import de.julielab.jcore.types.ohnlp.MedAttr;
 public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 	class MedDesc {
 		ConceptMention med;
-		List<MedAttr> attrs = new ArrayList<MedAttr>();
+		List<GeneralAttributeMention> attrs = new ArrayList<GeneralAttributeMention>();
 	}
 	
 	Set<String> bogusMed;
@@ -162,11 +162,11 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 					
 			int[] span = setWindow(jcas, drugs.get(i), nextDrugBegin);
 			
-			Iterator<?> maItr = indexes.getAnnotationIndex(MedAttr.type).iterator();
-			MedAttr beforeMedAttr = null; //attribute right before medication
+			Iterator<?> maItr = indexes.getAnnotationIndex(GeneralAttributeMention.type).iterator();
+			GeneralAttributeMention beforeMedAttr = null; //attribute right before medication
 			int cnt=0;
 			while(maItr.hasNext()) {
-				MedAttr ma = (MedAttr) maItr.next();
+				GeneralAttributeMention ma = (GeneralAttributeMention) maItr.next();
 				if(ma.getBegin()>=span[0] && ma.getEnd()<=span[1]) {	
 					md.attrs.add(ma); 
 					cnt++;
@@ -187,7 +187,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 			//add time or volume attributes before the drug
 			boolean flag = false;
 			if(md.attrs.size()>0 && beforeMedAttr!=null) {
-				for(MedAttr ma : md.attrs) {
+				for(GeneralAttributeMention ma : md.attrs) {
 					if(ma.getTag().equals("form")) {
 						//eg1) 24 HR Imdur 30 MG Extended Release Tablet
 						if(ma.getCoveredText().toLowerCase().matches("(.*?extended release.*?)" +

@@ -21,7 +21,7 @@
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
  *******************************************************************************/
-package org.ohnlp.medxn.ae;
+package org.ohnlp.ae.medxn;
 
 import java.util.Iterator;
 

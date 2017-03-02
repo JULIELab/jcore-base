@@ -21,7 +21,7 @@
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
  *******************************************************************************/
-package org.ohnlp.medxn.ae;
+package org.ohnlp.ae.medxn;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,7 +43,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.julielab.jcore.types.ohnlp.MedAttr;
+import de.julielab.jcore.types.medical.GeneralAttributeMention;
 
 
 
@@ -83,11 +83,11 @@ public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
 	
 	protected void addToJCas2(JCas jcas, List<Attribute> annot) {
 		for(Attribute attr : annot) {
-			MedAttr ma = new MedAttr(jcas);
-			ma.setTag(attr.tag);
-			ma.setBegin(attr.begin);
-			ma.setEnd(attr.end);
-			ma.addToIndexes();
+			GeneralAttributeMention gam = new GeneralAttributeMention(jcas);
+			gam.setTag(attr.tag);
+			gam.setBegin(attr.begin);
+			gam.setEnd(attr.end);
+			gam.addToIndexes();
 		}
 	}
 	
