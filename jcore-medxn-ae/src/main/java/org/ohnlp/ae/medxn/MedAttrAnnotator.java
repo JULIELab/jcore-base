@@ -53,6 +53,8 @@ import de.julielab.jcore.types.medical.GeneralAttributeMention;
  * Extract medication attributes defined in regExPatterns
  */
 public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
+	public final static String REGEX_FILE = "regExPatterns";
+	
 	class Attribute {
 		String tag;
 		String text;
@@ -66,7 +68,7 @@ public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
 		regExPat = new HashMap< String, List<String> >();
 		
 		try {
-			InputStream in = getContext().getResourceAsStream("regExPatterns");
+			InputStream in = getContext().getResourceAsStream(REGEX_FILE);
 			regExPat = getRegEx(in);
 		} catch (ResourceAccessException e) {
 			e.printStackTrace();
@@ -108,19 +110,24 @@ public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
 				gnum = Integer.parseInt(toks[1]);
 			}
 			for(String regex : regExPat.get(tag)) {
-				Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+				Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
 				Matcher m = p.matcher(text);
 				while(m.find()) {
 					Attribute attr = new Attribute();
 					attr.tag = aTag; //w/o group number
-					attr.text = m.group(gnum);
+					String tText = m.group(gnum);
+					if (tText.length() == 0) continue;
+					boolean hasEndSpace = Character.isWhitespace(tText.charAt(tText.length() - 1));
+					if (hasEndSpace) tText = tText.substring(0, tText.length()-1);
+					attr.text = tText;
 					attr.begin = m.start(gnum);
-					attr.end = m.end(gnum);						
+					attr.end = m.end(gnum);
+					if (hasEndSpace) attr.end -= 1;
 					ret.add(attr);
+					System.out.println(m);
 				}
 			}
 		}
-		
 		return ret;
 	}
 	
@@ -142,7 +149,6 @@ public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
 			spans.add(span);
 			tmp.add(a);			
 		}
-		
 		//if one is subsumed by another, use a longer one 
 		//(CAUSION: duplicated instances will be removed all)
 		//duplicates must be removed before this step
