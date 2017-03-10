@@ -18,8 +18,11 @@ import com.aliasi.tokenizer.TokenizerFactory;
 public class StringNormalizerForChunking {
 
 	public enum Mode {
-		/** Punctuation characters are deleted completely, shrinking the string. */
-		DELETE, /** Punctuation characters are replaced by white spaces. */
+		/**
+		 * Punctuation characters are deleted completely, shrinking the string.
+		 */
+		DELETE,
+		/** Punctuation characters are replaced by white spaces. */
 		REPLACE
 	}
 
@@ -66,9 +69,9 @@ public class StringNormalizerForChunking {
 	/**
 	 * This method was meant for text normalization by just deleting punctuation
 	 * characters. However, the approach turned out to be suboptimal in cases
-	 * where a dictionary entry would be "SHP-1" and the text form would be
-	 * "SHP 1". That is, when in the text there is just a whitespace where there
-	 * is a punctuation character in the dictionary, we won't recognize the
+	 * where a dictionary entry would be "SHP-1" and the text form would be "SHP
+	 * 1". That is, when in the text there is just a whitespace where there is a
+	 * punctuation character in the dictionary, we won't recognize the
 	 * dictionary entry. Thus, a different normalization was developed, namely
 	 * in the other normalization method. It is supposed to be used together
 	 * with an approximate chunker.
@@ -102,7 +105,8 @@ public class StringNormalizerForChunking {
 	}
 
 	/**
-	 * This normalization method uses a porter stemmer and additionally removes
+	 * This normalization method uses a given TokenizerFactory (could also be a
+	 * PorterStemmerTokenizerFactory for stemming) and additionally removes
 	 * possessive 's constructions. Dashes and other punctuation is left
 	 * untouched. By using an approximate chunker, one can also handle
 	 * punctuation.
@@ -111,44 +115,40 @@ public class StringNormalizerForChunking {
 	 * @param tokenizerFactory
 	 * @return
 	 */
-	public static NormalizedString normalizeString(String str,
-			TokenizerFactory tokenizerFactory) {
-		//	boolean stemming = tokenizerFactory instanceof PorterStemmerTokenizerFactory;
+	public static NormalizedString normalizeString(String str, TokenizerFactory tokenizerFactory) {
+		// boolean stemming = tokenizerFactory instanceof
+		// PorterStemmerTokenizerFactory;
 
 		NormalizedString ns = new NormalizedString();
 		ns.offsetMap = new HashMap<>();
 
 		char[] strChars = str.toCharArray();
-		Tokenizer tokenizer = tokenizerFactory.tokenizer(strChars, 0,
-				strChars.length);
+		Tokenizer tokenizer = tokenizerFactory.tokenizer(strChars, 0, strChars.length);
 		StringBuilder sb = new StringBuilder();
 		Stack<String> tokenS = new Stack<>();
 		Map<Integer, Integer> deleteCandidateOffsetMap = new HashMap<>();
-		// According to the lingpipe API documentation, one starts with the next whitespace.
+		// According to the lingpipe API documentation, one starts with the next
+		// whitespace.
 		sb.append(tokenizer.nextWhitespace());
 		ns.offsetMap.put(0, 0);
 		String token;
 		while ((token = tokenizer.nextToken()) != null) {
-			// Handle possessive 's (like Parkinson's). It will be deleted. In case we have accidentally deleted some
-			// tokens, those are stored in the stack and their offsets are stored, too. In case it was an error, the
+			// Handle possessive 's (like Parkinson's). It will be deleted. In
+			// case we have accidentally deleted some
+			// tokens, those are stored in the stack and their offsets are
+			// stored, too. In case it was an error, the
 			// tokens are later added again in the "else" path.
 			if (token.equals("'")) {
 				int newStartOffset = sb.length() + sumOfStack(tokenS);
-				int newEndOffset = sb.length() + sumOfStack(tokenS)
-						+ token.length();
-				deleteCandidateOffsetMap.put(newStartOffset,
-						tokenizer.lastTokenStartPosition());
-				deleteCandidateOffsetMap.put(newEndOffset,
-						tokenizer.lastTokenEndPosition());
+				int newEndOffset = sb.length() + sumOfStack(tokenS) + token.length();
+				deleteCandidateOffsetMap.put(newStartOffset, tokenizer.lastTokenStartPosition());
+				deleteCandidateOffsetMap.put(newEndOffset, tokenizer.lastTokenEndPosition());
 				tokenS.push(token + tokenizer.nextWhitespace());
 			} else if (token.equals("s") && tokenS.size() == 1) {
 				int newStartOffset = sb.length() + sumOfStack(tokenS);
-				int newEndOffset = sb.length() + sumOfStack(tokenS)
-						+ token.length();
-				deleteCandidateOffsetMap.put(newStartOffset,
-						tokenizer.lastTokenStartPosition());
-				deleteCandidateOffsetMap.put(newEndOffset,
-						tokenizer.lastTokenEndPosition());
+				int newEndOffset = sb.length() + sumOfStack(tokenS) + token.length();
+				deleteCandidateOffsetMap.put(newStartOffset, tokenizer.lastTokenStartPosition());
+				deleteCandidateOffsetMap.put(newEndOffset, tokenizer.lastTokenEndPosition());
 				tokenS.push(token);
 				String ws = tokenizer.nextWhitespace();
 				if (ws.length() > 0) {
@@ -165,15 +165,13 @@ public class StringNormalizerForChunking {
 					deleteCandidateOffsetMap.clear();
 				}
 				// plural s, only when no stemming is done
-				//				if (!stemming && token.endsWith("s"))
-				//					token = token.substring(0, token.length() - 1);
+				// if (!stemming && token.endsWith("s"))
+				// token = token.substring(0, token.length() - 1);
 				sb.append(token);
 				int newStartOffset = sb.length() - token.length();
 				int newEndOffset = sb.length();
-				ns.offsetMap.put(newStartOffset,
-						tokenizer.lastTokenStartPosition());
-				ns.offsetMap
-						.put(newEndOffset, tokenizer.lastTokenEndPosition());
+				ns.offsetMap.put(newStartOffset, tokenizer.lastTokenStartPosition());
+				ns.offsetMap.put(newEndOffset, tokenizer.lastTokenEndPosition());
 				sb.append(tokenizer.nextWhitespace());
 			}
 		}
