@@ -122,6 +122,9 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
 	@ExternalResource(key = CHUNKER_RESOURCE_NAME, mandatory = true)
 	private ChunkerProvider provider;
+	/**
+	 * Removes diacritics and does lower casing
+	 */
 	private Transliterator transliterator;
 	private Chunker gazetteer = null;
 	private boolean caseSensitive;
@@ -242,13 +245,11 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 		String docText = aJCas.getDocumentText();
 		if (docText == null || docText.length() == 0)
 			return;
-		if (transliterate)
-			docText = transliterator.transform(docText);
 		if (useApproximateMatching && !transliterate && !caseSensitive)
 			docText = docText.toLowerCase();
 		NormalizedString normalizedDocText = null;
 		if (normalize) {
-			normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory);
+			normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory, transliterator);
 		}
 		LOGGER.debug("Performing actual Gazetteer annotation...");
 		Chunking chunking;
@@ -589,9 +590,6 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
 		int start = normalize ? normalizedDocText.getOriginalOffset(chunk.start()) : chunk.start();
 		int end = normalize ? normalizedDocText.getOriginalOffset(chunk.end()) : chunk.end();
-		if (normalize) {
-			System.out.println(chunk.start() + "-" + chunk.end() + " mapped to " + start + "-" + end + " from string " + normalizedDocText.string.substring(chunk.start(), chunk.end()) + " to string " + aJCas.getDocumentText().substring(start, end));
-		}
 
 		try {
 			if (mantraMode) {
