@@ -589,6 +589,9 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
 		int start = normalize ? normalizedDocText.getOriginalOffset(chunk.start()) : chunk.start();
 		int end = normalize ? normalizedDocText.getOriginalOffset(chunk.end()) : chunk.end();
+		if (normalize) {
+			System.out.println(chunk.start() + "-" + chunk.end() + " mapped to " + start + "-" + end);
+		}
 
 		try {
 			if (mantraMode) {
