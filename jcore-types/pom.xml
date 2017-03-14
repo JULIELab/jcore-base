@@ -10,6 +10,57 @@
 		<artifactId>jcore-base</artifactId>
 		<version>2.3.0-SNAPSHOT</version>
 	</parent>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>jcasgen-maven-plugin</artifactId>
+				<version>2.9.0</version>  <!-- change this to the latest version -->
+				<executions>
+					<execution>
+						<goals><goal>generate</goal></goals>  <!-- this is the only goal -->
+						<!-- runs in phase process-resources by default -->
+						<configuration>
+
+							<!-- REQUIRED -->
+							<typeSystemIncludes>
+								<!-- one or more ant-like file patterns
+                                     identifying top level descriptors -->
+								<typeSystemInclude>
+									src/main/resources/de/julielab/jcore/types/jcore-all-types.xml
+								</typeSystemInclude>
+							</typeSystemIncludes>
+
+							<!-- OPTIONAL -->
+							<!-- a sequence of ant-like file patterns
+                                 to exclude from the above include list -->
+							<typeSystemExcludes>
+							</typeSystemExcludes>
+
+							<!-- OPTIONAL -->
+							<!-- where the generated files go -->
+							<!-- default value:
+                                 ${project.build.directory}/generated-sources/jcasgen" -->
+							<outputDirectory>
+								src/main/java
+							</outputDirectory>
+
+							<!-- true or false, default = false -->
+							<!-- if true, then although the complete merged type system
+                                 will be created internally, only those types whose
+                                 definition is contained within this maven project will be
+                                 generated.  The others will be presumed to be
+                                 available via other projects. -->
+							<!-- OPTIONAL -->
+							<limitToProject>false</limitToProject>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
 	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-types</url>
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
