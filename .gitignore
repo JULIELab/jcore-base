@@ -6,3 +6,5 @@
 .classpath
 .DS_Store
 /target/
+*.iml
+**/*.iml
