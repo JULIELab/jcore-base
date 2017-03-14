@@ -5,4 +5,8 @@
 .project
 .classpath
 .DS_Store
+.idea
 /target/
+*.iml
+**/*.iml
+

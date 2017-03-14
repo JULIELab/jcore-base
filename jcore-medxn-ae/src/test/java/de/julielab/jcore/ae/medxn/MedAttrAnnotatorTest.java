@@ -123,4 +123,26 @@ public class MedAttrAnnotatorTest {
 				e.printStackTrace();
 			}
 	}
+	
+	@Test
+	public void testFrequency() {
+			String text;
+			try {
+				text = loadTestExpression(TEST_FILES_ROOT + "frequency");
+				String[] lines = text.split("\\r?\\n");
+				ajcas.setDocumentText(text);
+				
+				attrExtractor.process(ajcas);
+				
+				check(lines, ajcas);
+				reset();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (AnalysisEngineProcessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
 }
