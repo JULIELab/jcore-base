@@ -11,13 +11,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 
-import com.aliasi.tokenizer.PorterStemmerTokenizerFactory;
 import com.aliasi.tokenizer.Tokenizer;
 import com.aliasi.tokenizer.TokenizerFactory;
 import com.ibm.icu.text.Transliterator;
-
-import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking.NormalizedString;
 
 public class StringNormalizerForChunking {
 
@@ -63,10 +61,37 @@ public class StringNormalizerForChunking {
 
 	public static class NormalizedString {
 		public String string;
-		public Map<Integer, Integer> offsetMap;
+		private Map<Integer, Integer> offsetMap = new HashMap<>();
 
-		public Integer getOriginalOffset(int newOffset) {
-			return offsetMap.get(newOffset);
+		public Map<Integer, Integer> getOffsetMap() {
+			return offsetMap;
+		}
+
+		private TreeSet<Integer> normalizedOffsetSet;
+
+		public Integer getOriginalOffset(int normalizedOffset) {
+			Integer originalOffset = offsetMap.get(normalizedOffset);
+			if (originalOffset == null) {
+				originalOffset = deriveOriginalOffset(normalizedOffset);
+				offsetMap.put(normalizedOffset, originalOffset);
+			}
+			return originalOffset;
+		}
+
+		private Integer deriveOriginalOffset(int normalizedOffset) {
+			if (normalizedOffsetSet == null)
+				normalizedOffsetSet = new TreeSet<>(offsetMap.keySet());
+			Integer previousNormalizedOffset = normalizedOffsetSet.floor(normalizedOffset);
+			Integer originalPreviousOffset = offsetMap.get(previousNormalizedOffset);
+			int offsetShift = Math.abs(originalPreviousOffset - previousNormalizedOffset);
+			// Typically, the normalized string will be shorter than the
+			// original, thus the original offset would be larger.
+			if (originalPreviousOffset > previousNormalizedOffset)
+				return normalizedOffset + offsetShift;
+			// But if, for some reason, the normalized string is longer than the
+			// original, we would have to subtract the difference from the
+			// normalized offset.
+			return normalizedOffset - offsetShift;
 		}
 	}
 
@@ -85,7 +110,6 @@ public class StringNormalizerForChunking {
 	 */
 	public static NormalizedString normalizeString(String str) {
 		NormalizedString ns = new NormalizedString();
-		ns.offsetMap = new HashMap<>();
 		StringBuilder sb = new StringBuilder();
 		int deletedChars = 0;
 
@@ -119,12 +143,12 @@ public class StringNormalizerForChunking {
 	 * @param tokenizerFactory
 	 * @return
 	 */
-	public static NormalizedString normalizeString(String str, TokenizerFactory tokenizerFactory, Transliterator transliterator) {
+	public static NormalizedString normalizeString(String str, TokenizerFactory tokenizerFactory,
+			Transliterator transliterator) {
 		// boolean stemming = tokenizerFactory instanceof
 		// PorterStemmerTokenizerFactory;
 
 		NormalizedString ns = new NormalizedString();
-		ns.offsetMap = new HashMap<>();
 
 		char[] strChars = str.toCharArray();
 		Tokenizer tokenizer = tokenizerFactory.tokenizer(strChars, 0, strChars.length);

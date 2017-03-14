@@ -525,7 +525,16 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 		Annotation anno;
 		if (normalize) {
 			int start = normalizedDocText.getOriginalOffset(chunk.start());
-			int end = normalizedDocText.getOriginalOffset(chunk.end());
+			int end;
+			try {
+				end = normalizedDocText.getOriginalOffset(chunk.end());
+			} catch (Exception e) {
+				System.out.println("Text: " + normalizedDocText);
+				System.out.println("Chunk: " + chunk);
+				System.out.println("Chunk end: " + chunk.end());
+				System.out.println("Normalized Text: " + normalizedDocText.string.substring(chunk.start(), chunk.end()));
+				throw e;
+			}
 			anno = new Annotation(aJCas, start, end);
 		} else {
 			anno = new Annotation(aJCas, chunk.start(), chunk.end());

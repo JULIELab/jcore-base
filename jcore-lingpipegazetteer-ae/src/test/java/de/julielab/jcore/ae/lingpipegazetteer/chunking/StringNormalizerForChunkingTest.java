@@ -6,14 +6,12 @@
 
 package de.julielab.jcore.ae.lingpipegazetteer.chunking;
 
-import static org.junit.Assert.*;
-
-import java.nio.charset.Charset;
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.cglib.transform.TransformingClassGenerator;
 
 import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
 import com.aliasi.tokenizer.PorterStemmerTokenizerFactory;
@@ -65,7 +63,7 @@ public class StringNormalizerForChunkingTest {
 		assertEquals("The original offset is computed wrong", new Integer(3), ns.getOriginalOffset(2));
 		assertEquals("The original offset is computed wrong", new Integer(6), ns.getOriginalOffset(3));
 		assertEquals("The original offset is computed wrong", new Integer(7), ns.getOriginalOffset(4));
-		assertNull("There are more offset mappings than should be", ns.getOriginalOffset(5));
+		assertNull("There are more offset mappings than should be", ns.getOffsetMap().get(5));
 
 		text = "((2-n-butyl-6,7-dichloro-2-cyclopentyl-2,3-dihydro-1-oxo-1H-inden-5-yl)oxy)acetic acid";
 		// Outcome:
@@ -76,7 +74,7 @@ public class StringNormalizerForChunkingTest {
 		assertEquals("The original offset is computed wrong", new Integer(6), ns.getOriginalOffset(2));
 		assertEquals("The original offset is computed wrong", new Integer(16), ns.getOriginalOffset(9));
 		assertEquals("The original offset is computed wrong", new Integer(82), ns.getOriginalOffset(62));
-		assertNull("There are more offset mappings than should be", ns.getOriginalOffset(66));
+		assertNull("There are more offset mappings than should be", ns.getOffsetMap().get(66));
 	}
 
 	@Test
@@ -92,8 +90,27 @@ public class StringNormalizerForChunkingTest {
 		Transliterator t = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower");
 		assertTrue(t.transform(text).length() == text.length() - 2);
 		ns = StringNormalizerForChunking.normalizeString(text, new IndoEuropeanTokenizerFactory(), t);
+		assertEquals("Transliteration wasn't done correctly",
+				"each node either a sensor or a beacon is noted as nodep, p ∈ 𝕊 ∪ 𝔹, and vector vp is used to represent the coordinate of nodep. beacons are placed onto the map with fixed coordinates vj, where j ∈ 𝔹. we assume that each beacon is aware of its own absolute location.",
+				ns.string);
 		assertEquals(new Integer(83), ns.getOriginalOffset(82));
 		assertEquals(new Integer(188), ns.getOriginalOffset(186));
+	}
+
+	@Test
+	public void testNormalizedOffetsTransliterator2() {
+		// Here we test for "derived offsets". The issue is, the offsetMap in
+		// the NormalizedString class only has entries for each token, by
+		// default. However, it might happen that an offset is asked for that
+		// lies between tokens. In this case, the original offset must be
+		// "derived" be computing the offset shift. This is tested here.
+		String text = "b⃗1,2, respectively.";
+		Transliterator t = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower");
+		NormalizedString ns = StringNormalizerForChunking.normalizeString(text, new IndoEuropeanTokenizerFactory(), t);
+		// in the original string, the substring from 0 to 10 would be "b⃗1,2,
+		// res", since the first character is a two-byte character. In the
+		// (transliterated) normalized string, it is only one byte. This is why we expect to get one character more.
+		assertEquals("b⃗1,2, resp", text.substring(0, ns.getOriginalOffset(10)));
 	}
 
 	@Test
