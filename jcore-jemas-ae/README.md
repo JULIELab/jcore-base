@@ -1,7 +1,3 @@
-# Stanford Lemmatizer
-  
+# JEmAS
 
-**Descriptor Path**:
-```
-de.julielab.jcore.ae.stanford.lemma.desc.jcore-stanford-lemmatizer
-```
+This is a UIMA AE implementation of the core functionality of JEmAS, the Jena Emotion Analysis System.
