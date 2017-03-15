@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.ae.jemas.EmotionAnalyzer</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe JEmAS</name>
+    <description>A UIMA-based implementation of the core functionality of JEmAS, the Jena Emotion Analysis System.</description>
+    <version>2.0.0</version>
+    <vendor/>
+    <configurationParameters>
+      <configurationParameter>
+        <name>lexiconPath</name>
+        <description>The path to the emotion lexicon.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>lexiconPath</name>
+        <value>
+          <string>src/main/resources/de/julielab/jcore/ae/jemas/lexicons/warriner.vad</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-all-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.POSTag</type>
+        <type allAnnotatorFeatures="true">de.julielab.jcore.types.Lemma</type>
+        </inputs>
+        <outputs>
+        	<type allAnnotatorFeatures="true">de.julilab.jcore.types.LexicalDocumentEmotion</type>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>

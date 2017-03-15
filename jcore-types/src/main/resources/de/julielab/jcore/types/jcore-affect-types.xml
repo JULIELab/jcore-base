@@ -1,8 +1,46 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <name>jcore-affect-types</name>
-    <description></description>
+    <description/>
     <version>1.0</version>
-    <vendor></vendor>
-  <types></types>
+    <vendor/>
+  <imports>
+    <import location="jcore-document-meta-types.xml"/>
+  </imports>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jcore.types.DocumentEmotion</name>
+      <description>Emotion value (Valence, Arousal and Dominance) of a document.</description>
+      <supertypeName>de.julielab.jcore.types.AutoDescriptor</supertypeName>
+      <features>
+        <featureDescription>
+          <name>Valence</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>Arousal</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>Dominance</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jcore.types.LexicalDocumentEmotion</name>
+      <description>The emotion of a document as calculated by the emotion values of the words.</description>
+      <supertypeName>de.julielab.jcore.types.DocumentEmotion</supertypeName>
+      <features>
+        <featureDescription>
+          <name>EmotionalWordCount</name>
+          <description>The number of the words in a document which received an emotion value by the employed lexicon.</description>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
 </typeSystemDescription>
