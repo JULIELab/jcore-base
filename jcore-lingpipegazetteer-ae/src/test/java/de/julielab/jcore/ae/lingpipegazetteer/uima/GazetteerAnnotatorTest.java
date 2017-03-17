@@ -454,17 +454,14 @@ public class GazetteerAnnotatorTest extends TestCase {
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 		JCas jCas = annotator.newJCas();
 
-		jCas.setDocumentText("IFI 16");
+		jCas.setDocumentText("We shall now describe our system setup followed by our proposed solution, which is a fully distributed and absolute localization solution specifically designed for both one-hop and multi-hop WSNs. Our considered WSN consists of Ns number of sensors randomly placed onto a map of predefined size with Nb number of beacons. Let 𝕊 and 𝔹 be the sets describing all sensors and beacons respectively, where each sensor is noted as Sensori, i ∈ 𝕊 and each beacon is noted as Beaconj, j ∈ 𝔹. Each node either a sensor or a beacon is noted as Nodep, p ∈ 𝕊 ∪ 𝔹, and vector V⃗p is used to represent the coordinate of Nodep. Beacons are placed onto the map with fixed coordinates V⃗j, where j ∈ 𝔹. We assume that each beacon is aware of its own absolute location. Whereas each sensor is unaware of its own location, and is configured with an initial guess of location unrelated to its actual deployed location. The two-dimensional (2-D) localization problem is the estimation of Ns unknown-location coordinates V⃗i, where i ∈ 𝕊.\n");
 		annotator.process(jCas);
 
 		FSIterator<org.apache.uima.jcas.tcas.Annotation> it = jCas.getAnnotationIndex(EntityMention.type).iterator();
-		while (it.hasNext()) {
-			EntityMention e = (EntityMention) it.next();
-			System.out.println(e.getCoveredText() + " " + e.getSpecificType());
-			assertEquals("IFI 16", e.getCoveredText());
-			assertEquals("3428(1.)", e.getSpecificType());
-		}
-
+while (it.hasNext()) {
+	Annotation annotation = (Annotation) it.next();
+	System.out.println(annotation.getCoveredText());
+}
 	}
 
 	@Test

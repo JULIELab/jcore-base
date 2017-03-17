@@ -36,6 +36,13 @@
         <multiValued>true</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>SentencePerLine</name>
+        <description>Whether the files are preprocessed and have only one sentence per line.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -50,10 +57,17 @@
           <string>data/files</string>
         </value>
       </nameValuePair>
+    <nameValuePair>
+        <name>SentencePerLine</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
         <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+      <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>

@@ -1,0 +1,86 @@
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">23700993</PMID>
+      <DateCreated>
+        <Year>2013</Year>
+        <Month>08</Month>
+        <Day>06</Day>
+      </DateCreated>
+      <DateCompleted>
+        <Year>2014</Year>
+        <Month>02</Month>
+        <Day>26</Day>
+      </DateCompleted>
+      <DateRevised>
+        <Year>2013</Year>
+        <Month>08</Month>
+        <Day>06</Day>
+      </DateRevised>
+      <Article PubModel="Print">
+        <Journal>
+          <ISSN IssnType="Electronic">1875-6697</ISSN>
+          <JournalIssue CitedMedium="Internet">
+            <Volume>9</Volume>
+            <Issue>2</Issue>
+            <PubDate>
+              <Year>2013</Year>
+              <Month>Jun</Month>
+            </PubDate>
+          </JournalIssue>
+          <Title>Current computer-aided drug design</Title>
+          <ISOAbbreviation>Curr Comput Aided Drug Des</ISOAbbreviation>
+        </Journal>
+        <ArticleTitle>Molecular design and QSARs/QSPRs with molecular descriptors family.</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>195-205</MedlinePgn>
+        </Pagination>
+        <Abstract>
+          <AbstractText>The aim of the present paper is to present the methodology of the molecular descriptors family (MDF) as an integrative tool in molecular modeling and its abilities as a multivariate QSAR/QSPR modeling tool. An algorithm for extracting useful information from the topological and geometrical representation of chemical compounds was developed and integrated to calculate MDF members. The MDF methodology was implemented and the software is available online (http://l.academicdirect.org/Chemistry/SARs/MDF_SARs/). This integrative tool was developed in order to maximize performance, functionality, efficiency and portability. The MDF methodology is able to provide reliable and valid multiple linear regression models. Furthermore, in many cases, the MDF models were better than the published results in the literature in terms of correlation coefficients (statistically significant Steiger's Z test at a significance level of 5%) and/or in terms of values of information criteria and Kubinyi function. The MDF methodology developed and implemented as a platform for investigating and characterizing quantitative relationships between the chemical structure and the activity/property of active compounds was used on more than 50 study cases. In almost all cases, the methodology allowed obtaining of QSAR/QSPR models improved in explanatory power of structure-activity and structure-property relationships. The algorithms applied in the computation of geometric and topological descriptors (useful in modeling physicochemical or biological properties of molecules) and those used in searching for reliable and valid multiple linear regression models certain enrich the pool of low-cost low-time drug design tools. </AbstractText>
+        </Abstract>
+        <AuthorList CompleteYN="Y">
+          <Author ValidYN="Y">
+            <LastName>Bolboacă</LastName>
+            <ForeName>Sorana D</ForeName>
+            <Initials>SD</Initials>
+            <AffiliationInfo>
+              <Affiliation>Department of Medical Informatics and Biostatistics, Iuliu Ha􀀅ieganu University of Medicine and Pharmacy Cluj-Napoca, 6 Louis Pasteur, 400349 Cluj, Romania.</Affiliation>
+            </AffiliationInfo>
+          </Author>
+          <Author ValidYN="Y">
+            <LastName>Jäntschi</LastName>
+            <ForeName>Lorentz</ForeName>
+            <Initials>L</Initials>
+          </Author>
+          <Author ValidYN="Y">
+            <LastName>Diudea</LastName>
+            <ForeName>Mircea V</ForeName>
+            <Initials>MV</Initials>
+          </Author>
+        </AuthorList>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+          <PublicationType UI="D013485">Research Support, Non-U.S. Gov't</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United Arab Emirates</Country>
+        <MedlineTA>Curr Comput Aided Drug Des</MedlineTA>
+        <NlmUniqueID>101265750</NlmUniqueID>
+        <ISSNLinking>1573-4099</ISSNLinking>
+      </MedlineJournalInfo>
+      <CitationSubset>IM</CitationSubset>
+      <MeshHeadingList>
+        <MeshHeading>
+          <DescriptorName UI="D000465" MajorTopicYN="N">Algorithms</DescriptorName>
+        </MeshHeading>
+        <MeshHeading>
+          <DescriptorName UI="D015195" MajorTopicYN="N">Drug Design</DescriptorName>
+        </MeshHeading>
+        <MeshHeading>
+          <DescriptorName UI="D021281" MajorTopicYN="Y">Quantitative Structure-Activity Relationship</DescriptorName>
+        </MeshHeading>
+        <MeshHeading>
+          <DescriptorName UI="D012984" MajorTopicYN="N">Software</DescriptorName>
+        </MeshHeading>
+      </MeshHeadingList>
+    </MedlineCitation>

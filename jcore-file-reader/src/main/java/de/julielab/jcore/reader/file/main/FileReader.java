@@ -22,8 +22,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -31,6 +33,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -39,20 +42,45 @@ import org.apache.uima.util.ProgressImpl;
 
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.pubmed.Header;
+import de.julielab.jcore.types.Sentence;
 
 public class FileReader extends CollectionReader_ImplBase {
 
+	/**
+	 * Folder with docments; as of now (11/2016) no subdir's are crawled.
+	 */
 	public static final String DIRECTORY_INPUT = "InputDirectory";
+	/**
+	 * 
+	 */
 	public static final String FILENAME_AS_DOC_ID = "UseFilenameAsDocId";
+	/**
+	 * 
+	 */
 	public static final String PUBLICATION_DATES_FILE = "PublicationDatesFile";
+	/**
+	 * 
+	 */
 	public static final String ALLOWED_FILE_EXTENSIONS = "AllowedFileExtensions";
+	/**
+	 * 
+	 */
+	public static final String SENTENCE_PER_LINE = "SentencePerLine";
 
 	private ArrayList<File> files;
 
 	private int fileIndex;
 
+	@ConfigurationParameter(name = DIRECTORY_INPUT, mandatory = true)
+	private File inputDirectory;
+	@ConfigurationParameter(name = FILENAME_AS_DOC_ID, mandatory = false)
 	private boolean useFilenameAsDocId;
+	@ConfigurationParameter(name = PUBLICATION_DATES_FILE, mandatory = false)
 	private File publicationDatesFile;
+	@ConfigurationParameter(name = SENTENCE_PER_LINE, mandatory = false)
+	private boolean sentencePerLine;
+	@ConfigurationParameter(name = ALLOWED_FILE_EXTENSIONS, mandatory = false)
+	private String[] allowedExtensionsArray;
 
 	/**
 	 * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -60,17 +88,26 @@ public class FileReader extends CollectionReader_ImplBase {
 	@Override
 	public void initialize() throws ResourceInitializationException {
 
-		File inputDirectory = new File(((String) getConfigParameterValue(DIRECTORY_INPUT)).trim());
+		inputDirectory = new File(((String) getConfigParameterValue(DIRECTORY_INPUT)).trim());
 		if (getConfigParameterValue(PUBLICATION_DATES_FILE) != null) {
 			publicationDatesFile = new File(((String) getConfigParameterValue(PUBLICATION_DATES_FILE)).trim());
 		}
+		
+		Boolean spl = (Boolean) getConfigParameterValue(SENTENCE_PER_LINE);
+		if (null == spl) {
+			sentencePerLine = false;
+		} else {
+			sentencePerLine = spl;
+		}
+		
 		Boolean filenameAsDocId = (Boolean) getConfigParameterValue(FILENAME_AS_DOC_ID);
 		if (null == filenameAsDocId) {
 			useFilenameAsDocId = false;
 		} else {
 			useFilenameAsDocId = filenameAsDocId;
 		}
-		String[] allowedExtensionsArray = (String[]) getConfigParameterValue(ALLOWED_FILE_EXTENSIONS);
+		
+		allowedExtensionsArray = (String[]) getConfigParameterValue(ALLOWED_FILE_EXTENSIONS);
 		final Set<String> allowedExtensions = new HashSet<>();
 		if (null != allowedExtensionsArray) {
 			for (int i = 0; i < allowedExtensionsArray.length; i++) {
@@ -128,6 +165,31 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		String text = FileUtils.readFileToString(file, "UTF-8");
 		// String text = FileUtils.file2String(file);
+		
+		// sentence per line mode
+		if (sentencePerLine) {
+			BufferedReader rdr = new BufferedReader(new StringReader(text));
+			List<String> lines = new ArrayList<String>();
+			List<Integer> start = new ArrayList<Integer>();
+			List<Integer> end = new ArrayList<Integer>();
+			Integer tmp = 0;
+			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
+			    lines.add(line);
+			    start.add(tmp);
+			    end.add(tmp + line.length());
+			    tmp += (line.length() + 1);
+			}
+			rdr.close();
+			
+			for (Integer i = 0; i < lines.size(); i++) {
+				Sentence sent = new Sentence(jcas);
+				sent.setBegin(start.get(i));
+				sent.setEnd(end.get(i));
+				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
+				sent.addToIndexes();
+			}
+		}
+		
 		// put document in CAS
 		jcas.setDocumentText(text);
 

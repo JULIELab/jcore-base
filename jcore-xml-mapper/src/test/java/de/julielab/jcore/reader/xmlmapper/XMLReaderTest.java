@@ -67,8 +67,7 @@ import de.julielab.jcore.types.pubmed.ManualDescriptor;
  */
 public class XMLReaderTest {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(XMLReaderTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(XMLReaderTest.class);
 	private static final boolean DEBUG_MODE = true;
 	/**
 	 * Path to the XMLReader descriptor for Medline (multiple files)
@@ -86,8 +85,7 @@ public class XMLReaderTest {
 	/**
 	 * Test data
 	 */
-	private static final String[] EXPECTED_KEYWORDS = { "NASA", "Birth Rate",
-			"Doe v. Bolton" };
+	private static final String[] EXPECTED_KEYWORDS = { "NASA", "Birth Rate", "Doe v. Bolton" };
 	/**
 	 * Test data
 	 */
@@ -108,55 +106,44 @@ public class XMLReaderTest {
 	/**
 	 * Test data
 	 */
-	private static final String EXPECTED_DOCUMENT_TEXT = EXPECTED_TITLE + "\n"
-			+ EXPECTED_ABSTRACT_TEXT;
+	private static final String EXPECTED_DOCUMENT_TEXT = EXPECTED_TITLE + "\n" + EXPECTED_ABSTRACT_TEXT;
 	/**
 	 * Test data, format: LastName, ForeName, Initials, Affiliation
 	 */
 	private static final String[][] EXPECTED_AUTHORS = {
-			{
-					"Kemal Duru",
-					"N",
-					"N",
-					"Department of Obstetrics and Gynecology,"
-							+ " GATA School of Medicine, Ankara, Turkey." },
+			{ "Kemal Duru", "N", "N",
+					"Department of Obstetrics and Gynecology," + " GATA School of Medicine, Ankara, Turkey." },
 			{ "Morshedi", "M", "M", "" }, { "Oehninger", "S", "S", "" } };
 	/**
 	 * Test data, format: DataBankName, AccessionNumber, AccessionNumber,
 	 * AccessionNumber
 	 */
-	private static final String[][] EXPECTED_DB_INFO = {
-			{ "GENBANK", "AF078607", "AF078608", "AF078609" },
+	private static final String[][] EXPECTED_DB_INFO = { { "GENBANK", "AF078607", "AF078608", "AF078609" },
 			{ "GENBANKClinicalTrials.gov", "NTC00078607", "", "" },
 			{ "ISRCTN", "ISRCTN0000607", "ISRCTN0078608", "" } };
 	/**
 	 * Test data, format: DescriptorName, isMajorTopic_descriptor,
 	 * QualifierName, isMajorTopic_qualifier
 	 */
-	private static final String[][] EXPECTED_MESH_HEADINGS = {
-			{ "Annexin A5", "N", "metabolism", "N" },
-			{ "Cohort Studies", "N", "", "" },
-			{ "DNA", "N", "drug effects", "Y" } };
+	private static final String[][] EXPECTED_MESH_HEADINGS = { { "Annexin A5", "N", "metabolism", "N" },
+			{ "Cohort Studies", "N", "", "" }, { "DNA", "N", "drug effects", "Y" } };
 	/**
 	 * Test data
 	 */
-	private static final String[] EXPECTED_GENE_SYMBOLS = { "pyrB", "Ghox-lab",
-			"polC" };
+	private static final String[] EXPECTED_GENE_SYMBOLS = { "pyrB", "Ghox-lab", "polC" };
 	/**
 	 * Test data, format: RegistryNumber, NameOfSubstance
 	 */
-	private static final String[][] EXPECTED_CHEMICALS = {
-			{ "0", "Annexin A5" }, { "0", "Phosphatidylserines" } };
+	private static final String[][] EXPECTED_CHEMICALS = { { "0", "Annexin A5" }, { "0", "Phosphatidylserines" } };
 	/**
 	 * Test data, format: citationStatus, language, pmid
 	 */
-	private static final String[] EXPECTED_HEADER = { "MEDLINE", "eng",
-			"11119751.xml" };
+	private static final String[] EXPECTED_HEADER = { "MEDLINE", "eng", "11119751.xml" };
 	/**
 	 * test data, format: issn, volume, issue, title
 	 */
-	private static final String[] EXPECTED_JOURNAL = { "0015-0282", "74", "6",
-			"Fertility and sterility.", "Fertil Steril", "1200-7" };
+	private static final String[] EXPECTED_JOURNAL = { "0015-0282", "74", "6", "Fertility and sterility.",
+			"Fertil Steril", "1200-7" };
 	/**
 	 * test data, format: year, month, day <MedlineDate>2000
 	 * Spring-Summer</MedlineDate>
@@ -175,8 +162,7 @@ public class XMLReaderTest {
 	private static final String[] EXPECTED_FORE_NAMES = { "F", "L G" };
 	private static final String DIR_CAS_OUTPUT = "src/test/resources/xmi-output/";
 	private static final String EXPECTED_JOURNAL_TITLE = "Digestive and liver disease : official journal of the Italian Society of Gastroenterology and the Italian Association for the Study of the Liver";
-	private static final String[] EXPECTED_PUBTYPES = { "Case Reports",
-			"Journal Article", "Review" };
+	private static final String[] EXPECTED_PUBTYPES = { "Case Reports", "Journal Article", "Review" };
 	private static final String EXPECTED_DOI = "10.1016/j.ijom.2006.12.012";
 	/**
 	 * Used for building the filename for serializing the CAS if PMID is not
@@ -209,27 +195,20 @@ public class XMLReaderTest {
 		try {
 			assertTrue(medlineReader.hasNext());
 			while (medlineReader.hasNext()) {
-				CAS cas = CasCreationUtils
-						.createCas((AnalysisEngineMetaData) medlineReader
-								.getMetaData());
+				CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) medlineReader.getMetaData());
 				medlineReader.getNext(cas);
 				if (DEBUG_MODE) {
 					serializeCas(cas);
 				}
-				assertTrue("test documenttext", cas.getDocumentText() != null
-						&& cas.getDocumentText().length() > 0);
+				assertTrue("test documenttext", cas.getDocumentText() != null && cas.getDocumentText().length() > 0);
 				assertEquals(
 						"Mitigation of graft-versus-host disease in rats treated with allogeneic and xenogeneic antilymphocytic sera.\nThis is a very short test abstract.",
 						cas.getDocumentText());
-				Iterator<Annotation> iter = getTypeIterator(cas,
-						EntityMention.type);
+				Iterator<Annotation> iter = getTypeIterator(cas, EntityMention.type);
 				int counter = 0;
-				String[] types = new String[] { ":::diso:2,3", ":::spe",
-						":::pgn" };
-				String[] texts = new String[] { "graft-versus-host disease",
-						"rats", "sera" };
-				assertTrue("No entity mentions found in the CAS",
-						iter.hasNext());
+				String[] types = new String[] { ":::diso:2,3", ":::spe", ":::pgn" };
+				String[] texts = new String[] { "graft-versus-host disease", "rats", "sera" };
+				assertTrue("No entity mentions found in the CAS", iter.hasNext());
 				while (iter.hasNext()) {
 					EntityMention text = (EntityMention) iter.next();
 					String coveredText = text.getCoveredText();
@@ -260,8 +239,7 @@ public class XMLReaderTest {
 	@Test
 	public void testGetNextCas_singleFile() throws Exception {
 		medlineReader = createCollectionReader(DESC_XML_READER_SINGLE_FILE);
-		CAS cas = CasCreationUtils
-				.createCas((AnalysisEngineMetaData) medlineReader.getMetaData());
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) medlineReader.getMetaData());
 		try {
 			medlineReader.getNext(cas);
 		} catch (CollectionException e) {
@@ -281,6 +259,18 @@ public class XMLReaderTest {
 		checkMeSHList(cas);
 	}
 
+	@Test
+	public void testUnicodeCharOutsideBMP() throws Exception {
+		medlineReader = createCollectionReader(
+				"src/test/resources/XMLReaderDescriptor_medline_Unicode_outside_BMP.xml");
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) medlineReader.getMetaData());
+		medlineReader.getNext(cas);
+		JCas jCas = cas.getJCas();
+		Header header = (Header) jCas.getAnnotationIndex(Header.type).iterator().next();
+		AuthorInfo authorInfo = header.getAuthors(0);
+		System.out.println(authorInfo.getAffiliation().charAt(61));
+	}
+
 	private void checkHeader(CAS cas) {
 		Iterator<Annotation> typeIterator = getTypeIterator(cas, Header.type);
 		int i = 0;
@@ -290,12 +280,8 @@ public class XMLReaderTest {
 			assertEquals("MEDLINE", annotation.getCitationStatus());
 			assertEquals("19754895", annotation.getDocId());
 			assertEquals("eng", annotation.getLanguage());
-			assertEquals(
-					"x.xml",
-					annotation.getSource()
-							.substring(
-									annotation.getSource().lastIndexOf(
-											File.separator) + 1));
+			assertEquals("x.xml",
+					annotation.getSource().substring(annotation.getSource().lastIndexOf(File.separator) + 1));
 			assertEquals(4, annotation.getPubTypeList().size());
 			i++;
 		}
@@ -306,30 +292,21 @@ public class XMLReaderTest {
 
 	private void checkMeSHList(CAS cas) {
 		// fail("es werden die booleans von den nachfolgenden werten genommen");
-		String[] meshList = new String[] { "Animalsfalsenullfalse",
-				"Calcium Channels\n			falsemetabolismtrue",
-				"Membrane Proteins\n			falsemetabolismtrue",
-				"Signal Transduction\n			falsenullfalse",
-				"T-Lymphocytes\n			falsemetabolismtrue",
-				"Protein Binding\n			falsenullfalse", "Humansfalsenullfalse",
-				"Calciumfalsemetabolismfalse" };
-		Iterator<Annotation> typeIterator = getTypeIterator(cas,
-				MeshHeading.type);
+		String[] meshList = new String[] { "Animalsfalsenullfalse", "Calcium Channels\n			falsemetabolismtrue",
+				"Membrane Proteins\n			falsemetabolismtrue", "Signal Transduction\n			falsenullfalse",
+				"T-Lymphocytes\n			falsemetabolismtrue", "Protein Binding\n			falsenullfalse",
+				"Humansfalsenullfalse", "Calciumfalsemetabolismfalse" };
+		Iterator<Annotation> typeIterator = getTypeIterator(cas, MeshHeading.type);
 		int i = 0;
 		while (typeIterator.hasNext()) {
 			MeshHeading annotation = (MeshHeading) typeIterator.next();
-			assertEquals(
-					meshList[i++],
-					annotation.getDescriptorName()
-							+ annotation.getDescriptorNameMajorTopic()
-							+ annotation.getQualifierName()
-							+ annotation.getQualifierNameMajorTopic());
+			assertEquals(meshList[i++], annotation.getDescriptorName() + annotation.getDescriptorNameMajorTopic()
+					+ annotation.getQualifierName() + annotation.getQualifierNameMajorTopic());
 		}
 	}
 
 	private void checkPubTypeList(CAS cas) {
-		String[] journalStrings = new String[] {
-				"Journal Article1600-065X2311Immunological reviewsImmunol Rev148-59",
+		String[] journalStrings = new String[] { "Journal Article1600-065X2311Immunological reviewsImmunol Rev148-59",
 				"Research Support, N.I.H., Intramural\n			1600-065X2311Immunological reviewsImmunol Rev148-59",
 				"Review1600-065X2311Immunological reviewsImmunol Rev148-59",
 				"Research Support, N.I.H., Extramural\n			1600-065X2311Immunological reviewsImmunol Rev148-59" };
@@ -337,13 +314,9 @@ public class XMLReaderTest {
 		int i = 0;
 		while (typeIterator.hasNext()) {
 			Journal annotation = (Journal) typeIterator.next();
-			assertEquals(
-					journalStrings[i++],
-					annotation.getName() + annotation.getISSN()
-							+ annotation.getVolume() + annotation.getIssue()
-							+ annotation.getTitle()
-							+ annotation.getShortTitle()
-							+ annotation.getPages());
+			assertEquals(journalStrings[i++],
+					annotation.getName() + annotation.getISSN() + annotation.getVolume() + annotation.getIssue()
+							+ annotation.getTitle() + annotation.getShortTitle() + annotation.getPages());
 		}
 	}
 
@@ -358,8 +331,7 @@ public class XMLReaderTest {
 	}
 
 	private void checkAuthors(CAS cas) {
-		Iterator<Annotation> typeIterator = getTypeIterator(cas,
-				AuthorInfo.type);
+		Iterator<Annotation> typeIterator = getTypeIterator(cas, AuthorInfo.type);
 		int i = 0;
 		HashMap<String, String[]> authors = new HashMap<String, String[]>();
 		while (typeIterator.hasNext()) {
@@ -367,10 +339,7 @@ public class XMLReaderTest {
 			assertEquals(
 					"Laboratory of Cellular and Molecular Biology, Center for\n			Cancer Research, National Cancer Institute, Bethesda, MD 20892, USA.\n			barrv@mail.nih.gov",
 					annotation.getAffiliation());
-			authors.put(
-					annotation.getInitials(),
-					new String[] { annotation.getLastName(),
-							annotation.getForeName() });
+			authors.put(annotation.getInitials(), new String[] { annotation.getLastName(), annotation.getForeName() });
 		}
 		for (i = 0; i < this.authors.length; i++) {
 			assertEquals(this.authors[i][0], authors.get(this.authors[i][2])[0]);
@@ -380,11 +349,10 @@ public class XMLReaderTest {
 
 	private void checkAbstractText(CAS cas) {
 		String text = "";
-		Iterator<Annotation> typeIterator = getTypeIterator(cas,
-				AbstractText.type);
+		Iterator<Annotation> typeIterator = getTypeIterator(cas, AbstractText.type);
 		if (typeIterator.hasNext()) {
 			AbstractText abstractText = (AbstractText) typeIterator.next();
-			System.out.println("hier: " +abstractText.getBegin() + " " + abstractText.getEnd());
+			System.out.println("hier: " + abstractText.getBegin() + " " + abstractText.getEnd());
 			text = abstractText.getCoveredText();
 		}
 		assertEquals(abstractText, text);
@@ -400,19 +368,15 @@ public class XMLReaderTest {
 	}
 
 	private void checkDocText(CAS cas) {
-		assertEquals(abstractTitle  + "\n" + abstractText,
-				cas.getDocumentText());
+		assertEquals(abstractTitle + "\n" + abstractText, cas.getDocumentText());
 	}
 
 	String abstractText = "In the last few years, great progress has been made in\n				understanding how stromal interacting molecule 1 (STIM1), a protein\n				containing a calcium sensor that is located in the endoplasmic\n				reticulum, and Orai1, a protein that forms a calcium channel in the\n				plasma membrane, interact and give rise to store-operated calcium\n				entry. Pharmacological depletion of calcium stores leads to the\n				formation of clusters containing STIM and Orai that appear to be\n				sites for calcium influx. Similar puncta are also produced in\n				response to physiological stimuli in immune cells. In T cells\n				engaged with antigen-presenting cells, clusters containing STIM and\n				Orai accumulate at the immunological synapse. We recently discovered\n				that in activated T cells, STIM1 and Orai1 also accumulate in\n				cap-like structures opposite the immune synapse at the distal pole\n				of the cell. Both caps and puncta are long-lived stable structures\n				containing STIM1 and Orai1 in close proximity. The function of\n				puncta as sites of calcium influx is clear. We speculate that the\n				caps may provide a secondary site of calcium entry. Alternatively,\n				they may serve as a source of preformed channel complexes that move\n				to new immune synapses as T cells repeatedly engage\n				antigen-presenting cells.";
 	String abstractTitle = "Formation of STIM and Orai complexes: puncta and distal\n			caps.";
 
-	String[][] authors = new String[][] {
-			new String[] { "Barr", "Valarie A", "VA" },
-			new String[] { "Bernot", "Kelsie M", "KM" },
-			new String[] { "Shaffer", "Meredith H", "MH" },
-			new String[] { "Burkhardt", "Janis K", "JK" },
-			new String[] { "Samelson", "Lawrence E", "LE" } };
+	String[][] authors = new String[][] { new String[] { "Barr", "Valarie A", "VA" },
+			new String[] { "Bernot", "Kelsie M", "KM" }, new String[] { "Shaffer", "Meredith H", "MH" },
+			new String[] { "Burkhardt", "Janis K", "JK" }, new String[] { "Samelson", "Lawrence E", "LE" } };
 
 	/**
 	 * Test main functionality of the {@link CollectionReader}
@@ -437,10 +401,8 @@ public class XMLReaderTest {
 			medlineReader = getCollectionReader(DESC_XML_READER_MISSING_INPUT_DIR);
 			fail("Expected exception was not thrown");
 		} catch (Exception e) {
-			assertTrue(
-					"Exception should be an instance of ResourceInitializationException , but was "
-							+ e.getClass().getName(),
-					e instanceof ResourceInitializationException);
+			assertTrue("Exception should be an instance of ResourceInitializationException , but was "
+					+ e.getClass().getName(), e instanceof ResourceInitializationException);
 		}
 	}
 
@@ -452,9 +414,7 @@ public class XMLReaderTest {
 	private void processAllCases() {
 		try {
 			while (medlineReader.hasNext()) {
-				CAS cas = CasCreationUtils
-						.createCas((AnalysisEngineMetaData) medlineReader
-								.getMetaData());
+				CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) medlineReader.getMetaData());
 				medlineReader.getNext(cas);
 				if (DEBUG_MODE) {
 					serializeCas(cas);
@@ -486,8 +446,7 @@ public class XMLReaderTest {
 				outputDir.mkdirs();
 			String filePath = DIR_CAS_OUTPUT + filename + ".xmi";
 			LOGGER.debug("Writing file " + filePath);
-			XmiCasSerializer.serialize(cas, new FileOutputStream(new File(
-					filePath)));
+			XmiCasSerializer.serialize(cas, new FileOutputStream(new File(filePath)));
 		} catch (FileNotFoundException e) {
 			LOGGER.error("", e);
 		} catch (SAXException e) {
@@ -506,15 +465,12 @@ public class XMLReaderTest {
 	 * @throws Exception
 	 *             e.g. ResourceInitializationException
 	 */
-	private CollectionReader getCollectionReader(String descAnalysisEngine)
-			throws Exception {
+	private CollectionReader getCollectionReader(String descAnalysisEngine) throws Exception {
 		CollectionReader collectionReader = null;
 		XMLInputSource source;
 		source = new XMLInputSource(descAnalysisEngine);
-		ResourceSpecifier resourceSpecifier = (ResourceSpecifier) UIMAFramework
-				.getXMLParser().parse(source);
-		collectionReader = UIMAFramework
-				.produceCollectionReader(resourceSpecifier);
+		ResourceSpecifier resourceSpecifier = (ResourceSpecifier) UIMAFramework.getXMLParser().parse(source);
+		collectionReader = UIMAFramework.produceCollectionReader(resourceSpecifier);
 		return collectionReader;
 	}
 
@@ -524,8 +480,7 @@ public class XMLReaderTest {
 	 */
 	private void checkAllDocumentTexts() {
 		for (int i = 0; i < cases.size(); i++) {
-			LOGGER.trace(i + ". checking Docuemnt Text of cas with pmid: "
-					+ getPMID(cases.get(i)));
+			LOGGER.trace(i + ". checking Docuemnt Text of cas with pmid: " + getPMID(cases.get(i)));
 			String text = cases.get(i).getDocumentText();
 			// assertTrue(((text == null) ? "null" : text), (text != null) &&
 			// (!text.equals("")));
@@ -545,63 +500,44 @@ public class XMLReaderTest {
 			String pmid = getPMID(cas);
 			if (pmid.equals("11119751")) {
 				checkCount++;
-				assertTrue("Invalid keyWordList",
-						checkKeywords(cas, EXPECTED_KEYWORDS));
-				assertTrue("Invalid Authors",
-						checkAuthors(cas, EXPECTED_AUTHORS));
-				assertTrue("Invalid DBInfoList",
-						ckeckDBInfos(cas, EXPECTED_DB_INFO));
-				assertTrue("Invalid MeshHeading",
-						checkMeshHeadings(cas, EXPECTED_MESH_HEADINGS));
-				assertTrue("Invalid GeneSymbol",
-						checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-				assertTrue("Invalid Chemical",
-						checkChemicals(cas, EXPECTED_CHEMICALS));
+				assertTrue("Invalid keyWordList", checkKeywords(cas, EXPECTED_KEYWORDS));
+				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
+				assertTrue("Invalid DBInfoList", ckeckDBInfos(cas, EXPECTED_DB_INFO));
+				assertTrue("Invalid MeshHeading", checkMeshHeadings(cas, EXPECTED_MESH_HEADINGS));
+				assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
+				assertTrue("Invalid Chemical", checkChemicals(cas, EXPECTED_CHEMICALS));
 				assertTrue("Invalid Header", checkHeader(cas, EXPECTED_HEADER));
-				assertTrue("Invalid ManualDescriptor",
-						checkManualDescriptor(cas));
-				assertTrue("Invalid Journal",
-						ckeckJournal(cas, EXPECTED_JOURNAL));
-				assertTrue("Invalid DocumentText",
-						checkDocumentText(cas, EXPECTED_DOCUMENT_TEXT));
-				assertTrue("Invalid AbstractText",
-						checkAbstractText(cas, EXPECTED_ABSTRACT_TEXT));
+				assertTrue("Invalid ManualDescriptor", checkManualDescriptor(cas));
+				assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
+				assertTrue("Invalid DocumentText", checkDocumentText(cas, EXPECTED_DOCUMENT_TEXT));
+				assertTrue("Invalid AbstractText", checkAbstractText(cas, EXPECTED_ABSTRACT_TEXT));
 				assertTrue("Invalid Title", checkTitle(cas, EXPECTED_TITLE));
 				assertTrue("Sentences Found", !checkSentences(cas));
 			}
 			// check medline XML without most lists (gene, keywords,...)
 			if (pmid.equals("11119751-a")) {
 				checkCount++;
-				assertTrue("Invalid Authors",
-						checkAuthors(cas, EXPECTED_AUTHORS));
+				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
 				assertTrue("Sentences Found", !checkSentences(cas));
 			}
 			// check medline XML with pub date: <MedlineDate>2000
 			// Spring-Summer</MedlineDate>
 			if (pmid.equals("11119751-b")) {
 				checkCount++;
-				assertTrue("Invalid Authors",
-						checkAuthors(cas, EXPECTED_AUTHORS));
-				assertTrue("Invalid GeneSymbol",
-						checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-				assertTrue("Invalid Journal",
-						ckeckJournal(cas, EXPECTED_JOURNAL));
-				assertTrue("Invalid PubDate",
-						checkPubDate(cas, EXPECTED_DATE_1));
+				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
+				assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
+				assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
+				assertTrue("Invalid PubDate", checkPubDate(cas, EXPECTED_DATE_1));
 				assertTrue("Sentences Found", !checkSentences(cas));
 			}
 			// check medline XML with pub date: <MedlineDate>2000 Dec
 			// 23-30</MedlineDate>
 			if (pmid.equals("11119751-c")) {
 				checkCount++;
-				assertTrue("Invalid Authors",
-						checkAuthors(cas, EXPECTED_AUTHORS));
-				assertTrue("Invalid GeneSymbol",
-						checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-				assertTrue("Invalid Journal",
-						ckeckJournal(cas, EXPECTED_JOURNAL));
-				assertTrue("Invalid PubDate",
-						checkPubDate(cas, EXPECTED_DATE_2));
+				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
+				assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
+				assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
+				assertTrue("Invalid PubDate", checkPubDate(cas, EXPECTED_DATE_2));
 				assertTrue("Sentences Found", !checkSentences(cas));
 			}
 			// check medline XML pub date: <MedlineDate>2000 Oct-2001
@@ -609,14 +545,10 @@ public class XMLReaderTest {
 			if (pmid.equals("11119751-d")) {
 				assertTrue("Sentences Found", !checkSentences(cas));
 				checkCount++;
-				assertTrue("Invalid Authors",
-						checkAuthors(cas, EXPECTED_AUTHORS));
-				assertTrue("Invalid GeneSymbol",
-						checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-				assertTrue("Invalid Journal",
-						ckeckJournal(cas, EXPECTED_JOURNAL));
-				assertTrue("Invalid PubDate",
-						checkPubDate(cas, EXPECTED_DATE_3));
+				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
+				assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
+				assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
+				assertTrue("Invalid PubDate", checkPubDate(cas, EXPECTED_DATE_3));
 				assertTrue("Sentences Found", !checkSentences(cas));
 			}
 			if (pmid.equals("8045680")) {
@@ -642,10 +574,8 @@ public class XMLReaderTest {
 			if (pmid.equals("17276851")) {
 				assertTrue("Sentences Found", !checkSentences(cas));
 				checkCount++;
-				assertTrue("Invalid Document Title",
-						checkTitle(cas, EXPECTED_TITLE_2));
-				assertTrue("Invalid Document Text",
-						checkDocumentText(cas, EXPECTED_TITLE_2));
+				assertTrue("Invalid Document Title", checkTitle(cas, EXPECTED_TITLE_2));
+				assertTrue("Invalid Document Text", checkDocumentText(cas, EXPECTED_TITLE_2));
 			}
 			// PubMed has changed the XML element ForeName to FirstName, but
 			// foreName should still
@@ -653,15 +583,13 @@ public class XMLReaderTest {
 			if (pmid.equals("18439884")) {
 				assertTrue("Sentences Found", !checkSentences(cas));
 				checkCount++;
-				assertTrue("Invalid foreName",
-						checkForeNames(cas, EXPECTED_FORE_NAMES));
+				assertTrue("Invalid foreName", checkForeNames(cas, EXPECTED_FORE_NAMES));
 				checkJournalTitle(cas, EXPECTED_JOURNAL_TITLE);
 			}
 			if (pmid.equals("17306504")) {
 				assertTrue("Sentences Found", !checkSentences(cas));
 				checkCount++;
-				assertTrue("Invalid pubTypeList",
-						checkPubTypeList(cas, EXPECTED_PUBTYPES));
+				assertTrue("Invalid pubTypeList", checkPubTypeList(cas, EXPECTED_PUBTYPES));
 				assertTrue("Invalid DOI", checkDoi(cas, EXPECTED_DOI));
 			}
 		}
@@ -676,8 +604,7 @@ public class XMLReaderTest {
 			if (doi.equals(expectedDoi)) {
 				return true;
 			} else {
-				LOGGER.warn("Expected DOI: " + expectedDoi + ", actual:"
-						+ header.getDoi());
+				LOGGER.warn("Expected DOI: " + expectedDoi + ", actual:" + header.getDoi());
 			}
 		}
 		return false;
@@ -696,8 +623,8 @@ public class XMLReaderTest {
 			checkCount++;
 		}
 		if (checkCount != expectedPubTypes.length) {
-			LOGGER.warn("Did not found all expected PubTypes. expected: "
-					+ expectedPubTypes.length + ", actual:" + checkCount);
+			LOGGER.warn("Did not found all expected PubTypes. expected: " + expectedPubTypes.length + ", actual:"
+					+ checkCount);
 			return false;
 		}
 		return true;
@@ -767,8 +694,7 @@ public class XMLReaderTest {
 		Iterator<Annotation> iter = getTypeIterator(cas, Journal.type);
 		Journal journal = (Journal) iter.next();
 		Date date = journal.getPubDate();
-		if (date.getDay() != dateValues[2] || date.getMonth() != dateValues[1]
-				|| date.getYear() != dateValues[0]) {
+		if (date.getDay() != dateValues[2] || date.getMonth() != dateValues[1] || date.getYear() != dateValues[0]) {
 			return false;
 		}
 		return true;
@@ -799,10 +725,8 @@ public class XMLReaderTest {
 	private boolean checkManualDescriptor(CAS cas) {
 		Iterator<Annotation> iter = getTypeIterator(cas, ManualDescriptor.type);
 		ManualDescriptor manualDescriptor = (ManualDescriptor) iter.next();
-		if (manualDescriptor.getMeSHList() == null
-				|| manualDescriptor.getChemicalList() == null
-				|| manualDescriptor.getKeywordList() == null
-				|| manualDescriptor.getDBInfoList() == null
+		if (manualDescriptor.getMeSHList() == null || manualDescriptor.getChemicalList() == null
+				|| manualDescriptor.getKeywordList() == null || manualDescriptor.getDBInfoList() == null
 				|| manualDescriptor.getGeneSymbolList() == null) {
 			return false;
 		}
@@ -826,8 +750,7 @@ public class XMLReaderTest {
 		Iterator<Annotation> iter = getTypeIterator(cas, Header.type);
 		Header header = (Header) iter.next();
 		if (header.getAuthors() == null || header.getPubTypeList() == null
-				|| !header.getCitationStatus().equals(headerData[0])
-				|| !header.getLanguage().equals(headerData[1])
+				|| !header.getCitationStatus().equals(headerData[0]) || !header.getLanguage().equals(headerData[1])
 				|| !header.getSource().contains(headerData[2])) {
 			return false;
 		}
@@ -851,12 +774,9 @@ public class XMLReaderTest {
 	private boolean ckeckJournal(CAS cas, String[] journalData) {
 		Iterator<Annotation> iter = getTypeIterator(cas, Journal.type);
 		Journal journal = (Journal) iter.next();
-		if (!journal.getISSN().equals(journalData[0])
-				|| !journal.getVolume().equals(journalData[1])
-				|| !journal.getIssue().equals(journalData[2])
-				|| !journal.getTitle().equals(journalData[3])
-				|| !journal.getShortTitle().equals(journalData[4])
-				|| !journal.getPages().equals(journalData[5])) {
+		if (!journal.getISSN().equals(journalData[0]) || !journal.getVolume().equals(journalData[1])
+				|| !journal.getIssue().equals(journalData[2]) || !journal.getTitle().equals(journalData[3])
+				|| !journal.getShortTitle().equals(journalData[4]) || !journal.getPages().equals(journalData[5])) {
 			return false;
 		}
 		if (iter.hasNext()) {
@@ -906,10 +826,8 @@ public class XMLReaderTest {
 	 *            test data
 	 * @return true, if test data and Chemical are equal
 	 */
-	private boolean chemicalEqualsStringArray(Chemical chemical,
-			String[] strings) {
-		if (!chemical.getRegistryNumber().equals(strings[0])
-				|| !chemical.getNameOfSubstance().equals(strings[1])) {
+	private boolean chemicalEqualsStringArray(Chemical chemical, String[] strings) {
+		if (!chemical.getRegistryNumber().equals(strings[0]) || !chemical.getNameOfSubstance().equals(strings[1])) {
 			return false;
 		}
 		return true;
@@ -981,32 +899,23 @@ public class XMLReaderTest {
 	 *            test data
 	 * @return true, if equal
 	 */
-	private boolean meshHeadingEqualsStringArray(MeshHeading meshHeading,
-			String[] strings) {
-		if (!strings[0].equals("")
-				&& !meshHeading.getDescriptorName().equals(strings[0])) {
+	private boolean meshHeadingEqualsStringArray(MeshHeading meshHeading, String[] strings) {
+		if (!strings[0].equals("") && !meshHeading.getDescriptorName().equals(strings[0])) {
 			return false;
 		}
-		if (!strings[2].equals("")
-				&& !meshHeading.getQualifierName().equals(strings[2])) {
+		if (!strings[2].equals("") && !meshHeading.getQualifierName().equals(strings[2])) {
 			return false;
 		}
-		if (!strings[1].equals("")
-				&& (meshHeading.getDescriptorNameMajorTopic() && strings[1]
-						.equals("N"))) {
+		if (!strings[1].equals("") && (meshHeading.getDescriptorNameMajorTopic() && strings[1].equals("N"))) {
 			return false;
 		}
-		if (!strings[1].equals("")
-				&& !meshHeading.getDescriptorNameMajorTopic()
-				&& strings[1].equals("Y")) {
+		if (!strings[1].equals("") && !meshHeading.getDescriptorNameMajorTopic() && strings[1].equals("Y")) {
 			return false;
 		}
-		if (!strings[3].equals("") && meshHeading.getQualifierNameMajorTopic()
-				&& strings[3].equals("N")) {
+		if (!strings[3].equals("") && meshHeading.getQualifierNameMajorTopic() && strings[3].equals("N")) {
 			return false;
 		}
-		if (!strings[3].equals("") && !meshHeading.getQualifierNameMajorTopic()
-				&& strings[3].equals("Y")) {
+		if (!strings[3].equals("") && !meshHeading.getQualifierNameMajorTopic() && strings[3].equals("Y")) {
 			return false;
 		}
 		return true;
@@ -1165,8 +1074,7 @@ public class XMLReaderTest {
 			foreNameCount++;
 			if (!set.contains(authorInfo.getForeName())) {
 				// if (!authorInfo.getForeName().equals(foreNames[i++])) {
-				LOGGER.info("Found " + authorInfo.getForeName()
-						+ " which was not expected");
+				LOGGER.info("Found " + authorInfo.getForeName() + " which was not expected");
 				return false;
 			}
 		}
@@ -1183,14 +1091,12 @@ public class XMLReaderTest {
 	 *            test data
 	 * @return true if AuthorInfo and String array have the same content
 	 */
-	private boolean authorEqualsStringArray(AuthorInfo authorInfo,
-			String[] strings) {
+	private boolean authorEqualsStringArray(AuthorInfo authorInfo, String[] strings) {
 		// if affiliation is not set it is null, not "" (empty String) !
 		if (authorInfo.getAffiliation() != null && strings[3].equals("")) {
 			return false;
 		}
-		if (!authorInfo.getLastName().equals(strings[0])
-				|| !authorInfo.getForeName().equals(strings[1])
+		if (!authorInfo.getLastName().equals(strings[0]) || !authorInfo.getForeName().equals(strings[1])
 				|| !authorInfo.getInitials().equals(strings[2])) {
 			return false;
 		}
@@ -1234,8 +1140,7 @@ public class XMLReaderTest {
 	private Iterator<Annotation> getTypeIterator(CAS cas, int type) {
 		Iterator<Annotation> iter = null;
 		try {
-			iter = cas.getJCas().getJFSIndexRepository()
-					.getAnnotationIndex(type).iterator();
+			iter = cas.getJCas().getJFSIndexRepository().getAnnotationIndex(type).iterator();
 		} catch (CASException e) {
 			e.printStackTrace();
 		}
@@ -1262,29 +1167,24 @@ public class XMLReaderTest {
 		return isContained;
 	}
 
-	private CollectionReader createCollectionReader(String descriptor)
-			throws Exception {
+	private CollectionReader createCollectionReader(String descriptor) throws Exception {
 		ResourceSpecifier resourceSpecifier;
 		CollectionReader xmlReader = null;
-		resourceSpecifier = UIMAFramework.getXMLParser()
-				.parseResourceSpecifier(new XMLInputSource(descriptor));
+		resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(new XMLInputSource(descriptor));
 		xmlReader = UIMAFramework.produceCollectionReader(resourceSpecifier);
 		return xmlReader;
 	}
 
 	@Test
 	public void testStructuredAbstract() throws UIMAException, IOException {
-		JCas jCas = JCasFactory.createJCas(
-				"de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
 				"de.julielab.jcore.types.jcore-document-structure-types");
-		CollectionReader reader = CollectionReaderFactory.createReader(
-				XMLReader.class, XMLReader.PARAM_INPUT_FILE,
-				"src/test/resources/doc_medline_test_structured_abstract.xml",
-				XMLReader.RESOURCE_MAPPING_FILE,
+		CollectionReader reader = CollectionReaderFactory.createReader(XMLReader.class, XMLReader.PARAM_INPUT_FILE,
+				"src/test/resources/doc_medline_test_structured_abstract.xml", XMLReader.RESOURCE_MAPPING_FILE,
 				"src/test/resources/newMappingFile.xml");
 		assertTrue(reader.hasNext());
 		reader.getNext(jCas.getCas());
-//		System.out.println(jCas.getDocumentText());
+		// System.out.println(jCas.getDocumentText());
 		// TODO handle structured abstracts, i.e. directly read the structures
 		// and also give them the appropriate annotations. This will require
 		// modifications to the mapping file. Take care to make it possible that
