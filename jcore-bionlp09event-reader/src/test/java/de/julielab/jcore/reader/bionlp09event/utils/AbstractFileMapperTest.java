@@ -23,6 +23,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.julielab.jcore.reader.bionlpformat.utils.TextFileMapper;
 import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.Title;
 import de.julielab.jcore.types.pubmed.Header;
@@ -31,7 +32,7 @@ public class AbstractFileMapperTest {
 
     private static final String DESCRIPTOR_FILE = "src/test/resources/de/julielab/jcore/reader/bionlp09event/desc/EventReaderTest.xml";
     private JCas cas;
-    private AbstractFileMapper abstractFileMapper;
+    private TextFileMapper abstractFileMapper;
 
     @Before
     public void setUp() throws Exception {
@@ -39,7 +40,7 @@ public class AbstractFileMapperTest {
                 .parseCollectionReaderDescription(new XMLInputSource(DESCRIPTOR_FILE));
         CollectionReader collectionReader = UIMAFramework.produceCollectionReader(readerDescription);
         cas = CasCreationUtils.createCas(collectionReader.getProcessingResourceMetaData()).getJCas();
-        abstractFileMapper = new AbstractFileMapper();
+        abstractFileMapper = new TextFileMapper();
     }
 
     @Test

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
  */
 
-package de.julielab.jcore.reader.bionlp09event.utils;
+package de.julielab.jcore.reader.bionlpformat.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.Title;
 import de.julielab.jcore.types.pubmed.Header;
 
-public class AbstractFileMapper {
+public class TextFileMapper {
 
     public void mapAbstractFile(String id, String source, BufferedReader bufferedReader, JCas cas) throws IOException {
         String title = bufferedReader.readLine();

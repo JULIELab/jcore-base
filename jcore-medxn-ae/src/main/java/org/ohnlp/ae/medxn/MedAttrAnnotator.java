@@ -53,7 +53,9 @@ import de.julielab.jcore.types.medical.GeneralAttributeMention;
  * Extract medication attributes defined in regExPatterns
  */
 public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
+	//TODO: descriptor needs to access these
 	public final static String REGEX_FILE = "regExPatterns";
+	public final static String ALLOW_MULT_ANNO = "multipleAnnotations"; 
 	
 	class Attribute {
 		String tag;
@@ -61,7 +63,9 @@ public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
 		int begin;
 		int end;
 	}
+	
 	private Map< String, List<String> > regExPat;
+	private Boolean multAnno = false;
 	
 	public void initialize(UimaContext uimaContext) throws ResourceInitializationException {
 		super.initialize(uimaContext);
@@ -73,6 +77,8 @@ public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
 		} catch (ResourceAccessException e) {
 			e.printStackTrace();
 		}
+		
+		
 	}
 	
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
@@ -124,7 +130,6 @@ public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
 					attr.end = m.end(gnum);
 					if (hasEndSpace) attr.end -= 1;
 					ret.add(attr);
-					System.out.println(m);
 				}
 			}
 		}
@@ -157,7 +162,7 @@ public class MedAttrAnnotator extends JCasAnnotator_ImplBase {
 			isOverlap = false;
 			for(int j=0; j<tmp.size(); j++) {
 				if(i==j) continue; 
-				if(tmp.get(i).tag.equals(tmp.get(j).tag) &&
+				if( (multAnno ? (tmp.get(i).tag.equals(tmp.get(j).tag)) : true) &&
 						tmp.get(i).begin>=tmp.get(j).begin &&
 						tmp.get(i).end<=tmp.get(j).end) {
 					isOverlap = true;

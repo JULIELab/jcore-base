@@ -4,7 +4,7 @@
   * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
   */
 
-package de.julielab.jcore.reader.bionlp09event.utils;
+package de.julielab.jcore.reader.bionlpformat.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
-import de.julielab.jcore.reader.bionlp09event.main.FormatClashException;
 import de.julielab.jcore.CorefExpression;
+import de.julielab.jcore.reader.bionlpformat.main.FormatClashException;
 import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.ArgumentMention;
 import de.julielab.jcore.types.CorefRelation;

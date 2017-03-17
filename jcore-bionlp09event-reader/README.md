@@ -1,9 +1,9 @@
-# JCoRe BioNLP 09 Event Reader
+# JCoRe BioNLP Format Reader
 Reader that converts [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) formatted files to CAS objects.  
 
 **Descriptor Path**:
 ```
-de.julielab.jcore.reader.bionlp09event.desc.jcore-bionlp09event-reader
+de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader
 ```
 
 ### Objective

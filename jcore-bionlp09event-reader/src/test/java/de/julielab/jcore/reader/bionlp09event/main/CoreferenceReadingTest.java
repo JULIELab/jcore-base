@@ -22,7 +22,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import de.julielab.jcore.reader.bionlp09event.main.EventReader;
+import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
 import de.julielab.jcore.types.Header;
 
 // Ignore because the data path does generally not exist; a fix should only contain some test data, not the whole dataset
@@ -33,8 +33,8 @@ public class CoreferenceReadingTest {
 			SAXException {
 		String baseDir = "/Users/faessler/Downloads/coref";
 		CollectionReader reader = CollectionReaderFactory.createReader(
-				EventReader.class, EventReader.BIOEVENT_SERVICE_MODE_PARAM,
-				false, EventReader.DIRECTORY_PARAM, baseDir
+				BioEventReader.class, BioEventReader.BIOEVENT_SERVICE_MODE_PARAM,
+				false, BioEventReader.DIRECTORY_PARAM, baseDir
 						+ "/BioNLP-ST_2011_coreference_training_data");
 
 		JCas jcas = JCasFactory.createJCas("julie-all-types");

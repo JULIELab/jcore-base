@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
  */
 
-package de.julielab.jcore.reader.bionlp09event.main;
+package de.julielab.jcore.reader.bionlpformat.main;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,13 +25,13 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.reader.bionlp09event.utils.AbstractFileMapper;
-import de.julielab.jcore.reader.bionlp09event.utils.AnnotationFileMapper;
+import de.julielab.jcore.reader.bionlpformat.utils.TextFileMapper;
+import de.julielab.jcore.reader.bionlpformat.utils.AnnotationFileMapper;
 import de.julielab.jcore.types.Annotation;
 
-public class EventReader extends CollectionReader_ImplBase {
+public class BioEventReader extends CollectionReader_ImplBase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventReader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BioEventReader.class);
     public static final String DIRECTORY_PARAM = "inDirectory";
     public static final String PROTEIN_FILE_PARAM = "proteinFile";
     public static final String ABSTRACT_FILE_PARAM = "abstractFile";
@@ -40,7 +40,7 @@ public class EventReader extends CollectionReader_ImplBase {
     private File[] files;
     private int i;
     private AnnotationFileMapper annotationFileMapper;
-    private AbstractFileMapper abstractFileMapper;
+    private TextFileMapper abstractFileMapper;
 
     @ConfigurationParameter(name = DIRECTORY_PARAM, mandatory = true)
     private String directoryName;
@@ -76,7 +76,7 @@ public class EventReader extends CollectionReader_ImplBase {
             files = directory.listFiles(filter);
         }
 
-        abstractFileMapper = new AbstractFileMapper();
+        abstractFileMapper = new TextFileMapper();
         annotationFileMapper = new AnnotationFileMapper();
         i = -1;
 

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>jcore-bionlp09event-reader</artifactId>
+  <artifactId>jcore-bionlpformat-reader</artifactId>
   <parent>
     <artifactId>jcore-base</artifactId>
     <groupId>de.julielab</groupId>
@@ -42,7 +42,7 @@
   	<name>JULIE Lab Jena, Germany</name>
   	<url>http://www.julielab.de</url>
   </organization>
-  <name>JCoRe BioNLP 09 Event Reader</name>
-  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bionlp09event-reader</url>
-  <description>This reader generates CAS' from data that adheres to the BioNLP-ST (2009) format.</description>
+  <name>JCoRe BioNLP Format Reader</name>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bionlpformat-reader</url>
+  <description>This reader generates CAS' from data that adheres to the BioNLP-ST format.</description>
 </project>

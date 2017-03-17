@@ -30,7 +30,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-import de.julielab.jcore.reader.bionlp09event.main.EventReader;
+import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
 import de.julielab.jcore.types.pubmed.Header;
 
 /**
@@ -41,7 +41,7 @@ import de.julielab.jcore.types.pubmed.Header;
 public class EventReaderApp {
 
 	private static final String DESCRIPTOR_FILE = "src/test/resources/de/julielab/jcore/reader/bionlp09event/desc/EventReaderTest.xml";
-	private static EventReader collectionReader;
+	private static BioEventReader collectionReader;
 	private static String outputDir = "tmp";
 
 	/**
@@ -51,7 +51,7 @@ public class EventReaderApp {
 		try {
 			CollectionReaderDescription readerDescription = UIMAFramework.getXMLParser()
 							.parseCollectionReaderDescription(new XMLInputSource(DESCRIPTOR_FILE));
-			collectionReader = (EventReader) UIMAFramework.produceCollectionReader(readerDescription);
+			collectionReader = (BioEventReader) UIMAFramework.produceCollectionReader(readerDescription);
 			CAS cas = CasCreationUtils.createCas(collectionReader.getProcessingResourceMetaData());
 			
 			while (collectionReader.hasNext()) {

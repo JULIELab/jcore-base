@@ -39,7 +39,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import de.julielab.jcore.reader.bionlp09event.utils.AnnotationFileMapper;
+
+import de.julielab.jcore.reader.bionlpformat.utils.AnnotationFileMapper;
 import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.ArgumentMention;
 import de.julielab.jcore.types.Entity;

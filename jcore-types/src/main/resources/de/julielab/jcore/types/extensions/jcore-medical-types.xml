@@ -65,7 +65,7 @@
       <description/>
       <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
     </typeDescription>
-  <typeDescription>
+    <typeDescription>
       <name>de.julielab.jcore.types.medical.GeneralAttributeMention</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>

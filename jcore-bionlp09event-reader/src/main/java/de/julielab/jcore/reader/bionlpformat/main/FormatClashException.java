@@ -4,7 +4,7 @@
   * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
   */
 
-package de.julielab.jcore.reader.bionlp09event.main;
+package de.julielab.jcore.reader.bionlpformat.main;
 
 public class FormatClashException extends Exception {
 

@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.text.Utilities;
+
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -42,11 +44,18 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.ohnlp.ConceptMention;
-import de.julielab.jcore.types.ohnlp.Drug;
-import de.julielab.jcore.types.ohnlp.LookupWindow;
+import de.julielab.jcore.types.medical.Dose;
+import de.julielab.jcore.types.medical.Duration;
+import de.julielab.jcore.types.medical.Frequency;
+//import de.julielab.jcore.types.ohnlp.ConceptMention;
+//import de.julielab.jcore.types.ohnlp.Drug;
+//import de.julielab.jcore.types.ohnlp.LookupWindow;
 import de.julielab.jcore.types.medical.GeneralAttributeMention;
+import de.julielab.jcore.types.medical.Medication;
+import de.julielab.jcore.types.medical.Modus;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
 
 
 
@@ -56,7 +65,7 @@ import de.julielab.jcore.types.medical.GeneralAttributeMention;
  */
 public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 	class MedDesc {
-		ConceptMention med;
+//		ConceptMention med;
 		List<GeneralAttributeMention> attrs = new ArrayList<GeneralAttributeMention>();
 	}
 	
@@ -91,22 +100,22 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 	
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		JFSIndexRepository indexes = jcas.getJFSIndexRepository();
-		Iterator<?> cmItr= indexes.getAnnotationIndex(ConceptMention.type).iterator(); //all drugs		
-		List<ConceptMention> drugs = new ArrayList<ConceptMention>();
+		Iterator<?> medItr= indexes.getAnnotationIndex(Medication.type).iterator(); //all drugs		
+		List<Medication> drugs = new ArrayList<Medication>();
 
 		//Get the list of drugs - if drug overlaps, use the longest one
-		while(cmItr.hasNext()) {
-			ConceptMention cm = (ConceptMention) cmItr.next();
+		while(medItr.hasNext()) {
+			Medication med = (Medication) medItr.next();
 			boolean addFlag = true;
 			
-			if(isFalseMed1(cm.getCoveredText())) continue; //added Nov-21
+//			if(isFalseMed1(cm.getCoveredText())) continue; //added Nov-21
 			
 			//add the longest only (also remove the duplicate)
-			if(drugs.size()==0) drugs.add(cm);
+			if(drugs.size()==0) drugs.add(med);
 			else {        			
 				for(int i=0; i<drugs.size(); i++) {
-					ConceptMention x = (ConceptMention) drugs.get(i);
-					int condition = contains(cm.getBegin(), cm.getEnd(), 
+					Medication x = (Medication) drugs.get(i);
+					int condition = contains(med.getBegin(), med.getEnd(), 
 							x.getBegin(), x.getEnd());
 					if(condition==1) {
 						drugs.remove(i);
@@ -118,7 +127,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 					}
 				}	        		
 				if(addFlag)
-					drugs.add(cm);       			
+					drugs.add(med);       			
 			}       		
 		}
 			
@@ -126,33 +135,33 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 		//merge to one and assign both term type and rxcui
 		String docText = jcas.getDocumentText();
 		
-		for(int i=0; i<drugs.size()-1; i++) {	
-			//skip a partial overlap
-			if(drugs.get(i+1).getBegin() < drugs.get(i).getEnd() 
-					&& drugs.get(i+1).getEnd() > drugs.get(i).getEnd())
-				continue;
-			
-			String substring = docText.substring(
-					drugs.get(i).getEnd(), drugs.get(i+1).getBegin());		
-			
-			if(substring.matches("( +\\[ ?)|( +\\( ?)")) {
-				drugs.get(i+1).setBegin(drugs.get(i).getBegin());
-				drugs.get(i+1).setEnd(drugs.get(i+1).getEnd()+1);
-				drugs.get(i+1).setNormTarget(drugs.get(i).getNormTarget()+"::"+
-						drugs.get(i+1).getNormTarget());
-				drugs.get(i+1).setSemGroup(drugs.get(i).getSemGroup()+"::"+
-						drugs.get(i+1).getSemGroup());
-				drugs.get(i+1).getSentence().setBegin(drugs.get(i).getSentence().getBegin()); 
-				
-				drugs.remove(i);
-			}			
-		}
+//		for(int i=0; i<drugs.size()-1; i++) {	
+//			//skip a partial overlap
+//			if(drugs.get(i+1).getBegin() < drugs.get(i).getEnd() 
+//					&& drugs.get(i+1).getEnd() > drugs.get(i).getEnd())
+//				continue;
+//			
+//			String substring = docText.substring(
+//					drugs.get(i).getEnd(), drugs.get(i+1).getBegin());		
+//			
+//			if(substring.matches("( +\\[ ?)|( +\\( ?)")) {
+//				drugs.get(i+1).setBegin(drugs.get(i).getBegin());
+//				drugs.get(i+1).setEnd(drugs.get(i+1).getEnd()+1);
+//				drugs.get(i+1).setNormTarget(drugs.get(i).getNormTarget()+"::"+
+//						drugs.get(i+1).getNormTarget());
+//				drugs.get(i+1).setSemGroup(drugs.get(i).getSemGroup()+"::"+
+//						drugs.get(i+1).getSemGroup());
+//				drugs.get(i+1).getSentence().setBegin(drugs.get(i).getSentence().getBegin()); 
+//				
+//				drugs.remove(i);
+//			}			
+//		}
 			
 		//associate drug with attributes within the window
 		//this window condition is for Mayo "current medication section"
 		for(int i=0; i<drugs.size(); i++) {
-			MedDesc md = new MedDesc();
-			md.med = drugs.get(i);
+//			MedDesc md = new MedDesc();
+//			md.med = drugs.get(i);
 			
 			int nextDrugBegin;
 			if(i==drugs.size()-1) 
@@ -162,17 +171,18 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 					
 			int[] span = setWindow(jcas, drugs.get(i), nextDrugBegin);
 			
-			Iterator<?> maItr = indexes.getAnnotationIndex(GeneralAttributeMention.type).iterator();
+			Iterator<?> gamItr = indexes.getAnnotationIndex(GeneralAttributeMention.type).iterator();
 			GeneralAttributeMention beforeMedAttr = null; //attribute right before medication
 			int cnt=0;
-			while(maItr.hasNext()) {
-				GeneralAttributeMention ma = (GeneralAttributeMention) maItr.next();
-				if(ma.getBegin()>=span[0] && ma.getEnd()<=span[1]) {	
-					md.attrs.add(ma); 
+			while(gamItr.hasNext()) {
+				GeneralAttributeMention gam = (GeneralAttributeMention) gamItr.next();
+				if(gam.getBegin()>=span[0] && gam.getEnd()<=span[1]) {
+					assignAttribute(gam, drugs.get(i), jcas);
+//					md.attrs.add(ma);
 					cnt++;
 				}
 				if(cnt==0) { 
-					beforeMedAttr = ma;
+					beforeMedAttr = gam;
 				}
 			}
 			
@@ -180,60 +190,99 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 			//because of the [window] condition 
 			//eg)	[Aspirin 81mg oral tablet.
 			//		0.2 ML ]Somatuline 300 MG/ML Prefilled Syringe.				
-			if(md.attrs.size()>0 &&
-					md.attrs.get(md.attrs.size()-1).getTag().matches("time|volume"))
-				md.attrs.remove(md.attrs.size()-1);
-			
-			//add time or volume attributes before the drug
-			boolean flag = false;
-			if(md.attrs.size()>0 && beforeMedAttr!=null) {
-				for(GeneralAttributeMention ma : md.attrs) {
-					if(ma.getTag().equals("form")) {
-						//eg1) 24 HR Imdur 30 MG Extended Release Tablet
-						if(ma.getCoveredText().toLowerCase().matches("(.*?extended release.*?)" +
-								"|transdermal patch")
-								&& beforeMedAttr.getTag().equals("time")) {
-							flag = true;
-							break;
-						}
-						//eg2) 0.2 ML Somatuline 300 MG/ML Prefilled Syringe
-						else if(ma.getCoveredText().toLowerCase().matches("prefilled (syringe|applicator)" +
-								"|injectable solution" +
-								"|topical lotion") 
-								&& beforeMedAttr.getTag().equals("volume")) {
-							flag = true;
-							break;
-						}						
-					}
-				}
-				if(flag) md.attrs.add(0,beforeMedAttr);
-			}
-						
-			if(!isFalseMed2(md)) 
-				addToJCas(jcas, md, span);						
+//			if(md.attrs.size()>0 &&
+//					md.attrs.get(md.attrs.size()-1).getTag().matches("time|volume"))
+//				md.attrs.remove(md.attrs.size()-1);
+//			
+//			//add time or volume attributes before the drug
+//			boolean flag = false;
+//			if(md.attrs.size()>0 && beforeMedAttr!=null) {
+//				for(GeneralAttributeMention ma : md.attrs) {
+//					if(ma.getTag().equals("form")) {
+//						//eg1) 24 HR Imdur 30 MG Extended Release Tablet
+//						if(ma.getCoveredText().toLowerCase().matches("(.*?extended release.*?)" +
+//								"|transdermal patch")
+//								&& beforeMedAttr.getTag().equals("time")) {
+//							flag = true;
+//							break;
+//						}
+//						//eg2) 0.2 ML Somatuline 300 MG/ML Prefilled Syringe
+//						else if(ma.getCoveredText().toLowerCase().matches("prefilled (syringe|applicator)" +
+//								"|injectable solution" +
+//								"|topical lotion") 
+//								&& beforeMedAttr.getTag().equals("volume")) {
+//							flag = true;
+//							break;
+//						}						
+//					}
+//				}
+//				if(flag) md.attrs.add(0,beforeMedAttr);
+//			}
+//						
+//			if(!isFalseMed2(md)) 
+//				addToJCas(jcas, drugs.get(i), span);						
 		}		
 	}
 	
-	protected void addToJCas(JCas jcas, MedDesc md, int[] window) {
-		Drug d = new Drug(jcas);
-		d.setName(md.med);
-		d.setBegin(md.med.getBegin());
-		d.setEnd(md.med.getEnd());
-				
-		FSArray attributes = new FSArray(jcas, md.attrs.size());
-		for(int i=0; i<md.attrs.size(); i++) {
-			//System.out.println("attributes="+md.attrs.get(i).getCoveredText());
-			attributes.set(i, md.attrs.get(i));			
+	private void assignAttribute(GeneralAttributeMention gam, Medication medication, JCas jcas) {
+		String gamType = gam.getTag(); //duration, dosage, route, frequency, strength
+		switch (gamType) {
+		case "duration":
+			Duration dur = new Duration(jcas);
+			dur.setBegin(gam.getBegin());
+			dur.setEnd(gam.getEnd());
+			dur.addToIndexes();
+			medication.setDuration(dur);
+			break;
+		case "dosage":
+			Dose dos = new Dose(jcas);
+			dos.setBegin(gam.getBegin());
+			dos.setEnd(gam.getEnd());
+			dos.addToIndexes();
+			medication.setDose(dos);
+			break;
+		case "route":
+			Modus mod = new Modus(jcas);
+			mod.setBegin(gam.getBegin());
+			mod.setEnd(gam.getEnd());
+			mod.addToIndexes();
+			medication.setModus(mod);
+			break;
+		case "frequency":
+			Frequency freq = new Frequency(jcas);
+			freq.setBegin(gam.getBegin());
+			freq.setEnd(gam.getEnd());
+			freq.addToIndexes();
+			medication.setFrequency(freq);
+			break;
+		case "strength":
+			break;
+		default:
+			break;
 		}
-
-		d.setAttrs(attributes);
-		d.addToIndexes();
 		
-		LookupWindow lw = new LookupWindow(jcas);
-		lw.setBegin(window[0]);
-		lw.setEnd(window[1]);
-		lw.addToIndexes();
 	}
+
+//	protected void addToJCas(JCas jcas, Medication drug, int[] window) {
+//		Drug d = new Drug(jcas);
+//		d.setName(md.med);
+//		d.setBegin(md.med.getBegin());
+//		d.setEnd(md.med.getEnd());
+//				
+//		FSArray attributes = new FSArray(jcas, md.attrs.size());
+//		for(int i=0; i<md.attrs.size(); i++) {
+//			//System.out.println("attributes="+md.attrs.get(i).getCoveredText());
+//			attributes.set(i, md.attrs.get(i));			
+//		}
+//
+//		d.setAttrs(attributes);
+//		d.addToIndexes();
+//		
+//		LookupWindow lw = new LookupWindow(jcas);
+//		lw.setBegin(window[0]);
+//		lw.setEnd(window[1]);
+//		lw.addToIndexes();
+//	}
 	
 	/**
 	 * NOTE THAT THIS IS SPECIFIC FOR MAYO DATA
@@ -249,13 +298,15 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 	 * @param nextDrugBegin
 	 * @return
 	 */
-	protected int[] setWindow(JCas jcas, ConceptMention drug, int nextDrugBegin) {
+	protected int[] setWindow(JCas jcas, Medication drug, int nextDrugBegin) {
 		JFSIndexRepository indexes = jcas.getJFSIndexRepository();
 		Iterator<?> senItr= indexes.getAnnotationIndex(Sentence.type).iterator();		
-	//	String[] str = drug.getSentence().split("::");
-		Sentence drugsen=(Sentence) drug.getSentence();
+//		String[] str = drug.getSentence().split("::");
+//		Sentence drugsen=(Sentence) drug.getSentence();
+		Sentence drugsen = (Sentence) JCoReAnnotationTools.getIncludingAnnotation(jcas, drug, Sentence.class);
 		int drugSenBegin = drugsen.getBegin();  
 		int drugSenEnd = drugsen.getEnd();
+		
 		int[] ret = {-1, -1};
 		
 		ret[0] = drug.getBegin();
@@ -326,23 +377,23 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 		return false;
 	}
 	
-	/**
-	 * Check if the given drug is true or not
-	 * @param md
-	 * @return true if potentially false medication
-	 */
-	protected boolean isFalseMed2(MedDesc md) {
-		String medStr = md.med.getCoveredText();
-		
-		if(bogusMed.contains(medStr.toLowerCase().replaceAll("\\W", " "))) {			
-			//no attribute
-			//TODO update because some appear w/o attribute 
-			if(md.attrs.size()==0)
-				return true;			
-		}
-		
-		return false;
-	}
+//	/**
+//	 * Check if the given drug is true or not
+//	 * @param md
+//	 * @return true if potentially false medication
+//	 */
+//	protected boolean isFalseMed2(MedDesc md) {
+//		String medStr = md.med.getCoveredText();
+//		
+//		if(bogusMed.contains(medStr.toLowerCase().replaceAll("\\W", " "))) {			
+//			//no attribute
+//			//TODO update because some appear w/o attribute 
+//			if(md.attrs.size()==0)
+//				return true;			
+//		}
+//		
+//		return false;
+//	}
 
 	/**
 	 * Returns 1 if 1 contains or equal to 2
