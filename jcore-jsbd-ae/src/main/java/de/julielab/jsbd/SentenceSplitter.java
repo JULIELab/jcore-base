@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.zip.GZIPInputStream;
@@ -49,6 +50,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.types.Sequence;
+import de.julielab.jcore.ae.jsbd.PostprocessingFilters.PostprocessingFilter;
 
 public class SentenceSplitter {
 
@@ -158,12 +160,12 @@ public class SentenceSplitter {
 	 * @param doPostprocessing
 	 * @return ArrayList of Unit objects
 	 */
-	public ArrayList<Unit> predict(ArrayList<String> lines, boolean doPostprocessing) {
+	public ArrayList<Unit> predict(ArrayList<String> lines, String postprocessingFilter) {
 		if (trained == false || model == null) {
 			throw new IllegalStateException("No model available. Train or load trained model first.");
 		}
 		Instance inst = model.getInputPipe().instanceFrom(new Instance(lines, "", "", ""));
-		return predict(inst, doPostprocessing);
+		return predict(inst, postprocessingFilter);
 	}
 
 	/**
@@ -173,8 +175,7 @@ public class SentenceSplitter {
 	 * @param doPostProcessing
 	 * @return ArrayList of Unit objects
 	 */
-	public ArrayList<Unit> predict(Instance inst, boolean doPostProcessing) {
-
+	public ArrayList<Unit> predict(Instance inst, String filterName) {
 		if (trained == false || model == null) {
 			throw new IllegalStateException("No model available. Train or load trained model first.");
 		}
@@ -191,8 +192,14 @@ public class SentenceSplitter {
 		}
 
 		// postprocessing
-		if (doPostProcessing) {
-			labelList = postprocessingFilter(labelList, units);
+		if (filterName != null) {
+			LOGGER.info("Postprocessing with " + filterName);
+			if ( (filterName.toLowerCase()).equals("biomed") ) {
+				labelList = PostprocessingFilter.Mode.BIOMED.process(labelList, units);
+			}
+			else if ( (filterName.toLowerCase()).equals("medical") ) {
+				labelList = PostprocessingFilter.Mode.MEDICAL.process(labelList, units);
+			}
 		}
 
 		// now write output to units
@@ -202,84 +209,6 @@ public class SentenceSplitter {
 		return units;
 	}
 
-	/**
-	 * a postprocessing filter (to be used after prediction) which can correct known errors
-	 * 
-	 * @param predLabels
-	 * @param units
-	 * @param abbrList
-	 * @return
-	 */
-	public ArrayList<String> postprocessingFilter(ArrayList<String> predLabels, ArrayList<Unit> units) {
-
-		Abbreviations abr = new Abbreviations();
-		TreeSet<String> abrSet = abr.getSet();
-
-		String[] labels = (String[]) predLabels.toArray(new String[predLabels.size()]);
-		ArrayList<String> newPred = new ArrayList<String>();
-
-		// do not set an EOS after opening bracket until bracket is closed again
-		int openNormalBrackets = 0;
-		int openSquareBrackets = 0;
-		int count = 0;
-
-		for (int i = 0; i < labels.length; i++) {
-			String unitRep = units.get(i).rep;
-
-			char[] c = unitRep.toCharArray();
-			for (int j = 0; j < c.length; j++) {
-				switch (c[j]) {
-				case '(':
-					openNormalBrackets++;
-					break;
-				case '[':
-					openSquareBrackets++;
-					break;
-				case ')':
-					openNormalBrackets--;
-					break;
-				case ']':
-					openSquareBrackets--;
-					break;
-				}
-			}
-
-			if (openSquareBrackets > 0 || openNormalBrackets > 0) {
-				labels[i] = "IS";
-				count++;
-			}
-
-			// close all brackets after 50 tokens inside brackets
-			if (count >= 50) {
-				openSquareBrackets = 0;
-				openNormalBrackets = 0;
-			}
-
-			if (openSquareBrackets < 0)
-				openSquareBrackets = 0;
-
-			if (openNormalBrackets < 0)
-				openNormalBrackets = 0;
-
-		}
-
-		for (int i = 0; i < labels.length; i++) {
-			String unitRep = units.get(i).rep;
-
-			// remove EOS from known abbreviations
-			if (abrSet.contains(unitRep))
-				labels[i] = "IS";
-
-			// set EOS if ends with ? or ! ."
-			if (unitRep.endsWith(".\"") || unitRep.endsWith("?") || unitRep.endsWith("!"))
-				labels[i] = "EOS";
-
-			// add to final arrayList
-			newPred.add(labels[i]);
-		}
-
-		return newPred;
-	}
 
 	public ArrayList<String> getLabelsFromLabelSequence(LabelSequence ls) {
 		ArrayList<String> labels = new ArrayList<String>();

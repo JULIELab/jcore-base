@@ -19,11 +19,11 @@ package de.julielab.jsbd;
 
 import java.util.TreeSet;
 
-class Abbreviations {
+public class AbbreviationsBiomed {
 
-	private TreeSet<String> abbr;
+	public TreeSet<String> abbr;
 
-	Abbreviations() {
+	public AbbreviationsBiomed() {
 		init();
 	}
 
@@ -63,7 +63,7 @@ class Abbreviations {
 
 	}
 
-	TreeSet<String> getSet() {
+	public TreeSet<String> getSet() {
 		return abbr;
 	}
 }
