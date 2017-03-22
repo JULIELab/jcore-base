@@ -13,3 +13,4 @@ PK	PK
 Ifi-16	3428(1.)
 IFI16	3428(2.)
 IFI	3458
+beacon	BEACON
