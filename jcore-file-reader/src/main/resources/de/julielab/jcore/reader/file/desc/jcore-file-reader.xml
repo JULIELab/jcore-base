@@ -43,6 +43,13 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+      <configurationParameter>
+        <name>FileNameSplitUnderscore</name>
+        <description>Whether the filenames are splitted on underscore as well as.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -59,6 +66,12 @@
       </nameValuePair>
     <nameValuePair>
         <name>SentencePerLine</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>FileNameSplitUnderscore</name>
         <value>
           <boolean>false</boolean>
         </value>

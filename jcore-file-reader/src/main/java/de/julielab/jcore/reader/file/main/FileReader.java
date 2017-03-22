@@ -66,6 +66,10 @@ public class FileReader extends CollectionReader_ImplBase {
 	 * 
 	 */
 	public static final String SENTENCE_PER_LINE = "SentencePerLine";
+	/**
+	 * 
+	 */
+	public static final String FILE_NAME_SPLIT_UNDERSCORE = "FileNameSplitUnderscore";
 
 	private ArrayList<File> files;
 
@@ -79,6 +83,8 @@ public class FileReader extends CollectionReader_ImplBase {
 	private File publicationDatesFile;
 	@ConfigurationParameter(name = SENTENCE_PER_LINE, mandatory = false)
 	private boolean sentencePerLine;
+	@ConfigurationParameter(name = FILE_NAME_SPLIT_UNDERSCORE, mandatory = false)
+	private boolean fileNameSplitUnderscore;
 	@ConfigurationParameter(name = ALLOWED_FILE_EXTENSIONS, mandatory = false)
 	private String[] allowedExtensionsArray;
 
@@ -98,6 +104,13 @@ public class FileReader extends CollectionReader_ImplBase {
 			sentencePerLine = false;
 		} else {
 			sentencePerLine = spl;
+		}
+		
+		Boolean fnsu = (Boolean) getConfigParameterValue(FILE_NAME_SPLIT_UNDERSCORE);
+		if (null == fnsu) {
+			fileNameSplitUnderscore = false;
+		} else {
+			fileNameSplitUnderscore = fnsu;
 		}
 		
 		Boolean filenameAsDocId = (Boolean) getConfigParameterValue(FILENAME_AS_DOC_ID);
@@ -199,9 +212,11 @@ public class FileReader extends CollectionReader_ImplBase {
 			if (extDotIndex > 0) {
 				filename = filename.substring(0, extDotIndex);
 			}
-			int extUnderScoreIndex = filename.lastIndexOf('_');
-			if (extUnderScoreIndex > 0) {
-				filename = filename.substring(0, extUnderScoreIndex);
+			if ( fileNameSplitUnderscore ) {
+				int extUnderScoreIndex = filename.lastIndexOf('_');
+				if (extUnderScoreIndex > 0) {
+					filename = filename.substring(0, extUnderScoreIndex);
+				}
 			}
 
 			Header header = new Header(jcas);
