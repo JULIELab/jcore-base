@@ -17,6 +17,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Organism;
@@ -31,6 +33,7 @@ import de.julielab.jcore.types.Sentence;
  *
  */
 public class GeneSpeciesAssignmentAnnotator extends JCasAnnotator_ImplBase {
+	private static final Logger log = LoggerFactory.getLogger(GeneSpeciesAssignmentAnnotator.class);
 
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
@@ -80,7 +83,7 @@ public class GeneSpeciesAssignmentAnnotator extends JCasAnnotator_ImplBase {
 		//Map initial letter of species instance to tax_ID
 		Set<String> taxIds = organismsMap.keySet();
 		if (taxIds.isEmpty()) {
-			System.out.println("No organisms");
+			log.debug("No organisms");
 			return;
 		}
 		//TODO: Can the set be empty?
