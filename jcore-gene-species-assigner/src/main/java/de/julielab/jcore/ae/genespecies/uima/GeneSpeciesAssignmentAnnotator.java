@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
@@ -24,6 +26,8 @@ import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Organism;
 import de.julielab.jcore.types.ResourceEntry;
 import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.pubmed.Header;
+import edu.ucdenver.ccp.nlp.core.uima.annotation.CCPDocumentInformation;
 
 /**
  * This analysis engine assigns each Gene in the CAS index a taxonomy
@@ -83,7 +87,13 @@ public class GeneSpeciesAssignmentAnnotator extends JCasAnnotator_ImplBase {
 		//Map initial letter of species instance to tax_ID
 		Set<String> taxIds = organismsMap.keySet();
 		if (taxIds.isEmpty()) {
-			log.debug("No organisms");
+			FSIterator<Annotation> headerIt = aJCas.getAnnotationIndex(Header.type).iterator();
+			if (headerIt.hasNext()) {
+				Header header = (Header) headerIt.next();
+				log.debug("Doc ID " + header.getDocId() + ": No organisms");
+			} else {
+				log.debug("No organisms");
+			}
 			return;
 		}
 		//TODO: Can the set be empty?
