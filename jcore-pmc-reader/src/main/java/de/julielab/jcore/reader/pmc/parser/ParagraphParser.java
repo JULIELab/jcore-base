@@ -1,24 +1,20 @@
 package de.julielab.jcore.reader.pmc.parser;
 
-import com.ximpleware.NavException;
+import org.apache.uima.jcas.tcas.Annotation;
 
-public class ParagraphParser extends NxmlElementParser {
+import de.julielab.jcore.types.Paragraph;
+
+public class ParagraphParser extends DefaultElementParser {
 
 	public ParagraphParser(NxmlDocumentParser nxmlDocumentParser) {
-		super(nxmlDocumentParser, "p");
+		super(nxmlDocumentParser);
 	}
 
 	@Override
-	public ElementParsingResult parse() throws ElementParsingException {
-		try {
-			int textNodeIndex = vn.getText();
-			if (textNodeIndex != -1) {
-				String text = vn.toString(textNodeIndex);
-			}
-			return null;
-		} catch (NavException e) {
-			throw new ElementParsingException(e);
-		}
+	protected Annotation getParsingResultAnnotation() {
+		return new Paragraph(nxmlDocumentParser.cas);
 	}
+
+	
 
 }

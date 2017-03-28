@@ -1,5 +1,7 @@
 package de.julielab.jcore.reader.pmc.parser;
 
+import org.apache.uima.jcas.tcas.Annotation;
+
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 
@@ -15,21 +17,22 @@ import de.julielab.jcore.types.Zone;
  */
 public class DefaultElementParser extends NxmlElementParser {
 
+	protected ElementParsingResult result;
+
 	public DefaultElementParser(NxmlDocumentParser nxmlDocumentParser) {
-		super(nxmlDocumentParser, "*");
+		super(nxmlDocumentParser);
 	}
 
 	@Override
 	public ElementParsingResult parse() throws ElementParsingException, DocumentParsingException {
 		try {
-			if (vn.getTokenType(vn.getCurrentIndex()) != VTDNav.TOKEN_STARTING_TAG)
-				throw new IllegalStateException("VTDNav is positioned incorrectly. It must point to a starting tag.");
+			checkCursorPosition();
 			// since this parser does not know the element is is used upon, set
 			// it first for the parsing result creation
 			elementName = vn.toString(vn.getCurrentIndex());
-			ElementParsingResult result = createParsingResult();
-			result.setAnnotation(new Zone(nxmlDocumentParser.cas));
 			int elementDepth = vn.getCurrentDepth();
+			result = createParsingResult();
+			result.setAnnotation(getParsingResultAnnotation());
 
 			// idea: get the text contents between child elements. For the child
 			// elements we let the appropriate parser do the work
@@ -84,6 +87,32 @@ public class DefaultElementParser extends NxmlElementParser {
 
 	/**
 	 * <p>
+	 * This method returns the UIMA annotation that will be used to annotate the
+	 * contents of this element. This is a {@link Zone} as a default. Should be
+	 * overwritten by implementing subclasses to use a more specific annotation.
+	 * </p>
+	 * <p>
+	 * This method is called while the VTDNav cursor is still positioned on the
+	 * starting tag token. Thus, attributes of the element may also be parsed
+	 * within this method into fields of the extending parser, if required. To
+	 * avoid side effects, the use of {@link VTDNav#push()} and
+	 * {@link VTDNav#pop()} is advisable. Also, when parsing attribute values
+	 * into parser fields, keep in mind that most parsers might be called
+	 * recursively so a parser cannot have a real state and fields will be
+	 * overwritten with the next call to their {@link #parse()} method. For this
+	 * reason, this class discloses its ParsingResult through the field
+	 * {@link #result} to subclasses. You should immediately write all required
+	 * information into {@link #result} and not rely on any state of the parser.
+	 * </p>
+	 * 
+	 * @return The UIMA element annotation.
+	 */
+	protected Annotation getParsingResultAnnotation() {
+		return new Zone(nxmlDocumentParser.cas);
+	}
+
+	/**
+	 * <p>
 	 * Helper method to determine whether the current token index still lies
 	 * within the element this parser has been called for. Since VTD-XML does
 	 * unfortunately not use its VTDNav.TOKEN_ENDING_TAG token type, we have to
@@ -92,14 +121,17 @@ public class DefaultElementParser extends NxmlElementParser {
 	 * </p>
 	 * <p>
 	 * When an XML element ends, the next token may be another starting tag with
-	 * the same depth as the original element (a sibling in the XML tree) or something else, e.g.
-	 * text data, with a lower depth belonging to the parent element. Those two
-	 * cases are checked in this method.
+	 * the same depth as the original element (a sibling in the XML tree) or
+	 * something else, e.g. text data, with a lower depth belonging to the
+	 * parent element. Those two cases are checked in this method.
 	 * </p>
 	 * 
-	 * @param index The token index to check.
-	 * @param elementDepth The depth of the original element this parser is handling.
-	 * @return True, if the token with the given index belongs to the element for this parser.
+	 * @param index
+	 *            The token index to check.
+	 * @param elementDepth
+	 *            The depth of the original element this parser is handling.
+	 * @return True, if the token with the given index belongs to the element
+	 *         for this parser.
 	 */
 	private boolean tokenIndexBelongsToElement(int index, int elementDepth) {
 		return !((vn.getTokenType(index) == VTDNav.TOKEN_STARTING_TAG && vn.getTokenDepth(index) <= elementDepth)

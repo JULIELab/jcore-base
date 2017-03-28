@@ -14,9 +14,8 @@ public abstract class NxmlElementParser extends NxmlParser {
 	private boolean autoPilotInUse = false;
 	protected NxmlDocumentParser nxmlDocumentParser;
 
-	public NxmlElementParser(NxmlDocumentParser nxmlDocumentParser, String elementName) {
+	public NxmlElementParser(NxmlDocumentParser nxmlDocumentParser) {
 		this.nxmlDocumentParser = nxmlDocumentParser;
-		this.elementName = elementName;
 		this.vn = nxmlDocumentParser.getVn();
 	}
 
@@ -80,5 +79,13 @@ public abstract class NxmlElementParser extends NxmlParser {
 		int offset = (int) elementFragment;
 		int length = (int) (elementFragment >> 32);
 		return offset + length;
+	}
+	
+	/**
+	 * Throws an exception if the VTDNav cursor is not set to an element starting tag.
+	 */
+	protected void checkCursorPosition() {
+		if (vn.getTokenType(vn.getCurrentIndex()) != VTDNav.TOKEN_STARTING_TAG)
+			throw new IllegalStateException("VTDNav is positioned incorrectly. It must point to a starting tag.");
 	}
 }
