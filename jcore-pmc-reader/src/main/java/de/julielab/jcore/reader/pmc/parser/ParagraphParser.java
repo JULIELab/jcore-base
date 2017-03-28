@@ -1,30 +1,24 @@
 package de.julielab.jcore.reader.pmc.parser;
 
-import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
-
-import de.julielab.jcore.reader.pmc.PmcReaderException;
 
 public class ParagraphParser extends NxmlElementParser {
 
-	public ParagraphParser(VTDNav vn, String xPath, String elementName, boolean recursive) {
-		super(vn, xPath, "p", recursive);
+	public ParagraphParser(NxmlDocumentParser nxmlDocumentParser) {
+		super(nxmlDocumentParser, "p");
 	}
 
 	@Override
-	public ParsingResult parse() throws PmcReaderException {
+	public ElementParsingResult parse() throws ElementParsingException {
 		try {
-			AutoPilot ap = getAutoPilot(xPath, vn);
-			while (ap.evalXPath() != -1) {
-				
+			int textNodeIndex = vn.getText();
+			if (textNodeIndex != -1) {
+				String text = vn.toString(textNodeIndex);
 			}
-		} catch (XPathParseException | XPathEvalException | NavException e) {
-			throw new PmcReaderException(e);
+			return null;
+		} catch (NavException e) {
+			throw new ElementParsingException(e);
 		}
-		return null;
 	}
 
 }

@@ -1,0 +1,109 @@
+package de.julielab.jcore.reader.pmc.parser;
+
+import com.ximpleware.NavException;
+import com.ximpleware.VTDNav;
+
+import de.julielab.jcore.types.Zone;
+
+/**
+ * A generic element parser that is applicable to any element of the document
+ * body. Parses the text contents from the element and calls specialized parsers
+ * for child elements.
+ * 
+ * @author faessler
+ *
+ */
+public class DefaultElementParser extends NxmlElementParser {
+
+	public DefaultElementParser(NxmlDocumentParser nxmlDocumentParser) {
+		super(nxmlDocumentParser, "*");
+	}
+
+	@Override
+	public ElementParsingResult parse() throws ElementParsingException, DocumentParsingException {
+		try {
+			if (vn.getTokenType(vn.getCurrentIndex()) != VTDNav.TOKEN_STARTING_TAG)
+				throw new IllegalStateException("VTDNav is positioned incorrectly. It must point to a starting tag.");
+			// since this parser does not know the element is is used upon, set
+			// it first for the parsing result creation
+			elementName = vn.toString(vn.getCurrentIndex());
+			ElementParsingResult result = createParsingResult();
+			result.setAnnotation(new Zone(nxmlDocumentParser.cas));
+			int elementDepth = vn.getCurrentDepth();
+
+			// idea: get the text contents between child elements. For the child
+			// elements we let the appropriate parser do the work
+			// we determine whether we are still in the original element by
+			// checking if the current depth gets higher (i.e. small depth) than
+			// the element is
+			// go one token further to leave the starting tag token
+			int i = vn.getCurrentIndex() + 1;
+			boolean inElementContent = false;
+			for (; i < vn.getTokenCount() && tokenIndexBelongsToElement(i, elementDepth); ++i) {
+				int tokenType = vn.getTokenType(i);
+				// look for the first token that does not belong to the starting
+				// tag
+				if (tokenType != VTDNav.TOKEN_ATTR_NAME && tokenType != VTDNav.TOKEN_ATTR_VAL
+						&& tokenType != VTDNav.TOKEN_ATTR_NS && tokenType != VTDNav.TOKEN_PI_NAME
+						&& tokenType != VTDNav.TOKEN_PI_VAL)
+					inElementContent = true;
+				// as long as we are not yet within the element contents, just
+				// keep on looking
+				if (!inElementContent)
+					continue;
+				switch (tokenType) {
+				case VTDNav.TOKEN_STARTING_TAG:
+					// set the cursor to the position of the starting tag and
+					// then call the parser for this tag
+					if (vn.getCurrentIndex() != i)
+						vn.recoverNode(i);
+					String tagName = vn.toString(vn.getCurrentIndex());
+					ElementParsingResult subResult = nxmlDocumentParser.getParser(tagName).parse();
+					result.addSubResult(subResult);
+					// The subresult parser moves the cursor towards the end of
+					// its element. We should continue where the last parser
+					// stopped. We decrement i because the for-loop will
+					// immediately increment for the next iteration. But for the
+					// next iteration we just want to be exactly where the last
+					// parser stopped.
+					i = subResult.getLastTokenIndex() - 1;
+					break;
+				case VTDNav.TOKEN_CHARACTER_DATA:
+				case VTDNav.TOKEN_CDATA_VAL:
+					result.addSubResult(new TextParsingResult(vn.toString(i), vn.getTokenOffset(i),
+							vn.getTokenOffset(i) + vn.getTokenLength(i)));
+					break;
+				}
+			}
+			result.setLastTokenIndex(i);
+			return result;
+		} catch (NavException e) {
+			throw new ElementParsingException(e);
+		}
+	}
+
+	/**
+	 * <p>
+	 * Helper method to determine whether the current token index still lies
+	 * within the element this parser has been called for. Since VTD-XML does
+	 * unfortunately not use its VTDNav.TOKEN_ENDING_TAG token type, we have to
+	 * infer from token type and token depth whether we have left the element or
+	 * not.
+	 * </p>
+	 * <p>
+	 * When an XML element ends, the next token may be another starting tag with
+	 * the same depth as the original element (a sibling in the XML tree) or something else, e.g.
+	 * text data, with a lower depth belonging to the parent element. Those two
+	 * cases are checked in this method.
+	 * </p>
+	 * 
+	 * @param index The token index to check.
+	 * @param elementDepth The depth of the original element this parser is handling.
+	 * @return True, if the token with the given index belongs to the element for this parser.
+	 */
+	private boolean tokenIndexBelongsToElement(int index, int elementDepth) {
+		return !((vn.getTokenType(index) == VTDNav.TOKEN_STARTING_TAG && vn.getTokenDepth(index) <= elementDepth)
+				|| vn.getTokenDepth(index) < elementDepth);
+	}
+
+}

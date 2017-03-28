@@ -27,6 +27,11 @@
       	<artifactId>julie-xml-tools</artifactId>
       	<version>0.3.2-SNAPSHOT</version>
       </dependency>
+      <dependency>
+      	<groupId>de.julielab</groupId>
+      	<artifactId>jcore-types</artifactId>
+      	<version>${project.parent.version}</version>
+      </dependency>
   </dependencies>
   <organization>
   	<name>JULIE Lab Jena, Germany</name>
