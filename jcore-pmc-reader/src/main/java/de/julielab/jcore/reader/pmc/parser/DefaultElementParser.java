@@ -1,10 +1,15 @@
 package de.julielab.jcore.reader.pmc.parser;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 
+import de.julielab.jcore.reader.pmc.ElementProperties;
 import de.julielab.jcore.types.Zone;
 
 /**
@@ -16,8 +21,6 @@ import de.julielab.jcore.types.Zone;
  *
  */
 public class DefaultElementParser extends NxmlElementParser {
-
-	protected ElementParsingResult result;
 
 	public DefaultElementParser(NxmlDocumentParser nxmlDocumentParser) {
 		super(nxmlDocumentParser);
@@ -31,8 +34,9 @@ public class DefaultElementParser extends NxmlElementParser {
 			// it first for the parsing result creation
 			elementName = vn.toString(vn.getCurrentIndex());
 			int elementDepth = vn.getCurrentDepth();
-			result = createParsingResult();
+			ElementParsingResult result = createParsingResult();
 			result.setAnnotation(getParsingResultAnnotation());
+			editResult(result);
 
 			// idea: get the text contents between child elements. For the child
 			// elements we let the appropriate parser do the work
@@ -85,6 +89,11 @@ public class DefaultElementParser extends NxmlElementParser {
 		}
 	}
 
+	// for access to the local ParsingResult
+	protected void editResult(ElementParsingResult result) {
+		// does nothing by default, just here for override
+	}
+
 	/**
 	 * <p>
 	 * This method returns the UIMA annotation that will be used to annotate the
@@ -102,12 +111,25 @@ public class DefaultElementParser extends NxmlElementParser {
 	 * overwritten with the next call to their {@link #parse()} method. For this
 	 * reason, this class discloses its ParsingResult through the field
 	 * {@link #result} to subclasses. You should immediately write all required
-	 * information into {@link #result} and not rely on any state of the parser.
+	 * information into {@link #result} by overwriting
+	 * {@link #editResult(ElementParsingResult)} and not rely on any state of
+	 * the parser.
 	 * </p>
 	 * 
 	 * @return The UIMA element annotation.
 	 */
 	protected Annotation getParsingResultAnnotation() {
+		String annotationClassName = (String) nxmlDocumentParser.getTagProperties(elementName)
+				.getOrDefault(ElementProperties.TYPE, Zone.class.getCanonicalName());
+		if (annotationClassName.trim().equals(ElementProperties.TYPE_NONE))
+			return null;
+		try {
+			Constructor<?> constructor = Class.forName(annotationClassName).getConstructor(JCas.class);
+			return (Annotation) constructor.newInstance(nxmlDocumentParser.cas);
+		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
 		return new Zone(nxmlDocumentParser.cas);
 	}
 

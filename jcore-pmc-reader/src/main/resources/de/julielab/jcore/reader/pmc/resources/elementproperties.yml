@@ -1,0 +1,9 @@
+xref:
+    block-element: false
+p:
+    block-element: true
+    type: de.julielab.jcore.types.Paragraph
+front:
+    text-body-element: false
+back:
+    text-body-element: false

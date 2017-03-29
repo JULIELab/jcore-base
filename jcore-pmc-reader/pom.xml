@@ -20,7 +20,7 @@
       	<groupId>org.slf4j</groupId>
       	<artifactId>slf4j-simple</artifactId>
       	<version>1.7.24</version>
-      	<scope>test</scope>
+      	<scope>provided</scope>
       </dependency>
       <dependency>
       	<groupId>de.julielab</groupId>
@@ -31,6 +31,11 @@
       	<groupId>de.julielab</groupId>
       	<artifactId>jcore-types</artifactId>
       	<version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.yaml</groupId>
+      	<artifactId>snakeyaml</artifactId>
+      	<version>1.18</version>
       </dependency>
   </dependencies>
   <organization>

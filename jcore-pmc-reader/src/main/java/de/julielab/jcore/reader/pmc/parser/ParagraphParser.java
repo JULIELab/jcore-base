@@ -15,6 +15,11 @@ public class ParagraphParser extends DefaultElementParser {
 		return new Paragraph(nxmlDocumentParser.cas);
 	}
 
+	@Override
+	protected void editResult(ElementParsingResult result) {
+		result.setBlockElement(true);
+	}
+
 	
 
 }

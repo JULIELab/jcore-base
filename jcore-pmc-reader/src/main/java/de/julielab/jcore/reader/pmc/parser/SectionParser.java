@@ -29,13 +29,20 @@ public class SectionParser extends DefaultElementParser {
 		Section section = (Section) parsingResult.getAnnotation();
 		section.setSectionHeading(sectionHeading);
 		// TODO finish
-		return null;
+		return parsingResult;
 	}
 
 	@Override
 	protected Annotation getParsingResultAnnotation() {
 		return new Section(nxmlDocumentParser.cas);
 	}
+
+	@Override
+	protected void editResult(ElementParsingResult result) {
+		result.setBlockElement(true);
+	}
+	
+	
 
 
 }

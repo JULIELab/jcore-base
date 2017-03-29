@@ -1,29 +1,23 @@
 package de.julielab.jcore.reader.pmc.parser;
 
 import java.io.File;
-import java.util.TreeSet;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
-import org.xml.sax.helpers.DefaultHandler;
 
-import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
-
-import de.julielab.xml.JulieXMLTools;
 
 public class SectionParserTest {
 	@Test
 	public void testParse() throws Exception {
 		File file = new File("src/test/resources/documents/PMC2847692.nxml.gz");
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
-		NxmlDocumentParser documentParser = new NxmlDocumentParser(file, cas);
+		NxmlDocumentParser documentParser = new NxmlDocumentParser();
+		documentParser.reset(file, cas);
 		ElementParsingResult result = documentParser.parse();
 		System.out.println(result);
 	}

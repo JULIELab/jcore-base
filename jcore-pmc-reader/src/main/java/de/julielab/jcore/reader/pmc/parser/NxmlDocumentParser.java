@@ -1,12 +1,18 @@
 package de.julielab.jcore.reader.pmc.parser;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
 
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
@@ -44,13 +50,14 @@ public class NxmlDocumentParser extends NxmlParser {
 		NLM_3_0
 	}
 
-	public Map<String, NxmlElementParser> parserRegistry;
+	private Map<String, NxmlElementParser> parserRegistry;
+	private DefaultElementParser defaultElementParser;
+	private Map<String, Map<String, Object>> tagProperties;
 	private Tagset tagset;
 	private File nxmlFile;
-	private DefaultElementParser defaultElementParser;
 	protected JCas cas;
 
-	public NxmlDocumentParser(File nxmlFile, JCas cas) throws DocumentParsingException {
+	public void reset(File nxmlFile, JCas cas) throws DocumentParsingException {
 		this.nxmlFile = nxmlFile;
 		this.cas = cas;
 		try {
@@ -101,7 +108,7 @@ public class NxmlDocumentParser extends NxmlParser {
 //		parserRegistry.put("sec", new SectionParser(this));
 		// TODO extend
 	}
-	
+
 	public VTDNav getVn() {
 		return vn;
 	}
@@ -118,7 +125,7 @@ public class NxmlDocumentParser extends NxmlParser {
 		return parserRegistry;
 	}
 
-	public ElementParsingResult parse() throws ElementParsingException, DocumentParsingException  {
+	public ElementParsingResult parse() throws ElementParsingException, DocumentParsingException {
 		String startingElement = moveToNextStartingTag();
 		assert startingElement.equals("article") : "Did not encounter an article element as first start element";
 		return getParser(startingElement).parse();
@@ -127,5 +134,27 @@ public class NxmlDocumentParser extends NxmlParser {
 	public NxmlElementParser getParser(String tagName) {
 		NxmlElementParser nxmlElementParser = parserRegistry.getOrDefault(tagName, defaultElementParser);
 		return nxmlElementParser;
+	}
+
+	public Map<String, Object> getTagProperties(String tag) {
+		if (tagProperties != null) {
+			return tagProperties.getOrDefault(tag, Collections.emptyMap());
+		}
+		return Collections.emptyMap();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void loadElementPropertyFile(String file) throws IOException {
+		Yaml yaml = new Yaml();
+		InputStream is = getClass().getResourceAsStream(file.startsWith("/") ? file : "/" + file);
+		if (is == null && new File(file).exists())
+			is = new FileInputStream(file);
+		if (is == null)
+			throw new IOException("Resource " + file + " could neither be found as a file nor as a classpath resource");
+		Iterable<Object> allProperties = yaml.loadAll(is);
+		for (Object tag : allProperties) {
+			tagProperties = (Map<String, Map<String, Object>>) tag;
+		}
+
 	}
 }

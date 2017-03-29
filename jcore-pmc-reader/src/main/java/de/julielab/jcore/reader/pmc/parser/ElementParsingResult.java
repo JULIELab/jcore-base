@@ -1,4 +1,4 @@
-	package de.julielab.jcore.reader.pmc.parser;
+package de.julielab.jcore.reader.pmc.parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,8 +8,12 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 public class ElementParsingResult extends ParsingResult {
 	public static final ElementParsingResult NONE = new ElementParsingResult("none", 0, 0);
+
 	private Annotation annotation;
 	private String elementName;
+	private boolean addAnnotationToIndexes;
+	private boolean blockElement;
+	private boolean textBodyElement;
 
 	private List<ParsingResult> subResults = Collections.emptyList();
 	private int lastTokenIndex;
@@ -33,6 +37,9 @@ public class ElementParsingResult extends ParsingResult {
 	public ElementParsingResult(String elementName, int begin, int end) {
 		super(begin, end, ResultType.ELEMENT);
 		this.elementName = elementName;
+		this.addAnnotationToIndexes = true;
+		this.blockElement = false;
+		this.textBodyElement = true;
 	}
 
 	public void addSubResult(ParsingResult subResult) {
@@ -63,12 +70,12 @@ public class ElementParsingResult extends ParsingResult {
 
 	public String toString(int indentLevel) {
 		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < indentLevel*2; ++i)
+		for (int i = 0; i < indentLevel * 2; ++i)
 			sb.append(" ");
 		sb.append(elementName);
 		sb.append(":\n");
 		for (ParsingResult result : subResults)
-			sb.append(result.toString(indentLevel+1));
+			sb.append(result.toString(indentLevel + 1));
 		return sb.toString();
 	}
 
@@ -79,11 +86,55 @@ public class ElementParsingResult extends ParsingResult {
 
 	public void setLastTokenIndex(int lastTokenIndex) {
 		this.lastTokenIndex = lastTokenIndex;
-		
+
 	}
 
 	public int getLastTokenIndex() {
 		return lastTokenIndex;
-	}	
-	
+	}
+
+	public void setAddAnnotationToIndexes(boolean addToIndexes) {
+		this.addAnnotationToIndexes = addToIndexes;
+	}
+
+	/**
+	 * Determines if the annotation of this result, as retrieved by
+	 * {@link #getAnnotation()}, should be added to CAS indexes or not.
+	 * 
+	 * @return True if this result's annotation should be added to CAS indexes.
+	 *         Default to true.
+	 */
+	public boolean addAnnotationToIndexes() {
+		return addAnnotationToIndexes;
+	}
+
+	/**
+	 * Block elements should be rendered with newlines before and after them.
+	 * 
+	 * @return True if this result corresponds to a block element, like a
+	 *         paragraph, a caption etc.
+	 */
+	public boolean isBlockElement() {
+		return blockElement;
+	}
+
+	public void setBlockElement(boolean blockElement) {
+		this.blockElement = blockElement;
+	}
+
+	/**
+	 * Indicates whether the XML element of this result has text contents to be
+	 * added to the CAS document text.
+	 * 
+	 * @return True if this element might have text contents for the CAS
+	 *         document text.
+	 */
+	public boolean isTextBodyElement() {
+		return textBodyElement;
+	}
+
+	public void setTextBodyElement(boolean textBodyElement) {
+		this.textBodyElement = textBodyElement;
+	}
+
 }
