@@ -43,6 +43,12 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>ReadSubDirs</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
