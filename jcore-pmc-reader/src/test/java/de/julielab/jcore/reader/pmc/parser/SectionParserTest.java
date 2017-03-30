@@ -1,12 +1,14 @@
 package de.julielab.jcore.reader.pmc.parser;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
+import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
@@ -27,11 +29,17 @@ public class SectionParserTest {
 		VTDGen vg = new VTDGen();
 		vg.parseGZIPFile("src/test/resources/documents/PMC2847692.nxml.gz", false);
 		VTDNav vn = vg.getNav();
-		for (int i = 0; i < vn.getTokenCount(); i++) {
-			if (vn.getTokenType(i) == VTDNav.TOKEN_DEC_ATTR_NAME) {
-				System.out.println(vn.toString(i));
-			}
-		}
+		System.out.println(vn.getCurrentIndex());
+//		vn.push();
+		AutoPilot ap = new AutoPilot(vn);
+		ap.selectXPath("/article/front/article-meta/abstract");
+		assertTrue(ap.evalXPath() != -1);
+		System.out.println(vn.getCurrentIndex());
+//		ap.resetXPath();
+//		vn.pop();
+		ap.selectXPath("/article/front/journal-meta/journal-title-group/journal-title");
+		assertTrue(ap.evalXPath() != -1);
+		System.out.println(vn.getCurrentIndex());
 	}
 
 	private void printText(VTDNav vn) throws NavException {

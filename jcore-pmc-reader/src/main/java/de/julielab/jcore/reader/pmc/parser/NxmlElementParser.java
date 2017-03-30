@@ -1,13 +1,16 @@
 package de.julielab.jcore.reader.pmc.parser;
 
+import java.util.Optional;
+
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
+import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
 public abstract class NxmlElementParser extends NxmlParser {
 	/**
-	 *  the name of the XML element to parse
+	 * the name of the XML element to parse
 	 */
 	protected String elementName;
 	private AutoPilot reusableAutoPilot;
@@ -20,7 +23,7 @@ public abstract class NxmlElementParser extends NxmlParser {
 	}
 
 	public abstract ElementParsingResult parse() throws ElementParsingException, DocumentParsingException;
-	
+
 	/**
 	 * <p>
 	 * This abstract class has one convenience AutoPilot object that can be
@@ -44,7 +47,6 @@ public abstract class NxmlElementParser extends NxmlParser {
 		assert !autoPilotInUse : "The reusable AutoPilot is in use and must be released before being used again.";
 		if (reusableAutoPilot == null)
 			reusableAutoPilot = new AutoPilot();
-		reusableAutoPilot.resetXPath();
 		reusableAutoPilot.bind(vn);
 		reusableAutoPilot.selectXPath(xpath);
 		return reusableAutoPilot;
@@ -54,50 +56,54 @@ public abstract class NxmlElementParser extends NxmlParser {
 	 * Signals the end of use of the reusable AutoPilot in this class.
 	 */
 	protected void releaseAutoPilot() {
+		reusableAutoPilot.resetXPath();
 		autoPilotInUse = false;
 	}
-	
+
 	/**
-	 * Must be called when vn is positioned on the start tag of the element for which a result should be created.
+	 * Must be called when vn is positioned on the start tag of the element for
+	 * which a result should be created.
+	 * 
 	 * @return The parsing result for the current element.
-	 * @throws NavException 
+	 * @throws NavException
 	 */
 	protected ElementParsingResult createParsingResult() throws NavException {
 		int begin = getElementStart();
 		int end = getElementEnd();
 		return new ElementParsingResult(elementName, begin, end);
 	}
-	
+
 	protected int getElementStart() throws NavException {
 		long elementFragment = vn.getElementFragment();
 		int offset = (int) elementFragment;
 		return offset;
 	}
-	
+
 	protected int getElementEnd() throws NavException {
 		long elementFragment = vn.getElementFragment();
 		int offset = (int) elementFragment;
 		int length = (int) (elementFragment >> 32);
 		return offset + length;
 	}
-	
+
 	/**
-	 * Throws an exception if the VTDNav cursor is not set to an element starting tag.
+	 * Throws an exception if the VTDNav cursor is not set to an element
+	 * starting tag.
 	 */
 	protected void checkCursorPosition() {
 		if (vn.getTokenType(vn.getCurrentIndex()) != VTDNav.TOKEN_STARTING_TAG)
 			throw new IllegalStateException("VTDNav is positioned incorrectly. It must point to a starting tag.");
 	}
-	
+
 	protected int skipElement() {
 		int elementDepth = vn.getCurrentDepth();
 		int i = vn.getCurrentIndex() + 1;
-		while(i < vn.getTokenCount() && tokenIndexBelongsToElement(i, elementDepth)) {
+		while (i < vn.getTokenCount() && tokenIndexBelongsToElement(i, elementDepth)) {
 			++i;
 		}
 		return i;
 	}
-	
+
 	/**
 	 * <p>
 	 * Helper method to determine whether the current token index still lies
@@ -123,5 +129,34 @@ public abstract class NxmlElementParser extends NxmlParser {
 	protected boolean tokenIndexBelongsToElement(int index, int elementDepth) {
 		return !((vn.getTokenType(index) == VTDNav.TOKEN_STARTING_TAG && vn.getTokenDepth(index) <= elementDepth)
 				|| vn.getTokenDepth(index) < elementDepth);
+	}
+
+	protected boolean moveToXPath(String xpath) throws XPathParseException, XPathEvalException, NavException {
+		AutoPilot ap = getAutoPilot(xpath, vn);
+		int index = ap.evalXPath();
+		releaseAutoPilot();
+
+		return index != -1;
+	}
+
+	protected Optional<ParsingResult> parseXPath(String xpath) throws XPathParseException, XPathEvalException,
+			NavException, ElementParsingException, DocumentParsingException {
+		if (moveToXPath(xpath)) {
+			return Optional.of(nxmlDocumentParser.getParser(vn.toString(vn.getCurrentIndex())).parse());
+		}
+		return Optional.empty();
+	}
+
+	protected Optional<String> getXPathValue(String xpath)
+			throws XPathParseException, XPathEvalException, NavException {
+		try {
+			AutoPilot ap = getAutoPilot(xpath, vn);
+			if (ap.evalXPath() != -1) {
+				return Optional.of(vn.toString(vn.getCurrentIndex()));
+			}
+			return Optional.empty();
+		} finally {
+			releaseAutoPilot();
+		}
 	}
 }

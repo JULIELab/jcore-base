@@ -10,6 +10,7 @@ public class SectionParser extends DefaultElementParser {
 
 	public SectionParser(NxmlDocumentParser nxmlDocumentParser) {
 		super(nxmlDocumentParser);
+		elementName = "sec";
 	}
 	
 	@Override
