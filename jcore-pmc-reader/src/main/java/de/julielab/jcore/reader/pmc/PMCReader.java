@@ -24,7 +24,9 @@ import de.julielab.jcore.reader.pmc.parser.ElementParsingException;
 import de.julielab.jcore.reader.pmc.parser.ElementParsingResult;
 import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser;
 import de.julielab.jcore.reader.pmc.parser.ParsingResult;
+import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
 import de.julielab.jcore.reader.pmc.parser.TextParsingResult;
+import de.julielab.jcore.types.Paragraph;
 
 public class PMCReader extends CollectionReader_ImplBase {
 
@@ -78,34 +80,21 @@ public class PMCReader extends CollectionReader_ImplBase {
 			ElementParsingResult elementParsingResult = (ElementParsingResult) result;
 			String elementName = elementParsingResult.getElementName();
 			boolean isBlockElement = elementParsingResult.isBlockElement() || (boolean) nxmlDocumentParser
-					.getTagProperties(elementName).getOrDefault(ElementProperties.BLOCK_ELEMENT, true);
-			boolean isTextBodyElement = elementParsingResult.isTextBodyElement() && (boolean) nxmlDocumentParser
-					.getTagProperties(elementName).getOrDefault(ElementProperties.TEXT_BODY_ELEMENT, true);
+					.getTagProperties(elementName).getOrDefault(ElementProperties.BLOCK_ELEMENT, false);
 
 			int begin = sb.length();
 			for (ParsingResult subResult : elementParsingResult.getSubResults()) {
-				if (subResult != ElementParsingResult.NONE)
-					populateCas(subResult, cas, sb);
+				populateCas(subResult, cas, sb);
 			}
 			int end = sb.length();
 
-			// Non-text body elements might still add metadata annotations to
-			// the CAS but do not contribute to the document text.
-			if (!isTextBodyElement) {
-				if (sb.length() > begin)
-					sb.delete(begin, sb.length());
-				begin = 0;
-				end = 0;
-			}
-			
 			// There are elements that should have line breaks before and after
 			// them like paragraphs, sections, captions etc. Other elements are
 			// inline-elements, like xref, which should be embedded in the
 			// surrounding text without line breaks.
-			if (isTextBodyElement && isBlockElement && sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+			if (isBlockElement && sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
 				sb.append("\n");
 			}
-
 			Annotation annotation = elementParsingResult.getAnnotation();
 			// if no annotation should be created, the parser is allowed to
 			// return null
@@ -119,6 +108,9 @@ public class PMCReader extends CollectionReader_ImplBase {
 		case TEXT:
 			TextParsingResult textParsingResult = (TextParsingResult) result;
 			sb.append(textParsingResult.getText());
+			break;
+		case NONE:
+			// do nothing
 			break;
 		}
 		return sb;

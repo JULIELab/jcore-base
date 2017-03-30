@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.uima.jcas.tcas.Annotation;
 
 public class ElementParsingResult extends ParsingResult {
-	public static final ElementParsingResult NONE = new ElementParsingResult("none", 0, 0);
 
 	private Annotation annotation;
 	private String elementName;

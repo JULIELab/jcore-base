@@ -10,6 +10,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 
 import de.julielab.jcore.reader.pmc.ElementProperties;
+import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
 import de.julielab.jcore.types.Zone;
 
 /**
@@ -34,7 +35,14 @@ public class DefaultElementParser extends NxmlElementParser {
 			// it first for the parsing result creation
 			elementName = vn.toString(vn.getCurrentIndex());
 			int elementDepth = vn.getCurrentDepth();
+			boolean omitElement = (boolean) nxmlDocumentParser.getTagProperties(elementName).getOrDefault(ElementProperties.OMIT_ELEMENT, false);
 			ElementParsingResult result = createParsingResult();
+			if (omitElement) {
+				int firstIndexAfterElement = skipElement();
+				result.setLastTokenIndex(firstIndexAfterElement);
+				result.setResultType(ResultType.NONE);
+				return result;
+			}
 			result.setAnnotation(getParsingResultAnnotation());
 			editResult(result);
 
@@ -120,7 +128,7 @@ public class DefaultElementParser extends NxmlElementParser {
 	 */
 	protected Annotation getParsingResultAnnotation() {
 		String annotationClassName = (String) nxmlDocumentParser.getTagProperties(elementName)
-				.getOrDefault(ElementProperties.TYPE, Zone.class.getCanonicalName());
+				.getOrDefault(ElementProperties.TYPE, ElementProperties.TYPE_NONE);
 		if (annotationClassName.trim().equals(ElementProperties.TYPE_NONE))
 			return null;
 		try {
@@ -130,34 +138,8 @@ public class DefaultElementParser extends NxmlElementParser {
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
-		return new Zone(nxmlDocumentParser.cas);
+		return null;
 	}
 
-	/**
-	 * <p>
-	 * Helper method to determine whether the current token index still lies
-	 * within the element this parser has been called for. Since VTD-XML does
-	 * unfortunately not use its VTDNav.TOKEN_ENDING_TAG token type, we have to
-	 * infer from token type and token depth whether we have left the element or
-	 * not.
-	 * </p>
-	 * <p>
-	 * When an XML element ends, the next token may be another starting tag with
-	 * the same depth as the original element (a sibling in the XML tree) or
-	 * something else, e.g. text data, with a lower depth belonging to the
-	 * parent element. Those two cases are checked in this method.
-	 * </p>
-	 * 
-	 * @param index
-	 *            The token index to check.
-	 * @param elementDepth
-	 *            The depth of the original element this parser is handling.
-	 * @return True, if the token with the given index belongs to the element
-	 *         for this parser.
-	 */
-	private boolean tokenIndexBelongsToElement(int index, int elementDepth) {
-		return !((vn.getTokenType(index) == VTDNav.TOKEN_STARTING_TAG && vn.getTokenDepth(index) <= elementDepth)
-				|| vn.getTokenDepth(index) < elementDepth);
-	}
 
 }

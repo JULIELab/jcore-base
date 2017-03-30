@@ -1,9 +1,23 @@
-xref:
-    block-element: false
+title:
+    block-element: true
+sec:
+    block-element: true
 p:
     block-element: true
     type: de.julielab.jcore.types.Paragraph
+fn-group:
+    block-element: true
 front:
-    text-body-element: false
+    omit-element: true
 back:
-    text-body-element: false
+    omit-element: true
+table-wrap:
+    omit-element: true
+table:
+    omit-element: true
+fig:
+    omit-element: true
+fig-group:
+    omit-element: true
+floats-group:
+    omit-element: true

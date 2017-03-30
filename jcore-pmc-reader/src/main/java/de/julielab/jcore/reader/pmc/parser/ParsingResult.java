@@ -7,7 +7,7 @@ public abstract class ParsingResult {
 	private ResultType resultType;
 
 	public enum ResultType {
-		ELEMENT, TEXT
+		ELEMENT, TEXT, NONE
 	}
 
 	/**
@@ -38,6 +38,10 @@ public abstract class ParsingResult {
 
 	public ResultType getResultType() {
 		return resultType;
+	}
+
+	public void setResultType(ResultType resultType) {
+		this.resultType = resultType;
 	}
 
 	public abstract String toString(int indentLevel);

@@ -88,4 +88,40 @@ public abstract class NxmlElementParser extends NxmlParser {
 		if (vn.getTokenType(vn.getCurrentIndex()) != VTDNav.TOKEN_STARTING_TAG)
 			throw new IllegalStateException("VTDNav is positioned incorrectly. It must point to a starting tag.");
 	}
+	
+	protected int skipElement() {
+		int elementDepth = vn.getCurrentDepth();
+		int i = vn.getCurrentIndex() + 1;
+		while(i < vn.getTokenCount() && tokenIndexBelongsToElement(i, elementDepth)) {
+			++i;
+		}
+		return i;
+	}
+	
+	/**
+	 * <p>
+	 * Helper method to determine whether the current token index still lies
+	 * within the element this parser has been called for. Since VTD-XML does
+	 * unfortunately not use its VTDNav.TOKEN_ENDING_TAG token type, we have to
+	 * infer from token type and token depth whether we have left the element or
+	 * not.
+	 * </p>
+	 * <p>
+	 * When an XML element ends, the next token may be another starting tag with
+	 * the same depth as the original element (a sibling in the XML tree) or
+	 * something else, e.g. text data, with a lower depth belonging to the
+	 * parent element. Those two cases are checked in this method.
+	 * </p>
+	 * 
+	 * @param index
+	 *            The token index to check.
+	 * @param elementDepth
+	 *            The depth of the original element this parser is handling.
+	 * @return True, if the token with the given index belongs to the element
+	 *         for this parser.
+	 */
+	protected boolean tokenIndexBelongsToElement(int index, int elementDepth) {
+		return !((vn.getTokenType(index) == VTDNav.TOKEN_STARTING_TAG && vn.getTokenDepth(index) <= elementDepth)
+				|| vn.getTokenDepth(index) < elementDepth);
+	}
 }

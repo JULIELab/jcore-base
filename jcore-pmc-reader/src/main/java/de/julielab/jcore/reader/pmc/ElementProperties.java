@@ -6,9 +6,9 @@ public class ElementProperties {
 	 */
 	public static final String BLOCK_ELEMENT = "block-element";
 	/**
-	 * Only text body elements may add to the CAS document text.
+	 * Indicates that the respective element should be omitted. That means that neither for the element nor for any of its descendants parsing will happen.
 	 */
-	public static final String TEXT_BODY_ELEMENT = "text-body-element";
+	public static final String OMIT_ELEMENT = "omit-element";
 	/**
 	 * The UIMA annotation type that should be used to annotate the described element.
 	 */
