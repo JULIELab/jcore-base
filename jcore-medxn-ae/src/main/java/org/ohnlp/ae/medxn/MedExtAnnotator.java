@@ -28,12 +28,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import javax.swing.text.Utilities;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -44,7 +44,6 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.medical.Dose;
 import de.julielab.jcore.types.medical.Duration;
@@ -112,9 +111,10 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 			
 			//add the longest only (also remove the duplicate)
 			if(drugs.size()==0) drugs.add(med);
-			else {        			
+			else {
 				for(int i=0; i<drugs.size(); i++) {
 					Medication x = (Medication) drugs.get(i);
+					
 					int condition = contains(med.getBegin(), med.getEnd(), 
 							x.getBegin(), x.getEnd());
 					if(condition==1) {
@@ -159,9 +159,12 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 			
 		//associate drug with attributes within the window
 		//this window condition is for Mayo "current medication section"
+		Integer drug_id = 1;
+		Integer attr_id = 1;
 		for(int i=0; i<drugs.size(); i++) {
 //			MedDesc md = new MedDesc();
 //			md.med = drugs.get(i);
+			Medication actMed = drugs.get(i);
 			
 			int nextDrugBegin;
 			if(i==drugs.size()-1) 
@@ -169,15 +172,16 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 			else 
 				nextDrugBegin = drugs.get(i+1).getBegin();
 					
-			int[] span = setWindow(jcas, drugs.get(i), nextDrugBegin);
+			int[] span = setWindow(jcas, actMed, nextDrugBegin);
 			
 			Iterator<?> gamItr = indexes.getAnnotationIndex(GeneralAttributeMention.type).iterator();
 			GeneralAttributeMention beforeMedAttr = null; //attribute right before medication
+			Map<String, ArrayList<GeneralAttributeMention>> attrMap = new HashMap<String, ArrayList<GeneralAttributeMention>>();
 			int cnt=0;
 			while(gamItr.hasNext()) {
 				GeneralAttributeMention gam = (GeneralAttributeMention) gamItr.next();
 				if(gam.getBegin()>=span[0] && gam.getEnd()<=span[1]) {
-					assignAttribute(gam, drugs.get(i), jcas);
+					assignAttribute(gam, attrMap);
 //					md.attrs.add(ma);
 					cnt++;
 				}
@@ -220,47 +224,93 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 //			}
 //						
 //			if(!isFalseMed2(md)) 
-//				addToJCas(jcas, drugs.get(i), span);						
+//				addToJCas(jcas, drugs.get(i), span);
+			attr_id = setUpMedictation(actMed, drug_id++, attrMap, attr_id, jcas);
 		}		
 	}
 	
-	private void assignAttribute(GeneralAttributeMention gam, Medication medication, JCas jcas) {
-		String gamType = gam.getTag(); //duration, dosage, route, frequency, strength
-		switch (gamType) {
-		case "duration":
-			Duration dur = new Duration(jcas);
-			dur.setBegin(gam.getBegin());
-			dur.setEnd(gam.getEnd());
-			dur.addToIndexes();
-			medication.setDuration(dur);
-			break;
-		case "dosage":
-			Dose dos = new Dose(jcas);
-			dos.setBegin(gam.getBegin());
-			dos.setEnd(gam.getEnd());
-			dos.addToIndexes();
-			medication.setDose(dos);
-			break;
-		case "route":
-			Modus mod = new Modus(jcas);
-			mod.setBegin(gam.getBegin());
-			mod.setEnd(gam.getEnd());
-			mod.addToIndexes();
-			medication.setModus(mod);
-			break;
-		case "frequency":
-			Frequency freq = new Frequency(jcas);
-			freq.setBegin(gam.getBegin());
-			freq.setEnd(gam.getEnd());
-			freq.addToIndexes();
-			medication.setFrequency(freq);
-			break;
-		case "strength":
-			break;
-		default:
-			break;
+	private Integer setUpMedictation(Medication actMed, Integer drug_id, Map<String, ArrayList<GeneralAttributeMention>> attrMap, Integer attr_id, JCas jcas) {
+		actMed.setId(String.format("T%1$d", drug_id));
+		for (String attr : attrMap.keySet()) {
+			ArrayList<GeneralAttributeMention> gamList = attrMap.get(attr);
+			FSArray attrArray = new FSArray(jcas, gamList.size());
+			switch (attr) {
+				case "duration":
+					for (int i=0; i<gamList.size(); i++) {
+						GeneralAttributeMention gam = gamList.get(i);
+						Duration dur = new Duration(jcas);
+						dur.setBegin(gam.getBegin());
+						dur.setEnd(gam.getEnd());
+						dur.setId(String.format("T%1$d%2$d", drug_id, attr_id));
+						dur.setSpecificType("Duration");
+						dur.addToIndexes();
+						attrArray.set(i, dur);
+						attr_id++;
+					}
+					attrArray.addToIndexes();
+					actMed.setDuration(attrArray);
+					break;
+				case "dosage":
+					for (int i=0; i<gamList.size(); i++) {
+						GeneralAttributeMention gam = gamList.get(i);
+						Dose dos = new Dose(jcas);
+						dos.setBegin(gam.getBegin());
+						dos.setEnd(gam.getEnd());
+						dos.setId(String.format("T%1$d%2$d", drug_id, attr_id));
+						dos.setSpecificType("Dose");
+						dos.addToIndexes();
+						attrArray.set(i, dos);
+						attr_id++;
+					}
+					attrArray.addToIndexes();
+					actMed.setDose(attrArray);
+					break;
+				case "route":
+					for (int i=0; i<gamList.size(); i++) {
+						GeneralAttributeMention gam = gamList.get(i);
+						Modus mod = new Modus(jcas);
+						mod.setBegin(gam.getBegin());
+						mod.setEnd(gam.getEnd());
+						mod.setId(String.format("T%1$d%2$d", drug_id, attr_id));
+						mod.setSpecificType("Modus");
+						mod.addToIndexes();
+						attrArray.set(i, mod);
+						attr_id++;
+					}
+					attrArray.addToIndexes();
+					actMed.setModus(attrArray);
+					break;
+				case "frequency":
+					for (int i=0; i<gamList.size(); i++) {
+						GeneralAttributeMention gam = gamList.get(i);
+						Frequency freq = new Frequency(jcas);
+						freq.setBegin(gam.getBegin());
+						freq.setEnd(gam.getEnd());
+						freq.setId(String.format("T%1$d%2$d", drug_id, attr_id));
+						freq.setSpecificType("Frequency");
+						freq.addToIndexes();
+						attrArray.set(i, freq);
+						attr_id++;
+					}
+					attrArray.addToIndexes();
+					actMed.setModus(attrArray);
+					break;
+				case "strength":
+					break;
+				default:
+					break;
+			}
 		}
-		
+		return attr_id;
+	}
+
+	private void assignAttribute(GeneralAttributeMention gam, Map<String, ArrayList<GeneralAttributeMention>> attrMap) {
+		String gamType = gam.getTag(); //duration, dosage, route, frequency, strength
+		if ( !attrMap.containsKey(gamType) ) {
+			ArrayList<GeneralAttributeMention> vals = new ArrayList<GeneralAttributeMention>();
+			attrMap.put(gamType, vals);
+		}
+		attrMap.get(gamType).add(gam);
 	}
 
 //	protected void addToJCas(JCas jcas, Medication drug, int[] window) {

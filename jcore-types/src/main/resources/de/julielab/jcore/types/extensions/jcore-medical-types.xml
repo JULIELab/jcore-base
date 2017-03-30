@@ -16,27 +16,32 @@
         <featureDescription>
           <name>duration</name>
           <description/>
-          <rangeTypeName>de.julielab.jcore.types.medical.Duration</rangeTypeName>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Duration</elementType>
         </featureDescription>
         <featureDescription>
           <name>dose</name>
           <description/>
-          <rangeTypeName>de.julielab.jcore.types.medical.Dose</rangeTypeName>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Dose</elementType>
         </featureDescription>
         <featureDescription>
           <name>frequency</name>
           <description/>
-          <rangeTypeName>de.julielab.jcore.types.medical.Frequency</rangeTypeName>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Frequency</elementType>
         </featureDescription>
         <featureDescription>
           <name>modus</name>
           <description/>
-          <rangeTypeName>de.julielab.jcore.types.medical.Modus</rangeTypeName>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Modus</elementType>
         </featureDescription>
         <featureDescription>
           <name>reason</name>
           <description/>
-          <rangeTypeName>de.julielab.jcore.types.medical.Reason</rangeTypeName>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Reason</elementType>
         </featureDescription>
       </features>
     </typeDescription>
