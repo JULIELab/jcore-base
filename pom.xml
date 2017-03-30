@@ -42,7 +42,7 @@
 	<modules>
 		<module>jcore-ace-reader</module>
 		<module>jcore-acronym-ae</module>
-		<module>jcore-bionlp09event-consumer</module>
+		<module>jcore-bionlpformat-consumer</module>
 		<module>jcore-bionlpformat-reader</module>
 		<module>jcore-biosem-ae</module>
 		<module>jcore-cas2conll-consumer</module>
