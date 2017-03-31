@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,7 @@ public class NxmlDocumentParser extends NxmlParser {
 	private void setTagset() throws NavException {
 		for (int i = 0; i < vn.getTokenCount(); i++) {
 			if (vn.getTokenType(i) == VTDNav.TOKEN_DTD_VAL) {
-				String docType = vn.toString(i).trim();
+				String docType = StringUtils.normalizeSpace(vn.toString(i)).replaceAll("'", "\"");
 				if (docType.equals(
 						"article PUBLIC \"-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN\" \"JATS-archivearticle1.dtd\""))
 					tagset = Tagset.JATS_1_0;
@@ -105,6 +106,10 @@ public class NxmlDocumentParser extends NxmlParser {
 		this.defaultElementParser = new DefaultElementParser(this);
 		parserRegistry = new HashMap<>();
 		parserRegistry.put("front", new FrontMatterParser(this));
+		// filters for authors currently (thus, omits editors, for example)
+//		parserRegistry.put("contrib-group", new FrontMatterParser(this));
+		// does only create AuthorInfo annotations and expects the contrib-type "author"
+//		parserRegistry.put("contrib", new FrontMatterParser(this));
 //		parserRegistry.put("sec", new SectionParser(this));
 		// TODO extend
 	}

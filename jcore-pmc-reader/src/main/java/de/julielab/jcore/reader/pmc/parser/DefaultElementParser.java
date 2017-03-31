@@ -28,12 +28,12 @@ public class DefaultElementParser extends NxmlElementParser {
 	}
 
 	@Override
-	public ElementParsingResult parse() throws ElementParsingException, DocumentParsingException {
+	public ElementParsingResult parse() throws ElementParsingException {
 		try {
-			checkCursorPosition();
 			// since this parser does not know the element is is used upon, set
 			// it first for the parsing result creation
 			elementName = vn.toString(vn.getCurrentIndex());
+			checkCursorPosition();
 			int elementDepth = vn.getCurrentDepth();
 			boolean omitElement = (boolean) nxmlDocumentParser.getTagProperties(elementName).getOrDefault(ElementProperties.OMIT_ELEMENT, false);
 			ElementParsingResult result = createParsingResult();

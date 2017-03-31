@@ -29,17 +29,36 @@ public class SectionParserTest {
 		VTDGen vg = new VTDGen();
 		vg.parseGZIPFile("src/test/resources/documents/PMC2847692.nxml.gz", false);
 		VTDNav vn = vg.getNav();
-		System.out.println(vn.getCurrentIndex());
-//		vn.push();
 		AutoPilot ap = new AutoPilot(vn);
-		ap.selectXPath("/article/front/article-meta/abstract");
-		assertTrue(ap.evalXPath() != -1);
-		System.out.println(vn.getCurrentIndex());
-//		ap.resetXPath();
-//		vn.pop();
-		ap.selectXPath("/article/front/journal-meta/journal-title-group/journal-title");
-		assertTrue(ap.evalXPath() != -1);
-		System.out.println(vn.getCurrentIndex());
+		ap.selectXPath("/muh");
+	System.out.println(".." + ap.evalXPathToString() + "..");
+	}
+	
+	@Test
+	public void voidTestVtd2() throws Exception {
+		String contrib = " <contrib contrib-type=\"author\" corresp=\"yes\">\n" + 
+				"                    <name>\n" + 
+				"                        <surname>Elofsson</surname>\n" + 
+				"                        <given-names>Katarina</given-names>\n" + 
+				"                    </name>\n" + 
+				"                    <address>\n" + 
+				"                        <email>katarina.elofsson@ekon.slu.se</email>\n" + 
+				"                    </address>\n" + 
+				"                    <xref ref-type=\"aff\" rid=\"Aff1\"/>\n" + 
+				"                    <bio>\n" + 
+				"                        <sec id=\"d29e148\">\n" + 
+				"                            <title>Katarina Elofsson</title>\n" + 
+				"                            <p>is assistant professor at the Swedish University of Agricultural Sciences. Her research is focused on management of water quality and of invasive species.</p>\n" + 
+				"                        </sec>\n" + 
+				"                    </bio>\n" + 
+				"                </contrib>";
+		VTDGen vg = new VTDGen();
+		vg.setDoc(contrib.getBytes());
+		vg.parse(false);
+		VTDNav vn = vg.getNav();
+		AutoPilot ap = new AutoPilot(vn);
+		ap.selectXPath("/contrib[@contrib-type='author']/xref[@ref-type='aff']/@rid");
+		System.out.println(ap.evalXPathToString());
 	}
 
 	private void printText(VTDNav vn) throws NavException {

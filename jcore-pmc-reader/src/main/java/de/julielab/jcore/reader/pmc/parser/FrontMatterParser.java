@@ -1,6 +1,8 @@
 package de.julielab.jcore.reader.pmc.parser;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import org.apache.uima.jcas.cas.FSArray;
 
@@ -10,6 +12,7 @@ import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
 import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser.Tagset;
+import de.julielab.jcore.types.AuthorInfo;
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.pubmed.Header;
@@ -23,15 +26,15 @@ public class FrontMatterParser extends NxmlElementParser {
 	}
 
 	@Override
-	public ElementParsingResult parse() throws ElementParsingException, DocumentParsingException {
+	public ElementParsingResult parse() throws ElementParsingException {
 		try {
 			ElementParsingResult frontResult = createParsingResult();
 			checkCursorPosition();
 			vn.push();
-			
+
+			// title and abstract
 			parseXPath("/article/front/article-meta/title-group/article-title").ifPresent(frontResult::addSubResult);
 			parseXPath("/article/front/article-meta/abstract").ifPresent(frontResult::addSubResult);
-			parseXPath("/article/front/article-meta/contrib-group").ifPresent(frontResult::addSubResult);
 
 			Optional<String> pmid = getXPathValue("/article/front/article-meta/article-id[@pub-id-type='pmid']");
 			Optional<String> pmcid = getXPathValue("/article/front/article-meta/article-id[@pub-id-type='pmc']");
@@ -48,8 +51,9 @@ public class FrontMatterParser extends NxmlElementParser {
 			Optional<String> firstPage = getXPathValue("/article/front/article-meta/fpage");
 			Optional<String> lastPage = getXPathValue("/article/front/article-meta/lpage");
 			Optional<String> issn = getXPathValue("/article/front/journal-meta/issn[@pub-type='ppub']");
-			
-			Optional<String> copyrightStatement = getXPathValue("/article/front/article-meta/permissions/copyright-statement");
+
+			Optional<String> copyrightStatement = getXPathValue(
+					"/article/front/article-meta/permissions/copyright-statement");
 
 			Header header = new Header(nxmlDocumentParser.cas);
 
@@ -62,7 +66,7 @@ public class FrontMatterParser extends NxmlElementParser {
 				header.setOtherIDs(otherIDs);
 			});
 			doi.ifPresent(header::setDoi);
-			
+
 			copyrightStatement.ifPresent(header::setCopyright);
 
 			Journal journal = new Journal(nxmlDocumentParser.cas);
@@ -79,9 +83,26 @@ public class FrontMatterParser extends NxmlElementParser {
 			year.map(Integer::parseInt).ifPresent(pubDate::setYear);
 			journal.setPubDate(pubDate);
 			header.setPubTypeList(pubTypes);
-			
+
+			// authors (more general: contributors; but for the moment we
+			// restrict ourselves to authors)
+			parseXPath("/article/front/article-meta/contrib-group").map(ElementParsingResult.class::cast)
+					.ifPresent(r -> {
+						// currently authors
+						List<ParsingResult> contribResults = r.getSubResults();
+						FSArray aiArray = new FSArray(nxmlDocumentParser.cas, contribResults.size());
+						IntStream.range(0, contribResults.size()).forEach(i -> {
+							ElementParsingResult contribResult = (ElementParsingResult) contribResults.get(i);
+							if (contribResult.getAnnotation() != null
+									&& contribResult.getAnnotation() instanceof AuthorInfo)
+								aiArray.set(i, contribResult.getAnnotation());
+						});
+						if (aiArray.size() > 0)
+							header.setAuthors(aiArray);
+					});
+
 			frontResult.setAnnotation(header);
-			
+
 			vn.pop();
 			vn.toElement(VTDNav.NEXT_SIBLING);
 			frontResult.setLastTokenIndex(vn.getCurrentIndex());

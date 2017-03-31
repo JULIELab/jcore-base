@@ -22,9 +22,9 @@ public class FrontMatterParserTest {
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
 		documentParser.reset(new File("src/test/resources/documents/PMC2847692.nxml.gz"), cas);
 		
-		ElementParsingResult parse = documentParser.parse();
-		assertNotNull(parse);
-		ElementParsingResult frontResult = getElementResult("front", parse);
+		FrontMatterParser frontMatterParser = new FrontMatterParser(documentParser);
+		frontMatterParser.moveToXPath("/article/front");
+		ElementParsingResult frontResult = frontMatterParser.parse();
 		assertNotNull(frontResult);
 		
 		Annotation annotation = frontResult.getAnnotation();
@@ -47,6 +47,8 @@ public class FrontMatterParserTest {
 		assertNotNull(titleResult);
 		ElementParsingResult abstractResult = getElementResult("abstract", frontResult);
 		assertNotNull(abstractResult);
+		
+		assertNotNull(header.getAuthors());
 	}
 
 	private ElementParsingResult getElementResult(String elementName, ElementParsingResult parse) {

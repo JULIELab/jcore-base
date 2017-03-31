@@ -14,7 +14,7 @@ public class SectionParser extends DefaultElementParser {
 	}
 	
 	@Override
-	public ElementParsingResult parse() throws ElementParsingException, DocumentParsingException  {
+	public ElementParsingResult parse() throws ElementParsingException  {
 		ElementParsingResult parsingResult = super.parse();
 		
 		Title sectionHeading = null;

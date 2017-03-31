@@ -22,7 +22,7 @@ public abstract class NxmlElementParser extends NxmlParser {
 		this.vn = nxmlDocumentParser.getVn();
 	}
 
-	public abstract ElementParsingResult parse() throws ElementParsingException, DocumentParsingException;
+	public abstract ElementParsingResult parse() throws ElementParsingException;
 
 	/**
 	 * <p>
@@ -89,10 +89,16 @@ public abstract class NxmlElementParser extends NxmlParser {
 	/**
 	 * Throws an exception if the VTDNav cursor is not set to an element
 	 * starting tag.
+	 * 
+	 * @throws NavException
 	 */
-	protected void checkCursorPosition() {
+	protected void checkCursorPosition() throws NavException {
 		if (vn.getTokenType(vn.getCurrentIndex()) != VTDNav.TOKEN_STARTING_TAG)
 			throw new IllegalStateException("VTDNav is positioned incorrectly. It must point to a starting tag.");
+		if (!vn.toString(vn.getCurrentIndex()).equals(elementName))
+			throw new IllegalStateException(
+					"VTDNav is positioned incorrectly. It is expected to be positioned at the starting tag \""
+							+ elementName + "\" but it is set to \"" + vn.toString(vn.getCurrentIndex()) + "\".");
 	}
 
 	protected int skipElement() {
@@ -139,8 +145,8 @@ public abstract class NxmlElementParser extends NxmlParser {
 		return index != -1;
 	}
 
-	protected Optional<ParsingResult> parseXPath(String xpath) throws XPathParseException, XPathEvalException,
-			NavException, ElementParsingException, DocumentParsingException {
+	protected Optional<ParsingResult> parseXPath(String xpath)
+			throws XPathParseException, XPathEvalException, NavException, ElementParsingException {
 		if (moveToXPath(xpath)) {
 			return Optional.of(nxmlDocumentParser.getParser(vn.toString(vn.getCurrentIndex())).parse());
 		}
@@ -150,13 +156,15 @@ public abstract class NxmlElementParser extends NxmlParser {
 	protected Optional<String> getXPathValue(String xpath)
 			throws XPathParseException, XPathEvalException, NavException {
 		try {
+			vn.push();
 			AutoPilot ap = getAutoPilot(xpath, vn);
-			if (ap.evalXPath() != -1) {
-				return Optional.of(vn.toString(vn.getText()));
-			}
+			String xpathValue = ap.evalXPathToString();
+			if (xpathValue != null && xpathValue.length() > 0)
+				return Optional.of(xpathValue);
 			return Optional.empty();
 		} finally {
 			releaseAutoPilot();
+			vn.pop();
 		}
 	}
 }
