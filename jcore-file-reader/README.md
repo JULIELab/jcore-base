@@ -21,6 +21,7 @@ de.julielab.jcore.reader.file.desc.jcore-file-reader
 | InputDirectory | String | yes | no | Directory where the text files reside. |
 | UseFilenameAsDocId | Boolean | no | no | If this is set to true, the document name (without extension) is used as document id. |
 | PublicationDatesAsFile | String | no | no | A file that maps document ids to publication dates |
+| ReadSubDirs | Boolean | no | no | If this is set to true, all subdirs of the InputDirectory are read. |#
 
 **2. Predefined Settings**
 
@@ -29,6 +30,7 @@ de.julielab.jcore.reader.file.desc.jcore-file-reader
 | InputDirectory | valid Path to the files to read in | `data/files/` |
 | UseFilenameAsDocId | boolean Variable | `false` |
 | PublicationDatesAsFile | valid Path to the ACE files | `data/publicationDates` |
+| ReadSubDirs | boolean Variable | `false` |
 
 **3. Capabilities**
 

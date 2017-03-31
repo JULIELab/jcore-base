@@ -69,6 +69,12 @@
           <boolean>false</boolean>
         </value>
       </nameValuePair>
+    <nameValuePair>
+        <name>ReadSubDirs</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
