@@ -1,5 +1,9 @@
 title:
     block-element: true
+    type: de.julielab.jcore.types.Title
+    paths:
+        - path: sec/title
+          type: de.julielab.jcore.types.SectionTitle
 sec:
     block-element: true
 p:

@@ -105,12 +105,12 @@ public class NxmlDocumentParser extends NxmlParser {
 	private void setupParserRegistry() {
 		this.defaultElementParser = new DefaultElementParser(this);
 		parserRegistry = new HashMap<>();
-		parserRegistry.put("front", new FrontMatterParser(this));
+		parserRegistry.put("front", new FrontParser(this));
 		// filters for authors currently (thus, omits editors, for example)
-//		parserRegistry.put("contrib-group", new FrontMatterParser(this));
+		parserRegistry.put("contrib-group", new ContribGroupParser(this));
 		// does only create AuthorInfo annotations and expects the contrib-type "author"
-//		parserRegistry.put("contrib", new FrontMatterParser(this));
-//		parserRegistry.put("sec", new SectionParser(this));
+		parserRegistry.put("contrib", new ContribParser(this));
+		parserRegistry.put("sec", new SectionParser(this));
 		// TODO extend
 	}
 

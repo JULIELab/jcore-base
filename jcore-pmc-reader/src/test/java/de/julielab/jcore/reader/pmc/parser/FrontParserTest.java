@@ -15,14 +15,14 @@ import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
 import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.pubmed.Header;
 
-public class FrontMatterParserTest {
+public class FrontParserTest {
 	@Test
 	public void testParser() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
 		documentParser.reset(new File("src/test/resources/documents/PMC2847692.nxml.gz"), cas);
 		
-		FrontMatterParser frontMatterParser = new FrontMatterParser(documentParser);
+		FrontParser frontMatterParser = new FrontParser(documentParser);
 		frontMatterParser.moveToXPath("/article/front");
 		ElementParsingResult frontResult = frontMatterParser.parse();
 		assertNotNull(frontResult);

@@ -2,6 +2,7 @@ package de.julielab.jcore.reader.pmc.parser;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.uima.jcas.cas.FSArray;
@@ -18,9 +19,9 @@ import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.types.pubmed.OtherID;
 
-public class FrontMatterParser extends NxmlElementParser {
+public class FrontParser extends NxmlElementParser {
 
-	public FrontMatterParser(NxmlDocumentParser nxmlDocumentParser) {
+	public FrontParser(NxmlDocumentParser nxmlDocumentParser) {
 		super(nxmlDocumentParser);
 		elementName = "front";
 	}
@@ -88,14 +89,13 @@ public class FrontMatterParser extends NxmlElementParser {
 			// restrict ourselves to authors)
 			parseXPath("/article/front/article-meta/contrib-group").map(ElementParsingResult.class::cast)
 					.ifPresent(r -> {
-						// currently authors
-						List<ParsingResult> contribResults = r.getSubResults();
-						FSArray aiArray = new FSArray(nxmlDocumentParser.cas, contribResults.size());
-						IntStream.range(0, contribResults.size()).forEach(i -> {
-							ElementParsingResult contribResult = (ElementParsingResult) contribResults.get(i);
-							if (contribResult.getAnnotation() != null
-									&& contribResult.getAnnotation() instanceof AuthorInfo)
-								aiArray.set(i, contribResult.getAnnotation());
+						// currently only authors
+						List<AuthorInfo> authors = r.getSubResults().stream().map(ElementParsingResult.class::cast)
+								.map(e -> e.getAnnotation()).filter(AuthorInfo.class::isInstance)
+								.map(AuthorInfo.class::cast).collect(Collectors.toList());
+						FSArray aiArray = new FSArray(nxmlDocumentParser.cas, authors.size());
+						IntStream.range(0, authors.size()).forEach(i -> {
+								aiArray.set(i, authors.get(i));
 						});
 						if (aiArray.size() > 0)
 							header.setAuthors(aiArray);

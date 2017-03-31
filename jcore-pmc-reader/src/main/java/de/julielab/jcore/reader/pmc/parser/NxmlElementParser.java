@@ -1,6 +1,10 @@
 package de.julielab.jcore.reader.pmc.parser;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
@@ -101,6 +105,11 @@ public abstract class NxmlElementParser extends NxmlParser {
 							+ elementName + "\" but it is set to \"" + vn.toString(vn.getCurrentIndex()) + "\".");
 	}
 
+	/**
+	 * Sets the VTDNav cursor the first position after the current element.
+	 * 
+	 * @return The new token index.
+	 */
 	protected int skipElement() {
 		int elementDepth = vn.getCurrentDepth();
 		int i = vn.getCurrentIndex() + 1;
@@ -137,6 +146,16 @@ public abstract class NxmlElementParser extends NxmlParser {
 				|| vn.getTokenDepth(index) < elementDepth);
 	}
 
+	/**
+	 * Moves the VTDNav cursor to the given XPath.
+	 * 
+	 * @param xpath
+	 *            The XPath to move to.
+	 * @return True if the XPath was found, false otherwise.
+	 * @throws XPathParseException
+	 * @throws XPathEvalException
+	 * @throws NavException
+	 */
 	protected boolean moveToXPath(String xpath) throws XPathParseException, XPathEvalException, NavException {
 		AutoPilot ap = getAutoPilot(xpath, vn);
 		int index = ap.evalXPath();
@@ -145,6 +164,20 @@ public abstract class NxmlElementParser extends NxmlParser {
 		return index != -1;
 	}
 
+	/**
+	 * Moves the VTDNav to the given XPath, which has to point to an element
+	 * (and not, for example, an attribute) and calls the registered parser for
+	 * the target element.
+	 * 
+	 * @param xpath
+	 *            The XPath to move to.
+	 * @return The element parsing result of the element found at
+	 *         <tt>xpath</tt>.
+	 * @throws XPathParseException
+	 * @throws XPathEvalException
+	 * @throws NavException
+	 * @throws ElementParsingException
+	 */
 	protected Optional<ParsingResult> parseXPath(String xpath)
 			throws XPathParseException, XPathEvalException, NavException, ElementParsingException {
 		if (moveToXPath(xpath)) {
@@ -153,6 +186,17 @@ public abstract class NxmlElementParser extends NxmlParser {
 		return Optional.empty();
 	}
 
+	/**
+	 * Returns the value of <tt>xpath</tt> as retrieved when calling
+	 * {@link AutoPilot#evalXPathToString()}.
+	 * 
+	 * @param xpath
+	 *            The XPath for which a value should be returned.
+	 * @return The XPath value.
+	 * @throws XPathParseException
+	 * @throws XPathEvalException
+	 * @throws NavException
+	 */
 	protected Optional<String> getXPathValue(String xpath)
 			throws XPathParseException, XPathEvalException, NavException {
 		try {
@@ -164,6 +208,38 @@ public abstract class NxmlElementParser extends NxmlParser {
 			return Optional.empty();
 		} finally {
 			releaseAutoPilot();
+			vn.pop();
+		}
+	}
+
+	/**
+	 * This method returns an absolute XPath-like representation of the position
+	 * of the current element. Only simple paths like
+	 * /article/front/article-meta will be returned and it is required that the
+	 * VTDNav is located at an element starting tag when calling this method.
+	 * 
+	 * @return The path of the current element.
+	 * @throws NavException
+	 */
+	protected String getElementPath() throws NavException {
+		try {
+			assert vn.getTokenType(vn
+					.getCurrentIndex()) == VTDNav.TOKEN_STARTING_TAG : "This method only works if the VTDNav is positioned at the beginning of an element.";
+			List<String> pathItems = new ArrayList<>(vn.getCurrentDepth() + 1);
+			vn.push();
+			do {
+				pathItems.add(vn.toString(vn.getCurrentIndex()));
+
+				// in the test we append the restriction to starting tags
+				// because in the current version of VTD, the parent of the root
+				// element seems to the doctype, if present. To make this
+				// algorithm more robust and not to rely and seemingly random
+				// behavior of VTD, we stick to actual elements
+			} while (vn.toElement(VTDNav.PARENT) && vn.getTokenType(vn.getCurrentIndex()) == VTDNav.TOKEN_STARTING_TAG);
+			int pathLength = pathItems.size() - 1;
+			return "/" + IntStream.rangeClosed(0, pathLength).mapToObj(i -> pathItems.get(pathLength - i))
+					.collect(Collectors.joining("/"));
+		} finally {
 			vn.pop();
 		}
 	}

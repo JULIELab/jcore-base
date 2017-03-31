@@ -2,6 +2,9 @@ package de.julielab.jcore.reader.pmc.parser;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -35,7 +38,8 @@ public class DefaultElementParser extends NxmlElementParser {
 			elementName = vn.toString(vn.getCurrentIndex());
 			checkCursorPosition();
 			int elementDepth = vn.getCurrentDepth();
-			boolean omitElement = (boolean) nxmlDocumentParser.getTagProperties(elementName).getOrDefault(ElementProperties.OMIT_ELEMENT, false);
+			boolean omitElement = (boolean) nxmlDocumentParser.getTagProperties(elementName)
+					.getOrDefault(ElementProperties.OMIT_ELEMENT, false);
 			ElementParsingResult result = createParsingResult();
 			if (omitElement) {
 				int firstIndexAfterElement = skipElement();
@@ -125,21 +129,61 @@ public class DefaultElementParser extends NxmlElementParser {
 	 * </p>
 	 * 
 	 * @return The UIMA element annotation.
+	 * @throws ElementParsingException
 	 */
-	protected Annotation getParsingResultAnnotation() {
-		String annotationClassName = (String) nxmlDocumentParser.getTagProperties(elementName)
-				.getOrDefault(ElementProperties.TYPE, ElementProperties.TYPE_NONE);
-		if (annotationClassName.trim().equals(ElementProperties.TYPE_NONE))
-			return null;
+	protected Annotation getParsingResultAnnotation() throws ElementParsingException {
 		try {
+			String annotationClassName = (String) nxmlDocumentParser.getTagProperties(elementName)
+					.getOrDefault(ElementProperties.TYPE, ElementProperties.TYPE_NONE);
+
+			annotationClassName = determineAnnotationClassName(annotationClassName);
+
+			if (annotationClassName.trim().equals(ElementProperties.TYPE_NONE))
+				return null;
 			Constructor<?> constructor = Class.forName(annotationClassName).getConstructor(JCas.class);
 			return (Annotation) constructor.newInstance(nxmlDocumentParser.cas);
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | NavException e) {
+			throw new ElementParsingException(e);
 		}
-		return null;
 	}
 
-
+	/**
+	 * Checks if the current element has one or more types given via paths. If
+	 * so, checks for the most specific path matching the current element path
+	 * and selects the respective annotation type. The default type name given
+	 * directly to the annotation type will be overwritten.
+	 * 
+	 * @param defaultClassName
+	 *            The simple type name given directly to the element name.
+	 * @return The final class name.
+	 * @throws NavException
+	 */
+	@SuppressWarnings("unchecked")
+	private String determineAnnotationClassName(String defaultClassName) throws NavException {
+		List<Object> paths = (List<Object>) nxmlDocumentParser.getTagProperties(elementName)
+				.getOrDefault(ElementProperties.PATHS, Collections.emptyList());
+		String currentElementPath = null;
+		if (!paths.isEmpty()) {
+			currentElementPath = getElementPath();
+		}
+		String longestPathFragment = "";
+		int longestPathFragmentLength = 0;
+		for (Object o : paths) {
+			Map<String, String> pathMap = (Map<String, String>) o;
+			String pathFragment = pathMap.get(ElementProperties.PATH);
+			if (currentElementPath.endsWith(pathFragment)) {
+				int pathFragmentLength = pathFragment.split("/").length;
+				if (pathFragmentLength > longestPathFragmentLength) {
+					longestPathFragment = pathFragment;
+					longestPathFragmentLength = pathFragmentLength;
+					defaultClassName = pathMap.get(ElementProperties.TYPE);
+				} else if (pathFragment.length() == longestPathFragmentLength)
+					throw new IllegalArgumentException("The given type paths for element " + elementName
+							+ " are ambiguous. The given paths " + pathFragment + " as well as " + longestPathFragment
+							+ " are applicable but both are of same length and thus none is more specific than the other. At least one of the path must be made more specific.");
+			}
+		}
+		return defaultClassName;
+	}
 }
