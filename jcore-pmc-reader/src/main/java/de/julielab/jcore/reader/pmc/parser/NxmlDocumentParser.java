@@ -104,6 +104,7 @@ public class NxmlDocumentParser extends NxmlParser {
 	private void setupParserRegistry() {
 		this.defaultElementParser = new DefaultElementParser(this);
 		parserRegistry = new HashMap<>();
+		parserRegistry.put("front", new FrontMatterParser(this));
 //		parserRegistry.put("sec", new SectionParser(this));
 		// TODO extend
 	}

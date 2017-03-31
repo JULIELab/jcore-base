@@ -152,7 +152,7 @@ public abstract class NxmlElementParser extends NxmlParser {
 		try {
 			AutoPilot ap = getAutoPilot(xpath, vn);
 			if (ap.evalXPath() != -1) {
-				return Optional.of(vn.toString(vn.getCurrentIndex()));
+				return Optional.of(vn.toString(vn.getText()));
 			}
 			return Optional.empty();
 		} finally {
