@@ -32,9 +32,11 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import de.julielab.jcore.types.ohnlp.ConceptMention;
-import de.julielab.jcore.types.ohnlp.Drug;
-import de.julielab.jcore.types.ohnlp.MedAttr;
+import de.julielab.jcore.types.medical.Medication;
+
+//import de.julielab.jcore.types.ohnlp.ConceptMention;
+//import de.julielab.jcore.types.ohnlp.Drug;
+//import de.julielab.jcore.types.ohnlp.MedAttr;
 
 
 /**
@@ -44,12 +46,12 @@ import de.julielab.jcore.types.ohnlp.MedAttr;
 public class MedNormAnnotator extends JCasAnnotator_ImplBase {	
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		JFSIndexRepository indexes = jcas.getJFSIndexRepository();
-		Iterator<?> drugItr= indexes.getAnnotationIndex(Drug.type).iterator(); //all drugs		
+		Iterator<?> drugItr= indexes.getAnnotationIndex(Medication.type).iterator(); //all drugs		
 
 		//Get the list of drugs - if drug overlaps, use the longest one
 		while(drugItr.hasNext()) {
-			Drug d = (Drug) drugItr.next();
-			d.setNormDrug(normalizeDrug(d.getName(), d.getAttrs()));
+			Medication d = (Medication) drugItr.next();
+//			d.setNormDrug(normalizeDrug(d.getName(), d.getAttrs()));
 		}
 			
 	}
@@ -65,26 +67,26 @@ public class MedNormAnnotator extends JCasAnnotator_ImplBase {
 	 * @param attrs medication attributes in FSArray 
 	 * @return normalized medication information to the RxNorm standard  
 	 */
-	protected String normalizeDrug(ConceptMention med, FSArray attrs) {
+	protected String normalizeDrug(Medication med, FSArray attrs) {
 		String strength="";
 		String doseForm="";
 		String route="";
 		String time="";
 		String volume="";
 		
-		for(int i=0; i<attrs.size(); i++) {			
-			if(strength.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("strength"))
-				strength =  ((Annotation) attrs.get(i)).getCoveredText();
-			else if(doseForm.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("form")) 
-				doseForm =  ((Annotation) attrs.get(i)).getCoveredText();
-			else if(route.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("route"))
-				route=((Annotation) attrs.get(i)).getCoveredText();
-			else if(time.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("time"))
-				time=((Annotation) attrs.get(i)).getCoveredText();
-			else if(volume.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("volume"))
-				volume=((Annotation) attrs.get(i)).getCoveredText();
-			else ;
-		}
+//		for(int i=0; i<attrs.size(); i++) {			
+//			if(strength.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("strength"))
+//				strength =  ((Annotation) attrs.get(i)).getCoveredText();
+//			else if(doseForm.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("form")) 
+//				doseForm =  ((Annotation) attrs.get(i)).getCoveredText();
+//			else if(route.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("route"))
+//				route=((Annotation) attrs.get(i)).getCoveredText();
+//			else if(time.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("time"))
+//				time=((Annotation) attrs.get(i)).getCoveredText();
+//			else if(volume.equals("") && ((MedAttr) attrs.get(i)).getTag().equals("volume"))
+//				volume=((Annotation) attrs.get(i)).getCoveredText();
+//			else ;
+//		}
 		
 		//TODO update if necessary
 		//inference dose form and expand dose form abbreviations 
@@ -118,22 +120,22 @@ public class MedNormAnnotator extends JCasAnnotator_ImplBase {
 		String in = "";
 		String inRxType = ""; //.?IN
 		boolean isMerged = false;
-		if(med.getNormTarget().contains("::")) {
-			isMerged = true;
-			String[] nameToks = med.getNormTarget().split("::");
-			String[] rxToks = med.getSemGroup().split("::");
-			//this is to allow PIN or MIN
-			if(med.getSemGroup().matches("\\d+::.?IN::\\d+::BN")) {
-				in = nameToks[0];
-				bn = nameToks[1];
-				inRxType = rxToks[1];
-			}
-			else if(med.getSemGroup().matches("\\d+::BN::\\d+::.?IN")) {
-				bn = nameToks[0];
-				in = nameToks[1];
-				inRxType = rxToks[3];
-			}
-		}
+//		if(med.getNormTarget().contains("::")) {
+//			isMerged = true;
+//			String[] nameToks = med.getNormTarget().split("::");
+//			String[] rxToks = med.getSemGroup().split("::");
+//			//this is to allow PIN or MIN
+//			if(med.getSemGroup().matches("\\d+::.?IN::\\d+::BN")) {
+//				in = nameToks[0];
+//				bn = nameToks[1];
+//				inRxType = rxToks[1];
+//			}
+//			else if(med.getSemGroup().matches("\\d+::BN::\\d+::.?IN")) {
+//				bn = nameToks[0];
+//				in = nameToks[1];
+//				inRxType = rxToks[3];
+//			}
+//		}
 				
 		//generate normalized drugs
 		String normDrug="";
@@ -144,19 +146,19 @@ public class MedNormAnnotator extends JCasAnnotator_ImplBase {
 				+ doseForm + "<df>"
 				+ bn + "<bn>";
 		}
-		else {
-			if(!time.equals("")) normDrug = time + "<tm>";
-			else if(!volume.equals("")) normDrug = volume + "<vl>";
-			
-			String[] toks = med.getSemGroup().split("::");
-			String rxtype = toks[1];
-			
-			normDrug = normDrug
-				+ med.getNormTarget() + "<"+rxtype+">"
-				+ strength.replaceAll("(\\d+,)?\\d+(?:\\.\\d+)?", "$0 ")
-					.replaceAll("-", "") + "<st>"
-				+ doseForm + "<df>";
-		}
+//		else {
+//			if(!time.equals("")) normDrug = time + "<tm>";
+//			else if(!volume.equals("")) normDrug = volume + "<vl>";
+//			
+//			String[] toks = med.getSemGroup().split("::");
+//			String rxtype = toks[1];
+//			
+//			normDrug = normDrug
+//				+ med.getNormTarget() + "<"+rxtype+">"
+//				+ strength.replaceAll("(\\d+,)?\\d+(?:\\.\\d+)?", "$0 ")
+//					.replaceAll("-", "") + "<st>"
+//				+ doseForm + "<df>";
+//		}
 		
 		normDrug = normDrug.toLowerCase().replaceAll("\\s{2,}", " ");
 		
