@@ -114,6 +114,11 @@ feature captionType is an Enumeration, stating to what type of entity the captio
           <description>the caption that comes with the object</description>
           <rangeTypeName>de.julielab.jcore.types.Caption</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>objectTitle</name>
+          <description>The title annotation of the text object, if it exists. The title might correspond to the objectLabel (which is of type String and thus no annotation on its own).</description>
+          <rangeTypeName>de.julielab.jcore.types.Title</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
