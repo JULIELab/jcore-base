@@ -6,6 +6,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
@@ -13,6 +16,9 @@ import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
 public abstract class NxmlElementParser extends NxmlParser {
+
+	private static final Logger log = LoggerFactory.getLogger(NxmlElementParser.class);
+
 	/**
 	 * the name of the XML element to parse
 	 */
@@ -26,7 +32,72 @@ public abstract class NxmlElementParser extends NxmlParser {
 		this.vn = nxmlDocumentParser.getVn();
 	}
 
-	public abstract ElementParsingResult parse() throws ElementParsingException;
+	public final ElementParsingResult parse() throws ElementParsingException {
+		try {
+			beforeParseElement();
+			checkCursorPosition();
+			int elementDepth = vn.getTokenDepth(vn.getCurrentIndex());
+			int startElementIndex = vn.getCurrentIndex();
+
+			ElementParsingResult elementParsingResult = createParsingResult();
+			parseElement(elementParsingResult);
+
+			if (vn.getCurrentIndex() < startElementIndex)
+				vn.recoverNode(startElementIndex);
+
+			if (vn.getTokenType(vn.getCurrentIndex()) != VTDNav.TOKEN_STARTING_TAG) {
+				vn.toElement(VTDNav.PARENT);
+				if (getElementEnd() > elementParsingResult.getEnd())
+					throw new IllegalStateException("Parsed element \"" + elementName + "\" ends at byte "
+							+ elementParsingResult.getEnd()
+							+ " but VTDNav was positioned after parsing within an element which ends at "
+							+ getElementEnd()
+							+ ". Each element parser must finish within its element or at a starting tag immediately following the parser's element closing tag.");
+			}
+
+			int index = findIndexAfterElement(elementDepth, vn.getCurrentIndex());
+
+			elementParsingResult.setLastTokenIndex(index);
+			
+			afterParseElement();
+			return elementParsingResult;
+		} catch (NavException e) {
+			throw new ElementParsingException(e);
+		}
+	}
+
+	private int findIndexAfterElement(int elementDepth, int startIndex) {
+		int index = vn.getCurrentIndex();
+		int tokenType = vn.getTokenType(index);
+		if (tokenType == VTDNav.TOKEN_STARTING_TAG)
+			index = findIndexAfterStartingTag(index);
+		while (tokenIndexBelongsToElement(index, elementDepth))
+			++index;
+		return index;
+
+	}
+
+	private int findIndexAfterStartingTag(int startIndex) {
+		int index = startIndex;
+		int tokenType = vn.getTokenType(index);
+		if (tokenType == VTDNav.TOKEN_STARTING_TAG)
+			++index;
+		// look for the first token that does not belong to the starting
+		// tag
+		while (tokenType == VTDNav.TOKEN_ATTR_NAME || tokenType == VTDNav.TOKEN_ATTR_VAL
+				|| tokenType == VTDNav.TOKEN_ATTR_NS || tokenType == VTDNav.TOKEN_PI_NAME
+				|| tokenType == VTDNav.TOKEN_PI_VAL)
+			++index;
+		return index;
+	}
+
+	protected void beforeParseElement() throws ElementParsingException {
+	}
+
+	protected void afterParseElement() throws ElementParsingException {
+	}
+
+	protected abstract void parseElement(ElementParsingResult elementParsingResult) throws ElementParsingException;
 
 	/**
 	 * <p>
@@ -71,10 +142,11 @@ public abstract class NxmlElementParser extends NxmlParser {
 	 * @return The parsing result for the current element.
 	 * @throws NavException
 	 */
-	protected ElementParsingResult createParsingResult() throws NavException {
+	private ElementParsingResult createParsingResult() throws NavException {
 		int begin = getElementStart();
 		int end = getElementEnd();
-		return new ElementParsingResult(elementName, begin, end);
+		ElementParsingResult result = new ElementParsingResult(elementName, begin, end);
+		return result;
 	}
 
 	protected int getElementStart() throws NavException {
@@ -96,7 +168,7 @@ public abstract class NxmlElementParser extends NxmlParser {
 	 * 
 	 * @throws NavException
 	 */
-	protected void checkCursorPosition() throws NavException {
+	private void checkCursorPosition() throws NavException {
 		if (vn.getTokenType(vn.getCurrentIndex()) != VTDNav.TOKEN_STARTING_TAG)
 			throw new IllegalStateException("VTDNav is positioned incorrectly. It must point to a starting tag.");
 		if (!vn.toString(vn.getCurrentIndex()).equals(elementName))
@@ -180,10 +252,16 @@ public abstract class NxmlElementParser extends NxmlParser {
 	 */
 	protected Optional<ParsingResult> parseXPath(String xpath)
 			throws XPathParseException, XPathEvalException, NavException, ElementParsingException {
-		if (moveToXPath(xpath)) {
-			return Optional.of(nxmlDocumentParser.getParser(vn.toString(vn.getCurrentIndex())).parse());
+		try {
+			vn.push();
+			if (moveToXPath(xpath)) {
+				return Optional.of(nxmlDocumentParser.getParser(vn.toString(vn.getCurrentIndex())).parse());
+			}
+			log.trace("XPath not found: {}", xpath);
+			return Optional.empty();
+		} finally {
+			vn.pop();
 		}
-		return Optional.empty();
 	}
 
 	/**

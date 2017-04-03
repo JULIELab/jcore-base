@@ -17,11 +17,8 @@ public class ContribParser extends NxmlElementParser {
 	}
 
 	@Override
-	public ElementParsingResult parse() throws ElementParsingException {
+	public void parseElement(ElementParsingResult result) throws ElementParsingException {
 		try {
-			checkCursorPosition();
-			vn.push();
-			ElementParsingResult result = createParsingResult();
 
 			Optional<String> givenNames = getXPathValue("name/given-names");
 			Optional<String> surname = getXPathValue("name/surname");
@@ -38,11 +35,11 @@ public class ContribParser extends NxmlElementParser {
 
 			result.setAnnotation(ai);
 			
-			vn.pop();
+//			vn.pop();
 			// move after this element
-			vn.toElement(VTDNav.NEXT_SIBLING);
-			result.setLastTokenIndex(vn.getCurrentIndex());
-			return result;
+//			vn.toElement(VTDNav.NEXT_SIBLING);
+//			result.setLastTokenIndex(vn.getCurrentIndex());
+//			return result;
 		} catch (NavException | XPathParseException | XPathEvalException e) {
 			throw new ElementParsingException(e);
 		}

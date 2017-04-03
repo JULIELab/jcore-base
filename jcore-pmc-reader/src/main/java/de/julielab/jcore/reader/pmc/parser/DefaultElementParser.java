@@ -14,7 +14,6 @@ import com.ximpleware.VTDNav;
 
 import de.julielab.jcore.reader.pmc.ElementProperties;
 import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
-import de.julielab.jcore.types.Zone;
 
 /**
  * A generic element parser that is applicable to any element of the document
@@ -31,21 +30,28 @@ public class DefaultElementParser extends NxmlElementParser {
 	}
 
 	@Override
-	public ElementParsingResult parse() throws ElementParsingException {
+	protected void beforeParseElement() throws ElementParsingException {
+		// since this parser does not know the element is is used upon, set
+		// it first for the parsing result creation
 		try {
-			// since this parser does not know the element is is used upon, set
-			// it first for the parsing result creation
 			elementName = vn.toString(vn.getCurrentIndex());
-			checkCursorPosition();
+		} catch (NavException e) {
+			throw new ElementParsingException(e);
+		}
+	}
+
+	@Override
+	public void parseElement(ElementParsingResult result) throws ElementParsingException {
+		try {
+			// checkCursorPosition();
 			int elementDepth = vn.getCurrentDepth();
 			boolean omitElement = (boolean) nxmlDocumentParser.getTagProperties(elementName)
 					.getOrDefault(ElementProperties.OMIT_ELEMENT, false);
-			ElementParsingResult result = createParsingResult();
 			if (omitElement) {
 				int firstIndexAfterElement = skipElement();
 				result.setLastTokenIndex(firstIndexAfterElement);
 				result.setResultType(ResultType.NONE);
-				return result;
+				return;
 			}
 			result.setAnnotation(getParsingResultAnnotation());
 			editResult(result);
@@ -79,12 +85,11 @@ public class DefaultElementParser extends NxmlElementParser {
 					String tagName = vn.toString(vn.getCurrentIndex());
 					ElementParsingResult subResult = nxmlDocumentParser.getParser(tagName).parse();
 					result.addSubResult(subResult);
-					// The subresult parser moves the cursor towards the end of
-					// its element. We should continue where the last parser
-					// stopped. We decrement i because the for-loop will
-					// immediately increment for the next iteration. But for the
-					// next iteration we just want to be exactly where the last
-					// parser stopped.
+					// The contract is: each element parser returns the index of
+					// the first VTD token after its processed element. Since we
+					// are here in a for-loop that will increment the index, we
+					// subtract one so that in the next iteration we actually
+					// process the first after-last-element-token
 					i = subResult.getLastTokenIndex() - 1;
 					break;
 				case VTDNav.TOKEN_CHARACTER_DATA:
@@ -94,8 +99,8 @@ public class DefaultElementParser extends NxmlElementParser {
 					break;
 				}
 			}
-			result.setLastTokenIndex(i);
-			return result;
+			// result.setLastTokenIndex(i);
+			// return result;
 		} catch (NavException e) {
 			throw new ElementParsingException(e);
 		}
@@ -109,23 +114,28 @@ public class DefaultElementParser extends NxmlElementParser {
 	/**
 	 * <p>
 	 * This method returns the UIMA annotation that will be used to annotate the
-	 * contents of this element. This is a {@link Zone} as a default. Should be
-	 * overwritten by implementing subclasses to use a more specific annotation.
+	 * contents of this element. The default is
+	 * {@link ElementProperties#TYPE_NONE} indicating no annotation. For each
+	 * element that should receive an annotation, an appropriate entry should go
+	 * into the <tt>elementproperties.xml</tt> file. This file configures
+	 * element properties for the default parser. Alternatively, a parser
+	 * extending the default parser may overwrite this method and return an
+	 * annotation of the desired type.
 	 * </p>
 	 * <p>
 	 * This method is called while the VTDNav cursor is still positioned on the
 	 * starting tag token. Thus, attributes of the element may also be parsed
 	 * within this method into fields of the extending parser, if required. To
 	 * avoid side effects, the use of {@link VTDNav#push()} and
-	 * {@link VTDNav#pop()} is advisable. Also, when parsing attribute values
-	 * into parser fields, keep in mind that most parsers might be called
-	 * recursively so a parser cannot have a real state and fields will be
-	 * overwritten with the next call to their {@link #parse()} method. For this
-	 * reason, this class discloses its ParsingResult through the field
-	 * {@link #result} to subclasses. You should immediately write all required
-	 * information into {@link #result} by overwriting
-	 * {@link #editResult(ElementParsingResult)} and not rely on any state of
-	 * the parser.
+	 * {@link VTDNav#pop()} is advisable in case the VTDNav cursor is moved.
+	 * Also, when parsing attribute values into parser fields, keep in mind that
+	 * most parsers might be called recursively so a parser cannot have a real
+	 * state and fields will be overwritten with the next call to their
+	 * {@link #parse()} method. For this reason, this class discloses its
+	 * ParsingResult through the field {@link #result} to subclasses. You should
+	 * immediately write all required information into {@link #result} by
+	 * overwriting {@link #editResult(ElementParsingResult)} and not rely on any
+	 * state of the parser.
 	 * </p>
 	 * 
 	 * @return The UIMA element annotation.
@@ -137,9 +147,9 @@ public class DefaultElementParser extends NxmlElementParser {
 					.getOrDefault(ElementProperties.TYPE, ElementProperties.TYPE_NONE);
 
 			annotationClassName = determineAnnotationClassName(annotationClassName);
-
 			if (annotationClassName.trim().equals(ElementProperties.TYPE_NONE))
 				return null;
+
 			Constructor<?> constructor = Class.forName(annotationClassName).getConstructor(JCas.class);
 			return (Annotation) constructor.newInstance(nxmlDocumentParser.cas);
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException

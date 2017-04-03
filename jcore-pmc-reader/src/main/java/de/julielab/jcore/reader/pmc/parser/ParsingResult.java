@@ -11,7 +11,7 @@ public abstract class ParsingResult {
 	}
 
 	/**
-	 * The begin offset of this parsing result in the original XML file. This is
+	 * The begin offset of in bytes this parsing result in the original XML file. This is
 	 * not the begin offset in the CAS.
 	 * 
 	 * @return The XML begin offset associated with this result.
@@ -21,7 +21,7 @@ public abstract class ParsingResult {
 	}
 
 	/**
-	 * The end offset of this parsing result in the original XML file. This is
+	 * The end offset in bytes of this parsing result in the original XML file. This is
 	 * not the end offset in the CAS.
 	 * 
 	 * @return The XML end offset associated with this result.

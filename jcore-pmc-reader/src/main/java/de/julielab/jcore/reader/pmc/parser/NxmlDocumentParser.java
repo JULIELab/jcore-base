@@ -111,6 +111,7 @@ public class NxmlDocumentParser extends NxmlParser {
 		// does only create AuthorInfo annotations and expects the contrib-type "author"
 		parserRegistry.put("contrib", new ContribParser(this));
 		parserRegistry.put("sec", new SectionParser(this));
+		parserRegistry.put("table-wrap", new TableWrapParser(this));
 		// TODO extend
 	}
 

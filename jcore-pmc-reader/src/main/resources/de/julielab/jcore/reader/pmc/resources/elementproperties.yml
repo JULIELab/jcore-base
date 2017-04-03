@@ -4,11 +4,17 @@ title:
     paths:
         - path: sec/title
           type: de.julielab.jcore.types.SectionTitle
+label:
+    block-element: true
+    type: de.julielab.jcore.types.Title
 sec:
     block-element: true
 p:
     block-element: true
     type: de.julielab.jcore.types.Paragraph
+caption:
+    block-element: true
+    type: de.julielab.jcore.types.Caption
 fn-group:
     block-element: true
 front:

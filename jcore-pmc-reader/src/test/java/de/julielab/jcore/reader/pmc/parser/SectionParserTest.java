@@ -20,6 +20,7 @@ public class SectionParserTest {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
 		documentParser.reset(file, cas);
+		documentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
 		ElementParsingResult result = documentParser.parse();
 		System.out.println(result);
 	}
@@ -30,8 +31,11 @@ public class SectionParserTest {
 		vg.parseGZIPFile("src/test/resources/documents/PMC2847692.nxml.gz", false);
 		VTDNav vn = vg.getNav();
 		AutoPilot ap = new AutoPilot(vn);
-		ap.selectXPath("/muh");
-	System.out.println(".." + ap.evalXPathToString() + "..");
+		ap.selectXPath("//break");
+		ap.evalXPath();
+		System.out.println((int)vn.getOffsetAfterHead());
+		System.out.println(vn.getTokenLength(vn.getCurrentIndex()));
+		
 	}
 	
 	@Test

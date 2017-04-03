@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileOutputStream;
 import java.util.Iterator;
 
-import org.apache.uima.cas.impl.TypeSystemUtils;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CollectionReader;
@@ -15,12 +14,12 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.util.TypeSystemUtil;
 import org.junit.Test;
 
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.Section;
+import de.julielab.jcore.types.Table;
 import de.julielab.jcore.types.Title;
 
 public class PMCReaderTest {
@@ -71,6 +70,32 @@ public class PMCReaderTest {
 				assertEquals("Introduction", sectionHeading.getCoveredText());
 			}
 			++secnum;
+		}
+	}
+	
+	@Test
+	public void testTables() throws Exception {
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+				"src/test/resources/documents/PMC2847692.nxml.gz");
+		assertTrue(reader.hasNext());
+		reader.getNext(cas.getCas());
+		Iterator<AnnotationFS> tableIt = CasUtil.iterator(cas.getCas(), CasUtil.getAnnotationType(cas.getCas(), Table.class));
+		assertTrue(tableIt.hasNext());
+		int tablenum = 0;
+		while (tableIt.hasNext()) {
+			Table table = (Table) tableIt.next();
+			assertNotNull(table.getObjectCaption());
+			assertNotNull(table.getObjectTitle());
+			Title tabelTitle = table.getObjectTitle();
+			if (tablenum == 0) {
+				assertEquals("Table 1", tabelTitle.getCoveredText());
+				// the whitespace is actually a no-break space
+				assertEquals("Table\u00A01", table.getObjectLabel());
+				assertTrue(table.getObjectCaption().getCoveredText().startsWith("Comparison of"));
+				assertEquals("Tab1", table.getObjectId());
+			}
+			++tablenum;
 		}
 	}
 }

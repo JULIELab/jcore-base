@@ -8,7 +8,6 @@ import java.util.stream.IntStream;
 import org.apache.uima.jcas.cas.FSArray;
 
 import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
@@ -27,11 +26,11 @@ public class FrontParser extends NxmlElementParser {
 	}
 
 	@Override
-	public ElementParsingResult parse() throws ElementParsingException {
+	public void parseElement(ElementParsingResult frontResult) throws ElementParsingException {
 		try {
-			ElementParsingResult frontResult = createParsingResult();
-			checkCursorPosition();
-			vn.push();
+//			ElementParsingResult frontResult = createParsingResult();
+//			checkCursorPosition();
+//			vn.push();
 
 			// title and abstract
 			parseXPath("/article/front/article-meta/title-group/article-title").ifPresent(frontResult::addSubResult);
@@ -103,10 +102,10 @@ public class FrontParser extends NxmlElementParser {
 
 			frontResult.setAnnotation(header);
 
-			vn.pop();
-			vn.toElement(VTDNav.NEXT_SIBLING);
-			frontResult.setLastTokenIndex(vn.getCurrentIndex());
-			return frontResult;
+//			vn.pop();
+//			vn.toElement(VTDNav.NEXT_SIBLING);
+//			frontResult.setLastTokenIndex(vn.getCurrentIndex());
+//			return frontResult;
 		} catch (XPathParseException | XPathEvalException | NavException e) {
 			throw new ElementParsingException(e);
 		}

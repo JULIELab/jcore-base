@@ -24,9 +24,7 @@ import de.julielab.jcore.reader.pmc.parser.ElementParsingException;
 import de.julielab.jcore.reader.pmc.parser.ElementParsingResult;
 import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser;
 import de.julielab.jcore.reader.pmc.parser.ParsingResult;
-import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
 import de.julielab.jcore.reader.pmc.parser.TextParsingResult;
-import de.julielab.jcore.types.Paragraph;
 
 public class PMCReader extends CollectionReader_ImplBase {
 

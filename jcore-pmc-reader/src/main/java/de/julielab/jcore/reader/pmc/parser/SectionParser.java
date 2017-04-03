@@ -15,8 +15,8 @@ public class SectionParser extends DefaultElementParser {
 	}
 
 	@Override
-	public ElementParsingResult parse() throws ElementParsingException {
-		ElementParsingResult parsingResult = super.parse();
+	public void parseElement(ElementParsingResult parsingResult) throws ElementParsingException {
+		super.parseElement(parsingResult);
 
 		Title sectionHeading = null;
 		for (ParsingResult subresult : parsingResult.getSubResults()) {
@@ -30,8 +30,6 @@ public class SectionParser extends DefaultElementParser {
 		}
 		Section section = (Section) parsingResult.getAnnotation();
 		section.setSectionHeading(sectionHeading);
-		// TODO finish
-		return parsingResult;
 	}
 
 	@Override
