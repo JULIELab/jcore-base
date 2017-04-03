@@ -239,9 +239,14 @@ feature captionType is an Enumeration, stating to what type of entity the captio
       <supertypeName>de.julielab.jcore.types.TextObject</supertypeName>
     <features>
         <featureDescription>
-          <name>figureTitle</name>
+          <name>title</name>
           <description>Annotation to mark the title of a caption specific to figure text object in the CAS document text.</description>
           <rangeTypeName>de.julielab.jcore.types.Title</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>caption</name>
+          <description>The caption annotation associated with a figure.</description>
+          <rangeTypeName>de.julielab.jcore.types.Caption</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
@@ -251,10 +256,20 @@ feature captionType is an Enumeration, stating to what type of entity the captio
       <supertypeName>de.julielab.jcore.types.TextObject</supertypeName>
     <features>
         <featureDescription>
-          <name>tableFootnotes</name>
+          <name>footnotes</name>
           <description>An array collecting all footnotes, appearing in this table</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>de.julielab.jcore.types.Footnote</elementType>
+        </featureDescription>
+      <featureDescription>
+          <name>caption</name>
+          <description>The caption annotation belonging to the table.</description>
+          <rangeTypeName>de.julielab.jcore.types.Caption</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>title</name>
+          <description>The title annotation for the table.</description>
+          <rangeTypeName>de.julielab.jcore.types.Title</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
