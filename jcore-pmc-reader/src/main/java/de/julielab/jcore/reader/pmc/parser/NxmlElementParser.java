@@ -58,7 +58,7 @@ public abstract class NxmlElementParser extends NxmlParser {
 			int index = findIndexAfterElement(elementDepth, vn.getCurrentIndex());
 
 			elementParsingResult.setLastTokenIndex(index);
-			
+
 			afterParseElement();
 			return elementParsingResult;
 		} catch (NavException e) {
@@ -283,6 +283,26 @@ public abstract class NxmlElementParser extends NxmlParser {
 			String xpathValue = ap.evalXPathToString();
 			if (xpathValue != null && xpathValue.length() > 0)
 				return Optional.of(xpathValue);
+			return Optional.empty();
+		} finally {
+			releaseAutoPilot();
+			vn.pop();
+		}
+	}
+
+	protected Optional<List<String>> getXPathValues(String xpath)
+			throws XPathParseException, XPathEvalException, NavException {
+		try {
+			vn.push();
+			List<String> values = new ArrayList<>();
+			AutoPilot ap = getAutoPilot(xpath, vn);
+			while (ap.evalXPath() != -1) {
+				int text = vn.getText();
+				if (text != -1)
+					values.add(vn.toString(text));
+			}
+			if (!values.isEmpty())
+				return Optional.of(values);
 			return Optional.empty();
 		} finally {
 			releaseAutoPilot();

@@ -2,7 +2,6 @@ package de.julielab.jcore.reader.pmc.parser;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -112,7 +111,7 @@ public class NxmlDocumentParser extends NxmlParser {
 		parserRegistry.put("contrib", new ContribParser(this));
 		parserRegistry.put("sec", new SectionParser(this));
 		parserRegistry.put("table-wrap", new TableWrapParser(this));
-		// TODO extend
+		parserRegistry.put("fig", new FigParser(this));
 	}
 
 	public VTDNav getVn() {

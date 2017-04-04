@@ -21,13 +21,9 @@ front:
     omit-element: true
 back:
     omit-element: true
-table-wrap:
-    omit-element: true
-table:
-    omit-element: true
-fig:
-    omit-element: true
 fig-group:
     omit-element: true
 floats-group:
+    omit-element: true
+array:
     omit-element: true
