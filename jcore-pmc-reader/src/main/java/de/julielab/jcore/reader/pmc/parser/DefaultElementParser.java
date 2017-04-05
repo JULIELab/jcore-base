@@ -13,6 +13,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 
 import de.julielab.jcore.reader.pmc.ElementProperties;
+import de.julielab.jcore.reader.pmc.PMCReader;
 import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
 
 /**
@@ -45,8 +46,7 @@ public class DefaultElementParser extends NxmlElementParser {
 		try {
 			// checkCursorPosition();
 			int elementDepth = vn.getCurrentDepth();
-			boolean omitElement = (boolean) nxmlDocumentParser.getTagProperties(elementName)
-					.getOrDefault(ElementProperties.OMIT_ELEMENT, false);
+			boolean omitElement = determineOmitElement();
 			if (omitElement) {
 				int firstIndexAfterElement = skipElement();
 				result.setLastTokenIndex(firstIndexAfterElement);
@@ -106,6 +106,39 @@ public class DefaultElementParser extends NxmlElementParser {
 		}
 	}
 
+	private boolean determineOmitElement() throws NavException {
+		// default: the element is configured to be omitted or not
+		boolean omitElement = (boolean) nxmlDocumentParser.getTagProperties(elementName)
+				.getOrDefault(ElementProperties.OMIT_ELEMENT, false);
+
+		// however, the element properties file might specify specific
+		// attribute-value combinations for the element which are might define
+		// different properties
+		if (nxmlDocumentParser.getTagProperties(elementName).get(ElementProperties.ATTRIBUTES) != null) {
+			// the list of defined attribute properties in the element
+			// properties file
+			@SuppressWarnings("unchecked")
+			List<Map<String, Object>> attributeList = (List<Map<String, Object>>) nxmlDocumentParser
+					.getTagProperties(elementName).get(ElementProperties.ATTRIBUTES);
+
+			// the actual properties of the current element
+			// we just go through the attributes and build a name-value map
+			Map<String, String> attributesOfElement = getElementAttributes();
+
+			// now check if an attribute-value pair defined in the element
+			// properties file matches this element;
+			// if so, check if it defines the omission of the element
+			for (Map<String, Object> attribute : attributeList) {
+				String attributeValue = attributesOfElement.get(attribute.get(ElementProperties.NAME));
+				if (attributeValue != null && attributeValue.equals(attribute.get(ElementProperties.VALUE))
+						&& attribute.containsKey(ElementProperties.OMIT_ELEMENT)) {
+					omitElement = (boolean) attribute.get(ElementProperties.OMIT_ELEMENT);
+				}
+			}
+		}
+		return omitElement;
+	}
+
 	// for access to the local ParsingResult
 	protected void editResult(ElementParsingResult result) {
 		// does nothing by default, just here for override
@@ -151,7 +184,10 @@ public class DefaultElementParser extends NxmlElementParser {
 				return null;
 
 			Constructor<?> constructor = Class.forName(annotationClassName).getConstructor(JCas.class);
-			return (Annotation) constructor.newInstance(nxmlDocumentParser.cas);
+			Annotation annotation = (Annotation) constructor.newInstance(nxmlDocumentParser.cas);
+			if (annotation instanceof de.julielab.jcore.types.Annotation)
+				((de.julielab.jcore.types.Annotation)annotation).setComponentId(PMCReader.class.getName());
+			return annotation;
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | NavException e) {
 			throw new ElementParsingException(e);

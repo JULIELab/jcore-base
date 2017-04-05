@@ -110,6 +110,9 @@ public class PMCReaderTest {
 			if (secnum == 0) {
 				assertEquals("Introduction", sectionHeading.getCoveredText());
 			}
+			if (sec.getSectionId().equals("Sec3"))
+				assertEquals(1, sec.getDepth());
+			
 			++secnum;
 		}
 	}
@@ -197,7 +200,7 @@ public class PMCReaderTest {
 	@Test
 	public void testGetPmcFiles() throws Exception {
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents/PMC2847692.nxml.gz");
+				"src/test/resources/documents");
 		Method getPmcFilesMethod = reader.getClass().getDeclaredMethod("getPmcFiles", File.class);
 		getPmcFilesMethod.setAccessible(true);
 		Iterator<File> recursiveIt = (Iterator<File>) getPmcFilesMethod.invoke(reader,
@@ -213,7 +216,7 @@ public class PMCReaderTest {
 				"PMC2970367.nxml.gz", "PMC3201365.nxml.gz", "PMC4257438.nxml.gz"));
 		while (recursiveIt.hasNext()) {
 			File file = recursiveIt.next();
-			assertTrue(expectedFileNames.remove(file.getName()));
+			assertTrue("The file \"" + file.getName() + "\" was not expected", expectedFileNames.remove(file.getName()));
 			// just to try causing trouble
 			recursiveIt.hasNext();
 		}

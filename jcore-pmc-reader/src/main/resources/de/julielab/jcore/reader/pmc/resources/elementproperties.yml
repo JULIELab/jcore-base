@@ -1,3 +1,6 @@
+article-title:
+    block-element: true
+    type: de.julielab.jcore.types.Title
 title:
     block-element: true
     type: de.julielab.jcore.types.Title
@@ -27,3 +30,8 @@ floats-group:
     omit-element: true
 array:
     omit-element: true
+xref:
+    attributes:
+        - name: ref-type
+          value: fn
+          omit-element: true

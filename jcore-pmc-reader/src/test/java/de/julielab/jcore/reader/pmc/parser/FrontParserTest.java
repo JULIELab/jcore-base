@@ -20,6 +20,7 @@ public class FrontParserTest {
 	public void testParser() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
+		documentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
 		documentParser.reset(new File("src/test/resources/documents/PMC2847692.nxml.gz"), cas);
 		
 		FrontParser frontMatterParser = new FrontParser(documentParser);

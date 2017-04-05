@@ -15,20 +15,11 @@ public class ContribGroupParser extends NxmlElementParser {
 	@Override
 	public void parseElement(ElementParsingResult result) throws ElementParsingException {
 		try {
-//			checkCursorPosition();
-//			vn.push();
-//			ElementParsingResult result = createParsingResult();
-
 			AutoPilot ap = getAutoPilot("/article/front/article-meta/contrib-group/contrib[@contrib-type='author']", vn);
 			while (ap.evalXPath() != -1) {
 				result.addSubResult(nxmlDocumentParser.getParser("contrib").parse());
 			}
 			releaseAutoPilot();
-			
-//			vn.pop();
-//			vn.toElement(VTDNav.NEXT_SIBLING);
-//			result.setLastTokenIndex(vn.getCurrentIndex());
-//			return result;
 		} catch (NavException | XPathParseException | XPathEvalException e) {
 			throw new ElementParsingException(e);
 		}

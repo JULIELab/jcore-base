@@ -11,11 +11,13 @@ import com.ximpleware.NavException;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
+import de.julielab.jcore.reader.pmc.PMCReader;
 import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser.Tagset;
 import de.julielab.jcore.types.AuthorInfo;
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.Keyword;
+import de.julielab.jcore.types.Title;
 import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import de.julielab.jcore.types.pubmed.OtherID;
@@ -32,7 +34,12 @@ public class FrontParser extends NxmlElementParser {
 		try {
 
 			// title and abstract
-			parseXPath("/article/front/article-meta/title-group/article-title").ifPresent(frontResult::addSubResult);
+			parseXPath("/article/front/article-meta/title-group/article-title").ifPresent(r -> {
+				ElementParsingResult er = (ElementParsingResult) r;
+				Title articleTitle = (Title) er.getAnnotation();
+				articleTitle.setTitleType("document");
+				frontResult.addSubResult(r);
+				});
 			parseXPath("/article/front/article-meta/abstract").ifPresent(frontResult::addSubResult);
 
 			// article IDs
@@ -69,10 +76,12 @@ public class FrontParser extends NxmlElementParser {
 			Optional<List<String>> keywords = getXPathValues("/article/front/article-meta/kwd-group/kwd");
 
 			Header header = new Header(nxmlDocumentParser.cas);
-
+			header.setComponentId(PMCReader.class.getName());
+			
 			pmcid.ifPresent(header::setDocId);
 			pmid.ifPresent(p -> {
 				OtherID otherID = new OtherID(nxmlDocumentParser.cas);
+				otherID.setComponentId(PMCReader.class.getName());
 				otherID.setId(p);
 				otherID.setSource("PubMed");
 				FSArray otherIDs = new FSArray(nxmlDocumentParser.cas, 1);
@@ -83,6 +92,7 @@ public class FrontParser extends NxmlElementParser {
 			copyrightStatement.ifPresent(header::setCopyright);
 
 			Journal journal = new Journal(nxmlDocumentParser.cas);
+			journal.setComponentId(PMCReader.class.getName());
 			journalTitle.ifPresent(journal::setTitle);
 			abbrevJournalTitle.ifPresent(journal::setShortTitle);
 			volume.ifPresent(journal::setVolume);
@@ -92,6 +102,7 @@ public class FrontParser extends NxmlElementParser {
 			FSArray pubTypes = new FSArray(nxmlDocumentParser.cas, 1);
 			pubTypes.set(0, journal);
 			Date pubDate = new Date(nxmlDocumentParser.cas);
+			pubDate.setComponentId(PMCReader.class.getName());
 			day.map(Integer::parseInt).ifPresent(pubDate::setDay);
 			month.map(Integer::parseInt).ifPresent(pubDate::setMonth);
 			year.map(Integer::parseInt).ifPresent(pubDate::setYear);
@@ -121,10 +132,12 @@ public class FrontParser extends NxmlElementParser {
 				FSArray fsArray = new FSArray(nxmlDocumentParser.cas, keywordList.size());
 				IntStream.range(0, keywordList.size()).forEach(i -> {
 					Keyword keyword = new Keyword(nxmlDocumentParser.cas);
+					keyword.setComponentId(PMCReader.class.getName());
 					keyword.setName(keywordList.get(i));
 					fsArray.set(i, keyword);
 				});
 				ManualDescriptor manualDescriptor = new ManualDescriptor(nxmlDocumentParser.cas);
+				manualDescriptor.setComponentId(PMCReader.class.getName());
 				manualDescriptor.setKeywordList(fsArray);
 				manualDescriptor.addToIndexes();
 			}

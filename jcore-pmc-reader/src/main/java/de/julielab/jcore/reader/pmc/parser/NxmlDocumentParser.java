@@ -62,6 +62,10 @@ public class NxmlDocumentParser extends NxmlParser {
 		this.cas = cas;
 		try {
 			VTDGen vg = new VTDGen();
+			// If we don't set this to true, some whitespaces, for example
+			// directly after closing tags, would be omitted. We don't want
+			// this, the NXML format is very specific in its whitespaces.
+			vg.enableIgnoredWhiteSpace(true);
 			if (nxmlFile.getName().endsWith(".gz"))
 				vg.parseGZIPFile(nxmlFile.getAbsolutePath(), false);
 			else
@@ -91,7 +95,8 @@ public class NxmlDocumentParser extends NxmlParser {
 				else if (docType.contains("journalpublishing3.dtd"))
 					tagset = Tagset.NLM_3_0;
 				else
-					throw new IllegalArgumentException("Unsupported document type in file " + nxmlFile.getAbsolutePath() + ": " + docType);
+					throw new IllegalArgumentException(
+							"Unsupported document type in file " + nxmlFile.getAbsolutePath() + ": " + docType);
 				return;
 			}
 		}

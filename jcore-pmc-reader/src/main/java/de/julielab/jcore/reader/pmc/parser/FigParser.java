@@ -6,6 +6,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
+import de.julielab.jcore.reader.pmc.PMCReader;
 import de.julielab.jcore.types.Caption;
 import de.julielab.jcore.types.Figure;
 import de.julielab.jcore.types.Title;
@@ -34,8 +35,11 @@ public class FigParser extends NxmlElementParser {
 			labelResult.ifPresent(figResult::addSubResult);
 
 			Figure figure = new Figure(nxmlDocumentParser.cas);
-			labelResult.map(l -> ((ElementParsingResult) l).getAnnotation()).map(Title.class::cast)
-					.ifPresent(figure::setObjectTitle);
+			figure.setComponentId(PMCReader.class.getName());
+			labelResult.map(l -> ((ElementParsingResult) l).getAnnotation()).map(Title.class::cast).map(t -> {
+				t.setTitleType("figure");
+				return t;
+			}).ifPresent(figure::setObjectTitle);
 			labelString.ifPresent(figure::setObjectLabel);
 			captionResult.map(r -> (Caption) ((ElementParsingResult) r).getAnnotation())
 					.ifPresent(figure::setObjectCaption);

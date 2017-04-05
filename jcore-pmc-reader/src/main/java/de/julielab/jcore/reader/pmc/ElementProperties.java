@@ -33,4 +33,19 @@ public class ElementProperties {
 	 * longest matching path.
 	 */
 	public static final String PATH = "path";
+	/**
+	 * Propery that defines a list of attribute name-value combinations for
+	 * which element properties may be applied. Then, the root element
+	 * properties will be overwritten by attribute properties if the attribute
+	 * name-value pair matches a particular element.
+	 */
+	public static final String ATTRIBUTES = "attributes";
+	/**
+	 * Used for attribute names in conjunction with {@link #ATTRIBUTES}.
+	 */
+	public static final String NAME= "name";
+	/**
+	 * Used for attribute values in conjunction with {@link #ATTRIBUTES}.
+	 */
+	public static final String VALUE = "value";
 }

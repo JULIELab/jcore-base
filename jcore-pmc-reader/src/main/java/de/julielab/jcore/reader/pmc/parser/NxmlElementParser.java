@@ -1,7 +1,9 @@
 package de.julielab.jcore.reader.pmc.parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -340,5 +342,42 @@ public abstract class NxmlElementParser extends NxmlParser {
 		} finally {
 			vn.pop();
 		}
+	}
+
+	/**
+	 * Requires the VTDNav to be positioned at the beginning of the element
+	 * opening tag. Extracts all attribute name-value pairs and returns them as
+	 * a map.
+	 * 
+	 * @return A map of attribute name-value pairs for the current element.
+	 * @throws NavException
+	 */
+	protected Map<String, String> getElementAttributes() throws NavException {
+		Map<String, String> attributesOfElement = new HashMap<>();
+		int i = vn.getCurrentIndex();
+		// check if the current token position is the starting tag with the
+		// correct name or, if we are positioned at an attribute name, the previous token; if none of these, we can't get
+		// the attributes here
+		if ((vn.getTokenType(i) == VTDNav.TOKEN_STARTING_TAG && !elementName.equals(vn.toString(i)))
+				|| (vn.getTokenType(i) == VTDNav.TOKEN_ATTR_NAME && vn.getTokenType(i - 1) == VTDNav.TOKEN_STARTING_TAG && !elementName.equals(vn.toString(i - 1)))) {
+			throw new IllegalStateException(
+					"To create the element attribute map, the VTDNav cursor must be set to the starting tag or the first attribute name.");
+		}
+		String attrName = null;
+		String attrValue = null;
+		while (vn.getTokenType(i) == VTDNav.TOKEN_STARTING_TAG || vn.getTokenType(i) == VTDNav.TOKEN_ATTR_NAME
+				|| vn.getTokenType(i) == VTDNav.TOKEN_ATTR_VAL) {
+			switch (vn.getTokenType(i)) {
+			case VTDNav.TOKEN_ATTR_NAME:
+				attrName = vn.toString(i);
+				break;
+			case VTDNav.TOKEN_ATTR_VAL:
+				attrValue = vn.toString(i);
+				attributesOfElement.put(attrName, attrValue);
+				break;
+			}
+			++i;
+		}
+		return attributesOfElement;
 	}
 }

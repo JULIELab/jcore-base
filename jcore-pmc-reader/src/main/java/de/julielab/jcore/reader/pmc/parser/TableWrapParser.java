@@ -6,6 +6,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
+import de.julielab.jcore.reader.pmc.PMCReader;
 import de.julielab.jcore.types.Caption;
 import de.julielab.jcore.types.Table;
 import de.julielab.jcore.types.Title;
@@ -34,8 +35,11 @@ public class TableWrapParser extends NxmlElementParser {
 			labelResult.ifPresent(tableWrapResult::addSubResult);
 
 			Table table = new Table(nxmlDocumentParser.cas);
-			labelResult.map(l -> ((ElementParsingResult) l).getAnnotation()).map(Title.class::cast)
-					.ifPresent(table::setObjectTitle);
+			table.setComponentId(PMCReader.class.getName());
+			labelResult.map(l -> ((ElementParsingResult) l).getAnnotation()).map(Title.class::cast).map(t -> {
+				t.setTitleType("table");
+				return t;
+			}).ifPresent(table::setObjectTitle);
 			labelString.ifPresent(table::setObjectLabel);
 			captionResult.map(r -> (Caption) ((ElementParsingResult) r).getAnnotation())
 					.ifPresent(table::setObjectCaption);

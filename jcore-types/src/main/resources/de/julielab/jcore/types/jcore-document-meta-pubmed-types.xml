@@ -112,7 +112,7 @@
 	<typeDescription>
       <name>de.julielab.jcore.types.pubmed.OtherID</name>
       <description>PubMed/Medline abstracts sometimes have other IDs besided their PMID from different sources. This type discloses the respective ID and source. For details see https://www.nlm.nih.gov/bsd/mms/medlineelements.html#oid</description>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>id</name>

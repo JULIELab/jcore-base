@@ -80,6 +80,14 @@ public class PMCReader extends CollectionReader_ImplBase {
 			boolean isBlockElement = elementParsingResult.isBlockElement() || (boolean) nxmlDocumentParser
 					.getTagProperties(elementName).getOrDefault(ElementProperties.BLOCK_ELEMENT, false);
 
+			// There are elements that should have line breaks before and after
+			// them like paragraphs, sections, captions etc. Other elements are
+			// inline-elements, like xref, which should be embedded in the
+			// surrounding text without line breaks.
+			if (isBlockElement && sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+				sb.append("\n");
+			}
+
 			int begin = sb.length();
 			for (ParsingResult subResult : elementParsingResult.getSubResults()) {
 				populateCas(subResult, cas, sb);
