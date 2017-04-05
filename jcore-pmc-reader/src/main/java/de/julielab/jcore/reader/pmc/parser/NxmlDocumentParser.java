@@ -84,17 +84,14 @@ public class NxmlDocumentParser extends NxmlParser {
 		for (int i = 0; i < vn.getTokenCount(); i++) {
 			if (vn.getTokenType(i) == VTDNav.TOKEN_DTD_VAL) {
 				String docType = StringUtils.normalizeSpace(vn.toString(i)).replaceAll("'", "\"");
-				if (docType.equals(
-						"article PUBLIC \"-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN\" \"JATS-archivearticle1.dtd\""))
+				if (docType.contains("JATS-archivearticle1.dtd"))
 					tagset = Tagset.JATS_1_0;
-				else if (docType.equals(
-						"article PUBLIC \"-//NLM//DTD Journal Publishing DTD v2.3 20070202//EN\" \"journalpublishing.dtd\""))
+				else if (docType.contains("journalpublishing.dtd") || docType.contains("archivearticle.dtd"))
 					tagset = Tagset.NLM_2_3;
-				else if (docType.equals(
-						"article PUBLIC \"-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN\" \"journalpublishing3.dtd\""))
+				else if (docType.contains("journalpublishing3.dtd"))
 					tagset = Tagset.NLM_3_0;
 				else
-					log.warn("Unsupported document type in file {}: {}", nxmlFile, docType);
+					throw new IllegalArgumentException("Unsupported document type in file " + nxmlFile.getAbsolutePath() + ": " + docType);
 				return;
 			}
 		}
@@ -107,7 +104,8 @@ public class NxmlDocumentParser extends NxmlParser {
 		parserRegistry.put("front", new FrontParser(this));
 		// filters for authors currently (thus, omits editors, for example)
 		parserRegistry.put("contrib-group", new ContribGroupParser(this));
-		// does only create AuthorInfo annotations and expects the contrib-type "author"
+		// does only create AuthorInfo annotations and expects the contrib-type
+		// "author"
 		parserRegistry.put("contrib", new ContribParser(this));
 		parserRegistry.put("sec", new SectionParser(this));
 		parserRegistry.put("table-wrap", new TableWrapParser(this));
@@ -147,7 +145,7 @@ public class NxmlDocumentParser extends NxmlParser {
 		}
 		return Collections.emptyMap();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void loadElementPropertyFile(String file) throws IOException {
 		Yaml yaml = new Yaml();

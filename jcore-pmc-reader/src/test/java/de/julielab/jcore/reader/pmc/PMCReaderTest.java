@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,12 +33,43 @@ import de.julielab.jcore.types.pubmed.ManualDescriptor;
 public class PMCReaderTest {
 	@Test
 	public void testPmcReader1() throws Exception {
+		// read a single file, parse it and right it to XMI for manual review
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
 		reader.getNext(cas.getCas());
 		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("test.xmi"));
+	}
+
+	@Test
+	public void testPmcReader2() throws Exception {
+		// read a whole directory with subdirectories
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+				"src/test/resources/documents");
+		assertTrue(reader.hasNext());
+		Set<String> expectedIds = new HashSet<>(Arrays.asList("2847692", "3201365", "4257438", "2758189", "2970367"));
+		while (reader.hasNext()) {
+			reader.getNext(cas.getCas());
+			
+			Header header = (Header) CasUtil.selectSingle(cas.getCas(),
+					CasUtil.getAnnotationType(cas.getCas(), Header.class));
+			assertNotNull(header);
+			assertTrue(expectedIds.remove(header.getDocId()));
+			assertNotNull(header.getPubTypeList());
+			assertTrue(header.getPubTypeList().size() > 0);
+			assertNotNull(((Journal) header.getPubTypeList(0)).getTitle());
+			assertNotNull(((Journal) header.getPubTypeList(0)).getIssue());
+			assertNotNull(((Journal) header.getPubTypeList(0)).getVolume());
+			assertNotNull(((Journal) header.getPubTypeList(0)).getPages());
+			assertTrue(((Journal) header.getPubTypeList(0)).getTitle().length() > 0);
+			assertNotNull(header.getAuthors());
+			assertTrue(header.getAuthors().size() > 0);
+			
+			cas.reset();
+		}
+		assertTrue(expectedIds.isEmpty());
 	}
 
 	@Test
@@ -155,7 +188,35 @@ public class PMCReaderTest {
 		Set<String> expectedKeywords = new HashSet<>(Arrays.asList("Baltic Sea Action Plan (BSAP)", "Costs", "Review",
 				"Eutrophication", "Hazardous substances"));
 		IntStream.range(0, md.getKeywordList().size())
-				.forEach(i -> assertTrue("The keyword \"" + md.getKeywordList(i).getName() +"\" was not expected", expectedKeywords.remove(md.getKeywordList(i).getName())));
+				.forEach(i -> assertTrue("The keyword \"" + md.getKeywordList(i).getName() + "\" was not expected",
+						expectedKeywords.remove(md.getKeywordList(i).getName())));
 		assertTrue(expectedKeywords.isEmpty());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetPmcFiles() throws Exception {
+		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+				"src/test/resources/documents/PMC2847692.nxml.gz");
+		Method getPmcFilesMethod = reader.getClass().getDeclaredMethod("getPmcFiles", File.class);
+		getPmcFilesMethod.setAccessible(true);
+		Iterator<File> recursiveIt = (Iterator<File>) getPmcFilesMethod.invoke(reader,
+				new File("src/test/resources/documents"));
+		assertTrue(recursiveIt.hasNext());
+		// check that multiple calls to hasNext() don't cause trouble
+		assertTrue(recursiveIt.hasNext());
+		assertTrue(recursiveIt.hasNext());
+		assertTrue(recursiveIt.hasNext());
+		assertTrue(recursiveIt.hasNext());
+		assertTrue(recursiveIt.hasNext());
+		Set<String> expectedFileNames = new HashSet<>(Arrays.asList("PMC2847692.nxml.gz", "PMC2758189.nxml.gz",
+				"PMC2970367.nxml.gz", "PMC3201365.nxml.gz", "PMC4257438.nxml.gz"));
+		while (recursiveIt.hasNext()) {
+			File file = recursiveIt.next();
+			assertTrue(expectedFileNames.remove(file.getName()));
+			// just to try causing trouble
+			recursiveIt.hasNext();
+		}
+		assertTrue(expectedFileNames.isEmpty());
 	}
 }

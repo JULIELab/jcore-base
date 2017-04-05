@@ -44,7 +44,7 @@ public class PMCReader extends CollectionReader_ImplBase {
 	@Override
 	public void initialize() throws ResourceInitializationException {
 		input = new File((String) getConfigParameterValue(PARAM_INPUT));
-		log.info("Reading PubmedCentral NXML files from {}", input);
+		log.info("Reading PubmedCentral NXML file(s) from {}", input);
 		try {
 			pmcFiles = getPmcFiles(input);
 		} catch (FileNotFoundException e) {
@@ -152,8 +152,7 @@ public class PMCReader extends CollectionReader_ImplBase {
 
 	@Override
 	public void close() throws IOException {
-		// TODO Auto-generated method stub
-
+		pmcFiles = null;
 	}
 
 	private Iterator<File> getPmcFiles(final File path) throws FileNotFoundException {
@@ -207,7 +206,8 @@ public class PMCReader extends CollectionReader_ImplBase {
 				if (directory.isDirectory()) {
 					// set the files in the directory
 					Stack<File> filesInSubDirectory = new Stack<File>();
-					Stream.of(directory.listFiles(f -> f.isFile())).forEach(filesInSubDirectory::push);
+					Stream.of(directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml")))
+							.forEach(filesInSubDirectory::push);
 					filesMap.put(directory, filesInSubDirectory);
 
 					// set the subdirectories of the directory
