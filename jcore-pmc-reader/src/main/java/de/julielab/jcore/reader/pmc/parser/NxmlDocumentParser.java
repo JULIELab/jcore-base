@@ -25,6 +25,21 @@ public class NxmlDocumentParser extends NxmlParser {
 	/**
 	 * The tagset the parsed document is modeled after. The options are very
 	 * similar to each other but may exhibit differences in details.
+	 * <p>
+	 * Just for an overview, in march 2017 the distribution of doctypes on the
+	 * PMC OA set looked like this:
+	 * 
+	 * <pre>
+	 *        2 &lt;!DOCTYPE article [note: line breaks in doctype]
+	 *  1355617 &lt;!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN" "JATS-archivearticle1.dtd">
+	 *        2 &lt;!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN" "JATS-archivearticle1.dtd"> 
+	 *        3 &lt;!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN" "JATS-archivearticle1.dtd">
+	 *        [note: actually I can't see a difference between the last three lines, must be some minor thing]
+	 *   187563 &lt;!DOCTYPE article PUBLIC "-//NLM//DTD Journal Archiving and Interchange DTD v2.3 20070202//EN" "archivearticle.dtd">
+	 * </pre>
+	 * 
+	 * As can be seen, the tag library v3.0 isn't used at all.
+	 * </p>
 	 * 
 	 * @author faessler
 	 * @see https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/article/style.html
