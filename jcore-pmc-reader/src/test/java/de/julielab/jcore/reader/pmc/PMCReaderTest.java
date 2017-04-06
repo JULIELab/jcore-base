@@ -20,6 +20,7 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
 import de.julielab.jcore.types.Figure;
@@ -36,7 +37,7 @@ public class PMCReaderTest {
 		// read a single file, parse it and right it to XMI for manual review
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents/PMC2847692.nxml.gz");
+				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
 		int count = 0;
 		while (reader.hasNext()) {
@@ -81,7 +82,7 @@ public class PMCReaderTest {
 	public void testHeader() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents/PMC2847692.nxml.gz");
+				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
 		reader.getNext(cas.getCas());
 		Header header = (Header) CasUtil.selectSingle(cas.getCas(),
@@ -101,7 +102,7 @@ public class PMCReaderTest {
 	public void testSections() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents/PMC2847692.nxml.gz");
+				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
 		reader.getNext(cas.getCas());
 		Iterator<AnnotationFS> secIt = CasUtil.iterator(cas.getCas(),
@@ -126,7 +127,7 @@ public class PMCReaderTest {
 	public void testTables() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents/PMC2847692.nxml.gz");
+				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
 		reader.getNext(cas.getCas());
 		Iterator<AnnotationFS> tableIt = CasUtil.iterator(cas.getCas(),
@@ -155,7 +156,7 @@ public class PMCReaderTest {
 	public void testFigures() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents/PMC2847692.nxml.gz");
+				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
 		reader.getNext(cas.getCas());
 		Iterator<AnnotationFS> figureIt = CasUtil.iterator(cas.getCas(),
@@ -184,7 +185,7 @@ public class PMCReaderTest {
 	public void testKeywords() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents/PMC2847692.nxml.gz");
+				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
 		reader.getNext(cas.getCas());
 		ManualDescriptor md = (ManualDescriptor) CasUtil.selectSingle(cas.getCas(),
@@ -227,5 +228,25 @@ public class PMCReaderTest {
 			recursiveIt.hasNext();
 		}
 		assertTrue(expectedFileNames.isEmpty());
+	}
+	
+	@Test
+	public void testSectionTitlesWithLabels() throws Exception {
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+				"src/test/resources/documents-textobjects/PMC3098455.nxml.gz");
+		reader.getNext(cas.getCas());
+		Iterator<AnnotationFS> secIt = CasUtil.iterator(cas.getCas(),
+				CasUtil.getAnnotationType(cas.getCas(), Section.class));
+		assertTrue(secIt.hasNext());
+		int i = 0;
+		while (secIt.hasNext()) {
+			Section sec = (Section) secIt.next();
+			if (i == 1) {
+				assertEquals("Materials and methods", sec.getSectionHeading().getCoveredText());
+				assertEquals("2", sec.getLabel());
+			}
+			++i;
+		}
 	}
 }
