@@ -15,7 +15,7 @@ public class ContribParserTest {
 	public void testParse() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
-		documentParser.reset(new File("src/test/resources/documents/PMC2847692.nxml.gz"), cas);
+		documentParser.reset(new File("src/test/resources/documents-recursive/PMC2847692.nxml.gz"), cas);
 
 		ContribParser contribParser = new ContribParser(documentParser);
 		contribParser.moveToXPath("/article/front/article-meta/contrib-group/contrib");

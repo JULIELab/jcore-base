@@ -3,6 +3,7 @@ package de.julielab.jcore.reader.pmc.parser;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.uima.jcas.tcas.Annotation;
 
@@ -65,6 +66,28 @@ public class ElementParsingResult extends ParsingResult {
 
 	public void setSubResults(List<ParsingResult> subResults) {
 		this.subResults = subResults;
+	}
+
+	/**
+	 * Iterates through all sub results and looks for element parsing results
+	 * with an annotation. If an annotation encountered is an instance (i.e.
+	 * also subclasses count) of <tt>annotationClass</tt>, it is added to the
+	 * returned list.
+	 * 
+	 * @param annotationClass
+	 *            The class of the returned sub result annotations.
+	 * @return Sub result annotations that are instances of
+	 *         <tt>annotationClass</tt>
+	 */
+	public <T extends Annotation> List<T> getSubResultAnnotations(Class<T> annotationClass) {
+		return subResults.stream().filter(ElementParsingResult.class::isInstance).map(ElementParsingResult.class::cast)
+				.filter(r -> r.getAnnotation() != null).filter(r -> annotationClass.isInstance(r.getAnnotation()))
+				.map(r -> r.getAnnotation()).map(annotationClass::cast).collect(Collectors.toList());
+	}
+
+	public List<ParsingResult> getSubResults(final String elementName) {
+		return subResults.stream().filter(ElementParsingResult.class::isInstance).map(ElementParsingResult.class::cast)
+				.filter(r -> r.getElementName().equals(elementName)).collect(Collectors.toList());
 	}
 
 	public String toString(int indentLevel) {
@@ -134,6 +157,14 @@ public class ElementParsingResult extends ParsingResult {
 
 	public void setTextBodyElement(boolean textBodyElement) {
 		this.textBodyElement = textBodyElement;
+	}
+
+	@Override
+	public String getResultText() {
+		StringBuilder sb = new StringBuilder();
+		for (ParsingResult result : subResults) 
+			sb.append(result.getResultText());
+		return sb.toString();
 	}
 
 }

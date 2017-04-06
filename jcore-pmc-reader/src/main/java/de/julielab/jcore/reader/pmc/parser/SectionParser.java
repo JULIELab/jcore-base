@@ -1,14 +1,15 @@
 package de.julielab.jcore.reader.pmc.parser;
 
-import org.apache.uima.jcas.tcas.Annotation;
+import java.util.List;
+import java.util.Optional;
 
 import com.ximpleware.NavException;
 
 import de.julielab.jcore.reader.pmc.PMCReader;
-import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
+import de.julielab.jcore.types.AbstractSection;
+import de.julielab.jcore.types.AbstractSectionHeading;
 import de.julielab.jcore.types.Section;
 import de.julielab.jcore.types.SectionTitle;
-import de.julielab.jcore.types.Title;
 
 public class SectionParser extends DefaultElementParser {
 
@@ -33,32 +34,33 @@ public class SectionParser extends DefaultElementParser {
 	public void parseElement(ElementParsingResult parsingResult) throws ElementParsingException {
 		try {
 			String sectionId = getElementAttributes().get("id");
-			
+			String elementPath = getElementPath();
+
 			super.parseElement(parsingResult);
 
-			Title sectionHeading = null;
-			for (ParsingResult subresult : parsingResult.getSubResults()) {
-				if (subresult.getResultType() == ResultType.ELEMENT) {
-					ElementParsingResult elementSubresult = (ElementParsingResult) subresult;
-					if (elementSubresult.getAnnotation() instanceof SectionTitle) {
-						sectionHeading = (Title) elementSubresult.getAnnotation();
-						break;
-					}
+			if (elementPath.contains("abstract")) {
+				AbstractSectionHeading sectionHeading = parsingResult
+						.getSubResultAnnotations(AbstractSectionHeading.class).get(0);
+				AbstractSection section = (AbstractSection) parsingResult.getAnnotation();
+				section.setComponentId(PMCReader.class.getName());
+				section.setAbstractSectionHeading(sectionHeading);
+			} else {
+				SectionTitle sectionHeading = parsingResult.getSubResultAnnotations(SectionTitle.class).get(0);
+				Section section = (Section) parsingResult.getAnnotation();
+				section.setComponentId(PMCReader.class.getName());
+				section.setSectionHeading(sectionHeading);
+				section.setDepth(depth);
+				section.setSectionId(sectionId);
+				List<ParsingResult> label = parsingResult.getSubResults("label");
+				if (!label.isEmpty()) {
+					// there is only one label element
+					ElementParsingResult labelParsingResult = (ElementParsingResult) label.get(0);
+					section.setLabel(labelParsingResult.getResultText());
 				}
 			}
-			Section section = (Section) parsingResult.getAnnotation();
-			section.setComponentId(PMCReader.class.getName());
-			section.setSectionHeading(sectionHeading);
-			section.setDepth(depth);
-			section.setSectionId(sectionId);
 		} catch (NavException e) {
 			throw new ElementParsingException(e);
 		}
-	}
-
-	@Override
-	protected Annotation getParsingResultAnnotation() {
-		return new Section(nxmlDocumentParser.cas);
 	}
 
 	@Override

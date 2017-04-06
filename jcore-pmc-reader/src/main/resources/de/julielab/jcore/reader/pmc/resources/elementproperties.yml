@@ -7,14 +7,32 @@ title:
     paths:
         - path: sec/title
           type: de.julielab.jcore.types.SectionTitle
+        - path: abstract/sec/title
+          type: de.julielab.jcore.types.AbstractSectionHeading
+abstract:
+    block-element: true
+    type: de.julielab.jcore.types.AbstractText
 label:
     block-element: true
     type: de.julielab.jcore.types.Title
+    paths:
+        - path: list-item/label
+          omit-element: true
 sec:
     block-element: true
+    type: de.julielab.jcore.types.Section
+    paths:
+        - path: abstract/sec
+          type: de.julielab.jcore.types.AbstractSection
 p:
     block-element: true
     type: de.julielab.jcore.types.Paragraph
+list:
+    block-element: true
+    type: de.julielab.jcore.types.List
+list-item:
+    block-element: true
+    type: de.julielab.jcore.types.ListItem
 caption:
     block-element: true
     type: de.julielab.jcore.types.Caption

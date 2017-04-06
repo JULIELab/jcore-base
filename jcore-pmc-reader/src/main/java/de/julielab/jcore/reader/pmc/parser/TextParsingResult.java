@@ -21,4 +21,9 @@ public class TextParsingResult extends ParsingResult {
 		sb.append("\n");
 		return sb.toString();
 	}
+
+	@Override
+	public String getResultText() {
+		return text;
+	}
 }

@@ -45,7 +45,7 @@ public class PMCReaderTest {
 			++count;
 		}
 		assertEquals(1, count);
-		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("test.xmi"));
+		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("2847692.xmi"));
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class PMCReaderTest {
 		// read a whole directory with subdirectories
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents");
+				"src/test/resources/documents-recursive");
 		assertTrue(reader.hasNext());
 		Set<String> expectedIds = new HashSet<>(Arrays.asList("2847692", "3201365", "4257438", "2758189", "2970367"));
 		while (reader.hasNext()) {
@@ -206,11 +206,11 @@ public class PMCReaderTest {
 	@Test
 	public void testGetPmcFiles() throws Exception {
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents");
+				"src/test/resources/documents-recursive");
 		Method getPmcFilesMethod = reader.getClass().getDeclaredMethod("getPmcFiles", File.class);
 		getPmcFilesMethod.setAccessible(true);
 		Iterator<File> recursiveIt = (Iterator<File>) getPmcFilesMethod.invoke(reader,
-				new File("src/test/resources/documents"));
+				new File("src/test/resources/documents-recursive"));
 		assertTrue(recursiveIt.hasNext());
 		// check that multiple calls to hasNext() don't cause trouble
 		assertTrue(recursiveIt.hasNext());
@@ -248,5 +248,6 @@ public class PMCReaderTest {
 			}
 			++i;
 		}
+		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("3098455.xmi"));
 	}
 }

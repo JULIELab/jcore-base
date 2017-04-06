@@ -11,8 +11,8 @@ public abstract class ParsingResult {
 	}
 
 	/**
-	 * The begin offset of in bytes this parsing result in the original XML file. This is
-	 * not the begin offset in the CAS.
+	 * The begin offset of in bytes this parsing result in the original XML
+	 * file. This is not the begin offset in the CAS.
 	 * 
 	 * @return The XML begin offset associated with this result.
 	 */
@@ -21,8 +21,8 @@ public abstract class ParsingResult {
 	}
 
 	/**
-	 * The end offset in bytes of this parsing result in the original XML file. This is
-	 * not the end offset in the CAS.
+	 * The end offset in bytes of this parsing result in the original XML file.
+	 * This is not the end offset in the CAS.
 	 * 
 	 * @return The XML end offset associated with this result.
 	 */
@@ -44,5 +44,21 @@ public abstract class ParsingResult {
 		this.resultType = resultType;
 	}
 
+	/**
+	 * Returns a pretty-printed representation of this result and all its sub
+	 * results, recursively.
+	 * 
+	 * @param indentLevel
+	 *            The indentation level to start with.
+	 * @return A textual representation of this parsing result.
+	 */
 	public abstract String toString(int indentLevel);
+
+	/**
+	 * Returns the text of text nodes of this parsing element and its sub
+	 * elements as a single string.
+	 * 
+	 * @return The element text.
+	 */
+	public abstract String getResultText();
 }

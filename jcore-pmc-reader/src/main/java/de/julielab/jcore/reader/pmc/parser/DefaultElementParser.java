@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -106,6 +107,7 @@ public class DefaultElementParser extends NxmlElementParser {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean determineOmitElement() throws NavException {
 		// default: the element is configured to be omitted or not
 		boolean omitElement = (boolean) nxmlDocumentParser.getTagProperties(elementName)
@@ -117,7 +119,6 @@ public class DefaultElementParser extends NxmlElementParser {
 		if (nxmlDocumentParser.getTagProperties(elementName).get(ElementProperties.ATTRIBUTES) != null) {
 			// the list of defined attribute properties in the element
 			// properties file
-			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> attributeList = (List<Map<String, Object>>) nxmlDocumentParser
 					.getTagProperties(elementName).get(ElementProperties.ATTRIBUTES);
 
@@ -136,12 +137,51 @@ public class DefaultElementParser extends NxmlElementParser {
 				}
 			}
 		}
+
+		// A path specification overwrites the attributes; this is because a
+		// different path kind of denotes a different element. If requried, we
+		// will have to allow the attributes properties within paths as well.
+		Optional<Map<String, Object>> pathMap = getPathMap();
+		if (pathMap.isPresent())
+			omitElement = (boolean) pathMap.get().getOrDefault(ElementProperties.OMIT_ELEMENT, false);
+
 		return omitElement;
 	}
 
 	// for access to the local ParsingResult
 	protected void editResult(ElementParsingResult result) {
 		// does nothing by default, just here for override
+	}
+
+	@SuppressWarnings("unchecked")
+	private Optional<Map<String, Object>> getPathMap() throws NavException {
+		List<Object> paths = (List<Object>) nxmlDocumentParser.getTagProperties(elementName)
+				.getOrDefault(ElementProperties.PATHS, Collections.emptyList());
+		String currentElementPath = null;
+		if (!paths.isEmpty()) {
+			currentElementPath = getElementPath();
+		}
+		String longestPathFragment = "";
+		int longestPathFragmentLength = 0;
+		Map<String, Object> matchingPathMap = null;
+		for (Object o : paths) {
+			Map<String, Object> pathMap = (Map<String, Object>) o;
+			String pathFragment = (String) pathMap.get(ElementProperties.PATH);
+			if (currentElementPath.endsWith(pathFragment)) {
+				int pathFragmentLength = pathFragment.split("/").length;
+				if (pathFragmentLength > longestPathFragmentLength) {
+					longestPathFragment = pathFragment;
+					longestPathFragmentLength = pathFragmentLength;
+					matchingPathMap = pathMap;
+				} else if (pathFragment.length() == longestPathFragmentLength)
+					throw new IllegalArgumentException("The given type paths for element " + elementName
+							+ " are ambiguous. The given paths " + pathFragment + " as well as " + longestPathFragment
+							+ " are applicable but both are of same length and thus none is more specific than the other. At least one of the path must be made more specific.");
+			}
+		}
+		if (matchingPathMap != null)
+			return Optional.of(matchingPathMap);
+		return Optional.empty();
 	}
 
 	/**
@@ -186,7 +226,7 @@ public class DefaultElementParser extends NxmlElementParser {
 			Constructor<?> constructor = Class.forName(annotationClassName).getConstructor(JCas.class);
 			Annotation annotation = (Annotation) constructor.newInstance(nxmlDocumentParser.cas);
 			if (annotation instanceof de.julielab.jcore.types.Annotation)
-				((de.julielab.jcore.types.Annotation)annotation).setComponentId(PMCReader.class.getName());
+				((de.julielab.jcore.types.Annotation) annotation).setComponentId(PMCReader.class.getName());
 			return annotation;
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | NavException e) {

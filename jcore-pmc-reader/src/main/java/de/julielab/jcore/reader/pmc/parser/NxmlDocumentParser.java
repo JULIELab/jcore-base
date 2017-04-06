@@ -130,6 +130,7 @@ public class NxmlDocumentParser extends NxmlParser {
 		parserRegistry.put("sec", new SectionParser(this));
 		parserRegistry.put("table-wrap", new TableWrapParser(this));
 		parserRegistry.put("fig", new FigParser(this));
+		parserRegistry.put("list", new ListParser(this));
 	}
 
 	public VTDNav getVn() {

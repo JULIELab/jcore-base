@@ -13,6 +13,8 @@ import com.ximpleware.XPathParseException;
 
 import de.julielab.jcore.reader.pmc.PMCReader;
 import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser.Tagset;
+import de.julielab.jcore.types.AbstractSection;
+import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.AuthorInfo;
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.Journal;
@@ -39,8 +41,16 @@ public class FrontParser extends NxmlElementParser {
 				Title articleTitle = (Title) er.getAnnotation();
 				articleTitle.setTitleType("document");
 				frontResult.addSubResult(r);
-				});
-			parseXPath("/article/front/article-meta/abstract").ifPresent(frontResult::addSubResult);
+			});
+			parseXPath("/article/front/article-meta/abstract").ifPresent(r -> {
+				ElementParsingResult er = (ElementParsingResult) r;
+				AbstractText abstractText = (AbstractText) er.getAnnotation();
+				List<AbstractSection> abstractSections = er.getSubResultAnnotations(AbstractSection.class);
+				FSArray fsArray = new FSArray(nxmlDocumentParser.cas, abstractSections.size());
+				IntStream.range(0, abstractSections.size()).forEach(i -> fsArray.set(i, abstractSections.get(i)));
+				abstractText.setStructuredAbstractParts(fsArray);
+				frontResult.addSubResult(r);
+			});
 
 			// article IDs
 			Optional<String> pmid = getXPathValue("/article/front/article-meta/article-id[@pub-id-type='pmid']");
@@ -77,7 +87,7 @@ public class FrontParser extends NxmlElementParser {
 
 			Header header = new Header(nxmlDocumentParser.cas);
 			header.setComponentId(PMCReader.class.getName());
-			
+
 			pmcid.ifPresent(header::setDocId);
 			pmid.ifPresent(p -> {
 				OtherID otherID = new OtherID(nxmlDocumentParser.cas);

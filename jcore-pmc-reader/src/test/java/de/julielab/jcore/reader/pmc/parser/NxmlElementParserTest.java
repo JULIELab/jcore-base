@@ -13,7 +13,7 @@ public class NxmlElementParserTest {
 	public void testGetElementPath() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
-		documentParser.reset(new File("src/test/resources/documents/PMC2847692.nxml.gz"), cas);
+		documentParser.reset(new File("src/test/resources/documents-recursive/PMC2847692.nxml.gz"), cas);
 		
 		DefaultElementParser parser = new DefaultElementParser(documentParser);
 		

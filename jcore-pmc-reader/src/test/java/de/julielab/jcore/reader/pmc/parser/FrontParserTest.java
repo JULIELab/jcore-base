@@ -21,7 +21,7 @@ public class FrontParserTest {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
 		documentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
-		documentParser.reset(new File("src/test/resources/documents/PMC2847692.nxml.gz"), cas);
+		documentParser.reset(new File("src/test/resources/documents-recursive/PMC2847692.nxml.gz"), cas);
 		
 		FrontParser frontMatterParser = new FrontParser(documentParser);
 		frontMatterParser.moveToXPath("/article/front");
