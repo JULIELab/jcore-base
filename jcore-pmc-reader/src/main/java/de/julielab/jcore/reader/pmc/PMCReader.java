@@ -182,12 +182,20 @@ public class PMCReader extends CollectionReader_ImplBase {
 					setFilesAndSubDirectories(currentDirectory);
 				}
 				Stack<File> filesInCurrentDirectory = filesMap.get(currentDirectory);
+				log.trace("Got files for key {}: {}", currentDirectory, filesInCurrentDirectory);
 				if (!filesInCurrentDirectory.isEmpty())
 					return true;
+				else if (currentDirectory.isFile())
+					// If the path points to a file an no files are left, then
+					// the one file has already been read. We are finished.
+					return false;
 				else {
 					Stack<File> subDirectories = subDirectoryMap.get(currentDirectory);
+					log.trace("No more files in current directory, got subdirectories left for key {}: {}",
+							currentDirectory, subDirectories);
 					if (!subDirectories.isEmpty()) {
 						File subDirectory = subDirectories.pop();
+						log.trace("Moving to subdirectory {}", subDirectory);
 
 						setFilesAndSubDirectories(subDirectory);
 
@@ -211,7 +219,9 @@ public class PMCReader extends CollectionReader_ImplBase {
 			}
 
 			private void setFilesAndSubDirectories(File directory) {
+				log.debug("Reading path {}", directory);
 				if (directory.isDirectory()) {
+					log.debug("Identified {} as a directory, reading files and subdirectories", directory);
 					// set the files in the directory
 					Stack<File> filesInSubDirectory = new Stack<File>();
 					Stream.of(directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml")))
@@ -223,9 +233,14 @@ public class PMCReader extends CollectionReader_ImplBase {
 					Stream.of(directory.listFiles(f -> f.isDirectory())).forEach(directoriesInSubDirectory::push);
 					subDirectoryMap.put(directory, directoriesInSubDirectory);
 				} else if (directory.isFile()) {
+					log.debug("Identified {} as a file, reading single file", directory);
 					Stack<File> fileStack = new Stack<File>();
 					fileStack.push(directory);
+					log.debug("Adding file to map with key {}", directory);
 					filesMap.put(directory, fileStack);
+				} else {
+					throw new IllegalStateException("Path " + directory.getAbsolutePath()
+							+ " was identified neither a path nor a file, cannot continue. This seems to be a bug in this code.");
 				}
 			}
 

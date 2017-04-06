@@ -38,7 +38,12 @@ public class PMCReaderTest {
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
-		reader.getNext(cas.getCas());
+		int count = 0;
+		while (reader.hasNext()) {
+			reader.getNext(cas.getCas());
+			++count;
+		}
+		assertEquals(1, count);
 		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("test.xmi"));
 	}
 
@@ -52,7 +57,7 @@ public class PMCReaderTest {
 		Set<String> expectedIds = new HashSet<>(Arrays.asList("2847692", "3201365", "4257438", "2758189", "2970367"));
 		while (reader.hasNext()) {
 			reader.getNext(cas.getCas());
-			
+
 			Header header = (Header) CasUtil.selectSingle(cas.getCas(),
 					CasUtil.getAnnotationType(cas.getCas(), Header.class));
 			assertNotNull(header);
@@ -66,7 +71,7 @@ public class PMCReaderTest {
 			assertTrue(((Journal) header.getPubTypeList(0)).getTitle().length() > 0);
 			assertNotNull(header.getAuthors());
 			assertTrue(header.getAuthors().size() > 0);
-			
+
 			cas.reset();
 		}
 		assertTrue(expectedIds.isEmpty());
@@ -112,7 +117,7 @@ public class PMCReaderTest {
 			}
 			if (sec.getSectionId().equals("Sec3"))
 				assertEquals(1, sec.getDepth());
-			
+
 			++secnum;
 		}
 	}
@@ -216,7 +221,8 @@ public class PMCReaderTest {
 				"PMC2970367.nxml.gz", "PMC3201365.nxml.gz", "PMC4257438.nxml.gz"));
 		while (recursiveIt.hasNext()) {
 			File file = recursiveIt.next();
-			assertTrue("The file \"" + file.getName() + "\" was not expected", expectedFileNames.remove(file.getName()));
+			assertTrue("The file \"" + file.getName() + "\" was not expected",
+					expectedFileNames.remove(file.getName()));
 			// just to try causing trouble
 			recursiveIt.hasNext();
 		}
