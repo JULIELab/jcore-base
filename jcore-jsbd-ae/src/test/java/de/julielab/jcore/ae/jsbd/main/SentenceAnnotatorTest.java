@@ -17,22 +17,30 @@
 
 package de.julielab.jcore.ae.jsbd.main;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.Range;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
@@ -40,9 +48,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.jsbd.main.SentenceAnnotator;
 import de.julielab.jcore.ae.jsbd.types.TestScope;
+import de.julielab.jcore.types.Caption;
+import de.julielab.jcore.types.Paragraph;
 import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Title;
 
 public class SentenceAnnotatorTest {
 
@@ -50,32 +60,30 @@ public class SentenceAnnotatorTest {
 	 * Logger for this class
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(SentenceAnnotatorTest.class);
-	
+
 	private static final String LOGGER_PROPERTIES = "src/test/java/log4j.properties";
-	
+
 	// uncomment to test with/without scope
-//	private static final String DESCRIPTOR = "src/test/resources/de/julielab/jcore/ae/jsbd/desc/SentenceAnnotatorTest.xml";
+	// private static final String DESCRIPTOR =
+	// "src/test/resources/de/julielab/jcore/ae/jsbd/desc/SentenceAnnotatorTest.xml";
 	private static final String DESCRIPTOR = "src/test/resources/de/julielab/jcore/ae/jsbd/desc/SentenceAnnotator_with-scope_Test.xml";
 
-	// last sentence has no EOS symbol to test that also this is handled correctly
-	private static final String[] TEST_TEXT = {
-			"First sentence. Second \t sentence! \n    Last sentence?",
-			"Hallo, jemand da? Nein, niemand.", "A test. METHODS: Bad stuffi",
-			"" };
+	// last sentence has no EOS symbol to test that also this is handled
+	// correctly
+	private static final String[] TEST_TEXT = { "First sentence. Second \t sentence! \n    Last sentence?",
+			"Hallo, jemand da? Nein, niemand.", "A test. METHODS: Bad stuffi", "" };
 
-	private static final String[] TEST_TEXT_OFFSETS = { "0-15;16-34;40-54", "0-17;18-32",
-			"0-7;8-16;17-27", "" };
-	
-	private static final int[] endOffsets = {54,32,27,0};
-	
-	
+	private static final String[] TEST_TEXT_OFFSETS = { "0-15;16-34;40-54", "0-17;18-32", "0-7;8-16;17-27", "" };
+
+	private static final int[] endOffsets = { 54, 32, 27, 0 };
+
 	/**
-	 * Use the model in resources, split the text in TEST_TEXT 
-	 * and compare the split result against TEST_TEXT_OFFSETS
+	 * Use the model in resources, split the text in TEST_TEXT and compare the
+	 * split result against TEST_TEXT_OFFSETS
 	 */
 	@Test
 	public void testProcess() {
-	
+
 		boolean annotationsOK = true;
 
 		XMLInputSource sentenceXML = null;
@@ -84,12 +92,10 @@ public class SentenceAnnotatorTest {
 
 		try {
 			sentenceXML = new XMLInputSource(DESCRIPTOR);
-			sentenceSpec = UIMAFramework.getXMLParser().parseResourceSpecifier(
-					sentenceXML);
-			sentenceAnnotator = UIMAFramework
-					.produceAnalysisEngine(sentenceSpec);
+			sentenceSpec = UIMAFramework.getXMLParser().parseResourceSpecifier(sentenceXML);
+			sentenceAnnotator = UIMAFramework.produceAnalysisEngine(sentenceSpec);
 		} catch (Exception e) {
-			LOGGER.error("testProcess()", e); 
+			LOGGER.error("testProcess()", e);
 		}
 
 		for (int i = 0; i < TEST_TEXT.length; i++) {
@@ -98,30 +104,29 @@ public class SentenceAnnotatorTest {
 			try {
 				jcas = sentenceAnnotator.newJCas();
 			} catch (ResourceInitializationException e) {
-				LOGGER.error("testProcess()", e); 
+				LOGGER.error("testProcess()", e);
 			}
 
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("testProcess() - testing text: " + TEST_TEXT[i]); 
+				LOGGER.debug("testProcess() - testing text: " + TEST_TEXT[i]);
 			}
 			jcas.setDocumentText(TEST_TEXT[i]);
 
-			// make one test scope ranging over complete document text annotations for the processing scope
-			TestScope scope1 = new TestScope(jcas,0,endOffsets[i]);
+			// make one test scope ranging over complete document text
+			// annotations for the processing scope
+			TestScope scope1 = new TestScope(jcas, 0, endOffsets[i]);
 			scope1.addToIndexes();
-			//TestScope scope2 = new TestScope(jcas,37,54);
+			// TestScope scope2 = new TestScope(jcas,37,54);
 
-			
 			try {
 				sentenceAnnotator.process(jcas, null);
 			} catch (Exception e) {
-				LOGGER.error("testProcess()", e); 
+				LOGGER.error("testProcess()", e);
 			}
 
 			// get the offsets of the sentences
 			JFSIndexRepository indexes = jcas.getJFSIndexRepository();
-			Iterator sentIter = indexes.getAnnotationIndex(Sentence.type)
-					.iterator();
+			Iterator sentIter = indexes.getAnnotationIndex(Sentence.type).iterator();
 
 			String predictedOffsets = getPredictedOffsets(i, sentIter);
 
@@ -134,9 +139,8 @@ public class SentenceAnnotatorTest {
 		assertTrue(annotationsOK);
 	}
 
-
 	private String getPredictedOffsets(int i, Iterator sentIter) {
-		String predictedOffsets="";
+		String predictedOffsets = "";
 		while (sentIter.hasNext()) {
 			Sentence s = (Sentence) sentIter.next();
 			LOGGER.debug("sentence: " + s.getCoveredText() + ": " + s.getBegin() + " - " + s.getEnd());
@@ -145,28 +149,19 @@ public class SentenceAnnotatorTest {
 		}
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("testProcess() - predicted: " + predictedOffsets); 
+			LOGGER.debug("testProcess() - predicted: " + predictedOffsets);
 		}
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("testProcess() - wanted: " + TEST_TEXT_OFFSETS[i]); 
+			LOGGER.debug("testProcess() - wanted: " + TEST_TEXT_OFFSETS[i]);
 		}
 		return predictedOffsets;
 	}
-	
+
 	@Test
 	public void testUimaFitIntegration() throws UIMAException, IOException {
-		AnalysisEngine sentenceAE = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE, "de/julielab/jcore/ae/jsbd/model/test-model.gz", SentenceAnnotator.PARAM_DO_POSTPROCESSING, true);
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
-		String abstractText = FileUtils.readFileToString(new File("src/test/resources/test-abstract.txt"), "UTF-8");
-		cas.setDocumentText(abstractText);
-		sentenceAE.process(cas);
-		Collection<Sentence> sentences = JCasUtil.select(cas, Sentence.class);
-		assertEquals(14, sentences.size());
-	}
-	
-	@Test
-	public void testModelClassPathResource() throws Exception {
-		AnalysisEngine sentenceAE = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE, "de/julielab/jcore/ae/jsbd/model/test-model.gz", SentenceAnnotator.PARAM_DO_POSTPROCESSING, true);
+		AnalysisEngine sentenceAE = AnalysisEngineFactory.createEngine(SentenceAnnotator.class,
+				SentenceAnnotator.PARAM_MODEL_FILE, "de/julielab/jcore/ae/jsbd/model/test-model.gz",
+				SentenceAnnotator.PARAM_DO_POSTPROCESSING, true);
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
 		String abstractText = FileUtils.readFileToString(new File("src/test/resources/test-abstract.txt"), "UTF-8");
 		cas.setDocumentText(abstractText);
@@ -175,5 +170,63 @@ public class SentenceAnnotatorTest {
 		assertEquals(14, sentences.size());
 	}
 
-	
+	@Test
+	public void testModelClassPathResource() throws Exception {
+		AnalysisEngine sentenceAE = AnalysisEngineFactory.createEngine(SentenceAnnotator.class,
+				SentenceAnnotator.PARAM_MODEL_FILE, "de/julielab/jcore/ae/jsbd/model/test-model.gz",
+				SentenceAnnotator.PARAM_DO_POSTPROCESSING, true);
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
+		String abstractText = FileUtils.readFileToString(new File("src/test/resources/test-abstract.txt"), "UTF-8");
+		cas.setDocumentText(abstractText);
+		sentenceAE.process(cas);
+		Collection<Sentence> sentences = JCasUtil.select(cas, Sentence.class);
+		assertEquals(14, sentences.size());
+	}
+
+	@Test
+	public void testSentenceDelimiterTypes() throws Exception {
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+		
+		jCas.setDocumentText("Introduction " + "We here show good results. This is a figure caption "
+				+ "And this is a paragraph without a fullstop for some reason " + "Conclusion "
+				+ "We are the greatest.");
+		Title t1 = new Title(jCas, 0, 12);
+		Caption c = new Caption(jCas, 40, 64);
+		Paragraph p = new Paragraph(jCas, 65, 123);
+		Title t2 = new Title(jCas, 124, 134);
+		t1.addToIndexes();
+		c.addToIndexes();
+		p.addToIndexes();
+		t2.addToIndexes();
+		assertEquals("Introduction", t1.getCoveredText());
+		assertEquals("This is a figure caption", c.getCoveredText());
+		assertEquals("And this is a paragraph without a fullstop for some reason", p.getCoveredText());
+		assertEquals("Conclusion", t2.getCoveredText());
+
+		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+				"de/julielab/jcore/ae/jsbd/model/test-model.gz", SentenceAnnotator.PARAM_SENTENCE_DELIMITER_TYPES,
+				new LinkedHashSet<Object>(
+						Arrays.asList(Title.class.getName(), Caption.class.getName(), Paragraph.class.getName())));
+		
+		jsbd.process(jCas.getCas());
+		
+		Set<Range<Integer>> expectedSpans = new HashSet<>();
+		expectedSpans.add(Range.between(0,  12));
+		expectedSpans.add(Range.between(13, 39));
+		expectedSpans.add(Range.between(40, 64));
+		expectedSpans.add(Range.between(65, 123));
+		expectedSpans.add(Range.between(124, 134));
+		expectedSpans.add(Range.between(135, 155));
+		
+		FSIterator<Annotation> it = jCas.getAnnotationIndex(Sentence.type).iterator();
+		assertTrue(it.hasNext());
+		while (it.hasNext()) {
+			Annotation sentence = it.next();
+			Range<Integer> sentenceRange = Range.between(sentence.getBegin(), sentence.getEnd());
+			assertTrue("Range " + sentenceRange + " was not expected", expectedSpans.remove(sentenceRange));
+		}
+		assertTrue(expectedSpans.isEmpty());
+	}
+
 }

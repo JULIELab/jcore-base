@@ -30,6 +30,13 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>SentenceDelimiterTypes</name>
+        <description>Qualified names of types that should never begin or end within a sentence. With other words, sentences should not begin within such a type but end after it or begin before it and end within or after it.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
