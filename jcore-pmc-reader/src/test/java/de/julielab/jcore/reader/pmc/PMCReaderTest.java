@@ -77,7 +77,7 @@ public class PMCReaderTest {
 		}
 		assertTrue(expectedIds.isEmpty());
 	}
-
+	
 	@Test
 	public void testHeader() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");

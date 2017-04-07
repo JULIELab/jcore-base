@@ -51,6 +51,22 @@ public class FrontParserTest {
 		
 		assertNotNull(header.getAuthors());
 	}
+	
+	@Test
+	public void testParser2() throws Exception {
+		// this publication does not define pages but an electronic location
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		NxmlDocumentParser documentParser = new NxmlDocumentParser();
+		documentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
+		documentParser.reset(new File("src/test/resources/documents-textobjects/PMC4393605.nxml.gz"), cas);
+		
+		FrontParser frontMatterParser = new FrontParser(documentParser);
+		frontMatterParser.moveToXPath("/article/front");
+		ElementParsingResult frontResult = frontMatterParser.parse();
+		assertNotNull(frontResult);
+		Header header = (Header) frontResult.getAnnotation();
+		assertEquals("80", ((Journal)header.getPubTypeList(0)).getPages());
+	}
 
 	private ElementParsingResult getElementResult(String elementName, ElementParsingResult parse) {
 		for (ParsingResult parsingResult : parse.getSubResults()) {

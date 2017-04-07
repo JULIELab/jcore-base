@@ -76,6 +76,7 @@ public class FrontParser extends NxmlElementParser {
 			Optional<String> issue = getXPathValue("/article/front/article-meta/issue");
 			Optional<String> firstPage = getXPathValue("/article/front/article-meta/fpage");
 			Optional<String> lastPage = getXPathValue("/article/front/article-meta/lpage");
+			Optional<String> elocation = getXPathValue("/article/front/article-meta/elocation-id");
 			Optional<String> issn = getXPathValue("/article/front/journal-meta/issn[@pub-type='ppub']");
 
 			// copyright statement
@@ -84,6 +85,8 @@ public class FrontParser extends NxmlElementParser {
 
 			// keywords
 			Optional<List<String>> keywords = getXPathValues("/article/front/article-meta/kwd-group/kwd");
+
+			assert volume.isPresent();
 
 			Header header = new Header(nxmlDocumentParser.cas);
 			header.setComponentId(PMCReader.class.getName());
@@ -108,7 +111,12 @@ public class FrontParser extends NxmlElementParser {
 			volume.ifPresent(journal::setVolume);
 			issue.ifPresent(journal::setIssue);
 			issn.ifPresent(journal::setISSN);
-			journal.setPages(firstPage.get() + "--" + lastPage.get());
+			String pages = null;
+			if (firstPage.isPresent())
+				pages = firstPage.get() + "--" + lastPage.get();
+			else
+				pages = elocation.get();
+			journal.setPages(pages);
 			FSArray pubTypes = new FSArray(nxmlDocumentParser.cas, 1);
 			pubTypes.set(0, journal);
 			Date pubDate = new Date(nxmlDocumentParser.cas);

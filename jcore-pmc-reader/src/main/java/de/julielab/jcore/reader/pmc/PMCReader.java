@@ -62,7 +62,9 @@ public class PMCReader extends CollectionReader_ImplBase {
 	@Override
 	public void getNext(CAS cas) throws IOException, CollectionException {
 		try {
-			nxmlDocumentParser.reset(pmcFiles.next(), cas.getJCas());
+			File next = pmcFiles.next();
+			log.trace("Now reading file {}", next);
+			nxmlDocumentParser.reset(next, cas.getJCas());
 			ElementParsingResult result = nxmlDocumentParser.parse();
 			StringBuilder sb = populateCas(result, cas, new StringBuilder());
 			cas.setDocumentText(sb.toString());
