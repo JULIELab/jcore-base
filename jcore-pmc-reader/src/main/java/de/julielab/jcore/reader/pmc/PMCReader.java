@@ -184,7 +184,6 @@ public class PMCReader extends CollectionReader_ImplBase {
 					setFilesAndSubDirectories(currentDirectory);
 				}
 				Stack<File> filesInCurrentDirectory = filesMap.get(currentDirectory);
-				log.trace("Got files for key {}: {}", currentDirectory, filesInCurrentDirectory);
 				if (!filesInCurrentDirectory.isEmpty())
 					return true;
 				else if (currentDirectory.isFile())
@@ -193,8 +192,7 @@ public class PMCReader extends CollectionReader_ImplBase {
 					return false;
 				else {
 					Stack<File> subDirectories = subDirectoryMap.get(currentDirectory);
-					log.trace("No more files in current directory, got subdirectories left for key {}: {}",
-							currentDirectory, subDirectories);
+					log.trace("No more files in current directory {}", currentDirectory);
 					if (!subDirectories.isEmpty()) {
 						File subDirectory = subDirectories.pop();
 						log.trace("Moving to subdirectory {}", subDirectory);

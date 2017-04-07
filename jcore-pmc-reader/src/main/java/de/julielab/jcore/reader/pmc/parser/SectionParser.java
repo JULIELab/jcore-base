@@ -39,13 +39,24 @@ public class SectionParser extends DefaultElementParser {
 			super.parseElement(parsingResult);
 
 			if (elementPath.contains("abstract")) {
-				AbstractSectionHeading sectionHeading = parsingResult
-						.getSubResultAnnotations(AbstractSectionHeading.class).get(0);
+				AbstractSectionHeading sectionHeading = null;
+				List<AbstractSectionHeading> abstractSectionHeadings = parsingResult
+						.getSubResultAnnotations(AbstractSectionHeading.class);
+				if (!abstractSectionHeadings.isEmpty())
+					sectionHeading = abstractSectionHeadings.get(0);
+				// Do not create annotations for sections that do not include any text themselves
+				if (parsingResult.getDirectResultText().trim().length() == 0 && abstractSectionHeadings.isEmpty()) {
+					parsingResult.setAnnotation(null);
+					return;
+				}
 				AbstractSection section = (AbstractSection) parsingResult.getAnnotation();
 				section.setComponentId(PMCReader.class.getName());
 				section.setAbstractSectionHeading(sectionHeading);
 			} else {
-				SectionTitle sectionHeading = parsingResult.getSubResultAnnotations(SectionTitle.class).get(0);
+				SectionTitle sectionHeading = null;
+				List<SectionTitle> secTitleAnnotations = parsingResult.getSubResultAnnotations(SectionTitle.class);
+				if (!secTitleAnnotations.isEmpty())
+					sectionHeading = secTitleAnnotations.get(0);
 				Section section = (Section) parsingResult.getAnnotation();
 				section.setComponentId(PMCReader.class.getName());
 				section.setSectionHeading(sectionHeading);

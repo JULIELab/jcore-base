@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CollectionReader;
@@ -20,9 +21,9 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
+import de.julielab.jcore.types.AbstractSection;
 import de.julielab.jcore.types.Figure;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Journal;
@@ -77,7 +78,7 @@ public class PMCReaderTest {
 		}
 		assertTrue(expectedIds.isEmpty());
 	}
-	
+
 	@Test
 	public void testHeader() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
@@ -229,12 +230,12 @@ public class PMCReaderTest {
 		}
 		assertTrue(expectedFileNames.isEmpty());
 	}
-	
+
 	@Test
 	public void testSectionTitlesWithLabels() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents-textobjects/PMC3098455.nxml.gz");
+				"src/test/resources/documents-misc/PMC3098455.nxml.gz");
 		reader.getNext(cas.getCas());
 		Iterator<AnnotationFS> secIt = CasUtil.iterator(cas.getCas(),
 				CasUtil.getAnnotationType(cas.getCas(), Section.class));
@@ -243,9 +244,42 @@ public class PMCReaderTest {
 		while (secIt.hasNext()) {
 			Section sec = (Section) secIt.next();
 			if (i == 1) {
+				System.out.println(sec.getSectionHeading().getCoveredText());
 				assertEquals("Materials and methods", sec.getSectionHeading().getCoveredText());
 				assertEquals("2", sec.getLabel());
 			}
+			++i;
+		}
+		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("3098455.xmi"));
+	}
+
+	@Test
+	public void testEmptyWrappingAbstractSection() throws Exception {
+		// This document wraps its abstract sections in one completely empty
+		// section. We choose to not realize this empty wrapping section at all
+		// because it would mess up easy access to abstract sections.
+		// Thus we test each abstract section we come across and check that it
+		// is the one we expect, i.e. not the wrapper with no title.
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+				"src/test/resources/documents-misc/PMC2836310.nxml.gz");
+		reader.getNext(cas.getCas());
+		Iterator<AnnotationFS> secIt = CasUtil.iterator(cas.getCas(),
+				CasUtil.getAnnotationType(cas.getCas(), AbstractSection.class));
+		assertTrue(secIt.hasNext());
+		int i = 0;
+		while (secIt.hasNext()) {
+			AbstractSection sec = (AbstractSection) secIt.next();
+			if (i == 1) {
+				assertEquals("Background", sec.getAbstractSectionHeading().getCoveredText());
+			}
+			if (i == 2) {
+				assertEquals("Results", sec.getAbstractSectionHeading().getCoveredText());
+			}
+			if (i == 3) {
+				assertEquals("Conclusions", sec.getAbstractSectionHeading().getCoveredText());
+			}
+			assertTrue(i < 4);
 			++i;
 		}
 		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("3098455.xmi"));

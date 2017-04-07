@@ -72,9 +72,10 @@ public abstract class NxmlElementParser extends NxmlParser {
 	private int findIndexAfterElement(int elementDepth, int startIndex) {
 		int index = vn.getCurrentIndex();
 		int tokenType = vn.getTokenType(index);
+
 		if (tokenType == VTDNav.TOKEN_STARTING_TAG)
 			index = findIndexAfterStartingTag(index);
-		while (tokenIndexBelongsToElement(index, elementDepth))
+		while (index < vn.getTokenCount() && tokenIndexBelongsToElement(index, elementDepth))
 			++index;
 		return index;
 

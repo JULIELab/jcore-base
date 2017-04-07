@@ -162,8 +162,23 @@ public class ElementParsingResult extends ParsingResult {
 	@Override
 	public String getResultText() {
 		StringBuilder sb = new StringBuilder();
-		for (ParsingResult result : subResults) 
+		for (ParsingResult result : subResults)
 			sb.append(result.getResultText());
+		return sb.toString();
+	}
+
+	/**
+	 * Returns all text that is included directly in the element of this result,
+	 * excluding text contained in child elements.
+	 * 
+	 * @return Directly contained text of this element result.
+	 */
+	public String getDirectResultText() {
+		StringBuilder sb = new StringBuilder();
+		for (ParsingResult result : subResults) {
+			if (result.getResultType() == ResultType.TEXT)
+				sb.append(result.getResultText());
+		}
 		return sb.toString();
 	}
 

@@ -1,3 +1,3 @@
-Files in this directory have different text objects or uses of the tagssets.
+Files in this directory have different uses of the tagssets.
 Respective tests use them to assert that everything is parsed and represented
 in UIMA as intended.
