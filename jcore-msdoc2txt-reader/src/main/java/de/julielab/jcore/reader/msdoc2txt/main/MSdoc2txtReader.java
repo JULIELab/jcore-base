@@ -7,12 +7,13 @@
  *
  * @author Christina Lohr
  *
- * Current version: 1.0
- * Since version:   1.0
+ * Current version: 1.1
+ * Since version:   1.1
  *
- * Creation date: 31.03.2017
+ * Creation date: 11.04.2017
  *
- * A UIMA <code>CollectionReader</code> that reads in simple text from a file. Derived form Apache UIMA example <code>FileSystemCollectionReader</code>.
+ * A UIMA <code>CollectionReader</code> that reads in simple text from a file.
+ * Derived form Apache UIMA example <code>FileSystemCollectionReader</code>.
  **/
 
 package de.julielab.jcore.reader.msdoc2txt.main;
@@ -133,24 +134,30 @@ public class MSdoc2txtReader extends CollectionReader_ImplBase
 
 		File file = files.get(fileIndex++); // open input stream to file
 
+		ReadSingleMSdoc.setFilename(file.getPath());
+		ReadSingleMSdoc.setDocRange();
+		ReadSingleMSdoc.doc2Text();
+
 		/**
 		 *  Read the doc-file:
 		 *  
-		 *  We implemented 3 ways to convert the *.doc-files.
+		 *  We implemented different ways to convert the *.doc-files,
+		 *  look into ReadSingleMSdoc.doc2Text(), this read the structure of the *.doc-file.
 		 *  
-		 *  Look into ReadMSdocWithTable.java:
-		 *  * readDocFileTableAndTransform2Text()
-		 *  * readDocFileAndTransform2HTMLtable()
-		 *  * readDocFileTableAndTransform2TextMarkedTables() with getOutputTextMarkedTables()
+		 *  * ReadSingleMSdoc.getContentTextOnly(): only the text
+		 *  * ReadSingleMSdoc.getContentTextWithMarkedTables(): text and tables marked
+		 *  * by | and 4 space characters for using text with the brat rapid annotation tool
+		 *  * ReadSingleMSdoc.getContentLabParams(): text and tables marked by | and 4 space characters
+		 *  	(only parameters from the laboratory in the document)
+		 *  * ReadSingleMSdoc.getContentHTML(): text and tables marked by HTML-code <table> ... </table>
 		 */
 		
-		// String text = readDocWithTable.ReadDocFileTableAndTransform2Text(file.getPath());
-		// String text = readDocWithTable.ReadDocFileAndTransform2HTMLtable(file.getPath());
-		
-		ReadMSdocWithTable.readDocFileTableAndTransform2TextMarkedTables(file.getPath());
-		String text = ReadMSdocWithTable.getOutputTextMarkedTables();
-		 
-		jcas.setDocumentText(text);
+//		String textOnly = ReadSingleMSdoc.getContentTextOnly();
+		String textWithMarkedTables = ReadSingleMSdoc.getContentTextWithMarkedTables();
+//		String labParams = ReadSingleMSdoc.getContentLabParams();
+//		String textHTML = ReadSingleMSdoc.getContentHTML();
+
+		jcas.setDocumentText(textWithMarkedTables);
 
 		if (useFilenameAsDocId)
 		{
@@ -170,11 +177,14 @@ public class MSdoc2txtReader extends CollectionReader_ImplBase
 			}
 
 			Header header = new Header(jcas);
-			header.setDocId(filename);	// set ID
+			header.setDocId(filename);
 			header.addToIndexes();
 		}
 		
-		writeArtifactIntoTXT(file.getPath(), text);
+//		writeArtifactIntoTXT(file.getPath(), textOnly);
+		writeArtifactIntoTXT(file.getPath(), textWithMarkedTables);
+//		writeArtifactIntoTXT(file.getPath(), textHTML);
+		
 	}
 
 	/**
