@@ -58,9 +58,17 @@ public class FrontParser extends NxmlElementParser {
 			Optional<String> doi = getXPathValue("/article/front/article-meta/article-id[@pub-id-type='doi']");
 
 			// publication details
-			Optional<String> year = getXPathValue("/article/front/article-meta/pub-date[@pub-type='epub']/year");
-			Optional<String> month = getXPathValue("/article/front/article-meta/pub-date[@pub-type='epub']/month");
-			Optional<String> day = getXPathValue("/article/front/article-meta/pub-date[@pub-type='epub']/day");
+			String pubType = "";
+			String pubDateFmt = "/article/front/article-meta/pub-date[@pub-type='%s']";
+			if (xPathExists(String.format(pubDateFmt, "epub")))
+				pubType = "epub";
+			else if (xPathExists(String.format(pubDateFmt, "ppub")))
+				pubType = "ppub";
+			else if (xPathExists(String.format(pubDateFmt, "pmc-release")))
+				pubType = "pmc-release";
+			Optional<String> year = getXPathValue(String.format("/article/front/article-meta/pub-date[@pub-type='%s']/year", pubType));
+			Optional<String> month = getXPathValue(String.format("/article/front/article-meta/pub-date[@pub-type='%s']/month", pubType));
+			Optional<String> day = getXPathValue(String.format("/article/front/article-meta/pub-date[@pub-type='%s']/day", pubType));
 			Optional<String> journalTitle = nxmlDocumentParser.getTagset() == Tagset.NLM_2_3
 					? getXPathValue("/article/front/journal-meta/journal-title")
 					: getXPathValue("/article/front/journal-meta/journal-title-group/journal-title");
@@ -112,9 +120,11 @@ public class FrontParser extends NxmlElementParser {
 			issue.ifPresent(journal::setIssue);
 			issn.ifPresent(journal::setISSN);
 			String pages = null;
-			if (firstPage.isPresent())
+			if (firstPage.isPresent() && lastPage.isPresent())
 				pages = firstPage.get() + "--" + lastPage.get();
-			else
+			else if (firstPage.isPresent())
+				pages = firstPage.get();
+			else if (elocation.isPresent())
 				pages = elocation.get();
 			journal.setPages(pages);
 			FSArray pubTypes = new FSArray(nxmlDocumentParser.cas, 1);

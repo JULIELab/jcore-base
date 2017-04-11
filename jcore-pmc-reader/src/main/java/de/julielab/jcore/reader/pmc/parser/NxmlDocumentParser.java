@@ -18,8 +18,11 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 
+import de.julielab.jcore.reader.pmc.EmptyFileException;
+
 public class NxmlDocumentParser extends NxmlParser {
 
+	@SuppressWarnings("unused")
 	private static final Logger log = LoggerFactory.getLogger(NxmlDocumentParser.class);
 
 	/**
@@ -72,10 +75,13 @@ public class NxmlDocumentParser extends NxmlParser {
 	private File nxmlFile;
 	protected JCas cas;
 
-	public void reset(File nxmlFile, JCas cas) throws DocumentParsingException {
+	public void reset(File nxmlFile, JCas cas) throws DocumentParsingException, EmptyFileException  {
 		this.nxmlFile = nxmlFile;
 		this.cas = cas;
 		try {
+			if (nxmlFile.exists() && nxmlFile.length() <= 40)
+				throw new EmptyFileException("The file " + nxmlFile.getAbsolutePath() + " is empty.");
+			
 			VTDGen vg = new VTDGen();
 			// If we don't set this to true, some whitespaces, for example
 			// directly after closing tags, would be omitted. We don't want
@@ -98,8 +104,9 @@ public class NxmlDocumentParser extends NxmlParser {
 	 * enum element from {@link Tagset}.
 	 * 
 	 * @throws NavException
+	 * @throws DocTypeNotFoundException 
 	 */
-	private void setTagset() throws NavException {
+	private void setTagset() throws NavException, DocTypeNotFoundException {
 		for (int i = 0; i < vn.getTokenCount(); i++) {
 			if (vn.getTokenType(i) == VTDNav.TOKEN_DTD_VAL) {
 				String docType = StringUtils.normalizeSpace(vn.toString(i)).replaceAll("'", "\"");
@@ -107,7 +114,7 @@ public class NxmlDocumentParser extends NxmlParser {
 					tagset = Tagset.JATS_1_0;
 				else if (docType.contains("journalpublishing.dtd") || docType.contains("archivearticle.dtd"))
 					tagset = Tagset.NLM_2_3;
-				else if (docType.contains("journalpublishing3.dtd"))
+				else if (docType.contains("journalpublishing3.dtd") || docType.contains("archivearticle3.dtd"))
 					tagset = Tagset.NLM_3_0;
 				else
 					throw new IllegalArgumentException(
@@ -115,7 +122,7 @@ public class NxmlDocumentParser extends NxmlParser {
 				return;
 			}
 		}
-		log.warn("Could not find a doctype in file {}", nxmlFile);
+		throw new DocTypeNotFoundException("Could not find a doctype in file " + nxmlFile);
 	}
 
 	private void setupParserRegistry() {

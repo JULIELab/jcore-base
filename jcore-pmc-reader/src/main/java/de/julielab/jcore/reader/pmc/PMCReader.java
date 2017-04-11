@@ -3,11 +3,16 @@ package de.julielab.jcore.reader.pmc;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Optional;
+import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -19,6 +24,7 @@ import org.apache.uima.util.Progress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.julielab.jcore.reader.pmc.parser.DocTypeNotFoundException;
 import de.julielab.jcore.reader.pmc.parser.DocumentParsingException;
 import de.julielab.jcore.reader.pmc.parser.ElementParsingException;
 import de.julielab.jcore.reader.pmc.parser.ElementParsingResult;
@@ -31,11 +37,16 @@ public class PMCReader extends CollectionReader_ImplBase {
 	private static final Logger log = LoggerFactory.getLogger(PMCReader.class);
 
 	public static final String PARAM_INPUT = "Input";
+	public static final String PARAM_ALREADY_READ = "AlreadyRead";
 
 	@ConfigurationParameter(name = PARAM_INPUT, mandatory = true, description = "The path to an NXML file or a directory with NXML files and possibly subdirectories holding more NXML files.")
 	private File input;
 
+	@ConfigurationParameter(name = PARAM_ALREADY_READ, mandatory = false, description = "A file that contains a list list of already read file names. Those will be skipped by the reader. While reading, the reader will append read files to this list. If it is not given, the file will not be maintained.")
+	private File alreadyReadFile;
+
 	private Iterator<File> pmcFiles;
+	private Set<String> alreadyReadFilenames = Collections.emptySet();
 
 	private long completed;
 
@@ -44,10 +55,14 @@ public class PMCReader extends CollectionReader_ImplBase {
 	@Override
 	public void initialize() throws ResourceInitializationException {
 		input = new File((String) getConfigParameterValue(PARAM_INPUT));
+		alreadyReadFile = Optional.ofNullable((String) getConfigParameterValue(PARAM_ALREADY_READ)).map(File::new)
+				.orElse(null);
 		log.info("Reading PubmedCentral NXML file(s) from {}", input);
 		try {
+			if (alreadyReadFile != null && alreadyReadFile.exists())
+				alreadyReadFilenames = new HashSet<>(FileUtils.readLines(alreadyReadFile, "UTF-8"));
 			pmcFiles = getPmcFiles(input);
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			throw new ResourceInitializationException(e);
 		}
 		completed = 0;
@@ -63,11 +78,26 @@ public class PMCReader extends CollectionReader_ImplBase {
 	public void getNext(CAS cas) throws IOException, CollectionException {
 		try {
 			File next = pmcFiles.next();
+			while (pmcFiles.hasNext() && alreadyReadFilenames.contains(next.getName())) {
+				log.trace("File {} has already been read. Skipping.", next);
+				next = pmcFiles.next();
+			}
 			log.trace("Now reading file {}", next);
-			nxmlDocumentParser.reset(next, cas.getJCas());
-			ElementParsingResult result = nxmlDocumentParser.parse();
+			ElementParsingResult result = null;
+			while (next != null && result == null) {
+				try {
+					nxmlDocumentParser.reset(next, cas.getJCas());
+					result = nxmlDocumentParser.parse();
+				} catch (DocTypeNotFoundException | EmptyFileException e) {
+					log.warn("Error occurred: {}. Skipping document.", e.getMessage());
+					if (pmcFiles.hasNext())
+						next = pmcFiles.next();
+				}
+			}
 			StringBuilder sb = populateCas(result, cas, new StringBuilder());
 			cas.setDocumentText(sb.toString());
+			if (alreadyReadFile != null)
+				FileUtils.write(alreadyReadFile, next.getName() + "\n", "UTF-8", true);
 		} catch (CASException | DocumentParsingException | ElementParsingException e) {
 			throw new CollectionException(e);
 		}

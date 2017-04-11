@@ -17,9 +17,9 @@ import com.ximpleware.AutoPilot;
 import com.ximpleware.VTDNav;
 
 public class SectionParserTest {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(SectionParserTest.class);
-	
+
 	@Test
 	public void testParser() throws Exception {
 		// this publication does not define title for all sections
@@ -30,7 +30,7 @@ public class SectionParserTest {
 		documentParser.reset(inputFile, cas);
 
 		String documentText = IOUtils.toString(new GZIPInputStream(new FileInputStream(inputFile)));
-		
+
 		SectionParser sectionParser = new SectionParser(documentParser);
 		VTDNav vn = documentParser.getVn();
 		AutoPilot ap = new AutoPilot(vn);
@@ -43,7 +43,7 @@ public class SectionParserTest {
 			assertNotNull(secResult);
 		}
 	}
-	
+
 	@Test
 	public void testParser2() throws Exception {
 		// this publication does not define pages but an electronic location
