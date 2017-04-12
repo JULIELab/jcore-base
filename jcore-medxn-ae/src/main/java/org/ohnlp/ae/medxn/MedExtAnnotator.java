@@ -63,6 +63,8 @@ import de.julielab.jcore.utility.JCoReAnnotationTools;
  * @author Sunghwan Sohn
  */
 public class MedExtAnnotator extends JCasAnnotator_ImplBase {
+	public final static int SENT_WINDOW_SPAN = 3;
+	
 	class MedDesc {
 //		ConceptMention med;
 		List<GeneralAttributeMention> attrs = new ArrayList<GeneralAttributeMention>();
@@ -365,7 +367,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 		int InstructionBegin = -1;
 		int IndicationBegin = -1;
 		int cnt=0;
-		while(senItr.hasNext() && cnt<2) {
+		while(senItr.hasNext() && cnt < SENT_WINDOW_SPAN) {
 			Sentence sen = (Sentence) senItr.next();
 			if(sen.getBegin()>drug.getEnd()) {
 				cnt++;
