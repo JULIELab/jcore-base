@@ -148,7 +148,7 @@ public class MSdoc2txtReader extends CollectionReader_ImplBase
 		 *  * ReadSingleMSdoc.getContentTextWithMarkedTables(): text and tables marked
 		 *  * by | and 4 space characters for using text with the brat rapid annotation tool
 		 *  * ReadSingleMSdoc.getContentLabParams(): text and tables marked by | and 4 space characters
-		 *  	(only parameters from the laboratory in the document)
+		 *  	(only parameters from the laboratory in the document, if you read a clinical document)
 		 *  * ReadSingleMSdoc.getContentHTML(): text and tables marked by HTML-code <table> ... </table>
 		 */
 		
