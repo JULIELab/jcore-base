@@ -164,7 +164,7 @@ public class SentenceAnnotatorTest {
 	public void testUimaFitIntegration() throws UIMAException, IOException {
 		AnalysisEngine sentenceAE = AnalysisEngineFactory.createEngine(SentenceAnnotator.class,
 				SentenceAnnotator.PARAM_MODEL_FILE, "de/julielab/jcore/ae/jsbd/model/test-model.gz",
-				SentenceAnnotator.PARAM_DO_POSTPROCESSING, true);
+				SentenceAnnotator.PARAM_POSTPROCESSING, "biomed");
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
 		String abstractText = FileUtils.readFileToString(new File("src/test/resources/test-abstract.txt"), "UTF-8");
 		cas.setDocumentText(abstractText);
@@ -177,7 +177,7 @@ public class SentenceAnnotatorTest {
 	public void testModelClassPathResource() throws Exception {
 		AnalysisEngine sentenceAE = AnalysisEngineFactory.createEngine(SentenceAnnotator.class,
 				SentenceAnnotator.PARAM_MODEL_FILE, "de/julielab/jcore/ae/jsbd/model/test-model.gz",
-				SentenceAnnotator.PARAM_DO_POSTPROCESSING, true);
+				SentenceAnnotator.PARAM_POSTPROCESSING, "biomed");
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
 		String abstractText = FileUtils.readFileToString(new File("src/test/resources/test-abstract.txt"), "UTF-8");
 		cas.setDocumentText(abstractText);

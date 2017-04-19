@@ -50,7 +50,7 @@ import de.julielab.jcore.types.Sentence;
 public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 
 	public static final String PARAM_MODEL_FILE = "ModelFilename";
-	public static final String PARAM_DO_POSTPROCESSING = "Postprocessing";
+	public static final String PARAM_POSTPROCESSING = "Postprocessing";
 	@Deprecated
 	public static final String PARAM_PROCESSING_SCOPE = "ProcessingScope";
 
@@ -61,8 +61,8 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SentenceAnnotator.class);
 
 	// activate post processing
-	@ConfigurationParameter(name = PARAM_DO_POSTPROCESSING, mandatory = false, defaultValue = { "false" })
-	private boolean doPostprocessing = false;
+	@ConfigurationParameter(name = PARAM_POSTPROCESSING, mandatory = false, defaultValue = { "false" })
+	private String postprocessingFilter = null;
 
 	@ConfigurationParameter(name = PARAM_PROCESSING_SCOPE, mandatory = false)
 	@Deprecated
@@ -118,9 +118,9 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 		}
 
 		// this parameter is not mandatory, so first check whether it is there
-		Boolean pp = (Boolean) aContext.getConfigParameterValue("Postprocessing");
+		Object pp = aContext.getConfigParameterValue("Postprocessing");
 		if (pp != null) {
-			doPostprocessing = ((Boolean) aContext.getConfigParameterValue("Postprocessing")).booleanValue();
+			postprocessingFilter = (String) aContext.getConfigParameterValue("Postprocessing");
 		}
 
 		// this parameter is not mandatory, so first check whether it is there
@@ -210,7 +210,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 
 		// make prediction
 		ArrayList<Unit> units;
-		units = sentenceSplitter.predict(lines, doPostprocessing);
+		units = sentenceSplitter.predict(lines, postprocessingFilter);
 
 		// add to UIMA annotations
 		addAnnotations(aJCas, units, offset);

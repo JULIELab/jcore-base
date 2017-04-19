@@ -18,7 +18,7 @@
       </configurationParameter>
       <configurationParameter>
         <name>Postprocessing</name>
-        <description>Indicates whether postprocessing should be run. Default: no postprocessing</description>
+        <description>Indicates whether postprocessing (and which filter) should be run. Default: no postprocessing</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
