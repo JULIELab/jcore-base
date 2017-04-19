@@ -70,6 +70,10 @@ public class FileReader extends CollectionReader_ImplBase {
 	 * 
 	 */
 	public static final String FILE_NAME_SPLIT_UNDERSCORE = "FileNameSplitUnderscore";
+	/**
+	 * 
+	 */
+	public static final String DIRECTORY_SUBDIRS = "ReadSubDirs";
 
 	private ArrayList<File> files;
 
@@ -87,6 +91,8 @@ public class FileReader extends CollectionReader_ImplBase {
 	private boolean fileNameSplitUnderscore;
 	@ConfigurationParameter(name = ALLOWED_FILE_EXTENSIONS, mandatory = false)
 	private String[] allowedExtensionsArray;
+	@ConfigurationParameter(name = DIRECTORY_SUBDIRS, mandatory = false)
+	private boolean useSubDirs;
 
 	/**
 	 * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -128,28 +134,47 @@ public class FileReader extends CollectionReader_ImplBase {
 				allowedExtensions.add(allowedExtension);
 			}
 		}
+		
+		Boolean subdir = (Boolean) getConfigParameterValue(DIRECTORY_SUBDIRS);
+		if (null == subdir){
+			useSubDirs = false;
+		}
+		else{
+			useSubDirs = subdir;
+		}
+		
+		
 		fileIndex = 0;
 
-		if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
-			throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
-					new Object[] { DIRECTORY_INPUT, this.getMetaData().getName(), inputDirectory.getPath() });
-		}
+//		if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
+//			throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
+//					new Object[] { DIRECTORY_INPUT, this.getMetaData().getName(), inputDirectory.getPath() });
+//		}
 
 		files = new ArrayList<File>();
-		File[] f = inputDirectory.listFiles(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				if (allowedExtensions.isEmpty())
-					return true;
-				String extension = name.substring(name.lastIndexOf('.') + 1);
-				return allowedExtensions.contains(extension);
-			}
-		});
-		for (int i = 0; i < f.length; i++) {
-			if (!f[i].isDirectory()) {
-				files.add(f[i]);
-			}
+//		File[] f = inputDirectory.listFiles(new FilenameFilter() {
+//
+//			@Override
+//			public boolean accept(File dir, String name) {
+//				if (allowedExtensions.isEmpty())
+//					return true;
+//				String extension = name.substring(name.lastIndexOf('.') + 1);
+//				return allowedExtensions.contains(extension);
+//			}
+//		});
+//		for (int i = 0; i < f.length; i++) {
+//			if (!f[i].isDirectory()) {
+//				files.add(f[i]);
+//			}
+//		}
+		
+		try
+		{
+			createFileListByType(inputDirectory, allowedExtensions);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 	}
 
@@ -293,5 +318,24 @@ public class FileReader extends CollectionReader_ImplBase {
 	@Override
 	public Progress[] getProgress() {
 		return new Progress[] { new ProgressImpl(fileIndex, files.size(), Progress.ENTITIES) };
+	}
+
+	private String[] createFileListByType(File inputDirectory, final Set<String> allowedExtensions) throws IOException {
+		String[] path = new File(inputDirectory.getPath()).list();
+
+		for (int i = 0; i < path.length; i++) {
+			File file = new File(inputDirectory.getAbsolutePath() + "/" + path[i]);
+
+			String CurrentExtension = path[i].substring(path[i].lastIndexOf('.') + 1);
+			if (allowedExtensions.contains(CurrentExtension)) {
+				files.add(file);
+			}
+
+			if (useSubDirs && file.isDirectory()) {
+				createFileListByType(file, allowedExtensions);
+			}
+		}
+
+		return path;
 	}
 }

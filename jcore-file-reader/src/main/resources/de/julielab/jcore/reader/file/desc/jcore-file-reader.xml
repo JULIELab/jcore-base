@@ -50,6 +50,12 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+      <configurationParameter>
+        <name>ReadSubDirs</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -72,6 +78,12 @@
       </nameValuePair>
       <nameValuePair>
         <name>FileNameSplitUnderscore</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ReadSubDirs</name>
         <value>
           <boolean>false</boolean>
         </value>
