@@ -16,6 +16,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.Assert;
 
@@ -80,6 +81,7 @@ public class MedAttrAnnotatorTest {
 		setUpIsDone = true;
 	}
 	
+	@Ignore
 	@Test
 	public void testDuration() {
 			String text;
@@ -102,6 +104,7 @@ public class MedAttrAnnotatorTest {
 			}
 	}
 	
+	@Ignore
 	@Test
 	public void testDose() {
 			String text;
@@ -124,6 +127,7 @@ public class MedAttrAnnotatorTest {
 			}
 	}
 	
+	@Ignore
 	@Test
 	public void testFrequency() {
 			String text;
@@ -146,6 +150,7 @@ public class MedAttrAnnotatorTest {
 			}
 	}
 	
+	@Ignore
 	@Test
 	public void testModus() {
 			String text;

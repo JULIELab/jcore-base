@@ -35,9 +35,13 @@ public class EntityWriter {
 
 	public void writeEntity(EntityMention entity) throws IOException {
 		String id = entity.getId();
+		String etype = "Entity";
 		writtenIds.add(id);
 		
-		String line = entity.getId() + "\t" + ((entity.getSpecificType().equals("DRUG")) ? "Medication" : "Entity" ) + " " +
+		if (entity.getSpecificType() != null) {
+			etype = (entity.getSpecificType().equals("DRUG")) ? "Medication" : "Entity";
+		}
+		String line = entity.getId() + "\t" + etype + " " +
 					  entity.getBegin() + " " + entity.getEnd() + "\t" + 
 					  documentText.substring(entity.getBegin(), entity.getEnd()) + "\n";
 		

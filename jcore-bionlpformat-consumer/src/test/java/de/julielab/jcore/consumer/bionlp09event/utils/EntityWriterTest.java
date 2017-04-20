@@ -52,7 +52,7 @@ public class EntityWriterTest {
 	public void testWriteEntity() throws Exception{
 		writer.write(ENTITY_T13);
 		replay(writer);
-		
+
 		entityWriter.writeEntity(entityT13);
 		
 		verify(writer);
