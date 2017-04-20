@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jcore.reader.bionlpformat.main.BioEventReader</implementationName>
+  <processingResourceMetaData>
+    <name>BioNLP 09 Event Reader</name>
+    <description/>
+    <version>2.0.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>inDirectory</name>
+        <description>The path to the directory containing source files.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>bioEventServiceMode</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>proteinFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>abstractFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>bioEventServiceMode</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>inDirectory</name>
+        <value>
+          <string>data/BioNLPinData</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-basic-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-concept-types"/>
+      <import name="de.julielab.jcore.types.jcore-discourse-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Title</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Gene</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EventTrigger</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EventMention</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.EntityMention</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Entity</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.ArgumentMention</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Annotation</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AbstractText</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.CorefRelation</type>
+        <type allAnnotatorFeatures="true">de.julielab.jcore.CorefExpression</type>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration/>
+</collectionReaderDescription>

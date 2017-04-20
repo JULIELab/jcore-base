@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
@@ -44,11 +45,12 @@ import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
 import de.julielab.jsbd.SentenceSplitter;
 import de.julielab.jsbd.Unit;
+import de.julielab.jcore.types.Sentence;
 
 public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 
 	public static final String PARAM_MODEL_FILE = "ModelFilename";
-	public static final String PARAM_DO_POSTPROCESSING = "Postprocessing";
+	public static final String PARAM_POSTPROCESSING = "Postprocessing";
 	@Deprecated
 	public static final String PARAM_PROCESSING_SCOPE = "ProcessingScope";
 
@@ -59,8 +61,8 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SentenceAnnotator.class);
 
 	// activate post processing
-	@ConfigurationParameter(name = PARAM_DO_POSTPROCESSING, mandatory = false, defaultValue = { "false" })
-	private boolean doPostprocessing = false;
+	@ConfigurationParameter(name = PARAM_POSTPROCESSING, mandatory = false, defaultValue = { "false" })
+	private String postprocessingFilter = null;
 
 	@ConfigurationParameter(name = PARAM_PROCESSING_SCOPE, mandatory = false)
 	@Deprecated
@@ -116,9 +118,9 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 		}
 
 		// this parameter is not mandatory, so first check whether it is there
-		Boolean pp = (Boolean) aContext.getConfigParameterValue("Postprocessing");
+		Object pp = aContext.getConfigParameterValue("Postprocessing");
 		if (pp != null) {
-			doPostprocessing = ((Boolean) aContext.getConfigParameterValue("Postprocessing")).booleanValue();
+			postprocessingFilter = (String) aContext.getConfigParameterValue("Postprocessing");
 		}
 
 		// this parameter is not mandatory, so first check whether it is there
@@ -205,9 +207,10 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	private void doSegmentation(JCas aJCas, String text, int offset) throws AnalysisEngineProcessException {
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add(text);
+
 		// make prediction
 		ArrayList<Unit> units;
-		units = sentenceSplitter.predict(lines, doPostprocessing);
+		units = sentenceSplitter.predict(lines, postprocessingFilter);
 
 		// add to UIMA annotations
 		addAnnotations(aJCas, units, offset);
@@ -248,3 +251,4 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 		}
 	}
 }
+

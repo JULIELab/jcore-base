@@ -25,16 +25,16 @@ import org.junit.Test;
 import de.julielab.jcore.ae.biosem.BioSemEventAnnotator;
 import de.julielab.jcore.ae.biosem.DBUtilsProviderImpl;
 import de.julielab.jcore.consumer.bionlp09event.main.EventConsumer;
-import de.julielab.jcore.reader.bionlp09event.main.EventReader;
+import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
 import de.julielab.jcore.types.EventMention;
 
 public class BioSemEventAnnotatorTest {
 	@Test
 	public void testProcess() throws Exception {
 		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
-		CollectionReader bioNlpSTReader = CollectionReaderFactory.createReader(EventReader.class,
-				EventReader.DIRECTORY_PARAM, "src/test/resources/st09-traindoc/",
-				EventReader.BIOEVENT_SERVICE_MODE_PARAM, false);
+		CollectionReader bioNlpSTReader = CollectionReaderFactory.createReader(BioEventReader.class,
+				BioEventReader.DIRECTORY_PARAM, "src/test/resources/st09-traindoc/",
+				BioEventReader.BIOEVENT_SERVICE_MODE_PARAM, false);
 		ExternalResourceDescription dbResourceDescription = ExternalResourceFactory.createExternalResourceDescription(
 				DBUtilsProviderImpl.class,
 				"file:src/test/resources/de/julielab/jcore/ae/biosemannotator.test.properties");

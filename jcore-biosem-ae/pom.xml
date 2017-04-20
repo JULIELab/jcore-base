@@ -29,7 +29,7 @@ http://www.ncbi.nlm.nih.gov/pubmed/22859502</description>
 		</dependency>
 		<dependency>
 			<groupId>de.julielab</groupId>
-			<artifactId>jcore-bionlp09event-reader</artifactId>
+			<artifactId>jcore-bionlpformat-reader</artifactId>
 			<version>${jcore-version}</version>
 			<scope>test</scope>
 		</dependency>

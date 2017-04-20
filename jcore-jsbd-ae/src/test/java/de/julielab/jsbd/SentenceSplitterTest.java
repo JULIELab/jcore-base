@@ -96,7 +96,7 @@ public class SentenceSplitterTest {
 
 		Pipe myPipe = sentenceSplitter.model.getInputPipe();
 		Instance instance = sentenceSplitter.makePredictionData(lines, myPipe);
-		ArrayList<Unit> unitList = sentenceSplitter.predict(instance, true);
+		ArrayList<Unit> unitList = sentenceSplitter.predict(instance, "biomed");
 
 		assertNotNull(unitList);
 		for (Unit unit : unitList) {
