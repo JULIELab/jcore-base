@@ -333,7 +333,7 @@ public class JCoReTools {
 		xmlReader.setContentHandler(handler);
 		xmlReader.parse(source);
 
-		System.setProperty("julielab.xerces.attributebuffersize", null);
+		System.clearProperty("julielab.xerces.attributebuffersize");
 	}
 
 }
