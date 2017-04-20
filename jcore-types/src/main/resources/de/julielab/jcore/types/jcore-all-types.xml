@@ -26,5 +26,6 @@
     <import location="extensions/jcore-semantics-mention-extension-types.xml"/>
     <import location="extensions/jcore-semantics-stemnet-types.xml"/>
     <import location="extensions/jcore-wikipedia-types.xml"/>
+	<import location="extensions/jcore-medical-types.xml"/>
   </imports>
 </typeSystemDescription>

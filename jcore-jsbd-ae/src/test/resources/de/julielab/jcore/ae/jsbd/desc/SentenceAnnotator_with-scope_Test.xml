@@ -19,7 +19,7 @@
       <configurationParameter>
         <name>Postprocessing</name>
         <description>Indicates whether postprocessing should be run. Default: no postprocessing</description>
-        <type>Boolean</type>
+        <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
@@ -41,7 +41,7 @@
       <nameValuePair>
         <name>Postprocessing</name>
         <value>
-          <boolean>true</boolean>
+          <string>biomed</string>
         </value>
       </nameValuePair>
       <nameValuePair>

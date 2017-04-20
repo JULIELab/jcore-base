@@ -1,0 +1,71 @@
+#=== Definitions of medication attribute Java regular expressions ===#
+## '#' is comment symbol
+
+##== Define variables here (must be before regular expression) ==##
+## Format: @variable@::value1|value2|...
+## @variable@ cannot be used in another @variable@
+## First occurred string will be matched in regular expression pattern using OR ("|"). So, use a longer before a shorter string (eg, months|month)	
+
+## Avoid overlaps between dosage_form and strength_unit
+@STRENGTH_UNIT@::µg|mg|g|ml|l|i\\.?\\s?e\\.?\\s?|mikrogramm?s?|microgramm?s?|milligramm?s?|gramm?s?|millilitern?|litern?
+@STRENGTH_UNIT_ADD@::\\/?\\s*(min\\.?|h|d|minuten?|stunden?|tag(?:en)?|die|o2\\s*\\/\\s*min\\.?(?:ute)?)
+@STR_NUM@::(?:ein)?viertel|halbe|dreiviertel|ganze|eine?|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf
+@DOSAGE_FORM@::trpf\\.?|tropfen|tabl?\\.?|tabletten?|amp\\.?|ampullen?|hub|kapseln?|kaps\\.?|kps\\.?|hochdosis
+@DURATION_UNIT@::m(?:in)?\\.?|minuten?|h|stunden?|d|tage?n?|wochen?|w|m|monate?n?|y|jahre?n?
+@DURATION_ADV@::kurzzeitig|lebenslang
+@DURATION_PART@::begonnen|angefangen|unterbrochen|pausiert|beendet|abgeschlossen
+@DURATION_NOUN@::ende|pause|beendigung|pausierung|anfang|unterbrechung
+@MEAL@::(?:frühstück|mittag|abendbrot|mittagessen|abendessen|mahlzeit(?:en)?)s?
+@DAYTIME@::morgens?|mittags?|abends?|nachts?|uhr|h|schlafengehen
+@DAYS@::montags?|mo|dienstags?|di|mittwochs?|mi|donnerstags|do|freitags?|fr|samstags?|sonnabends?|sa|sonntags?|so
+@TIME_UNIT@::stunden?|h|minuten?|mins?
+@NUMBER@::(?:(?:ein)?viertel|halbe|dreiviertel|ganze|eine?|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf|\\u00BD|\\u00BE|\\u00BC|\\d\/\\d|\\d\\.\\d|\\d+)(?:(?: |-)?(?:-|bis)(?: |-)?(?:(?:ein)?viertel|halbe|dreiviertel|ganze|eine?|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf|\\u00BD|\\u00BE|\\u00BC|\\d\/\\d|\\d\\.\\d|\\d+))?
+@DAY_UNIT@::d|tage?n?|w|wochen?|m|monate?n?
+@PER_UNIT@::(?:(?:am|im|(?:in\\sder)|pro)(?:\\s+|-)(?:tag|woche|monat))|nä?chtl(\\.|ich)|tä?gl(\\.|ich)|wö?che?ntl(\\.|ich)|mo?na?tl(\\.|ich)
+@ASNEED@::(?:b(?:ei|\\.))? bedarf|wie (?:ver|vorge|be)schrieben|wie (?:an|vor)?gegeben
+@DECIMAL_NUM@::(?:\\d+(?:,|\\.))?\\d+(?:(?:\\.|,)\\d+)?(?:(?: |-)?(?:-|bis)(?: |-)?(?:\\d+,)?\\d+(?:\\.\\d+)?)?
+@FREQ_LATIN@::tid|bd|bid|bis|qd|qhs|qad|qam|qpm|qds|qh|qid|qqh|od|t\\.i\\.d\\.|b\\.d\\.|b\\.i\\.d.|q\\.d\\.|q\\.h\\.s\\.|q\\.a\\.d\\.|q\\.a\\.m\\.|q\\.p\\.m\\.|q\\.d\\.s\\.|q\\.h\\.|q\\.i\\.d\\.|q\\.q\\.h\\.|o\\.d\\.
+@ROUTE@::nasensonde|stents?|maske|infusion(?:en)?|inhalation|injektion(?:en)?|subkutane?n?|orale?n?|oralisiert|intravenöse?n?|guttae|per os|i\\.?\\s?v\\.?|s\\.?\\s?c\\.?|gtt\\.?
+@DATE_LONG@::(?:[0-3]?[0-9](?:\\.|\\/))?(?:[0-1]?[0-9](?:\\.|\\/))(?:[1-2][0|9][0-9]{2}|[0-9]{2})?
+@DATE_YEAR@::[1-2][0|9][0-9]{2}
+@PRAEP@::für|während|bis(?: zu[r|m]?)?|über|nach|seit|vo[n|m]|ab|a[n|m]
+
+##== Define regular expressions here ==##
+## Format: 	"tag::regex" or "tag%group_number_in_regex::regex"
+## 			- group_number is to catch a specific group in regular expression 
+## 			- if no group number, it will be '0' - ie, catches the whole match string 
+## 			eg) dosage%1::\b(\d+)\s+(each|every|on)\s+(@DAYS@)\b --> only the group(1) (ie, (\d+)) will be caught 
+
+## cf)(\W|$) at the end is to take care of abbreviation with period
+
+route%1::\b(@ROUTE@)(\W|$)
+strength::\b(@DECIMAL_NUM@\/)?(@DECIMAL_NUM@)\s?%
+strength::\b\d+\s?(-|bis)\s?\d+(\s|-)?(@STRENGTH_UNIT@)(\s?@STRENGTH_UNIT_ADD@)?\b
+duration::\b(@PRAEP@)(\s+ca\.?|\s+insgesamt){0,2}\s+(\w+\s+){0,2}((@NUMBER@)(\s*|-)(@DURATION_UNIT@))(\s+am\s+(@DATE_LONG@|@DATE_YEAR@))?\b
+duration::\b(@NUMBER@)(\s*|-)(@DURATION_UNIT@)\b
+duration::\b(x|X)\s?(\d+\s?(@DURATION_UNIT@))\b
+duration::\b((@PRAEP@)(\s+ca\.|\s+einschließlich|\s+etwa|\s+ungefähr)?(?:\s+de[m|n])?\s+)?(@DATE_LONG@|@DATE_YEAR@)(?:(\s+bis\s+|\s*-\s*)(@DATE_LONG@|@DATE_YEAR@))?(\s+@DURATION_PART@)?\b
+duration::\b(bis\s+)?(zu[m|r]\s+)?(@DURATION_NOUN@)(\s+@DATE_YEAR@)?\b
+duration::\b(@DURATION_ADV@|@DURATION_PART@)\b
+dosage::\b(@DECIMAL_NUM@\/)?(@DECIMAL_NUM@)(\s+|-)?(@STRENGTH_UNIT@)(\s?\/?\s?(@STRENGTH_UNIT_ADD@))?\b
+dosage::\b(@STR_NUM@)\s+(bis\s+(@STR_NUM@)\s+)?(@STRENGTH_UNIT@)(\s?\/?\s?(@STRENGTH_UNIT_ADD@))?\b
+dosage::\b(@STR_NUM@|@DECIMAL_NUM@|@NUMBER@)\s*((bis\s+|-\s*)(@STR_NUM@|@DECIMAL_NUM@|@NUMBER@)\s+)?(@DOSAGE_FORM@)(\W|$)
+dosage::\b(@DOSAGE_FORM@)\b
+frequency::\b(@NUMBER@|@STR_NUM@)\s*(mal|x)(\s+(@PER_UNIT@))?(\s+(@ASNEED@))?(\W|$)
+frequency::\b((@ASNEED@)\s+)?((@NUMBER@)\s+(@DURATION_UNIT@)\s+)?(nach|(?:be)?vor|mit|während|zu)\s+(de(?:n|r|m|s)\s+(@MEAL@))(\s+(@ASNEED@))?\b
+frequency::\b((?:@NUMBER@)\s*-\s*(?:@NUMBER@)\s*-\s*(?:@NUMBER@)(?:\s*-\s*@NUMBER@)?)\b
+#frequency::\b(each|every|on)\s+(@DAYS@|@DAYTIME@|week|month)(\s+(@ASNEED@))?\b
+#frequency::\bevery(-|\s+)other(-|\s+)(@DAYS@|@DAYTIME@|week|month)(\s+(@ASNEED@))?\b
+#frequency::\bevery\s+(@NUMBER@)\s+(@TIME_UNIT@|@DAY_UNIT@)(\s+(@ASNEED@))?\b
+#frequency::\b(q|q\.) ?(\d ?(to|-) ?)?\d? ?(@TIME_UNIT@|@DAY_UNIT@|@DAYTIME@)(\s+(@ASNEED@))?\b
+#frequency::\b(once|twice|once or twice)(\s+|-)(@PER_UNIT@)(\s+(@ASNEED@))?\b
+#frequency::\b(once|twice|once or twice)(\s+|-)(@PER_UNIT@)(\s+(in|on|at|during)\s+(the\s)?(@DAYTIME@))?\b
+#frequency%1::\b((@FREQ_LATIN@)(\s+(@ASNEED@))?)(\W|$)
+#frequency%1::\b((@FREQ_LATIN@)(\s+(before|after|following|with|w/|at)\s+(@MEAL@))?)(\W|$)
+#frequency%1::\b((in|on|at|during)\s+(the\s)?(@DAYTIME@)(\s+(@ASNEED@))?)(\W|$)
+#frequency%1::\b/((@DAY_UNIT@)(\s+(@ASNEED@))?)\b
+#frequency%1::\b(@ASNEED@)(\W|$)
+#frequency%3::\b(@NUMBER@)(\s+|-)((@PER_UNIT@)(\s+(@ASNEED@))?)\b 
+#frequency%4::(\b|\d)(@STRENGTH_UNIT@|@ALL_FORM@(s|es)?|@ROUTE@)\s+((@PER_UNIT@)(\s+(@ASNEED@))?)\b
+#time::\b(12|24|84|168)\s+hr\b
+#volume::\b(@DECIMAL_NUM@)\s+(ml)\b

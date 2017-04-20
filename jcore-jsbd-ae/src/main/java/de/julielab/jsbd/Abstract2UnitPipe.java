@@ -52,7 +52,7 @@ class Abstract2UnitPipe extends Pipe {
 
 		// initialize the list of end-of-sentence symbols and abbreviations
 		eosSymbols = new EOSSymbols().getSymbols();
-		abbrList = (new Abbreviations()).getSet();
+		abbrList = (new AbbreviationsBiomed()).getSet();
 	}
 
 	/**
