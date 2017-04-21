@@ -326,8 +326,10 @@ public class FileReader extends CollectionReader_ImplBase {
 		for (int i = 0; i < path.length; i++) {
 			File file = new File(inputDirectory.getAbsolutePath() + "/" + path[i]);
 
+			if ( !useSubDirs && file.isDirectory() ) continue;
+
 			String CurrentExtension = path[i].substring(path[i].lastIndexOf('.') + 1);
-			if (allowedExtensions.contains(CurrentExtension)) {
+			if (allowedExtensions.isEmpty() || allowedExtensions.contains(CurrentExtension)) {
 				files.add(file);
 			}
 
