@@ -2,6 +2,8 @@ package de.julielab.jcore.utility;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -41,7 +43,7 @@ public class JCoReAnnotationIndexTest {
 			return o1.getBegin() - o2.getBegin();
 		});
 		Supplier<TreeSet<Token>> s2 = supplier;
-		JCoReAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReAnnotationIndex<>(g, g, s2,
+		JCoReAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReAnnotationIndex<>(TreeMap::new, g, g, s2,
 				supplier);
 		index.index(cas, Token.type);
 
@@ -80,7 +82,7 @@ public class JCoReAnnotationIndexTest {
 			return o1.getBegin() - o2.getBegin();
 		});
 		Supplier<TreeSet<Token>> s2 = supplier;
-		JCoReAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReAnnotationIndex<>(g, sg, s2,
+		JCoReAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReAnnotationIndex<>(HashMap::new, g, sg, s2,
 				supplier);
 		index.index(cas, Token.type);
 
