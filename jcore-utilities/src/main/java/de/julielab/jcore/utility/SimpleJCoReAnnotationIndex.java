@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 import org.apache.uima.jcas.tcas.Annotation;
 
+import de.julielab.jcore.utility.index.JCoReMapAnnotationIndex;
+
 /**
- * A trivial subclass of {@link JCoReAnnotationIndex} that uses a HashMap index
+ * A trivial subclass of {@link JCoReMapAnnotationIndex} that uses a HashMap index
  * and {@link ArrayList} instances to store annotations in the index and to
  * return search hits.
  * 
@@ -18,7 +20,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  *            The key type used to index the annotations.
  */
 public class SimpleJCoReAnnotationIndex<T extends Annotation, K extends Comparable<K>>
-		extends JCoReAnnotationIndex<T, K, ArrayList<T>, ArrayList<T>> {
+		extends JCoReMapAnnotationIndex<T, K, ArrayList<T>, ArrayList<T>> {
 
 	public SimpleJCoReAnnotationIndex(IndexTermGenerator<K> indexTermGenerator,
 			IndexTermGenerator<K> searchTermGenerator) {

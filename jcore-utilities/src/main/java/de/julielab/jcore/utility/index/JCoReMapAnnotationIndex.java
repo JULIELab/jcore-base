@@ -1,11 +1,9 @@
-package de.julielab.jcore.utility;
+package de.julielab.jcore.utility.index;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.FSIterator;
@@ -35,7 +33,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  *            The collection type (e.g. TreeSet<Sentence>) used to return search
  *            results.
  */
-public class JCoReAnnotationIndex<T extends Annotation, K extends Comparable<K>, C extends Collection<T>, U extends Collection<T>> {
+public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<K>, C extends Collection<T>, U extends Collection<T>> {
 
 	private final Map<K, C> index;
 	private final IndexTermGenerator<K> indexTermGenerator;
@@ -73,7 +71,7 @@ public class JCoReAnnotationIndex<T extends Annotation, K extends Comparable<K>,
 	 *            and the resultCollectionSupplier should create a collection
 	 *            reflects the desired output format.
 	 */
-	public JCoReAnnotationIndex(Supplier<Map<K, C>> indexSupplier, IndexTermGenerator<K> indexTermGenerator,
+	public JCoReMapAnnotationIndex(Supplier<Map<K, C>> indexSupplier, IndexTermGenerator<K> indexTermGenerator,
 			IndexTermGenerator<K> searchTermGenerator, Supplier<C> indexAnnotationCollectionSupplier,
 			Supplier<U> resultCollectionSupplier) {
 		this.indexTermGenerator = indexTermGenerator;
@@ -220,7 +218,7 @@ public class JCoReAnnotationIndex<T extends Annotation, K extends Comparable<K>,
 	 * <p>
 	 * An interface that defines a way to construct index or search terms from
 	 * an annotation <tt>a</tt>. Implementations are given to the constructor of
-	 * {@link JCoReAnnotationIndex} and are then internally used to create index
+	 * {@link JCoReMapAnnotationIndex} and are then internally used to create index
 	 * terms from annotations.
 	 * </p>
 	 * <p>
@@ -239,127 +237,6 @@ public class JCoReAnnotationIndex<T extends Annotation, K extends Comparable<K>,
 	@FunctionalInterface
 	public interface IndexTermGenerator<K extends Comparable<K>> {
 		public Stream<K> generateIndexTerms(Annotation a);
-	}
-
-	/**
-	 * This class offers some commonly used comparators on annotations.
-	 * 
-	 * @author faessler
-	 *
-	 */
-	public static class Comparators {
-		/**
-		 * Compares annotations strictly by their offsets. Two annotations are
-		 * equal if both begin and end offsets are equal. If not, they are
-		 * sorted by begin offset or, when those are equal, be end offset.
-		 * 
-		 * @return The comparison value.
-		 */
-		public <T extends Annotation> Comparator<T> exactOffsetMatchComparator() {
-			return (o1, o2) -> {
-
-				if (o1.getBegin() == o2.getBegin() && o1.getEnd() == o2.getEnd())
-					return 0;
-				if (o1.getBegin() == o2.getBegin())
-					return o1.getEnd() - o2.getEnd();
-				return o1.getBegin() - o2.getBegin();
-			};
-		}
-
-		/**
-		 * Compares annotations for any kind of overlapping. As long as two
-		 * annotations overlap for at least a single position, they are deemed
-		 * "equal" by this comparator. Otherwise, they are sorted by begin
-		 * offset.
-		 * 
-		 * @return 0 if annotations overlap, the start offset difference
-		 *         otherwise.
-		 */
-		public <T extends Annotation> Comparator<T> overlapComparator() {
-			return (o1, o2) -> {
-				int b1 = o1.getBegin();
-				int e1 = o1.getEnd();
-				int b2 = o2.getBegin();
-				int e2 = o2.getEnd();
-
-				if ((b1 <= b2) && (e1 >= e2)) {
-					return 0;
-				} else if ((b1 >= b2) && (e1 <= e2)) {
-					return 0;
-				} else if ((b1 < e2) && (e1 > e2)) {
-					return 0;
-				} else if ((b1 < b2) && (e1 > b2)) {
-					return 0;
-				}
-				return b1 - b2;
-			};
-		}
-	}
-
-	/**
-	 * This class offers a range of predefined term generators (to be used as a
-	 * constructor argument to {@link JCoReAnnotationIndex} that might be useful
-	 * in a range of applications.
-	 * 
-	 * @author faessler
-	 *
-	 */
-	public static class TermGenerators {
-		/**
-		 * Creates strict n-grams of the covered text of an annotation. Returned
-		 * terms are always of length n. Annotations shorter than n will not
-		 * return any terms.
-		 * 
-		 * @param n
-		 *            The n-gram size.
-		 * @return The n-gram index terms.
-		 */
-		public static IndexTermGenerator<String> nGramTermGenerator(int n) {
-			return a -> {
-				String text = a.getCoveredText();
-				return IntStream.range(0, text.length()).mapToObj(i -> {
-					if (i + n <= text.length())
-						return text.substring(i, i + n);
-					return null;
-				}).filter(s -> s != null);
-			};
-		}
-
-		/**
-		 * Generates as a search term the prefix of the covered text of an
-		 * annotation of length <tt>length</tt>. If the annotation is shorter
-		 * than <tt>length</tt> no terms are generated.
-		 * 
-		 * @param length
-		 *            The prefix length.
-		 * @return The annotation text prefix of length <tt>length</tt>
-		 */
-		public static IndexTermGenerator<String> prefixTermGenerator(int length) {
-			return a -> {
-				String text = a.getCoveredText();
-				if (text.length() >= length)
-					return Stream.of(text.substring(0, length));
-				return Stream.empty();
-			};
-		}
-
-		/**
-		 * Generates as a search term the suffix of the covered text of an
-		 * annotation of length <tt>length</tt>. If the annotation is shorter
-		 * than <tt>length</tt> no terms are generated.
-		 * 
-		 * @param length
-		 *            The suffix length.
-		 * @return The annotation text suffix of length <tt>length</tt>
-		 */
-		public static IndexTermGenerator<String> suffixTermGenerator(int length) {
-			return a -> {
-				String text = a.getCoveredText();
-				if (text.length() >= length)
-					return Stream.of(text.substring(text.length() - length, text.length()));
-				return Stream.empty();
-			};
-		}
 	}
 
 }

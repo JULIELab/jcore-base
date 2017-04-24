@@ -1,4 +1,4 @@
-package de.julielab.jcore.utility;
+package de.julielab.jcore.utility.index;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,9 +15,9 @@ import org.junit.Test;
 
 import de.julielab.jcore.types.Entity;
 import de.julielab.jcore.types.Token;
-import de.julielab.jcore.utility.JCoReAnnotationIndex.IndexTermGenerator;
+import de.julielab.jcore.utility.index.JCoReMapAnnotationIndex.IndexTermGenerator;
 
-public class JCoReAnnotationIndexTest {
+public class JCoReMapAnnotationIndexTest {
 	@Test
 	public void testStringIndex() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
@@ -33,7 +33,7 @@ public class JCoReAnnotationIndexTest {
 
 		Entity e1 = new Entity(cas, 7, 13);
 
-		JCoReAnnotationIndex.IndexTermGenerator<String> g = t -> Stream.of(t.getCoveredText());
+		JCoReMapAnnotationIndex.IndexTermGenerator<String> g = t -> Stream.of(t.getCoveredText());
 		Supplier<TreeSet<Token>> supplier = () -> new TreeSet<>((o1, o2) -> {
 
 			if (o1.getBegin() == o2.getBegin() && o1.getEnd() == o2.getEnd())
@@ -43,7 +43,7 @@ public class JCoReAnnotationIndexTest {
 			return o1.getBegin() - o2.getBegin();
 		});
 		Supplier<TreeSet<Token>> s2 = supplier;
-		JCoReAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReAnnotationIndex<>(TreeMap::new, g, g, s2,
+		JCoReMapAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReMapAnnotationIndex<>(TreeMap::new, g, g, s2,
 				supplier);
 		index.index(cas, Token.type);
 
@@ -71,8 +71,8 @@ public class JCoReAnnotationIndexTest {
 
 		Entity e1 = new Entity(cas, 7, 13);
 
-		JCoReAnnotationIndex.IndexTermGenerator<String> g = JCoReAnnotationIndex.TermGenerators.nGramTermGenerator(2);
-		JCoReAnnotationIndex.IndexTermGenerator<String> sg = JCoReAnnotationIndex.TermGenerators.suffixTermGenerator(2);
+		JCoReMapAnnotationIndex.IndexTermGenerator<String> g = TermGenerators.nGramTermGenerator(2);
+		JCoReMapAnnotationIndex.IndexTermGenerator<String> sg = TermGenerators.suffixTermGenerator(2);
 		Supplier<TreeSet<Token>> supplier = () -> new TreeSet<>((o1, o2) -> {
 
 			if (o1.getBegin() == o2.getBegin() && o1.getEnd() == o2.getEnd())
@@ -82,7 +82,7 @@ public class JCoReAnnotationIndexTest {
 			return o1.getBegin() - o2.getBegin();
 		});
 		Supplier<TreeSet<Token>> s2 = supplier;
-		JCoReAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReAnnotationIndex<>(HashMap::new, g, sg, s2,
+		JCoReMapAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReMapAnnotationIndex<>(HashMap::new, g, sg, s2,
 				supplier);
 		index.index(cas, Token.type);
 
@@ -100,14 +100,14 @@ public class JCoReAnnotationIndexTest {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		cas.setDocumentText("1234567");
 		Annotation a = new Annotation(cas, 0, 7);
-		IndexTermGenerator<String> unigramGenerator = JCoReAnnotationIndex.TermGenerators.nGramTermGenerator(1);
+		IndexTermGenerator<String> unigramGenerator = TermGenerators.nGramTermGenerator(1);
 		assertEquals("1 2 3 4 5 6 7", unigramGenerator.generateIndexTerms(a).reduce((s1, s2) -> s1 + " " + s2).get());
 
-		IndexTermGenerator<String> bigramGenerator = JCoReAnnotationIndex.TermGenerators.nGramTermGenerator(2);
+		IndexTermGenerator<String> bigramGenerator = TermGenerators.nGramTermGenerator(2);
 		assertEquals("12 23 34 45 56 67",
 				bigramGenerator.generateIndexTerms(a).reduce((s1, s2) -> s1 + " " + s2).get());
 
-		IndexTermGenerator<String> trigramGenerator = JCoReAnnotationIndex.TermGenerators.nGramTermGenerator(3);
+		IndexTermGenerator<String> trigramGenerator = TermGenerators.nGramTermGenerator(3);
 		assertEquals("123 234 345 456 567",
 				trigramGenerator.generateIndexTerms(a).reduce((s1, s2) -> s1 + " " + s2).get());
 	}

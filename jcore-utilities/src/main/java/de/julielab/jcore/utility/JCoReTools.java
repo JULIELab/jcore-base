@@ -23,6 +23,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -336,4 +338,29 @@ public class JCoReTools {
 		System.clearProperty("julielab.xerces.attributebuffersize");
 	}
 
+	public static <T extends Annotation, R extends Comparable<R>> int binarySearch(List<T> annotations,
+			Function<T, R> comparisonValueFunction, R searchValue) {
+		return binarySearch(annotations, comparisonValueFunction, searchValue, 0, annotations.size()-1);
+	}
+
+	public static <T extends Annotation, R extends Comparable<R>> int binarySearch(List<T> annotations,
+			Function<T, R> comparisonValueFunction, R searchValue, int from, int to) {
+		assert from <= to : "End offset is smaller than begin offset";
+		int lookupIndex = from + (to - from) / 2;
+		T annotation = annotations.get(lookupIndex);
+		R comparisonValue = comparisonValueFunction.apply(annotation);
+		int comparison = searchValue.compareTo(comparisonValue);
+		if (comparison == 0)
+			return lookupIndex;
+		else if (comparison < 0) {
+			if (from > lookupIndex - 1)
+				return -(lookupIndex) - 1;
+			return binarySearch(annotations, comparisonValueFunction, searchValue, from, lookupIndex-1);
+		}
+		else {
+			if (to < lookupIndex + 1)
+				return -(lookupIndex+1) - 1;
+			return binarySearch(annotations, comparisonValueFunction, searchValue, lookupIndex+1, to);
+		}
+	}
 }
