@@ -37,5 +37,5 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 
 ### Reference
-M.F. Porter. 1980. An algorithm for suffix stripping. Program, Vol. 14 No.3, pp. 130-137.
+M.F. Porter. 1980. An algorithm for suffix stripping. Program, Vol. 14 No.3, pp. 130-137.  
 Peter Willett. 2006. The Porter stemming algorithm: then and now. Program, Volume 40 Issue: 3, pages 219-223.
