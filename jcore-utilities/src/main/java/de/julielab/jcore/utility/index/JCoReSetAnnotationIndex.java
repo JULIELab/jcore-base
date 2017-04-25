@@ -79,5 +79,9 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 		
 		return index.subSet(lower, firstInclusive, higher, lastInclusive);
 	}
+	
+	public boolean contains(E a) {
+		return index.contains(a);
+	}
 
 }
