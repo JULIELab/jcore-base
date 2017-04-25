@@ -4,7 +4,6 @@
 **Descriptor Path**:
 ```
 de.julielab.jcore.ae.stanford.lemma.desc.jcore-stanford-lemmatizer
-
 ```
 
 
@@ -39,4 +38,4 @@ de.julielab.jcore.ae.stanford.lemma.desc.jcore-stanford-lemmatizer
 ### Reference
 [1] Some Literature?
 
-```
+
