@@ -6,6 +6,9 @@
 de.julielab.jcore.ae.stanford.lemma.desc.jcore-stanford-lemmatizer
 
 
+```
+
+
 ### Objective
 
 ### Requirements and Dependencies
