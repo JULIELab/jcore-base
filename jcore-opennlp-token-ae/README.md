@@ -1,7 +1,8 @@
 # JCoRe OpenNLP Tokenizer Wrapper
 
 **Descriptor Path**:
-```jcore-base.jcore-opennlp-token-ae.desc.TokenAnnotator
+```
+jcore-base.jcore-opennlp-token-ae.desc.TokenAnnotator
 ```
 
 ### Objective
