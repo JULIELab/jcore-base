@@ -1,9 +1,8 @@
 package de.julielab.jcore.utility.index;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.NavigableSet;
 
 import org.apache.uima.fit.factory.JCasFactory;
@@ -28,16 +27,37 @@ public class JCoReSetAnnotationIndexTest {
 		t3.addToIndexes();
 		t4.addToIndexes();
 
-		// this entity overlaps token1 and token2
-		Entity e1 = new Entity(cas, 3, 10);
 
 		JCoReSetAnnotationIndex<Annotation> index = new JCoReSetAnnotationIndex<>(Comparators.overlapComparator());
 		index.index(cas, Token.type);
 
+		// this entity overlaps token1 and token2
+		Entity e1 = new Entity(cas, 3, 10);
 		NavigableSet<Annotation> search = index.search(e1);
-		System.out.println(search);
 		assertEquals(2, search.size());
 		assertTrue(search.contains(t1));
 		assertTrue(search.contains(t2));
+		
+		// embedded in token3
+		e1 = new Entity(cas, 15, 19);
+		search = index.search(e1);
+		assertEquals(1, search.size());
+		assertTrue(search.contains(t3));
+		
+		// not overlapping any token
+		e1 = new Entity(cas, 30, 35);
+		search = index.search(e1);
+		assertEquals(0, search.size());
+		
+		// not overlapping negatively (just for the sake of the test)
+		e1 = new Entity(cas, -5, -3);
+		search = index.search(e1);
+		assertEquals(0, search.size());
+		
+		
+		// covering all tokens
+		e1 = new Entity(cas, 0, 27);
+		search = index.search(e1);
+		assertEquals(4, search.size());
 	}
 }

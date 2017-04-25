@@ -12,9 +12,25 @@ import org.apache.uima.jcas.tcas.Annotation;
 import de.julielab.jcore.utility.JCoReTools;
 
 /**
+ * <p>
+ * Note: If it can be guaranteed that the index elements do not overlap
+ * themselves, a {@link JCoReSetAnnotationIndex} with an
+ * {@link Comparators#overlapComparator()} should be used instead of this class.
+ * </p>
+ * <p>
  * This index allows to index annotations and then retrieve all those
  * annotations overlapping in any way with another annotation or an arbitrary
- * given pair of begin and end offsets.
+ * given pair of begin and end offsets. Each search has the complexity O(n/2)
+ * where n is the size of the index. This rather bad complexity class stems from
+ * the fast that this class handles the general case of overlapping: Suppose we
+ * search for an annotation a that happens to be in the middle of the document.
+ * The only thing we know is that we can rule out all index elements then begin
+ * after a and those that end before a. All other annotations might still
+ * overlap a. We have to compare to all index elements from the beginning (or
+ * the end) up to the point where we know that we can omit the rest of the index
+ * elements. Those are - in the case a lies in the middle of the index elements
+ * - n/2.
+ * </p>
  * 
  * @author faessler
  *
@@ -114,19 +130,24 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation> {
 		// Depending on which case rules out more annotations - ending before a
 		// or starting after a - we look at the case that leaves us with the
 		// fewest annotations. If those were the annotations that started after
-		// a, then we keep those that start before a ends. Those are then sorted
-		// by end offset. And then we rule those out that end before a starts.
-		// This is our result set. The other case is vice versa.
+		// a, then we keep those that start before a ends. Those are than
+		// filtered for annotations that end before a starts.
 		if (indexBeginAfterEnd < endIndex.size() - indexEndBeforeBegin) {
 			List<E> beginBeforeEnd = new ArrayList<>(beginIndex.subList(0, indexBeginAfterEnd));
-			Collections.sort(beginBeforeEnd, Comparators.endOffsetComparator());
-			int indexEndAfterBegin = insertionPoint(JCoReTools.binarySearch(beginBeforeEnd, an -> an.getEnd(), begin));
-			return beginBeforeEnd.subList(indexEndAfterBegin, beginBeforeEnd.size());
+			ArrayList<E> result = new ArrayList<>();
+			for (E e : beginBeforeEnd) {
+				if (e.getEnd() > begin)
+					result.add(e);
+			}
+			return result;
 		} else {
 			List<E> endAfterBegin = new ArrayList<>(endIndex.subList(indexEndBeforeBegin, endIndex.size()));
-			Collections.sort(endAfterBegin, Comparators.beginOffsetComparator());
-			int indexBeginBeforeEnd = insertionPoint(JCoReTools.binarySearch(endAfterBegin, an -> an.getBegin(), end));
-			return endAfterBegin.subList(0, indexBeginBeforeEnd);
+			ArrayList<E> result = new ArrayList<>();
+			for (E e : endAfterBegin) {
+				if (e.getBegin() < end)
+					result.add(e);
+			}
+			return result;
 		}
 	}
 

@@ -64,14 +64,20 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 
 
 	public NavigableSet<E> search(E a) {
+		boolean firstInclusive = false;
+		boolean lastInclusive = false;
 		E lower = index.lower(a);
-		if (lower == null)
-			lower = index.floor(a);
-		// check if we found some result at all
-		if (index.comparator().compare(lower, a) != 0)
-			return null;
+		if (lower == null) {
+			lower = index.first();
+			firstInclusive = true;
+		}
 		E higher = index.higher(a);
-		return index.subSet(lower, false, higher, false);
+		if (higher == null) {
+			higher = index.last();
+			lastInclusive = true;
+		}
+		
+		return index.subSet(lower, firstInclusive, higher, lastInclusive);
 	}
 
 }

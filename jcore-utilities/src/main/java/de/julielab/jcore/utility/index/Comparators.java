@@ -37,9 +37,7 @@ public class Comparators {
 	 * 
 	 * @return 0 if annotations overlap, the start offset difference
 	 *         otherwise.
-	 *         @deprecated Doesn't work in a set as one would whish
 	 */
-	@Deprecated
 	public static <T extends Annotation> Comparator<T> overlapComparator() {
 		return (o1, o2) -> {
 			int b1 = o1.getBegin();
