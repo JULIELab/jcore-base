@@ -1,8 +1,10 @@
 package de.julielab.jcore.utility.index;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
@@ -90,6 +92,8 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 	}
 
 	public NavigableSet<E> search(E a) {
+		if (index.isEmpty())
+			return Collections.emptyNavigableSet();
 		boolean firstInclusive = false;
 		boolean lastInclusive = false;
 		E lower = index.lower(a);
@@ -108,6 +112,14 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 
 	public boolean contains(E a) {
 		return index.contains(a);
+	}
+
+	public Stream<E> items() {
+		return index.stream();
+	}
+
+	public TreeSet<E> getIndex() {
+		return index;
 	}
 
 }

@@ -1,5 +1,6 @@
 package de.julielab.jcore.utility.index;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,20 +34,18 @@ import org.apache.uima.jcas.tcas.Annotation;
  *            The collection type (e.g. TreeSet<Sentence>) used to return search
  *            results.
  */
-public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<K>, C extends Collection<T>, U extends Collection<T>> {
+public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<K>> {
 
-	private final Map<K, C> index;
+	private final Map<K, Collection<T>> index;
 	private final IndexTermGenerator<K> indexTermGenerator;
 	private final IndexTermGenerator<K> searchTermGenerator;
-	private final Supplier<U> resultCollectionSupplier;
-	private Supplier<C> indexAnnotationCollectionSupplier;
-	private U emptyResultCollection;
+	private Supplier<Collection<T>> indexAnnotationStorageSupplier;
 
 	/**
 	 * This is the full constructor of the map index. It takes parameters for
 	 * virtually every aspect of the index. For a quicker start, you might want
 	 * to refer to one of its subclasses, e.g.
-	 * {@link SimpleJCoReMapAnnotationIndex}. Using the constructor immediately
+	 * {@link JCoReHashMapAnnotationIndex}. Using the constructor immediately
 	 * build the index from the given <tt>jCas</tt> for the annotation type
 	 * given by <tt>type</tt>.
 	 * 
@@ -84,15 +83,12 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	 *            The UIMA type system type, belonging to <tt>jCas</tt>, that
 	 *            should be indexed.
 	 */
-	public JCoReMapAnnotationIndex(Supplier<Map<K, C>> indexMapSupplier, IndexTermGenerator<K> indexTermGenerator,
-			IndexTermGenerator<K> searchTermGenerator, Supplier<C> indexAnnotationCollectionSupplier,
-			Supplier<U> resultCollectionSupplier, JCas jCas, Type type) {
+	public JCoReMapAnnotationIndex(Supplier<Map<K, Collection<T>>> indexMapSupplier,
+			IndexTermGenerator<K> indexTermGenerator, IndexTermGenerator<K> searchTermGenerator, JCas jCas, Type type) {
 		this.indexTermGenerator = indexTermGenerator;
 		this.searchTermGenerator = searchTermGenerator;
-		this.indexAnnotationCollectionSupplier = indexAnnotationCollectionSupplier;
-		this.resultCollectionSupplier = resultCollectionSupplier;
 		this.index = indexMapSupplier.get();
-		emptyResultCollection = resultCollectionSupplier.get();
+		indexAnnotationStorageSupplier = ArrayList::new;
 		if (jCas != null && type != null)
 			index(jCas, type);
 	}
@@ -101,7 +97,7 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	 * This is the full constructor of the map index. It takes parameters for
 	 * virtually every aspect of the index. For a quicker start, you might want
 	 * to refer to one of its subclasses, e.g.
-	 * {@link SimpleJCoReMapAnnotationIndex}. Using the constructor immediately
+	 * {@link JCoReHashMapAnnotationIndex}. Using the constructor immediately
 	 * build the index from the given <tt>jCas</tt> for the annotation type
 	 * given by <tt>type</tt>.
 	 * 
@@ -139,11 +135,9 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	 *            The UIMA type system type, belonging to <tt>jCas</tt>, that
 	 *            should be indexed.
 	 */
-	public JCoReMapAnnotationIndex(Supplier<Map<K, C>> indexMapSupplier, IndexTermGenerator<K> indexTermGenerator,
-			IndexTermGenerator<K> searchTermGenerator, Supplier<C> indexAnnotationCollectionSupplier,
-			Supplier<U> resultCollectionSupplier, JCas jCas, int type) {
-		this(indexMapSupplier, indexTermGenerator, searchTermGenerator, indexAnnotationCollectionSupplier,
-				resultCollectionSupplier, jCas, jCas.getCasType(type));
+	public JCoReMapAnnotationIndex(Supplier<Map<K, Collection<T>>> indexMapSupplier,
+			IndexTermGenerator<K> indexTermGenerator, IndexTermGenerator<K> searchTermGenerator, JCas jCas, int type) {
+		this(indexMapSupplier, indexTermGenerator, searchTermGenerator, jCas, jCas.getCasType(type));
 	}
 
 	/**
@@ -177,11 +171,9 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	 *            and the resultCollectionSupplier should create a collection
 	 *            reflects the desired output format.
 	 */
-	public JCoReMapAnnotationIndex(Supplier<Map<K, C>> indexMapSupplier, IndexTermGenerator<K> indexTermGenerator,
-			IndexTermGenerator<K> searchTermGenerator, Supplier<C> indexAnnotationCollectionSupplier,
-			Supplier<U> resultCollectionSupplier) {
-		this(indexMapSupplier, indexTermGenerator, searchTermGenerator, indexAnnotationCollectionSupplier,
-				resultCollectionSupplier, null, null);
+	public JCoReMapAnnotationIndex(Supplier<Map<K, Collection<T>>> indexMapSupplier,
+			IndexTermGenerator<K> indexTermGenerator, IndexTermGenerator<K> searchTermGenerator) {
+		this(indexMapSupplier, indexTermGenerator, searchTermGenerator, null, null);
 	}
 
 	/**
@@ -230,9 +222,9 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	public void index(T a) {
 		Stream<K> indexTerms = indexTermGenerator.generateIndexTerms(a);
 		indexTerms.forEach(t -> {
-			C annotations = index.get(t);
+			Collection<T> annotations = index.get(t);
 			if (annotations == null) {
-				annotations = indexAnnotationCollectionSupplier.get();
+				annotations = indexAnnotationStorageSupplier.get();
 				index.put(t, annotations);
 			}
 			annotations.add(a);
@@ -256,7 +248,7 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	 *            The annotation that provides search terms to search for.
 	 * @return The found annotations.
 	 */
-	public U search(Annotation a) {
+	public Stream<T> search(Annotation a) {
 		Stream<K> searchTerms = searchTermGenerator.generateIndexTerms(a);
 		return search(searchTerms);
 	}
@@ -268,25 +260,16 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	 *            The terms used to look up annotations.
 	 * @return The found annotations.
 	 */
-	@SuppressWarnings("unchecked")
-	public U search(Stream<K> searchTerms) {
-		U hits = emptyResultCollection;
-		int i = 0;
+	public Stream<T> search(Stream<K> searchTerms) {
+		Stream<T> hits = null;
 		for (Iterator<K> it = searchTerms.iterator(); it.hasNext();) {
 			K t = it.next();
-			C hit = index.get(t);
+			Collection<T> hit = index.get(t);
 			if (hit != null) {
-				if (i == 0 && hit.getClass().equals(emptyResultCollection.getClass())) {
-					hits = (U) hit;
-				} else if (i == 1 && hit.getClass().equals(emptyResultCollection.getClass())) {
-					U previousHits = hits;
-					hits = resultCollectionSupplier.get();
-					hits.addAll(previousHits);
-					hits.addAll(hit);
-				} else {
-					hits.addAll(hit);
-				}
-				++i;
+				if (hits == null)
+					hits = hit.stream();
+				else
+					Stream.concat(hits, hit.stream());
 			}
 		}
 
@@ -300,20 +283,8 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	 *            The term to search for.
 	 * @return The found annotations.
 	 */
-	@SuppressWarnings("unchecked")
-	public U search(K searchTerm) {
-		U hits = emptyResultCollection;
-		C hit = index.get(searchTerm);
-		if (hit != null) {
-			if (hit.getClass().equals(emptyResultCollection.getClass()))
-				hits = (U) hit;
-			else {
-				hits = resultCollectionSupplier.get();
-				hits.addAll(hit);
-			}
-		}
-
-		return hits;
+	public Stream<T> search(K searchTerm) {
+		return index.get(searchTerm).stream();
 	}
 
 	/**
@@ -339,6 +310,26 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	@FunctionalInterface
 	public interface IndexTermGenerator<K extends Comparable<K>> {
 		public Stream<K> generateIndexTerms(Annotation a);
+	}
+
+	public Map<K, Collection<T>> getIndex() {
+		return index;
+	}
+
+	/**
+	 * Allows to change the supplier for the internal storage of annotations which are the values of the index map.
+	 * That might be helpful when one wants to control the storage strategy in
+	 * order to be able to predict the shape of search results.
+	 * 
+	 * @param supplier
+	 *            A supplier that will be used to create the internal storage
+	 *            for indexed annotations (i.e. the values of the index map).
+	 */
+	public void setIndexAnnotationStorageSupplier(Supplier<Collection<T>> supplier) {
+		if (!index.isEmpty())
+			throw new IllegalStateException(
+					"The index must be empty when the supplier for the internal storage of annotations is changed.");
+		this.indexAnnotationStorageSupplier = supplier;
 	}
 
 }

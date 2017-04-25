@@ -3,19 +3,17 @@ package de.julielab.jcore.utility.index;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
 import de.julielab.jcore.types.Entity;
 import de.julielab.jcore.types.Token;
-import de.julielab.jcore.utility.index.JCoReMapAnnotationIndex.IndexTermGenerator;
 
 public class JCoReMapAnnotationIndexTest {
 	@Test
@@ -34,24 +32,14 @@ public class JCoReMapAnnotationIndexTest {
 		Entity e1 = new Entity(cas, 7, 13);
 
 		JCoReMapAnnotationIndex.IndexTermGenerator<String> g = t -> Stream.of(t.getCoveredText());
-		Supplier<TreeSet<Token>> supplier = () -> new TreeSet<>((o1, o2) -> {
-
-			if (o1.getBegin() == o2.getBegin() && o1.getEnd() == o2.getEnd())
-				return 0;
-			if (o1.getBegin() == o2.getBegin())
-				return o1.getEnd() - o2.getEnd();
-			return o1.getBegin() - o2.getBegin();
-		});
-		Supplier<TreeSet<Token>> s2 = supplier;
-		JCoReMapAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReMapAnnotationIndex<>(TreeMap::new, g, g, s2,
-				supplier);
+		JCoReMapAnnotationIndex<Token, String> index = new JCoReMapAnnotationIndex<>(TreeMap::new, g, g);
 		index.index(cas, Token.type);
 
-		TreeSet<Token> search = index.search(e1);
+		Set<Token> search = index.search(e1).collect(Collectors.toSet());
 		assertEquals(1, search.size());
 		assertEquals("token2", search.iterator().next().getCoveredText());
 
-		search = index.search("token4");
+		search = index.search("token4").collect(Collectors.toSet());
 		assertEquals(1, search.size());
 		assertEquals("token4", search.iterator().next().getCoveredText());
 	}
@@ -72,43 +60,17 @@ public class JCoReMapAnnotationIndexTest {
 		Entity e1 = new Entity(cas, 7, 13);
 
 		JCoReMapAnnotationIndex.IndexTermGenerator<String> g = TermGenerators.nGramTermGenerator(2);
-		JCoReMapAnnotationIndex.IndexTermGenerator<String> sg = TermGenerators.suffixTermGenerator(2);
-		Supplier<TreeSet<Token>> supplier = () -> new TreeSet<>((o1, o2) -> {
-
-			if (o1.getBegin() == o2.getBegin() && o1.getEnd() == o2.getEnd())
-				return 0;
-			if (o1.getBegin() == o2.getBegin())
-				return o1.getEnd() - o2.getEnd();
-			return o1.getBegin() - o2.getBegin();
-		});
-		Supplier<TreeSet<Token>> s2 = supplier;
-		JCoReMapAnnotationIndex<Token, String, TreeSet<Token>, TreeSet<Token>> index = new JCoReMapAnnotationIndex<>(HashMap::new, g, sg, s2,
-				supplier);
+		JCoReMapAnnotationIndex.IndexTermGenerator<String> sg = TermGenerators.exactSuffixTermGenerator(2);
+		JCoReMapAnnotationIndex<Token, String> index = new JCoReMapAnnotationIndex<>(HashMap::new, g, sg);
 		index.index(cas, Token.type);
 
-		TreeSet<Token> search = index.search(e1);
+		Set<Token> search = index.search(e1).collect(Collectors.toSet());
 		assertEquals(1, search.size());
 		assertEquals("token2", search.iterator().next().getCoveredText());
 
-		search = index.search("n4");
+		search = index.search("n4").collect(Collectors.toSet());
 		assertEquals(1, search.size());
 		assertEquals("token4", search.iterator().next().getCoveredText());
 	}
 
-	@Test
-	public void testNGramTermGenerator() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
-		cas.setDocumentText("1234567");
-		Annotation a = new Annotation(cas, 0, 7);
-		IndexTermGenerator<String> unigramGenerator = TermGenerators.nGramTermGenerator(1);
-		assertEquals("1 2 3 4 5 6 7", unigramGenerator.generateIndexTerms(a).reduce((s1, s2) -> s1 + " " + s2).get());
-
-		IndexTermGenerator<String> bigramGenerator = TermGenerators.nGramTermGenerator(2);
-		assertEquals("12 23 34 45 56 67",
-				bigramGenerator.generateIndexTerms(a).reduce((s1, s2) -> s1 + " " + s2).get());
-
-		IndexTermGenerator<String> trigramGenerator = TermGenerators.nGramTermGenerator(3);
-		assertEquals("123 234 345 456 567",
-				trigramGenerator.generateIndexTerms(a).reduce((s1, s2) -> s1 + " " + s2).get());
-	}
 }
