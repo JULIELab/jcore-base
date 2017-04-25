@@ -37,4 +37,5 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 
 ### Reference
-Porterstemmertokenizerfactory (Lingpipe API)". Alias-i.com. N.p., 2017. Web. 18 Apr. 2017.
+Peter Willett. 2006. "The Porter stemming algorithm: then and now", Program, Volume 40 Issue: 3,
+pages 219-223.
