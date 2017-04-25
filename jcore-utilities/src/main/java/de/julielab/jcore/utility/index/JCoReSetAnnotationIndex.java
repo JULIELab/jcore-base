@@ -91,9 +91,9 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 		index(annotation);
 	}
 
-	public NavigableSet<E> search(E a) {
+	public Stream<E> search(E a) {
 		if (index.isEmpty())
-			return Collections.emptyNavigableSet();
+			return Stream.empty();
 		boolean firstInclusive = false;
 		boolean lastInclusive = false;
 		E lower = index.lower(a);
@@ -107,7 +107,7 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 			lastInclusive = true;
 		}
 
-		return index.subSet(lower, firstInclusive, higher, lastInclusive);
+		return index.subSet(lower, firstInclusive, higher, lastInclusive).stream();
 	}
 
 	public boolean contains(E a) {

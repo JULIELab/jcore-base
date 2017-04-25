@@ -3,6 +3,7 @@ package de.julielab.jcore.utility.index;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
@@ -116,7 +117,7 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation> {
 	 *            index for.
 	 * @return All annotations in the index overlapping a.
 	 */
-	public <T extends Annotation> List<E> search(T a) {
+	public <T extends Annotation> Stream<E> search(T a) {
 		if (!frozen)
 			throw new IllegalStateException(
 					"This index is not frozen and cannot be used yet. Freeze the index before searching.");
@@ -143,7 +144,7 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation> {
 				if (e.getEnd() > begin)
 					result.add(e);
 			}
-			return result;
+			return result.stream();
 		} else {
 			List<E> endAfterBegin = new ArrayList<>(endIndex.subList(indexEndBeforeBegin, endIndex.size()));
 			ArrayList<E> result = new ArrayList<>();
@@ -151,7 +152,7 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation> {
 				if (e.getBegin() < end)
 					result.add(e);
 			}
-			return result;
+			return result.stream();
 		}
 	}
 

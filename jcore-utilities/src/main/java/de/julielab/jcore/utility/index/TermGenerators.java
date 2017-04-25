@@ -34,6 +34,15 @@ public class TermGenerators {
 		};
 	}
 
+	/**
+	 * Generates all prefixes between length of 1 and length of max(n,
+	 * annotation.getCoveredText().length()) for an annotation a.
+	 * 
+	 * @param n
+	 *            The maximum prefix length.
+	 * @return An index generated generating edge n-grams to a maxmimum length
+	 *         of n.
+	 */
 	public static JCoReMapAnnotationIndex.IndexTermGenerator<String> edgeNGramTermGenerator(int n) {
 		return a -> {
 			String text = a.getCoveredText();
@@ -80,8 +89,7 @@ public class TermGenerators {
 		return a -> {
 			try {
 				String documentText = a.getCAS().getJCas().getDocumentText();
-				return Stream.of(documentText.substring(Math.max(a.getEnd() - maxLength, a.getBegin()),
-						a.getEnd()));
+				return Stream.of(documentText.substring(Math.max(a.getEnd() - maxLength, a.getBegin()), a.getEnd()));
 			} catch (CASException e) {
 				e.printStackTrace();
 			}
