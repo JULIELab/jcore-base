@@ -10,7 +10,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
- * This class is actually more an ordered set than an index. It is backed by a {@link TreeSet}
+ * This class is actually more an ordered set than an index. It is backed by a
+ * {@link TreeSet}
+ * 
  * @author faessler
  *
  * @param <E>
@@ -18,11 +20,20 @@ import org.apache.uima.jcas.tcas.Annotation;
 public class JCoReSetAnnotationIndex<E extends Annotation> {
 	private TreeSet<E> index;
 
-	public JCoReSetAnnotationIndex(Comparator<? super E> comparator) {
+	public JCoReSetAnnotationIndex(Comparator<? super E> comparator, JCas jCas, Type type) {
 		index = new TreeSet<>(comparator);
+		if (jCas != null && type != null)
+			index(jCas, type);
 	}
 
-	
+	public JCoReSetAnnotationIndex(Comparator<? super E> comparator, JCas jCas, int type) {
+		this(comparator, jCas, jCas.getCasType(type));
+	}
+
+	public JCoReSetAnnotationIndex(Comparator<? super E> comparator) {
+		this(comparator, null, null);
+	}
+
 	/**
 	 * Indexes the whole contents of the CAS annotation index of type
 	 * <tt>type</tt>. For each annotation, the {@link #indexTermGenerator} is
@@ -37,7 +48,7 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 	public void index(JCas jCas, int type) {
 		index(jCas, jCas.getCasType(type));
 	}
-	
+
 	/**
 	 * Indexes the whole contents of the CAS annotation index of type
 	 * <tt>type</tt>. For each annotation, the {@link #indexTermGenerator} is
@@ -57,11 +68,26 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 			index((E) annotation);
 		}
 	}
-	
-	private void index(E annotation) {
+
+	/**
+	 * Indexes the given annotation.
+	 * 
+	 * @param annotation
+	 *            The annotation to add to the index.
+	 */
+	public void index(E annotation) {
 		index.add(annotation);
 	}
 
+	/**
+	 * The same as {@link #index(Annotation)}.
+	 * 
+	 * @param annotation
+	 *            The annotation to add to the index.
+	 */
+	public void add(E annotation) {
+		index(annotation);
+	}
 
 	public NavigableSet<E> search(E a) {
 		boolean firstInclusive = false;
@@ -76,10 +102,10 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 			higher = index.last();
 			lastInclusive = true;
 		}
-		
+
 		return index.subSet(lower, firstInclusive, higher, lastInclusive);
 	}
-	
+
 	public boolean contains(E a) {
 		return index.contains(a);
 	}

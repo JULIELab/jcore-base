@@ -48,6 +48,10 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation> {
 	}
 
 	public JCoReOverlapAnnotationIndex(JCas jcas, int type) {
+		this(jcas, jcas.getCasType(type));
+	}
+	
+	public JCoReOverlapAnnotationIndex(JCas jcas, Type type) {
 		this();
 		index(jcas, type);
 		freeze();
