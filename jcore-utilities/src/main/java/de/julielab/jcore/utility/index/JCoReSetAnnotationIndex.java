@@ -92,8 +92,12 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 	}
 
 	public Stream<E> search(E a) {
+		return searchSubset(a).stream();
+	}
+	
+	public NavigableSet<E> searchSubset(E a) {
 		if (index.isEmpty())
-			return Stream.empty();
+			return Collections.emptyNavigableSet();
 		boolean firstInclusive = false;
 		boolean lastInclusive = false;
 		E lower = index.lower(a);
@@ -107,10 +111,23 @@ public class JCoReSetAnnotationIndex<E extends Annotation> {
 			lastInclusive = true;
 		}
 
-		return index.subSet(lower, firstInclusive, higher, lastInclusive).stream();
+		return index.subSet(lower, firstInclusive, higher, lastInclusive);
 	}
 
-	public boolean contains(E a) {
+	public E get(E a) {
+		E result = null;
+		try {
+			result = index.floor(a);
+			return result;
+		} finally {
+			E ceiling = index.ceiling(a);
+			if (ceiling != null && index.comparator().compare(result, ceiling) != 0)
+				throw new IllegalStateException(
+						"There are multiple index items matching " + a + ". Use the search(E) method.");
+		}
+	}
+
+	public boolean contains(Annotation a) {
 		return index.contains(a);
 	}
 

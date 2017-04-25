@@ -69,4 +69,24 @@ public class Comparators {
 			return o1.getEnd() - o2.getEnd();
 		};
 	}
+	
+	public static Comparator<Long> longOverlapComparator() {
+		return (o1, o2) -> {
+			int b1 = (int)(o1 >> 32);
+			int e1 = (int)(o1 >> 0);
+			int b2 = (int)(o2 >> 32);
+			int e2 = (int)(o2 >> 0);
+
+			if ((b1 <= b2) && (e1 >= e2)) {
+				return 0;
+			} else if ((b1 >= b2) && (e1 <= e2)) {
+				return 0;
+			} else if ((b1 < e2) && (e1 > e2)) {
+				return 0;
+			} else if ((b1 < b2) && (e1 > b2)) {
+				return 0;
+			}
+			return b1 - b2;
+		};
+	}
 }

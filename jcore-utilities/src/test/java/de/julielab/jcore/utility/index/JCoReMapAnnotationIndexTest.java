@@ -31,8 +31,8 @@ public class JCoReMapAnnotationIndexTest {
 
 		Entity e1 = new Entity(cas, 7, 13);
 
-		JCoReMapAnnotationIndex.IndexTermGenerator<String> g = t -> Stream.of(t.getCoveredText());
-		JCoReMapAnnotationIndex<Token, String> index = new JCoReMapAnnotationIndex<>(TreeMap::new, g, g);
+		IndexTermGenerator<String> g = t -> Stream.of(t.getCoveredText());
+		JCoReMapAnnotationIndex<String, Token> index = new JCoReMapAnnotationIndex<>(TreeMap::new, g, g);
 		index.index(cas, Token.type);
 
 		Set<Token> search = index.search(e1).collect(Collectors.toSet());
@@ -59,9 +59,9 @@ public class JCoReMapAnnotationIndexTest {
 
 		Entity e1 = new Entity(cas, 7, 13);
 
-		JCoReMapAnnotationIndex.IndexTermGenerator<String> g = TermGenerators.nGramTermGenerator(2);
-		JCoReMapAnnotationIndex.IndexTermGenerator<String> sg = TermGenerators.exactSuffixTermGenerator(2);
-		JCoReMapAnnotationIndex<Token, String> index = new JCoReMapAnnotationIndex<>(HashMap::new, g, sg);
+		IndexTermGenerator<String> g = TermGenerators.nGramTermGenerator(2);
+		IndexTermGenerator<String> sg = TermGenerators.exactSuffixTermGenerator(2);
+		JCoReMapAnnotationIndex<String, Token> index = new JCoReMapAnnotationIndex<>(HashMap::new, g, sg);
 		index.index(cas, Token.type);
 
 		Set<Token> search = index.search(e1).collect(Collectors.toSet());

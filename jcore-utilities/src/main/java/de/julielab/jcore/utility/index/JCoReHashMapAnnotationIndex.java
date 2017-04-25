@@ -16,8 +16,8 @@ import org.apache.uima.jcas.tcas.Annotation;
  * @param <K>
  *            The key type used to index the annotations.
  */
-public class JCoReHashMapAnnotationIndex<T extends Annotation, K extends Comparable<K>>
-		extends JCoReMapAnnotationIndex<T, K> {
+public class JCoReHashMapAnnotationIndex<K extends Comparable<K>, T extends Annotation>
+		extends JCoReMapAnnotationIndex<K, T> {
 
 	public JCoReHashMapAnnotationIndex(IndexTermGenerator<K> indexTermGenerator,
 			IndexTermGenerator<K> searchTermGenerator) {

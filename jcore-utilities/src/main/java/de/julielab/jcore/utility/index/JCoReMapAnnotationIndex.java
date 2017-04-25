@@ -34,12 +34,12 @@ import org.apache.uima.jcas.tcas.Annotation;
  *            The collection type (e.g. TreeSet<Sentence>) used to return search
  *            results.
  */
-public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<K>> {
+public class JCoReMapAnnotationIndex<K extends Comparable<K>, T extends Annotation> {
 
-	private final Map<K, Collection<T>> index;
-	private final IndexTermGenerator<K> indexTermGenerator;
-	private final IndexTermGenerator<K> searchTermGenerator;
-	private Supplier<Collection<T>> indexAnnotationStorageSupplier;
+	protected final Map<K, Collection<T>> index;
+	protected final IndexTermGenerator<K> indexTermGenerator;
+	protected final IndexTermGenerator<K> searchTermGenerator;
+	protected Supplier<Collection<T>> indexAnnotationStorageSupplier;
 
 	/**
 	 * This is the full constructor of the map index. It takes parameters for
@@ -219,16 +219,27 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	 * @param a
 	 *            The annotation to index.
 	 */
+	@SuppressWarnings("unchecked")
 	public void index(T a) {
-		Stream<K> indexTerms = indexTermGenerator.generateIndexTerms(a);
-		indexTerms.forEach(t -> {
-			Collection<T> annotations = index.get(t);
-			if (annotations == null) {
-				annotations = indexAnnotationStorageSupplier.get();
-				index.put(t, annotations);
-			}
-			annotations.add(a);
-		});
+		Object o = indexTermGenerator.generateIndexTerms(a);
+		if (o instanceof Stream) {
+			Stream<K> indexTerms = (Stream<K>) o;
+			indexTerms.forEach(t -> {
+				index(t, a);
+			});
+			indexTerms.close();
+		} else {
+			index((K) o, a);
+		}
+	}
+
+	private void index(K t, T a) {
+		Collection<T> annotations = index.get(t);
+		if (annotations == null) {
+			annotations = indexAnnotationStorageSupplier.get();
+			index.put(t, annotations);
+		}
+		annotations.add(a);
 	}
 
 	/**
@@ -248,9 +259,15 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	 *            The annotation that provides search terms to search for.
 	 * @return The found annotations.
 	 */
+	@SuppressWarnings("unchecked")
 	public Stream<T> search(Annotation a) {
-		Stream<K> searchTerms = searchTermGenerator.generateIndexTerms(a);
-		return search(searchTerms);
+		Object o = searchTermGenerator.generateIndexTerms(a);
+		if (o instanceof Stream) {
+			Stream<K> searchTerms = (Stream<K>) o;
+			return search(searchTerms);
+		} else {
+			return search((K) o);
+		}
 	}
 
 	/**
@@ -287,29 +304,47 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 		return index.get(searchTerm).stream();
 	}
 
-	/**
-	 * <p>
-	 * An interface that defines a way to construct index or search terms from
-	 * an annotation <tt>a</tt>. Implementations are given to the constructor of
-	 * {@link JCoReMapAnnotationIndex} and are then internally used to create
-	 * index terms from annotations.
-	 * </p>
-	 * <p>
-	 * The class {@link TermGenerators} offers a range of predefined term
-	 * generators.
-	 * </p>
-	 * 
-	 * @author faessler
-	 *
-	 * @param <K>
-	 *            The type of index terms that should be created for an
-	 *            annotation, for example a String or an Integer. This type is
-	 *            also used by the index map for the keys, where the generated
-	 *            index terms will go to.
-	 */
-	@FunctionalInterface
-	public interface IndexTermGenerator<K extends Comparable<K>> {
-		public Stream<K> generateIndexTerms(Annotation a);
+	public T get(K searchTerm) {
+		Iterator<T> it = index.get(searchTerm).iterator();
+		try {
+			if (it.hasNext())
+				return it.next();
+			return null;
+		} finally {
+			if (it.hasNext())
+				throw new IllegalStateException("There are multiple values associated with key \"" + searchTerm
+						+ "\". Use the search(K) method.");
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public T get(Annotation a) {
+		Object o = searchTermGenerator.generateIndexTerms(a);
+		if (o instanceof Stream) {
+			T result = null;
+			Stream<K> searchTerms = (Stream<K>) o;
+			try {
+				for (Iterator<K> it = searchTerms.iterator(); it.hasNext();) {
+					K term = it.next();
+					Collection<T> annotations = index.get(term);
+					if (annotations != null && result == null) {
+						Iterator<T> annIt = annotations.iterator();
+						if (annIt.hasNext())
+							result = annIt.next();
+						if (it.hasNext())
+							throw new IllegalStateException("There are multiple values associated with key \"" + term
+									+ "\". Use the search(Annotation) method.");
+					} else if (annotations != null)
+						throw new IllegalStateException("Multiple search terms produced search hits for annotation " + a
+								+ ". Use the search(Annotation) method.");
+				}
+			} finally {
+				searchTerms.close();
+			}
+			return result;
+		} else {
+			return get((K) o);
+		}
 	}
 
 	public Map<K, Collection<T>> getIndex() {
@@ -317,9 +352,10 @@ public class JCoReMapAnnotationIndex<T extends Annotation, K extends Comparable<
 	}
 
 	/**
-	 * Allows to change the supplier for the internal storage of annotations which are the values of the index map.
-	 * That might be helpful when one wants to control the storage strategy in
-	 * order to be able to predict the shape of search results.
+	 * Allows to change the supplier for the internal storage of annotations
+	 * which are the values of the index map. That might be helpful when one
+	 * wants to control the storage strategy in order to be able to predict the
+	 * shape of search results.
 	 * 
 	 * @param supplier
 	 *            A supplier that will be used to create the internal storage

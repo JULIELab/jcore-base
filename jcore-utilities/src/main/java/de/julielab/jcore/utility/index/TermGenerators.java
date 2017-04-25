@@ -5,6 +5,8 @@ import java.util.stream.Stream;
 
 import org.apache.uima.cas.CASException;
 
+import ch.qos.logback.core.net.ssl.SSLConfigurableServerSocket;
+
 /**
  * This class offers a range of predefined term generators (to be used as a
  * constructor argument to {@link JCoReMapAnnotationIndex} that might be useful
@@ -23,7 +25,7 @@ public class TermGenerators {
 	 *            The n-gram size.
 	 * @return The n-gram index terms.
 	 */
-	public static JCoReMapAnnotationIndex.IndexTermGenerator<String> nGramTermGenerator(int n) {
+	public static IndexTermGenerator<String> nGramTermGenerator(int n) {
 		return a -> {
 			String text = a.getCoveredText();
 			return IntStream.range(0, text.length()).mapToObj(i -> {
@@ -43,7 +45,7 @@ public class TermGenerators {
 	 * @return An index generated generating edge n-grams to a maxmimum length
 	 *         of n.
 	 */
-	public static JCoReMapAnnotationIndex.IndexTermGenerator<String> edgeNGramTermGenerator(int n) {
+	public static IndexTermGenerator<String> edgeNGramTermGenerator(int n) {
 		return a -> {
 			String text = a.getCoveredText();
 			return IntStream.range(0, n).mapToObj(i -> {
@@ -63,12 +65,12 @@ public class TermGenerators {
 	 *            The maximum prefix length.
 	 * @return The annotation text prefix of maximum length <tt>length</tt>
 	 */
-	public static JCoReMapAnnotationIndex.IndexTermGenerator<String> prefixTermGenerator(int maxLength) {
+	public static IndexTermGenerator<String> prefixTermGenerator(int maxLength) {
 		return a -> {
 			try {
 				String documentText = a.getCAS().getJCas().getDocumentText();
-				return Stream.of(documentText.substring(a.getBegin(),
-						a.getBegin() + Math.min(maxLength, a.getEnd() - a.getBegin())));
+				return documentText.substring(a.getBegin(),
+						a.getBegin() + Math.min(maxLength, a.getEnd() - a.getBegin()));
 			} catch (CASException e) {
 				e.printStackTrace();
 			}
@@ -85,11 +87,11 @@ public class TermGenerators {
 	 *            The maximum suffix length.
 	 * @return The annotation text suffix of maximum length <tt>length</tt>
 	 */
-	public static JCoReMapAnnotationIndex.IndexTermGenerator<String> suffixTermGenerator(int maxLength) {
+	public static IndexTermGenerator<String> suffixTermGenerator(int maxLength) {
 		return a -> {
 			try {
 				String documentText = a.getCAS().getJCas().getDocumentText();
-				return Stream.of(documentText.substring(Math.max(a.getEnd() - maxLength, a.getBegin()), a.getEnd()));
+				return documentText.substring(Math.max(a.getEnd() - maxLength, a.getBegin()), a.getEnd());
 			} catch (CASException e) {
 				e.printStackTrace();
 			}
@@ -106,12 +108,12 @@ public class TermGenerators {
 	 *            The prefix length.
 	 * @return The annotation text prefix of length <tt>length</tt>
 	 */
-	public static JCoReMapAnnotationIndex.IndexTermGenerator<String> exactPrefixTermGenerator(int length) {
+	public static IndexTermGenerator<String> exactPrefixTermGenerator(int length) {
 		return a -> {
 			try {
 				String documentText = a.getCAS().getJCas().getDocumentText();
 				if (a.getEnd() - a.getBegin() >= length)
-					return Stream.of(documentText.substring(a.getBegin(), a.getBegin() + length));
+					return documentText.substring(a.getBegin(), a.getBegin() + length);
 			} catch (CASException e) {
 				e.printStackTrace();
 			}
@@ -128,16 +130,22 @@ public class TermGenerators {
 	 *            The suffix length.
 	 * @return The annotation text suffix of length <tt>length</tt>
 	 */
-	public static JCoReMapAnnotationIndex.IndexTermGenerator<String> exactSuffixTermGenerator(int length) {
+	public static IndexTermGenerator<String> exactSuffixTermGenerator(int length) {
 		return a -> {
 			try {
 				String documentText = a.getCAS().getJCas().getDocumentText();
 				if (a.getEnd() - a.getBegin() >= length)
-					return Stream.of(documentText.substring(Math.max(a.getEnd() - length, a.getBegin()), a.getEnd()));
+					return documentText.substring(Math.max(a.getEnd() - length, a.getBegin()), a.getEnd());
 			} catch (CASException e) {
 				e.printStackTrace();
 			}
 			return Stream.empty();
+		};
+	}
+	
+	public static IndexTermGenerator<Long> longOffsetTermGenerator() {
+		return a -> {
+			return (long)a.getBegin() << 32 | a.getEnd();
 		};
 	}
 }
