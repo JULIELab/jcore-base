@@ -305,6 +305,41 @@ public class JCoReMapAnnotationIndex<K extends Comparable<K>, T extends Annotati
 		return collection != null ? collection.stream() : Stream.empty();
 	}
 
+	public T getFirst(K searchTerm) {
+		Collection<T> collection = index.get(searchTerm);
+		if (collection == null)
+			return null;
+		Iterator<T> it = collection.iterator();
+		if (it.hasNext())
+			return it.next();
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public T getFirst(Annotation a) {
+		Object o = searchTermGenerator.generateIndexTerms(a);
+		if (o instanceof Stream) {
+			T result = null;
+			Stream<K> searchTerms = (Stream<K>) o;
+			try {
+				for (Iterator<K> it = searchTerms.iterator(); it.hasNext();) {
+					K term = it.next();
+					Collection<T> annotations = index.get(term);
+					Iterator<T> annIt = annotations.iterator();
+					if (annIt.hasNext()) {
+						result = annIt.next();
+						return result;
+					}
+				}
+			} finally {
+				searchTerms.close();
+			}
+			return result;
+		} else {
+			return getFirst((K) o);
+		}
+	}
+
 	public T get(K searchTerm) {
 		Collection<T> collection = index.get(searchTerm);
 		if (collection == null)

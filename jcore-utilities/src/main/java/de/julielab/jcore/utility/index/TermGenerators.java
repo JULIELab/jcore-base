@@ -4,6 +4,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.CASException;
+import org.apache.uima.jcas.tcas.Annotation;
 
 import ch.qos.logback.core.net.ssl.SSLConfigurableServerSocket;
 
@@ -143,9 +144,20 @@ public class TermGenerators {
 		};
 	}
 	
-	public static IndexTermGenerator<Long> longOffsetTermGenerator() {
-		return a -> {
-			return (long)a.getBegin() << 32 | a.getEnd();
-		};
+	public static LongOffsetIndexTermGenerator longOffsetTermGenerator() {
+		return new LongOffsetIndexTermGenerator();
 	}
+	
+	public static class LongOffsetIndexTermGenerator implements IndexTermGenerator<Long> {
+
+		@Override
+		public Object generateIndexTerms(Annotation a) {
+			return forOffsets(a.getBegin(), a.getEnd());
+		}
+		
+		public Long forOffsets(int begin, int end) {
+			return (long)begin << 32 | end;
+		}
+	}
+		
 }
