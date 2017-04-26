@@ -259,6 +259,14 @@ public class JCoReTools {
 			System.out.println("fs[" + i + "] =  " + fs);
 		}
 	}
+	
+	public static void printAnnotationIndex(JCas jCas, int type) {
+		for (Iterator<Annotation> it = jCas.getAnnotationIndex(type).iterator(); it.hasNext();) {
+			Annotation a = it.next();
+			System.out.println("[" + a.getBegin() + "-" + a.getEnd() + "] " + a.getCoveredText());
+		}
+		
+	}
 
 	/**
 	 * <p>

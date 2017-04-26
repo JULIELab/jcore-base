@@ -301,11 +301,15 @@ public class JCoReMapAnnotationIndex<K extends Comparable<K>, T extends Annotati
 	 * @return The found annotations.
 	 */
 	public Stream<T> search(K searchTerm) {
-		return index.get(searchTerm).stream();
+		Collection<T> collection = index.get(searchTerm);
+		return collection != null ? collection.stream() : Stream.empty();
 	}
 
 	public T get(K searchTerm) {
-		Iterator<T> it = index.get(searchTerm).iterator();
+		Collection<T> collection = index.get(searchTerm);
+		if (collection == null)
+			return null;
+		Iterator<T> it = collection.iterator();
 		try {
 			if (it.hasNext())
 				return it.next();
