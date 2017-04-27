@@ -38,7 +38,7 @@ import de.julielab.jcore.utility.JCoReTools;
  * @param <E>
  *            The annotation type the index should be over.
  */
-public class JCoReOverlapAnnotationIndex<E extends Annotation> {
+public class JCoReOverlapAnnotationIndex<E extends Annotation>  implements JCoReAnnotationIndex<E> {
 	private List<E> beginIndex;
 	private List<E> endIndex;
 	private boolean frozen;
@@ -93,7 +93,7 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation> {
 		}
 	}
 
-	private void index(E annotation) {
+	public void index(E annotation) {
 		if (frozen)
 			throw new IllegalStateException("This index is frozen and cannot except further items.");
 		beginIndex.add(annotation);
@@ -121,6 +121,8 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation> {
 		if (!frozen)
 			throw new IllegalStateException(
 					"This index is not frozen and cannot be used yet. Freeze the index before searching.");
+		if (beginIndex.isEmpty())
+			return Stream.empty();
 		// The following is rather difficult to understand from the code. The
 		// idea is the following:
 		// We search annotations overlapping with a. Thus, we can rule out those
@@ -162,5 +164,10 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation> {
 
 	public void melt() {
 		frozen = false;
+	}
+
+	@Override
+	public void add(E a) {
+		index(a);
 	}
 }

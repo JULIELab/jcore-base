@@ -1,5 +1,6 @@
 package de.julielab.jcore.utility.index;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -81,11 +82,10 @@ public class JCoReTreeMapAnnotationIndex<K extends Comparable<K>, T extends Anno
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Stream<T> searchFuzzy(K key) {
 		if (index.isEmpty())
 			return Stream.empty();
-		TreeMap<K, T> index = (TreeMap<K, T>) this.index;
+		TreeMap<K, Collection<T>> index = (TreeMap<K, Collection<T>>) this.index;
 		boolean firstInclusive = false;
 		boolean lastInclusive = false;
 		K lower = index.lowerKey(key);
@@ -99,7 +99,7 @@ public class JCoReTreeMapAnnotationIndex<K extends Comparable<K>, T extends Anno
 			lastInclusive = true;
 		}
 
-		return index.subMap(lower, firstInclusive, higher, lastInclusive).values().stream();
+		return index.subMap(lower, firstInclusive, higher, lastInclusive).values().stream().flatMap(c -> c.stream());
 	}
 
 }

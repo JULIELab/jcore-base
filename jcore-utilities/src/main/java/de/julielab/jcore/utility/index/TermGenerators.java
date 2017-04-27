@@ -6,8 +6,6 @@ import java.util.stream.Stream;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import ch.qos.logback.core.net.ssl.SSLConfigurableServerSocket;
-
 /**
  * This class offers a range of predefined term generators (to be used as a
  * constructor argument to {@link JCoReMapAnnotationIndex} that might be useful

@@ -34,7 +34,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  *            The collection type (e.g. TreeSet<Sentence>) used to return search
  *            results.
  */
-public class JCoReMapAnnotationIndex<K extends Comparable<K>, T extends Annotation> {
+public class JCoReMapAnnotationIndex<K extends Comparable<K>, T extends Annotation>  implements JCoReAnnotationIndex<T> {
 
 	protected final Map<K, Collection<T>> index;
 	protected final IndexTermGenerator<K> indexTermGenerator;
@@ -405,6 +405,11 @@ public class JCoReMapAnnotationIndex<K extends Comparable<K>, T extends Annotati
 			throw new IllegalStateException(
 					"The index must be empty when the supplier for the internal storage of annotations is changed.");
 		this.indexAnnotationStorageSupplier = supplier;
+	}
+
+	@Override
+	public void add(T a) {
+		index(a);
 	}
 
 }

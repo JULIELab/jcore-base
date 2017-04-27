@@ -19,7 +19,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  *
  * @param <E>
  */
-public class JCoReSetAnnotationIndex<E extends Annotation> {
+public class JCoReSetAnnotationIndex<E extends Annotation>  implements JCoReAnnotationIndex<E> {
 	private TreeSet<E> index;
 
 	public JCoReSetAnnotationIndex(Comparator<? super E> comparator, JCas jCas, Type type) {

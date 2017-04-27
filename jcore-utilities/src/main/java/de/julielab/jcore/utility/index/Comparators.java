@@ -58,6 +58,7 @@ public class Comparators {
 		};
 	}
 	
+	
 	public static <T extends Annotation> Comparator<T> beginOffsetComparator() {
 		return (o1, o2) -> {
 			return o1.getBegin() - o2.getBegin();
@@ -69,7 +70,7 @@ public class Comparators {
 			return o1.getEnd() - o2.getEnd();
 		};
 	}
-	
+
 	public static Comparator<Long> longOverlapComparator() {
 		return (o1, o2) -> {
 			int b1 = (int)(o1 >> 32);
