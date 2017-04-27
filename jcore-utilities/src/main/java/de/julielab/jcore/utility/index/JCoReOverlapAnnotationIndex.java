@@ -14,6 +14,11 @@ import de.julielab.jcore.utility.JCoReTools;
 
 /**
  * <p>
+ * Use when: You need to access arbitrary annotations that are in any way
+ * overlapped by an input annotation (warning: these quite loose restrictions
+ * cause a relatively high search complexity, see below).
+ * </p>
+ * <p>
  * Note: If it can be guaranteed that the index elements do not overlap
  * themselves, a {@link JCoReSetAnnotationIndex} with an
  * {@link Comparators#overlapComparator()} should be used instead of this class.
@@ -38,7 +43,7 @@ import de.julielab.jcore.utility.JCoReTools;
  * @param <E>
  *            The annotation type the index should be over.
  */
-public class JCoReOverlapAnnotationIndex<E extends Annotation>  implements JCoReAnnotationIndex<E> {
+public class JCoReOverlapAnnotationIndex<E extends Annotation> implements JCoReAnnotationIndex<E> {
 	private List<E> beginIndex;
 	private List<E> endIndex;
 	private boolean frozen;
@@ -51,7 +56,7 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation>  implements JCoRe
 	public JCoReOverlapAnnotationIndex(JCas jcas, int type) {
 		this(jcas, jcas.getCasType(type));
 	}
-	
+
 	public JCoReOverlapAnnotationIndex(JCas jcas, Type type) {
 		this();
 		index(jcas, type);
@@ -162,6 +167,9 @@ public class JCoReOverlapAnnotationIndex<E extends Annotation>  implements JCoRe
 		return i < 0 ? -(i + 1) : i;
 	}
 
+	/**
+	 * Un-freeze the index to allow new elements to be added.
+	 */
 	public void melt() {
 		frozen = false;
 	}

@@ -13,6 +13,11 @@ import org.apache.uima.jcas.tcas.Annotation;
 import de.julielab.jcore.utility.JCoReTools;
 
 /**
+ * <p>
+ * Use when: You need access to annotations between a given begin- and
+ * end-offset or completely covered by another annotation.
+ * </p>
+ * 
  * Allows efficient access to annotation which are covered completely by a given
  * begin - end offset span.
  * 
@@ -38,9 +43,20 @@ public class JCoReCoverIndex<E extends Annotation> implements JCoReAnnotationInd
 		freeze();
 	}
 
+	/**
+	 * Freeze the index to allow searching it. The index can only be searched if
+	 * frozen.
+	 */
 	public void freeze() {
 		frozen = true;
 		Collections.sort(index, Comparators.beginOffsetComparator());
+	}
+
+	/**
+	 * Un-freeze the index to allow new elements to be added.
+	 */
+	public void melt() {
+		frozen = false;
 	}
 
 	/**

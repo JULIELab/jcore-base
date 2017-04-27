@@ -14,6 +14,11 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * <p>
+ * Use when: You want to access annotations by an some arbitrary key that should
+ * be computed once and then only used for access. Use also when single
+ * annotations might or should be associated with multiple keys.
+ * </p>
+ * <p>
  * This class builds a map from arbitrary keys to collections of annotations.
  * For convenience access, class takes suppliers for the generation of index or
  * search terms as well as suppliers for the actual collection implementations
@@ -34,7 +39,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  *            The collection type (e.g. TreeSet<Sentence>) used to return search
  *            results.
  */
-public class JCoReMapAnnotationIndex<K extends Comparable<K>, T extends Annotation>  implements JCoReAnnotationIndex<T> {
+public class JCoReMapAnnotationIndex<K extends Comparable<K>, T extends Annotation> implements JCoReAnnotationIndex<T> {
 
 	protected final Map<K, Collection<T>> index;
 	protected final IndexTermGenerator<K> indexTermGenerator;

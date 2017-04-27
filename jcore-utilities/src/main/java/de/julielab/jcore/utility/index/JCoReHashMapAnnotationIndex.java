@@ -7,7 +7,12 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
- * A trivial subclass of {@link JCoReMapAnnotationIndex} that uses a HashMap index.
+ * <p>
+ * Use when: You basically just need a map that maps from some key to
+ * annotations associated with that key.
+ * </p>
+ * A trivial subclass of {@link JCoReMapAnnotationIndex} that uses a HashMap
+ * index.
  * 
  * @author faessler
  *
@@ -23,12 +28,12 @@ public class JCoReHashMapAnnotationIndex<K extends Comparable<K>, T extends Anno
 			IndexTermGenerator<K> searchTermGenerator) {
 		super(HashMap::new, indexTermGenerator, searchTermGenerator);
 	}
-	
+
 	public JCoReHashMapAnnotationIndex(IndexTermGenerator<K> indexTermGenerator,
 			IndexTermGenerator<K> searchTermGenerator, JCas jCas, Type type) {
 		super(HashMap::new, indexTermGenerator, searchTermGenerator, jCas, type);
 	}
-	
+
 	public JCoReHashMapAnnotationIndex(IndexTermGenerator<K> indexTermGenerator,
 			IndexTermGenerator<K> searchTermGenerator, JCas jCas, int type) {
 		super(HashMap::new, indexTermGenerator, searchTermGenerator, jCas, type);

@@ -12,14 +12,22 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
+ * <p>
+ * Use when: You just want an ordered set of annotations that can be retrieved
+ * according to an {@link Comparator}. If you want the search keys to be of
+ * another type than the annotations in the index or even keys not being
+ * annotations at all, look at {@link JCoReMapAnnotationIndex} and its
+ * subclasses.
+ * </p>
  * This class is actually more an ordered set than an index. It is backed by a
  * {@link TreeSet}
  * 
  * @author faessler
  *
  * @param <E>
+ *            The annotation type to index.
  */
-public class JCoReSetAnnotationIndex<E extends Annotation>  implements JCoReAnnotationIndex<E> {
+public class JCoReSetAnnotationIndex<E extends Annotation> implements JCoReAnnotationIndex<E> {
 	private TreeSet<E> index;
 
 	public JCoReSetAnnotationIndex(Comparator<? super E> comparator, JCas jCas, Type type) {
@@ -94,7 +102,7 @@ public class JCoReSetAnnotationIndex<E extends Annotation>  implements JCoReAnno
 	public Stream<E> search(E a) {
 		return searchSubset(a).stream();
 	}
-	
+
 	public NavigableSet<E> searchSubset(E a) {
 		if (index.isEmpty())
 			return Collections.emptyNavigableSet();
