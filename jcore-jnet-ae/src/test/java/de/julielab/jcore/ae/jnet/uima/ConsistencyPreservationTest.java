@@ -38,6 +38,7 @@ import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.Disease;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Organism;
 import de.julielab.jcore.types.ResourceEntry;
 import de.julielab.jcore.types.Token;
 import junit.framework.TestCase;
@@ -378,9 +379,10 @@ public class ConsistencyPreservationTest extends TestCase {
 		g3.setSpecificType("type2");
 		g3.addToIndexes();
 		
-		EntityMention e1 = new EntityMention(jCas, 8, 17);
-		e1.setSpecificType("type1");
-		e1.addToIndexes();
+		// We use "organism" because we need a type that is not a ascendant or descendant of Gene since then we would run into subsumption issues
+		Organism o1 = new Organism(jCas, 8, 17);
+		o1.setSpecificType("type1");
+		o1.addToIndexes();
 
 		new Token(jCas, 0, 4).addToIndexes();
 		new Token(jCas, 5, 7).addToIndexes();
@@ -408,7 +410,7 @@ public class ConsistencyPreservationTest extends TestCase {
 		final ConsistencyPreservation consistencyPreservation = new ConsistencyPreservation(modeString);
 		final TreeSet<String> entityMentionClassnames = new TreeSet<String>();
 		entityMentionClassnames.add("de.julielab.jcore.types.Gene");
-		entityMentionClassnames.add("de.julielab.jcore.types.EntityMention");
+		entityMentionClassnames.add("de.julielab.jcore.types.Organism");
 		consistencyPreservation.stringMatch(jCas, entityMentionClassnames, 0);
 
 		FSIterator<org.apache.uima.jcas.tcas.Annotation> it = jCas.getAnnotationIndex(Gene.type).iterator();
@@ -427,15 +429,14 @@ public class ConsistencyPreservationTest extends TestCase {
 		assertEquals(2, count1);
 		assertEquals(2, count2);
 		
-		it = jCas.getAnnotationIndex(EntityMention.type).iterator();
-		int emCount = 0;
+		it = jCas.getAnnotationIndex(Organism.type).iterator();
+		int oCount = 0;
 		while (it.hasNext()) {
-			EntityMention em = (EntityMention) it.next();
-			if (em instanceof Gene)
-				continue;
-			emCount++;
+			@SuppressWarnings("unused")
+			Organism em = (Organism) it.next();
+			oCount++;
 		}
-		assertEquals(2, emCount);
+		assertEquals(2, oCount);
 	}
 
 	/*

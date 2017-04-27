@@ -33,7 +33,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
@@ -97,159 +96,6 @@ public class ConsistencyPreservation {
 		LOGGER.info("ConsistencyPreservation() - modes used in consistency engine: " + activeModes.toString());
 	}
 
-	/**
-	 * this method checks whether the full form (at the position where an
-	 * abbreviation was introduced) of an abbreviation is labeled as an entity.
-	 * If so, and the abbreviation was not labeled as an entity, the entity
-	 * label is copied to the abbreviation. As only the full form where the
-	 * abbreviation was introduced is considered, this method should be run
-	 * AFTER e.g. doStringBased() which makes sure that all Strings get the same
-	 * entity annotation. For modes: _full2acro_ and _acro2full_
-	 * 
-	 * @param aJCas
-	 * @param entityMentionClassnames
-	 *            the entity mention class names to be considered
-	 * @throws AnalysisEngineProcessException
-	 */
-	public void acroMatchOld(final JCas aJCas, final TreeSet<String> entityMentionClassnames)
-			throws AnalysisEngineProcessException {
-
-		// check whether any mode enabled
-		if ((activeModes == null) || (activeModes.size() == 0)
-				|| !(activeModes.contains(ConsistencyPreservation.MODE_FULL2ACRO)
-						|| activeModes.contains(ConsistencyPreservation.MODE_ACRO2FULL)))
-			return;
-
-		// TODO needs to be checked for performance
-
-		// make a set of Annotation objects for entity class names to be
-		// considered
-		// EF, 28.5.2013: Changed from TreeSet to HashSet because our UIMA
-		// annotation types do not implement Comparable which is a prerequisite
-		// for the usage of TreeSet. However, before Java7, there was a bug
-		// allowing the first inserted element not to be Comparable. I hope it
-		// wasn't important in any way that this was a TreeMap.
-		// When using a TreeMap here and running on a Java7 JVM, a
-		// ClassCastException (cannot cast to Comparable) would be risen.
-		Set<EntityMention> entityMentionTypes = null;
-		try {
-			entityMentionTypes = new HashSet<EntityMention>();
-			for (final String className : entityMentionClassnames)
-				entityMentionTypes.add((EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, className));
-		} catch (final SecurityException e1) {
-			e1.printStackTrace();
-		} catch (final IllegalArgumentException e1) {
-			e1.printStackTrace();
-		} catch (final ClassNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (final NoSuchMethodException e1) {
-			e1.printStackTrace();
-		} catch (final InstantiationException e1) {
-			e1.printStackTrace();
-		} catch (final IllegalAccessException e1) {
-			e1.printStackTrace();
-		} catch (final InvocationTargetException e1) {
-			e1.printStackTrace();
-		}
-
-		// loop over these full forms
-		final JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
-		final Iterator<org.apache.uima.jcas.tcas.Annotation> abbrevIter = indexes.getAnnotationIndex(Abbreviation.type)
-				.iterator();
-
-		while (abbrevIter.hasNext()) {
-			final Abbreviation abbrev = (Abbreviation) abbrevIter.next();
-			final Annotation fullFormAnnotation = abbrev.getTextReference();
-			LOGGER.debug("doAbbreviationBased() - checking abbreviation: " + abbrev.getCoveredText());
-
-			final ArrayList<EntityMention> mentionList = new ArrayList<EntityMention>();
-
-			// check whether abbreviation was identified as an entity mention of
-			// interest
-			for (final EntityMention mention : entityMentionTypes)
-				mentionList.addAll(UIMAUtils.getAnnotations(aJCas, abbrev, mention.getClass()));
-			if ((mentionList == null) || (mentionList.size() == 0)) {
-
-				// check whether full2acro mode is enabled
-				if (activeModes.contains(ConsistencyPreservation.MODE_FULL2ACRO)) {
-
-					// if the abbreviation has no entity annotation of the types
-					// of interest
-					LOGGER.debug("doAbbreviationBased() -  no entity mentions of interest found on this abbreviation");
-
-					final ArrayList<EntityMention> fullFormMentionList = new ArrayList<EntityMention>();
-					for (final EntityMention mention : entityMentionTypes)
-						// check whether respective full form does have an
-						// entity annotation of
-						// interest. Important: exact match ! Theses below...
-						fullFormMentionList
-								.addAll(UIMAUtils.getExactAnnotations(aJCas, fullFormAnnotation, mention.getClass()));
-
-					if ((fullFormMentionList != null) && (fullFormMentionList.size() > 0)) {
-						// if we found an entity mention on the full form (exact
-						// match!), add first entity mention
-						// to abbreviation
-						final EntityMention refEntityMention = fullFormMentionList.get(0);
-						LOGGER.debug("doAbbreviationBased() -  but found entity mention on full form");
-						LOGGER.debug("doAbbreviationBased() -  adding annotation to unlabeled entity mention");
-						try {
-							final EntityMention newEntityMention = (EntityMention) JCoReAnnotationTools
-									.getAnnotationByClassName(aJCas, refEntityMention.getClass().getName());
-							newEntityMention.setBegin(abbrev.getBegin());
-							newEntityMention.setEnd(abbrev.getEnd());
-							newEntityMention.setSpecificType(refEntityMention.getSpecificType());
-							newEntityMention.setResourceEntryList(refEntityMention.getResourceEntryList());
-							newEntityMention.setConfidence(refEntityMention.getConfidence());
-							newEntityMention.setTextualRepresentation(abbrev.getCoveredText());
-							newEntityMention.setComponentId(COMPONENT_ID + " Abbrev");
-							newEntityMention.addToIndexes();
-						} catch (final Exception e) {
-							LOGGER.error("doAbbreviationBased() - could not get create new entity mention annotation: "
-									+ refEntityMention.getClass().getName());
-							throw new AnalysisEngineProcessException();
-						}
-					}
-				}
-			} else // check whether acro2full mode is enabled
-			if (activeModes.contains(ConsistencyPreservation.MODE_ACRO2FULL))
-				if (mentionList.size() > 0) {
-					LOGGER.debug("doAbbreviationBased() -  abbreviation has entity mentions of interest");
-					final ArrayList<EntityMention> fullFormMentionList = new ArrayList<EntityMention>();
-					for (final EntityMention mention : entityMentionTypes)
-						// check whether respective full form does have an
-						// entity annotation of
-						// interest
-						fullFormMentionList
-								.addAll(UIMAUtils.getAnnotations(aJCas, fullFormAnnotation, mention.getClass()));
-
-					if ((fullFormMentionList == null) || (fullFormMentionList.size() == 0)) {
-						// if full form has none, add one
-						final EntityMention refEntityMention = mentionList.get(0);
-						LOGGER.debug(
-								"doAbbreviationBased() -  but reference full form has no entity mentions of interest");
-						LOGGER.debug("doAbbreviationBased() -  adding annotation to unlabeled entity mention");
-						try {
-							final EntityMention newEntityMention = (EntityMention) JCoReAnnotationTools
-									.getAnnotationByClassName(aJCas, refEntityMention.getClass().getName());
-							newEntityMention.setBegin(fullFormAnnotation.getBegin());
-							newEntityMention.setEnd(fullFormAnnotation.getEnd());
-							newEntityMention.setSpecificType(refEntityMention.getSpecificType());
-							newEntityMention.setResourceEntryList(refEntityMention.getResourceEntryList());
-							newEntityMention.setConfidence(refEntityMention.getConfidence());
-							newEntityMention.setTextualRepresentation(abbrev.getCoveredText());
-							newEntityMention.setComponentId(COMPONENT_ID + " Abbrev");
-							newEntityMention.addToIndexes();
-						} catch (final Exception e) {
-							LOGGER.error("doAbbreviationBased() - could not get create new entity mention annotation: "
-									+ refEntityMention.getClass().getName());
-							throw new AnalysisEngineProcessException();
-						}
-					}
-
-				}
-
-		}
-	}
 
 	public void acroMatch(final JCas aJCas, final Set<String> entityMentionClassnames)
 			throws AnalysisEngineProcessException {
@@ -366,7 +212,7 @@ public class ConsistencyPreservation {
 	 * consistency presevation based on (exact) string matching. If string was
 	 * annotated once as entity, all other occurrences of this string get the
 	 * same label. For mode: _string_ TODO: more intelligent (voting) mechanism
-	 * needed to avoid false positives TODO: needs to be checked for performance
+	 * needed to avoid false positives
 	 * 
 	 * @param aJCas
 	 * @param entityMentionClassnames
