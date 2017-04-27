@@ -27,7 +27,7 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
-| ModelFile | valid Path to the ModelFiles  | `data/token-en.bin` |
+| ModelFile | valid Path to the ModelFiles  | `data/en-token.bin` |
 
 
 **3. Capabilities**
