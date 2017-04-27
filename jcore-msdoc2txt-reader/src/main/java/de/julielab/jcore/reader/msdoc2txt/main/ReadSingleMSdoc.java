@@ -166,6 +166,7 @@ public class ReadSingleMSdoc {
 		contentTextOnly = characterChecker(contentTextOnly);
 
 		String[] contentSplit = characterChecker(contentTextWithMarkedTables).split("\n");
+		contentTextWithMarkedTables = "";
 
 		boolean foundLabParams = false;
 
@@ -186,7 +187,6 @@ public class ReadSingleMSdoc {
 		contentTextOnly = characterChecker(contentTextOnly);
 		contentTextWithMarkedTables = characterChecker(contentTextWithMarkedTables);
 		contentHTML = characterChecker(contentHTML);
-
 	}
 
 	/**
