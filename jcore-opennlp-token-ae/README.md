@@ -20,23 +20,23 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
-| param1 | UIMA-Type | Boolean | Boolean | Description |
-| param2 | UIMA-Type | Boolean | Boolean | Description |
+| ModelFile | String | yes | no | Path to the ModelFiles |
+
 
 **2. Predefined Settings**
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
-| param1 | Syntax-Description | `Example` |
-| param2 | Syntax-Description | `Example` |
+| ModelFile | valid Path to the ModelFiles  | `data/token-en.bin` |
+
 
 **3. Capabilities**
 
 | Type | Input | Output |
 |------|:-----:|:------:|
-| de.julielab.jcore.types.TYPE |  | `+` |
-| de.julielab.jcore.types.ace.TYPE | `+` |  |
+| de.julielab.jcore.types.Sentence |`+`|  |
+| de.julielab.jcore.types.Token |   |`+`| 
 
 
 ### Reference
-[1] Some Reference
+[1] Gregory Grefenstette, Pasi Tapanainen. 1994. What is a word? What is a sentence? Problems of Tokenization. pp 4-9.
