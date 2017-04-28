@@ -12,7 +12,7 @@ The JULIE Lab Lingpipe Porterstemmer is an UIMA Analysis Engine that annotates t
 ### Requirements and Dependencies
 The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
 
-### Using the CR - Descriptor Configuration
+### Using the AE - Descriptor Configuration
 In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is avaiable under `src/main/resources/de/julielab/jcore/ae/lingpipe/porterstemmer/desc` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
 
 
