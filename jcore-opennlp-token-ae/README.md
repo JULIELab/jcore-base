@@ -1,10 +1,5 @@
 # JCoRe OpenNLP Tokenizer Wrapper
 
-**Descriptor Path**:
-```
-jcore-base.jcore-opennlp-token-ae.desc.TokenAnnotator
-```
-
 ### Objective
 JULIE Lab TokenAnnotator is an UIMA Analysis Engine that annotates tokes in given sentences. This Engine is a Wrapper for the OpenNLP `Tokenizer` and assumes that sentences have been annotated in the CAS. 
 It iterates over sentences and invokes the OpenNLP `Tokenizer` on each sentence. To instantiate the `TokenizerME` (the learnable Tokenizer), a Token Model must be created first.
@@ -13,8 +8,8 @@ It iterates over sentences and invokes the OpenNLP `Tokenizer` on each sentence.
 The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
 
 ### Using the CR - Descriptor Configuration
-In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is avaiable under `jcore-base/jcore-opennlp-token-ae/desc` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
-
+For this component the "Base" version won't be sufficient if you're **not** planning on training your own model but rather want to use them out-of-the-box in a prediction pipeline. As of now this component has a specialized project with pretrained models (available from the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-projects)).
+Please refer to this link for information on how to use them in your pipeline.
 
 **1. Parameters**
 
