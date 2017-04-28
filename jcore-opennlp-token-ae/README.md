@@ -7,7 +7,7 @@ It iterates over sentences and invokes the OpenNLP `Tokenizer` on each sentence.
 ### Requirements and Dependencies
 The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
 
-### Using the CR - Descriptor Configuration
+### Using the AE - Descriptor Configuration
 For this component the "Base" version won't be sufficient if you're **not** planning on training your own model but rather want to use them out-of-the-box in a prediction pipeline. As of now this component has a specialized project with pretrained models (available from the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-projects)).
 Please refer to this link for information on how to use them in your pipeline.
 
