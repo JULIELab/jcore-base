@@ -39,4 +39,4 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 
 ### Reference
-[1] Gregory Grefenstette, Pasi Tapanainen. 1994. What is a word? What is a sentence? Problems of Tokenization. pp 4-9.
+
