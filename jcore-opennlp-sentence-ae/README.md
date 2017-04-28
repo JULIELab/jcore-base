@@ -1,10 +1,5 @@
 # JCoRe OpenNLP Sentence Segmenter Wrapper
 
-**Descriptor Path**:
-```
-TODO - insert descriptor path
-```
-
 ### Objective
 JULIE Lab SentenceAnnotator is an UIMA Analysis Engine that identifies sentences in given texts with respect to user-defined end-of-sentence punctuation markers. This Engine is a Wrapper for the OpenNLP `SentenceDetector`, which can detect that a punctuation character marks the end of a sentence or not. It has a method named `sentPosDetect(String s)`, which returns an array of spans for each detected sentence.
 To instantiate the `SentenceDetectorME`, the Sentence Model must be loaded first.
@@ -12,9 +7,9 @@ To instantiate the `SentenceDetectorME`, the Sentence Model must be loaded first
 ### Requirements and Dependencies
 The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
 
-### Using the CR - Descriptor Configuration
-In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is avaiable under ... but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
-
+### Using the AE - Descriptor Configuration
+For this component the "Base" version won't be sufficient if you're **not** planning on training your own model but rather want to use them out-of-the-box in a prediction pipeline. As of now the present component has a specialized project with pretrained models (available from the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-projects)).
+Please refer to this link for information on how to use them in your pipeline.
 
 **1. Parameters**
 
@@ -39,4 +34,4 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 
 ### Reference
-[1] Gregory Grefenstette, Pasi Tapanainen. 1994. What is a word? What is a sentence? Problems of Tokenization. pp 4-9.
+
