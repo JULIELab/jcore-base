@@ -8,7 +8,7 @@ The input and output of an AE is done via annotation objects. The classes corres
 
 ### Using the AE - Descriptor Configuration
 For this component the "Base" version won't be sufficient if you're **not** planning on training your own model but rather want to use them out-of-the-box in a prediction pipeline. This component has a specialized project with pretrained models (available from the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-projects)).
-Please refer to that website for information on how to use this in your pipeline.
+Please refer to this link for information on how to use this in your pipeline.
 
 **1. Parameters**
 
