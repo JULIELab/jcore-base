@@ -481,7 +481,7 @@ public class ConsistencyPreservation {
 								end = lastToken.getEnd();
 						}
 						EntityMention refEntity;
-						if (end >= 0) {
+						if (end >= 0 && aJCas.getDocumentText().substring(begin, end).equals(entityName)) {
 							refEntity = (EntityMention) aJCas.getCas().createAnnotation(t, begin, end);
 							refEntity.setBegin(begin);
 							refEntity.setEnd(end);

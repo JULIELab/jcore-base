@@ -41,6 +41,8 @@ import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Organism;
 import de.julielab.jcore.types.ResourceEntry;
 import de.julielab.jcore.types.Token;
+import de.julielab.jcore.utility.JCoReTools;
+import de.julielab.jcore.utility.JCoReUtilitiesException;
 import junit.framework.TestCase;
 
 /**
@@ -437,6 +439,43 @@ public class ConsistencyPreservationTest extends TestCase {
 			oCount++;
 		}
 		assertEquals(2, oCount);
+	}
+	
+	public void testStringMatchTokenBoundaries3() throws Exception {
+		// Test for multi token entities with correct prefix but wrong ending
+		String text = "Group 1. And Group B.";
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		jCas.setDocumentText(text);
+
+		Gene g1 = new Gene(jCas, 0, 7);
+		g1.setSpecificType("type1");
+		g1.addToIndexes();
+
+
+		new Token(jCas, 0, 5).addToIndexes();
+		new Token(jCas, 6, 7).addToIndexes();
+		new Token(jCas, 7, 8).addToIndexes();
+		new Token(jCas, 9, 12).addToIndexes();
+		new Token(jCas, 13, 18).addToIndexes();
+		new Token(jCas, 19, 20).addToIndexes();
+		new Token(jCas, 20, 21).addToIndexes();
+		
+		final String modeString = ConsistencyPreservation.MODE_STRING_TOKEN_BOUNDARIES;
+		final ConsistencyPreservation consistencyPreservation = new ConsistencyPreservation(modeString);
+		final TreeSet<String> entityMentionClassnames = new TreeSet<String>();
+		entityMentionClassnames.add("de.julielab.jcore.types.Gene");
+		consistencyPreservation.stringMatch(jCas, entityMentionClassnames, 0);
+
+		FSIterator<org.apache.uima.jcas.tcas.Annotation> it = jCas.getAnnotationIndex(Gene.type).iterator();
+		// there should be nothing more than the original gene
+		int count1 = 0;
+		while (it.hasNext()) {
+			Gene g = (Gene) it.next();
+			if (g.getSpecificType().equals("type1"))
+				count1++;
+		}
+		assertEquals(1, count1);
+		
 	}
 
 	/*
