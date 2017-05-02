@@ -25,7 +25,7 @@ Please refer to this link for information on how to use this in your pipeline.
 |----------------|------------------|---------|
 | modelFile | Valid Path to the model file | `resources/modelsGenia` |
 | posTagSetPreference | A valid String | A valid String |
-| mappings | OpenNLP name; CAS name | `S;S` |
+| mappings | OpenNLP name; CAS name | `ChunkNP;ChunkNP` |
 
 
 **3. Capabilities**
