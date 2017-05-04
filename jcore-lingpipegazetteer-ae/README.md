@@ -9,7 +9,7 @@ de.julielab.jcore.ae.lingpipegazetteer.desc.GazetteerAnnotator (??)
 ### Objective
 The JULIE Lab GazetteerAnnotator is an Analysis Engine, which is a Wrapper for LingPipe's entity tagger based on a dictionary look-up. There are two modes: exact matching (only terms which map exactly to 
 those specified in dictionary are found) and approximate matching (by means of weighted levenstein distance, approximate matches are found). 
-For exact matching, LigPipe provides an implementation of the Aho-Corasick algorithm.
+For exact matching, LingPipe provides an implementation of the Aho-Corasick algorithm.
 
 ### Requirements and Dependencies
 The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
