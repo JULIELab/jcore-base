@@ -193,7 +193,7 @@ public class SentenceSplitter {
 
 		// postprocessing
 		if (filterName != null) {
-			LOGGER.info("Postprocessing with " + filterName);
+			LOGGER.debug("Postprocessing with " + filterName);
 			if ( (filterName.toLowerCase()).equals("biomed") ) {
 				labelList = PostprocessingFilter.Mode.BIOMED.process(labelList, units);
 			}
