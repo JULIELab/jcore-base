@@ -56,5 +56,5 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 ### Reference
 Aho, Alfred V., and Margaret J. Corasick. "Efficient string matching: an aid to bibliographic search." Communications of the ACM 18.6 (1975): 333-340.
-Heeringa, Wilbert Jan. Measuring dialect pronunciation differences using Levenshtein distance. Diss. University Library Groningen][Host], 2004.
+
 
