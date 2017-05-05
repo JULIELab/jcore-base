@@ -21,13 +21,14 @@ Please refer to this link for information on how to use them in your pipeline.
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
 | modelFileName | String | yes | no | Path to the ModelFile |
-| useCompleteDocText | Boolean | no | no | If the whole document text should be tokenized |
+| useCompleteDocText | Boolean | no | no | If the whole document text should be tokenized, default is `false` |
 
 **2. Predefined Settings**
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
 | modelFileName | valid Path to the ModelFiles  | `resources/TokenizerGenia.bin.gz` |
+| useCompleteDocText | Boolean  | `false` |
 
 
 **3. Capabilities**
