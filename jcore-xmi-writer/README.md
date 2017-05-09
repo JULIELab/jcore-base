@@ -40,9 +40,15 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 
 **3. Capabilities**
+
 | Type | Input | Output |
 |------|:-----:|:------:|
 | de.julielab.jcore.types.Header | `+` |  |
+
+| Type | Input | Output |
+|------|:-----:|:------:|
+| de.julielab.jcore.types.Header |  | `+` |
+
 
 
 
