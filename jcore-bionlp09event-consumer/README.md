@@ -7,10 +7,10 @@ de.julielab.jcore.consumer.bionlp09event.desc.jcore-bionlp09event-consumer
 ```
  
 ### Objective
-This consumer takes the annotations specified in **Capabilities** and outputs three seperate text files for each document to `outDirectory`. The text files follow the format of the [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) and are therefore applicable for being evaluated by their eval tool or the online evaluation of the test files.
+This consumer takes the annotations specified in **Capabilities** and outputs three separate text files for each document to the  `outDirectory`. The text files follow the format of the [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) and are therefore applicable for being evaluated by their eval tool or the online evaluation of the test files.
 
 ### Using the Consumer - Descriptor Configuration
- In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is available under `src/main/resources/de/julielab/jcore/consumer/bionlp09event/desc` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
+In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is available under `src/main/resources/de/julielab/jcore/consumer/bionlp09event/desc` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
  
  **1. Parameters**
 
