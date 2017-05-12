@@ -1,0 +1,106 @@
+<MedlineCitation Status="In-Data-Review" Owner="NLM">
+      <PMID Version="1">27805344</PMID>
+      <DateCreated>
+        <Year>2016</Year>
+        <Month>11</Month>
+        <Day>02</Day>
+      </DateCreated>
+      <DateRevised>
+        <Year>2016</Year>
+        <Month>11</Month>
+        <Day>03</Day>
+      </DateRevised>
+      <Article PubModel="Print">
+        <Journal>
+          <ISSN IssnType="Print">0004-5772</ISSN>
+          <JournalIssue CitedMedium="Print">
+            <Volume>64</Volume>
+            <Issue>11</Issue>
+            <PubDate>
+              <Year>2016</Year>
+              <Month>Nov</Month>
+            </PubDate>
+          </JournalIssue>
+          <Title>The Journal of the Association of Physicians of India</Title>
+          <ISOAbbreviation>J Assoc Physicians India</ISOAbbreviation>
+        </Journal>
+        <ArticleTitle>Haemorrhagic Bullae in Skin as First Manifestation of SLE.</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>84-85</MedlinePgn>
+        </Pagination>
+        <Abstract>
+          <AbstractText Label="OBJECTIVE" NlmCategory="OBJECTIVE"/>
+          <AbstractText Label="METHODS" NlmCategory="METHODS"/>
+          <AbstractText Label="RESULTS" NlmCategory="RESULTS"/>
+          <AbstractText Label="CONCLUSIONS" NlmCategory="CONCLUSIONS"/>
+        </Abstract>
+        <AuthorList CompleteYN="Y">
+          <Author ValidYN="Y">
+            <LastName>Sarkar</LastName>
+            <ForeName>Rathindranath</ForeName>
+            <Initials>R</Initials>
+            <AffiliationInfo>
+              <Affiliation>Professor and HOD.</Affiliation>
+            </AffiliationInfo>
+          </Author>
+          <Author ValidYN="Y">
+            <LastName>Paul</LastName>
+            <ForeName>Rudrajit</ForeName>
+            <Initials>R</Initials>
+            <AffiliationInfo>
+              <Affiliation>Assistant Professor.</Affiliation>
+            </AffiliationInfo>
+          </Author>
+          <Author ValidYN="Y">
+            <LastName>Aziz</LastName>
+            <ForeName>Sahid</ForeName>
+            <Initials>S</Initials>
+            <AffiliationInfo>
+              <Affiliation>Postgraduate Trainee.</Affiliation>
+            </AffiliationInfo>
+          </Author>
+          <Author ValidYN="Y">
+            <LastName>Das</LastName>
+            <ForeName>Indrani</ForeName>
+            <Initials>I</Initials>
+            <AffiliationInfo>
+              <Affiliation>Assistant Professor, Dept. of Medicine, Medical College, Kolkata, West Bengal.</Affiliation>
+            </AffiliationInfo>
+          </Author>
+          <Author ValidYN="Y">
+            <LastName>Mondal</LastName>
+            <ForeName>Jayati</ForeName>
+            <Initials>J</Initials>
+            <AffiliationInfo>
+              <Affiliation>RMO-cum-Clinical Tutor, Chittaranjan Seva Sadan, Kolkata, West Bengal.</Affiliation>
+            </AffiliationInfo>
+          </Author>
+          <Author ValidYN="Y">
+            <LastName>Roy</LastName>
+            <ForeName>Krishnendu</ForeName>
+            <Initials>K</Initials>
+            <AffiliationInfo>
+              <Affiliation>Professor, Dept. of Medicine, Medical College, Kolkata, West Bengal.</Affiliation>
+            </AffiliationInfo>
+          </Author>
+          <Author ValidYN="Y">
+            <LastName>Kargupta</LastName>
+            <ForeName>Arindam</ForeName>
+            <Initials>A</Initials>
+            <AffiliationInfo>
+              <Affiliation>Postgraduate Trainee.</Affiliation>
+            </AffiliationInfo>
+          </Author>
+        </AuthorList>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="">Case Reports</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>India</Country>
+        <MedlineTA>J Assoc Physicians India</MedlineTA>
+        <NlmUniqueID>7505585</NlmUniqueID>
+        <ISSNLinking>0004-5772</ISSNLinking>
+      </MedlineJournalInfo>
+    </MedlineCitation>

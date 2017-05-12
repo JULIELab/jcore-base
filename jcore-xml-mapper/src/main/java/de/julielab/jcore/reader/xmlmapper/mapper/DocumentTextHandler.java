@@ -17,7 +17,6 @@ package de.julielab.jcore.reader.xmlmapper.mapper;
 import static org.fest.reflect.core.Reflection.constructor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,8 +31,6 @@ import com.ximpleware.VTDException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
-
-import de.julielab.jcore.reader.xmlmapper.typeParser.TypeParser;
 
 /**
  * Handels to parse the DocumentText

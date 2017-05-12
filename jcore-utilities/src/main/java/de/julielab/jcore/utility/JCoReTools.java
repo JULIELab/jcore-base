@@ -18,25 +18,31 @@
 package de.julielab.jcore.utility;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
 
-import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.cas.text.AnnotationIndex;
-import org.apache.uima.collection.CollectionReader;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import de.julielab.jcore.types.Header;
 
@@ -58,7 +64,8 @@ public class JCoReTools {
 	public static final int DEFAULT_ADDITION_SIZE = 10;
 
 	/**
-	 * Adds an Element of type FeatrueStructrue to a FSArray and resizes the FSArray if necessary
+	 * Adds an Element of type FeatrueStructrue to a FSArray and resizes the
+	 * FSArray if necessary
 	 * 
 	 * @param array
 	 *            The array to what the feature structure should be added
@@ -71,8 +78,9 @@ public class JCoReTools {
 	}
 
 	/**
-	 * Adds an Element of type FeatrueStructrue to a FSArray and resizes the FSArray if necessary, adding additionSize
-	 * new elements to the array (only if necessary!)
+	 * Adds an Element of type FeatrueStructrue to a FSArray and resizes the
+	 * FSArray if necessary, adding additionSize new elements to the array (only
+	 * if necessary!)
 	 * 
 	 * @param array
 	 *            The array to what the feature structure should be added
@@ -111,7 +119,8 @@ public class JCoReTools {
 				e.printStackTrace();
 			}
 		} else {
-			log.trace("There is still room left over in the passed array, new element is appended after the last non-null element.");
+			log.trace(
+					"There is still room left over in the passed array, new element is appended after the last non-null element.");
 		}
 
 		while ((lastElementIndex > 0) && (outputArray.get(lastElementIndex - 1) == null)) {
@@ -124,7 +133,8 @@ public class JCoReTools {
 	}
 
 	/**
-	 * Adds all elements in <tt>newElements</tt> to <tt>array</tt> resizes the FSArray if necessary.
+	 * Adds all elements in <tt>newElements</tt> to <tt>array</tt> resizes the
+	 * FSArray if necessary.
 	 * 
 	 * @param inputArray
 	 *            The array to what the feature structure should be added
@@ -133,14 +143,14 @@ public class JCoReTools {
 	 * @return The array, that was added to
 	 * @throws CASException
 	 */
-	public static FSArray addToFSArray(final FSArray inputArray, final Collection<? extends FeatureStructure> newElements) {
+	public static FSArray addToFSArray(final FSArray inputArray,
+			final Collection<? extends FeatureStructure> newElements) {
 
 		FSArray array = inputArray;
 
-
 		if (null == newElements || newElements.size() == 0)
 			return array;
-		
+
 		if (null == array) {
 			try {
 				array = new FSArray(newElements.iterator().next().getCAS().getJCas(), 1);
@@ -152,14 +162,16 @@ public class JCoReTools {
 		try {
 			int lastElementIndex = array.size() - 1;
 
-			// Search for the last non-null element. If none is found, lastElementIndex will actually be -1 after the
+			// Search for the last non-null element. If none is found,
+			// lastElementIndex will actually be -1 after the
 			// loop.
 			while (lastElementIndex >= 0 && array.get(lastElementIndex) == null) {
 				lastElementIndex--;
 			}
 
 			FSArray ret = null;
-			// Is there enough space in the existing array to put all new elements in it?
+			// Is there enough space in the existing array to put all new
+			// elements in it?
 			int requiredSpace = lastElementIndex + 1 + newElements.size();
 			if (requiredSpace <= array.size()) {
 				log.trace(
@@ -169,7 +181,8 @@ public class JCoReTools {
 			} else {
 				log.trace("Passed array has size {} but there are {} elements overall, thus a new FSArray is created.",
 						array.size(), requiredSpace);
-				// There is not enough space for all new elements in the given FSArray so create a new one
+				// There is not enough space for all new elements in the given
+				// FSArray so create a new one
 				ret = new FSArray(array.getCAS().getJCas(), requiredSpace);
 				for (int i = 0; i <= lastElementIndex; i++)
 					ret.set(i, array.get(i));
@@ -246,20 +259,29 @@ public class JCoReTools {
 			System.out.println("fs[" + i + "] =  " + fs);
 		}
 	}
+	
+	public static void printAnnotationIndex(JCas jCas, int type) {
+		for (Iterator<Annotation> it = jCas.getAnnotationIndex(type).iterator(); it.hasNext();) {
+			Annotation a = it.next();
+			System.out.println("[" + a.getBegin() + "-" + a.getEnd() + "] " + a.getCoveredText());
+		}
+		
+	}
 
 	/**
 	 * <p>
-	 * Returns the PubMed ID of the document in the <code>JCas</code>.
+	 * Returns the document ID of the document in the <code>JCas</code>.
 	 * </p>
 	 * <p>
-	 * This can only be done when an annotation of type <code>de.julielab.jcore.types.pubmed.Header</code> is present
-	 * and its feature <code>docId</code> has the appropriate value.
+	 * This can only be done when an annotation of type
+	 * <code>de.julielab.jcore.types.Header</code> (or a subtype) is present and
+	 * its feature <code>docId</code> is set.
 	 * </p>
 	 * 
 	 * @param aJCas
-	 * @return The value of of {@link de.julielab.jcore.types.pubmed.Header#getDocId()}
+	 * @return The value of of {@link de.julielab.jcore.types.Header#getDocId()}
 	 */
-	public static String getPubmedId(JCas aJCas) {
+	public static String getDocId(JCas aJCas) {
 		AnnotationIndex<Annotation> headerIndex = aJCas.getAnnotationIndex(Header.type);
 		FSIterator<Annotation> it = headerIndex.iterator();
 		if (!it.hasNext())
@@ -269,20 +291,84 @@ public class JCoReTools {
 		return pubmedId;
 	}
 
-	//TODO description
-	public static CollectionReader getCollectionReader(String readerDescriptor) {
-		CollectionReaderDescription readerDescription;
-		CollectionReader collectionReader = null;
-		try {
-			readerDescription = (CollectionReaderDescription) UIMAFramework
-					.getXMLParser().parseCollectionReaderDescription(new XMLInputSource(readerDescriptor));
-			collectionReader = UIMAFramework.produceCollectionReader(readerDescription);
-		} catch (InvalidXMLException | IOException e) {
-			e.printStackTrace();
-		} catch (ResourceInitializationException e) {
-			e.printStackTrace();
-		}
-		return collectionReader;
+	/**
+	 * <p>
+	 * Deserializes an UTF-8 encoded XMI input stream into the given CAS.
+	 * </p>
+	 * <p>
+	 * This method has largely been taken directly from
+	 * {@link XmiCasDeserializer#deserialize(InputStream, CAS)}. However, the
+	 * given input stream is explicitly transformed into an UTF-8 encoded
+	 * {@link InputSource} for the XML parsing process. This is necessary
+	 * because the Xerces internal UTF-8 handling is faulty with Unicode
+	 * characters above the BMP (see
+	 * https://issues.apache.org/jira/browse/XERCESJ-1257). Thus, this method
+	 * explicitly uses UTF-8 encoding. For other encodings, use the default UIMA
+	 * deserialization mechanism.
+	 * </p>
+	 * <p>
+	 * The {@code attributeBufferSize} parameter only has an effect if the
+	 * julielab Xerces version is on the classpath. Then, the XMLStringBuffer
+	 * initial size is set via a system property. This can be very helpful for
+	 * documents because UIMA stores the document text as an attribute to the
+	 * sofa element in the XMI format. Such long attribute values are not
+	 * expected by Xerces which initializes its attribute buffers with a size of
+	 * 32 chars. Then, reading a large sofa (= document text) string results in
+	 * a very long process of resizing the buffer array and copying the old
+	 * buffer contents into the larger array. By setting a larger size from the
+	 * beginning, a lot of time can be saved.
+	 * </p>
+	 * 
+	 * @see https://issues.apache.org/jira/browse/XERCESJ-1257
+	 * @param cas
+	 *            The CAS to populate.
+	 * @param is
+	 *            The XMI data stream to populate the CAS with.
+	 * @param attributeBufferSize
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	public static void deserializeXmi(CAS cas, InputStream is, int attributeBufferSize)
+			throws SAXException, IOException {
+		Reader reader = new InputStreamReader(is, "UTF-8");
+		InputSource source = new InputSource(reader);
+		source.setEncoding("UTF-8");
+
+		if (attributeBufferSize > 0)
+			System.setProperty("julielab.xerces.attributebuffersize", String.valueOf(attributeBufferSize));
+
+		XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+		XmiCasDeserializer deser = new XmiCasDeserializer(cas.getTypeSystem());
+		ContentHandler handler = deser.getXmiCasHandler(cas, false, null, -1);
+		xmlReader.setContentHandler(handler);
+		xmlReader.parse(source);
+
+		System.clearProperty("julielab.xerces.attributebuffersize");
 	}
 
+	public static <T extends Annotation, R extends Comparable<R>> int binarySearch(List<T> annotations,
+			Function<T, R> comparisonValueFunction, R searchValue) {
+		return binarySearch(annotations, comparisonValueFunction, searchValue, 0, annotations.size()-1);
+	}
+
+	public static <T extends Annotation, R extends Comparable<R>> int binarySearch(List<T> annotations,
+			Function<T, R> comparisonValueFunction, R searchValue, int from, int to) {
+		assert from <= to : "End offset is smaller than begin offset";
+		int lookupIndex = from + (to - from) / 2;
+		T annotation = annotations.get(lookupIndex);
+		R comparisonValue = comparisonValueFunction.apply(annotation);
+		int comparison = searchValue.compareTo(comparisonValue);
+		if (comparison == 0)
+			return lookupIndex;
+		else if (comparison < 0) {
+			if (from > lookupIndex - 1)
+				return -(lookupIndex) - 1;
+			return binarySearch(annotations, comparisonValueFunction, searchValue, from, lookupIndex-1);
+		}
+		else {
+			if (to < lookupIndex + 1)
+				return -(lookupIndex+1) - 1;
+			return binarySearch(annotations, comparisonValueFunction, searchValue, lookupIndex+1, to);
+		}
+	}
 }

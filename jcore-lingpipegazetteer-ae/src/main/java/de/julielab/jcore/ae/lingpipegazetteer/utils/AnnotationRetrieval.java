@@ -173,6 +173,7 @@ public class AnnotationRetrieval {
 	 * 
 	 * @return the first annotation in the index that has the same span as windowAnnotation
 	 */
+	@Deprecated
 	public static <T extends Annotation> T getMatchingAnnotation(JCas jCas, Annotation windowAnnotation, Class<T> cls) {
 		if (cls.isInstance(windowAnnotation))
 			return cls.cast(windowAnnotation);

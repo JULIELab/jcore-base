@@ -1,9 +1,9 @@
 /** 
  * NegativeList.java
  * 
- * Copyright (c) 2015, JULIE Lab.
+ * Copyright (c) 2008, JULIE Lab. 
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the Common Public License v1.0 
  *
  * Author: tomanek
  * 
@@ -17,8 +17,10 @@ package de.julielab.jcore.ae.jnet.uima;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.TreeSet;
 
 public class NegativeList {
@@ -28,7 +30,11 @@ public class NegativeList {
 	private TreeSet<String> negativeList;
 
 	public NegativeList(final File myFile) throws IOException {
-		init(myFile);
+		this(new FileInputStream(myFile));
+	}
+	
+	public NegativeList(final InputStream is) throws IOException {
+		init(is);
 	}
 
 	/**
@@ -36,14 +42,13 @@ public class NegativeList {
 	 * 
 	 * @param myFile
 	 */
-	private void init(final File myFile) throws IOException {
+	private void init(final InputStream is) throws IOException {
 		negativeList = new TreeSet<String>();
 		BufferedReader br;
-		br = new BufferedReader(new FileReader(myFile));
+		br = new BufferedReader(new InputStreamReader(is));
 		String line = "";
 		while ((line = br.readLine()) != null)
 			negativeList.add(line);
-		br.close();
 	}
 
 	/**

@@ -1,0 +1,53 @@
+package de.julielab.jcore.utility.index;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.jcas.JCas;
+import org.junit.Test;
+
+import de.julielab.jcore.types.Token;
+
+public class JCoReOverlapAnnotationIndexTest {
+	@Test
+	public void testOverlapAnnotationIndex() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		Token t1 = new Token(jcas, 0, 3);
+		Token t2 = new Token(jcas, 2, 8);
+		Token t3 = new Token(jcas, 7, 10);
+		Token t4 = new Token(jcas, 11, 18);
+		Token t5 = new Token(jcas, 15, 21);
+		Token t6 = new Token(jcas, 22, 27);
+		t1.addToIndexes();
+		t2.addToIndexes();
+		t3.addToIndexes();
+		t4.addToIndexes();
+		t5.addToIndexes();
+		t6.addToIndexes();
+
+		JCoReOverlapAnnotationIndex<Token> index = new JCoReOverlapAnnotationIndex<>(jcas, Token.type);
+		List<Token> result = index.search(t2).collect(Collectors.toList());
+		assertTrue(result.contains(t1));
+		assertTrue(result.contains(t2));
+		assertTrue(result.contains(t3));
+		assertEquals(3, result.size());
+		
+		result = index.search(t1).collect(Collectors.toList());
+		assertTrue(result.contains(t1));
+		assertTrue(result.contains(t2));
+		assertEquals(2, result.size());
+		
+		result = index.search(t4).collect(Collectors.toList());
+		assertTrue(result.contains(t4));
+		assertTrue(result.contains(t5));
+		assertEquals(2, result.size());
+		
+		result = index.search(t6).collect(Collectors.toList());
+		assertTrue(result.contains(t6));
+		assertEquals(1, result.size());
+	}
+}
