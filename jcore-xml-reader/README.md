@@ -36,5 +36,5 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 | Type | Input | Output |
 |------|:-----:|:------:|
-|- | - | - |
+|de.julielab.jcore.types.Header |  | `+` |
 
