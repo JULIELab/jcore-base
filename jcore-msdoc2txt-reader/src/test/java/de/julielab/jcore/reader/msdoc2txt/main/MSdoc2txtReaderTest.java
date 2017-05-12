@@ -16,17 +16,15 @@
 
 package de.julielab.jcore.reader.msdoc2txt.main;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
@@ -37,67 +35,87 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//import org.springframework.aop.ThrowsAdvice;
 
-public class MSdoc2txtReaderTest
-{
+public class MSdoc2txtReaderTest {
 	/**
 	 * Path to the FileReader descriptor
 	 */
 	private static final String DESC_FILE_READER = "src/main/resources/de/julielab/jcore/reader/msdoc2txt/desc/jcore-msdoc2txt-reader.xml";
-	private static final String DIRECTORY_INPUT = "data/files";
 
+	/**
+	 * CAS for UIMA
+	 */
 	private static CAS cas;
-	
+
+	/**
+	 * Names of dummies
+	 */
+	private static final String DIRECTORY_INPUT = "data/files/input";	// do not delete data/files directory, it is used by 'DESC_FILE_READER'
+
+	private static final String DIR1 = DIRECTORY_INPUT + "/dir1";
+	private static final String SUBDIR1 = DIR1 + "/subdir1";
+
+	private static final String DIR2 = DIRECTORY_INPUT + "/dir2";
+	private static final String SUBDIR2 = DIR2 + "/subdir2";
+
+	private static final String DIR3 = DIRECTORY_INPUT + "/dir3";
+	private static final String SUBDIR31 = DIR3 + "/subdir31";
+	private static final String SUBDIR32 = DIR3 + "/subdir32";
+
+	private static final String DOC_DUMMY_NAME = "dummy.doc";
+	private static final String DOC_DUMMY_FILE = "src/test/resources/" + DOC_DUMMY_NAME;
+
 	@BeforeClass
-	public static void setUp() throws Exception
-	{
-		File dir = new File("data/input");
-		dir.mkdir();
-		writeArtifact(dir.getAbsolutePath() + "/writeDOC.doc");
-		
-		File dir1 = new File("data/input/dir1");
-		dir1.mkdir();
-		
-		File subdir1 = new File("data/input/dir1/subdir1");
-		subdir1.mkdir();
-		
-		File dir2 = new File("data/input/dir2");
-		dir2.mkdir();
-		
-		File subdir2 = new File("data/input/dir3/subdir2");
-		subdir2.mkdir();
-		
-		File dir3 = new File("data/input/dir3");
-		dir3.mkdir();
-		
-		File subdir31 = new File("data/input/dir3/subdir31");
-		subdir31.mkdir();
-		
-		File subdir32 = new File("data/input/dir3/subdir32");
-		subdir32.mkdir();
+	public static void setUp() throws Exception {
+		/**
+		 * Create dummies of *.doc-files.
+		 */
+
+		new File(DIRECTORY_INPUT).mkdir();
+
+		new File(DIR1).mkdir();
+		new File(SUBDIR1).mkdir();
+		writeArtifact(SUBDIR1 + "/" + DOC_DUMMY_NAME);
+
+		new File(DIR2).mkdir();
+		new File(SUBDIR2).mkdir();
+		writeArtifact(SUBDIR2 + "/" + DOC_DUMMY_NAME);
+
+		new File(DIR3).mkdir();
+		new File(SUBDIR31).mkdir();
+		writeArtifact(SUBDIR31 + "/" + DOC_DUMMY_NAME);
+		new File(SUBDIR32).mkdir();
+		writeArtifact(SUBDIR32 + "/" + DOC_DUMMY_NAME);
 	}
-	
+
 	@Test
-	public void testDocumentTextPresent() throws CASException, Exception
-	{
+	public void testDocumentTextPresent() throws CASException, Exception {
+
+		File file = new File(DOC_DUMMY_FILE);
+
+		ReadSingleMSdoc.setFilename(file.getPath());
+		ReadSingleMSdoc.setDocRange();
+		ReadSingleMSdoc.doc2Text();
+
+		String artifactText = ReadSingleMSdoc.getContentTextWithMarkedTables();
+
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
 		fileReader.setConfigParameterValue("InputDirectory", DIRECTORY_INPUT);
 		fileReader.setConfigParameterValue("UseFilenameAsDocId", true);
 		fileReader.setConfigParameterValue("ReadSubDirs", true);
-		fileReader.setConfigParameterValue(MSdoc2txtReader.ALLOWED_FILE_EXTENSIONS, new String[]{"doc"});
+		fileReader.setConfigParameterValue(MSdoc2txtReader.ALLOWED_FILE_EXTENSIONS, new String[] { "doc" });
 		fileReader.reconfigure();
 
-		cas = CasCreationUtils.createCas( (AnalysisEngineMetaData) fileReader.getMetaData() );
-		
+		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
 		assertTrue(fileReader.hasNext());
 
-		while(fileReader.hasNext())
-		{
+		while (fileReader.hasNext()) {
 			fileReader.getNext(cas);
+			assertEquals(cas.getDocumentText(), artifactText);
 			cas.reset();
 		}
 	}
@@ -109,29 +127,21 @@ public class MSdoc2txtReaderTest
 	 *            The path to the descriptor
 	 * @return A collection reader
 	 */
-	public static CollectionReader getCollectionReader(String descriptor)
-	{
+	public static CollectionReader getCollectionReader(String descriptor) {
 		CollectionReader reader = null;
 		XMLInputSource inputSource = null;
-		
+
 		ResourceSpecifier readerResourceSpecifier = null;
-		
-		try
-		{
+
+		try {
 			inputSource = new XMLInputSource(descriptor);
 			readerResourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(inputSource);
 			reader = UIMAFramework.produceCollectionReader(readerResourceSpecifier);
-		}
-		catch (IOException e1)
-		{
+		} catch (IOException e1) {
 			e1.printStackTrace();
-		}
-		catch (InvalidXMLException e)
-		{
+		} catch (InvalidXMLException e) {
 			e.printStackTrace();
-		}
-		catch (ResourceInitializationException e)
-		{
+		} catch (ResourceInitializationException e) {
 			e.printStackTrace();
 		}
 		return reader;
@@ -142,34 +152,22 @@ public class MSdoc2txtReaderTest
 	 *
 	 * @param artifact
 	 *            Text to be written to file
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private static void writeArtifact(String file_name) throws IOException {
-//		private static void writeArtifact(String artifact, String file_name) throws IOException {
-//		FileOutputStream outStream = new FileOutputStream("resources/doc/writeDOC.doc");
-		FileOutputStream outStream = new FileOutputStream(file_name);
-		
-		
-		@SuppressWarnings("resource")
-		XWPFDocument doc = new XWPFDocument();
-		XWPFParagraph paraTit = doc.createParagraph();
-		
-		paraTit.setAlignment(ParagraphAlignment.CENTER);
-		XWPFRun paraTitRun = paraTit.createRun();
-		
-		paraTitRun.setBold(true);
-		paraTitRun.setFontSize(20);
-//		paraTitRun.setFontFamily(fontFamily);
-		paraTitRun.setText("Jetzt bin ich aber mal gespannt!");
-		
-		doc.write(outStream);
-		outStream.close();
+
+		File file = new File(file_name);
+		if (!file.exists()) {
+			Files.copy(Paths.get(DOC_DUMMY_FILE), Paths.get(file_name));
+		}
 	}
 
-	
 	@AfterClass
-	public static void tearDown() throws Exception
-	{
-		// directories and files from setUp delete
+	public static void tearDown() throws Exception {
+		/**
+		 * Delete dummies from setUp.
+		 */
+
+		FileUtils.deleteDirectory(new File(DIRECTORY_INPUT));
 	}
 }
