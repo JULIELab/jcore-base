@@ -11,7 +11,7 @@ The JULIE Lab XML Reader is a UIMA Collection Reader (CR) for reading XML files,
 
 
 ### Requirement and Dependencies
-The XML Files can be downloaded from the [PubMed's Website](https://www.ncbi.nlm.nih.gov/pubmed/).
+This Reader depends on the [JCoRe XML Mapper](https://github.com/JULIELab/jcore-xml-mapper), which  maps XML elements from an XML document onto (JCore) Types or Type Features.
 
 
 ### Using the CR - Descriptor Configuration
