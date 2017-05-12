@@ -50,8 +50,10 @@
 		<module>jcore-coordination-baseline-ae</module>
 		<module>jcore-dta-reader</module>
 		<module>jcore-file-reader</module>
+<!-- 		<module>jcore-gene-species-assigner</module> -->
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
+		<module>jcore-ign-reader</module>
 		<module>jcore-jnet-ae</module>
 		<module>jcore-jpos-ae</module>
 		<module>jcore-jsbd-ae</module>
@@ -60,6 +62,7 @@
 		<module>jcore-lingpipe-porterstemmer-ae</module>
 		<module>jcore-mantra-xml-types</module>
 		<module>jcore-medxn-ae</module>
+		<module>jcore-msdoc2txt-reader</module>
 		<module>jcore-mstparser-ae</module>
 		<module>jcore-muc7-reader</module>
 		<module>jcore-opennlp-chunk-ae</module>
@@ -67,15 +70,13 @@
 		<module>jcore-opennlp-postag-ae</module>
 		<module>jcore-opennlp-sentence-ae</module>
 		<module>jcore-opennlp-token-ae</module>
+		<module>jcore-pmc-reader</module>
 		<module>jcore-stanford-lemmatizer</module>
 		<module>jcore-types</module>
 		<module>jcore-utilities</module>
 		<module>jcore-xml-mapper</module>
 		<module>jcore-xml-reader</module>
 		<module>jcore-xmi-writer</module>
-		<module>jcore-gene-species-assigner</module>
-		<module>jcore-ign-reader</module>
-		<module>jcore-pmc-reader</module>
 	</modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
