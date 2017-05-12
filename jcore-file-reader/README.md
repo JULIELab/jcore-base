@@ -1,3 +1,4 @@
+ # JCoRe File Collection Reader
  JCoRe File Reader for reading in text files.  
 
 **Descriptor Path**:
