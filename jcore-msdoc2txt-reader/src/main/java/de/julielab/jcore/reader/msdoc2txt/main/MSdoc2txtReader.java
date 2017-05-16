@@ -152,10 +152,10 @@ public class MSdoc2txtReader extends CollectionReader_ImplBase
 		 *  * ReadSingleMSdoc.getContentHTML(): text and tables marked by HTML-code <table> ... </table>
 		 */
 		
-//		String textOnly = ReadSingleMSdoc.getContentTextOnly();
+		String textOnly = ReadSingleMSdoc.getContentTextOnly();
 		String textWithMarkedTables = ReadSingleMSdoc.getContentTextWithMarkedTables();
-//		String labParams = ReadSingleMSdoc.getContentLabParams();
-//		String textHTML = ReadSingleMSdoc.getContentHTML();
+		String labParams = ReadSingleMSdoc.getContentLabParams();
+		String textHTML = ReadSingleMSdoc.getContentHTML();
 
 		jcas.setDocumentText(textWithMarkedTables);
 
