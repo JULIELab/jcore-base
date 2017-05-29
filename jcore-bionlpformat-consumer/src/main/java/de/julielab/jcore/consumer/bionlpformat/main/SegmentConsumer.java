@@ -2,8 +2,10 @@ package de.julielab.jcore.consumer.bionlpformat.main;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Iterator;
 
@@ -73,13 +75,15 @@ public class SegmentConsumer extends JCasAnnotator_ImplBase {
 	}
 	
 	private DocumentWriter createDocumentWriter(String id) throws IOException {
-        return new DocumentWriter(new BufferedWriter(new FileWriter(new File(directory, id + ".txt"))));
+        return new DocumentWriter(new BufferedWriter(
+        		new OutputStreamWriter(new FileOutputStream(new File(directory, id + ".txt")), "UTF-8")));
     }
 	
 	private SegmentWriter createSegmentWriter(String documentText, String id) throws AnalysisEngineProcessException {
 		Writer annotationFileWriter = null;
 		try {
-            annotationFileWriter = new BufferedWriter(new FileWriter(new File(directory, id + ".ann")));
+            annotationFileWriter = new BufferedWriter(
+            		new OutputStreamWriter(new FileOutputStream(new File(directory, id + ".ann")), "UTF-8"));
             return new SegmentWriter(annotationFileWriter, documentText);
 		} catch (IOException e) {
             throw new AnalysisEngineProcessException(e);

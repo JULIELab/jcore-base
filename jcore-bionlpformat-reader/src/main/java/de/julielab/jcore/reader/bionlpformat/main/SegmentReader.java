@@ -20,26 +20,20 @@ import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.reader.bionlpformat.utils.TextFileMapper;
 import de.julielab.jcore.reader.bionlpformat.utils.AnnotationFileMapper_Med;
+import de.julielab.jcore.reader.bionlpformat.utils.AnnotationFileMapper_Seg;
 
-public class MedEventReader  extends CollectionReader_ImplBase {
+public class SegmentReader  extends CollectionReader_ImplBase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BioEventReader.class);
     public static final String DIRECTORY_PARAM = "inDirectory";
-    public static final String ANNOTATION_FILE_PARAM = "annotationFile";
-    public static final String TEXT_FILE_PARAM = "textFile";
 
     private File[] files;
     private int i;
-    private AnnotationFileMapper_Med annotationFileMapper;
+    private AnnotationFileMapper_Seg annotationFileMapper;
     private TextFileMapper textFileMapper;
 
     @ConfigurationParameter(name = DIRECTORY_PARAM, mandatory = true)
     private String directoryName;
-    @ConfigurationParameter(name = ANNOTATION_FILE_PARAM, mandatory = false)
-    private String annotationFileString;
-    @ConfigurationParameter(name = TEXT_FILE_PARAM, mandatory = false)
-    private String textFileString;
-
     private File directory;
 
     @Override
@@ -58,7 +52,7 @@ public class MedEventReader  extends CollectionReader_ImplBase {
         files = directory.listFiles(filter);
         
         textFileMapper = new TextFileMapper();
-        annotationFileMapper = new AnnotationFileMapper_Med();
+        annotationFileMapper = new AnnotationFileMapper_Seg();
         i = -1;
     }
 

@@ -29,7 +29,7 @@ import de.julielab.jcore.types.medical.Medication;
 import de.julielab.jcore.types.medical.Modus;
 import de.julielab.jcore.types.medical.Reason;
 
-public class AnnotationFileMapper_Alt {
+public class AnnotationFileMapper_Med {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationFileMapper.class);
 	private static final String MEDICATION = "Medication";
@@ -137,7 +137,7 @@ public class AnnotationFileMapper_Alt {
 		
 		annotation.setId(id);
 		annotation.setBegin(new Integer(tokens[1]));
-		annotation.setEnd(new Integer(tokens[2]));
+		annotation.setEnd(new Integer(tokens[tokens.length-1]));
 		annotation.addToIndexes();
 		mappedEntities.put(id, annotation);
 	}
