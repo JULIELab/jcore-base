@@ -16,7 +16,7 @@
  * TODO: combine makeUnits and makeLabels into one method
  **/
 
-package de.julielab.jtbd;
+package de.julielab.jcore.ae.jtbd;
 
 import java.util.ArrayList;
 import java.util.Set;

@@ -19,7 +19,7 @@
  * other fields (source, target, name) are ignored and/or overwritten.
  **/
 
-package de.julielab.jpos.pipes;
+package de.julielab.jcore.ae.jpos.pipes;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -41,9 +41,9 @@ import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
-import de.julielab.jpos.tagger.FeatureConfiguration;
-import de.julielab.jpos.tagger.Sentence;
-import de.julielab.jpos.tagger.Unit;
+import de.julielab.jcore.ae.jpos.tagger.FeatureConfiguration;
+import de.julielab.jcore.ae.jpos.tagger.Sentence;
+import de.julielab.jcore.ae.jpos.tagger.Unit;
 
 class BasePipe extends Pipe {
 

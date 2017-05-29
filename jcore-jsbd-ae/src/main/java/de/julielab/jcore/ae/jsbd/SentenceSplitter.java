@@ -18,7 +18,7 @@
  * the end of a sentence)
  **/
 
-package de.julielab.jsbd;
+package de.julielab.jcore.ae.jsbd;
 
 import java.io.BufferedReader;
 import java.io.File;

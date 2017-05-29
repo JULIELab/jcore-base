@@ -16,7 +16,7 @@
  * 
  **/
 
-package de.julielab.jsbd;
+package de.julielab.jcore.ae.jsbd;
 
 
 public class Unit {

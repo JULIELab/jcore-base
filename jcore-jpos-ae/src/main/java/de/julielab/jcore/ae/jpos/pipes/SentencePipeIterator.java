@@ -19,13 +19,13 @@
  * of these objects, the iterator creates an Instance (the data field is a Sentence object).
  **/
 
-package de.julielab.jpos.pipes;
+package de.julielab.jcore.ae.jpos.pipes;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import cc.mallet.types.Instance;
-import de.julielab.jpos.tagger.Sentence;
+import de.julielab.jcore.ae.jpos.tagger.Sentence;
 
 public class SentencePipeIterator implements Iterator<Instance> {
 

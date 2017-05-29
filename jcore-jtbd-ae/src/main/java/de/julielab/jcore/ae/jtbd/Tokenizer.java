@@ -15,7 +15,7 @@
  * function for training and prediction etc. The following labels are used:
  **/
 
-package de.julielab.jtbd;
+package de.julielab.jcore.ae.jtbd;
 
 import java.io.File;
 import java.io.FileInputStream;

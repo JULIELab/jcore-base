@@ -15,7 +15,7 @@
  * The base pipe used converting an abstract into a sequence of Unit objects.
  **/
 
-package de.julielab.jsbd;
+package de.julielab.jcore.ae.jsbd;
 
 import java.util.ArrayList;
 import java.util.HashMap;

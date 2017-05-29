@@ -41,10 +41,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.julielab.jcore.ae.jsbd.SentenceSplitter;
+import de.julielab.jcore.ae.jsbd.Unit;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
-import de.julielab.jsbd.SentenceSplitter;
-import de.julielab.jsbd.Unit;
 import de.julielab.jcore.types.Sentence;
 
 public class SentenceAnnotator extends JCasAnnotator_ImplBase {

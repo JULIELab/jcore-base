@@ -3,9 +3,9 @@ package de.julielab.jcore.ae.jsbd.PostprocessingFilters;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-import de.julielab.jsbd.AbbreviationsBiomed;
-import de.julielab.jsbd.AbbreviationsMedical;
-import de.julielab.jsbd.Unit;
+import de.julielab.jcore.ae.jsbd.AbbreviationsBiomed;
+import de.julielab.jcore.ae.jsbd.AbbreviationsMedical;
+import de.julielab.jcore.ae.jsbd.Unit;
 
 public class PostprocessingFilter {
 

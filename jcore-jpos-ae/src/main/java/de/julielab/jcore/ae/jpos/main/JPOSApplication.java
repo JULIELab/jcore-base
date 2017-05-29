@@ -31,13 +31,12 @@ import java.util.Random;
 
 import cc.mallet.fst.CRF;
 import cc.mallet.types.Alphabet;
+import de.julielab.jcore.ae.jpos.tagger.POSTagger;
+import de.julielab.jcore.ae.jpos.tagger.Sentence;
+import de.julielab.jcore.ae.jpos.tagger.Unit;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-
-import de.julielab.jpos.tagger.POSTagger;
-import de.julielab.jpos.tagger.Sentence;
-import de.julielab.jpos.tagger.Unit;
 
 /**
  * Command line application

@@ -16,7 +16,7 @@
  * have a TokenSequence in the data field!
  **/
 
-package de.julielab.jpos.pipes;
+package de.julielab.jcore.ae.jpos.pipes;
 
 import java.util.ArrayList;
 

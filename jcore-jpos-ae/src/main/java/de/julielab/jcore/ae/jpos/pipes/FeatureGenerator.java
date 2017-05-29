@@ -16,7 +16,7 @@
  * an ArrayList of ArrayLists of Unit objects.
  **/
 
-package de.julielab.jpos.pipes;
+package de.julielab.jcore.ae.jpos.pipes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,8 +38,8 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
-import de.julielab.jpos.tagger.FeatureConfiguration;
-import de.julielab.jpos.tagger.Sentence;
+import de.julielab.jcore.ae.jpos.tagger.FeatureConfiguration;
+import de.julielab.jcore.ae.jpos.tagger.Sentence;
 
 public class FeatureGenerator {
 

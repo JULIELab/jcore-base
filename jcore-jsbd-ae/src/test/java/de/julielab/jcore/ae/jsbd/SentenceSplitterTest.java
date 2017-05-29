@@ -13,7 +13,7 @@
  * Creation date: 01.10.2008 
  **/
 
-package de.julielab.jsbd;
+package de.julielab.jcore.ae.jsbd;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import de.julielab.jcore.ae.jsbd.SentenceSplitter;
+import de.julielab.jcore.ae.jsbd.Unit;
 
 /**
  * Test for the class {@link SentenceSplitter}

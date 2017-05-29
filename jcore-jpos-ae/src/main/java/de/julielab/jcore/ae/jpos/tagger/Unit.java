@@ -15,7 +15,7 @@
  *
  **/
 
-package de.julielab.jpos.tagger;
+package de.julielab.jcore.ae.jpos.tagger;
 
 public class Unit {
 

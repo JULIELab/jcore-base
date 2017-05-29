@@ -15,7 +15,7 @@
  * A list of end-of-sentence symbols.
  **/
 
-package de.julielab.jsbd;
+package de.julielab.jcore.ae.jsbd;
 
 import java.util.TreeSet;
 

@@ -13,7 +13,7 @@
  * Creation date: Aug 01, 2006 
  **/
 
-package de.julielab.jsbd;
+package de.julielab.jcore.ae.jsbd;
 
 import java.io.File;
 import java.io.FileInputStream;

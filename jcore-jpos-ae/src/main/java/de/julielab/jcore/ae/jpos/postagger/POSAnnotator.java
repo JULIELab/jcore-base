@@ -38,12 +38,12 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.julielab.jcore.ae.jpos.tagger.POSTagger;
+import de.julielab.jcore.ae.jpos.tagger.Unit;
 import de.julielab.jcore.types.POSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReTools;
-import de.julielab.jpos.tagger.POSTagger;
-import de.julielab.jpos.tagger.Unit;
 
 public class POSAnnotator extends JCasAnnotator_ImplBase {
 
@@ -159,7 +159,7 @@ public class POSAnnotator extends JCasAnnotator_ImplBase {
                     new Token(aJCas, 0, 0).getClass());
 
             // make the Sentence object
-            final de.julielab.jpos.tagger.Sentence unitSentence = createUnitSentence(tokenList, aJCas);
+            final de.julielab.jcore.ae.jpos.tagger.Sentence unitSentence = createUnitSentence(tokenList, aJCas);
 
             LOGGER.debug("process() - original sentence: " + sentence.getCoveredText());
             final StringBuffer unitS = new StringBuffer();
@@ -200,9 +200,9 @@ public class POSAnnotator extends JCasAnnotator_ImplBase {
      *         the first sequence, abbreviations are expanded to their fullform. In the second sequence, the tokens are
      *         of their original form.
      */
-    protected de.julielab.jpos.tagger.Sentence createUnitSentence(final ArrayList<Token> tokenList, final JCas JCas) {
+    protected de.julielab.jcore.ae.jpos.tagger.Sentence createUnitSentence(final ArrayList<Token> tokenList, final JCas JCas) {
 
-        final de.julielab.jpos.tagger.Sentence unitSentence = new de.julielab.jpos.tagger.Sentence();
+        final de.julielab.jcore.ae.jpos.tagger.Sentence unitSentence = new de.julielab.jcore.ae.jpos.tagger.Sentence();
 
         for (int i = 0; i < tokenList.size(); i++) {
             final Token token = tokenList.get(i);
@@ -231,7 +231,7 @@ public class POSAnnotator extends JCasAnnotator_ImplBase {
      * @param tokenList
      * @throws AnalysisEngineProcessException
      */
-    public void writeToCAS(final de.julielab.jpos.tagger.Sentence unitSentence, final JCas aJCas,
+    public void writeToCAS(final de.julielab.jcore.ae.jpos.tagger.Sentence unitSentence, final JCas aJCas,
             final ArrayList<Token> tokenList) throws AnalysisEngineProcessException {
 
         if (tokenList.size() != unitSentence.size()) {

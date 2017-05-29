@@ -15,7 +15,7 @@
  * helper class for reading in feature configurations
  **/
 
-package de.julielab.jpos.tagger;
+package de.julielab.jcore.ae.jpos.tagger;
 
 import java.util.ArrayList;
 import java.util.Enumeration;

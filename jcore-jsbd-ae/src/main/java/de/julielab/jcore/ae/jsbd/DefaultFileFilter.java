@@ -15,7 +15,7 @@
  * A default file filter that accepts all files.
  **/
 
-package de.julielab.jsbd;
+package de.julielab.jcore.ae.jsbd;
 
 import java.io.File;
 import java.io.FileFilter;

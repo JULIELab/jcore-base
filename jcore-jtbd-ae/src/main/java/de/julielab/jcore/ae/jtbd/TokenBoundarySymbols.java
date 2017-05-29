@@ -16,7 +16,7 @@
  *
  **/
 
-package de.julielab.jtbd;
+package de.julielab.jcore.ae.jtbd;
 
 import java.util.HashSet;
 import java.util.Set;

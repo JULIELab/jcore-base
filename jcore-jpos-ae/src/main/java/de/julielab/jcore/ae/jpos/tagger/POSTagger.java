@@ -15,7 +15,7 @@
  *
  **/
 
-package de.julielab.jpos.tagger;
+package de.julielab.jcore.ae.jpos.tagger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +41,7 @@ import cc.mallet.classify.MaxEntTrainer;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
-import de.julielab.jpos.pipes.FeatureGenerator;
+import de.julielab.jcore.ae.jpos.pipes.FeatureGenerator;
 
 /**
 *

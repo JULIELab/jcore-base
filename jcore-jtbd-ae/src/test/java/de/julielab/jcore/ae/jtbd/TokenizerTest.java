@@ -12,7 +12,7 @@
  * Creation date: 14.10.2008
  **/
 
-package de.julielab.jtbd;
+package de.julielab.jcore.ae.jtbd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import de.julielab.jcore.ae.jtbd.Tokenizer;
+import de.julielab.jcore.ae.jtbd.Unit;
 import de.julielab.jcore.ae.jtbd.main.TokenAnnotator;
-import de.julielab.jtbd.Tokenizer;
-import de.julielab.jtbd.Unit;
 import de.julielab.jcore.types.Token;
 
 /**
