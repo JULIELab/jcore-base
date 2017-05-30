@@ -67,15 +67,23 @@ public class SegmentWriter {
 				begin += 1;
 				continue;
 			}
-			text += ann.getCoveredText().substring(begin, m.start()) + " ";
-			begin_end = Integer.toString((ann.getBegin()+begin)) + " " + Integer.toString((ann.getBegin()+m.start())) + ";";
+			String t = ann.getCoveredText().substring(begin, m.start());
+			String ltrimmed = t.replaceAll("^\\s+", "");
+			int tcount = t.indexOf(ltrimmed);
+			
+			text += ltrimmed + " ";
+			begin_end = Integer.toString((ann.getBegin()+begin+tcount)) + " " + Integer.toString((ann.getBegin()+m.start())) + ";";
 			out_line += begin_end;
 			begin = m.end();
 			first = false;
 		}
 		if (begin < ann.getCoveredText().length()) {
-			text += ann.getCoveredText().substring(begin, ann.getCoveredText().length());
-			begin_end = Integer.toString((ann.getBegin()+begin)) + " " + Integer.toString((ann.getBegin()+ann.getCoveredText().length()));
+			String t = ann.getCoveredText().substring(begin, ann.getCoveredText().length());
+			String ltrimmed = t.replaceAll("^\\s+", "");
+			int tcount = t.indexOf(ltrimmed);
+			
+			text += ltrimmed;
+			begin_end = Integer.toString((ann.getBegin()+begin+tcount)) + " " + Integer.toString((ann.getBegin()+ann.getCoveredText().length()));
 			out_line += begin_end;
 		}
 		else {
