@@ -27,7 +27,7 @@ JTBD is based on a slightly modified version of the machine learning toolkit MAL
 | ModelFilename | valid path to a model file | `de/julielab/jcore/ae/jsbd/model/jsbd-2.0.gz`* |
 | Postprocessing| Boolean Variable | `true` |
 | ProcessingScope | Boolean Variable | `none` |
-\* a model is not included; see the [biomed-project](https://github.com/JULIELab/jcore-projects/tree/master/jcore-jsbd-ae-biomedical-english) or [medical-project](https://github.com/JULIELab/jcore-projects/tree/master/jcore-jsbd-ae-medical-german) for a pre-built one 
+\* a model is not included; see the [biomed-project](https://github.com/JULIELab/jcore-projects/tree/master/jcore-jsbd-ae-biomedical-english) fro a pre-built one 
 
 **3. Capabilities**
 
