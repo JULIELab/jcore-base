@@ -1,5 +1,5 @@
 # JCoRe IEXML Collection Reader
-Reader for IEXML files as used in the mantra project/challenge  
+A Collection Reader for IEXML files as used in the mantra project/challenge  .
 
 **Descriptor Path**:
 ```
@@ -7,9 +7,11 @@ de.julielab.jcore.reader.iexml.desc.jcore-iexml-reader
 ```
 
 ### Objective
+The JULIE Lab IEXMLFileReader is a UIMA Collection Reader (CR). It reads from the IEXML files (a specific, task-dependent file format as used in the mantra challenge) and converts it to types defined in the UIMA type system that we provide as well.
 
 
 ### Requirement and Dependencies
+The output of the CR is in the form of annotation objects. The classes corresponding to these objects are part of our [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
 
 
 ### Using the CR - Descriptor Configuration
