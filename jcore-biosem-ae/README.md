@@ -2,15 +2,15 @@
 Wrapper for the [BioSEM Event Extraction System](https://github.com/JULIELab/jcore-dependencies/tree/master/biosem-event-extractor)
 
 ### Objective
-
+The JULIE Lab BioSemEventAnnotator is an Analysis Engine, which deals with extraction of events and relations in the biomedical domain. 
 
 ### Requirement and Dependencies
- The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
- Furthermore this AE is only a wrapper, so the [BioSEM Event Extraction System](https://github.com/JULIELab/jcore-dependencies/tree/master/biosem-event-extractor) is needed, too.
- Without a model this AE is not really of any use, therefore we encourage you to use one of the [JCoRe projects](https://github.com/JULIELab/jcore-projects) if you want to use this AE in your pipeline.
+The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
+Furthermore this AE is only a wrapper, so the [BioSEM Event Extraction System](https://github.com/JULIELab/jcore-dependencies/tree/master/biosem-event-extractor) is needed, too.
 
 ### Using the AE - Descriptor Configuration
- In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is available under `src/main/resources/de/julielab/jcore/ ` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
+For this component the "Base" version won't be sufficient if you're **not** planning on training your own model but rather want to use them out-of-the-box in a prediction pipeline. This component has a specialized project with pretrained models (available from the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-projects)).
+Please refer to this link for information on how to use this in your pipeline.
 
 **1. Capabilities**
 
