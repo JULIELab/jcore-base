@@ -82,9 +82,11 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 
 					System.out.println(tokenText);
 					
-					POSTag posTag = new POSTag(jcas);
-
-					//FSArray postags = token.getPosTag();
+					POSTag posTag = null;
+					
+					FSArray postags = token.getPosTag();
+					if (postags != null && postags.size() > 0)
+						posTag = (POSTag) postags.get(0);
 
 					System.out.println("Der POS: " + posTag.getValue());
 

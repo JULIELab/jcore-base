@@ -15,6 +15,7 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
+import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.pubmed.Header;
@@ -48,7 +49,13 @@ public class SentenceTokenConsumerTest {
 		Sentence s2 = new Sentence(cas, 13, 29);
 		s2.addToIndexes();
 
-		new Token(cas, 0, 1).addToIndexes();
+		Token t1 = new Token(cas, 0, 1);
+		t1.addToIndexes();
+		// TODO
+		// new FSArray(jcas, 1)
+//		PennBioIEPOSTag pos = new PennBioIEPOSTag(cas);
+//		pos.setValue("pow");
+//		t1.setPosTag(v);
 
 		new Token(cas, 2, 6).addToIndexes();
 
