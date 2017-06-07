@@ -29,18 +29,8 @@ JNET offers the following functionalities:
 | ExpandAbbreviations | Boolean | no | no |  |
 | ShowSegmentConfidence| Boolean | no | no | whether a confidence should be estimated for each entity or not |
 | IgnoreNotIntroducedAbbreviations | Boolean | no | no | hether labels predicted by JNET on strings which represent abbreviations ([A-Z]{2,3}) but were not introduced in the text should be ignored |
-| NegativeList | String | no | no | a list with entity mentions (covered text) and label which when found is ignore, i.e., not written to the CAS. Format: one entry per line, within the line: entityMention@label if no label is given, also @ should not be given!
-Example:
---------------
-IL-2@gene
-IL-2 receptor
-HDA1@protein
--------------- |
-| ConsistencyPreservation| String | no | no | Coma-separated list of active modes.
-Available modes are:
- - string
- - full2acro
- - acro2full |
+| NegativeList | String | no | no | a list with entity mentions (covered text) and label which when found is ignore, i.e., not written to the CAS. Format: one entry per line, within the line: entityMention@label if no label is given, also @ should not be given! (1) |
+| ConsistencyPreservation| String | no | no | Coma-separated list of active modes. (2) |
 
 **2. Predefined Settings**
 
@@ -86,3 +76,21 @@ JNET may be run by giving console commands in the following form:
 runJNET.sh <parameters>
 
 If you want to see which modes JNET provides just leave the parameters blank.
+
+### Footnotes
+**(1)**
+```
+Example:
+--------------
+IL-2@gene
+IL-2 receptor
+HDA1@protein
+--------------
+```
+**(2)**
+```
+Available modes are:
+ - string
+ - full2acro
+ - acro2full
+```
