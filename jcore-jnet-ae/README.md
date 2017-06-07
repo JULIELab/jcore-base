@@ -51,7 +51,7 @@ Available modes are:
 | ExpandAbbreviations | Boolean Value | `true` |
 | ShowSegmentConfidence| Boolean Value | `false` |
 | IgnoreNotIntroducedAbbreviations | Boolean Value | `true` |
-| NegativeList |  | `` |
+| NegativeList |  |  |
 | ConsistencyPreservation|  | `string,full2acro,acro2full` |
 
 **3. Capabilities**
