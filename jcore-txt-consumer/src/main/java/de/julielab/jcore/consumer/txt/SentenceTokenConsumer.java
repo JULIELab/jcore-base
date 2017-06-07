@@ -33,9 +33,13 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
+import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.POSTag;
+import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 
@@ -53,33 +57,52 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 		String dirName = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_DIR);
 		directory = new File(dirName);
 		if (!directory.exists()) {
-            directory.mkdir();
-        }
+			directory.mkdir();
+		}
 	}
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		LOGGER.info("Processing next document ... ");
 		try {
-			FSIterator sentenceIterator = jcas.getAnnotationIndex(
-					Sentence.type).iterator();
+			FSIterator sentenceIterator = jcas.getAnnotationIndex(Sentence.type).iterator();
 
-			AnnotationIndex tokenIndex = jcas.getAnnotationIndex(
-					Token.type);
+			AnnotationIndex tokenIndex = jcas.getAnnotationIndex(Token.type);
 
-			ArrayList<String> sentences = new ArrayList<String>();
+			ArrayList<String> sentences = new ArrayList<>();
 			while (sentenceIterator.hasNext()) {
 				Sentence sentence = (Sentence) sentenceIterator.next();
-				FSIterator tokIterator = tokenIndex.subiterator(sentence);
+				FSIterator<Annotation> tokIterator = tokenIndex.subiterator(sentence);
 
 				String sentenceText = "";
 				while (tokIterator.hasNext()) {
 					Token token = (Token) tokIterator.next();
+
 					String tokenText = token.getCoveredText();
+
+					System.out.println(tokenText);
+					
+					POSTag posTag = new POSTag(jcas);
+
+					//FSArray postags = token.getPosTag();
+
+					System.out.println("Der POS: " + posTag.getValue());
+
+					// for (int i = 0; i < postags.size(); i++) {
+
+					//POSTag postag = token.getPosTag(i);
+
+					String postagText = posTag.getValue();
+
+					System.out.println("Der Wert: " +postagText);
+
 					if (sentenceText.equals(""))
-						sentenceText = tokenText;
-					else
-						sentenceText = sentenceText + " " + tokenText;
+						sentenceText = tokenText + "_" + postagText;
+					else {
+						sentenceText = sentenceText + " " + tokenText + "_" + postagText;
+						System.out.println(sentenceText);
+					}
+					// }
 				}
 
 				sentences.add(sentenceText);
@@ -102,8 +125,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	public String getDocID(JCas jcas) throws CASException {
 		String docID = "";
 		JFSIndexRepository indexes = jcas.getJFSIndexRepository();
-		Iterator<?> headerIter = indexes.getAnnotationIndex(Header.type)
-				.iterator();
+		Iterator<?> headerIter = indexes.getAnnotationIndex(Header.type).iterator();
 		while (headerIter.hasNext()) {
 			Header h = (Header) headerIter.next();
 			docID = h.getDocId();
@@ -113,8 +135,8 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 
 	private void writeSentences2File(String fileId, ArrayList<String> sentences) {
 		try {
-			IOUtils.arraylist_to_file(sentences, new File(directory.getCanonicalPath() + File.separator + fileId
-					+ ".txt"));
+			IOUtils.arraylist_to_file(sentences,
+					new File(directory.getCanonicalPath() + File.separator + fileId + ".txt"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
