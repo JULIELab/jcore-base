@@ -36,10 +36,8 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.POSTag;
-import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 
@@ -72,7 +70,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 			ArrayList<String> sentences = new ArrayList<>();
 			while (sentenceIterator.hasNext()) {
 				Sentence sentence = (Sentence) sentenceIterator.next();
-				FSIterator<Annotation> tokIterator = tokenIndex.subiterator(sentence);
+				FSIterator tokIterator = tokenIndex.subiterator(sentence);
 
 				String sentenceText = "";
 				while (tokIterator.hasNext()) {
