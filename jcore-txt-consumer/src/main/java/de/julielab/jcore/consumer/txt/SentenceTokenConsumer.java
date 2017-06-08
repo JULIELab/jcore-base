@@ -80,31 +80,19 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 
 					String tokenText = token.getCoveredText();
 
-					System.out.println(tokenText);
-					
 					POSTag posTag = null;
-					
+
 					FSArray postags = token.getPosTag();
 					if (postags != null && postags.size() > 0)
 						posTag = (POSTag) postags.get(0);
 
-					System.out.println("Der POS: " + posTag.getValue());
-
-					// for (int i = 0; i < postags.size(); i++) {
-
-					//POSTag postag = token.getPosTag(i);
-
 					String postagText = posTag.getValue();
 
-					System.out.println("Der Wert: " +postagText);
-
 					if (sentenceText.equals(""))
-						sentenceText = tokenText + "_" + postagText;
+						sentenceText = tokenText + "|" + postagText;
 					else {
-						sentenceText = sentenceText + " " + tokenText + "_" + postagText;
-						System.out.println(sentenceText);
+						sentenceText = sentenceText + " " + tokenText + "|" + postagText;
 					}
-					// }
 				}
 
 				sentences.add(sentenceText);
