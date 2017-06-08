@@ -45,9 +45,21 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 
 	private static final Logger LOGGER = Logger.getLogger(SentenceTokenConsumer.class);
 	public static final String PARAM_OUTPUT_DIR = "outDirectory";
+	public static final String PARAM_DELIMITER = "delimiter";
+	public static final String PARAM_POS_TAG = "addPOSTag";
+	
+	private final static String DEFAULT_DELIMITER = "$";
+	private final static boolean DEFAULT_PARAM_POS_TAG = false;
+	
 	@ConfigurationParameter(name = PARAM_OUTPUT_DIR, mandatory = true)
 	private File directory;
 	int docs = 0;
+	@ConfigurationParameter(name = PARAM_DELIMITER, mandatory = false)
+	private String delimiter;
+	@ConfigurationParameter(name = PARAM_POS_TAG, mandatory = false)
+	private boolean addPOSTAG;
+
+	
 
 	@Override
 	public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -57,6 +69,18 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 		if (!directory.exists()) {
 			directory.mkdir();
 		}
+		LOGGER.info("Writing txt files to output directory '" + directory + "'");
+		
+		delimiter = (String) aContext.getConfigParameterValue(PARAM_DELIMITER);
+		if (delimiter == null) {
+			delimiter = DEFAULT_DELIMITER;
+		}
+		if (aContext.getConfigParameterValue(PARAM_POS_TAG) != null) {
+			addPOSTAG = (Boolean) aContext.getConfigParameterValue(PARAM_POS_TAG);
+		} else {
+			addPOSTAG = DEFAULT_PARAM_POS_TAG;
+		}
+		LOGGER.info("Adding POSTags ...");
 	}
 
 	@Override
@@ -77,7 +101,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 					Token token = (Token) tokIterator.next();
 
 					String tokenText = token.getCoveredText();
-
+					
 					POSTag posTag = null;
 
 					FSArray postags = token.getPosTag();
@@ -87,10 +111,11 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 					String postagText = posTag.getValue();
 
 					if (sentenceText.equals(""))
-						sentenceText = tokenText + "|" + postagText;
+						sentenceText = tokenText + delimiter + postagText;
 					else {
-						sentenceText = sentenceText + " " + tokenText + "|" + postagText;
+						sentenceText = sentenceText + " " + tokenText + delimiter + postagText;
 					}
+				
 				}
 
 				sentences.add(sentenceText);

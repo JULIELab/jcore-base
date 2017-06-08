@@ -37,7 +37,7 @@ public class SentenceTokenConsumerTest {
 	}
 
 	@Test
-	public void testProcess() throws Exception {
+	public void testProcessWithPOSTags() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class,
 				SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data");
@@ -134,15 +134,17 @@ public class SentenceTokenConsumerTest {
 
 		assertFalse(new File("src/test/resources/data/example2.txt").exists());
 
-		List<String> file = readFile("src/test/resources/data/pew.txt");
-		assertTrue(file.contains("I|PRP love|VBP food|NN .|."));
-		assertTrue(file.contains("I|PRP like|VBP sleeping|VBG .|."));
-		
+		List<String> file = readFile("src/test/resources/data/example1.txt");
+		assertTrue(file.contains("I$PRP love$VBP food$NN .$."));
+		assertTrue(file.contains("I$PRP like$VBP sleeping$VBG .$."));
+
 		System.out.println(file.get(0) + "\n" + file.get(1));
-		//assertTrue(file.contains("I|PRP love|VBP food|NN .|." + "\\n" + "I|PRP like|VBP sleeping|VBG .|."));
-		
+		// assertTrue(file.contains("I|PRP love|VBP food|NN .|." + "\\n" +
+		// "I|PRP like|VBP sleeping|VBG .|."));
 
 	}
+	
+	
 
 	public List<String> readFile(String fileName) throws IOException {
 		List<String> lines = new ArrayList<String>();
