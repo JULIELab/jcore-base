@@ -1,2 +1,2 @@
-I$PRP love$VBP food$NN .$.
-I$PRP like$VBP sleeping$VBG .$.
+I_PRP love_VBP food_NN ._.
+I_PRP like_VBP sleeping_VBG ._.

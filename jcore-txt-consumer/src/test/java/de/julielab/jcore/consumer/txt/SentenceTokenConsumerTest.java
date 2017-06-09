@@ -35,13 +35,16 @@ public class SentenceTokenConsumerTest {
 
 		consumer.process(cas);
 	}
-
+	/**
+	 * testing without POSTags, just sentences and tokens
+	 * @throws Exception
+	 */
 	@Test
 	public void testProcessWithoutPOSTags() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
-		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class, 
-				SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_POS_TAG, false);
-		
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class,
+				SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data");
+
 		cas.setDocumentText("I love food. I like sleeping.");
 
 		Sentence s1 = new Sentence(cas, 0, 12);
@@ -52,28 +55,28 @@ public class SentenceTokenConsumerTest {
 
 		Token t1 = new Token(cas, 0, 1);
 		t1.addToIndexes();
-		
+
 		Token t2 = new Token(cas, 2, 6);
 		t2.addToIndexes();
-		
+
 		Token t3 = new Token(cas, 7, 11);
 		t3.addToIndexes();
-		
+
 		Token t4 = new Token(cas, 11, 12);
 		t4.addToIndexes();
-		
+
 		Token t5 = new Token(cas, 13, 14);
 		t5.addToIndexes();
-		
+
 		Token t6 = new Token(cas, 15, 19);
 		t6.addToIndexes();
-		
+
 		Token t7 = new Token(cas, 20, 28);
 		t7.addToIndexes();
-		
+
 		Token t8 = new Token(cas, 28, 29);
 		t8.addToIndexes();
-		
+
 		Header header = new Header(cas);
 		header.setDocId("example3");
 		header.addToIndexes();
@@ -81,22 +84,25 @@ public class SentenceTokenConsumerTest {
 		consumer.process(cas);
 
 		assertTrue(new File("src/test/resources/data/example3.txt").exists());
-		
-		
+
 		List<String> file = readFile("src/test/resources/data/example3.txt");
 		assertTrue(file.contains("I love food ."));
 		assertTrue(file.contains("I like sleeping ."));
 
-		System.out.println(file.get(0) + "\n" + file.get(1));
-		
+		//System.out.println(file.get(0) + "\n" + file.get(1));
+
 	}
 
-	// test
+	/**
+	 * tests with POSTags
+	 * @throws Exception
+	 */
 	@Test
 	public void testProcessWithPOSTags() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class,
-				SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data");
+				SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data",
+				SentenceTokenConsumer.PARAM_DELIMITER, "_", SentenceTokenConsumer.PARAM_POS_TAG, true);
 
 		cas.setDocumentText("I love food. I like sleeping.");
 
@@ -191,10 +197,10 @@ public class SentenceTokenConsumerTest {
 		assertFalse(new File("src/test/resources/data/example2.txt").exists());
 
 		List<String> file = readFile("src/test/resources/data/example1.txt");
-		assertTrue(file.contains("I$PRP love$VBP food$NN .$."));
-		assertTrue(file.contains("I$PRP like$VBP sleeping$VBG .$."));
+		assertTrue(file.contains("I_PRP love_VBP food_NN ._."));
+		//assertTrue(file.contains("I$PRP like$VBP sleeping$VBG .$."));
 
-		System.out.println(file.get(0) + "\n" + file.get(1));
+		//System.out.println(file.get(0) + "\n" + file.get(1));
 		// assertTrue(file.contains("I|PRP love|VBP food|NN .|." + "\\n" +
 		// "I|PRP like|VBP sleeping|VBG .|."));
 

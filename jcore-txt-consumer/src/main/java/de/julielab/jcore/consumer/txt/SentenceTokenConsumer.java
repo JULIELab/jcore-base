@@ -48,7 +48,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	public static final String PARAM_DELIMITER = "delimiter";
 	public static final String PARAM_POS_TAG = "addPOSTag";
 
-	private final static String DEFAULT_DELIMITER = "$";
+	private final static String DEFAULT_DELIMITER = "";
 	private final static boolean DEFAULT_PARAM_POS_TAG = false;
 
 	@ConfigurationParameter(name = PARAM_OUTPUT_DIR, mandatory = true)
@@ -96,7 +96,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 
 				String sentenceText = "";
 				while (tokIterator.hasNext()) {
-					if (addPOSTAG = true) {
+					if (addPOSTAG) {
 						sentenceText = returnWithPOSTAG(tokIterator, sentenceText);
 					} else {
 						sentenceText = returnWithoutPOSTAG(tokIterator, sentenceText);
