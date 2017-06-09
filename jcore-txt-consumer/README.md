@@ -6,7 +6,7 @@ A simple text consumer.
 TODO
 ```
 ### Objective
-The JULIE Lab SentenceTokenAnnotator is a UIMA Cosumer (CC). It outputs sentences (one per line), tokens (white-space-separated) and adds a POS feature to it's token, separated by the delimiter '|'.
+The JULIE Lab SentenceTokenAnnotator is a UIMA Consumer (CC). It outputs sentences (one per line), tokens (white-space-separated) and appends POS information to each token, if avaiable and desired, separated with a designated delimiter (e.g. $ or | or _).
 
 ### Requirements and Dependencies
 The input of a CC is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types). The output should be a valid txt-file.
@@ -19,12 +19,14 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
 | outDirectory | String | yes | yes | Path to an output directory |
+| delimiter | String | no | no | If the delimiter is stated, the consumer will append the POS information to each token |
 
 **2. Predefined Settings**
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
 | outDirectory | Valid Path to an output directory | `data/example.txt` |
+| delimiter | A designated/chosen delimiter | `$` |
 
 **3. Capabilities**
 
