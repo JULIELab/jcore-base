@@ -75,10 +75,11 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 		
 		if (aContext.getConfigParameterValue(PARAM_DELIMITER) != null) {
 			addPOSTAG = true;
+			LOGGER.info("Adding POSTags ...");
 		} else {
 			addPOSTAG = DEFAULT_PARAM_POS_TAG;
 		}
-		LOGGER.info("Adding POSTags ...");
+		
 	}
 
 	@Override
