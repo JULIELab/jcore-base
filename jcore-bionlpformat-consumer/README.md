@@ -1,4 +1,4 @@
-# JCoRe BioNLP 09 Event Consumer
+# JCoRe BioNLP Format Event Consumer
 Consumer that writes CAS annotations into the [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/index.shtml#data) format.  
 
 **Descriptor Path**:
