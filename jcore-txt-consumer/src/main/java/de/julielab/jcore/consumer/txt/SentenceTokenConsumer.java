@@ -47,10 +47,10 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	public static final String PARAM_OUTPUT_DIR = "outDirectory";
 	public static final String PARAM_DELIMITER = "delimiter";
 	public static final String PARAM_POS_TAG = "addPOSTag";
-	
+
 	private final static String DEFAULT_DELIMITER = "$";
 	private final static boolean DEFAULT_PARAM_POS_TAG = false;
-	
+
 	@ConfigurationParameter(name = PARAM_OUTPUT_DIR, mandatory = true)
 	private File directory;
 	int docs = 0;
@@ -58,8 +58,6 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	private String delimiter;
 	@ConfigurationParameter(name = PARAM_POS_TAG, mandatory = false)
 	private boolean addPOSTAG;
-
-	
 
 	@Override
 	public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -70,7 +68,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 			directory.mkdir();
 		}
 		LOGGER.info("Writing txt files to output directory '" + directory + "'");
-		
+
 		delimiter = (String) aContext.getConfigParameterValue(PARAM_DELIMITER);
 		if (delimiter == null) {
 			delimiter = DEFAULT_DELIMITER;
@@ -98,24 +96,11 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 
 				String sentenceText = "";
 				while (tokIterator.hasNext()) {
-					Token token = (Token) tokIterator.next();
-
-					String tokenText = token.getCoveredText();
-					
-					POSTag posTag = null;
-
-					FSArray postags = token.getPosTag();
-					if (postags != null && postags.size() > 0)
-						posTag = (POSTag) postags.get(0);
-
-					String postagText = posTag.getValue();
-
-					if (sentenceText.equals(""))
-						sentenceText = tokenText + delimiter + postagText;
-					else {
-						sentenceText = sentenceText + " " + tokenText + delimiter + postagText;
+					if (addPOSTAG = true) {
+						sentenceText = returnWithPOSTAG(tokIterator, sentenceText);
+					} else {
+						sentenceText = returnWithoutPOSTAG(tokIterator, sentenceText);
 					}
-				
 				}
 
 				sentences.add(sentenceText);
@@ -133,6 +118,41 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 			e.printStackTrace();
 		}
 
+	}
+
+	private String returnWithoutPOSTAG(FSIterator tokIterator, String sentenceText) {
+
+		Token token = (Token) tokIterator.next();
+
+		String tokenText = token.getCoveredText();
+
+		if (sentenceText.equals(""))
+			sentenceText = tokenText;
+		else {
+			sentenceText = sentenceText + " " + tokenText;
+		}
+		return sentenceText;
+	}
+
+	private String returnWithPOSTAG(FSIterator tokIterator, String sentenceText) {
+		Token token = (Token) tokIterator.next();
+
+		String tokenText = token.getCoveredText();
+
+		POSTag posTag = null;
+
+		FSArray postags = token.getPosTag();
+		if (postags != null && postags.size() > 0)
+			posTag = (POSTag) postags.get(0);
+
+		String postagText = posTag.getValue();
+
+		if (sentenceText.equals(""))
+			sentenceText = tokenText + delimiter + postagText;
+		else {
+			sentenceText = sentenceText + " " + tokenText + delimiter + postagText;
+		}
+		return sentenceText;
 	}
 
 	public String getDocID(JCas jcas) throws CASException {
