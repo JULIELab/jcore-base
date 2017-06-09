@@ -78,14 +78,14 @@ public class SentenceTokenConsumerTest {
 		t8.addToIndexes();
 
 		Header header = new Header(cas);
-		header.setDocId("example3");
+		header.setDocId("withoutPOS");
 		header.addToIndexes();
 
 		consumer.process(cas);
 
-		assertTrue(new File("src/test/resources/data/example3.txt").exists());
+		assertTrue(new File("src/test/resources/data/withoutPOS.txt").exists());
 
-		List<String> file = readFile("src/test/resources/data/example3.txt");
+		List<String> file = readFile("src/test/resources/data/withoutPOS.txt");
 		assertTrue(file.contains("I love food ."));
 		assertTrue(file.contains("I like sleeping ."));
 
@@ -102,7 +102,7 @@ public class SentenceTokenConsumerTest {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class,
 				SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data",
-				SentenceTokenConsumer.PARAM_DELIMITER, "_", SentenceTokenConsumer.PARAM_POS_TAG, true);
+				SentenceTokenConsumer.PARAM_DELIMITER, "$");
 
 		cas.setDocumentText("I love food. I like sleeping.");
 
@@ -187,20 +187,20 @@ public class SentenceTokenConsumerTest {
 		// JCoReTools.printAnnotationIndex(cas, Sentence.type);
 
 		Header header = new Header(cas);
-		header.setDocId("example1");
+		header.setDocId("withPOS");
 		header.addToIndexes();
 
 		consumer.process(cas);
 
-		assertTrue(new File("src/test/resources/data/example1.txt").exists());
+		assertTrue(new File("src/test/resources/data/withPOS.txt").exists());
 
-		assertFalse(new File("src/test/resources/data/example2.txt").exists());
+		assertFalse(new File("src/test/resources/data/nemo.txt").exists());
 
-		List<String> file = readFile("src/test/resources/data/example1.txt");
-		assertTrue(file.contains("I_PRP love_VBP food_NN ._."));
-		//assertTrue(file.contains("I$PRP like$VBP sleeping$VBG .$."));
+		List<String> file = readFile("src/test/resources/data/withPOS.txt");
+		assertFalse(file.contains("I_PRP love_VBP food_NN ._."));
+		assertTrue(file.contains("I$PRP like$VBP sleeping$VBG .$."));
 
-		//System.out.println(file.get(0) + "\n" + file.get(1));
+		System.out.println(file.get(0) + "\n" + file.get(1));
 		// assertTrue(file.contains("I|PRP love|VBP food|NN .|." + "\\n" +
 		// "I|PRP like|VBP sleeping|VBG .|."));
 

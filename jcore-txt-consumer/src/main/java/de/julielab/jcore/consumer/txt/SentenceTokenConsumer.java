@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -46,7 +47,6 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	private static final Logger LOGGER = Logger.getLogger(SentenceTokenConsumer.class);
 	public static final String PARAM_OUTPUT_DIR = "outDirectory";
 	public static final String PARAM_DELIMITER = "delimiter";
-	public static final String PARAM_POS_TAG = "addPOSTag";
 
 	private final static String DEFAULT_DELIMITER = "";
 	private final static boolean DEFAULT_PARAM_POS_TAG = false;
@@ -56,7 +56,6 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	int docs = 0;
 	@ConfigurationParameter(name = PARAM_DELIMITER, mandatory = false)
 	private String delimiter;
-	@ConfigurationParameter(name = PARAM_POS_TAG, mandatory = false)
 	private boolean addPOSTAG;
 
 	@Override
@@ -72,9 +71,10 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 		delimiter = (String) aContext.getConfigParameterValue(PARAM_DELIMITER);
 		if (delimiter == null) {
 			delimiter = DEFAULT_DELIMITER;
-		}
-		if (aContext.getConfigParameterValue(PARAM_POS_TAG) != null) {
-			addPOSTAG = (Boolean) aContext.getConfigParameterValue(PARAM_POS_TAG);
+		} 
+		
+		if (aContext.getConfigParameterValue(PARAM_DELIMITER) != null) {
+			addPOSTAG = true;
 		} else {
 			addPOSTAG = DEFAULT_PARAM_POS_TAG;
 		}
@@ -96,7 +96,8 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 
 				String sentenceText = "";
 				while (tokIterator.hasNext()) {
-					if (addPOSTAG) {
+					
+					if(addPOSTAG) {
 						sentenceText = returnWithPOSTAG(tokIterator, sentenceText);
 					} else {
 						sentenceText = returnWithoutPOSTAG(tokIterator, sentenceText);
