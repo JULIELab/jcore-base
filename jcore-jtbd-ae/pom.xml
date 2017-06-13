@@ -23,7 +23,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>de.julielab.jtbd.TokenizerApplication</mainClass>
+							<mainClass>de.julielab.jcore.ae.jtbd.TokenizerApplication</mainClass>
 						</manifest>
 					</archive>
 
