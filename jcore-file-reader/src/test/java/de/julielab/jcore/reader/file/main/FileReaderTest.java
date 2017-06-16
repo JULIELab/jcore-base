@@ -105,7 +105,7 @@ public class FileReaderTest {
 		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
 		assertTrue(fileReader.hasNext());
 		fileReader.getNext(cas);
-		System.out.println("Text1: "+cas.getDocumentText());
+		System.out.println("Text 1: "+cas.getDocumentText());
 		assertTrue(cas.getDocumentText().equals(ARTIFACT_1));
 
 		Type headerType = cas.getTypeSystem().getType(Header.class.getCanonicalName());
@@ -131,7 +131,7 @@ public class FileReaderTest {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
 		fileReader.setConfigParameterValue("InputDirectory",
 				FILE_ARTIFACT_2.substring(0, FILE_ARTIFACT_2.lastIndexOf("/")));
-		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
+		//fileReader.setConfigParameterValue("UseFilenameAsDocId", true);
 		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[]{"txt"});
 		fileReader.setConfigParameterValue("SentencePerLine", true);
 		fileReader.reconfigure();
@@ -140,6 +140,12 @@ public class FileReaderTest {
 		fileReader.getNext(cas);
 		System.out.println("Text 2: " +cas.getDocumentText());
 		//assertTrue(cas.getDocumentText().equals(ARTIFACT_2));//FEHLER 1
+		
+//		Type headerType = cas.getTypeSystem().getType(Header.class.getCanonicalName());
+//		FSIterator<FeatureStructure> headerIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(headerType);
+//		assertTrue(headerIt.hasNext());
+//		Header header = (Header) headerIt.next();
+//		assertEquals("755", header.getDocId());
 		
 		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
 		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
