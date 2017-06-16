@@ -104,28 +104,28 @@ public class FileReader extends CollectionReader_ImplBase {
 		if (getConfigParameterValue(PUBLICATION_DATES_FILE) != null) {
 			publicationDatesFile = new File(((String) getConfigParameterValue(PUBLICATION_DATES_FILE)).trim());
 		}
-		
+
 		Boolean spl = (Boolean) getConfigParameterValue(SENTENCE_PER_LINE);
-		if (null == spl) {
+		if (spl == null) {
 			sentencePerLine = false;
 		} else {
 			sentencePerLine = spl;
 		}
-		
+
 		Boolean fnsu = (Boolean) getConfigParameterValue(FILE_NAME_SPLIT_UNDERSCORE);
 		if (null == fnsu) {
 			fileNameSplitUnderscore = false;
 		} else {
 			fileNameSplitUnderscore = fnsu;
 		}
-		
+
 		Boolean filenameAsDocId = (Boolean) getConfigParameterValue(FILENAME_AS_DOC_ID);
 		if (null == filenameAsDocId) {
 			useFilenameAsDocId = false;
 		} else {
 			useFilenameAsDocId = filenameAsDocId;
 		}
-		
+
 		allowedExtensionsArray = (String[]) getConfigParameterValue(ALLOWED_FILE_EXTENSIONS);
 		final Set<String> allowedExtensions = new HashSet<>();
 		if (null != allowedExtensionsArray) {
@@ -134,46 +134,44 @@ public class FileReader extends CollectionReader_ImplBase {
 				allowedExtensions.add(allowedExtension);
 			}
 		}
-		
+
 		Boolean subdir = (Boolean) getConfigParameterValue(DIRECTORY_SUBDIRS);
-		if (null == subdir){
+		if (null == subdir) {
 			useSubDirs = false;
-		}
-		else{
+		} else {
 			useSubDirs = subdir;
 		}
-		
-		
+
 		fileIndex = 0;
 
-//		if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
-//			throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
-//					new Object[] { DIRECTORY_INPUT, this.getMetaData().getName(), inputDirectory.getPath() });
-//		}
+		// if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
+		// throw new
+		// ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
+		// new Object[] { DIRECTORY_INPUT, this.getMetaData().getName(),
+		// inputDirectory.getPath() });
+		// }
 
 		files = new ArrayList<File>();
-//		File[] f = inputDirectory.listFiles(new FilenameFilter() {
-//
-//			@Override
-//			public boolean accept(File dir, String name) {
-//				if (allowedExtensions.isEmpty())
-//					return true;
-//				String extension = name.substring(name.lastIndexOf('.') + 1);
-//				return allowedExtensions.contains(extension);
-//			}
-//		});
-//		for (int i = 0; i < f.length; i++) {
-//			if (!f[i].isDirectory()) {
-//				files.add(f[i]);
-//			}
-//		}
 		
-		try
-		{
+		// File[] f = inputDirectory.listFiles(new FilenameFilter() {
+		//
+		// @Override
+		// public boolean accept(File dir, String name) {
+		// if (allowedExtensions.isEmpty())
+		// return true;
+		// String extension = name.substring(name.lastIndexOf('.') + 1);
+		// return allowedExtensions.contains(extension);
+		// }
+		// });
+		// for (int i = 0; i < f.length; i++) {
+		// if (!f[i].isDirectory()) {
+		// files.add(f[i]);
+		// }
+		// }
+
+		try {
 			createFileListByType(inputDirectory, allowedExtensions);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -200,10 +198,14 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		// open input stream to file
 		File file = files.get(fileIndex++);
+		System.out.println("FileIndex:"+fileIndex);
 
 		String text = FileUtils.readFileToString(file, "UTF-8");
-		// String text = FileUtils.file2String(file);
+		System.out.println("Filename:" +file.getName());
+		System.out.println("Stringtext: " + text);
 		
+		// String text = FileUtils.file2String(file);
+
 		// sentence per line mode
 		if (sentencePerLine) {
 			BufferedReader rdr = new BufferedReader(new StringReader(text));
@@ -211,14 +213,19 @@ public class FileReader extends CollectionReader_ImplBase {
 			List<Integer> start = new ArrayList<Integer>();
 			List<Integer> end = new ArrayList<Integer>();
 			Integer tmp = 0;
-			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
-			    lines.add(line);
-			    start.add(tmp);
-			    end.add(tmp + line.length());
-			    tmp += (line.length() + 1);
+			String line = null;
+			while ((line = rdr.readLine()) != null) {
+				System.out.println("Readline:" +rdr.readLine());
+				System.out.println("Line:" + line);
+				lines.add(line);
+				start.add(tmp);
+				end.add(tmp + line.length());
+				tmp += (line.length() + 1);
 			}
+
 			rdr.close();
-			
+			System.out.println("Size:"+lines.size());
+
 			for (Integer i = 0; i < lines.size(); i++) {
 				Sentence sent = new Sentence(jcas);
 				sent.setBegin(start.get(i));
@@ -227,7 +234,7 @@ public class FileReader extends CollectionReader_ImplBase {
 				sent.addToIndexes();
 			}
 		}
-		
+
 		// put document in CAS
 		jcas.setDocumentText(text);
 
@@ -237,7 +244,7 @@ public class FileReader extends CollectionReader_ImplBase {
 			if (extDotIndex > 0) {
 				filename = filename.substring(0, extDotIndex);
 			}
-			if ( fileNameSplitUnderscore ) {
+			if (fileNameSplitUnderscore) {
 				int extUnderScoreIndex = filename.lastIndexOf('_');
 				if (extUnderScoreIndex > 0) {
 					filename = filename.substring(0, extUnderScoreIndex);
@@ -326,7 +333,8 @@ public class FileReader extends CollectionReader_ImplBase {
 		for (int i = 0; i < path.length; i++) {
 			File file = new File(inputDirectory.getAbsolutePath() + "/" + path[i]);
 
-			if ( !useSubDirs && file.isDirectory() ) continue;
+			if (!useSubDirs && file.isDirectory())
+				continue;
 
 			String CurrentExtension = path[i].substring(path[i].lastIndexOf('.') + 1);
 			if (allowedExtensions.isEmpty() || allowedExtensions.contains(CurrentExtension)) {
