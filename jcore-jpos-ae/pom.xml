@@ -37,7 +37,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>de.julielab.jpos.JPOSApplication</mainClass>
+							<mainClass>de.julielab.jcore.ae.jpos.main.JPOSApplication</mainClass>
 						</manifest>
 					</archive>
 					<appendAssemblyId>true</appendAssemblyId>
