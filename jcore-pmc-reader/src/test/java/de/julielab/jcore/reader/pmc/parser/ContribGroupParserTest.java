@@ -21,5 +21,6 @@ public class ContribGroupParserTest {
 		ElementParsingResult parse = contribGroupParser.parse();
 		assertNotNull(parse);
 		assertEquals(1, parse.getSubResults().size());
+		assertNotNull(parse.getSubResults().get(0));
 	}
 }

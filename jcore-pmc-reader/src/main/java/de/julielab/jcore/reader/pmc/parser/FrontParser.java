@@ -106,6 +106,7 @@ public class FrontParser extends NxmlElementParser {
 				otherID.setId(p);
 				otherID.setSource("PubMed");
 				FSArray otherIDs = new FSArray(nxmlDocumentParser.cas, 1);
+				otherIDs.set(0, otherID);
 				header.setOtherIDs(otherIDs);
 			});
 			doi.ifPresent(header::setDoi);

@@ -73,6 +73,7 @@ public class PMCReaderTest {
 			assertTrue(((Journal) header.getPubTypeList(0)).getTitle().length() > 0);
 			assertNotNull(header.getAuthors());
 			assertTrue(header.getAuthors().size() > 0);
+			assertNotNull(header.getAuthors(0));
 
 			cas.reset();
 		}
@@ -194,6 +195,7 @@ public class PMCReaderTest {
 		assertNotNull(md);
 		assertNotNull(md.getKeywordList());
 		assertEquals(5, md.getKeywordList().size());
+		assertNotNull(md.getKeywordList(0));
 
 		Set<String> expectedKeywords = new HashSet<>(Arrays.asList("Baltic Sea Action Plan (BSAP)", "Costs", "Review",
 				"Eutrophication", "Hazardous substances"));
