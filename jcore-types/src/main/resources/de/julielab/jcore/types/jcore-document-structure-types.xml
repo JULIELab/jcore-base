@@ -330,6 +330,10 @@ document: title of the document</description>
           <string>other</string>
           <description/>
         </value>
+      <value>
+          <string>section</string>
+          <description/>
+        </value>
       </allowedValues>
     </typeDescription>
   <typeDescription>

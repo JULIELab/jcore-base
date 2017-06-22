@@ -8,22 +8,24 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.CasUtil;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.julielab.jcore.types.AbstractSection;
+import de.julielab.jcore.types.Caption;
 import de.julielab.jcore.types.Figure;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Journal;
@@ -75,6 +77,13 @@ public class PMCReaderTest {
 			assertTrue(header.getAuthors().size() > 0);
 			assertNotNull(header.getAuthors(0));
 
+			Collection<Caption> captions = JCasUtil.select(cas, Caption.class);
+			for (Caption c : captions)
+				assertNotNull(c.getCaptionType());
+			Collection<Title> titles = JCasUtil.select(cas, Title.class);
+			for (Title t : titles)
+				assertNotNull(t.getTitleType());
+			
 			cas.reset();
 		}
 		assertTrue(expectedIds.isEmpty());
