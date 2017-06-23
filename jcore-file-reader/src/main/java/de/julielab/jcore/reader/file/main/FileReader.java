@@ -198,10 +198,11 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		// open input stream to file
 		File file = files.get(fileIndex++);
-		System.out.println("FileIndex:"+fileIndex);
+		System.out.println("Number of Files: "+files.size());
+		System.out.println("Current FileIndex: "+fileIndex);
 
 		String text = FileUtils.readFileToString(file, "UTF-8");
-		System.out.println("Filename:" +file.getName());
+		System.out.println("Filename: " +file.getName());
 		System.out.println("Stringtext: " + text);
 		
 		// String text = FileUtils.file2String(file);
@@ -215,8 +216,8 @@ public class FileReader extends CollectionReader_ImplBase {
 			Integer tmp = 0;
 			String line = null;
 			while ((line = rdr.readLine()) != null) {
-				System.out.println("Readline:" +rdr.readLine());
-				System.out.println("Line:" + line);
+				System.out.println("Readline: " +rdr.readLine());
+				System.out.println("Line: " + line);
 				lines.add(line);
 				start.add(tmp);
 				end.add(tmp + line.length());
@@ -224,7 +225,7 @@ public class FileReader extends CollectionReader_ImplBase {
 			}
 
 			rdr.close();
-			System.out.println("Size:"+lines.size());
+			System.out.println("Size of lines: "+lines.size());
 
 			for (Integer i = 0; i < lines.size(); i++) {
 				Sentence sent = new Sentence(jcas);

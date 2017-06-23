@@ -139,6 +139,10 @@ public class FileReaderTest {
 		assertTrue(fileReader.hasNext());
 		fileReader.getNext(cas);
 		System.out.println("Text 2: " +cas.getDocumentText());
+		
+		fileReader.getNext(cas);
+		System.out.println("Text 3: " +cas.getDocumentText());
+		
 		//assertTrue(cas.getDocumentText().equals(ARTIFACT_2));//FEHLER 1
 		
 //		Type headerType = cas.getTypeSystem().getType(Header.class.getCanonicalName());
