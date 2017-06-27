@@ -215,24 +215,28 @@ public class FileReader extends CollectionReader_ImplBase {
 			List<Integer> start = new ArrayList<Integer>();
 			List<Integer> end = new ArrayList<Integer>();
 			Integer tmp = 0;
-			String line = null;
+			String line;
 			while ((line = rdr.readLine()) != null) {
-				System.out.println("Readline: " +rdr.readLine());
 				System.out.println("Line: " + line);
+				System.out.println("Readline: " + rdr.readLine());
 				lines.add(line);
 				start.add(tmp);
 				end.add(tmp + line.length());
-				tmp += (line.length() + 1);
+				tmp += (line.length()+1);
+				//int size = lines.size() + rdr.readLine().length();
+				System.out.println("Size of lines: "+lines.size());
 			}
-
+			
 			rdr.close();
-			System.out.println("Size of lines: "+lines.size());
+			
+			
 
 			for (Integer i = 0; i < lines.size(); i++) {
 				Sentence sent = new Sentence(jcas);
 				sent.setBegin(start.get(i));
 				sent.setEnd(end.get(i));
 				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
+				System.out.println(this.getClass().getName() + " : Sentence per Line Mode");
 				sent.addToIndexes();
 			}
 		}
