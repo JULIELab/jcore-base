@@ -198,18 +198,12 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		// open input stream to file
 		File file = files.get(fileIndex++);
-		System.out.println("Number of Files: "+files.size());
-		System.out.println("Current FileIndex: "+fileIndex);
 
 		String text = FileUtils.readFileToString(file, "UTF-8");
-		System.out.println("Filename: " +file.getName());
-		System.out.println("Stringtext: " + text);
 		
-		// String text = FileUtils.file2String(file);
 
 		// sentence per line mode
 		if (sentencePerLine) {
-			System.out.println("SentencePerLine is true!");
 			BufferedReader rdr = new BufferedReader(new StringReader(text));
 			List<String> lines = new ArrayList<String>();
 			List<Integer> start = new ArrayList<Integer>();
@@ -217,14 +211,11 @@ public class FileReader extends CollectionReader_ImplBase {
 			Integer tmp = 0;
 			String line;
 			while ((line = rdr.readLine()) != null) {
-				System.out.println("Line: " + line);
-				System.out.println("Readline: " + rdr.readLine());
 				lines.add(line);
 				start.add(tmp);
 				end.add(tmp + line.length());
 				tmp += (line.length()+1);
-				//int size = lines.size() + rdr.readLine().length();
-				System.out.println("Size of lines: "+lines.size());
+				int size = lines.size();
 			}
 			
 			rdr.close();
@@ -236,7 +227,6 @@ public class FileReader extends CollectionReader_ImplBase {
 				sent.setBegin(start.get(i));
 				sent.setEnd(end.get(i));
 				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
-				System.out.println(this.getClass().getName() + " : Sentence per Line Mode");
 				sent.addToIndexes();
 			}
 		}

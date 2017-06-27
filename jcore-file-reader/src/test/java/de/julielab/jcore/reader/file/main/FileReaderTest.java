@@ -82,7 +82,7 @@ public class FileReaderTest {
 			+ "Understanding the balance between IL-12, IL-23 and"
 			+ " IL-27 is crucial to the development of immune intervention in tuberculosis.";
 
-	private static final String FILE_ARTIFACT_2 = "data/files/755.txt";
+	private static final String FILE_ARTIFACT_2 = "data/sentPerLine/755.txt";
 
 	private static final Integer S_GOLD_COUNT = new Integer(5); // number of
 																// sentences in
@@ -107,7 +107,6 @@ public class FileReaderTest {
 		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
 		assertTrue(fileReader.hasNext());
 		fileReader.getNext(cas);
-		System.out.println("Text 1: " + cas.getDocumentText());
 		assertTrue(cas.getDocumentText().equals(ARTIFACT_1));
 
 		Type headerType = cas.getTypeSystem().getType(Header.class.getCanonicalName());
@@ -124,7 +123,6 @@ public class FileReaderTest {
 		assertEquals(10, date.getMonth());
 		System.out.println(
 				"pubmed-id: " + header.getDocId() + ", publication date: " + date.getYear() + "/" + date.getMonth());
-		System.out.println("----------------------------------------------------");
 
 	}
 
@@ -140,24 +138,9 @@ public class FileReaderTest {
 		fileReader.reconfigure();
 		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
 		assertTrue(fileReader.hasNext());
-//		fileReader.getNext(cas);
 		fileReader.getNext(cas);
-		System.out.println("Text 2: " + cas.getDocumentText());
 
-		System.out.println("------------------------------------------------------");
-
-		// fileReader.getNext(cas);
-		// System.out.println("Text 3: " +cas.getDocumentText());
-
-		assertTrue(cas.getDocumentText().equals(ARTIFACT_2));// FEHLER 1
-
-		// Type headerType =
-		// cas.getTypeSystem().getType(Header.class.getCanonicalName());
-		// FSIterator<FeatureStructure> headerIt =
-		// cas.getJCas().getFSIndexRepository().getAllIndexedFS(headerType);
-		// assertTrue(headerIt.hasNext());
-		// Header header = (Header) headerIt.next();
-		// assertEquals("755", header.getDocId());
+		assertTrue(cas.getDocumentText().equals(ARTIFACT_2));
 
 		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
 		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
@@ -167,7 +150,7 @@ public class FileReaderTest {
 			System.out.println("sent " + scount + ": " + ((Sentence) sentIt.next()).getCoveredText());
 		}
 		System.out.println("Sentences counted: " + scount.toString() + " -- Gold: " + S_GOLD_COUNT);
-		// assertEquals(S_GOLD_COUNT, scount);//FEHLER 2
+		assertEquals(S_GOLD_COUNT, scount);
 	}
 
 	/**
