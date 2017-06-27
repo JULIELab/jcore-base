@@ -209,6 +209,7 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		// sentence per line mode
 		if (sentencePerLine) {
+			System.out.println("SentencePerLine is true!");
 			BufferedReader rdr = new BufferedReader(new StringReader(text));
 			List<String> lines = new ArrayList<String>();
 			List<Integer> start = new ArrayList<Integer>();

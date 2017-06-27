@@ -122,6 +122,7 @@ public class FileReaderTest {
 		assertEquals(10, date.getMonth());
 		System.out.println(
 				"pubmed-id: " + header.getDocId() + ", publication date: " + date.getYear() + "/" + date.getMonth());
+		System.out.println("----------------------------------------------------");
 
 	}
 	
@@ -140,8 +141,8 @@ public class FileReaderTest {
 		fileReader.getNext(cas);
 		System.out.println("Text 2: " +cas.getDocumentText());
 		
-		fileReader.getNext(cas);
-		System.out.println("Text 3: " +cas.getDocumentText());
+		//fileReader.getNext(cas);
+		//System.out.println("Text 3: " +cas.getDocumentText());
 		
 		//assertTrue(cas.getDocumentText().equals(ARTIFACT_2));//FEHLER 1
 		
