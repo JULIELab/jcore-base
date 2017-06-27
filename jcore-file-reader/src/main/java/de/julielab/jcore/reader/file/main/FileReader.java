@@ -215,7 +215,6 @@ public class FileReader extends CollectionReader_ImplBase {
 				start.add(tmp);
 				end.add(tmp + line.length());
 				tmp += (line.length()+1);
-				int size = lines.size();
 			}
 			
 			rdr.close();
