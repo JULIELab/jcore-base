@@ -4,7 +4,7 @@
 4	.	.	.	.	_	_	_	4	punct	_	_
 
 1	I	I	PRP	PRP	_	_	_	1	nsubj	_	_
-2	like	like	VBP	VBP	_	_	_	2	nsubj	_	_
-3	sleeping	sleeping	NN	NN	_	_	_	3	nsubj	_	_
-4	.	.	.	.	_	_	_	4	nsubj	_	_
+2	like	like	VBP	VBP	_	_	_	2	aux	_	_
+3	sleeping	sleeping	NN	NN	_	_	_	3	null	_	_
+4	.	.	.	.	_	_	_	4	punct	_	_
 
