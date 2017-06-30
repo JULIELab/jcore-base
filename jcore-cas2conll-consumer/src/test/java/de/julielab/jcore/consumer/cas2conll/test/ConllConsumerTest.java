@@ -197,7 +197,7 @@ public class ConllConsumerTest {
 		FSArray arrayDep6 = new FSArray(cas, 1);
 		DependencyRelation d6 = new DependencyRelation(cas);
 		d6.setHead(t6);
-		d6.setLabel("nsubj");
+		d6.setLabel("aux");
 		arrayDep6.set(0, d6);
 		t6.setDepRel(arrayDep6);
 
@@ -222,7 +222,7 @@ public class ConllConsumerTest {
 		FSArray arrayDep7 = new FSArray(cas, 1);
 		DependencyRelation d7 = new DependencyRelation(cas);
 		d7.setHead(t7);
-		d7.setLabel("nsubj");
+		d7.setLabel("null");
 		arrayDep7.set(0, d7);
 		t7.setDepRel(arrayDep7);
 
@@ -246,7 +246,7 @@ public class ConllConsumerTest {
 		FSArray arrayDep8 = new FSArray(cas, 1);
 		DependencyRelation d8 = new DependencyRelation(cas);
 		d8.setHead(t8);
-		d8.setLabel("nsubj");
+		d8.setLabel("punct");
 		arrayDep8.set(0, d8);
 		t8.setDepRel(arrayDep8);
 
