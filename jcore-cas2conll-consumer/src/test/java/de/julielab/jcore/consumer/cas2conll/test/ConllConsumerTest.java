@@ -1,6 +1,6 @@
 package de.julielab.jcore.consumer.cas2conll.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import de.julielab.jcore.consumer.cas2conll.ConllConsumer;
 import de.julielab.jcore.types.DependencyRelation;
-import de.julielab.jcore.types.Lemma;
 import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
@@ -62,7 +61,7 @@ public class ConllConsumerTest {
 
 		Token t1 = new Token(cas, 0, 1);
 		t1.addToIndexes();
-		
+
 		FSArray array1 = new FSArray(cas, 1);
 		PennBioIEPOSTag pos1 = new PennBioIEPOSTag(cas);
 		pos1.setValue("PRP");
@@ -78,11 +77,11 @@ public class ConllConsumerTest {
 		DependencyRelation d1 = new DependencyRelation(cas);
 		d1.addToIndexes();
 
-		//-----------------------------------------------------
-		
+		// -----------------------------------------------------
+
 		Token t2 = new Token(cas, 2, 6);
 		t2.addToIndexes();
-		
+
 		FSArray array2 = new FSArray(cas, 1);
 		PennBioIEPOSTag pos2 = new PennBioIEPOSTag(cas);
 		pos2.setValue("VBP");
@@ -94,15 +93,15 @@ public class ConllConsumerTest {
 		pos22.setValue("VBP");
 		array22.set(0, pos22);
 		t2.setPosTag(array22);
-		
+
 		DependencyRelation d2 = new DependencyRelation(cas);
 		d2.addToIndexes();
-		
-		//-----------------------------------------------------
+
+		// -----------------------------------------------------
 
 		Token t3 = new Token(cas, 7, 11);
 		t3.addToIndexes();
-		
+
 		FSArray array3 = new FSArray(cas, 1);
 		PennBioIEPOSTag pos3 = new PennBioIEPOSTag(cas);
 		pos3.setValue("NN");
@@ -114,15 +113,15 @@ public class ConllConsumerTest {
 		pos33.setValue("NN");
 		array33.set(0, pos33);
 		t3.setPosTag(array33);
-		
+
 		DependencyRelation d3 = new DependencyRelation(cas);
 		d3.addToIndexes();
-		
-		//-----------------------------------------------------
+
+		// -----------------------------------------------------
 
 		Token t4 = new Token(cas, 11, 12);
 		t4.addToIndexes();
-		
+
 		FSArray array4 = new FSArray(cas, 1);
 		PennBioIEPOSTag pos4 = new PennBioIEPOSTag(cas);
 		pos4.setValue(".");
@@ -134,15 +133,15 @@ public class ConllConsumerTest {
 		pos44.setValue(".");
 		array44.set(0, pos44);
 		t4.setPosTag(array44);
-		
+
 		DependencyRelation d4 = new DependencyRelation(cas);
 		d4.addToIndexes();
-		
-		//-------------------------------------------------------
+
+		// -------------------------------------------------------
 
 		Token t5 = new Token(cas, 13, 14);
 		t5.addToIndexes();
-		
+
 		FSArray array5 = new FSArray(cas, 1);
 		PennBioIEPOSTag pos5 = new PennBioIEPOSTag(cas);
 		pos5.setValue("PRP");
@@ -154,15 +153,15 @@ public class ConllConsumerTest {
 		pos55.setValue("PRP");
 		array55.set(0, pos55);
 		t5.setPosTag(array55);
-		
+
 		DependencyRelation d5 = new DependencyRelation(cas);
 		d5.addToIndexes();
-		
-		//---------------------------------------------------------
+
+		// ---------------------------------------------------------
 
 		Token t6 = new Token(cas, 15, 19);
 		t6.addToIndexes();
-		
+
 		FSArray array6 = new FSArray(cas, 1);
 		PennBioIEPOSTag pos6 = new PennBioIEPOSTag(cas);
 		pos6.setValue("VBP");
@@ -174,15 +173,15 @@ public class ConllConsumerTest {
 		pos66.setValue("VBP");
 		array66.set(0, pos66);
 		t6.setPosTag(array66);
-		
+
 		DependencyRelation d6 = new DependencyRelation(cas);
 		d6.addToIndexes();
-		
-		//----------------------------------------------------------
+
+		// ----------------------------------------------------------
 
 		Token t7 = new Token(cas, 20, 28);
 		t7.addToIndexes();
-		
+
 		FSArray array7 = new FSArray(cas, 1);
 		PennBioIEPOSTag pos7 = new PennBioIEPOSTag(cas);
 		pos7.setValue("NN");
@@ -194,15 +193,15 @@ public class ConllConsumerTest {
 		pos77.setValue("NN");
 		array77.set(0, pos77);
 		t7.setPosTag(array77);
-		
+
 		DependencyRelation d7 = new DependencyRelation(cas);
 		d7.addToIndexes();
-		
-		//-----------------------------------------------------------
+
+		// -----------------------------------------------------------
 
 		Token t8 = new Token(cas, 28, 29);
 		t8.addToIndexes();
-		
+
 		FSArray array8 = new FSArray(cas, 1);
 		PennBioIEPOSTag pos8 = new PennBioIEPOSTag(cas);
 		pos8.setValue(".");
@@ -214,7 +213,7 @@ public class ConllConsumerTest {
 		pos88.setValue(".");
 		array88.set(0, pos88);
 		t8.setPosTag(array88);
-		
+
 		DependencyRelation d8 = new DependencyRelation(cas);
 		d8.addToIndexes();
 
@@ -227,9 +226,9 @@ public class ConllConsumerTest {
 		assertTrue(new File("src/test/resources/data/conllTest.CONLL").exists());
 
 		List<String> file = readFile("src/test/resources/data/conllTest.CONLL");
-     	assertTrue(file.contains(expectedText));
+		assertTrue(file.contains(expectedText));
 
-		System.out.println(file.get(0) + "\n" +file.get(1));
+		System.out.println(file.get(0) + "\n" + file.get(1));
 
 	}
 
