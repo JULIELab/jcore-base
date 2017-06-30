@@ -27,7 +27,10 @@ public class ConllConsumerTest {
 
 	private String expectedText = "1" + "\t" + "I" + "\t" + "I" + "\t" + "PRP" + "\t" + "PRP" + "\t" + "_" + "\t" + "_"
 			+ "\t" + "_" + "\t" + "2" + "\t" + "nsubj" + "\t" + "_" + "\t" + "_";
-
+/**
+ * just tests if there is an error with an empty CAS and if a new file is made
+ * @throws Exception
+ */
 	@Test
 	public void testProcessEmptyCAS() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
@@ -44,7 +47,10 @@ public class ConllConsumerTest {
 
 		assertTrue(new File("src/test/resources/data/emptyFile.CONLL").exists());
 	}
-
+/**
+ * tests the process method with sentence examples
+ * @throws Exception
+ */
 	@Test
 	public void testProcess() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
