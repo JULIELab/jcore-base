@@ -80,8 +80,7 @@ public class ConllConsumerTest {
 		d1.setLabel("nsubj");
 		arrayDep1.set(0, d1);
 		t1.setDepRel(arrayDep1);
-		
-		
+
 		// -----------------------------------------------------
 
 		Token t2 = new Token(cas, 2, 6);
@@ -98,14 +97,13 @@ public class ConllConsumerTest {
 		pos22.setValue("VBP");
 		array22.set(0, pos22);
 		t2.setPosTag(array22);
-		
+
 		FSArray arrayDep2 = new FSArray(cas, 1);
 		DependencyRelation d2 = new DependencyRelation(cas);
 		d2.setHead(t2);
 		d2.setLabel("null");
 		arrayDep2.set(0, d2);
 		t2.setDepRel(arrayDep2);
-
 
 		// -----------------------------------------------------
 
@@ -249,15 +247,15 @@ public class ConllConsumerTest {
 		System.out.println(file.get(0) + "\n" + file.get(1) + "\n" + file.get(2) + "\n" + file.get(3));
 
 	}
-	
+
 	@Test
 	public void testProcessWithDependencyParse() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(ConllConsumer.class,
 				ConllConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data", ConllConsumer.PARAM_DEPENDENCY_PARSE, true);
-		
+
 		cas.setDocumentText("I love food. I like sleeping.");
-		
+
 		Sentence s1 = new Sentence(cas, 0, 12);
 		s1.addToIndexes();
 
@@ -431,10 +429,10 @@ public class ConllConsumerTest {
 		assertTrue(new File("src/test/resources/data/conllTestWithDependencyParse.CONLL").exists());
 
 		List<String> file = readFile("src/test/resources/data/conllTestWithDependencyParse.CONLL");
-		//assertTrue(file.contains(expectedText));
+		// assertTrue(file.contains(expectedText));
 
 		System.out.println(file.get(0) + "\n" + file.get(1));
-		
+
 	}
 
 	public List<String> readFile(String fileName) throws IOException {
