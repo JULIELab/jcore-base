@@ -170,8 +170,12 @@ public class ConllConsumerTest {
 		array55.set(0, pos55);
 		t5.setPosTag(array55);
 
+		FSArray arrayDep5 = new FSArray(cas, 1);
 		DependencyRelation d5 = new DependencyRelation(cas);
-		d5.addToIndexes();
+		d5.setHead(t5);
+		d5.setLabel("nsubj");
+		arrayDep5.set(0, d5);
+		t5.setDepRel(arrayDep5);
 
 		// ---------------------------------------------------------
 
@@ -190,8 +194,13 @@ public class ConllConsumerTest {
 		array66.set(0, pos66);
 		t6.setPosTag(array66);
 
+		FSArray arrayDep6 = new FSArray(cas, 1);
 		DependencyRelation d6 = new DependencyRelation(cas);
-		d6.addToIndexes();
+		d6.setHead(t6);
+		d6.setLabel("nsubj");
+		arrayDep6.set(0, d6);
+		t6.setDepRel(arrayDep6);
+
 
 		// ----------------------------------------------------------
 
@@ -210,8 +219,12 @@ public class ConllConsumerTest {
 		array77.set(0, pos77);
 		t7.setPosTag(array77);
 
+		FSArray arrayDep7 = new FSArray(cas, 1);
 		DependencyRelation d7 = new DependencyRelation(cas);
-		d7.addToIndexes();
+		d7.setHead(t7);
+		d7.setLabel("nsubj");
+		arrayDep7.set(0, d7);
+		t7.setDepRel(arrayDep7);
 
 		// -----------------------------------------------------------
 
@@ -230,8 +243,12 @@ public class ConllConsumerTest {
 		array88.set(0, pos88);
 		t8.setPosTag(array88);
 
+		FSArray arrayDep8 = new FSArray(cas, 1);
 		DependencyRelation d8 = new DependencyRelation(cas);
-		d8.addToIndexes();
+		d8.setHead(t8);
+		d8.setLabel("nsubj");
+		arrayDep8.set(0, d8);
+		t8.setDepRel(arrayDep8);
 
 		Header header = new Header(cas);
 		header.setDocId("conllTest");
