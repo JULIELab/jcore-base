@@ -27,7 +27,7 @@ import de.julielab.jcore.types.pubmed.Header;
 public class ConllConsumerTest {
 
 	private String expectedText = "1" + "\t" + "I" + "\t" + "I" + "\t" + "PRP" + "\t" + "PRP" + "\t" + "_" + "\t" + "_"
-			+ "\t" + "_" + "\t" + "0" + "\t" + "_" + "\t" + "_" + "\t" + "_" + "\n";
+			+ "\t" + "_" + "\t" + "0" + "\t" + "_" + "\t" + "_" + "\t" + "_";
 
 	@Test
 	public void testProcessEmptyCAS() throws Exception {
@@ -227,9 +227,9 @@ public class ConllConsumerTest {
 		assertTrue(new File("src/test/resources/data/conllTest.CONLL").exists());
 
 		List<String> file = readFile("src/test/resources/data/conllTest.CONLL");
-//		assertTrue(file.contains(expectedText));
+     	assertTrue(file.contains(expectedText));
 
-		System.out.println(file.get(0));
+		System.out.println(file.get(0) + "\n" +file.get(1));
 
 	}
 
