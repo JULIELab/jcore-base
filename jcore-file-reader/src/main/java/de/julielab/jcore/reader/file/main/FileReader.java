@@ -211,7 +211,8 @@ public class FileReader extends CollectionReader_ImplBase {
 			List<Integer> start = new ArrayList<Integer>();
 			List<Integer> end = new ArrayList<Integer>();
 			Integer tmp = 0;
-			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
+			String line;
+			while ((line = rdr.readLine()) != null) {
 			    lines.add(line);
 			    start.add(tmp);
 			    end.add(tmp + line.length());
