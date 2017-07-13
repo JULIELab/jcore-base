@@ -43,6 +43,7 @@ import org.junit.Test;
 
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.pubmed.Header;
 
 public class FileReaderTest {
@@ -172,7 +173,7 @@ public class FileReaderTest {
 		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
 		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[]{"txt"});
 		fileReader.setConfigParameterValue("SentencePerLine", true);
-		fileReader.setConfigParameterValue("Tokenized", true);
+		fileReader.setConfigParameterValue("TokenByToken", true);
 		fileReader.reconfigure();
 		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
 		assertTrue(fileReader.hasNext());
@@ -181,10 +182,19 @@ public class FileReaderTest {
 		
 		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
 		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
+		Type tokType = cas.getTypeSystem().getType(Token.class.getCanonicalName());
+		FSIterator<FeatureStructure> tokIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(tokType);
 		Integer scount = 0;
 		while (sentIt.hasNext()) {
 			scount += 1;
 			System.out.println("sent " + scount + ": " + ((Sentence) sentIt.next()).getCoveredText());
+			Integer tcount = 0;
+			while (tokIt.hasNext()) {
+				System.out.println("entered the inner loop");
+				tcount += 1;
+				System.out.println("token " + tcount + ": " + ((Token) tokIt.next()).getCoveredText());
+			}
+			System.out.println("Tokens counted: " + tcount.toString() + " -- Gold ");
 		}
 		System.out.println("Sentences counted: " + scount.toString() + " -- Gold: " + S_GOLD_COUNT);
 		assertEquals(S_GOLD_COUNT, scount);

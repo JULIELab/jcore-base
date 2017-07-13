@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.cas.CAS;
@@ -43,11 +44,12 @@ import org.apache.uima.util.ProgressImpl;
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 public class FileReader extends CollectionReader_ImplBase {
 
 	/**
-	 * Folder with docments; as of now (11/2016) no subdir's are crawled.
+	 * Folder with documents; as of now (11/2016) no subdir's are crawled.
 	 */
 	public static final String DIRECTORY_INPUT = "InputDirectory";
 	/**
@@ -69,6 +71,10 @@ public class FileReader extends CollectionReader_ImplBase {
 	/**
 	 * 
 	 */
+	public static final String TOKEN_BY_TOKEN = "TokenByToken";
+	/**
+	 * 
+	 */
 	public static final String FILE_NAME_SPLIT_UNDERSCORE = "FileNameSplitUnderscore";
 	/**
 	 * 
@@ -87,6 +93,8 @@ public class FileReader extends CollectionReader_ImplBase {
 	private File publicationDatesFile;
 	@ConfigurationParameter(name = SENTENCE_PER_LINE, mandatory = false)
 	private boolean sentencePerLine;
+	@ConfigurationParameter(name = TOKEN_BY_TOKEN, mandatory = false)
+	private boolean tokenByToken;
 	@ConfigurationParameter(name = FILE_NAME_SPLIT_UNDERSCORE, mandatory = false)
 	private boolean fileNameSplitUnderscore;
 	@ConfigurationParameter(name = ALLOWED_FILE_EXTENSIONS, mandatory = false)
@@ -104,28 +112,36 @@ public class FileReader extends CollectionReader_ImplBase {
 		if (getConfigParameterValue(PUBLICATION_DATES_FILE) != null) {
 			publicationDatesFile = new File(((String) getConfigParameterValue(PUBLICATION_DATES_FILE)).trim());
 		}
-		
+
 		Boolean spl = (Boolean) getConfigParameterValue(SENTENCE_PER_LINE);
 		if (null == spl) {
 			sentencePerLine = false;
 		} else {
 			sentencePerLine = spl;
 		}
-		
+		// new
+
+		Boolean tokspl = (Boolean) getConfigParameterValue(TOKEN_BY_TOKEN);
+		if (null == tokspl) {
+			tokenByToken = false;
+		} else {
+			tokenByToken = tokspl;
+		}
+
 		Boolean fnsu = (Boolean) getConfigParameterValue(FILE_NAME_SPLIT_UNDERSCORE);
 		if (null == fnsu) {
 			fileNameSplitUnderscore = false;
 		} else {
 			fileNameSplitUnderscore = fnsu;
 		}
-		
+
 		Boolean filenameAsDocId = (Boolean) getConfigParameterValue(FILENAME_AS_DOC_ID);
 		if (null == filenameAsDocId) {
 			useFilenameAsDocId = false;
 		} else {
 			useFilenameAsDocId = filenameAsDocId;
 		}
-		
+
 		allowedExtensionsArray = (String[]) getConfigParameterValue(ALLOWED_FILE_EXTENSIONS);
 		final Set<String> allowedExtensions = new HashSet<>();
 		if (null != allowedExtensionsArray) {
@@ -134,46 +150,43 @@ public class FileReader extends CollectionReader_ImplBase {
 				allowedExtensions.add(allowedExtension);
 			}
 		}
-		
+
 		Boolean subdir = (Boolean) getConfigParameterValue(DIRECTORY_SUBDIRS);
-		if (null == subdir){
+		if (null == subdir) {
 			useSubDirs = false;
-		}
-		else{
+		} else {
 			useSubDirs = subdir;
 		}
-		
-		
+
 		fileIndex = 0;
 
-//		if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
-//			throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
-//					new Object[] { DIRECTORY_INPUT, this.getMetaData().getName(), inputDirectory.getPath() });
-//		}
+		// if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
+		// throw new
+		// ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
+		// new Object[] { DIRECTORY_INPUT, this.getMetaData().getName(),
+		// inputDirectory.getPath() });
+		// }
 
 		files = new ArrayList<File>();
-//		File[] f = inputDirectory.listFiles(new FilenameFilter() {
-//
-//			@Override
-//			public boolean accept(File dir, String name) {
-//				if (allowedExtensions.isEmpty())
-//					return true;
-//				String extension = name.substring(name.lastIndexOf('.') + 1);
-//				return allowedExtensions.contains(extension);
-//			}
-//		});
-//		for (int i = 0; i < f.length; i++) {
-//			if (!f[i].isDirectory()) {
-//				files.add(f[i]);
-//			}
-//		}
-		
-		try
-		{
+		// File[] f = inputDirectory.listFiles(new FilenameFilter() {
+		//
+		// @Override
+		// public boolean accept(File dir, String name) {
+		// if (allowedExtensions.isEmpty())
+		// return true;
+		// String extension = name.substring(name.lastIndexOf('.') + 1);
+		// return allowedExtensions.contains(extension);
+		// }
+		// });
+		// for (int i = 0; i < f.length; i++) {
+		// if (!f[i].isDirectory()) {
+		// files.add(f[i]);
+		// }
+		// }
+
+		try {
 			createFileListByType(inputDirectory, allowedExtensions);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -203,7 +216,7 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		String text = FileUtils.readFileToString(file, "UTF-8");
 		// String text = FileUtils.file2String(file);
-		
+
 		// sentence per line mode
 		if (sentencePerLine) {
 			BufferedReader rdr = new BufferedReader(new StringReader(text));
@@ -213,13 +226,13 @@ public class FileReader extends CollectionReader_ImplBase {
 			Integer tmp = 0;
 			String line;
 			while ((line = rdr.readLine()) != null) {
-			    lines.add(line);
-			    start.add(tmp);
-			    end.add(tmp + line.length());
-			    tmp += (line.length() + 1);
+				lines.add(line);
+				start.add(tmp);
+				end.add(tmp + line.length());
+				tmp += (line.length() + 1);
 			}
 			rdr.close();
-			
+
 			for (Integer i = 0; i < lines.size(); i++) {
 				Sentence sent = new Sentence(jcas);
 				sent.setBegin(start.get(i));
@@ -228,7 +241,60 @@ public class FileReader extends CollectionReader_ImplBase {
 				sent.addToIndexes();
 			}
 		}
-		
+
+		if (sentencePerLine && tokenByToken) {
+			BufferedReader rdr = new BufferedReader(new StringReader(text));
+			List<String> lines = new ArrayList<>();
+			List<Integer> start = new ArrayList<>();
+			List<Integer> end = new ArrayList<>();
+			List<String> tokens = new ArrayList<>();
+			List<Integer> tokStart = new ArrayList<>();
+			List<Integer> tokEnd = new ArrayList<>();
+			Integer tmp = 0;
+			String line;
+			Integer numberOfTokens = 0;
+			//Integer tmpTok = 0;
+			while ((line = rdr.readLine()) != null) {
+				lines.add(line);
+				start.add(tmp);
+				end.add(tmp + line.length());
+				tmp += (line.length() + 1);
+				StringTokenizer tokenizer = new StringTokenizer(line);
+				numberOfTokens = tokenizer.countTokens();
+
+				while (tokenizer.hasMoreTokens()) {
+					tokens.add(tokenizer.nextToken());
+//					tokStart.add(tmpTok);
+//					tokEnd.add(tmpTok + tokenizer.nextToken().length());
+//					tmpTok += (tokenizer.nextToken().length() + 1);
+				}
+				
+				for (String token : tokens) {
+					System.out.println(token);
+				}
+
+				System.out.println("Number of tokens: " + numberOfTokens);
+				System.out.println("---------------End of Line--------------------");
+			}
+			rdr.close();
+
+			for (Integer i = 0; i < lines.size(); i++) {
+				Sentence sent = new Sentence(jcas);
+				sent.setBegin(start.get(i));
+				sent.setEnd(end.get(i));
+				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
+				sent.addToIndexes();
+				for (Integer j = 0; j < tokens.size(); j++) {
+				 Token token = new Token(jcas);
+				 token.setBegin(tokStart.get(j));
+				 token.setEnd(tokEnd.get(j));
+				 token.setComponentId(this.getClass().getName() + " :Tokenized Mode" );
+				 token.addToIndexes();
+				 }
+
+			}
+		}
+
 		// put document in CAS
 		jcas.setDocumentText(text);
 
@@ -238,7 +304,7 @@ public class FileReader extends CollectionReader_ImplBase {
 			if (extDotIndex > 0) {
 				filename = filename.substring(0, extDotIndex);
 			}
-			if ( fileNameSplitUnderscore ) {
+			if (fileNameSplitUnderscore) {
 				int extUnderScoreIndex = filename.lastIndexOf('_');
 				if (extUnderScoreIndex > 0) {
 					filename = filename.substring(0, extUnderScoreIndex);
@@ -327,7 +393,8 @@ public class FileReader extends CollectionReader_ImplBase {
 		for (int i = 0; i < path.length; i++) {
 			File file = new File(inputDirectory.getAbsolutePath() + "/" + path[i]);
 
-			if ( !useSubDirs && file.isDirectory() ) continue;
+			if (!useSubDirs && file.isDirectory())
+				continue;
 
 			String CurrentExtension = path[i].substring(path[i].lastIndexOf('.') + 1);
 			if (allowedExtensions.isEmpty() || allowedExtensions.contains(CurrentExtension)) {
