@@ -259,6 +259,7 @@ public class FileReader extends CollectionReader_ImplBase {
 				start.add(tmp);
 				end.add(tmp + line.length());
 				tmp += (line.length() + 1);
+				
 				StringTokenizer tokenizer = new StringTokenizer(line);
 				numberOfTokens = tokenizer.countTokens();
 
@@ -289,6 +290,7 @@ public class FileReader extends CollectionReader_ImplBase {
 				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
 				sent.addToIndexes();
 				for (Integer j = 0; j < tokens.size(); j++) {
+			     System.out.println("Tokens: " + tokens.size());
 				 Token token = new Token(jcas);
 				 token.setBegin(tokStart.get(j));
 				 token.setEnd(tokEnd.get(j));
