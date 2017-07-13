@@ -101,12 +101,19 @@ public class FileReaderTest {
 
 	private static final String FILE_ARTIFACT_3 = "data/token/333.txt";
 
+	private final static String ARTIFACT_4 = "I love food . \nI like sleeping very much .";
+
+	private static final String FILE_ARTIFACT_4 = "data/example/222.txt";
+	
+	private static final Integer SIMPLE_GOLD = new Integer(2);
+
 	@BeforeClass
 
 	public static void setUp() throws Exception {
 		writeArtifact(ARTIFACT_1, FILE_ARTIFACT_1);
 		writeArtifact(ARTIFACT_2, FILE_ARTIFACT_2);
 		writeArtifact(ARTIFACT_3, FILE_ARTIFACT_3);
+		writeArtifact(ARTIFACT_4, FILE_ARTIFACT_4);
 	}
 
 	@Test
@@ -169,25 +176,26 @@ public class FileReaderTest {
 	public void testTokenizedMode() throws Exception {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
 		fileReader.setConfigParameterValue("InputDirectory",
-				FILE_ARTIFACT_3.substring(0, FILE_ARTIFACT_3.lastIndexOf("/")));
+				FILE_ARTIFACT_4.substring(0, FILE_ARTIFACT_4.lastIndexOf("/")));
 		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
-		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[]{"txt"});
+		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[] { "txt" });
 		fileReader.setConfigParameterValue("SentencePerLine", true);
 		fileReader.setConfigParameterValue("TokenByToken", true);
 		fileReader.reconfigure();
 		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
 		assertTrue(fileReader.hasNext());
 		fileReader.getNext(cas);
-		assertTrue(cas.getDocumentText().equals(ARTIFACT_3));
-		
+		assertTrue(cas.getDocumentText().equals(ARTIFACT_4));
+
 		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
 		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
-		Type tokType = cas.getTypeSystem().getType(Token.class.getCanonicalName());
-		FSIterator<FeatureStructure> tokIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(tokType);
+
 		Integer scount = 0;
 		while (sentIt.hasNext()) {
 			scount += 1;
 			System.out.println("sent " + scount + ": " + ((Sentence) sentIt.next()).getCoveredText());
+			Type tokType = cas.getTypeSystem().getType(Token.class.getCanonicalName());
+			FSIterator<FeatureStructure> tokIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(tokType);
 			Integer tcount = 0;
 			while (tokIt.hasNext()) {
 				System.out.println("entered the inner loop");
@@ -196,8 +204,8 @@ public class FileReaderTest {
 			}
 			System.out.println("Tokens counted: " + tcount.toString() + " -- Gold ");
 		}
-		System.out.println("Sentences counted: " + scount.toString() + " -- Gold: " + S_GOLD_COUNT);
-		assertEquals(S_GOLD_COUNT, scount);
+		System.out.println("Sentences counted: " + scount.toString() + " -- Gold: " + SIMPLE_GOLD);
+		assertEquals(SIMPLE_GOLD, scount);
 	}
 
 	/**

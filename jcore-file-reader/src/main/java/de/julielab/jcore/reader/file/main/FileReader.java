@@ -218,7 +218,7 @@ public class FileReader extends CollectionReader_ImplBase {
 		// String text = FileUtils.file2String(file);
 
 		// sentence per line mode
-		if (sentencePerLine) {
+		if (sentencePerLine && !tokenByToken) {
 			BufferedReader rdr = new BufferedReader(new StringReader(text));
 			List<String> lines = new ArrayList<String>();
 			List<Integer> start = new ArrayList<Integer>();
@@ -264,13 +264,17 @@ public class FileReader extends CollectionReader_ImplBase {
 
 				while (tokenizer.hasMoreTokens()) {
 					tokens.add(tokenizer.nextToken());
-					//tokStart.add(tmpTok);
-					//tokEnd.add(tmpTok + tokenizer.nextToken().length());
+//					tokStart.add(0);
+//					tokEnd.add(tokenizer.nextToken().length());
 					//tmpTok += (tokenizer.nextToken().length() + 1);
 				}
 				
 				for (String token : tokens) {
 					System.out.println(token);
+					tokStart.add(tmpTok); 
+					tokEnd.add(tmpTok + token.length());
+					tmpTok += (token.length() +1);
+					System.out.println(token.length());
 				}
 
 				System.out.println("Number of tokens: " + numberOfTokens);
@@ -284,14 +288,13 @@ public class FileReader extends CollectionReader_ImplBase {
 				sent.setEnd(end.get(i));
 				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
 				sent.addToIndexes();
-//				for (Integer j = 0; j < tokens.size(); j++) {
-//				 Token token = new Token(jcas);
-//				 token.setBegin(tokStart.get(j));
-//				 token.setEnd(tokEnd.get(j));
-//				 token.setComponentId(this.getClass().getName() + " :Tokenized Mode" );
-//				 token.addToIndexes();
-//				 }
-
+				for (Integer j = 0; j < tokens.size(); j++) {
+				 Token token = new Token(jcas);
+				 token.setBegin(tokStart.get(j));
+				 token.setEnd(tokEnd.get(j));
+				 token.setComponentId(this.getClass().getName() + " :Tokenized Mode" );
+				 token.addToIndexes();
+				 }
 			}
 		}
 
