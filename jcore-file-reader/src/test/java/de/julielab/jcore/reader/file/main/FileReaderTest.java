@@ -202,7 +202,7 @@ public class FileReaderTest {
 				tcount += 1;
 				System.out.println("token " + tcount + ": " + ((Token) tokIt.next()).getCoveredText());
 			}
-			System.out.println("Tokens counted: " + tcount.toString() + " -- Gold ");
+			System.out.println("Tokens counted: " + tcount.toString() + " -- Gold " + 10);
 			System.out.println("-----------------------------------------------------------------------");
 		}
 		System.out.println("Sentences counted: " + scount.toString() + " -- Gold: " + SIMPLE_GOLD);

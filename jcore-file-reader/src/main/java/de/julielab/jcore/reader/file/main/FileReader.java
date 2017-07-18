@@ -284,13 +284,14 @@ public class FileReader extends CollectionReader_ImplBase {
 			rdr.close();
 
 			for (Integer i = 0; i < lines.size(); i++) {
+				System.out.println("Line: " + lines.get(i));
 				Sentence sent = new Sentence(jcas);
 				sent.setBegin(start.get(i));
 				sent.setEnd(end.get(i));
 				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
 				sent.addToIndexes();
 				for (Integer j = 0; j < tokens.size(); j++) {
-			     System.out.println("Tokens: " + tokens.size());
+			     System.out.println("Token: " + tokens.get(j));
 				 Token token = new Token(jcas);
 				 token.setBegin(tokStart.get(j));
 				 token.setEnd(tokEnd.get(j));
