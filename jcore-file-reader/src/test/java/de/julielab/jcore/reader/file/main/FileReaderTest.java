@@ -188,6 +188,7 @@ public class FileReaderTest {
 		assertTrue(cas.getDocumentText().equals(ARTIFACT_3));
 
 		System.out.println("____________Test starts________________");
+		
 		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
 		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
 
@@ -203,10 +204,11 @@ public class FileReaderTest {
 		
 		Type tokType = cas.getTypeSystem().getType(Token.class.getCanonicalName());
 		FSIterator<FeatureStructure> tokIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(tokType);
+		
 		Integer tcount = 0;
 		while (tokIt.hasNext()) {
 			tcount += 1;
-			System.out.println("token " + tcount + ": " + ((Token) tokIt.next()).getCoveredText());
+			System.out.println("tok " + tcount + ": " + ((Token) tokIt.next()).getCoveredText());
 		}
 		System.out.println("Tokens counted: " + tcount.toString() + " -- Gold " + 126);
 		System.out.println("-----------------------------------------------------------------------");

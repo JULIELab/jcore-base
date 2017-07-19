@@ -310,7 +310,7 @@ public class FileReader extends CollectionReader_ImplBase {
 				System.out.println("Global Number Of Token: " + globalNumberOfToken);
 
 				for (Integer i = 0; i < lines.size(); i++) {
-					System.out.println("Line: " + lines.get(i));
+					System.out.println("Sentence: " + lines.get(i));
 					Sentence sent = new Sentence(jcas);
 					sent.setBegin(start.get(i));
 					sent.setEnd(end.get(i));
@@ -319,12 +319,13 @@ public class FileReader extends CollectionReader_ImplBase {
 					System.out.println("-----------------------------------------");
 
 				}
+				
 				for (Integer j = 0; j < tokensList.size(); j++) {
 					System.out.println("Token: " + tokensList.get(j));
 					Token token = new Token(jcas);
 					token.setBegin(tokStart.get(j));
 					token.setEnd(tokEnd.get(j));
-					token.setComponentId(this.getClass().getName() + "Tokenized Mode");
+					token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
 					token.addToIndexes();
 
 				}
