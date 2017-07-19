@@ -104,7 +104,7 @@ public class FileReaderTest {
 	private final static String ARTIFACT_4 = "I love food . \nI like sleeping very much .";
 
 	private static final String FILE_ARTIFACT_4 = "data/example/222.txt";
-	
+
 	private static final Integer SIMPLE_GOLD = new Integer(2);
 
 	@BeforeClass
@@ -187,6 +187,7 @@ public class FileReaderTest {
 		fileReader.getNext(cas);
 		assertTrue(cas.getDocumentText().equals(ARTIFACT_4));
 
+		System.out.println("____________Test starts________________");
 		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
 		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
 
@@ -194,11 +195,12 @@ public class FileReaderTest {
 		while (sentIt.hasNext()) {
 			scount += 1;
 			System.out.println("sent " + scount + ": " + ((Sentence) sentIt.next()).getCoveredText());
+			
 			Type tokType = cas.getTypeSystem().getType(Token.class.getCanonicalName());
 			FSIterator<FeatureStructure> tokIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(tokType);
+			
 			Integer tcount = 0;
 			while (tokIt.hasNext()) {
-				System.out.println("entered the inner loop");
 				tcount += 1;
 				System.out.println("token " + tcount + ": " + ((Token) tokIt.next()).getCoveredText());
 			}
@@ -220,7 +222,6 @@ public class FileReaderTest {
 
 		CollectionReader reader = null;
 		XMLInputSource inputSource = null;
-		;
 		ResourceSpecifier readerResourceSpecifier = null;
 		try {
 			inputSource = new XMLInputSource(descriptor);
