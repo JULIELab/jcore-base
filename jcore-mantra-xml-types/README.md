@@ -1,4 +1,2 @@
 # JCoRe Mantra XML Types
-
-### Reference
-[1] Some Reference
+The jcore-mantra-xml-types are used for (de)serializing the IEXML format in the IEXML/MANTRA reader and consumer.

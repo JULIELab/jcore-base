@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
@@ -47,7 +48,9 @@ public class DefaultElementParser extends NxmlElementParser {
 		try {
 			// checkCursorPosition();
 			int elementDepth = vn.getCurrentDepth();
-			boolean omitElement = determineOmitElement();
+			// boolean omitElement = determineOmitElement();
+			boolean omitElement = (boolean) getApplicableProperties().orElse(Collections.emptyMap())
+					.getOrDefault(ElementProperties.OMIT_ELEMENT, false);
 			if (omitElement) {
 				int firstIndexAfterElement = skipElement();
 				result.setLastTokenIndex(firstIndexAfterElement);
@@ -107,50 +110,27 @@ public class DefaultElementParser extends NxmlElementParser {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private boolean determineOmitElement() throws NavException {
-		// default: the element is configured to be omitted or not
-		boolean omitElement = (boolean) nxmlDocumentParser.getTagProperties(elementName)
-				.getOrDefault(ElementProperties.OMIT_ELEMENT, false);
-
-		// however, the element properties file might specify specific
-		// attribute-value combinations for the element which are might define
-		// different properties
-		if (nxmlDocumentParser.getTagProperties(elementName).get(ElementProperties.ATTRIBUTES) != null) {
-			// the list of defined attribute properties in the element
-			// properties file
-			List<Map<String, Object>> attributeList = (List<Map<String, Object>>) nxmlDocumentParser
-					.getTagProperties(elementName).get(ElementProperties.ATTRIBUTES);
-
-			// the actual properties of the current element
-			// we just go through the attributes and build a name-value map
-			Map<String, String> attributesOfElement = getElementAttributes();
-
-			// now check if an attribute-value pair defined in the element
-			// properties file matches this element;
-			// if so, check if it defines the omission of the element
-			for (Map<String, Object> attribute : attributeList) {
-				String attributeValue = attributesOfElement.get(attribute.get(ElementProperties.NAME));
-				if (attributeValue != null && attributeValue.equals(attribute.get(ElementProperties.VALUE))
-						&& attribute.containsKey(ElementProperties.OMIT_ELEMENT)) {
-					omitElement = (boolean) attribute.get(ElementProperties.OMIT_ELEMENT);
-				}
-			}
-		}
-
-		// A path specification overwrites the attributes; this is because a
-		// different path kind of denotes a different element. If requried, we
-		// will have to allow the attributes properties within paths as well.
-		Optional<Map<String, Object>> pathMap = getPathMap();
-		if (pathMap.isPresent())
-			omitElement = (boolean) pathMap.get().getOrDefault(ElementProperties.OMIT_ELEMENT, false);
-
-		return omitElement;
-	}
-
-	// for access to the local ParsingResult
+	// for access to the local ParsingResult; may be overwritten by extending
+	// classes
 	protected void editResult(ElementParsingResult result) {
-		// does nothing by default, just here for override
+		// Default behavior: Add default feature values to the created
+		// annotation, if this is configured in the element properties for the
+		// current annotation type
+		String typeName = (String) nxmlDocumentParser.getTagProperties(elementName).getOrDefault(ElementProperties.TYPE,
+				ElementProperties.TYPE_NONE);
+
+		if (typeName.equals(ElementProperties.TYPE_NONE))
+			return;
+
+		@SuppressWarnings("unchecked")
+		Map<String, Object> defaultFeatureValues = (Map<String, Object>) nxmlDocumentParser
+				.getTagProperties(elementName)
+				.getOrDefault(ElementProperties.DEFAULT_FEATURE_VALUES, Collections.emptyMap());
+		for (String featureName : defaultFeatureValues.keySet()) {
+			Feature feature = nxmlDocumentParser.cas.getTypeSystem().getType(typeName)
+					.getFeatureByBaseName(featureName);
+			result.getAnnotation().setFeatureValueFromString(feature, (String) defaultFeatureValues.get(featureName));
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -216,10 +196,9 @@ public class DefaultElementParser extends NxmlElementParser {
 	 */
 	protected Annotation getParsingResultAnnotation() throws ElementParsingException {
 		try {
-			String annotationClassName = (String) nxmlDocumentParser.getTagProperties(elementName)
+			String annotationClassName = (String) getApplicableProperties().orElse(Collections.emptyMap())
 					.getOrDefault(ElementProperties.TYPE, ElementProperties.TYPE_NONE);
 
-			annotationClassName = determineAnnotationClassName(annotationClassName);
 			if (annotationClassName.trim().equals(ElementProperties.TYPE_NONE))
 				return null;
 
@@ -235,41 +214,57 @@ public class DefaultElementParser extends NxmlElementParser {
 	}
 
 	/**
-	 * Checks if the current element has one or more types given via paths. If
-	 * so, checks for the most specific path matching the current element path
-	 * and selects the respective annotation type. The default type name given
-	 * directly to the annotation type will be overwritten.
+	 * Looks up the current element name in the element properties configuration
+	 * file. It takes into account path and attribute-value specifications that
+	 * might define different properties for certain element paths or
+	 * attribute-value combinations. First, the path is checked, then the
+	 * attributes.
 	 * 
-	 * @param defaultClassName
-	 *            The simple type name given directly to the element name.
-	 * @return The final class name.
+	 * @return An optional with the found properties map or an empty optional if
+	 *         there is no configuration for the current element in the
+	 *         properties file.
 	 * @throws NavException
+	 *             If something during parsing goes wrong.
 	 */
 	@SuppressWarnings("unchecked")
-	private String determineAnnotationClassName(String defaultClassName) throws NavException {
-		List<Object> paths = (List<Object>) nxmlDocumentParser.getTagProperties(elementName)
-				.getOrDefault(ElementProperties.PATHS, Collections.emptyList());
-		String currentElementPath = null;
-		if (!paths.isEmpty()) {
-			currentElementPath = getElementPath();
-		}
-		String longestPathFragment = "";
-		int longestPathFragmentLength = 0;
-		for (Object o : paths) {
-			Map<String, String> pathMap = (Map<String, String>) o;
-			String pathFragment = pathMap.get(ElementProperties.PATH);
-			if (currentElementPath.endsWith(pathFragment)) {
-				int pathFragmentLength = pathFragment.split("/").length;
-				if (pathFragmentLength > longestPathFragmentLength) {
-					longestPathFragment = pathFragment;
-					longestPathFragmentLength = pathFragmentLength;
-					defaultClassName = pathMap.get(ElementProperties.TYPE);
-				} else if (pathFragment.length() == longestPathFragmentLength)
-					throw new IllegalArgumentException("The given type paths for element " + elementName
-							+ " are ambiguous. The given paths " + pathFragment + " as well as " + longestPathFragment
-							+ " are applicable but both are of same length and thus none is more specific than the other. At least one of the path must be made more specific.");
+	private Optional<Map<String, Object>> getApplicableProperties() throws NavException {
+		Optional<Map<String, Object>> applicableProperties = null;
+
+		// First: Check the paths
+		applicableProperties = getPathMap();
+
+		// If no paths match this element, check the attributes
+		// however, the element properties file might specify specific
+		// attribute-value combinations for the element which might define
+		// different properties
+		if (!applicableProperties.isPresent()
+				&& nxmlDocumentParser.getTagProperties(elementName).get(ElementProperties.ATTRIBUTES) != null) {
+			// the list of defined attribute properties in the element
+			// properties file
+			List<Map<String, Object>> attributeList = (List<Map<String, Object>>) nxmlDocumentParser
+					.getTagProperties(elementName).get(ElementProperties.ATTRIBUTES);
+
+			// the actual properties of the current element
+			// we just go through the attributes and build a name-value map
+			Map<String, String> attributesOfElement = getElementAttributes();
+
+			// now check if an attribute-value pair defined in the element
+			// properties file matches this element;
+			// if so, check if it defines the omission of the element
+			for (Map<String, Object> attribute : attributeList) {
+				String attributeValue = attributesOfElement.get(attribute.get(ElementProperties.NAME));
+				if (attributeValue != null && attributeValue.equals(attribute.get(ElementProperties.VALUE))
+						&& attribute.containsKey(ElementProperties.OMIT_ELEMENT)) {
+					// omitElement = (boolean)
+					// attribute.get(ElementProperties.OMIT_ELEMENT);
+					applicableProperties = Optional.of(attribute);
+				}
 			}
 		}
-		return defaultClassName;
+
+		if (!applicableProperties.isPresent())
+			applicableProperties = Optional.ofNullable(nxmlDocumentParser.getTagProperties(elementName));
+
+		return applicableProperties;
 	}
 }

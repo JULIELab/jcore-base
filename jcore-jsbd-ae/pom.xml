@@ -24,7 +24,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>de.julielab.jsbd.SentenceSplitterApplication</mainClass>
+							<mainClass>de.julielab.jcore.ae.jsbd.SentenceSplitterApplication</mainClass>
 						</manifest>
 					</archive>
 

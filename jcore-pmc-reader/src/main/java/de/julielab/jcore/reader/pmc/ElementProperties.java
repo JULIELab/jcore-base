@@ -34,7 +34,7 @@ public class ElementProperties {
 	 */
 	public static final String PATH = "path";
 	/**
-	 * Propery that defines a list of attribute name-value combinations for
+	 * Property that defines a list of attribute name-value combinations for
 	 * which element properties may be applied. Then, the root element
 	 * properties will be overwritten by attribute properties if the attribute
 	 * name-value pair matches a particular element.
@@ -43,9 +43,17 @@ public class ElementProperties {
 	/**
 	 * Used for attribute names in conjunction with {@link #ATTRIBUTES}.
 	 */
-	public static final String NAME= "name";
+	public static final String NAME = "name";
 	/**
 	 * Used for attribute values in conjunction with {@link #ATTRIBUTES}.
 	 */
 	public static final String VALUE = "value";
+	/**
+	 * Property that is key to a map of (feature name, default feature value)
+	 * pairs. Only primitive feature values (string, int, double, ...) are
+	 * supported, i.e. types cannot be specified this way. This value of this
+	 * property is used by the default element parser to assign default values
+	 * to elements that are not handled otherwise.
+	 */
+	public static final String DEFAULT_FEATURE_VALUES = "default-feature-values";
 }

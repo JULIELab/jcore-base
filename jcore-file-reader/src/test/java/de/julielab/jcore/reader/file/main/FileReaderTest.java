@@ -16,8 +16,7 @@
 
 package de.julielab.jcore.reader.file.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,7 +69,7 @@ public class FileReaderTest {
 			+ " IL-27 is crucial to the development of immune intervention in tuberculosis. ";
 
 	private static final String FILE_ARTIFACT_1 = "data/files/8563171.txt";
-	
+
 	private final static String ARTIFACT_2 = "Our understanding of the role of interleukin (IL)-12 in controlling"
 			+ " tuberculosis has expanded because of increased interest in other members of the IL-12 family of cytokines.\n"
 			+ "Recent data show that IL-12, IL-23 and IL-27 have specific roles in the initiation, expansion and control of"
@@ -82,10 +81,12 @@ public class FileReaderTest {
 			+ " bacterial killing and tissue damage is required for survival.\n"
 			+ "Understanding the balance between IL-12, IL-23 and"
 			+ " IL-27 is crucial to the development of immune intervention in tuberculosis.";
-	
-	private static final String FILE_ARTIFACT_2 = "data/files/755.txt";
-	
-	private static final Integer S_GOLD_COUNT = new Integer(5); // number of sentences in ARTIFACT_2
+
+	private static final String FILE_ARTIFACT_2 = "data/sentPerLine/755.txt";
+
+	private static final Integer S_GOLD_COUNT = new Integer(5); // number of
+																// sentences in
+																// ARTIFACT_2
 
 	@BeforeClass
 	public static void setUp() throws Exception {
@@ -93,7 +94,7 @@ public class FileReaderTest {
 		writeArtifact(ARTIFACT_2, FILE_ARTIFACT_2);
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void testDocumentTextPresent() throws CASException, Exception {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
@@ -101,7 +102,7 @@ public class FileReaderTest {
 				FILE_ARTIFACT_1.substring(0, FILE_ARTIFACT_1.lastIndexOf("/")));
 		fileReader.setConfigParameterValue("UseFilenameAsDocId", true);
 		fileReader.setConfigParameterValue("PublicationDatesFile", "src/test/resources/data/BC2_publicationDates");
-		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[]{"txt"});
+		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[] { "txt" });
 		fileReader.reconfigure();
 		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
 		assertTrue(fileReader.hasNext());
@@ -124,28 +125,29 @@ public class FileReaderTest {
 				"pubmed-id: " + header.getDocId() + ", publication date: " + date.getYear() + "/" + date.getMonth());
 
 	}
-	
-	@Ignore
+
+	// @Ignore
 	@Test
-	public void testSentencePerLineMode() throws CASException, Exception  {
+	public void testSentencePerLineMode() throws CASException, Exception {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
 		fileReader.setConfigParameterValue("InputDirectory",
 				FILE_ARTIFACT_2.substring(0, FILE_ARTIFACT_2.lastIndexOf("/")));
-		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
-		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[]{"txt"});
+		// fileReader.setConfigParameterValue("UseFilenameAsDocId", true);
+		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[] { "txt" });
 		fileReader.setConfigParameterValue("SentencePerLine", true);
 		fileReader.reconfigure();
 		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
 		assertTrue(fileReader.hasNext());
 		fileReader.getNext(cas);
+
 		assertTrue(cas.getDocumentText().equals(ARTIFACT_2));
-		
+
 		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
 		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
 		Integer scount = 0;
 		while (sentIt.hasNext()) {
 			scount += 1;
-			System.out.println("sent "+ scount + ": " + ((Sentence) sentIt.next()).getCoveredText());
+			System.out.println("sent " + scount + ": " + ((Sentence) sentIt.next()).getCoveredText());
 		}
 		System.out.println("Sentences counted: " + scount.toString() + " -- Gold: " + S_GOLD_COUNT);
 		assertEquals(S_GOLD_COUNT, scount);
@@ -187,13 +189,13 @@ public class FileReaderTest {
 	private static void writeArtifact(String artifact, String file_name) {
 
 		File artifactFile = new File(file_name);
-		try (FileOutputStream outputStream = new FileOutputStream(artifactFile)){
+		try (FileOutputStream outputStream = new FileOutputStream(artifactFile)) {
 			outputStream.write(artifact.getBytes());
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
- 			e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 
@@ -201,7 +203,7 @@ public class FileReaderTest {
 	public static void tearDown() throws Exception {
 		File artifactFile1 = new File(FILE_ARTIFACT_1);
 		artifactFile1.delete();
-		
+
 		File artifactFile2 = new File(FILE_ARTIFACT_2);
 		artifactFile2.delete();
 	}

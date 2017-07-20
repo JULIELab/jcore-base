@@ -114,6 +114,7 @@ public class EventConsumerTest {
 		Header header = new Header(cas);
 		header.setDocId("123");
 		header.addToIndexes();
+		
 		filter = new FilenameFilter() {
 
 			public boolean accept(File file, String name) {

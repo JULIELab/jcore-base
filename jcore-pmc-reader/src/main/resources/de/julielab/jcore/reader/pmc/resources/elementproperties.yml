@@ -4,11 +4,15 @@ article-title:
 title:
     block-element: true
     type: de.julielab.jcore.types.Title
+    default-feature-values:
+        titleType: other
     paths:
         - path: sec/title
           type: de.julielab.jcore.types.SectionTitle
+          titleType: section
         - path: abstract/sec/title
           type: de.julielab.jcore.types.AbstractSectionHeading
+          titleType: abstractSection
 abstract:
     block-element: true
     type: de.julielab.jcore.types.AbstractText
@@ -36,6 +40,8 @@ list-item:
 caption:
     block-element: true
     type: de.julielab.jcore.types.Caption
+    default-feature-values:
+        captionType: other
 fn-group:
     block-element: true
 front:

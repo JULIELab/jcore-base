@@ -1,3 +1,4 @@
+ # JCore MScod2txt Reader
  JCoRe MSdoc2txt Reader for reading the text from text files.  
 
 **Descriptor Path**:
@@ -6,7 +7,7 @@ de.julielab.jcore.reader.file.desc.jcore-msdoc2txt-reader
 ```
 
 ### Objective
- This is a reader for reading in text files, providing them to UIMA for further processing.
+This is a reader for reading in text files, providing them to UIMA for further processing.
 
 ### Requirement and Dependencies
  The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).

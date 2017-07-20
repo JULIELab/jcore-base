@@ -71,13 +71,7 @@
           <description>document object identifier</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
-        <featureDescription>
-          <name>pkElements</name>
-          <description/>
-          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
-          <elementType>de.julielab.jcore.types.PKElement</elementType>
-        </featureDescription>
-      </features>
+        </features>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.PubType</name>
@@ -462,17 +456,5 @@
         </featureDescription>
       </features>
     </typeDescription>
-    <typeDescription>
-      <name>de.julielab.jcore.types.PKElement</name>
-      <description/>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
-      <features>
-        <featureDescription>
-          <name>value</name>
-          <description/>
-          <rangeTypeName>uima.cas.ByteArray</rangeTypeName>
-        </featureDescription>
-      </features>
-    </typeDescription>
-  </types>
+    </types>
 </typeSystemDescription>

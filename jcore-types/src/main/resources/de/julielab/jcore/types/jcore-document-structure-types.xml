@@ -326,6 +326,14 @@ document: title of the document</description>
           <string>document</string>
           <description>Denotes the document title</description>
         </value>
+      <value>
+          <string>other</string>
+          <description/>
+        </value>
+      <value>
+          <string>section</string>
+          <description/>
+        </value>
       </allowedValues>
     </typeDescription>
   <typeDescription>
@@ -339,6 +347,10 @@ document: title of the document</description>
         </value>
         <value>
           <string>figure</string>
+          <description/>
+        </value>
+      <value>
+          <string>other</string>
           <description/>
         </value>
       </allowedValues>

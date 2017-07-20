@@ -33,6 +33,7 @@ public class FrontParserTest {
 		assertEquals("10.1007/s13280-009-0005-8", header.getDoi());
 		assertNotNull(header.getOtherIDs());
 		assertTrue(header.getOtherIDs().size() > 0);
+		assertNotNull(header.getOtherIDs().get(0));
 
 		assertNotNull(header.getPubTypeList());
 		assertTrue(header.getPubTypeList().size() > 0);
