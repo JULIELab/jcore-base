@@ -268,7 +268,7 @@ public class FileReader extends CollectionReader_ImplBase {
 
 					System.out.println("Line: " + line);
 
-					tokens = line.split("\\s+");
+					tokens = line.split("\\s");
 
 					Integer numberOfTokens = 0;
 
