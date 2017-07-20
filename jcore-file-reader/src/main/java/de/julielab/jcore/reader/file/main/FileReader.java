@@ -261,6 +261,11 @@ public class FileReader extends CollectionReader_ImplBase {
 				Integer tmpTok = 0;
 				Integer globalNumberOfToken = 0;
 				while ((line = rdr.readLine()) != null) {
+					
+					if (line.endsWith(" ")) {
+						line = line.substring(0, line.length() - 1);
+					}
+					
 					lines.add(line);
 					start.add(tmp);
 					end.add(tmp + line.length());
@@ -275,8 +280,8 @@ public class FileReader extends CollectionReader_ImplBase {
 					for (String token : tokens) {
 						System.out.println("Token: " + token);
 						tokensList.add(token);
-						tokStart.add(0);
-						tokEnd.add(token.length());
+						tokStart.add(tmpTok);
+						tokEnd.add(tmpTok + token.length());
 						tmpTok += (token.length() + 1);
 						numberOfTokens++;
 					}

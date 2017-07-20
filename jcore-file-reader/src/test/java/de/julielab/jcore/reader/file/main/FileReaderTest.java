@@ -88,14 +88,14 @@ public class FileReaderTest {
 																// ARTIFACT_2
 
 	private final static String ARTIFACT_3 = "Our understanding of the role of interleukin (IL)-12 in controlling"
-			+ " tuberculosis has expanded because of increased interest in other members of the IL-12 family of cytokines . \n"
+			+ " tuberculosis has expanded because of increased interest in other members of the IL-12 family of cytokines .\n"
 			+ "Recent data show that IL-12, IL-23 and IL-27 have specific roles in the initiation, expansion and control of"
-			+ " the cellular response to tuberculosis . \n"
+			+ " the cellular response to tuberculosis .\n"
 			+ "Specifically , IL-12 , and to a lesser degree IL-23 , generates protective"
 			+ " cellular responses and promotes survival , whereas IL-27 moderates the inflammatory response and is required for"
-			+ " long-term survival . \n"
+			+ " long-term survival .\n"
 			+ "Paradoxically , IL-27 also limits bacterial control , suggesting that a balance between"
-			+ " bacterial killing and tissue damage is required for survival . \n"
+			+ " bacterial killing and tissue damage is required for survival .\n"
 			+ "Understanding the balance between IL-12 , IL-23 and"
 			+ " IL-27 is crucial to the development of immune intervention in tuberculosis .";
 
@@ -105,7 +105,6 @@ public class FileReaderTest {
 
 	private static final String FILE_ARTIFACT_4 = "data/example/222.txt";
 
-	private static final Integer SIMPLE_GOLD = new Integer(1);
 
 	@BeforeClass
 
