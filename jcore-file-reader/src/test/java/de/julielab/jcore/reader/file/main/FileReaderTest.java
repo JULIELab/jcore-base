@@ -39,6 +39,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.julielab.jcore.types.Date;
@@ -89,7 +90,7 @@ public class FileReaderTest {
 
 	private final static String ARTIFACT_3 = "Our understanding of the role of interleukin (IL)-12 in controlling"
 			+ " tuberculosis has expanded because of increased interest in other members of the IL-12 family of cytokines .\n"
-			+ "Recent data show that IL-12, IL-23 and IL-27 have specific roles in the initiation, expansion and control of"
+			+ "Recent data show that IL-12 , IL-23 and IL-27 have specific roles in the initiation , expansion and control of"
 			+ " the cellular response to tuberculosis .\n"
 			+ "Specifically , IL-12 , and to a lesser degree IL-23 , generates protective"
 			+ " cellular responses and promotes survival , whereas IL-27 moderates the inflammatory response and is required for"
@@ -99,12 +100,18 @@ public class FileReaderTest {
 			+ "Understanding the balance between IL-12 , IL-23 and"
 			+ " IL-27 is crucial to the development of immune intervention in tuberculosis .";
 
-	private static final String FILE_ARTIFACT_3 = "data/token/333.txt";
+	private static final String FILE_ARTIFACT_3 = "data/sentPerLineAndToken/333.txt";
 
-	private final static String ARTIFACT_4 = "I love reading bla bla bla bla bla .";
-
-	private static final String FILE_ARTIFACT_4 = "data/example/222.txt";
-
+	 private final static String ARTIFACT_4 = "Our understanding of the role of interleukin (IL)-12 in controlling"
+			+ " tuberculosis has expanded because of increased interest in other members of the IL-12 family of cytokines ."
+			+ " Recent data show that IL-12 , IL-23 and IL-27 have specific roles in the initiation , expansion and control of"
+			+ " the cellular response to tuberculosis . Specifically , IL-12 , and to a lesser degree IL-23 , generates protective"
+			+ " cellular responses and promotes survival , whereas IL-27 moderates the inflammatory response and is required for"
+			+ " long-term survival . Paradoxically , IL-27 also limits bacterial control , suggesting that a balance between"
+			+ " bacterial killing and tissue damage is required for survival . Understanding the balance between IL-12 , IL-23 and"
+			+ " IL-27 is crucial to the development of immune intervention in tuberculosis .";
+	
+	 private static final String FILE_ARTIFACT_4 = "data/onlyToken/222.txt";
 
 	@BeforeClass
 
@@ -172,7 +179,7 @@ public class FileReaderTest {
 	}
 
 	@Test
-	public void testTokenizedMode() throws Exception {
+	public void testSentencePerLineAndTokenizedMode() throws Exception {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
 		fileReader.setConfigParameterValue("InputDirectory",
 				FILE_ARTIFACT_3.substring(0, FILE_ARTIFACT_3.lastIndexOf("/")));
@@ -186,8 +193,6 @@ public class FileReaderTest {
 		fileReader.getNext(cas);
 		assertTrue(cas.getDocumentText().equals(ARTIFACT_3));
 
-		System.out.println("____________Test starts________________");
-		
 		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
 		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
 
@@ -199,18 +204,43 @@ public class FileReaderTest {
 
 		System.out.println("Sentences counted: " + scount.toString() + " -- Gold: " + S_GOLD_COUNT);
 		assertEquals(S_GOLD_COUNT, scount);
-		
-		
+
 		Type tokType = cas.getTypeSystem().getType(Token.class.getCanonicalName());
 		FSIterator<FeatureStructure> tokIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(tokType);
-		
+
 		Integer tcount = 0;
 		while (tokIt.hasNext()) {
 			tcount += 1;
-			System.out.println("tok " + tcount + ": " + ((Token) tokIt.next()).getCoveredText());
+			String x = ((Token) tokIt.next()).getCoveredText();
+			System.out.println("tok " + tcount + ": " + x + "_" + x.length());
 		}
-		System.out.println("Tokens counted: " + tcount.toString() + " -- Gold " + 126);
-		System.out.println("-----------------------------------------------------------------------");
+		System.out.println("Tokens counted: " + tcount.toString() + " -- Gold " + 128);
+	}
+	
+	@Test
+	public void testOnlyTokenizedMode() throws Exception {
+		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
+		fileReader.setConfigParameterValue("InputDirectory",
+				FILE_ARTIFACT_4.substring(0, FILE_ARTIFACT_4.lastIndexOf("/")));
+		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
+		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[] { "txt" });
+		fileReader.setConfigParameterValue("TokenByToken", true);
+		fileReader.reconfigure();
+		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
+		assertTrue(fileReader.hasNext());
+		fileReader.getNext(cas);
+		assertTrue(cas.getDocumentText().equals(ARTIFACT_4));
+
+		Type tokType = cas.getTypeSystem().getType(Token.class.getCanonicalName());
+		FSIterator<FeatureStructure> tokIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(tokType);
+
+		Integer tcount = 0;
+		while (tokIt.hasNext()) {
+			tcount += 1;
+			String x = ((Token) tokIt.next()).getCoveredText();
+			System.out.println("tok " + tcount + ": " + x + "_" + x.length());
+		}
+		System.out.println("Tokens counted: " + tcount.toString() + " -- Gold " + 128);
 	}
 
 	/**
@@ -257,13 +287,12 @@ public class FileReaderTest {
 			e.printStackTrace();
 		}
 	}
-
-	@AfterClass
-	public static void tearDown() throws Exception {
-		File artifactFile1 = new File(FILE_ARTIFACT_1);
-		artifactFile1.delete();
-
-		File artifactFile2 = new File(FILE_ARTIFACT_2);
-		artifactFile2.delete();
-	}
+//	@AfterClass
+//	public static void tearDown() throws Exception {
+//		File artifactFile1 = new File(FILE_ARTIFACT_1);
+//		artifactFile1.delete();
+//
+//		File artifactFile2 = new File(FILE_ARTIFACT_2);
+//		artifactFile2.delete();
+//	}
 }
