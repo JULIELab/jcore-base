@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.cas.CAS;
@@ -43,11 +44,12 @@ import org.apache.uima.util.ProgressImpl;
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 
 public class FileReader extends CollectionReader_ImplBase {
 
 	/**
-	 * Folder with docments; as of now (11/2016) no subdir's are crawled.
+	 * Folder with documents; as of now (11/2016) no subdir's are crawled.
 	 */
 	public static final String DIRECTORY_INPUT = "InputDirectory";
 	/**
@@ -69,6 +71,10 @@ public class FileReader extends CollectionReader_ImplBase {
 	/**
 	 * 
 	 */
+	public static final String TOKEN_BY_TOKEN = "TokenByToken";
+	/**
+	 * 
+	 */
 	public static final String FILE_NAME_SPLIT_UNDERSCORE = "FileNameSplitUnderscore";
 	/**
 	 * 
@@ -87,6 +93,8 @@ public class FileReader extends CollectionReader_ImplBase {
 	private File publicationDatesFile;
 	@ConfigurationParameter(name = SENTENCE_PER_LINE, mandatory = false)
 	private boolean sentencePerLine;
+	@ConfigurationParameter(name = TOKEN_BY_TOKEN, mandatory = false)
+	private boolean tokenByToken;
 	@ConfigurationParameter(name = FILE_NAME_SPLIT_UNDERSCORE, mandatory = false)
 	private boolean fileNameSplitUnderscore;
 	@ConfigurationParameter(name = ALLOWED_FILE_EXTENSIONS, mandatory = false)
@@ -111,6 +119,13 @@ public class FileReader extends CollectionReader_ImplBase {
 		} else {
 			sentencePerLine = spl;
 		}
+
+		Boolean tokspl = (Boolean) getConfigParameterValue(TOKEN_BY_TOKEN);
+		if (null == tokspl) {
+			tokenByToken = false;
+		} else {
+			tokenByToken = tokspl;
+		}false
 
 		Boolean fnsu = (Boolean) getConfigParameterValue(FILE_NAME_SPLIT_UNDERSCORE);
 		if (null == fnsu) {
@@ -152,7 +167,7 @@ public class FileReader extends CollectionReader_ImplBase {
 		// }
 
 		files = new ArrayList<File>();
-		
+
 		// File[] f = inputDirectory.listFiles(new FilenameFilter() {
 		//
 		// @Override
@@ -200,7 +215,146 @@ public class FileReader extends CollectionReader_ImplBase {
 		File file = files.get(fileIndex++);
 
 		String text = FileUtils.readFileToString(file, "UTF-8");
-		
+		// String text = FileUtils.file2String(file);
+
+		// sentence per line mode
+		if (sentencePerLine) {
+			if (!tokenByToken) {
+				BufferedReader rdr = new BufferedReader(new StringReader(text));
+				List<String> lines = new ArrayList<String>();
+				List<Integer> start = new ArrayList<Integer>();
+				List<Integer> end = new ArrayList<Integer>();
+				Integer tmp = 0;
+				String line;
+				while ((line = rdr.readLine()) != null) {
+					lines.add(line);
+					start.add(tmp);
+					end.add(tmp + line.length());
+					tmp += (line.length() + 1);
+				}
+				rdr.close();
+
+				for (Integer i = 0; i < lines.size(); i++) {
+					Sentence sent = new Sentence(jcas);
+					sent.setBegin(start.get(i));
+					sent.setEnd(end.get(i));
+					sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
+					sent.addToIndexes();
+				}
+			}
+		}
+		//token by token mode
+		if (tokenByToken) {
+			if (sentencePerLine) {
+				System.out.println("Entered Sentence Per Line And TokenByToken");
+				BufferedReader rdr = new BufferedReader(new StringReader(text));
+				List<String> lines = new ArrayList<>();
+				List<Integer> start = new ArrayList<>();
+				List<Integer> end = new ArrayList<>();
+				List<String> tokensList = new ArrayList<>();
+				List<Integer> tokStart = new ArrayList<>();
+				List<Integer> tokEnd = new ArrayList<>();
+				Integer tmp = 0;
+				String line;
+				String[] tokens;
+
+				Integer tmpTok = 0;
+				Integer globalNumberOfToken = 0;
+				while ((line = rdr.readLine()) != null) {
+
+					// if (line.endsWith(" ")) {
+					// line = line.substring(0, line.length() - 2);
+					// System.out.println("Line then:" + line);
+					// }
+
+					lines.add(line);
+					start.add(tmp);
+					end.add(tmp + line.length());
+					tmp += (line.length() + 1);
+
+					System.out.println("Line: " + line);
+
+					tokens = line.split("\\s");
+
+					Integer numberOfTokens = 0;
+
+					for (String token : tokens) {
+						System.out.println("Token: " + token);
+						tokensList.add(token);
+						tokStart.add(tmpTok);
+						tokEnd.add(tmpTok + token.length());
+						tmpTok += (token.length() + 1);
+						numberOfTokens++;
+					}
+
+					System.out.println("Number of tokens in this Line: " + numberOfTokens);
+					System.out.println("---------------End of Line--------------------");
+					globalNumberOfToken += numberOfTokens;
+				}
+				rdr.close();
+
+				System.out.println("Closed the Reader!");
+				System.out.println("Global Number Of Token: " + globalNumberOfToken);
+
+				for (Integer i = 0; i < lines.size(); i++) {
+					System.out.println("Sentence: " + lines.get(i));
+					Sentence sent = new Sentence(jcas);
+					sent.setBegin(start.get(i));
+					sent.setEnd(end.get(i));
+					sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
+					sent.addToIndexes();
+					System.out.println("-----------------------------------------");
+
+				}
+
+				for (Integer j = 0; j < tokensList.size(); j++) {
+					System.out.println("Token: " + tokensList.get(j));
+					Token token = new Token(jcas);
+					token.setBegin(tokStart.get(j));
+					token.setEnd(tokEnd.get(j));
+					token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
+					token.addToIndexes();
+
+				}
+			} else {
+				System.out.println("TokenByToken");
+				List<String> tokensList = new ArrayList<>();
+				List<Integer> tokStart = new ArrayList<>();
+				List<Integer> tokEnd = new ArrayList<>();
+				
+				String[] tokens;
+
+				Integer tmpTok = 0;
+				Integer globalNumberOfToken = 0;
+
+				System.out.println("Text: " + text);
+
+				tokens = text.split("\\s");
+
+				Integer numberOfTokens = 0;
+
+				for (String token : tokens) {
+					System.out.println("Token: " + token);
+					tokensList.add(token);
+					tokStart.add(tmpTok);
+					tokEnd.add(tmpTok + token.length());
+					tmpTok += (token.length() + 1);
+					numberOfTokens++;
+				}
+
+				System.out.println("Number of tokens in this Line: " + numberOfTokens);
+				globalNumberOfToken += numberOfTokens;
+
+				System.out.println("Global Number Of Token: " + globalNumberOfToken);
+
+				for (Integer j = 0; j < tokensList.size(); j++) {
+					System.out.println("Token: " + tokensList.get(j));
+					Token token = new Token(jcas);
+					token.setBegin(tokStart.get(j));
+					token.setEnd(tokEnd.get(j));
+					token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
+					token.addToIndexes();
+				}
 
 		// sentence per line mode
 		if (sentencePerLine) {

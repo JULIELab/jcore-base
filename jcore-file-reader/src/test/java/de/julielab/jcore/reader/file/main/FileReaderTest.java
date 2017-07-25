@@ -30,9 +30,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
-import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
@@ -45,6 +43,7 @@ import org.junit.Test;
 
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.pubmed.Header;
 
 public class FileReaderTest {
@@ -84,17 +83,45 @@ public class FileReaderTest {
 
 	private static final String FILE_ARTIFACT_2 = "data/sentPerLine/755.txt";
 
-	private static final Integer S_GOLD_COUNT = new Integer(5); // number of
+	private static final Integer S_GOLD_COUNT = new Integer(5);// number of
 																// sentences in
 																// ARTIFACT_2
 
+	private final static String ARTIFACT_3 = "Our understanding of the role of interleukin (IL)-12 in controlling"
+			+ " tuberculosis has expanded because of increased interest in other members of the IL-12 family of cytokines .\n"
+			+ "Recent data show that IL-12 , IL-23 and IL-27 have specific roles in the initiation , expansion and control of"
+			+ " the cellular response to tuberculosis .\n"
+			+ "Specifically , IL-12 , and to a lesser degree IL-23 , generates protective"
+			+ " cellular responses and promotes survival , whereas IL-27 moderates the inflammatory response and is required for"
+			+ " long-term survival .\n"
+			+ "Paradoxically , IL-27 also limits bacterial control , suggesting that a balance between"
+			+ " bacterial killing and tissue damage is required for survival .\n"
+			+ "Understanding the balance between IL-12 , IL-23 and"
+			+ " IL-27 is crucial to the development of immune intervention in tuberculosis .";
+
+	private static final String FILE_ARTIFACT_3 = "data/sentPerLineAndToken/333.txt";
+
+	 private final static String ARTIFACT_4 = "Our understanding of the role of interleukin (IL)-12 in controlling"
+			+ " tuberculosis has expanded because of increased interest in other members of the IL-12 family of cytokines ."
+			+ " Recent data show that IL-12 , IL-23 and IL-27 have specific roles in the initiation , expansion and control of"
+			+ " the cellular response to tuberculosis . Specifically , IL-12 , and to a lesser degree IL-23 , generates protective"
+			+ " cellular responses and promotes survival , whereas IL-27 moderates the inflammatory response and is required for"
+			+ " long-term survival . Paradoxically , IL-27 also limits bacterial control , suggesting that a balance between"
+			+ " bacterial killing and tissue damage is required for survival . Understanding the balance between IL-12 , IL-23 and"
+			+ " IL-27 is crucial to the development of immune intervention in tuberculosis .";
+	
+	 private static final String FILE_ARTIFACT_4 = "data/onlyToken/222.txt";
+
+
 	@BeforeClass
+
 	public static void setUp() throws Exception {
 		writeArtifact(ARTIFACT_1, FILE_ARTIFACT_1);
 		writeArtifact(ARTIFACT_2, FILE_ARTIFACT_2);
+		writeArtifact(ARTIFACT_3, FILE_ARTIFACT_3);
+		writeArtifact(ARTIFACT_4, FILE_ARTIFACT_4);
 	}
 
-	// @Ignore
 	@Test
 	public void testDocumentTextPresent() throws CASException, Exception {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
@@ -126,13 +153,13 @@ public class FileReaderTest {
 
 	}
 
-	// @Ignore
 	@Test
 	public void testSentencePerLineMode() throws CASException, Exception {
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
 		fileReader.setConfigParameterValue("InputDirectory",
 				FILE_ARTIFACT_2.substring(0, FILE_ARTIFACT_2.lastIndexOf("/")));
-		// fileReader.setConfigParameterValue("UseFilenameAsDocId", true);
+		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
+
 		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[] { "txt" });
 		fileReader.setConfigParameterValue("SentencePerLine", true);
 		fileReader.reconfigure();
@@ -153,6 +180,71 @@ public class FileReaderTest {
 		assertEquals(S_GOLD_COUNT, scount);
 	}
 
+	@Test
+	public void testSentencePerLineAndTokenizedMode() throws Exception {
+		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
+		fileReader.setConfigParameterValue("InputDirectory",
+				FILE_ARTIFACT_3.substring(0, FILE_ARTIFACT_3.lastIndexOf("/")));
+		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
+		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[] { "txt" });
+		fileReader.setConfigParameterValue("SentencePerLine", true);
+		fileReader.setConfigParameterValue("TokenByToken", true);
+		fileReader.reconfigure();
+		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
+		assertTrue(fileReader.hasNext());
+		fileReader.getNext(cas);
+		assertTrue(cas.getDocumentText().equals(ARTIFACT_3));
+
+		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
+		FSIterator<FeatureStructure> sentIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(sentType);
+
+		Integer scount = 0;
+		while (sentIt.hasNext()) {
+			scount += 1;
+			System.out.println("sent " + scount + ": " + ((Sentence) sentIt.next()).getCoveredText());
+		}
+
+		System.out.println("Sentences counted: " + scount.toString() + " -- Gold: " + S_GOLD_COUNT);
+		assertEquals(S_GOLD_COUNT, scount);
+
+		Type tokType = cas.getTypeSystem().getType(Token.class.getCanonicalName());
+		FSIterator<FeatureStructure> tokIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(tokType);
+
+		Integer tcount = 0;
+		while (tokIt.hasNext()) {
+			tcount += 1;
+			String x = ((Token) tokIt.next()).getCoveredText();
+			System.out.println("tok " + tcount + ": " + x + "_" + x.length());
+		}
+		System.out.println("Tokens counted: " + tcount.toString() + " -- Gold " + 128);
+	}
+	
+	@Test
+	public void testOnlyTokenizedMode() throws Exception {
+		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
+		fileReader.setConfigParameterValue("InputDirectory",
+				FILE_ARTIFACT_4.substring(0, FILE_ARTIFACT_4.lastIndexOf("/")));
+		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
+		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[] { "txt" });
+		fileReader.setConfigParameterValue("TokenByToken", true);
+		fileReader.reconfigure();
+		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
+		assertTrue(fileReader.hasNext());
+		fileReader.getNext(cas);
+		assertTrue(cas.getDocumentText().equals(ARTIFACT_4));
+
+		Type tokType = cas.getTypeSystem().getType(Token.class.getCanonicalName());
+		FSIterator<FeatureStructure> tokIt = cas.getJCas().getFSIndexRepository().getAllIndexedFS(tokType);
+
+		Integer tcount = 0;
+		while (tokIt.hasNext()) {
+			tcount += 1;
+			String x = ((Token) tokIt.next()).getCoveredText();
+			System.out.println("tok " + tcount + ": " + x + "_" + x.length());
+		}
+		System.out.println("Tokens counted: " + tcount.toString() + " -- Gold " + 128);
+	}
+
 	/**
 	 * Produces a CollectionReader form the given descriptor file name
 	 *
@@ -164,7 +256,6 @@ public class FileReaderTest {
 
 		CollectionReader reader = null;
 		XMLInputSource inputSource = null;
-		;
 		ResourceSpecifier readerResourceSpecifier = null;
 		try {
 			inputSource = new XMLInputSource(descriptor);
@@ -198,13 +289,12 @@ public class FileReaderTest {
 			e.printStackTrace();
 		}
 	}
-
-	@AfterClass
-	public static void tearDown() throws Exception {
-		File artifactFile1 = new File(FILE_ARTIFACT_1);
-		artifactFile1.delete();
-
-		File artifactFile2 = new File(FILE_ARTIFACT_2);
-		artifactFile2.delete();
-	}
+//	@AfterClass
+//	public static void tearDown() throws Exception {
+//		File artifactFile1 = new File(FILE_ARTIFACT_1);
+//		artifactFile1.delete();
+//
+//		File artifactFile2 = new File(FILE_ARTIFACT_2);
+//		artifactFile2.delete();
+//	}
 }
