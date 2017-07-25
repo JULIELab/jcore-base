@@ -125,7 +125,7 @@ public class FileReader extends CollectionReader_ImplBase {
 			tokenByToken = false;
 		} else {
 			tokenByToken = tokspl;
-		}false
+		}
 
 		Boolean fnsu = (Boolean) getConfigParameterValue(FILE_NAME_SPLIT_UNDERSCORE);
 		if (null == fnsu) {
@@ -355,34 +355,35 @@ public class FileReader extends CollectionReader_ImplBase {
 					token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
 					token.addToIndexes();
 				}
-
-		// sentence per line mode
-		if (sentencePerLine) {
-			BufferedReader rdr = new BufferedReader(new StringReader(text));
-			List<String> lines = new ArrayList<String>();
-			List<Integer> start = new ArrayList<Integer>();
-			List<Integer> end = new ArrayList<Integer>();
-			Integer tmp = 0;
-			String line;
-			while ((line = rdr.readLine()) != null) {
-				lines.add(line);
-				start.add(tmp);
-				end.add(tmp + line.length());
-				tmp += (line.length()+1);
-			}
-			
-			rdr.close();
-			
-			
-
-			for (Integer i = 0; i < lines.size(); i++) {
-				Sentence sent = new Sentence(jcas);
-				sent.setBegin(start.get(i));
-				sent.setEnd(end.get(i));
-				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
-				sent.addToIndexes();
 			}
 		}
+//		// sentence per line mode
+//		if (sentencePerLine) {
+//			BufferedReader rdr = new BufferedReader(new StringReader(text));
+//			List<String> lines = new ArrayList<String>();
+//			List<Integer> start = new ArrayList<Integer>();
+//			List<Integer> end = new ArrayList<Integer>();
+//			Integer tmp = 0;
+//			String line;
+//			while ((line = rdr.readLine()) != null) {
+//				lines.add(line);
+//				start.add(tmp);
+//				end.add(tmp + line.length());
+//				tmp += (line.length()+1);
+//			}
+//			
+//			rdr.close();
+//			
+//			
+//
+//			for (Integer i = 0; i < lines.size(); i++) {
+//				Sentence sent = new Sentence(jcas);
+//				sent.setBegin(start.get(i));
+//				sent.setEnd(end.get(i));
+//				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
+//				sent.addToIndexes();
+//			}
+//		}
 
 		// put document in CAS
 		jcas.setDocumentText(text);
