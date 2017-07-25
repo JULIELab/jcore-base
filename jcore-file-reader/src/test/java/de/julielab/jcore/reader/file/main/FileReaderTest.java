@@ -16,8 +16,7 @@
 
 package de.julielab.jcore.reader.file.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -113,6 +112,7 @@ public class FileReaderTest {
 	
 	 private static final String FILE_ARTIFACT_4 = "data/onlyToken/222.txt";
 
+
 	@BeforeClass
 
 	public static void setUp() throws Exception {
@@ -159,12 +159,14 @@ public class FileReaderTest {
 		fileReader.setConfigParameterValue("InputDirectory",
 				FILE_ARTIFACT_2.substring(0, FILE_ARTIFACT_2.lastIndexOf("/")));
 		fileReader.setConfigParameterValue("UseFilenameAsDocId", false);
+
 		fileReader.setConfigParameterValue(FileReader.ALLOWED_FILE_EXTENSIONS, new String[] { "txt" });
 		fileReader.setConfigParameterValue("SentencePerLine", true);
 		fileReader.reconfigure();
 		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());
 		assertTrue(fileReader.hasNext());
 		fileReader.getNext(cas);
+
 		assertTrue(cas.getDocumentText().equals(ARTIFACT_2));
 
 		Type sentType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
