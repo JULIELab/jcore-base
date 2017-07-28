@@ -246,7 +246,7 @@ public class FileReader extends CollectionReader_ImplBase {
 		//token by token mode
 		if (tokenByToken) {
 			if (sentencePerLine) {
-				System.out.println("Entered Sentence Per Line And TokenByToken");
+//				System.out.println("Entered Sentence Per Line And TokenByToken");
 				BufferedReader rdr = new BufferedReader(new StringReader(text));
 				List<String> lines = new ArrayList<>();
 				List<Integer> start = new ArrayList<>();
@@ -272,14 +272,14 @@ public class FileReader extends CollectionReader_ImplBase {
 					end.add(tmp + line.length());
 					tmp += (line.length() + 1);
 
-					System.out.println("Line: " + line);
+//					System.out.println("Line: " + line);
 
 					tokens = line.split("\\s");
 
 					Integer numberOfTokens = 0;
 
 					for (String token : tokens) {
-						System.out.println("Token: " + token);
+//						System.out.println("Token: " + token);
 						tokensList.add(token);
 						tokStart.add(tmpTok);
 						tokEnd.add(tmpTok + token.length());
@@ -287,28 +287,28 @@ public class FileReader extends CollectionReader_ImplBase {
 						numberOfTokens++;
 					}
 
-					System.out.println("Number of tokens in this Line: " + numberOfTokens);
-					System.out.println("---------------End of Line--------------------");
+//					System.out.println("Number of tokens in this Line: " + numberOfTokens);
+//					System.out.println("---------------End of Line--------------------");
 					globalNumberOfToken += numberOfTokens;
 				}
 				rdr.close();
 
-				System.out.println("Closed the Reader!");
-				System.out.println("Global Number Of Token: " + globalNumberOfToken);
+//				System.out.println("Closed the Reader!");
+//				System.out.println("Global Number Of Token: " + globalNumberOfToken);
 
 				for (Integer i = 0; i < lines.size(); i++) {
-					System.out.println("Sentence: " + lines.get(i));
+//					System.out.println("Sentence: " + lines.get(i));
 					Sentence sent = new Sentence(jcas);
 					sent.setBegin(start.get(i));
 					sent.setEnd(end.get(i));
 					sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
 					sent.addToIndexes();
-					System.out.println("-----------------------------------------");
+//					System.out.println("-----------------------------------------");
 
 				}
 
 				for (Integer j = 0; j < tokensList.size(); j++) {
-					System.out.println("Token: " + tokensList.get(j));
+//					System.out.println("Token: " + tokensList.get(j));
 					Token token = new Token(jcas);
 					token.setBegin(tokStart.get(j));
 					token.setEnd(tokEnd.get(j));
@@ -317,7 +317,7 @@ public class FileReader extends CollectionReader_ImplBase {
 
 				}
 			} else {
-				System.out.println("TokenByToken");
+//				System.out.println("TokenByToken");
 				List<String> tokensList = new ArrayList<>();
 				List<Integer> tokStart = new ArrayList<>();
 				List<Integer> tokEnd = new ArrayList<>();
@@ -327,14 +327,14 @@ public class FileReader extends CollectionReader_ImplBase {
 				Integer tmpTok = 0;
 				Integer globalNumberOfToken = 0;
 
-				System.out.println("Text: " + text);
+//				System.out.println("Text: " + text);
 
 				tokens = text.split("\\s");
 
 				Integer numberOfTokens = 0;
 
 				for (String token : tokens) {
-					System.out.println("Token: " + token);
+//					System.out.println("Token: " + token);
 					tokensList.add(token);
 					tokStart.add(tmpTok);
 					tokEnd.add(tmpTok + token.length());
@@ -342,13 +342,13 @@ public class FileReader extends CollectionReader_ImplBase {
 					numberOfTokens++;
 				}
 
-				System.out.println("Number of tokens in this Line: " + numberOfTokens);
+//				System.out.println("Number of tokens in this Line: " + numberOfTokens);
 				globalNumberOfToken += numberOfTokens;
 
-				System.out.println("Global Number Of Token: " + globalNumberOfToken);
+//				System.out.println("Global Number Of Token: " + globalNumberOfToken);
 
 				for (Integer j = 0; j < tokensList.size(); j++) {
-					System.out.println("Token: " + tokensList.get(j));
+//					System.out.println("Token: " + tokensList.get(j));
 					Token token = new Token(jcas);
 					token.setBegin(tokStart.get(j));
 					token.setEnd(tokEnd.get(j));
