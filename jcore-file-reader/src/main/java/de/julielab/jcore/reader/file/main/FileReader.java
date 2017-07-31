@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.cas.CAS;
@@ -217,9 +219,11 @@ public class FileReader extends CollectionReader_ImplBase {
 		String text = FileUtils.readFileToString(file, "UTF-8");
 		// String text = FileUtils.file2String(file);
 
+		Pattern nws = Pattern.compile("[^\\s]+", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
+		
 		// sentence per line mode
 		if (sentencePerLine) {
-			if (!tokenByToken) {
+//			if (!tokenByToken) {
 				BufferedReader rdr = new BufferedReader(new StringReader(text));
 				List<String> lines = new ArrayList<String>();
 				List<Integer> start = new ArrayList<Integer>();
@@ -227,9 +231,11 @@ public class FileReader extends CollectionReader_ImplBase {
 				Integer tmp = 0;
 				String line;
 				while ((line = rdr.readLine()) != null) {
-					lines.add(line);
-					start.add(tmp);
-					end.add(tmp + line.length());
+					if (!Pattern.matches("\\s*", line)) {
+						lines.add(line);
+						start.add(tmp);
+						end.add(tmp + line.length());
+					}
 					tmp += (line.length() + 1);
 				}
 				rdr.close();
@@ -241,104 +247,110 @@ public class FileReader extends CollectionReader_ImplBase {
 					sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
 					sent.addToIndexes();
 				}
-			}
+//			}
 		}
 		//token by token mode
 		if (tokenByToken) {
-			if (sentencePerLine) {
-//				System.out.println("Entered Sentence Per Line And TokenByToken");
-				BufferedReader rdr = new BufferedReader(new StringReader(text));
-				List<String> lines = new ArrayList<>();
-				List<Integer> start = new ArrayList<>();
-				List<Integer> end = new ArrayList<>();
-				List<String> tokensList = new ArrayList<>();
-				List<Integer> tokStart = new ArrayList<>();
-				List<Integer> tokEnd = new ArrayList<>();
-				Integer tmp = 0;
-				String line;
-				String[] tokens;
-
-				Integer tmpTok = 0;
-				Integer globalNumberOfToken = 0;
-				while ((line = rdr.readLine()) != null) {
-
-					// if (line.endsWith(" ")) {
-					// line = line.substring(0, line.length() - 2);
-					// System.out.println("Line then:" + line);
-					// }
-
-					lines.add(line);
-					start.add(tmp);
-					end.add(tmp + line.length());
-					tmp += (line.length() + 1);
-
-//					System.out.println("Line: " + line);
-
-					tokens = line.split("\\s");
-
-					Integer numberOfTokens = 0;
-
-					for (String token : tokens) {
-//						System.out.println("Token: " + token);
-						tokensList.add(token);
-						tokStart.add(tmpTok);
-						tokEnd.add(tmpTok + token.length());
-						tmpTok += (token.length() + 1);
-						numberOfTokens++;
-					}
-
-//					System.out.println("Number of tokens in this Line: " + numberOfTokens);
-//					System.out.println("---------------End of Line--------------------");
-					globalNumberOfToken += numberOfTokens;
-				}
-				rdr.close();
-
-//				System.out.println("Closed the Reader!");
-//				System.out.println("Global Number Of Token: " + globalNumberOfToken);
-
-				for (Integer i = 0; i < lines.size(); i++) {
-//					System.out.println("Sentence: " + lines.get(i));
-					Sentence sent = new Sentence(jcas);
-					sent.setBegin(start.get(i));
-					sent.setEnd(end.get(i));
-					sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
-					sent.addToIndexes();
-//					System.out.println("-----------------------------------------");
-
-				}
-
-				for (Integer j = 0; j < tokensList.size(); j++) {
-//					System.out.println("Token: " + tokensList.get(j));
-					Token token = new Token(jcas);
-					token.setBegin(tokStart.get(j));
-					token.setEnd(tokEnd.get(j));
-					token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
-					token.addToIndexes();
-
-				}
-			} else {
+//			if (sentencePerLine) {
+////				System.out.println("Entered Sentence Per Line And TokenByToken");
+//				BufferedReader rdr = new BufferedReader(new StringReader(text));
+//				List<String> lines = new ArrayList<>();
+//				List<Integer> start = new ArrayList<>();
+//				List<Integer> end = new ArrayList<>();
+//				List<String> tokensList = new ArrayList<>();
+//				List<Integer> tokStart = new ArrayList<>();
+//				List<Integer> tokEnd = new ArrayList<>();
+//				Integer tmp = 0;
+//				String line;
+//				List<String> tokens = new ArrayList<String>();
+//
+//				Integer tmpTok = 0;
+//				Integer globalNumberOfToken = 0;
+//				while ((line = rdr.readLine()) != null) {
+//
+//					// if (line.endsWith(" ")) {
+//					// line = line.substring(0, line.length() - 2);
+//					// System.out.println("Line then:" + line);
+//					// }
+//					if (!Pattern.matches("\\s*", line)) {
+//						lines.add(line);
+//						start.add(tmp);
+//						end.add(tmp + line.length());
+//					}
+//					tmp += (line.length() + 1);
+//
+////					System.out.println("Line: " + line);
+//
+//					Integer numberOfTokens = 0;
+//					Matcher m = nws.matcher(line);
+//					while(m.find()) {
+//						tokensList.add(m.group());
+////						System.out.println("Token: " + token);
+//						String token = m.group();
+//						tokensList.add(token);
+//						tokStart.add(tmpTok + m.start());
+//						tokEnd.add(tmpTok + m.end());
+//						tmpTok += (token.length() + 1);
+//						numberOfTokens++;
+//					}
+//
+////					System.out.println("Number of tokens in this Line: " + numberOfTokens);
+////					System.out.println("---------------End of Line--------------------");
+//					globalNumberOfToken += numberOfTokens;
+//				}
+//				rdr.close();
+//
+////				System.out.println("Closed the Reader!");
+////				System.out.println("Global Number Of Token: " + globalNumberOfToken);
+//
+//				for (Integer i = 0; i < lines.size(); i++) {
+////					System.out.println("Sentence: " + lines.get(i));
+//					Sentence sent = new Sentence(jcas);
+//					sent.setBegin(start.get(i));
+//					sent.setEnd(end.get(i));
+//					sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
+//					sent.addToIndexes();
+////					System.out.println("-----------------------------------------");
+//
+//				}
+//
+//				for (Integer j = 0; j < tokensList.size(); j++) {
+////					System.out.println("Token: " + tokensList.get(j));
+//					Token token = new Token(jcas);
+//					token.setBegin(tokStart.get(j));
+//					token.setEnd(tokEnd.get(j));
+//					token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
+//					token.addToIndexes();
+//
+//				}
+//			} else {
 //				System.out.println("TokenByToken");
 				List<String> tokensList = new ArrayList<>();
 				List<Integer> tokStart = new ArrayList<>();
 				List<Integer> tokEnd = new ArrayList<>();
 				
-				String[] tokens;
+//				String[] tokens;
 
 				Integer tmpTok = 0;
 				Integer globalNumberOfToken = 0;
 
 //				System.out.println("Text: " + text);
 
-				tokens = text.split("\\s");
+//				tokens = text.split("\\s+");
 
 				Integer numberOfTokens = 0;
-
-				for (String token : tokens) {
-//					System.out.println("Token: " + token);
+				Matcher m = nws.matcher(text);
+				while(m.find()) {
+					String token = m.group();
+					int start = m.start();
+					int end = m.end();
 					tokensList.add(token);
-					tokStart.add(tmpTok);
-					tokEnd.add(tmpTok + token.length());
-					tmpTok += (token.length() + 1);
+					tokStart.add(start);
+					tokEnd.add(end);
+//					System.out.println("Token: " + token + " ("
+//							+ Integer.toString(start) + ", "
+//							+ Integer.toString(end) + ")");
+//					tmpTok += (token.length() + 1);
 					numberOfTokens++;
 				}
 
@@ -355,7 +367,7 @@ public class FileReader extends CollectionReader_ImplBase {
 					token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
 					token.addToIndexes();
 				}
-			}
+//			}
 		}
 //		// sentence per line mode
 //		if (sentencePerLine) {
