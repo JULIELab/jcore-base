@@ -33,12 +33,6 @@ import cc.mallet.types.TokenSequence;
 
 class Abstract2UnitPipe extends Pipe {
 
-	// all upper case letters (consider different languages, too)
-	private static final String CAPS = "A-ZÁÉÍÓÚÀÈÌÒÙÇÑÏÄÖÜ";
-
-	// all lower case letters (consider different languages, too)
-	private static final String LOW = "a-zàèìòùáéíóúçñïäöü";
-
 	private static final long serialVersionUID = 1L;
 
 	private static final Pattern splitPattern = Pattern.compile("[^\\s]+");
@@ -52,7 +46,7 @@ class Abstract2UnitPipe extends Pipe {
 
 		// initialize the list of end-of-sentence symbols and abbreviations
 		eosSymbols = new EOSSymbols().getSymbols();
-		abbrList = (new AbbreviationsBiomed()).getSet();
+		abbrList = (new AbbreviationsMedical()).getSet();
 	}
 
 	/**
@@ -116,16 +110,16 @@ class Abstract2UnitPipe extends Pipe {
 				token.setFeatureValue("TOKEN=" + currUnitRep, 1);
 
 				// some regexp features
-				if (currUnitRep.matches("[" + CAPS + "].*"))
+				if (currUnitRep.matches("[\\p{Lu}].*"))
 					token.setFeatureValue("INITCAPS", 1);
 
-				if (currUnitRep.matches("[" + CAPS + "]"))
+				if (currUnitRep.matches("[\\p{Lu}]"))
 					token.setFeatureValue("ONECAPS", 1);
 
-				if (currUnitRep.matches("[" + CAPS + "]+"))
+				if (currUnitRep.matches("[\\p{Lu}]+"))
 					token.setFeatureValue("ALLCAPS", 1);
 
-				if (currUnitRep.matches("(.*[" + CAPS + LOW + "].*[0-9].*|.*[0-9].*[" + CAPS + LOW + "].*)"))
+				if (currUnitRep.matches("(.*[\\p{L}\\p{M}].*[0-9].*|.*[0-9].*[\\p{L}\\p{M}].*)"))
 					token.setFeatureValue("ALPHANUMERIC", 1);
 
 				if (currUnitRep.matches("[IVXDLCM]+"))
@@ -182,10 +176,10 @@ class Abstract2UnitPipe extends Pipe {
 				wc = wc.replaceAll("[0-9]", "0");
 				wc = wc.replaceAll("[^A-Za-z0-9]", "x");
 
-				bwc = bwc.replaceAll("[A-Z]+", "A");
-				bwc = bwc.replaceAll("[a-z]+", "a");
+				bwc = bwc.replaceAll("[\\p{Lu}\\p{M}]+", "A");
+				bwc = bwc.replaceAll("[\\p{Ll}\\p{M}]+", "a");
 				bwc = bwc.replaceAll("[0-9]+", "0");
-				bwc = bwc.replaceAll("[^A-Za-z0-9]+", "x");
+				bwc = bwc.replaceAll("[^\\p{L}\\p{M}0-9]+", "x");
 
 				token.setFeatureValue("BWC=" + bwc, 1);
 

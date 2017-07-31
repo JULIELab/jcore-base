@@ -8,10 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import cc.mallet.pipe.Pipe;
-import cc.mallet.types.Alphabet;
 import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
-import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
 
@@ -53,22 +50,6 @@ public class Abstract2UnitPipeTest {
 		assertTrue(similar(third.getFeatureValue("TOKEN=a"), 1.0));
 		assertTrue(similar(third.getFeatureValue("BWC=a"), 1.0));
 		assertTrue(similar(third.getFeatureValue("SIZE1"), 1.0));
-	}
-	
-	@Test
-	public void testPipeInitCapsToken() {		
-		ArrayList<String> list = new ArrayList<String>(1);
-		//Testing "This"
-		list.add("This is a TEST.");
-		Instance inst = pipe.pipe(new Instance(list, "", "", ""));
-		
-		TokenSequence tokens = (TokenSequence) inst.getData();
-		Token first = (Token) tokens.get(0);
-
-		assertTrue(Double.toString(first.getFeatureValue("INITCAPS")), 
-				similar(first.getFeatureValue("INITCAPS"), 1.0));
-		assertTrue(similar(first.getFeatureValue("BWC=Aa"), 1.0));
-		assertTrue(similar(first.getFeatureValue("SIZE2"), 1.0));
 	}
 	
 	@Test
@@ -154,22 +135,42 @@ public class Abstract2UnitPipeTest {
 	}
 	
 	@Test
-	public void testUnicodeLoken() {
+	public void testUnicodeToken() {
 		ArrayList<String> list = new ArrayList<String>(1);
 		//Testing "(Senior-Løken"
 		list.add("Nephronophthisis (NPH) and RP (Senior-Løken syndrome).");
 		Instance inst = pipe.pipe(new Instance(list, "", "", ""));
 		
 		TokenSequence tokens = (TokenSequence) inst.getData();
-		Token second = (Token) tokens.get(4);
-		System.out.println(second);
-		//TODO: Is right now BWC=xAaxAxa, should be BWC=xAaxAa
-		//(ø is not recognized as letter)
-		//Use \\p{javaUpperCase} and\\p{javaLowerCase} instead of [A-Z] & [a-z]
-		assertTrue(similar(second.getFeatureValue("BWC=xAaxAa"), 1.0));
-		assertTrue(similar(second.getFeatureValue("BEGINBRACKETS"), 1.0));
-		assertTrue(similar(second.getFeatureValue("SIZE3"), 1.0));		
+		Token token = (Token) tokens.get(4);
+		
+		assertTrue(similar(token.getFeatureValue("BWC=xAaxAa"), 1.0));
+		assertTrue(similar(token.getFeatureValue("BEGINBRACKETS"), 1.0));
+		assertTrue(similar(token.getFeatureValue("SIZE3"), 1.0));		
 	}
+	
+	@Test
+	public void testAlphanumericToken() {
+		ArrayList<String> list = new ArrayList<String>(1);
+		list.add("NH3");
+		Instance inst = pipe.pipe(new Instance(list, "", "", ""));
+		
+		TokenSequence tokens = (TokenSequence) inst.getData();
+		Token token = (Token) tokens.get(0);
+		assertTrue(similar(token.getFeatureValue("ALPHANUMERIC"), 1.0));	
+	}
+	
+	@Test
+	public void testInitCapsLoken() {
+		ArrayList<String> list = new ArrayList<String>(1);
+		list.add("Ährengold");
+		Instance inst = pipe.pipe(new Instance(list, "", "", ""));
+		
+		TokenSequence tokens = (TokenSequence) inst.getData();
+		Token token = (Token) tokens.get(0);
+		assertTrue(similar(token.getFeatureValue("INITCAPS"), 1.0));	
+	}
+	
 	
 	private boolean similar(double featureValue, double d) {
 		if (Math.abs(featureValue - d) < Math.sqrt(Double.MIN_NORMAL)) {
