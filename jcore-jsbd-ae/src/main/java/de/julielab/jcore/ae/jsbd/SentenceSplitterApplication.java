@@ -103,7 +103,7 @@ public class SentenceSplitterApplication {
 			in = new ObjectInputStream(new GZIPInputStream(new FileInputStream(args[1])));
 			crf = (CRF) in.readObject();
 			in.close();
-		} catch (Exception e) {
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
@@ -453,7 +453,7 @@ public class SentenceSplitterApplication {
 			ArrayList<Unit> units = null;
 			try {
 				units = tpFunctions.predict(inst, doPostprocessing);
-			} catch (Exception e) {
+			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 
@@ -540,7 +540,7 @@ public class SentenceSplitterApplication {
 			ArrayList<Unit> units = null;
 			try {
 				units = tpFunctions.predict(inst, doPostprocessing);
-			} catch (Exception e) {
+			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 
@@ -638,7 +638,7 @@ public class SentenceSplitterApplication {
 		System.out.println("reading model...");
 		try {
 			sentenceSplitter.readModel(new File(modelFilename));
-		} catch (Exception e) {
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
@@ -669,7 +669,7 @@ public class SentenceSplitterApplication {
 
 			try {
 				units = sentenceSplitter.predict(inst, doPostprocessing);
-			} catch (Exception e) {
+			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 
@@ -736,7 +736,7 @@ public class SentenceSplitterApplication {
 			for (int i = 0; i < lines.size(); i++)
 				fw.write(lines.get(i) + "\n");
 			fw.close();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 

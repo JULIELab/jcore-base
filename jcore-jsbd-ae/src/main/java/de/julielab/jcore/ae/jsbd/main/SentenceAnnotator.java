@@ -113,7 +113,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 							+ "\" could be found neither in the file system nor in the classpath.");
 			}
 			sentenceSplitter.readModel(modelIs);
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			throw new ResourceInitializationException(e);
 		}
 
