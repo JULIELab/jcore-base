@@ -168,13 +168,7 @@ class Abstract2UnitPipe extends Pipe {
 					token.setFeatureValue("ABBR3", 1);
 
 				// word class
-				String wc = plainUnitRep;
 				String bwc = plainUnitRep;
-
-				wc = wc.replaceAll("[A-Z]", "A");
-				wc = wc.replaceAll("[a-z]", "a");
-				wc = wc.replaceAll("[0-9]", "0");
-				wc = wc.replaceAll("[^A-Za-z0-9]", "x");
 
 				bwc = bwc.replaceAll("[\\p{Lu}\\p{M}]+", "A");
 				bwc = bwc.replaceAll("[\\p{Ll}\\p{M}]+", "a");
