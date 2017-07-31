@@ -60,9 +60,13 @@ public class SegmentConsumer extends JCasAnnotator_ImplBase {
             SegmentWriter segmentWriter = createSegmentWriter(documentText, id);
             documentWriter.write(cas.getJCas());
             FSIterator<AnnotationFS> sentenceIterator = cas.getAnnotationIndex(sentenceType).iterator();
-            while (sentenceIterator.hasNext()) {
-                Sentence sentence = (Sentence) sentenceIterator.next();
-                segmentWriter.writeSentence(sentence);
+            if (!sentenceIterator.hasNext()) {
+            	segmentWriter.writeTokensOnly(cas);
+            } else {
+            	while (sentenceIterator.hasNext()) {
+            		Sentence sentence = (Sentence) sentenceIterator.next();
+            		segmentWriter.writeSentence(sentence);
+            	}
             }
             documentWriter.close();
             segmentWriter.close();
