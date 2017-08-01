@@ -125,5 +125,10 @@
         </featureDescription>
       </features>
     </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jcore.types.Enzyme</name>
+      <description/>
+      <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
+    </typeDescription>
   </types>
 </typeSystemDescription>
