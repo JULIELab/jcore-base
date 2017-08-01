@@ -110,13 +110,13 @@ class Abstract2UnitPipe extends Pipe {
 				token.setFeatureValue("TOKEN=" + currUnitRep, 1);
 
 				// some regexp features
-				if (currUnitRep.matches("[\\p{Lu}].*"))
+				if (currUnitRep.matches("[\\p{Lu}\\p{M}].*"))
 					token.setFeatureValue("INITCAPS", 1);
 
-				if (currUnitRep.matches("[\\p{Lu}]"))
+				if (currUnitRep.matches("[\\p{Lu}\\p{M}]"))
 					token.setFeatureValue("ONECAPS", 1);
 
-				if (currUnitRep.matches("[\\p{Lu}]+"))
+				if (currUnitRep.matches("[\\p{Lu}\\p{M}]+"))
 					token.setFeatureValue("ALLCAPS", 1);
 
 				if (currUnitRep.matches("(.*[\\p{L}\\p{M}].*[0-9].*|.*[0-9].*[\\p{L}\\p{M}].*)"))
