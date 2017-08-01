@@ -49,6 +49,7 @@
 		<module>jcore-cas2iob-consumer</module>
 		<module>jcore-coordination-baseline-ae</module>
 		<module>jcore-dta-reader</module>
+		<module>jcore-ec-code-ae</module>
 		<module>jcore-file-reader</module>
 <!-- 		<module>jcore-gene-species-assigner</module> -->
 		<module>jcore-iexml-consumer</module>
