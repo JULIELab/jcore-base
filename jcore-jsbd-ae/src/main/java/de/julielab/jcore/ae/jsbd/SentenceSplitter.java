@@ -182,6 +182,7 @@ public class SentenceSplitter {
 
 		// get sequence
 		Sequence input = (Sequence) inst.getData();
+		@SuppressWarnings("unchecked")
 		ArrayList<Unit> units = (ArrayList<Unit>) inst.getName();
 		ArrayList<String> labelList = new ArrayList<String>();
 

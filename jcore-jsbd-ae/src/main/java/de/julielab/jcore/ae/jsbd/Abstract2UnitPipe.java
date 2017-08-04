@@ -60,6 +60,7 @@ class Abstract2UnitPipe extends Pipe {
 	public Instance pipe(Instance carrier) {
 
 		String abstractFileName = (String) carrier.getSource();
+		@SuppressWarnings("unchecked")
 		ArrayList<String> lines = (ArrayList<String>) carrier.getData();
 		HashMap<String, Integer> unitFreq = getUnitFrequency(lines);
 
