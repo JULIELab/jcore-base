@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -215,6 +216,77 @@ public class SentenceTokenConsumerTest {
 
 		bufferedReader.close();
 		return lines;
+	}
+	
+	@Test
+	public void testWriteDocumentText() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+		jcas.setDocumentText("This is line 1\nthis is line two.");
+		// add a few annotations that should totally be ignored in document text mode
+		new Token(jcas, 0, 4).addToIndexes();
+		new Token(jcas, 5, 7).addToIndexes();
+		new Token(jcas, 8, 12).addToIndexes();
+		new Sentence(jcas, 0, 7).addToIndexes();
+		Header header = new Header(jcas, 0, 0);
+		header.setDocId("documentTest");
+		header.addToIndexes();
+		
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class, SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_MODE, "DOCUMENT");
+		consumer.process(jcas);
+		
+		File outputFile = new File("src/test/resources/data/documentTest.txt");
+		assertTrue(outputFile.exists());
+		List<String> lines = readFile(outputFile.getAbsolutePath());
+		assertEquals(2, lines.size());
+		assertEquals("This is line 1", lines.get(0));
+		assertEquals("this is line two.", lines.get(1));
+	}
+	
+	@Test
+	public void testFromDescriptor1() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+		jcas.setDocumentText("This is line 1\nthis is line two.");
+		// add a few annotations that should totally be ignored in document text mode
+		new Token(jcas, 0, 4).addToIndexes();
+		new Token(jcas, 5, 7).addToIndexes();
+		new Token(jcas, 8, 12).addToIndexes();
+		new Sentence(jcas, 0, 7).addToIndexes();
+		Header header = new Header(jcas, 0, 0);
+		header.setDocId("documentTest");
+		header.addToIndexes();
+		
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer", SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_MODE, "DOCUMENT");
+		consumer.process(jcas);
+		
+		File outputFile = new File("src/test/resources/data/documentTest.txt");
+		assertTrue(outputFile.exists());
+		List<String> lines = readFile(outputFile.getAbsolutePath());
+		assertEquals(2, lines.size());
+		assertEquals("This is line 1", lines.get(0));
+		assertEquals("this is line two.", lines.get(1));
+	}
+	
+	@Test
+	public void testFromDescriptor2() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+		jcas.setDocumentText("This is line 1\nthis is line two.");
+		// add a few annotations that should totally be ignored in document text mode
+		new Token(jcas, 0, 4).addToIndexes();
+		new Token(jcas, 5, 7).addToIndexes();
+		new Token(jcas, 8, 12).addToIndexes();
+		new Sentence(jcas, 0, 7).addToIndexes();
+		Header header = new Header(jcas, 0, 0);
+		header.setDocId("tokenTest");
+		header.addToIndexes();
+		
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer", SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_MODE, "TOKEN");
+		consumer.process(jcas);
+		
+		File outputFile = new File("src/test/resources/data/tokenTest.txt");
+		assertTrue(outputFile.exists());
+		List<String> lines = readFile(outputFile.getAbsolutePath());
+		assertEquals(1, lines.size());
+		assertEquals("This is", lines.get(0));
 	}
 
 }
