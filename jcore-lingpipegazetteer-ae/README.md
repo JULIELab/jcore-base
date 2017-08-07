@@ -3,7 +3,7 @@ An Analysis Engine for Named-Entity Recognition using the LingPipe Libraries.
 
 **Descriptor Path**:
 ```
-de.julielab.jcore.ae.lingpipegazetteer.desc.GazetteerAnnotator (??)
+de.julielab.jcore.ae.lingpipegazetteer.desc.GazetteerGeneAnnotator
 ```
 
 ### Objective
@@ -21,14 +21,15 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
-| checkAcronyms | Boolean | yes | no | Checks acronyms, needs to be true because of chunker injection |
-| useApproximateMatching | Boolean | yes | no | Gazetteer mode, default value is false |
-| mantraMode | Boolean | no | no | default value is false |
-| transliterate | Boolean | yes | no | Parameter to indicate whether text should be transliterated |
-| normalize | Boolean | yes | no | Parameter to indicate whether text should be normalized by completely removing dashes, parenthesis, genitive's and perhaps more |
-| outputType | String | yes | no | the output type|
-| caseSensitive | Boolean | no | no | The approximate chunker is always case sensitive |
-| generateVariants| Boolean | no | no | - |
+| CheckAcronyms | Boolean | no | no | Checks acronyms, needs to be true because of chunker injection |
+| UseApproximateMatching | Boolean | no | no | Gazetteer mode, default value is false |
+| MantraMode | Boolean | no | no | Activate this to use gazetteer files which contain detailed information like cuis or sources|
+| TransliterateText | Boolean | no | no | Whether to strip accents and other character variations from the text |
+| NormalizeText | Boolean | no | no | Parameter to indicate whether text should be normalized by completely removing dashes, parenthesis, genitive's and perhaps more |
+| OutputType | String | yes | no | The UIMA annotation type that should be generated for text passages matching a dictionary entry|
+| IgnoreCase | Boolean | no | no | Whether matching should be done case-sensitive or case-insensitive |
+| CaseSensitive | Boolean | no | no | Only used in the annotator if approximate matching is enabled |
+| MakeVariants| Boolean | no | no | Whether (non-)hyphenated/(non-)parenthesized dictionary variants should be generated |
 | dictFile | Inputstream | yes | no | The Dictionary File |
 | stopFile | Inputstream | yes | no | The StopWords File |
 
@@ -37,13 +38,17 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
-| checkAcronyms | Boolean | `true` |
-| useApproximateMatching | Boolean | `false` |
-| transliterate | Boolean | `true` |
-| normalize | Boolean | `true` |
-| outputType | A valid output Type | `XML`|
+| CheckAcronyms | Boolean | `true` |
+| UseApproximateMatching | Boolean | `false` |
+| MantraMode | Boolean | `false` | 
+| TransliterateText | Boolean | `true` |
+| NormalizeText | Boolean | `true` |
+| OutputType | A valid output Type | `de.julielab.jcore.types.Gene`|
+| IgnoreCase | Boolean | `false` |
+| CaseSensitive | Boolean | `false` |
+| MakeVariants | Boolean | `true` |
 | dictFile | A valid Path to the Dictionary File | `data/exampleDict` |
-| stopFile | A valid Path to the StopWords File | `data/stopWords`|
+| stopFile | A valid Path to the StopWords File | `resources/DictionaryAnnotatorParams/stopwords/general_english_words`|
 
 
 **3. Capabilities**
