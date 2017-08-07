@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.consumer.txt.SentenceTokenConsumer</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>jcore-txt-consumer</name>
+    <description/>
+    <version>2.3.0-SNAPSHOT</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>outDirectory</name>
+        <description>The directory where to write the text files to.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>delimiter</name>
+        <description>A delimiter to insert between tokens and PoS tags. PoS tags will be appended to each token if a delimiter is set. If it not set, only tokens will be output.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>mode</name>
+        <description>Valid options are TOKEN and DOCUMENT. Defaults to TOKEN. TOKEN will cause the output to split to sentences and tokens and print the text one sentence per line, optionally with PoS tags appended to each token. DOCUMENT will just output the original CAS document text without any changes.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription/>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.cas.CAS;
@@ -60,7 +61,7 @@ public class IOUtils {
 	 * @param file
 	 * @throws IOException
 	 */
-	public static void arraylist_to_file(ArrayList array, File file)
+	public static void arraylist_to_file(List array, File file)
 			throws IOException {
 		FileWriter fw = new FileWriter(file);
 		for (Iterator iter = array.iterator(); iter.hasNext();) {
