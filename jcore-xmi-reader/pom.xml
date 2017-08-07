@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jcore-xmi-reader</artifactId>
 	<packaging>jar</packaging>
-	<name>JULES XMI Collection Reader</name>
+	<name>JCoRe XMI Collection Reader</name>
 	<description>Reads in XMI representions of CAS objects from files and converts them to CAS objects.
 Is able to read (g)zipped files and can recursively search subdirectories for XMI files to read.</description>
 
@@ -19,9 +19,13 @@ Is able to read (g)zipped files and can recursively search subdirectories for XM
 	<dependencies>
 		<dependency>
 			<groupId>de.julielab</groupId>
-			<artifactId>jules-types</artifactId>
-			<version>[2.8.0,)</version>
+			<artifactId>jcore-types</artifactId>
+			<version>${jcore-version}</version>
 		</dependency>
 	</dependencies>
+<organization>
+  	<name>JULIE Lab, Germany</name>
+  	<url>http://www.julielab.de</url>
+</organization>
 </project>
 
