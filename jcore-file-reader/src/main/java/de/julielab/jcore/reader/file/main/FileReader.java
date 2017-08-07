@@ -51,7 +51,7 @@ import de.julielab.jcore.types.Token;
 public class FileReader extends CollectionReader_ImplBase {
 
 	/**
-	 * Folder with documents; as of now (11/2016) no subdir's are crawled.
+	 * 
 	 */
 	public static final String DIRECTORY_INPUT = "InputDirectory";
 	/**
@@ -82,6 +82,14 @@ public class FileReader extends CollectionReader_ImplBase {
 	 * 
 	 */
 	public static final String DIRECTORY_SUBDIRS = "ReadSubDirs";
+	/**
+	 * 
+	 */
+	public static final String DIRECTORY_SENT_FILES = "SentFolder";
+	/**
+	 * 
+	 */
+	public static final String SENT_FILES_EXT = "SentFileExt";
 
 	private ArrayList<File> files;
 
@@ -103,6 +111,10 @@ public class FileReader extends CollectionReader_ImplBase {
 	private String[] allowedExtensionsArray;
 	@ConfigurationParameter(name = DIRECTORY_SUBDIRS, mandatory = false)
 	private boolean useSubDirs;
+	@ConfigurationParameter(name = DIRECTORY_SENT_FILES, mandatory = false)
+	private File sentFolder;
+	@ConfigurationParameter(name = SENT_FILES_EXT, mandatory = false)
+	private String sentFileExt;
 
 	/**
 	 * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -158,7 +170,25 @@ public class FileReader extends CollectionReader_ImplBase {
 		} else {
 			useSubDirs = subdir;
 		}
+		
+		String sentfoo = (String) getConfigParameterValue(DIRECTORY_SENT_FILES);
+		if (null == sentfoo) {
+			sentFolder = null;
+		} else {
+			sentFolder = new File(sentfoo.trim());
+		}
 
+		String sentfile_ext = (String) getConfigParameterValue(SENT_FILES_EXT);
+		if (null == sentfile_ext) {
+			sentFileExt = "txt";
+		} else {
+			sentFileExt = sentfile_ext;
+			if (sentfile_ext.startsWith(".")) {
+				sentFileExt = sentfile_ext.substring(1);
+			}
+		}
+		
+		
 		fileIndex = 0;
 
 		// if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
@@ -221,6 +251,10 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		Pattern nws = Pattern.compile("[^\\s]+", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
 		
+		if (sentFolder != null) {
+			File sentFile = new File(sentFolder, getFileName(file) + "." + sentFileExt);
+		}
+		
 		// sentence per line mode
 		if (sentencePerLine) {
 //			if (!tokenByToken) {
@@ -251,92 +285,15 @@ public class FileReader extends CollectionReader_ImplBase {
 		}
 		//token by token mode
 		if (tokenByToken) {
-//			if (sentencePerLine) {
-////				System.out.println("Entered Sentence Per Line And TokenByToken");
-//				BufferedReader rdr = new BufferedReader(new StringReader(text));
-//				List<String> lines = new ArrayList<>();
-//				List<Integer> start = new ArrayList<>();
-//				List<Integer> end = new ArrayList<>();
-//				List<String> tokensList = new ArrayList<>();
-//				List<Integer> tokStart = new ArrayList<>();
-//				List<Integer> tokEnd = new ArrayList<>();
-//				Integer tmp = 0;
-//				String line;
-//				List<String> tokens = new ArrayList<String>();
-//
-//				Integer tmpTok = 0;
-//				Integer globalNumberOfToken = 0;
-//				while ((line = rdr.readLine()) != null) {
-//
-//					// if (line.endsWith(" ")) {
-//					// line = line.substring(0, line.length() - 2);
-//					// System.out.println("Line then:" + line);
-//					// }
-//					if (!Pattern.matches("\\s*", line)) {
-//						lines.add(line);
-//						start.add(tmp);
-//						end.add(tmp + line.length());
-//					}
-//					tmp += (line.length() + 1);
-//
-////					System.out.println("Line: " + line);
-//
-//					Integer numberOfTokens = 0;
-//					Matcher m = nws.matcher(line);
-//					while(m.find()) {
-//						tokensList.add(m.group());
-////						System.out.println("Token: " + token);
-//						String token = m.group();
-//						tokensList.add(token);
-//						tokStart.add(tmpTok + m.start());
-//						tokEnd.add(tmpTok + m.end());
-//						tmpTok += (token.length() + 1);
-//						numberOfTokens++;
-//					}
-//
-////					System.out.println("Number of tokens in this Line: " + numberOfTokens);
-////					System.out.println("---------------End of Line--------------------");
-//					globalNumberOfToken += numberOfTokens;
-//				}
-//				rdr.close();
-//
-////				System.out.println("Closed the Reader!");
-////				System.out.println("Global Number Of Token: " + globalNumberOfToken);
-//
-//				for (Integer i = 0; i < lines.size(); i++) {
-////					System.out.println("Sentence: " + lines.get(i));
-//					Sentence sent = new Sentence(jcas);
-//					sent.setBegin(start.get(i));
-//					sent.setEnd(end.get(i));
-//					sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
-//					sent.addToIndexes();
-////					System.out.println("-----------------------------------------");
-//
-//				}
-//
-//				for (Integer j = 0; j < tokensList.size(); j++) {
-////					System.out.println("Token: " + tokensList.get(j));
-//					Token token = new Token(jcas);
-//					token.setBegin(tokStart.get(j));
-//					token.setEnd(tokEnd.get(j));
-//					token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
-//					token.addToIndexes();
-//
-//				}
-//			} else {
 //				System.out.println("TokenByToken");
 				List<String> tokensList = new ArrayList<>();
 				List<Integer> tokStart = new ArrayList<>();
 				List<Integer> tokEnd = new ArrayList<>();
 				
-//				String[] tokens;
-
 				Integer tmpTok = 0;
 				Integer globalNumberOfToken = 0;
 
 //				System.out.println("Text: " + text);
-
-//				tokens = text.split("\\s+");
 
 				Integer numberOfTokens = 0;
 				Matcher m = nws.matcher(text);
@@ -369,49 +326,13 @@ public class FileReader extends CollectionReader_ImplBase {
 				}
 //			}
 		}
-//		// sentence per line mode
-//		if (sentencePerLine) {
-//			BufferedReader rdr = new BufferedReader(new StringReader(text));
-//			List<String> lines = new ArrayList<String>();
-//			List<Integer> start = new ArrayList<Integer>();
-//			List<Integer> end = new ArrayList<Integer>();
-//			Integer tmp = 0;
-//			String line;
-//			while ((line = rdr.readLine()) != null) {
-//				lines.add(line);
-//				start.add(tmp);
-//				end.add(tmp + line.length());
-//				tmp += (line.length()+1);
-//			}
-//			
-//			rdr.close();
-//			
-//			
-//
-//			for (Integer i = 0; i < lines.size(); i++) {
-//				Sentence sent = new Sentence(jcas);
-//				sent.setBegin(start.get(i));
-//				sent.setEnd(end.get(i));
-//				sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
-//				sent.addToIndexes();
-//			}
-//		}
 
 		// put document in CAS
 		jcas.setDocumentText(text);
 
 		if (useFilenameAsDocId) {
-			String filename = file.getName();
-			int extDotIndex = filename.lastIndexOf('.');
-			if (extDotIndex > 0) {
-				filename = filename.substring(0, extDotIndex);
-			}
-			if (fileNameSplitUnderscore) {
-				int extUnderScoreIndex = filename.lastIndexOf('_');
-				if (extUnderScoreIndex > 0) {
-					filename = filename.substring(0, extUnderScoreIndex);
-				}
-			}
+			
+			String filename = getFileName(file);
 
 			Header header = new Header(jcas);
 
@@ -509,5 +430,20 @@ public class FileReader extends CollectionReader_ImplBase {
 		}
 
 		return path;
+	}
+
+	private String getFileName(File fi) {
+		String filename = fi.getName();
+		int extDotIndex = filename.lastIndexOf('.');
+		if (extDotIndex > 0) {
+			filename = filename.substring(0, extDotIndex);
+		}
+		if (fileNameSplitUnderscore) {
+			int extUnderScoreIndex = filename.lastIndexOf('_');
+			if (extUnderScoreIndex > 0) {
+				filename = filename.substring(0, extUnderScoreIndex);
+			}
+		}
+		return filename;
 	}
 }

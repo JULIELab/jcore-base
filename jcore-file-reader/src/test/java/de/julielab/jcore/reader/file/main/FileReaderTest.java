@@ -81,7 +81,7 @@ public class FileReaderTest {
 			+ "Understanding the balance between IL-12, IL-23 and"
 			+ " IL-27 is crucial to the development of immune intervention in tuberculosis.";
 
-	private static final String FILE_ARTIFACT_2 = "data/sentPerLine/755.txt";
+	private static final String FILE_ARTIFACT_2 = "data/sentPerLine/8563171.txt";
 
 	private static final Integer S_GOLD_COUNT = new Integer(5);// number of
 																// sentences in
@@ -99,7 +99,7 @@ public class FileReaderTest {
 			+ "Understanding the balance between IL-12 , IL-23 and"
 			+ " IL-27 is crucial to the development of immune intervention in tuberculosis .";
 
-	private static final String FILE_ARTIFACT_3 = "data/sentPerLineAndToken/333.txt";
+	private static final String FILE_ARTIFACT_3 = "data/sentPerLineAndToken/8563171.txt";
 
 	 private final static String ARTIFACT_4 = "Our understanding of the role of interleukin (IL)-12 in controlling"
 			+ " tuberculosis has expanded because of increased interest in other members of the IL-12 family of cytokines ."
@@ -110,7 +110,7 @@ public class FileReaderTest {
 			+ " bacterial killing and tissue damage is required for survival . Understanding the balance between IL-12 , IL-23 and"
 			+ " IL-27 is crucial to the development of immune intervention in tuberculosis .";
 	
-	 private static final String FILE_ARTIFACT_4 = "data/onlyToken/222.txt";
+	 private static final String FILE_ARTIFACT_4 = "data/onlyToken/8563171.txt";
 
 
 	@BeforeClass

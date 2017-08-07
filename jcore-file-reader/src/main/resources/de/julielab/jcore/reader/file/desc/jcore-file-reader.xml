@@ -62,6 +62,18 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>SentFolder</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>SentFileExt</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -98,6 +110,12 @@
         <name>TokenByToken</name>
         <value>
           <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>SentFileExt</name>
+        <value>
+          <string>txt</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
