@@ -1,14 +1,7 @@
-
-# /
-/.settings
-/.classpath
-/.project
-/target
+/doc
+/desc
 /bin
 /conf
 /data
-/desc
-/doc
-/lib
 /metadata
 /resources

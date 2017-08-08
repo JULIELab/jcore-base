@@ -1,10 +1,4 @@
 
-# /
-/.settings
-/.classpath
-/.project
-/target
-/lib
 
 # /doc/
 /doc/*.gz

@@ -1,12 +1,7 @@
 
-# /
-/.project
-/.classpath
-/.settings
-
 # /doc/
 /doc/*.aux
 /doc/*.bbl
 /doc/*.blg
 /doc/*.gz
-/target/
+
