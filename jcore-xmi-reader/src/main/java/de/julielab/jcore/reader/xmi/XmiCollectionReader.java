@@ -1,4 +1,4 @@
-package de.julielab.jules.reader;
+package de.julielab.jcore.reader.xmi;
 
 import java.io.File;
 import java.io.FileFilter;
