@@ -361,7 +361,8 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 		
 		int[] ret = {-1, -1};
 		
-		ret[0] = drug.getBegin();
+		// The span before a drug for a possible attribute extends to the sentence begin
+		ret[0] = drugSenBegin; // drug.getBegin();
 		ret[1] = drugSenEnd;
 
 		int InstructionBegin = -1;
@@ -372,7 +373,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 			if(sen.getBegin()>drug.getEnd()) {
 				cnt++;
 				ret[1] = sen.getEnd();
-				
+				//TODO: to german
 				if(sen.getCoveredText().startsWith("Instruction"))
 					InstructionBegin = sen.getBegin();
 				else if(sen.getCoveredText().startsWith("Indication"))
@@ -386,12 +387,13 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 		//and reset a window (eg, IV Lasix, one dose of IV Lasix)		
 		//TODO currently simply expand -20 before a given drug or 
 		//begin of the sentence and so might need more sophisticated rules
-		String text = jcas.getDocumentText().substring(drugSenBegin, drug.getBegin());
-		if(text.matches(".*\\s+IV\\s+") 
-				|| text.matches(".*\\s+of\\s+(\\S+\\s+){0,1}")) {	
-			int begin = drug.getBegin()-20;
-			ret[0] = begin<drugSenBegin ? drugSenBegin : begin;
-		}		
+		
+//		String text = jcas.getDocumentText().substring(drugSenBegin, drug.getBegin());
+//		if(text.matches(".*\\s+IV\\s+") 
+//				|| text.matches(".*\\s+of\\s+(\\S+\\s+){0,1}")) {	
+//			int begin = drug.getBegin()-20;
+//			ret[0] = begin<drugSenBegin ? drugSenBegin : begin;
+//		}		
 		
 		//---- TODO: DON'T USE THIS CONDICTION IF NOT MAYO DATA
 		//NOTE THAT this is specific for Mayo Current Medication section

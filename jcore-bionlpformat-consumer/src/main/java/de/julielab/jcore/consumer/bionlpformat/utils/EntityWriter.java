@@ -41,10 +41,11 @@ public class EntityWriter {
 		if (entity.getSpecificType() != null) {
 			etype = (entity.getSpecificType().equals("DRUG")) ? "Medication" : "Entity";
 		}
-		String line = entity.getId() + "\t" + etype + " " +
+		
+		String line = "";
+		line = entity.getId() + "\t" + etype + " " +
 					  entity.getBegin() + " " + entity.getEnd() + "\t" + 
 					  documentText.substring(entity.getBegin(), entity.getEnd()) + "\n";
-		
 		writer.write(line);
 	}
 
