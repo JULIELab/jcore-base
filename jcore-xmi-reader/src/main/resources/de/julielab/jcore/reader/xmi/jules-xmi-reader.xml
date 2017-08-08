@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>de.julielab.jules.reader.XmiCollectionReader</implementationName>
+  <implementationName>de.julielab.jcore.reader.xmi.XmiCollectionReader</implementationName>
   <processingResourceMetaData>
     <name>XmiCollectionReader</name>
     <description>A CollectionReader which reads CAS data stored as XMI files from the file system. The reader grounds on IBM's XmiCollectionReader delivered with older versions of UIMA and has been extended by the Julie Lab team at the University of Jena.
