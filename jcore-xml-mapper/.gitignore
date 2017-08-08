@@ -1,29 +1,8 @@
 
-# /
-/target
-/.classpath
-/.project
-/.settings
 
 # /src/main/java/
 /src/main/java/META-INF
 
 # /src/test/resources/xmi-output/
-/src/test/resources/xmi-output/12.xmi
-/src/test/resources/xmi-output/6.xmi
-/src/test/resources/xmi-output/7.xmi
-/src/test/resources/xmi-output/null.xmi
-/src/test/resources/xmi-output/10.xmi
-/src/test/resources/xmi-output/5.xmi
-/src/test/resources/xmi-output/11.xmi
-/src/test/resources/xmi-output/0.xmi
-/src/test/resources/xmi-output/3.xmi
-/src/test/resources/xmi-output/9.xmi
-/src/test/resources/xmi-output/13.xmi
-/src/test/resources/xmi-output/14.xmi
-/src/test/resources/xmi-output/4.xmi
-/src/test/resources/xmi-output/2.xmi
-/src/test/resources/xmi-output/8.xmi
-/src/test/resources/xmi-output/1.xmi
 /src/test/resources/xmi-output/*.xmi
-/bin/
+

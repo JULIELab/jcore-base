@@ -7,6 +7,11 @@
 .DS_Store
 .idea
 target
+bin
+conf
+data
+metadata
+lib
 *.iml
 **/*.iml
 
