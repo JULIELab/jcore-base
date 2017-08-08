@@ -1,4 +1,4 @@
-package de.julielab.jules.reader;
+package de.julielab.jcore.reader.xmi;
 
 import static org.junit.Assert.assertTrue;
 
@@ -8,8 +8,8 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.julielab.jules.types.EventMention;
-import de.julielab.jules.types.Gene;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.Gene;
 
 public class XmiCollectionReaderTest {
 	@Test
