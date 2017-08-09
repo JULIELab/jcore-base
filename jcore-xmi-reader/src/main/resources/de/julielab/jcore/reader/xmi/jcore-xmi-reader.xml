@@ -39,7 +39,7 @@ This XMI reader is capable of reading (g)zipped XMI files and is able to recursi
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="julie-all-types"/>
+        <import name="jcore-all-types"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
