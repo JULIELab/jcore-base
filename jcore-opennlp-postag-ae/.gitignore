@@ -1,4 +1,9 @@
-
+# /
+/bin
+/conf
+/data
+/metadata
+/lib
 
 # /src/main/java/de/julielab/jules/
 /src/main/java/de/julielab/jules/types

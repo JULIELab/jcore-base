@@ -1,4 +1,5 @@
-
+#/
+/bin
 
 # /src/test/resources/cas-output/
 /src/test/resources/cas-output/*.xmi
