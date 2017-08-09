@@ -163,18 +163,24 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 		//this window condition is for Mayo "current medication section"
 		Integer drug_id = 1;
 		Integer attr_id = 1;
+		int prevDrugEnd = 0;
+		Map<GeneralAttributeMention, Boolean> usedAttributes = new HashMap<GeneralAttributeMention, Boolean>();
 		for(int i=0; i<drugs.size(); i++) {
 //			MedDesc md = new MedDesc();
 //			md.med = drugs.get(i);
 			Medication actMed = drugs.get(i);
 			
+			Medication nextDrug;
 			int nextDrugBegin;
-			if(i==drugs.size()-1) 
+			if(i==drugs.size()-1) {
+				nextDrug = null;
 				nextDrugBegin = Integer.MAX_VALUE;
-			else 
-				nextDrugBegin = drugs.get(i+1).getBegin();
-					
-			int[] span = setWindow(jcas, actMed, nextDrugBegin);
+			} else {
+				nextDrug = drugs.get(i+1);
+				nextDrugBegin = nextDrug.getBegin();
+			}
+			int[] span = setWindow(jcas, actMed, nextDrugBegin, prevDrugEnd);
+			prevDrugEnd = actMed.getEnd();
 			
 			Iterator<?> gamItr = indexes.getAnnotationIndex(GeneralAttributeMention.type).iterator();
 			GeneralAttributeMention beforeMedAttr = null; //attribute right before medication
@@ -183,7 +189,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 			while(gamItr.hasNext()) {
 				GeneralAttributeMention gam = (GeneralAttributeMention) gamItr.next();
 				if(gam.getBegin()>=span[0] && gam.getEnd()<=span[1]) {
-					assignAttribute(gam, attrMap);
+					assignAttribute(gam, attrMap, usedAttributes);
 //					md.attrs.add(ma);
 					cnt++;
 				}
@@ -228,7 +234,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 //			if(!isFalseMed2(md)) 
 //				addToJCas(jcas, drugs.get(i), span);
 			attr_id = setUpMedictation(actMed, drug_id++, attrMap, attr_id, jcas);
-		}		
+		}
 	}
 	
 	private Integer setUpMedictation(Medication actMed, Integer drug_id, Map<String, ArrayList<GeneralAttributeMention>> attrMap, Integer attr_id, JCas jcas) {
@@ -295,7 +301,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 						attr_id++;
 					}
 					attrArray.addToIndexes();
-					actMed.setModus(attrArray);
+					actMed.setFrequency(attrArray);
 					break;
 				case "strength":
 					break;
@@ -306,13 +312,17 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 		return attr_id;
 	}
 
-	private void assignAttribute(GeneralAttributeMention gam, Map<String, ArrayList<GeneralAttributeMention>> attrMap) {
+	private void assignAttribute(GeneralAttributeMention gam, Map<String, ArrayList<GeneralAttributeMention>> attrMap,
+			Map<GeneralAttributeMention, Boolean> usedAttributes) {
 		String gamType = gam.getTag(); //duration, dosage, route, frequency, strength
-		if ( !attrMap.containsKey(gamType) ) {
-			ArrayList<GeneralAttributeMention> vals = new ArrayList<GeneralAttributeMention>();
-			attrMap.put(gamType, vals);
+		if ( !usedAttributes.containsKey(gam) || !usedAttributes.get(gam) ) {
+			if ( !attrMap.containsKey(gamType) ) {
+				ArrayList<GeneralAttributeMention> vals = new ArrayList<GeneralAttributeMention>();
+				attrMap.put(gamType, vals);
+			}
+			attrMap.get(gamType).add(gam);
+			usedAttributes.put(gam, true);
 		}
-		attrMap.get(gamType).add(gam);
 	}
 
 //	protected void addToJCas(JCas jcas, Medication drug, int[] window) {
@@ -346,11 +356,11 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 	 * or Indication, the end becomes newline" 
 	 *     
 	 * @param jcas
-	 * @param drug 
+	 * @param drug
 	 * @param nextDrugBegin
 	 * @return
 	 */
-	protected int[] setWindow(JCas jcas, Medication drug, int nextDrugBegin) {
+	protected int[] setWindow(JCas jcas, Medication drug, int nextDrugBegin, int prevDrugEnd) {
 		JFSIndexRepository indexes = jcas.getJFSIndexRepository();
 		Iterator<?> senItr= indexes.getAnnotationIndex(Sentence.type).iterator();		
 //		String[] str = drug.getSentence().split("::");
@@ -381,6 +391,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 			}				
 		}
 		
+		ret[0] = ret[0]<prevDrugEnd ? prevDrugEnd : ret[0];
 		ret[1] = ret[1]>nextDrugBegin ? nextDrugBegin : ret[1];
 		
 		//Check if a given drug window needs to be expanded before drug
