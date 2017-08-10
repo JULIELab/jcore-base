@@ -2,6 +2,7 @@
 An Analysis Engine for Named-Entity Recognition using the LingPipe Libraries.
 
 **Descriptor Path**:
+
 Different Gazetteers are handled by different `jcore-projects`; so there is no uniform descriptor.
 
 ### Objective
