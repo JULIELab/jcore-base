@@ -2,9 +2,7 @@
 An Analysis Engine for Named-Entity Recognition using the LingPipe Libraries.
 
 **Descriptor Path**:
-```
-de.julielab.jcore.ae.lingpipegazetteer.desc.GazetteerGeneAnnotator
-```
+Different Gazetteers are handled by different `jcore-projects`; so there is no uniform descriptor.
 
 ### Objective
 The JULIE Lab GazetteerAnnotator is an Analysis Engine, which is a Wrapper for LingPipe's entity tagger based on a dictionary look-up. There are two modes: exact matching (only terms which map exactly to 
