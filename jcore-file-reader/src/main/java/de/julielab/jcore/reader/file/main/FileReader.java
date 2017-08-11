@@ -26,10 +26,13 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.cas.CAS;
@@ -251,8 +254,10 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		Pattern nws = Pattern.compile("[^\\s]+", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
 		
+		String sentText = null;
 		if (sentFolder != null) {
 			File sentFile = new File(sentFolder, getFileName(file) + "." + sentFileExt);
+			sentText = FileUtils.readFileToString(sentFile, "UTF-8");
 		}
 		
 		// sentence per line mode
@@ -274,12 +279,35 @@ public class FileReader extends CollectionReader_ImplBase {
 				}
 				rdr.close();
 
+				int index_tmp = 0;
+				Optional<String> newLine;
 				for (Integer i = 0; i < lines.size(); i++) {
+					boolean addSent2index = true;
 					Sentence sent = new Sentence(jcas);
-					sent.setBegin(start.get(i));
-					sent.setEnd(end.get(i));
+					if (sentText != null) {
+						newLine = Stream
+								.of(lines.get(i).split("\\s+"))
+								.map(x -> Pattern.quote(x))
+								.reduce((x,y) -> x+"\\s*"+y);
+						Pattern p = Pattern.compile(newLine.get(), Pattern.UNICODE_CHARACTER_CLASS);
+						Matcher m = p.matcher(sentText);
+						if (m.find(index_tmp)) {
+							int newStart = m.start();
+							int newEnd = m.end();
+							index_tmp = m.end() + 1;
+							sent.setBegin(newStart);
+							sent.setEnd(newEnd);
+						} else {
+							addSent2index = false;
+						}
+					} else {
+						sent.setBegin(start.get(i));
+						sent.setEnd(end.get(i));
+					}
 					sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
-					sent.addToIndexes();
+					if (addSent2index) {
+						sent.addToIndexes();
+					}
 				}
 //			}
 		}
@@ -316,19 +344,36 @@ public class FileReader extends CollectionReader_ImplBase {
 
 //				System.out.println("Global Number Of Token: " + globalNumberOfToken);
 
+				int index_tmp = 0;
 				for (Integer j = 0; j < tokensList.size(); j++) {
 //					System.out.println("Token: " + tokensList.get(j));
+					boolean addToken2index = true;
 					Token token = new Token(jcas);
-					token.setBegin(tokStart.get(j));
-					token.setEnd(tokEnd.get(j));
+					if (sentText != null) {
+						String tok = tokensList.get(j);
+						int newStart = sentText.indexOf(tok, index_tmp);
+						int newEnd = newStart + tok.length();
+						index_tmp = newEnd;
+						token.setBegin(newStart);
+						token.setEnd(newEnd);
+					} else {
+						token.setBegin(tokStart.get(j));
+						token.setEnd(tokEnd.get(j));
+					}
 					token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
-					token.addToIndexes();
+					if (addToken2index) {
+						token.addToIndexes();
+					}
 				}
 //			}
 		}
 
 		// put document in CAS
-		jcas.setDocumentText(text);
+		if (sentText != null) {
+			jcas.setDocumentText(sentText);
+		} else {
+			jcas.setDocumentText(text);
+		}
 
 		if (useFilenameAsDocId) {
 			
