@@ -88,11 +88,11 @@ public class FileReader extends CollectionReader_ImplBase {
 	/**
 	 * 
 	 */
-	public static final String DIRECTORY_SENT_FILES = "SentFolder";
+	public static final String DIRECTORY_ORIG_FILES = "OriginalFolder";
 	/**
 	 * 
 	 */
-	public static final String SENT_FILES_EXT = "SentFileExt";
+	public static final String ORIG_FILES_EXT = "OriginalFileExt";
 
 	private ArrayList<File> files;
 
@@ -114,10 +114,10 @@ public class FileReader extends CollectionReader_ImplBase {
 	private String[] allowedExtensionsArray;
 	@ConfigurationParameter(name = DIRECTORY_SUBDIRS, mandatory = false)
 	private boolean useSubDirs;
-	@ConfigurationParameter(name = DIRECTORY_SENT_FILES, mandatory = false)
-	private File sentFolder;
-	@ConfigurationParameter(name = SENT_FILES_EXT, mandatory = false)
-	private String sentFileExt;
+	@ConfigurationParameter(name = DIRECTORY_ORIG_FILES, mandatory = false)
+	private File origFolder;
+	@ConfigurationParameter(name = ORIG_FILES_EXT, mandatory = false)
+	private String origFileExt;
 
 	/**
 	 * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -174,20 +174,20 @@ public class FileReader extends CollectionReader_ImplBase {
 			useSubDirs = subdir;
 		}
 		
-		String sentfoo = (String) getConfigParameterValue(DIRECTORY_SENT_FILES);
+		String sentfoo = (String) getConfigParameterValue(DIRECTORY_ORIG_FILES);
 		if (null == sentfoo) {
-			sentFolder = null;
+			origFolder = null;
 		} else {
-			sentFolder = new File(sentfoo.trim());
+			origFolder = new File(sentfoo.trim());
 		}
 
-		String sentfile_ext = (String) getConfigParameterValue(SENT_FILES_EXT);
+		String sentfile_ext = (String) getConfigParameterValue(ORIG_FILES_EXT);
 		if (null == sentfile_ext) {
-			sentFileExt = "txt";
+			origFileExt = "txt";
 		} else {
-			sentFileExt = sentfile_ext;
+			origFileExt = sentfile_ext;
 			if (sentfile_ext.startsWith(".")) {
-				sentFileExt = sentfile_ext.substring(1);
+				origFileExt = sentfile_ext.substring(1);
 			}
 		}
 		
@@ -254,10 +254,10 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		Pattern nws = Pattern.compile("[^\\s]+", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
 		
-		String sentText = null;
-		if (sentFolder != null) {
-			File sentFile = new File(sentFolder, getFileName(file) + "." + sentFileExt);
-			sentText = FileUtils.readFileToString(sentFile, "UTF-8");
+		String origText = null;
+		if (origFolder != null) {
+			File origFile = new File(origFolder, getFileName(file) + "." + origFileExt);
+			origText = FileUtils.readFileToString(origFile, "UTF-8");
 		}
 		
 		// sentence per line mode
@@ -284,13 +284,13 @@ public class FileReader extends CollectionReader_ImplBase {
 				for (Integer i = 0; i < lines.size(); i++) {
 					boolean addSent2index = true;
 					Sentence sent = new Sentence(jcas);
-					if (sentText != null) {
+					if (origText != null) {
 						newLine = Stream
 								.of(lines.get(i).split("\\s+"))
 								.map(x -> Pattern.quote(x))
 								.reduce((x,y) -> x+"\\s*"+y);
 						Pattern p = Pattern.compile(newLine.get(), Pattern.UNICODE_CHARACTER_CLASS);
-						Matcher m = p.matcher(sentText);
+						Matcher m = p.matcher(origText);
 						if (m.find(index_tmp)) {
 							int newStart = m.start();
 							int newEnd = m.end();
@@ -349,9 +349,9 @@ public class FileReader extends CollectionReader_ImplBase {
 //					System.out.println("Token: " + tokensList.get(j));
 					boolean addToken2index = true;
 					Token token = new Token(jcas);
-					if (sentText != null) {
+					if (origText != null) {
 						String tok = tokensList.get(j);
-						int newStart = sentText.indexOf(tok, index_tmp);
+						int newStart = origText.indexOf(tok, index_tmp);
 						int newEnd = newStart + tok.length();
 						index_tmp = newEnd;
 						token.setBegin(newStart);
@@ -369,8 +369,8 @@ public class FileReader extends CollectionReader_ImplBase {
 		}
 
 		// put document in CAS
-		if (sentText != null) {
-			jcas.setDocumentText(sentText);
+		if (origText != null) {
+			jcas.setDocumentText(origText);
 		} else {
 			jcas.setDocumentText(text);
 		}
