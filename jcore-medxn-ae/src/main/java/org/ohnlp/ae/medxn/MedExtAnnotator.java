@@ -64,6 +64,7 @@ import de.julielab.jcore.utility.JCoReAnnotationTools;
  */
 public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 	public final static int SENT_WINDOW_SPAN = 3;
+	public final static int SENT_WINDOW_SPAN_DUR = 1;
 	
 	class MedDesc {
 //		ConceptMention med;
@@ -179,15 +180,22 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 				nextDrug = drugs.get(i+1);
 				nextDrugBegin = nextDrug.getBegin();
 			}
-			int[] span = setWindow(jcas, actMed, nextDrugBegin, prevDrugEnd);
+			int[] span = setWindow(jcas, actMed, nextDrugBegin, prevDrugEnd, SENT_WINDOW_SPAN);
 			prevDrugEnd = actMed.getEnd();
 			
 			Iterator<?> gamItr = indexes.getAnnotationIndex(GeneralAttributeMention.type).iterator();
 			GeneralAttributeMention beforeMedAttr = null; //attribute right before medication
 			Map<String, ArrayList<GeneralAttributeMention>> attrMap = new HashMap<String, ArrayList<GeneralAttributeMention>>();
+			List<GeneralAttributeMention> durList = new ArrayList<GeneralAttributeMention>();
+			
 			int cnt=0;
 			while(gamItr.hasNext()) {
 				GeneralAttributeMention gam = (GeneralAttributeMention) gamItr.next();
+				if (gam.getTag().equals("duration")) {
+					// adds duration and skips setup for now to use smaller window for duration.
+					durList.add(gam);
+					continue;
+				}
 				if(gam.getBegin()>=span[0] && gam.getEnd()<=span[1]) {
 					assignAttribute(gam, attrMap, usedAttributes);
 //					md.attrs.add(ma);
@@ -195,6 +203,17 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 				}
 				if(cnt==0) { 
 					beforeMedAttr = gam;
+				}
+			}
+			
+			span = setWindow(jcas, actMed, nextDrugBegin, prevDrugEnd, SENT_WINDOW_SPAN_DUR);
+			for (GeneralAttributeMention dur : durList) {
+				if(dur.getBegin()>=span[0] && dur.getEnd()<=span[1]) {
+					assignAttribute(dur, attrMap, usedAttributes);
+					cnt++;
+				}
+				if(cnt==0) { 
+					beforeMedAttr = dur;
 				}
 			}
 			
@@ -360,7 +379,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 	 * @param nextDrugBegin
 	 * @return
 	 */
-	protected int[] setWindow(JCas jcas, Medication drug, int nextDrugBegin, int prevDrugEnd) {
+	protected int[] setWindow(JCas jcas, Medication drug, int nextDrugBegin, int prevDrugEnd, int windowSpan) {
 		JFSIndexRepository indexes = jcas.getJFSIndexRepository();
 		Iterator<?> senItr= indexes.getAnnotationIndex(Sentence.type).iterator();		
 //		String[] str = drug.getSentence().split("::");
@@ -378,7 +397,7 @@ public class MedExtAnnotator extends JCasAnnotator_ImplBase {
 		int InstructionBegin = -1;
 		int IndicationBegin = -1;
 		int cnt=0;
-		while(senItr.hasNext() && cnt < SENT_WINDOW_SPAN) {
+		while(senItr.hasNext() && cnt < windowSpan) {
 			Sentence sen = (Sentence) senItr.next();
 			if(sen.getBegin()>drug.getEnd()) {
 				cnt++;
