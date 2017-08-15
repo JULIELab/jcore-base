@@ -110,8 +110,8 @@ public class JCoReFeaturePath implements FeaturePath {
 	/**
 	 * The sequence of features given in the feature path. For example, the
 	 * feature path <tt>/argument[0]/resourceEntryList[1]/entryId</tt> would
-	 * contain three features <tt>argument</tt>, <tt>resourceEntryList</tt>
-	 * and </tt>entryId</tt>.
+	 * contain three features <tt>argument</tt>, <tt>resourceEntryList</tt> and
+	 * </tt>entryId</tt>.
 	 */
 	private Feature[] features;
 	/**
@@ -152,6 +152,13 @@ public class JCoReFeaturePath implements FeaturePath {
 	 * (re-)determined on the current type.
 	 */
 	private boolean featurePathChanged;
+	/**
+	 * One of:
+	 * <ul>
+	 * <li>coveredText()</li>
+	 * <li>typeName()</li>
+	 * </ul>
+	 */
 	private String builtInFunction;
 
 	private final static Logger log = LoggerFactory.getLogger(JCoReFeaturePath.class);
@@ -185,8 +192,18 @@ public class JCoReFeaturePath implements FeaturePath {
 		this.featurePath = featurePath.trim().substring(1).split("/");
 		log.debug("Initializing feature path with these path elements: {}", Arrays.toString(this.featurePath));
 		String[] builtInFunctionSplit = this.featurePath[this.featurePath.length - 1].split(":");
+		// We now check if the given feature path is terminated by a built-in
+		// function. If so, we split away the function and store it separately.
+		// The feature path will be the original feature path minus the built-in
+		// function. Thus, when retrieving values, we will traverse to the end
+		// of the feature path, get the respective feature(s) and then apply the
+		// built-in function on it / them.
 		if (builtInFunctionSplit.length > 1) {
 			this.featurePath[this.featurePath.length - 1] = builtInFunctionSplit[0];
+			// if the built-in function should be applied to the root type,
+			// (e.g. /:getCoveredText()), there won't be a feature
+			if (this.featurePath.length == 1 && this.featurePath[0].trim().length() == 0)
+				this.featurePath = new String[0];
 			this.builtInFunction = builtInFunctionSplit[1];
 			log.debug("Found in-built function {} to apply on the feature structure pointed to by the feature path.",
 					builtInFunction);
@@ -482,6 +499,11 @@ public class JCoReFeaturePath implements FeaturePath {
 			} else if (featureValue instanceof FeatureStructure) {
 				featureValue = applyBuiltInFunction(featureValue);
 			}
+		} else if (builtInFunction != null && this.featurePath.length == 0) {
+			// this is the case where we haven't given a feature but want to
+			// apply the built-in function to the original feature structure
+			// (e.g. /:typeName())
+			featureValue = applyBuiltInFunction(fs);
 		}
 		return featureValue;
 	}
@@ -491,6 +513,8 @@ public class JCoReFeaturePath implements FeaturePath {
 		if (value instanceof Annotation) {
 			if (builtInFunction.equals("coveredText()"))
 				functionValue = ((Annotation) value).getCoveredText();
+			else if (builtInFunction.equals("typeName()"))
+				functionValue = value.getClass().getName();
 			else
 				throw new NotImplementedException(
 						"Built-in function " + builtInFunction + " is currently not supported by the JCoReFeaturePath");
