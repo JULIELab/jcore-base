@@ -54,7 +54,8 @@ public class MSdoc2txtReaderTest {
 	/**
 	 * Names of dummies
 	 */
-	private static final String DIRECTORY_INPUT = "data/files/input";	// do not delete data/files directory, it is used by 'DESC_FILE_READER'
+	private static final String DIRECTORY_INPUT = "data/files/input";
+	// do not delete data/files directory, it is used by 'DESC_FILE_READER'
 
 	private static final String DIR1 = DIRECTORY_INPUT + "/dir1";
 	private static final String SUBDIR1 = DIR1 + "/subdir1";

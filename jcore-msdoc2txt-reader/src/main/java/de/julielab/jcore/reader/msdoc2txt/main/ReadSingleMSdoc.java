@@ -47,35 +47,35 @@ public class ReadSingleMSdoc {
 
 	public static String INPUT_FILE = "";
 
-	public static String CONTENT_HTML				= "";
-	public static String CONTENT_NORMAL				= "";
-	public static String CONTENT_TAB_MARKED			= "";
+	public static String CONTENT_HTML = "";
+	public static String CONTENT_NORMAL = "";
+	public static String CONTENT_TAB_MARKED = "";
 
-	public static String LAB_PARAMS_HTML			= "";
-	public static String LAB_PARAMS_NORMAL			= "";
-	public static String LAB_PARAMS_TAB_MARKED		= "";
+	public static String LAB_PARAMS_HTML = "";
+	public static String LAB_PARAMS_NORMAL = "";
+	public static String LAB_PARAMS_TAB_MARKED = "";
 
 	// WOLP... without lab params
-	public static String CONTENT_WOLP_HTML			= "";
-	public static String CONTENT_WOLP_NORMAL		= "";
-	public static String CONTENT_WOLP_TAB_MARKED	= "";
+	public static String CONTENT_WOLP_HTML = "";
+	public static String CONTENT_WOLP_NORMAL = "";
+	public static String CONTENT_WOLP_TAB_MARKED = "";
 
 	public static boolean LAB_TABLE = false;
 
 	public static void doc2Text() {
-		
-		CONTENT_HTML			= "";
-		CONTENT_NORMAL			= "";
-		CONTENT_TAB_MARKED		= "";
-		
-		LAB_PARAMS_HTML			= "";
-		LAB_PARAMS_NORMAL		= "";
-		LAB_PARAMS_TAB_MARKED	= "";
-		
+
+		CONTENT_HTML = "";
+		CONTENT_NORMAL = "";
+		CONTENT_TAB_MARKED = "";
+
+		LAB_PARAMS_HTML = "";
+		LAB_PARAMS_NORMAL = "";
+		LAB_PARAMS_TAB_MARKED = "";
+
 		// WOLP... without lab params
-		CONTENT_WOLP_HTML		= "";
-		CONTENT_WOLP_NORMAL		= "";
-		CONTENT_WOLP_TAB_MARKED	= "";
+		CONTENT_WOLP_HTML = "";
+		CONTENT_WOLP_NORMAL = "";
+		CONTENT_WOLP_TAB_MARKED = "";
 
 		try {
 			InputStream fis = new FileInputStream(INPUT_FILE);
@@ -85,140 +85,108 @@ public class ReadSingleMSdoc {
 			HWPFDocument doc = new HWPFDocument(fs);
 
 			Range docRange = doc.getRange();
-			
+
 			boolean inTable = false;
 			boolean inRow = false;
 
 			boolean tbOpen = false;
 			boolean tdOpen = false;
 
-			for (int i = 0; i < docRange.numParagraphs(); i++)
-			{
+			for (int i = 0; i < docRange.numParagraphs(); i++) {
 				Paragraph par = docRange.getParagraph(i);
 
-				if (par.isInTable())
-				{
-					if (!inTable)
-					{
+				if (par.isInTable()) {
+					if (!inTable) {
 						CONTENT_HTML += "\n<table>\n";
 						inTable = true;
 					}
-					if (!inRow)
-					{
-						if (tbOpen == true)
-						{
+					if (!inRow) {
+						if (tbOpen == true) {
 							CONTENT_HTML += "</tr>\n";
 						}
-						
+
 						CONTENT_HTML += "<tr>";
 						inRow = true;
 						tbOpen = true;
 					}
-					if (par.isTableRowEnd())
-					{
+					if (par.isTableRowEnd()) {
 						inRow = false;
-					}
-					else
-					{
-						if ( (!tdOpen) && (par.text().endsWith("\u0007")))
-						{
+					} else {
+						if ((!tdOpen) && (par.text().endsWith("\u0007"))) {
 							CONTENT_HTML += "<td>";
-							CONTENT_HTML += par.text().replaceAll("\\s", " " );
+							CONTENT_HTML += par.text().replaceAll("\\s", " ");
 							CONTENT_HTML += "</td>";
-						}
-						else if ( (!tdOpen) && (!(par.text().endsWith("\u0007"))))
-						{
+						} else if ((!tdOpen) && (!(par.text().endsWith("\u0007")))) {
 							CONTENT_HTML += "<td>";
-							CONTENT_HTML += par.text().replaceAll("\\s", " " );
+							CONTENT_HTML += par.text().replaceAll("\\s", " ");
 							tdOpen = true;
 						}
-						
-						else if (tdOpen && (par.text().endsWith("\u0007")))
-						{
-							CONTENT_HTML += par.text().replaceAll("\\s", " " );
+
+						else if (tdOpen && (par.text().endsWith("\u0007"))) {
+							CONTENT_HTML += par.text().replaceAll("\\s", " ");
 							CONTENT_HTML += "</td>";
 							tdOpen = false;
-						}
-						else if (tdOpen && (!(par.text().endsWith("\u0007"))))
-						{
-							CONTENT_HTML += par.text().replaceAll("\\s", " " );
+						} else if (tdOpen && (!(par.text().endsWith("\u0007")))) {
+							CONTENT_HTML += par.text().replaceAll("\\s", " ");
 						}
 					}
-				}
-				else
-				{
-					if (inTable)
-					{
+				} else {
+					if (inTable) {
 						CONTENT_HTML += "</tr>\n</table>\n";
 						inTable = false;
 					}
 					CONTENT_HTML += par.text() + "<br/>";
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println("Exception: " + e);
 		}
-		
+
 		CONTENT_HTML = characterChecker(CONTENT_HTML);
-		
+
 		CONTENT_NORMAL = makeNormalText(CONTENT_HTML);
 		CONTENT_TAB_MARKED = makeTabMarked(CONTENT_HTML);
-		
-//		CONTENT_TEXT_ONLY = characterChecker(CONTENT_TEXT_ONLY);
+
+		// CONTENT_TEXT_ONLY = characterChecker(CONTENT_TEXT_ONLY);
 
 		String[] contentSplitMT = characterChecker(CONTENT_HTML).split("\n");
-//		String[] contentSplitNMT = characterChecker(CONTENT_TEXT_ONLY).split("\n");
-		
+		// String[] contentSplitNMT =
+		// characterChecker(CONTENT_TEXT_ONLY).split("\n");
+
 		boolean foundLabParams = false;
 
 		for (int i = 0; i < contentSplitMT.length; i++) {
 
-				if (contentSplitMT[i].contains("<br/>Laborwerte:"))
-				{
-					for (int j = i; j < contentSplitMT.length; j++)
-					{
-						if (contentSplitMT[j].contains("Normwert"))
-						{
-							foundLabParams = true;
-							break;
-						}
+			if (contentSplitMT[i].contains("<br/>Laborwerte:")) {
+				for (int j = i; j < contentSplitMT.length; j++) {
+					if (contentSplitMT[j].contains("Normwert")) {
+						foundLabParams = true;
+						break;
 					}
 				}
+			}
 
 			if (!foundLabParams) {
 				CONTENT_WOLP_HTML = CONTENT_WOLP_HTML + contentSplitMT[i] + "\n";
 			} else {
-				LAB_PARAMS_HTML		= LAB_PARAMS_HTML + contentSplitMT[i] + "\n";
+				LAB_PARAMS_HTML = LAB_PARAMS_HTML + contentSplitMT[i] + "\n";
 			}
 		}
-		
+
 		CONTENT_WOLP_NORMAL = makeNormalText(CONTENT_WOLP_HTML);
 		CONTENT_WOLP_TAB_MARKED = makeTabMarked(CONTENT_WOLP_HTML);
-		
+
 		LAB_PARAMS_NORMAL = makeNormalText(LAB_PARAMS_HTML);
 		LAB_PARAMS_TAB_MARKED = makeTabMarked(LAB_PARAMS_HTML);
-		
-		if (
-				(LAB_PARAMS_HTML.contains("<table>"))
-			&&
-				(LAB_PARAMS_HTML.contains("</table>"))
-			&&
-				(LAB_PARAMS_HTML.contains("<tr>"))
-			&&
-				(LAB_PARAMS_HTML.contains("</tr>"))
-			)
-		{
+
+		if ((LAB_PARAMS_HTML.contains("<table>")) && (LAB_PARAMS_HTML.contains("</table>"))
+				&& (LAB_PARAMS_HTML.contains("<tr>")) && (LAB_PARAMS_HTML.contains("</tr>"))) {
 			LAB_TABLE = true;
-		}
-		else
-		{
+		} else {
 			LAB_TABLE = false;
 		}
 	}
-	
-	
+
 	/**
 	 * The Reader doesn't use all characters.
 	 * 
@@ -262,44 +230,40 @@ public class ReadSingleMSdoc {
 		y = y.substring(0, y.length() - 1);
 		return Integer.parseInt(y);
 	}
-	
-	private static String makeNormalText(String input)
-	{
+
+	private static String makeNormalText(String input) {
 		String text = input;
-		text = text.replaceAll("<table>",	"");
-		text = text.replaceAll("</table>",	"");
-		text = text.replaceAll("<tr>",		"");
-		text = text.replaceAll("</tr>",		"\n");
-		text = text.replaceAll("<td>",		"");
-		text = text.replaceAll("</td>",		"\t");
-		text = text.replaceAll("<br/>",		"");
-		text = text.replaceAll("\n+",		"\n");
-		
-		if (text.startsWith("\n"))
-		{
+		text = text.replaceAll("<table>", "");
+		text = text.replaceAll("</table>", "");
+		text = text.replaceAll("<tr>", "");
+		text = text.replaceAll("</tr>", "\n");
+		text = text.replaceAll("<td>", "");
+		text = text.replaceAll("</td>", "\t");
+		text = text.replaceAll("<br/>", "");
+		text = text.replaceAll("\n+", "\n");
+
+		if (text.startsWith("\n")) {
 			text = text.replaceFirst("\n", "");
 		}
-		
+
 		return text;
 	}
-	
-	private static String makeTabMarked(String input)
-	{
+
+	private static String makeTabMarked(String input) {
 		String text = input;
-		text = text.replaceAll("<table>",	"");
-		text = text.replaceAll("</table>",	"");
-		text = text.replaceAll("<tr>",		"");
-		text = text.replaceAll("</tr>",		"");
-		text = text.replaceAll("<td>",		"|    ");
-		text = text.replaceAll("</td>",		"    |");
-		text = text.replaceAll("<br/>",		"");
-		text = text.replaceAll("\n+",		"\n");
-		
-		if (text.startsWith("\n"))
-		{
+		text = text.replaceAll("<table>", "");
+		text = text.replaceAll("</table>", "");
+		text = text.replaceAll("<tr>", "");
+		text = text.replaceAll("</tr>", "");
+		text = text.replaceAll("<td>", "|    ");
+		text = text.replaceAll("</td>", "    |");
+		text = text.replaceAll("<br/>", "");
+		text = text.replaceAll("\n+", "\n");
+
+		if (text.startsWith("\n")) {
 			text = text.replaceFirst("\n", "");
 		}
-		
+
 		return text;
 	}
 }
