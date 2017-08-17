@@ -132,31 +132,23 @@ public class MSdoc2txtReader extends CollectionReader_ImplBase
 			throw new CollectionException(e);
 		}
 
-		File file = files.get(fileIndex++); // open input stream to file
+		File file = files.get(fileIndex++);
 
-		ReadSingleMSdoc.setFilename(file.getPath());
-		ReadSingleMSdoc.setDocRange();
+		ReadSingleMSdoc.INPUT_FILE = file.getPath();
 		ReadSingleMSdoc.doc2Text();
 
 		/**
 		 *  Read the doc-file:
 		 *  
 		 *  We implemented different ways to convert the *.doc-files,
-		 *  look into ReadSingleMSdoc.doc2Text(), this read the structure of the *.doc-file.
-		 *  
-		 *  * ReadSingleMSdoc.getContentTextOnly(): only the text
-		 *  * ReadSingleMSdoc.getContentTextWithMarkedTables(): text and tables marked
-		 *  * by | and 4 space characters for using text with the brat rapid annotation tool
-		 *  * ReadSingleMSdoc.getContentLabParams(): text and tables marked by | and 4 space characters
-		 *  	(only parameters from the laboratory in the document, if you read a clinical document)
-		 *  * ReadSingleMSdoc.getContentHTML(): text and tables marked by HTML-code <table> ... </table>
+		 *  look into ReadSingleMSdoc.doc2Text(), this reads the structure of the *.doc-file.
 		 */
 		
-		String textOnly = ReadSingleMSdoc.getContentTextOnly();
-		String textWithMarkedTables = ReadSingleMSdoc.getContentTextWithMarkedTables();
-		String labParams = ReadSingleMSdoc.getContentLabParams();
-		String textHTML = ReadSingleMSdoc.getContentHTML();
-
+//		String textOnly = ReadSingleMSdoc.CONTENT_NORMAL;
+		String textWithMarkedTables = ReadSingleMSdoc.CONTENT_TAB_MARKED;
+//		String labParams = ReadSingleMSdoc.LAB_PARAMS_NORMAL;
+//		String textHMTL = ReadSingleMSdoc.CONTENT_HTML;
+		
 		jcas.setDocumentText(textWithMarkedTables);
 
 		if (useFilenameAsDocId)

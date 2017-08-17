@@ -97,11 +97,10 @@ public class MSdoc2txtReaderTest {
 
 		File file = new File(DOC_DUMMY_FILE);
 
-		ReadSingleMSdoc.setFilename(file.getPath());
-		ReadSingleMSdoc.setDocRange();
+		ReadSingleMSdoc.INPUT_FILE = file.getPath();
 		ReadSingleMSdoc.doc2Text();
 
-		String artifactText = ReadSingleMSdoc.getContentTextWithMarkedTables();
+		String artifactText = ReadSingleMSdoc.CONTENT_TAB_MARKED;
 
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
 		fileReader.setConfigParameterValue("InputDirectory", DIRECTORY_INPUT);
