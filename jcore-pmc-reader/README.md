@@ -36,7 +36,31 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 | Type | Input | Output |
 |------|:-----:|:------:|
-| - |  - | - |
+| de.julielab.jcore.types.TitleType |   | `+` |
+| de.julielab.jcore.types.Title |  | `+` |
+| de.julielab.jcore.types.TextObject | | `+` |
+| de.julielab.jcore.types.Table | | `+` |
+| de.julielab.jcore.types.SectionTitle | | `+` |
+| de.julielab.jcore.types.Section | | `+` |
+| de.julielab.jcore.types.PubType | | `+` |
+| de.julielab.jcore.types.Paragraph | | `+` |
+| de.julielab.jcore.types.OtherPub | | `+` |
+| de.julielab.jcore.types.pubmed.OtherID | | `+` |
+| de.julielab.jcore.types.pubmed.ManualDescriptor | | `+` |
+| de.julielab.jcore.types.Keyword | | `+` |
+| de.julielab.jcore.types.Journal | | `+` |
+| de.julielab.jcore.types.pubmed.Header | | `+` |
+| de.julielab.jcore.types.Footnote | | `+` |
+| de.julielab.jcore.types.Figure | | `+` |
+| uima.tcas.DocumentAnnotation | | `+` |
+| de.julielab.jcore.types.Date | | `+` |
+| de.julielab.jcore.types.CaptionType | | `+` |
+| de.julielab.jcore.types.Caption | | `+` |
+| de.julielab.jcore.types.AutoDescriptor | | `+` |
+| de.julielab.jcore.types.AuthorInfo | | `+` |
+| de.julielab.jcore.types.AbstractText | | `+` |
+| de.julielab.jcore.types.AbstractSectionHeading | | `+` |
+| de.julielab.jcore.types.AbstractSection | | `+` |
 
 
 
