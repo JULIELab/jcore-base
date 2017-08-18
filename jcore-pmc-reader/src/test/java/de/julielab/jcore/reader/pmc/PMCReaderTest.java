@@ -30,6 +30,7 @@ import de.julielab.jcore.types.Figure;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.Section;
+import de.julielab.jcore.types.SectionTitle;
 import de.julielab.jcore.types.Table;
 import de.julielab.jcore.types.Title;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
@@ -87,6 +88,21 @@ public class PMCReaderTest {
 			cas.reset();
 		}
 		assertTrue(expectedIds.isEmpty());
+	}
+	
+	@Test
+	public void testTitle() throws Exception {
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
+		assertTrue(reader.hasNext());
+		reader.getNext(cas.getCas());
+		Collection<Title> titles = JCasUtil.select(cas, Title.class);
+		for (Title t : titles) {
+			if (t.getClass().equals(SectionTitle.class)) {
+				assertEquals("section", t.getTitleType());
+			}
+		}
 	}
 
 	@Test

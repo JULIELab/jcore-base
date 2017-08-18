@@ -9,7 +9,8 @@ title:
     paths:
         - path: sec/title
           type: de.julielab.jcore.types.SectionTitle
-          titleType: section
+          default-feature-values:
+            titleType: section
         - path: abstract/sec/title
           type: de.julielab.jcore.types.AbstractSectionHeading
           titleType: abstractSection
