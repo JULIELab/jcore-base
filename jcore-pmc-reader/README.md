@@ -9,7 +9,9 @@ de.julielab.jcore.reader.pmc.desc.jcore-pmc-reader
 ### Objective
 The JULIE Lab PMC Reader is a UIMA Collection Reader (CR). TODO more information
 ### Requirements and Dependencies
-TODO information
+* jcore-types
+* julie-xml-tools
+* snakeyaml
 ### Using the CR - Descriptor Configuration
 In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is available under `src/main/resources/de/julielab/jcore/reader/pmc/desc` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
 
