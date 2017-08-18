@@ -17,7 +17,7 @@ public class ContribParser extends NxmlElementParser {
 	}
 
 	@Override
-	public void parseElement(ElementParsingResult result) throws ElementParsingException {
+	protected void parseElement(ElementParsingResult result) throws ElementParsingException {
 		try {
 
 			Optional<String> givenNames = getXPathValue("name/given-names");

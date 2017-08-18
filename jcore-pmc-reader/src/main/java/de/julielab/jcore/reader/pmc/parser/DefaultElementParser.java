@@ -21,7 +21,9 @@ import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
 /**
  * A generic element parser that is applicable to any element of the document
  * body. Parses the text contents from the element and calls specialized parsers
- * for child elements.
+ * for child elements. This class is configured externally by the
+ * <tt>elementproperties.yml</tt> file found in
+ * <tt>src/main/resources/de/julielab/jcore/reader/pmc/resources/</tt>
  * 
  * @author faessler
  *
@@ -44,7 +46,7 @@ public class DefaultElementParser extends NxmlElementParser {
 	}
 
 	@Override
-	public void parseElement(ElementParsingResult result) throws ElementParsingException {
+	protected void parseElement(ElementParsingResult result) throws ElementParsingException {
 		try {
 			// checkCursorPosition();
 			int elementDepth = vn.getCurrentDepth();

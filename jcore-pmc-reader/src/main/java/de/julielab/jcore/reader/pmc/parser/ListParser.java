@@ -15,7 +15,7 @@ public class ListParser extends DefaultElementParser {
 	}
 
 	@Override
-	public void parseElement(ElementParsingResult result) throws ElementParsingException {
+	protected void parseElement(ElementParsingResult result) throws ElementParsingException {
 		super.parseElement(result);
 		
 		List list = (List) result.getAnnotation();
