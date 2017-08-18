@@ -54,4 +54,26 @@ If an associated parser class is found, this specific class handels the element.
 of elements are simple text span markup elements that do not require special treatment or overly complicated parsing, for example paragraphs or sections. Also, some elements might be more complicated, like references,
 but are not yet handeled by the reader to their full extend. By using the `DefaultElementParser`, these element are still accounted for while reading without handeling their inner semantics.
 For such more complicated elements like references, footnotes or elements that contain meta data that should not be reflected in the CAS document text like front and back matter, a special class can be
-created that handles the respective element. Such parsing classes 
+created that handles the respective element. Such parsing classes extend `de.julielab.jcore.reader.pmc.parser.NxmlElementParser` and are registered to the parser registry in `de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser`.
+
+Now, configuration can only be done on the `DefaultElementParser`. It is using the configuration file at `src/main/resources/de/julielab/jcore/reader/pmc/resources/elementproperties.yml`. This file in YAML format accepts a set
+of properties and rules associated with an element type in the following format:
+<elementName>
+	<property1>
+	<property2>
+	...
+<elementName>
+	...
+	
+The following properties are currently supported:
+
+| Property Name          |  Property Type  | Description |
+|------------------------|-----------------|-------------|
+| attributes             | list of objects | Allows to specify properties only to elements matching a specific attribute value on a given attribute name. |
+| block-element          | boolean         | Specifies whether the element should be handled as a block element. Block elements always begin at a new line and have a line break after their last line. This is mainly important for a rough document text layout in the CAS. |
+| default-feature-values | object          | Specifies key-value pairs where the key is a UIMA type feature name of the annotation type that is created for the current element (see the type property below). For eligible elements, their created annotation will have set the respective default feature values to the specified features. |
+| omit-element           | boolean         | Whether or not to omit this element. For elements that should not be included in the document text but that also are not handled by any parser, this property may be used to skip an element type. |
+| paths                  | list of objects | Allows to specify a relative or absolute XPath like sequence of element names in the form `abstract/sec/title` and properties that should be applied to elements matching this path. |
+| type                   | string          | The UIMA type that should be used to annotate the text contents of the element |
+
+The `attribute` and `path` properties define criteria where the base properties are overwritten by the properties specified in association with the given attribute-value combination or path. For example, it is possible to include a certain element for document text but omit it if has a specific element as parent or some attribute value.
