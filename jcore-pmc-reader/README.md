@@ -58,13 +58,15 @@ created that handles the respective element. Such parsing classes extend `de.jul
 
 Now, configuration can only be done on the `DefaultElementParser`. It is using the configuration file at `src/main/resources/de/julielab/jcore/reader/pmc/resources/elementproperties.yml`. This file in YAML format accepts a set
 of properties and rules associated with an element type in the following format:
-<elementName>
-	<property1>
-	<property2>
-	...
-<elementName>
-	...
-	
+```yml
+elementName
+    property1
+    property2
+    ...
+elementName
+    ...
+```
+
 The following properties are currently supported:
 
 | Property Name          |  Property Type  | Description |
@@ -77,3 +79,22 @@ The following properties are currently supported:
 | type                   | string          | The UIMA type that should be used to annotate the text contents of the element |
 
 The `attribute` and `path` properties define criteria where the base properties are overwritten by the properties specified in association with the given attribute-value combination or path. For example, it is possible to include a certain element for document text but omit it if has a specific element as parent or some attribute value.
+
+Here is an example taken directly from the `elementproperties.yml` file:
+```yml
+title:
+    block-element: true
+    type: de.julielab.jcore.types.Title
+    default-feature-values:
+        titleType: other
+    paths:
+        - path: sec/title
+          type: de.julielab.jcore.types.SectionTitle
+          default-feature-values:
+            titleType: section
+        - path: abstract/sec/title
+          type: de.julielab.jcore.types.AbstractSectionHeading
+          default-feature-values:
+            titleType: abstractSection
+```
+The rule here says "XML elements with the name 'title' are a block element and are annotated with an annotation of type 'de.julielab.jcore.types.Title' with the 'titleType' feature set to the string 'other'. However, if the path 'sec/title' or 'abstract/sec/title' apply to the element, change the annotation type to 'de.julielab.jcore.types.SectionTitle' or 'de.julielab.jcore.types.AbstractSectionHeading', respectively, and set the 'titleType' feature value to 'section' or 'abstractSection', respectively.
