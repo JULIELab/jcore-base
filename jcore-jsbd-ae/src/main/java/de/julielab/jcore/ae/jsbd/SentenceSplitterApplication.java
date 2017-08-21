@@ -33,6 +33,7 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
+import de.julielab.jcore.ae.jsbd.PostprocessingFilters.PostprocessingFilter;
 
 /**
  * * The user interface (command line version) for the JULIE Sentence Boundary Detector. Includes
@@ -45,7 +46,7 @@ import cc.mallet.types.LabelSequence;
  */
 public class SentenceSplitterApplication {
 
-	private final static String doPostprocessing = "biomed";
+	private static String doPostprocessing = "biomed";
 
 	public static void main(String[] args) {
 
@@ -92,8 +93,14 @@ public class SentenceSplitterApplication {
 		System.out.println("performing evaluation previously trained model.");
 
 		if (args.length != 4) {
-			System.err.println("usage: JSBD e <modelFile> <predictInDir> <errorFile>");
+			System.err.println("usage: JSBD e <modelFile> <predictInDir> <errorFile> [<postprocessing>]");
 			System.exit(-1);
+		}
+		
+		if (args.length > 4) {
+			if (PostprocessingFilter.POSTPROC_STREAM.anyMatch(x -> args[4].equals(x))) {
+				doPostprocessing = args[4];
+			}
 		}
 
 		ObjectInputStream in;
@@ -133,8 +140,14 @@ public class SentenceSplitterApplication {
 		System.out.println("performing evaluation on 90/10 split");
 
 		if (args.length != 3) {
-			System.err.println("usage: JSBD s <textDir> <errorFile>");
+			System.err.println("usage: JSBD s <textDir> <errorFile>  [<postprocessing>]");
 			System.exit(-1);
+		}
+		
+		if (args.length > 3) {
+			if (PostprocessingFilter.POSTPROC_STREAM.anyMatch(x -> args[4].equals(x))) {
+				doPostprocessing = args[4];
+			}
 		}
 
 		File abstractDir = new File(args[1]);
@@ -161,10 +174,16 @@ public class SentenceSplitterApplication {
 	private static void startXValidationMode(String[] args) {
 		System.out.println("performing cross-validation");
 		if (args.length != 4) {
-			System.err.println("usage: JSBD x <textDir> <cross-val-rounds> <errorFile>");
+			System.err.println("usage: JSBD x <textDir> <cross-val-rounds> <errorFile> [<postprocessing>]");
 			System.exit(-1);
 		}
 
+		if (args.length > 4) {
+			if (PostprocessingFilter.POSTPROC_STREAM.anyMatch(x -> args[4].equals(x))) {
+				doPostprocessing = args[4];
+			}
+		}
+		
 		File abstractDir = new File(args[1]);
 		if (!abstractDir.isDirectory()) {
 			System.err.println("Error: the specified directory does not exist.");
@@ -196,8 +215,14 @@ public class SentenceSplitterApplication {
 	private static void startPredictionMode(String[] args) {
 		System.out.println("doing the sentence splitting...");
 		if (args.length != 4) {
-			System.err.println("usage: JSBD p <inDir> <outDir> <modelFilename>");
+			System.err.println("usage: JSBD p <inDir> <outDir> <modelFilename> [<postprocessing>]");
 			System.exit(-1);
+		}
+		
+		if (args.length > 4) {
+			if (PostprocessingFilter.POSTPROC_STREAM.anyMatch(x -> args[4].equals(x))) {
+				doPostprocessing = args[4];
+			}
 		}
 
 		File inDir = new File(args[1]);

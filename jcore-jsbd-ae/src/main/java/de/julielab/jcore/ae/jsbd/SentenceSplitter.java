@@ -195,10 +195,10 @@ public class SentenceSplitter {
 		// postprocessing
 		if (filterName != null) {
 			LOGGER.debug("Postprocessing with " + filterName);
-			if ( (filterName.toLowerCase()).equals("biomed") ) {
+			if ( (filterName.toLowerCase()).equals(PostprocessingFilter.BIOMED_POSTPROC) ) {
 				labelList = PostprocessingFilter.Mode.BIOMED.process(labelList, units);
 			}
-			else if ( (filterName.toLowerCase()).equals("medical") ) {
+			else if ( (filterName.toLowerCase()).equals(PostprocessingFilter.MEDICAL_POSTPROC) ) {
 				labelList = PostprocessingFilter.Mode.MEDICAL.process(labelList, units);
 			}
 		}
