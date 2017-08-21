@@ -45,7 +45,7 @@ import cc.mallet.types.LabelSequence;
  */
 public class SentenceSplitterApplication {
 
-	private final static String doPostprocessing = "de.julielab.jcore.ae.jsbd.PostprocessingFilters.BiomedPostprocessingFilter";
+	private final static String doPostprocessing = "biomed";
 
 	public static void main(String[] args) {
 

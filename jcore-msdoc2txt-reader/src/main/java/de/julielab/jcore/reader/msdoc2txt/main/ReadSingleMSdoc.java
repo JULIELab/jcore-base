@@ -7,26 +7,30 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
  *
- * Current version: 1.1
+ * Current version: 1.2
  * Since version:   1.1
  *
  * Creation date: 11.04.2017
+ * Update: 17.08.2017
  * 
  * There are different ways to read *.doc-files of MS Word and transform it to plain text.
+ * This component was developed for clinical documents containing a separated part of laboratory values.
+ * Tables can be extracted with HTML code by <tables>...</tables>, <tr>...</tr> and <td>...</td>.
+ * Now, only tables are markable with HTML.
+ * Another way to mark tables is the identification by ´|         |´.
+ * These flags are useful for the annotation by BRAT.
  * 
- *  * ReadSingleMSdoc.getContentTextOnly(): only the text
- *  
- *  * ReadSingleMSdoc.getContentTextWithMarkedTables(): text and tables marked
- *  * by | and 4 space characters for using text with the brat rapid annotation tool
- *  
- *  * ReadSingleMSdoc.getContentLabParams(): text and tables marked by | and 4 space characters
- *  	(only parameters from the laboratory in the document, if you read a clinical document)
- *  
- *  * ReadSingleMSdoc.getContentHTML(): text and tables marked by HTML-code <table> ... </table>
- *  
- * We removed non-readable characters, see characterChecker().
+ * * CONTENT_HTML            ... Full content, tables marked by HTML.
+   * CONTENT_NORMAL          ... Full content, not marked.
+   * CONTENT_TAB_MARKED      ... Full content, tables marked by |.
+   * LAB_PARAMS_HTML         ... Part of laboratory values, tables marked by HTML.
+   * LAB_PARAMS_NORMAL       ... Part of laboratory values, not marked.
+   * LAB_PARAMS_TAB_MARKED   ... Part of laboratory values, tables marked by |.
+   * CONTENT_WOLP_HTML       ... Full content without laboratory values, tables marked by HTML.
+   * CONTENT_WOLP_NORMAL     ... Full content without laboratory values, not marked.
+   * CONTENT_WOLP_TAB_MARKED ... Full content without laboratory values, tables marked by |.
  * 
- * see http://stackoverflow.com/questions/17062841/read-table-from-docx-file-using-apache-poi
+ * Non-readable characters are removed, see characterChecker().
  */
 
 package de.julielab.jcore.reader.msdoc2txt.main;
@@ -41,156 +45,150 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 public class ReadSingleMSdoc {
 
-	static String filename;
-	static Range docRange;
+	public static String INPUT_FILE = "";
 
-	static String contentTextOnly;
-	static String contentTextWithMarkedTables;
-	static String contentLabParams;
-	static String contentHTML;
+	public static String CONTENT_HTML = "";
+	public static String CONTENT_NORMAL = "";
+	public static String CONTENT_TAB_MARKED = "";
 
-	// static String outputDocument = "";
+	public static String LAB_PARAMS_HTML = "";
+	public static String LAB_PARAMS_NORMAL = "";
+	public static String LAB_PARAMS_TAB_MARKED = "";
 
-	public static void setFilename(String file) {
-		filename = file;
-	}
+	// WOLP... without lab params
+	public static String CONTENT_WOLP_HTML = "";
+	public static String CONTENT_WOLP_NORMAL = "";
+	public static String CONTENT_WOLP_TAB_MARKED = "";
 
-	public static void setDocRange() // open file
-	{
-		docRange = null;
+	public static boolean LAB_TABLE = false;
+
+	public static void doc2Text() {
+
+		CONTENT_HTML = "";
+		CONTENT_NORMAL = "";
+		CONTENT_TAB_MARKED = "";
+
+		LAB_PARAMS_HTML = "";
+		LAB_PARAMS_NORMAL = "";
+		LAB_PARAMS_TAB_MARKED = "";
+
+		// WOLP... without lab params
+		CONTENT_WOLP_HTML = "";
+		CONTENT_WOLP_NORMAL = "";
+		CONTENT_WOLP_TAB_MARKED = "";
 
 		try {
-
-			InputStream fis = new FileInputStream(filename);
+			InputStream fis = new FileInputStream(INPUT_FILE);
 			POIFSFileSystem fs = new POIFSFileSystem(fis);
 
 			@SuppressWarnings("resource")
 			HWPFDocument doc = new HWPFDocument(fs);
 
-			docRange = doc.getRange();
+			Range docRange = doc.getRange();
 
+			boolean inTable = false;
+			boolean inRow = false;
+
+			boolean tbOpen = false;
+			boolean tdOpen = false;
+
+			for (int i = 0; i < docRange.numParagraphs(); i++) {
+				Paragraph par = docRange.getParagraph(i);
+
+				if (par.isInTable()) {
+					if (!inTable) {
+						CONTENT_HTML += "\n<table>\n";
+						inTable = true;
+					}
+					if (!inRow) {
+						if (tbOpen == true) {
+							CONTENT_HTML += "</tr>\n";
+						}
+
+						CONTENT_HTML += "<tr>";
+						inRow = true;
+						tbOpen = true;
+					}
+					if (par.isTableRowEnd()) {
+						inRow = false;
+					} else {
+						if ((!tdOpen) && (par.text().endsWith("\u0007"))) {
+							CONTENT_HTML += "<td>";
+							CONTENT_HTML += par.text().replaceAll("\\s", " ");
+							CONTENT_HTML += "</td>";
+						} else if ((!tdOpen) && (!(par.text().endsWith("\u0007")))) {
+							CONTENT_HTML += "<td>";
+							CONTENT_HTML += par.text().replaceAll("\\s", " ");
+							tdOpen = true;
+						}
+
+						else if (tdOpen && (par.text().endsWith("\u0007"))) {
+							CONTENT_HTML += par.text().replaceAll("\\s", " ");
+							CONTENT_HTML += "</td>";
+							tdOpen = false;
+						} else if (tdOpen && (!(par.text().endsWith("\u0007")))) {
+							CONTENT_HTML += par.text().replaceAll("\\s", " ");
+						}
+					}
+				} else {
+					if (inTable) {
+						CONTENT_HTML += "</tr>\n</table>\n";
+						inTable = false;
+					}
+					CONTENT_HTML += par.text() + "<br/>";
+				}
+			}
 		} catch (Exception e) {
 			System.out.println("Exception: " + e);
 		}
-	}
 
-	public static Range getDocRange() {
-		return docRange;
-	}
+		CONTENT_HTML = characterChecker(CONTENT_HTML);
 
-	public static String getContentTextOnly() {
-		return contentTextOnly;
-	}
+		CONTENT_NORMAL = makeNormalText(CONTENT_HTML);
+		CONTENT_TAB_MARKED = makeTabMarked(CONTENT_HTML);
 
-	public static String getContentTextWithMarkedTables() {
-		return contentTextWithMarkedTables;
-	}
+		// CONTENT_TEXT_ONLY = characterChecker(CONTENT_TEXT_ONLY);
 
-	public static String getContentLabParams() {
-		return contentLabParams;
-	}
-
-	public static String getContentHTML() {
-		return contentHTML;
-	}
-
-	public static void doc2Text() {
-
-		contentTextOnly = "";
-		contentTextWithMarkedTables = "";
-		contentHTML = "";
-
-		boolean intable = false;
-		boolean inrow = false;
-		boolean td_open = false;
-
-		for (int i = 0; i < docRange.numParagraphs(); i++) {
-			Paragraph par = docRange.getParagraph(i);
-
-			if (par.isInTable()) {
-				if (!intable) {
-					contentTextOnly = contentTextOnly + "\n";
-					contentTextWithMarkedTables = contentTextWithMarkedTables + "\n";
-					contentHTML = contentHTML + "<table>\n";
-
-					intable = true;
-				}
-				if (!inrow) {
-					contentHTML = contentHTML + "<tr>\n";
-					inrow = true;
-				}
-				if (par.isTableRowEnd()) {
-					contentHTML = contentHTML + "</tr>\n";
-					inrow = false;
-				} else {
-					if (td_open == false) {
-						if (par.text().endsWith("\u0007")) {
-							contentTextOnly = contentTextOnly + par.text() + "\n";
-							contentTextWithMarkedTables = contentTextWithMarkedTables + "|    " + par.text() + "    |";
-							contentHTML = contentHTML + "<td>" + par.text() + "</td>\n";
-						} else {
-							td_open = true;
-							contentTextOnly = contentTextOnly + par.text();
-							contentTextWithMarkedTables = contentTextWithMarkedTables + "|    " + par.text() + " ";
-							contentHTML = contentHTML + "<td>" + par.text() + "<br>";
-						}
-					} else {
-						if (par.text().endsWith("\u0007")) {
-							td_open = false;
-							contentTextOnly = contentTextOnly + par.text() + "\n";
-							contentTextWithMarkedTables = contentTextWithMarkedTables + par.text() + "    |";
-							contentHTML = contentHTML + par.text() + "</td>\n";
-
-						} else {
-							contentTextOnly = contentTextOnly + par.text();
-							contentTextWithMarkedTables = contentTextWithMarkedTables + par.text() + " ";
-							contentHTML = contentHTML + par.text() + "<br>";
-						}
-					}
-				}
-			} else {
-				if (inrow) {
-					contentHTML = contentHTML + "</table>";
-					inrow = false;
-				}
-				if (intable) {
-					contentHTML = contentHTML + par.text() + "<br/>";
-					intable = false;
-				}
-				contentTextOnly = contentTextOnly + par.text();
-				contentTextWithMarkedTables = contentTextWithMarkedTables + par.text();
-				contentHTML = contentHTML + par.text() + "<br/>";
-			}
-		}
-
-		contentTextOnly = characterChecker(contentTextOnly);
-
-		String[] contentSplit = characterChecker(contentTextWithMarkedTables).split("\n");
-		contentTextWithMarkedTables = "";
+		String[] contentSplitMT = characterChecker(CONTENT_HTML).split("\n");
+		// String[] contentSplitNMT =
+		// characterChecker(CONTENT_TEXT_ONLY).split("\n");
 
 		boolean foundLabParams = false;
 
-		for (int i = 0; i < contentSplit.length; i++) {
-			if (i + 2 < contentSplit.length) {
-				if ((contentSplit[i].contains("Laborwerte")) && (contentSplit[i + 2].contains("Normwert"))) {
-					foundLabParams = true;
+		for (int i = 0; i < contentSplitMT.length; i++) {
+
+			if (contentSplitMT[i].contains("<br/>Laborwerte:")) {
+				for (int j = i; j < contentSplitMT.length; j++) {
+					if (contentSplitMT[j].contains("Normwert")) {
+						foundLabParams = true;
+						break;
+					}
 				}
 			}
 
 			if (!foundLabParams) {
-				contentTextWithMarkedTables = contentTextWithMarkedTables + contentSplit[i] + "\n";
+				CONTENT_WOLP_HTML = CONTENT_WOLP_HTML + contentSplitMT[i] + "\n";
 			} else {
-				contentLabParams = contentLabParams + contentSplit[i] + "\n";
+				LAB_PARAMS_HTML = LAB_PARAMS_HTML + contentSplitMT[i] + "\n";
 			}
 		}
 
-		contentTextOnly = characterChecker(contentTextOnly);
-		contentTextWithMarkedTables = characterChecker(contentTextWithMarkedTables);
-		contentHTML = characterChecker(contentHTML);
+		CONTENT_WOLP_NORMAL = makeNormalText(CONTENT_WOLP_HTML);
+		CONTENT_WOLP_TAB_MARKED = makeTabMarked(CONTENT_WOLP_HTML);
+
+		LAB_PARAMS_NORMAL = makeNormalText(LAB_PARAMS_HTML);
+		LAB_PARAMS_TAB_MARKED = makeTabMarked(LAB_PARAMS_HTML);
+
+		if ((LAB_PARAMS_HTML.contains("<table>")) && (LAB_PARAMS_HTML.contains("</table>"))
+				&& (LAB_PARAMS_HTML.contains("<tr>")) && (LAB_PARAMS_HTML.contains("</tr>"))) {
+			LAB_TABLE = true;
+		} else {
+			LAB_TABLE = false;
+		}
 	}
 
 	/**
-	 * MSdocReade don't use all characters.
+	 * The Reader doesn't use all characters.
 	 * 
 	 * Private Use Area from U+E000 until U+F8FF
 	 * https://unicode-table.com/en/blocks/private-use-area/
@@ -220,7 +218,6 @@ public class ReadSingleMSdoc {
 
 		output = output.replaceAll("\u0007", "");
 		output = output.replaceAll("\u0008", "");
-		output = output.replaceAll("\u0009", "    "); // \t
 		output = output.replaceAll("\u000B", "");
 		output = output.replaceAll("\u000C", "");
 		output = output.replaceAll("\\r", "\n");
@@ -230,10 +227,43 @@ public class ReadSingleMSdoc {
 
 	private static int ReadIntegerValueOf1Character(char c) {
 		String y = c + Character.digit(c, 10) + " ";
-
 		y = y.substring(0, y.length() - 1);
-
 		return Integer.parseInt(y);
 	}
 
+	private static String makeNormalText(String input) {
+		String text = input;
+		text = text.replaceAll("<table>", "");
+		text = text.replaceAll("</table>", "");
+		text = text.replaceAll("<tr>", "");
+		text = text.replaceAll("</tr>", "\n");
+		text = text.replaceAll("<td>", "");
+		text = text.replaceAll("</td>", "\t");
+		text = text.replaceAll("<br/>", "");
+		text = text.replaceAll("\n+", "\n");
+
+		if (text.startsWith("\n")) {
+			text = text.replaceFirst("\n", "");
+		}
+
+		return text;
+	}
+
+	private static String makeTabMarked(String input) {
+		String text = input;
+		text = text.replaceAll("<table>", "");
+		text = text.replaceAll("</table>", "");
+		text = text.replaceAll("<tr>", "");
+		text = text.replaceAll("</tr>", "");
+		text = text.replaceAll("<td>", "|    ");
+		text = text.replaceAll("</td>", "    |");
+		text = text.replaceAll("<br/>", "");
+		text = text.replaceAll("\n+", "\n");
+
+		if (text.startsWith("\n")) {
+			text = text.replaceFirst("\n", "");
+		}
+
+		return text;
+	}
 }

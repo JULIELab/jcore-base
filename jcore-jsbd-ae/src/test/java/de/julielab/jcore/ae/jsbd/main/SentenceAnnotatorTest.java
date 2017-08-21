@@ -169,6 +169,9 @@ public class SentenceAnnotatorTest {
 		cas.setDocumentText(abstractText);
 		sentenceAE.process(cas);
 		Collection<Sentence> sentences = JCasUtil.select(cas, Sentence.class);
+		for (Sentence sentence : sentences) {
+			System.out.println(sentence.getCoveredText());
+		}
 		assertEquals(14, sentences.size());
 	}
 
@@ -182,6 +185,10 @@ public class SentenceAnnotatorTest {
 		cas.setDocumentText(abstractText);
 		sentenceAE.process(cas);
 		Collection<Sentence> sentences = JCasUtil.select(cas, Sentence.class);
+		System.out.println(sentences.size());
+		for (Sentence sentence : sentences) {
+			System.out.println(sentence.getCoveredText());
+		}
 		assertEquals(14, sentences.size());
 	}
 
