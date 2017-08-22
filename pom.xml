@@ -61,6 +61,7 @@
 		<module>jcore-jtbd-ae</module>
 		<module>jcore-lingpipegazetteer-ae</module>
 		<module>jcore-lingpipe-porterstemmer-ae</module>
+		<module>jcore-linnaeus-species-ae</module>
 		<module>jcore-mantra-xml-types</module>
 		<module>jcore-medxn-ae</module>
 		<module>jcore-msdoc2txt-reader</module>
