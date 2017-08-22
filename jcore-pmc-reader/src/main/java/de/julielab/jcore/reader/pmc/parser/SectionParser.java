@@ -31,7 +31,7 @@ public class SectionParser extends DefaultElementParser {
 	}
 
 	@Override
-	public void parseElement(ElementParsingResult parsingResult) throws ElementParsingException {
+	protected void parseElement(ElementParsingResult parsingResult) throws ElementParsingException {
 		try {
 			String sectionId = getElementAttributes().get("id");
 			String elementPath = getElementPath();

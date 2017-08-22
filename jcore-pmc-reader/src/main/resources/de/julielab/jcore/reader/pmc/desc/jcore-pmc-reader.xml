@@ -24,13 +24,44 @@
       </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings/>
-    <typeSystemDescription/>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
+      </imports>
+    </typeSystemDescription>
     <typePriorities/>
     <fsIndexCollection/>
     <capabilities>
       <capability>
         <inputs/>
-        <outputs/>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.TitleType</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Title</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.TextObject</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Table</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.SectionTitle</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Section</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.PubType</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Paragraph</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.OtherPub</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.OtherID</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.ManualDescriptor</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Keyword</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Journal</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Footnote</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Figure</type>
+          <type allAnnotatorFeatures="true">uima.tcas.DocumentAnnotation</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Date</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.CaptionType</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Caption</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AutoDescriptor</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AuthorInfo</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AbstractText</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AbstractSectionHeading</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AbstractSection</type>
+        </outputs>
         <languagesSupported/>
       </capability>
     </capabilities>
