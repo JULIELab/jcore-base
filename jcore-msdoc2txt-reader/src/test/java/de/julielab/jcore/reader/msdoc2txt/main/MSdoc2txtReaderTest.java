@@ -54,7 +54,8 @@ public class MSdoc2txtReaderTest {
 	/**
 	 * Names of dummies
 	 */
-	private static final String DIRECTORY_INPUT = "data/files/input";	// do not delete data/files directory, it is used by 'DESC_FILE_READER'
+	private static final String DIRECTORY_INPUT = "data/files/input";
+	// do not delete data/files directory, it is used by 'DESC_FILE_READER'
 
 	private static final String DIR1 = DIRECTORY_INPUT + "/dir1";
 	private static final String SUBDIR1 = DIR1 + "/subdir1";
@@ -97,11 +98,10 @@ public class MSdoc2txtReaderTest {
 
 		File file = new File(DOC_DUMMY_FILE);
 
-		ReadSingleMSdoc.setFilename(file.getPath());
-		ReadSingleMSdoc.setDocRange();
+		ReadSingleMSdoc.INPUT_FILE = file.getPath();
 		ReadSingleMSdoc.doc2Text();
 
-		String artifactText = ReadSingleMSdoc.getContentTextWithMarkedTables();
+		String artifactText = ReadSingleMSdoc.CONTENT_TAB_MARKED;
 
 		CollectionReader fileReader = getCollectionReader(DESC_FILE_READER);
 		fileReader.setConfigParameterValue("InputDirectory", DIRECTORY_INPUT);

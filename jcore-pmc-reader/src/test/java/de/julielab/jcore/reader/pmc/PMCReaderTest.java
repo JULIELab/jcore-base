@@ -30,6 +30,7 @@ import de.julielab.jcore.types.Figure;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.Section;
+import de.julielab.jcore.types.SectionTitle;
 import de.julielab.jcore.types.Table;
 import de.julielab.jcore.types.Title;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
@@ -38,7 +39,7 @@ public class PMCReaderTest {
 	@Test
 	public void testPmcReader1() throws Exception {
 		// read a single file, parse it and right it to XMI for manual review
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
@@ -54,7 +55,7 @@ public class PMCReaderTest {
 	@Test
 	public void testPmcReader2() throws Exception {
 		// read a whole directory with subdirectories
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive");
 		assertTrue(reader.hasNext());
@@ -88,10 +89,25 @@ public class PMCReaderTest {
 		}
 		assertTrue(expectedIds.isEmpty());
 	}
+	
+	@Test
+	public void testTitle() throws Exception {
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
+		assertTrue(reader.hasNext());
+		reader.getNext(cas.getCas());
+		Collection<Title> titles = JCasUtil.select(cas, Title.class);
+		for (Title t : titles) {
+			if (t.getClass().equals(SectionTitle.class)) {
+				assertEquals("section", t.getTitleType());
+			}
+		}
+	}
 
 	@Test
 	public void testHeader() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
@@ -136,7 +152,7 @@ public class PMCReaderTest {
 
 	@Test
 	public void testTables() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
@@ -194,7 +210,7 @@ public class PMCReaderTest {
 
 	@Test
 	public void testKeywords() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
@@ -244,7 +260,7 @@ public class PMCReaderTest {
 
 	@Test
 	public void testSectionTitlesWithLabels() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-misc/PMC3098455.nxml.gz");
 		reader.getNext(cas.getCas());
@@ -271,7 +287,7 @@ public class PMCReaderTest {
 		// because it would mess up easy access to abstract sections.
 		// Thus we test each abstract section we come across and check that it
 		// is the one we expect, i.e. not the wrapper with no title.
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-misc/PMC2836310.nxml.gz");
 		reader.getNext(cas.getCas());

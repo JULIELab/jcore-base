@@ -75,13 +75,13 @@ public class NxmlDocumentParser extends NxmlParser {
 	private File nxmlFile;
 	protected JCas cas;
 
-	public void reset(File nxmlFile, JCas cas) throws DocumentParsingException, EmptyFileException  {
+	public void reset(File nxmlFile, JCas cas) throws DocumentParsingException, EmptyFileException {
 		this.nxmlFile = nxmlFile;
 		this.cas = cas;
 		try {
 			if (nxmlFile.exists() && nxmlFile.length() <= 40)
 				throw new EmptyFileException("The file " + nxmlFile.getAbsolutePath() + " is empty.");
-			
+
 			VTDGen vg = new VTDGen();
 			// If we don't set this to true, some whitespaces, for example
 			// directly after closing tags, would be omitted. We don't want
@@ -104,7 +104,7 @@ public class NxmlDocumentParser extends NxmlParser {
 	 * enum element from {@link Tagset}.
 	 * 
 	 * @throws NavException
-	 * @throws DocTypeNotFoundException 
+	 * @throws DocTypeNotFoundException
 	 */
 	private void setTagset() throws NavException, DocTypeNotFoundException {
 		for (int i = 0; i < vn.getTokenCount(); i++) {
@@ -152,6 +152,16 @@ public class NxmlDocumentParser extends NxmlParser {
 		return tagset;
 	}
 
+	/**
+	 * The parser registry is a simple map that associates XML element names
+	 * with a parser for the respective element type. When parsing a document,
+	 * all elements are traversed in a depth-first fashion. For each element,
+	 * this registry is checked for a parser handling the current element. If
+	 * one is found, this parser is used for the element. Otherwise, the
+	 * {@link DefaultElementParser} is employed.
+	 * 
+	 * @return The parser registry.
+	 */
 	public Map<String, NxmlElementParser> getParserRegistry() {
 		return parserRegistry;
 	}

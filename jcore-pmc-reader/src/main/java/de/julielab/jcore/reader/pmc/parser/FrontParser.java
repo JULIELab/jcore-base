@@ -32,7 +32,7 @@ public class FrontParser extends NxmlElementParser {
 	}
 
 	@Override
-	public void parseElement(ElementParsingResult frontResult) throws ElementParsingException {
+	protected void parseElement(ElementParsingResult frontResult) throws ElementParsingException {
 		try {
 
 			// title and abstract

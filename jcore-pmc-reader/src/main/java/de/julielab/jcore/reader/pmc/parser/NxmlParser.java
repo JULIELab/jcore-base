@@ -6,6 +6,15 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
+/**
+ * This is the top NXML parser class that offers very limited access to parsing
+ * facilities. Most commonly, new parsing classes should be extended from
+ * {@link NxmlElementParser} when the class is supposed to handle a specific
+ * element type of the NXML specification.
+ * 
+ * @author faessler
+ *
+ */
 public abstract class NxmlParser {
 	protected VTDNav vn;
 	private AutoPilot reusableAutoPilot;
@@ -59,7 +68,7 @@ public abstract class NxmlParser {
 		reusableAutoPilot.resetXPath();
 		autoPilotInUse = false;
 	}
-	
+
 	protected boolean xPathExists(String xpath) throws XPathParseException, XPathEvalException, NavException {
 		try {
 			AutoPilot ap = getAutoPilot(xpath, vn);

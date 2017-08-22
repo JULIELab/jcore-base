@@ -51,7 +51,7 @@ public class TokenizerTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TokenizerTest.class);
 
-	private static final String FILENAME_MODEL = "src/test/resources/de/julielab/jcore/ae/jtbd/model/jtbd-2.0-biomed.gz";
+	private static final String FILENAME_MODEL = "src/test/resources/de/julielab/jcore/ae/jtbd/model/test-model.gz";
 	private static final String FILENAME_TRAIN_DATA_ORG = "src/test/resources/testdata/train/train.sent";
 	private static final String FILENAME_TRAIN_DATA_TOK = "src/test/resources/testdata/train/train.tok";
 	private static final String FILENAME_TRAIN_MODEL_OUTPUT = "/tmp/TestModelOuput.mod";
@@ -156,7 +156,7 @@ public class TokenizerTest {
 		jCas.setDocumentText("Please tokenize this sentence.");
 		AnalysisEngine engine =
 				AnalysisEngineFactory.createEngine(TokenAnnotator.class, TokenAnnotator.PARAM_MODEL,
-						"de/julielab/jcore/ae/jtbd/model/jtbd-2.0-biomed.gz", TokenAnnotator.USE_DOC_TEXT_PARAM, true);
+						"de/julielab/jcore/ae/jtbd/model/test-model.gz", TokenAnnotator.USE_DOC_TEXT_PARAM, true);
 		engine.process(jCas.getCas());
 
 		Collection<Token> tokens = JCasUtil.select(jCas, Token.class);

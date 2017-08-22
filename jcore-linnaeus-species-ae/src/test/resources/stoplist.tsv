@@ -1,0 +1,18 @@
+#id	regular expression
+species:ncbi:173331	[Pp]ermits?
+species:ncbi:59837	[sS]pots?
+species:ncbi:55581	[Nn]ames?
+species:ncbi:255564	[Rr]ays?
+species:ncbi:215167	3A
+species:ncbi:3708	[Rr]apes?
+species:ncbi:34205	[Ff]lags?
+species:ncbi:10760	T7
+species:ncbi:76720	Fishers?
+species:ncbi:9685	Cat[^s]
+species:ncbi:37334	Yu
+species:ncbi:138334	[Rr]amp
+species:ncbi:64459	[sS]mall white
+species:ncbi:185542	mates?
+species:ncbi:9793	Ass
+species:ncbi:6239	[Nn]ematodes?
+species:ncbi:1829	[Jj]1

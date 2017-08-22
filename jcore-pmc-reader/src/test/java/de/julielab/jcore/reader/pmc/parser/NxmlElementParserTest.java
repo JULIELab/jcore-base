@@ -11,7 +11,7 @@ import org.junit.Test;
 public class NxmlElementParserTest {
 	@Test
 	public void testGetElementPath() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
 		documentParser.reset(new File("src/test/resources/documents-recursive/PMC2847692.nxml.gz"), cas);
 		

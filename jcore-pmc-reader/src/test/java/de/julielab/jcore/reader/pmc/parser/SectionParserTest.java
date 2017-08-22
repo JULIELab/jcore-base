@@ -23,7 +23,7 @@ public class SectionParserTest {
 	@Test
 	public void testParser() throws Exception {
 		// this publication does not define title for all sections
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
 		documentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
 		File inputFile = new File("src/test/resources/documents-misc/PMC5289004.nxml.gz");
@@ -47,7 +47,7 @@ public class SectionParserTest {
 	@Test
 	public void testParser2() throws Exception {
 		// this publication does not define pages but an electronic location
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		NxmlDocumentParser documentParser = new NxmlDocumentParser();
 		documentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
 		File inputFile = new File("src/test/resources/documents-misc/PMC2836310.nxml.gz");

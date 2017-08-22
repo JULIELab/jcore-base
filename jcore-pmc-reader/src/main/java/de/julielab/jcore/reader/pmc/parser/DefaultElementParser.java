@@ -21,7 +21,9 @@ import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
 /**
  * A generic element parser that is applicable to any element of the document
  * body. Parses the text contents from the element and calls specialized parsers
- * for child elements.
+ * for child elements. This class is configured externally by the
+ * <tt>elementproperties.yml</tt> file found in
+ * <tt>src/main/resources/de/julielab/jcore/reader/pmc/resources/</tt>
  * 
  * @author faessler
  *
@@ -44,7 +46,7 @@ public class DefaultElementParser extends NxmlElementParser {
 	}
 
 	@Override
-	public void parseElement(ElementParsingResult result) throws ElementParsingException {
+	protected void parseElement(ElementParsingResult result) throws ElementParsingException {
 		try {
 			// checkCursorPosition();
 			int elementDepth = vn.getCurrentDepth();
@@ -112,7 +114,7 @@ public class DefaultElementParser extends NxmlElementParser {
 
 	// for access to the local ParsingResult; may be overwritten by extending
 	// classes
-	protected void editResult(ElementParsingResult result) {
+	protected void editResult(ElementParsingResult result) throws NavException {
 		// Default behavior: Add default feature values to the created
 		// annotation, if this is configured in the element properties for the
 		// current annotation type
@@ -122,9 +124,12 @@ public class DefaultElementParser extends NxmlElementParser {
 		if (typeName.equals(ElementProperties.TYPE_NONE))
 			return;
 
+//		@SuppressWarnings("unchecked")
+//		Map<String, Object> defaultFeatureValues = (Map<String, Object>) nxmlDocumentParser
+//				.getTagProperties(elementName)
+//				.getOrDefault(ElementProperties.DEFAULT_FEATURE_VALUES, Collections.emptyMap());
 		@SuppressWarnings("unchecked")
-		Map<String, Object> defaultFeatureValues = (Map<String, Object>) nxmlDocumentParser
-				.getTagProperties(elementName)
+		Map<String, Object> defaultFeatureValues = (Map<String, Object>) getApplicableProperties().orElse(Collections.emptyMap())
 				.getOrDefault(ElementProperties.DEFAULT_FEATURE_VALUES, Collections.emptyMap());
 		for (String featureName : defaultFeatureValues.keySet()) {
 			Feature feature = nxmlDocumentParser.cas.getTypeSystem().getType(typeName)

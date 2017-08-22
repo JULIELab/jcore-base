@@ -13,7 +13,7 @@ public class ContribGroupParser extends NxmlElementParser {
 	}
 
 	@Override
-	public void parseElement(ElementParsingResult result) throws ElementParsingException {
+	protected void parseElement(ElementParsingResult result) throws ElementParsingException {
 		try {
 			AutoPilot ap = getAutoPilot("/article/front/article-meta/contrib-group/contrib[@contrib-type='author']", vn);
 			while (ap.evalXPath() != -1) {

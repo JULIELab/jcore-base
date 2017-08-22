@@ -19,7 +19,7 @@ public class TableWrapParser extends NxmlElementParser {
 	}
 
 	@Override
-	public void parseElement(ElementParsingResult tableWrapResult) throws ElementParsingException {
+	protected void parseElement(ElementParsingResult tableWrapResult) throws ElementParsingException {
 		try {
 			Optional<String> tableWrapId = getXPathValue("@id");
 			Optional<ParsingResult> labelResult = parseXPath("label");
