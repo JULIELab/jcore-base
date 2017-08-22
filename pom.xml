@@ -51,6 +51,7 @@
 		<module>jcore-dta-reader</module>
 		<module>jcore-ec-code-ae</module>
 		<module>jcore-file-reader</module>
+		<module>jcore-gene-mapper-ae</module>
 <!-- 		<module>jcore-gene-species-assigner</module> -->
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>

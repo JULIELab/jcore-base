@@ -1,0 +1,5 @@
+## Bad synonyms to be filtered out before lucene indexing:
+
+p55				ANYWHERE
+p75				ANYWHERE
+cd25 protein	PMP22_RAT
