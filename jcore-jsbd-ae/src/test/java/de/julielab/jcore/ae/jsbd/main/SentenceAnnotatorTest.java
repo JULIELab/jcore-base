@@ -48,7 +48,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.jsbd.main.SentenceAnnotator;
 import de.julielab.jcore.ae.jsbd.types.TestScope;
 import de.julielab.jcore.types.Caption;
 import de.julielab.jcore.types.Paragraph;
@@ -72,9 +71,9 @@ public class SentenceAnnotatorTest {
 	// last sentence has no EOS symbol to test that also this is handled
 	// correctly
 	private static final String[] TEST_TEXT = { "First sentence. Second \t sentence! \n    Last sentence?",
-			"Hallo, jemand da? Nein, niemand.", "A test. METHODS: Bad stuffi", "" };
+			"Hallo, jemand da? Nein, niemand.", "A test. It can't be just one sentence. Testing the test.", "" };
 
-	private static final String[] TEST_TEXT_OFFSETS = { "0-15;16-34;40-54", "0-17;18-32", "0-7;8-16;17-27", "" };
+	private static final String[] TEST_TEXT_OFFSETS = { "0-15;16-34;40-54", "0-17;18-32", "0-7;8-38;39-56", "" };
 
 	private static final int[] endOffsets = { 54, 32, 27, 0 };
 
@@ -131,7 +130,7 @@ public class SentenceAnnotatorTest {
 			Iterator sentIter = indexes.getAnnotationIndex(Sentence.type).iterator();
 
 			String predictedOffsets = getPredictedOffsets(i, sentIter);
-
+			
 			// compare offsets
 			if (!predictedOffsets.equals(TEST_TEXT_OFFSETS[i])) {
 				annotationsOK = false;
