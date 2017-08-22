@@ -17,6 +17,40 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
+import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser.Tagset;
+
+/**
+ * <p>
+ * This is the common super class for all element parser classes. An element
+ * parser class is a class that is responsible for parsing a specific element
+ * type as specified in the NXML DTDs (see {@link Tagset}). In its core stands
+ * the {@link #parse()} method that behaves like a template for parsing
+ * text-containing elements: It checks if the parser cursor is at a valid
+ * position and created the {@link ElementParsingResult} instance for the
+ * current element. After calling {@link #parseElement(ElementParsingResult)},
+ * it moves the cursor to the next sibling element or parent, if there is no
+ * next sibling. Thus, even if not all descendants of the current element are
+ * handled by the parser class, the whole element will be consumed. There are
+ * three methods that can be overwritten by extending classes which are called
+ * from within the parse() method:
+ * <ol>
+ * <li>protected void beforeParseElement()</li>
+ * <li>protected void afterParseElement()</li>
+ * <li>protected abstract void parseElement(ElementParsingResult
+ * elementParsingResult)</li>
+ * </ol>
+ * The last method must be overwritten by extending classes as it is the actual
+ * parsing method.
+ * </p>
+ * <p>
+ * To have a parser class to actually be used for parsing of an element, it must
+ * be registered to the element's name in the parser registry obtained by
+ * {@link NxmlDocumentParser#getParserRegistry()}.
+ * </p>
+ * 
+ * @author faessler
+ *
+ */
 public abstract class NxmlElementParser extends NxmlParser {
 
 	private static final Logger log = LoggerFactory.getLogger(NxmlElementParser.class);
@@ -99,8 +133,6 @@ public abstract class NxmlElementParser extends NxmlParser {
 	}
 
 	protected abstract void parseElement(ElementParsingResult elementParsingResult) throws ElementParsingException;
-
-	
 
 	/**
 	 * Must be called when vn is positioned on the start tag of the element for
@@ -321,10 +353,12 @@ public abstract class NxmlElementParser extends NxmlParser {
 		Map<String, String> attributesOfElement = new HashMap<>();
 		int i = vn.getCurrentIndex();
 		// check if the current token position is the starting tag with the
-		// correct name or, if we are positioned at an attribute name, the previous token; if none of these, we can't get
+		// correct name or, if we are positioned at an attribute name, the
+		// previous token; if none of these, we can't get
 		// the attributes here
 		if ((vn.getTokenType(i) == VTDNav.TOKEN_STARTING_TAG && !elementName.equals(vn.toString(i)))
-				|| (vn.getTokenType(i) == VTDNav.TOKEN_ATTR_NAME && vn.getTokenType(i - 1) == VTDNav.TOKEN_STARTING_TAG && !elementName.equals(vn.toString(i - 1)))) {
+				|| (vn.getTokenType(i) == VTDNav.TOKEN_ATTR_NAME && vn.getTokenType(i - 1) == VTDNav.TOKEN_STARTING_TAG
+						&& !elementName.equals(vn.toString(i - 1)))) {
 			throw new IllegalStateException(
 					"To create the element attribute map, the VTDNav cursor must be set to the starting tag or the first attribute name.");
 		}

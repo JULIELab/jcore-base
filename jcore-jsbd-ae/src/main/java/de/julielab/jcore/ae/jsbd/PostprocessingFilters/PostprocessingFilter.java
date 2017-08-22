@@ -2,13 +2,18 @@ package de.julielab.jcore.ae.jsbd.PostprocessingFilters;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import de.julielab.jcore.ae.jsbd.AbbreviationsBiomed;
 import de.julielab.jcore.ae.jsbd.AbbreviationsMedical;
 import de.julielab.jcore.ae.jsbd.Unit;
 
 public class PostprocessingFilter {
-
+	public static final String BIOMED_POSTPROC = "biomed";
+	public static final String MEDICAL_POSTPROC = "medical";
+	
+	public static final Stream<String> POSTPROC_STREAM = Stream.of("biomed", "medical");
+	
 	public enum Mode {
 		BIOMED {
 	        @Override
