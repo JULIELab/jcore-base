@@ -1,31 +1,30 @@
 /**
- * AcronymAnnotator.java
- *
- * Copyright (c) 2015, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
- *
- * Author: tusche
- *
- * Current version: 2.0
- *
- * Creation date: 14.01.2007
- *
- * Finds fullforms for acronyms using the Schwartz/Hearst algorithm
- * if no fullform was found, then the acronym can be looked in an
- * -->AcronymList
- * 
- * An acronym has the form [foo] or (foo), where foo contains at least two
- * letters, including at least two uppercase letter. Minus (-) and digits
- * are allowed, too.
- * 
- * still to do (strange):
- * merge ABBREVIATION_PATTERN1 and ABBREVIATION_PATTERN2
- * 
- * new in 2.0: acronym-list removed!!
- *  
- **/
+BSD 2-Clause License
 
+Copyright (c) 2017, JULIE Lab
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+**/
 package de.julielab.jcore.ae.acronymtagger.main;
 
 import java.io.BufferedReader;
