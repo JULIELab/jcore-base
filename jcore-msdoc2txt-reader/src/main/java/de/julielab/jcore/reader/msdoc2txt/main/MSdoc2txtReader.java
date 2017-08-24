@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2017, JULIE Lab.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * @author Christina Lohr
  *
