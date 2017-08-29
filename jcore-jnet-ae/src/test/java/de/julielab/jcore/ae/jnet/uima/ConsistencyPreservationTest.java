@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.AbbreviationLongform;
 import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.Disease;
 import de.julielab.jcore.types.EntityMention;
@@ -41,8 +42,6 @@ import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Organism;
 import de.julielab.jcore.types.ResourceEntry;
 import de.julielab.jcore.types.Token;
-import de.julielab.jcore.utility.JCoReTools;
-import de.julielab.jcore.utility.JCoReUtilitiesException;
 import junit.framework.TestCase;
 
 /**
@@ -68,17 +67,17 @@ public class ConsistencyPreservationTest extends TestCase {
 		jcas.setDocumentText("0ABCD1234");
 
 		// full forms for abbreviations
-		final Annotation full1 = new Annotation(jcas, 1, 2);// ->no entity anno
+		final AbbreviationLongform full1 = new AbbreviationLongform(jcas, 1, 2);// ->no entity anno
 		full1.addToIndexes();
-		final Annotation full2 = new Annotation(jcas, 2, 3); // ->has
+		final AbbreviationLongform full2 = new AbbreviationLongform(jcas, 2, 3); // ->has
 																// interesting
 																// entity anno
 		full2.addToIndexes();
-		final Annotation full3 = new Annotation(jcas, 3, 4);// ->has
+		final AbbreviationLongform full3 = new AbbreviationLongform(jcas, 3, 4);// ->has
 															// uninteresting
 															// entity anno
 		full3.addToIndexes();
-		final Annotation full4 = new Annotation(jcas, 4, 5);// ->no entity anno
+		final AbbreviationLongform full4 = new AbbreviationLongform(jcas, 4, 5);// ->no entity anno
 		full4.addToIndexes();
 
 		// abbreviations

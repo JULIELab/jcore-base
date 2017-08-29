@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.AbbreviationLongform;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
@@ -89,7 +89,7 @@ public class EntityAnnotatorTest extends TestCase {
 		// no abbreviation on YY
 		jcas.setDocumentText("aXXaYYaZZs");
 		final Abbreviation a1 = new Abbreviation(jcas, 1, 3);
-		final Annotation anno = new Annotation(jcas, 0, 1);
+		final AbbreviationLongform anno = new AbbreviationLongform(jcas, 0, 1);
 		a1.setTextReference(anno);
 		a1.setExpan("something");
 		a1.addToIndexes();
