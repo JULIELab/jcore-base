@@ -17,10 +17,8 @@ package de.julielab.jcore.ae.acronymtagger.main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 
-import junit.framework.TestCase;
-
-import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -28,6 +26,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -40,10 +39,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.acronymtagger.main.AcronymAnnotator;
 import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.Acronym;
+import de.julielab.jcore.types.AbbreviationLongform;
 import de.julielab.jcore.types.Sentence;
+import junit.framework.TestCase;
 
 /**
  * The AcronymAnnotatorTest class
@@ -295,6 +294,26 @@ public class AcronymAnnotatorTest extends TestCase {
 		assertTrue(iterator.hasNext());
 		iterator.next();
 		assertFalse(iterator.hasNext());
+	}
+	
+	@Test
+	public void testPostprocessing() throws Exception {
+		// Preparation
+				JCas jCas = JCasFactory.createJCas(ALL_TYPES_NAME);
+				jCas.setDocumentText("Tumor necrosis factor (TNF) is one thing. The TNF receptor(TNF-R) is another.");
+				Sentence sentence = new Sentence(jCas, 0, jCas.getDocumentText().length());
+				sentence.addToIndexes();
+				// Read the acronym list file from the classpath
+				AnalysisEngine engine = AnalysisEngineFactory.createEngine(AcronymAnnotator.class, AcronymAnnotator.PARAM_ACROLIST, BASE_PATH+"testresources/acrolist.txt");
+				
+				// Let the annotator run
+				engine.process(jCas.getCas());
+				Postprocessing.doPostprocessing(jCas);
+				// We expect two abbreviations and two full form annotations
+				Collection<Abbreviation> acronyms = JCasUtil.select(jCas, Abbreviation.class);
+				assertEquals(2, acronyms.size());
+				Collection<AbbreviationLongform> longForms = JCasUtil.select(jCas, AbbreviationLongform.class);
+				assertEquals(2, longForms.size());
 	}
 
 }

@@ -151,7 +151,7 @@
         <featureDescription>
           <name>textReference</name>
           <description>Reference to the text span that contains the  full form of the abbreviation/acronym</description>
-          <rangeTypeName>de.julielab.jcore.types.Annotation</rangeTypeName>
+          <rangeTypeName>de.julielab.jcore.types.AbbreviationLongform</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>definedHere</name>
@@ -731,6 +731,11 @@
       <name>de.julielab.jcore.types.PrimaryDependencyRelation</name>
       <description/>
       <supertypeName>de.julielab.jcore.types.DependencyRelation</supertypeName>
+    </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jcore.types.AbbreviationLongform</name>
+      <description>This annotation type represents the text reference to an abbreviation.</description>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
     </typeDescription>
   </types>
 </typeSystemDescription>

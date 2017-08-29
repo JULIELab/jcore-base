@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 import de.julielab.jcore.ae.acronymtagger.entries.AcronymEntry;
 import de.julielab.jcore.ae.acronymtagger.entries.FullformEntry;
 import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.AbbreviationLongform;
 import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.Sentence;
 
@@ -310,7 +311,7 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 				a.setExpan(fullform);
 				a.setDefinedHere(true);
 				// Annotation anno = new Annotation(aJCas, ffStart, ffEnd);
-				Annotation anno = new Annotation(aJCas, beginSent + fullformBegin, beginSent + fullformEnd);
+				AbbreviationLongform anno = new AbbreviationLongform(aJCas, beginSent + fullformBegin, beginSent + fullformEnd);
 				anno.setComponentId(COMPONENT_ID);
 				anno.addToIndexes();
 				a.setTextReference(anno);
@@ -417,7 +418,7 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 					a.setExpan(fullform);
 					a.setDefinedHere(true);
 					// Annotation anno = new Annotation(aJCas, ffStart, ffEnd);
-					Annotation anno = new Annotation(aJCas, beginSent + ffStart, beginSent + ffEnd);
+					AbbreviationLongform anno = new AbbreviationLongform(aJCas, beginSent + ffStart, beginSent + ffEnd);
 					anno.setComponentId(COMPONENT_ID);
 					anno.addToIndexes();
 					a.setTextReference(anno);
