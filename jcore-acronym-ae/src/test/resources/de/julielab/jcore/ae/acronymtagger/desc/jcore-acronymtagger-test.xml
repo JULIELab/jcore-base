@@ -35,6 +35,12 @@ etc.</description>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>Postprocessing</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -53,6 +59,12 @@ etc.</description>
         <name>AcroList</name>
         <value>
           <string>src/test/resources/de/julielab/jcore/ae/acronymtagger/testresources/acrolist.txt</string>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>Postprocessing</name>
+        <value>
+          <boolean>true</boolean>
         </value>
       </nameValuePair>
     </configurationParameterSettings>

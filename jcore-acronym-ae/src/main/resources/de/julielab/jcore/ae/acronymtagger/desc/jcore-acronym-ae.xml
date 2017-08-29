@@ -23,6 +23,13 @@
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>Postprocessing</name>
+        <description>Activates a post processing that unifies overlapping abbreviations and fullforms.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -35,6 +42,12 @@
         <name>MaxLength</name>
         <value>
           <integer>5</integer>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>Postprocessing</name>
+        <value>
+          <boolean>true</boolean>
         </value>
       </nameValuePair>
     </configurationParameterSettings>

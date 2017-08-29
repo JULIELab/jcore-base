@@ -80,6 +80,8 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 
 	public static final String PARAM_CONSISTENCY_ANNO = "ConsistencyAnno";
 	// extra annotation of every other shortform occurence?
+	
+	private static final String PARAM_POSTPROCESSING = "Postprocessing";
 
 	public static final String PARAM_MAXLENGTH_FACTOR = "MaxLength";
 	// how far back shall we loog to find the start of a fullform?
@@ -118,6 +120,8 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 			"wherever", "whether", "which", "while", "whither", "who", "whoever", "whole", "whom", "whose", "why",
 			"will", "with", "within", "without", "would", "yet", "you", "your", "yours", "yourself", "yourselves", };
 
+	
+
 	private static String ABBREVIATION = "[\\(\\[][-\\w]*?([A-Z]-?\\w|\\w-?[A-Z])[-\\w]*?[\\)\\]]";
 	private final Pattern ABBR_PATTERN = Pattern.compile(ABBREVIATION);
 	private static String EMBEDDED_ABBR = "[\\(\\[][a-z]+?([A-Z]-?\\w|\\w-?[A-Z])[-\\w]*?[\\)\\]]";
@@ -129,6 +133,9 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 
 	@ConfigurationParameter(name = PARAM_CONSISTENCY_ANNO, defaultValue = "true")
 	private boolean consistencyAnno = false;
+	
+	@ConfigurationParameter(name = PARAM_POSTPROCESSING, defaultValue = "true")
+	private boolean postprocessing = false;
 
 	private HashMap<String, String> acro2fullForm;
 
@@ -149,6 +156,8 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 			setAcroList(aContext);
 
 			consistencyAnno = ((Boolean) aContext.getConfigParameterValue(PARAM_CONSISTENCY_ANNO)).booleanValue();
+			
+			postprocessing = ((Boolean) aContext.getConfigParameterValue(PARAM_POSTPROCESSING)).booleanValue();
 
 			MAXLENGTHFACTOR = ((Integer) aContext.getConfigParameterValue(PARAM_MAXLENGTH_FACTOR)).intValue();
 
@@ -238,6 +247,8 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 				ConsistencyAnnotator ca = new ConsistencyAnnotator();
 				ca.consistencyAnnotate(aJCas);
 			}
+			
+			
 
 		} catch (StringIndexOutOfBoundsException e) {
 			LOGGER.error("typical Error in AcronymAnnotator.process() : StringIndexOutOfBounds");
