@@ -248,6 +248,9 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 				ca.consistencyAnnotate(aJCas);
 			}
 			
+			if (postprocessing) {
+				Postprocessing.doPostprocessing(aJCas);
+			}
 			
 
 		} catch (StringIndexOutOfBoundsException e) {
