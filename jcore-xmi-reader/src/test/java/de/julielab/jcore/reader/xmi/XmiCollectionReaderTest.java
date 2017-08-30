@@ -8,13 +8,14 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
+import de.julielab.jcore.reader.xmi.XmiCollectionReader;
 import de.julielab.jcore.types.EventMention;
 import de.julielab.jcore.types.Gene;
 
 public class XmiCollectionReaderTest {
 	@Test
 	public void testUimaFitIntegration() throws Exception {
-		JCas cas = JCasFactory.createJCas("julie-all-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		
 		CollectionReader reader = CollectionReaderFactory.createReader(XmiCollectionReader.class, XmiCollectionReader.PARAM_INPUTDIR, "src/test/resources/input");
 		

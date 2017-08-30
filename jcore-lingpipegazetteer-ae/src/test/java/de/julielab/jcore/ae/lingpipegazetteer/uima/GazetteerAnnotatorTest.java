@@ -57,6 +57,7 @@ import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProviderImplAlt;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
 import de.julielab.jcore.ae.lingpipegazetteer.uima.GazetteerAnnotator;
 import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.AbbreviationLongform;
 import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.OntClassMention;
@@ -88,7 +89,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		Abbreviation abbr = new Abbreviation(myCAS, 41, 46);
 		abbr.setDefinedHere(true);
 		abbr.setExpan("killer cell lectin-like receptor G1");
-		Annotation v = new Annotation(myCAS, 4, 39);
+		AbbreviationLongform v = new AbbreviationLongform(myCAS, 4, 39);
 		v.addToIndexes();
 		abbr.setTextReference(v);
 		abbr.addToIndexes();
@@ -108,7 +109,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		abbr = new Abbreviation(myCAS, 563, 568);
 		abbr.setDefinedHere(true);
 		abbr.setExpan("killer cell lectin-like receptor G2");
-		v = new Annotation(myCAS, 526, 561);
+		v = new AbbreviationLongform(myCAS, 526, 561);
 		v.addToIndexes();
 		abbr.setTextReference(v);
 		abbr.addToIndexes();
@@ -122,7 +123,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		abbr = new Abbreviation(myCAS, 789, 793);
 		abbr.setDefinedHere(true);
 		abbr.setExpan("immunoreceptor tyrosine-based inhibitory motif");
-		v = new Annotation(myCAS, 741, 787);
+		v = new AbbreviationLongform(myCAS, 741, 787);
 		v.addToIndexes();
 		abbr.setTextReference(v);
 		abbr.addToIndexes();
@@ -382,11 +383,11 @@ public class GazetteerAnnotatorTest extends TestCase {
 
 		jCas.setDocumentText("Here we have the short form isnotin dictionary (TSFOTEINITD) indeed.");
 		Abbreviation abbr;
-		Annotation v;
+		AbbreviationLongform v;
 		abbr = new Abbreviation(jCas, 52, 63);
 		abbr.setDefinedHere(true);
 		abbr.setExpan("short form isnotin dictionary");
-		v = new Annotation(jCas, 17, 50);
+		v = new AbbreviationLongform(jCas, 17, 50);
 		v.addToIndexes();
 		abbr.setTextReference(v);
 		abbr.addToIndexes();
@@ -410,7 +411,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		abbr = new Abbreviation(jCas, 103, 111);
 		abbr.setDefinedHere(true);
 		abbr.setExpan("human brain 25 kDa lysophospholipid-specific lysophospholipase");
-		v = new Annotation(jCas, 39, 101);
+		v = new AbbreviationLongform(jCas, 39, 101);
 		v.addToIndexes();
 		abbr.setTextReference(v);
 		abbr.addToIndexes();
@@ -418,7 +419,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		abbr = new Abbreviation(jCas, 104, 111);
 		abbr.setDefinedHere(true);
 		abbr.setExpan("lysophospholipase");
-		v = new Annotation(jCas, 84, 101);
+		v = new AbbreviationLongform(jCas, 84, 101);
 		v.addToIndexes();
 		abbr.setTextReference(v);
 		abbr.addToIndexes();
