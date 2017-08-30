@@ -1,0 +1,22 @@
+<assembly>
+	<id>assembly</id>
+	<formats>
+		<format>jar</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>target/classes</directory>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>/</outputDirectory>
+			<unpack>true</unpack>
+			<includes>
+				<include>ch.qos.logback:logback-classic</include>
+			</includes>
+		</dependencySet>
+	</dependencySets>
+</assembly>

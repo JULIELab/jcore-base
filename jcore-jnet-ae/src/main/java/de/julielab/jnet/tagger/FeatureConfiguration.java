@@ -34,10 +34,12 @@ public class FeatureConfiguration {
 	 */
 	public boolean featureActive(final Properties propDef, final String propName) {
 		if ((propDef.getProperty(propName) != null)
-				&& propDef.getProperty(propName).equals("true"))
+				&& propDef.getProperty(propName).equals("true")) {
 			return true;
-		else
+		}
+		else {
 			return false;
+		}
 	}
 
 	public int[] getIntArray(final Properties propDef, final String propName) {

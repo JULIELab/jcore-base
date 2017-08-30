@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<banner-configuration>
+  <banner>
+    <eval>
+      <datasetName>banner.eval.dataset.BC2GMDataset</datasetName>
+      <dataset>
+        <sentenceFilename>src/main/resources/bc2geneMention/train/train.in</sentenceFilename>
+        <mentionTestFilename>src/main/resources/bc2geneMention/train/GENE.eval</mentionTestFilename>
+        <mentionAlternateFilename>src/main/resources/bc2geneMention/train/ALTGENE.eval</mentionAlternateFilename>
+      </dataset>
+      <idInputFilename>output/ids.txt</idInputFilename>
+      <rawInputFilename>output/raw.txt</rawInputFilename>
+      <trainingInputFilename>output/training.txt</trainingInputFilename>
+      <outputFilename>output/output.txt</outputFilename>
+      <inContextAnalysisFilename>output/contextAnalysis.html</inContextAnalysisFilename>
+      <mentionFilename>output/mention.txt</mentionFilename>
+      <modelFilename>output/model_BC2GM.bin</modelFilename>
+      <lemmatiserDataDirectory>nlpdata/lemmatiser</lemmatiserDataDirectory>
+      <posTaggerDataDirectory>nlpdata/tagger</posTaggerDataDirectory>
+      <posTagger>dragon.nlp.tool.HeppleTagger</posTagger>
+      <tokenizer>banner.tokenization.SimpleTokenizer</tokenizer>
+      <useParenthesisPostProcessing>true</useParenthesisPostProcessing>
+      <useLocalAbbreviationPostProcessing>true</useLocalAbbreviationPostProcessing>
+      <useNumericNormalization>true</useNumericNormalization>
+      <tagFormat>IOB</tagFormat>
+      <crfOrder>2</crfOrder>
+      <mentionTypes>Required</mentionTypes>
+      <sameTypeOverlapOption>Exception</sameTypeOverlapOption>
+      <differentTypeOverlapOption>Exception</differentTypeOverlapOption>
+      <dictionaryTagger>banner.tagging.dictionary.DictionaryTagger</dictionaryTagger>
+    </eval>
+    <tagging>
+      <dictionary>
+        <DictionaryTagger>
+          <filterContainedMentions>true</filterContainedMentions>
+          <normalizeMixedCase>false</normalizeMixedCase>
+          <normalizeDigits>false</normalizeDigits>
+          <canonize>false</canonize>
+          <generate2PartVariations>true</generate2PartVariations>
+          <dropEndParentheticals>false</dropEndParentheticals>
+          <dictionaryFile>dict/single.txt</dictionaryFile>
+          <dictionaryType>GENE</dictionaryType>
+        </DictionaryTagger>
+      </dictionary>
+    </tagging>
+  </banner>
+</banner-configuration>
