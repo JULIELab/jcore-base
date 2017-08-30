@@ -2,7 +2,9 @@ package de.julielab.jcore.ae.acronymtagger.main;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.FSIterator;
@@ -31,7 +33,7 @@ public class Postprocessing {
 
 	private static void removeAcronymsOnFullforms(JCas jcas,
 			JCoReTreeMapAnnotationIndex<Long, Abbreviation> acronymIndex) {
-		List<Abbreviation> toRemove = new ArrayList<>();
+		Set<Abbreviation> toRemove = new HashSet<>();
 		FSIterator<Annotation> it = jcas.getAnnotationIndex(AbbreviationLongform.type).iterator();
 		while (it.hasNext()) {
 			Annotation longForm = it.next();
@@ -40,13 +42,12 @@ public class Postprocessing {
 		}
 		for (Abbreviation a : toRemove) {
 			a.removeFromIndexes();
-			acronymIndex.getIndex().remove(termGenerator.asKey(a));
 		}
 	}
 
 	private static void unifyForLongestAcronym(JCas jcas,
 			JCoReTreeMapAnnotationIndex<Long, Abbreviation> acronymIndex) {
-		List<Abbreviation> toRemove = new ArrayList<>();
+		Set<Abbreviation> toRemove = new HashSet<>();
 		FSIterator<Annotation> it = jcas.getAnnotationIndex(Abbreviation.type).iterator();
 		while (it.hasNext()) {
 			Abbreviation a = (Abbreviation) it.next();
@@ -73,7 +74,6 @@ public class Postprocessing {
 		}
 		for (Abbreviation a : toRemove) {
 			a.removeFromIndexes();
-			acronymIndex.getIndex().remove(termGenerator.asKey(a));
 		}
 	}
 }
