@@ -14,6 +14,7 @@ import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -36,6 +37,7 @@ import dragon.nlp.tool.lemmatiser.EngLemmatiser;
  * @author siddhartha, faessler
  *
  */
+@TypeCapability(inputs = "de.julielab.jcore.types.Sentence", outputs = "de.julielab.jcore.types.Gene")
 public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 
 	private final static Logger log = LoggerFactory.getLogger(BANNERAnnotator.class);
@@ -71,21 +73,23 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 						configFile, classpathAddress);
 				InputStream is = getClass().getResourceAsStream(classpathAddress);
 				if (is != null) {
-					log.debug("Found configuration file as classpath resource {}. Loading configuration.", classpathAddress);
+					log.debug("Found configuration file as classpath resource {}. Loading configuration.",
+							classpathAddress);
 					config = new XMLConfiguration();
-					((XMLConfiguration)config).load(is);
+					((XMLConfiguration) config).load(is);
 				} else {
-					throw new ResourceInitializationException(ResourceInitializationException.COULD_NOT_ACCESS_DATA, new Object[] {configFilePath});
+					throw new ResourceInitializationException(ResourceInitializationException.COULD_NOT_ACCESS_DATA,
+							new Object[] { configFilePath });
 				}
 			}
-			
+
 			tokenizer = BANNER.getTokenizer(config);
 			dictionary = BANNER.getDictionary(config);
 			lemmatiser = BANNER.getLemmatiser(config);
 			posTagger = BANNER.getPosTagger(config);
 			postProcessor = BANNER.getPostProcessor(config);
-			
-			SubnodeConfiguration subConfig = config.configurationAt("eval");
+
+			SubnodeConfiguration subConfig = config.configurationAt("banner.eval");
 			String modelFilename = subConfig.getString("modelFilename");
 
 			InputStream modelIs;
@@ -109,10 +113,12 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 		String docId = JCoReTools.getDocId(jcas);
 		FSIterator<Annotation> sentIt = jcas.getAnnotationIndex(de.julielab.jcore.types.Sentence.type).iterator();
 		int geneCount = 0;
+		int sentCount = 0;
 		while (sentIt.hasNext()) {
 			de.julielab.jcore.types.Sentence jcoreSentence = (de.julielab.jcore.types.Sentence) sentIt.next();
 			int sentenceBegin = jcoreSentence.getBegin();
-			Sentence sentence = new Sentence(jcoreSentence.getId(), docId, jcoreSentence.getCoveredText());
+			String sentenceId = jcoreSentence.getId() != null ? jcoreSentence.getId() : docId + ": " + sentCount++;
+			Sentence sentence = new Sentence(sentenceId, docId, jcoreSentence.getCoveredText());
 			sentence = BANNER.process(tagger, tokenizer, postProcessor, sentence);
 			for (Mention mention : sentence.getMentions()) {
 				Gene g = new Gene(jcas, sentenceBegin + mention.getStartChar(), sentenceBegin + mention.getEndChar());
