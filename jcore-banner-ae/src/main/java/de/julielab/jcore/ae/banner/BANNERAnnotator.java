@@ -96,8 +96,11 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 			if (new File(modelFilename).exists()) {
 				modelIs = new FileInputStream(modelFilename);
 			} else {
-				modelIs = getClass().getResourceAsStream(modelFilename);
+				modelIs = getClass().getResourceAsStream(modelFilename.startsWith("/") ? modelFilename : "/" + modelFilename);
 			}
+			if (null == modelIs)
+				throw new ResourceInitializationException(ResourceInitializationException.COULD_NOT_ACCESS_DATA,
+						new Object[] { modelFilename });
 			tagger = CRFTagger.load(modelIs, lemmatiser, posTagger, dictionary);
 			log.info("{}: {}", PARAM_CONFIG_FILE, configFilePath);
 			log.info("Model: {}", modelFilename);

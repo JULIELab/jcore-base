@@ -22,7 +22,7 @@ public class BANNERAnnotatorTest {
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
 				"de.julielab.jcore.types.jcore-document-meta-types",
 				"de.julielab.jcore.types.jcore-semantics-biology-types");
-		// this is sentence P00055040A0000 from the test BC2GM traind ata
+		// this is sentence P00055040A0000 from the test BC2GM train data
 		jcas.setDocumentText(
 				"Ten out-patients with pustulosis palmaris et plantaris were examined with direct immunofluorescence (IF) technique for deposition of fibrinogen, fibrin or its degradation products (FR-antigen) in affected and unaffected skin, together with heparin-precipitable fraction (HPF), cryoglobulin and total plasma fibrinogen in the blood.");
 		new Sentence(jcas, 0, jcas.getDocumentText().length()).addToIndexes();
