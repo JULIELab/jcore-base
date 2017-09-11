@@ -1,13 +1,15 @@
 package de.julielab.jcore.consumer.entityevaluator;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -25,6 +27,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.utility.JCoReFeaturePath;
 
 public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
@@ -62,6 +65,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	private File outputFile;
 
 	private List<String[]> entityRecords = new ArrayList<>();
+	private BufferedWriter bw;
 
 	private static final Logger log = LoggerFactory.getLogger(EntityEvaluatorConsumer.class);
 
@@ -85,6 +89,11 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 		if (outputFile.exists()) {
 			log.warn("File \"{}\" is overridden.", outputFile.getAbsolutePath());
 			outputFile.delete();
+		}
+		try {
+			bw = FileUtilities.getWriterToFile(outputFile);
+		} catch (IOException e) {
+			throw new ResourceInitializationException(e);
 		}
 
 		log.info("{}: {}", PARAM_ENTITY_TYPE, entityTypeString);
@@ -125,7 +134,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 			JCoReFeaturePath idfp = new JCoReFeaturePath();
 			List<JCoReFeaturePath> additionalFps = new ArrayList<>();
-			
+
 			for (int i = 0; additionalFeaturePaths != null && i < additionalFeaturePaths.length; i++) {
 				String fp = additionalFeaturePaths[i];
 				JCoReFeaturePath jfp = new JCoReFeaturePath();
@@ -171,10 +180,11 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 				if (entityIds == null)
 					entityIds = new String[] { null };
 				for (int i = 0; i < entityIds.length; i++) {
-					// the 5 fields docId, entityId, begin, end and coveredText are fixed, additional fields may be appended
+					// the 5 fields docId, entityId, begin, end and coveredText
+					// are fixed, additional fields may be appended
 					String[] entityRecord = new String[5 + additionalFps.size()];
 					String entityId = entityIds[i];
-					
+
 					entityRecord[0] = docId;
 					entityRecord[1] = entityId;
 					entityRecord[2] = begin;
@@ -188,17 +198,22 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 						// if there is no value, we leave the field empty
 						if (values.length == 0)
 							finalValue = "";
-						// if there is only a single value, we assume that this value should always be used
+						// if there is only a single value, we assume that this
+						// value should always be used
 						else if (values.length == 1)
 							finalValue = values[0];
-						// if the values are of the same length as the IDs, we assume both arrays to be parallel
+						// if the values are of the same length as the IDs, we
+						// assume both arrays to be parallel
 						else if (values.length == entityIds.length)
 							finalValue = values[i];
 						else
-							throw new IllegalArgumentException("Feature path " + additionalFeaturePaths[j] + " has " + values.length + " values but there are " + entityIds.length + " entity IDs. Values: " + Arrays.toString(values) + ", IDs: " + Arrays.toString(entityIds));
-						entityRecord[j+5] = finalValue;
+							throw new IllegalArgumentException(
+									"Feature path " + additionalFeaturePaths[j] + " has " + values.length
+											+ " values but there are " + entityIds.length + " entity IDs. Values: "
+											+ Arrays.toString(values) + ", IDs: " + Arrays.toString(entityIds));
+						entityRecord[j + 5] = finalValue;
 					}
-					
+
 					if (null != discardWOId && discardWOId && StringUtils.isBlank(entityId)) {
 						log.debug("Discarding entity {} with because it has no value of the ID feature path.", entity);
 						continue;
@@ -268,12 +283,17 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 		log.info("Collection completed. Writing {} entity records to file {}.", entityRecords.size(),
 				outputFile.getName());
 		appendEntityRecordsToFile();
+		try {
+			bw.close();
+		} catch (IOException e) {
+			throw new AnalysisEngineProcessException(e);
+		}
 	}
 
 	protected void appendEntityRecordsToFile() {
 		for (String[] entityRecord : entityRecords) {
 			try {
-				FileUtils.write(outputFile, StringUtils.join(entityRecord, "\t") + "\n", "UTF-8", true);
+				bw.write(Stream.of(entityRecord).collect(Collectors.joining("\t")) + "\n");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

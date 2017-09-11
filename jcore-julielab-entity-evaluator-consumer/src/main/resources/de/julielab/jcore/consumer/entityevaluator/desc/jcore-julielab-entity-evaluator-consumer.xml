@@ -48,7 +48,7 @@
         <name>OutputFile</name>
         <description>Output file to which all entity information is written in the format
 docId EGID begin end confidence
-Where the fields are separated by tab stops.</description>
+Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>

@@ -6,18 +6,16 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
-
-import de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer;
 
 public class EntityEvaluatorConsumerTest {
 
@@ -48,7 +46,7 @@ public class EntityEvaluatorConsumerTest {
 		}
 		converter.collectionProcessComplete();
 
-		List<String> entityRecords = FileUtils.readLines(OUTPUT_FILE);
+		List<String> entityRecords = Files.readAllLines(OUTPUT_FILE.toPath());
 		assertEquals(73, entityRecords.size());
 
 		for (String record : entityRecords) {
@@ -85,7 +83,7 @@ public class EntityEvaluatorConsumerTest {
 		converter.batchProcessComplete();
 		converter.collectionProcessComplete();
 
-		List<String> entityRecords = FileUtils.readLines(OUTPUT_FILE);
+		List<String> entityRecords = Files.readAllLines(OUTPUT_FILE.toPath());
 		assertEquals(6, entityRecords.size());
 
 		for (String record : entityRecords) {
@@ -100,7 +98,7 @@ public class EntityEvaluatorConsumerTest {
 				EntityEvaluatorConsumer.PARAM_DOC_INFORMATION_TYPE, "de.julielab.jcore.types.pubmed.Header",
 				EntityEvaluatorConsumer.PARAM_DOC_ID_FEATURE_PATH, "docId",
 				EntityEvaluatorConsumer.PARAM_DISCARD_ENTITIES_WO_ID, true, // <<<------
-																				// !!
+																			// !!
 				EntityEvaluatorConsumer.PARAM_OUTPUT_FILE, OUTPUT_FILE.getAbsolutePath(),
 				EntityEvaluatorConsumer.PARAM_ADDITIONAL_FEATURE_PATHS, new String[] { "/confidence", "/componentId" });
 		jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
@@ -111,7 +109,7 @@ public class EntityEvaluatorConsumerTest {
 		converter.batchProcessComplete();
 		converter.collectionProcessComplete();
 
-		entityRecords = FileUtils.readLines(OUTPUT_FILE);
+		entityRecords = Files.readAllLines(OUTPUT_FILE.toPath());
 		assertEquals(5, entityRecords.size());
 
 		for (String record : entityRecords) {
