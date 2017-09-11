@@ -49,6 +49,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	public static final String PARAM_OUTPUT_DIR = "outDirectory";
 	public static final String PARAM_DELIMITER = "delimiter";
 	public static final String PARAM_MODE = "mode";
+	public static final String PARAM_GZIP = "gzip";
 
 	private final static String DEFAULT_DELIMITER = "";
 	private final static boolean DEFAULT_PARAM_POS_TAG = false;
@@ -64,6 +65,8 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	private String delimiter;
 	@ConfigurationParameter(name = PARAM_MODE, mandatory = false, description = "Possible values: TOKEN and DOCUMENT. The first prints out tokens with one sentence per line, the second just prints out the CAS document text without changing it in any way.")
 	private Mode mode;
+	@ConfigurationParameter(name = PARAM_GZIP, mandatory = false, defaultValue = "false")
+	private boolean gzip;
 	private boolean addPOSTAG;
 
 	@Override
@@ -128,7 +131,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 				}
 				writeSentences2File(fileId, sentences);
 			} else if (mode == Mode.DOCUMENT) {
-				File outputFile = new File(directory.getCanonicalPath() + File.separator + fileId + ".txt");
+				File outputFile = new File(directory.getCanonicalPath() + File.separator + fileId + ".txt" + (gzip ? ".gz" : ""));
 				LOGGER.trace("Writing the verbatim CAS document text to {}", outputFile);
 				IOUtils.arraylist_to_file(Arrays.asList(jcas.getDocumentText()),
 						outputFile);
@@ -193,7 +196,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	private void writeSentences2File(String fileId, ArrayList<String> sentences) {
 		try {
 			IOUtils.arraylist_to_file(sentences,
-					new File(directory.getCanonicalPath() + File.separator + fileId + ".txt"));
+					new File(directory.getCanonicalPath() + File.separator + fileId + ".txt" + (gzip ? ".gz" : "")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

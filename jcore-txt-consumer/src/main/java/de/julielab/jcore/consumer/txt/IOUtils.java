@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,18 +35,20 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 
+import de.julielab.java.utilities.FileUtilities;
+
 public class IOUtils {
 	
 
 	/**
 	 * Generate ArrayList from File
-	 * @param file
+	 * @param file May be a regular file or a GZIP file. In the second case, the file name must end on .gz or .gzip.
 	 * @return
 	 * @throws IOException
 	 */
 	public static ArrayList<String> file_to_arraylist(File file) throws IOException {
 		ArrayList<String> output = new ArrayList<String>();
-		BufferedReader fr = new BufferedReader(new FileReader(file));
+		BufferedReader fr = FileUtilities.getReaderFromFile(file);
 		String line = fr.readLine();
 		while (line != null) {
 			output.add(line);
@@ -58,12 +61,12 @@ public class IOUtils {
 	/**
 	 * Generate File form ArrayList
 	 * @param array
-	 * @param file
+	 * @param file May be a regular file or a GZIP file. In the second case, the file name must end on .gz or .gzip.
 	 * @throws IOException
 	 */
 	public static void arraylist_to_file(List array, File file)
 			throws IOException {
-		FileWriter fw = new FileWriter(file);
+		Writer fw = FileUtilities.getWriterToFile(file);
 		for (Iterator iter = array.iterator(); iter.hasNext();) {
 			String element = (String) iter.next();
 			if (element != null && element != "")
