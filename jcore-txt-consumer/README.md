@@ -23,14 +23,16 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 | outDirectory | String | yes | yes | Path to an output directory |
 | delimiter | String | no | no | If the delimiter is stated, the consumer will append the POS information to each token |
 | mode | String | no | no | The output mode, TOKEN or DOCUMENT. Defaults to TOKEN. Determines whether to output sentences and tokens (TOKEN) or just the document text (DOCUMENT) |
+| gzip | Boolean | no | no | Whether or not to store the output files in GZIP format. |
 
 **2. Predefined Settings**
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
-| outDirectory | Valid Path to an output directory | `data/example.txt` |
+| outDirectory | Valid Path to an output directory | `data` |
 | delimiter | A designated/chosen delimiter | `$` |
 | mode | Either TOKEN or DOCUMENT. | TOKEN |
+| gzip | true or false | true |
 
 **3. Capabilities**
 
