@@ -20,7 +20,6 @@ package de.julielab.jcore.reader.file.main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -28,28 +27,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.annotator.AnnotatorConfigurationException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
 import de.julielab.jcore.types.Date;
-import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.pubmed.Header;
 
 public class FileReader extends CollectionReader_ImplBase {
 
@@ -191,33 +188,11 @@ public class FileReader extends CollectionReader_ImplBase {
 			}
 		}
 		
+		if (!inputDirectory.exists())
+			throw new ResourceInitializationException(AnnotatorConfigurationException.RESOURCE_NOT_FOUND, new Object[] {inputDirectory.getAbsolutePath()});
 		
 		fileIndex = 0;
-
-		// if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
-		// throw new
-		// ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
-		// new Object[] { DIRECTORY_INPUT, this.getMetaData().getName(),
-		// inputDirectory.getPath() });
-		// }
-
 		files = new ArrayList<File>();
-
-		// File[] f = inputDirectory.listFiles(new FilenameFilter() {
-		//
-		// @Override
-		// public boolean accept(File dir, String name) {
-		// if (allowedExtensions.isEmpty())
-		// return true;
-		// String extension = name.substring(name.lastIndexOf('.') + 1);
-		// return allowedExtensions.contains(extension);
-		// }
-		// });
-		// for (int i = 0; i < f.length; i++) {
-		// if (!f[i].isDirectory()) {
-		// files.add(f[i]);
-		// }
-		// }
 
 		try {
 			createFileListByType(inputDirectory, allowedExtensions);
