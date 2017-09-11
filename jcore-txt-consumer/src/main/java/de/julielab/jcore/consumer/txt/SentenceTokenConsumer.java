@@ -66,7 +66,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 	@ConfigurationParameter(name = PARAM_MODE, mandatory = false, description = "Possible values: TOKEN and DOCUMENT. The first prints out tokens with one sentence per line, the second just prints out the CAS document text without changing it in any way.")
 	private Mode mode;
 	@ConfigurationParameter(name = PARAM_GZIP, mandatory = false, defaultValue = "false")
-	private boolean gzip;
+	private Boolean gzip;
 	private boolean addPOSTAG;
 
 	@Override
@@ -82,6 +82,11 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 		delimiter = (String) aContext.getConfigParameterValue(PARAM_DELIMITER);
 		if (delimiter == null) {
 			delimiter = DEFAULT_DELIMITER;
+		}
+		
+		gzip = (Boolean) aContext.getConfigParameterValue(PARAM_GZIP);
+		if (gzip == null) {
+			gzip = false;
 		}
 
 		if (aContext.getConfigParameterValue(PARAM_DELIMITER) != null) {
