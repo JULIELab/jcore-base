@@ -4,7 +4,7 @@
 
 **Descriptor Path**:
 ```
-de.julielab.jcore.consumer.file.desc.jcore-file-reader
+de.julielab.jcore.consumer.entityevaluator.desc.jcore-julielab-entity-evaluator-consumer
 ```
 
 ### Objective
