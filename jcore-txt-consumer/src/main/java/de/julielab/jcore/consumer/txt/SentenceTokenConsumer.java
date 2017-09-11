@@ -105,7 +105,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		LOGGER.info("Processing next document ... ");
+		LOGGER.trace("Processing next document ... ");
 		try {
 			String fileId = getDocID(jcas);
 			if (fileId == null)
