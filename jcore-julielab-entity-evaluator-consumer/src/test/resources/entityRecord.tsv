@@ -1,0 +1,73 @@
+10336473	ANGP2_BOVIN	71	85	angiopoietin-2	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+10336473	TIE2_BOVIN	178	182	Tie2		de.julielab.jcore.ae.netagger.EntityAnnotator
+10336473	ANGP2_BOVIN	456	470	angiopoietin-2	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+10336473	ANGP2_BOVIN	472	476	Ang2		de.julielab.jcore.ae.netagger.EntityAnnotator
+10336473	ANGP2_BOVIN	688	692	Ang2		de.julielab.jcore.ae.netagger.EntityAnnotator
+10336473	ANGP2_BOVIN	904	913	Ang2 mRNA		de.julielab.jcore.ae.netagger.EntityAnnotator
+10336473	ANG1_BOVIN	939	943	Ang1		de.julielab.jcore.ae.netagger.EntityAnnotator
+10336473	TIE2_BOVIN	948	952	Tie2		de.julielab.jcore.ae.netagger.EntityAnnotator
+10336473	ANGP2_BOVIN	1005	1009	Ang2		de.julielab.jcore.ae.netagger.EntityAnnotator
+10336473	ANGP2_BOVIN	1206	1215	Ang2 mRNA		de.julielab.jcore.ae.netagger.EntityAnnotator
+10336473	ANGP2_BOVIN	1454	1458	Ang2		de.julielab.jcore.ae.netagger.EntityAnnotator
+10774550	ENW1_HUMAN	513	516	env	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+10774550	STAB2_HUMAN	792	796	fell	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+11163331	MK08_MOUSE	1518	1541	c-Jun N-terminal kinase		de.julielab.jcore.ae.netagger.EntityAnnotator
+11163331	CASP8_HUMAN	2008	2017	caspase-8		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	0	5	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	122	127	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	CD4_MOUSE	204	207	CD4	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+15491472	I12R2_MOUSE	277	282	IL-12		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IFNG_MOUSE	287	296	IFN-gamma		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	423	428	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	581	586	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	649	654	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	910	915	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	I12R2_MOUSE	1016	1021	IL-12		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IFNG_MOUSE	1026	1035	IFN-gamma		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	1051	1056	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	1185	1190	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	1208	1213	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	1404	1409	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	I12R2_MOUSE	1475	1480	IL-12		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IFNG_MOUSE	1485	1494	IFN-gamma		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	1691	1696	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	1885	1890	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+15491472	IL10_MOUSE	2144	2149	IL-10		de.julielab.jcore.ae.netagger.EntityAnnotator
+17573417	ALBU_HUMAN	25	32	albumin	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+17573417	ALBU_HUMAN	103	110	albumin		de.julielab.jcore.ae.netagger.EntityAnnotator
+17573417	ALBU_HUMAN	269	276	albumin		de.julielab.jcore.ae.netagger.EntityAnnotator
+17573417	ALBU_HUMAN	338	345	albumin		de.julielab.jcore.ae.netagger.EntityAnnotator
+17573417	ALBU_HUMAN	897	904	albumin		de.julielab.jcore.ae.netagger.EntityAnnotator
+17573417	ALBU_HUMAN	1155	1162	albumin		de.julielab.jcore.ae.netagger.EntityAnnotator
+17573417	ALBU_HUMAN	1345	1352	albumin		de.julielab.jcore.ae.netagger.EntityAnnotator
+17573417	ALBU_HUMAN	1458	1465	albumin		de.julielab.jcore.ae.netagger.EntityAnnotator
+17573417	ALBU_HUMAN	1785	1792	albumin	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+18372624	BAG1_MOUSE	703	712	anti-BAG1		de.julielab.jcore.ae.netagger.EntityAnnotator
+18372624	BAG1_MOUSE	824	833	anti-BAG1		de.julielab.jcore.ae.netagger.EntityAnnotator
+18372624	BAG1_MOUSE	958	962	BAG1		de.julielab.jcore.ae.netagger.EntityAnnotator
+18372624	SAG1_YEAST	968	972	SAG1		de.julielab.jcore.ae.netagger.EntityAnnotator
+18372624	BAG1_MOUSE	1089	1093	BAG1		de.julielab.jcore.ae.netagger.EntityAnnotator
+5160732	SC6A7_RAT	13	22	L-proline		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	CENPI_RAT	20	48	follicle-stimulating hormone		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	244	247	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	413	416	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	502	505	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	630	633	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	830	833	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	1014	1017	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	1226	1229	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	1299	1302	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	1337	1340	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	1554	1557	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	1785	1788	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	1940	1943	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	2312	2315	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+6816885	BRD2_HUMAN	2362	2365	FSH		de.julielab.jcore.ae.netagger.EntityAnnotator
+7913940	CD4_MOUSE	544	547	CD4	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+7913940	IL4_MOUSE	586	590	IL-4		de.julielab.jcore.ae.netagger.EntityAnnotator
+7913940	CD8A_HUMAN	667	670	CD8	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+7913940	HAND2_MOUSE	869	872	Th2	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+7913940	CD4_MOUSE	1207	1210	CD4		de.julielab.jcore.ae.netagger.EntityAnnotator
+7913940	CF1A_DROME	1411	1420	separated	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+7913940	HAND2_MOUSE	1815	1818	Th2	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
+8098606	THIO_MOUSE	169	173	thio	1.0	de.julielab.jcore.lingpipegazetteer.GazetteerAnnotator
