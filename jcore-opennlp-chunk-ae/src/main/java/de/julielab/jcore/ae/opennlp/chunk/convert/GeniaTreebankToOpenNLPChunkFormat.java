@@ -14,7 +14,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  *  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  * 
  * This java class is used to convert GENIA Treebank version 1.0 xml files
  * into one file in the openNLP 1.6 Chunker Training format
