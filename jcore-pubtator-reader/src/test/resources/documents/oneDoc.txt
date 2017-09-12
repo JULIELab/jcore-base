@@ -1,0 +1,17 @@
+
+14656948|t|Specific differences in gene expression profile revealed by cDNA microarray analysis of glutathione S-transferase placental form (GST-P) immunohistochemically positive rat liver foci and surrounding tissue.
+14656948|a|Glutathione S-transferase placental form (GST-P), one of the glutathione S-transferases family of detoxification enzymes, is a very useful marker of rat liver pre-neoplastic lesions. We here investigated the gene expression profile in GST-P positive foci as compared with surrounding GST-P negative areas in the same liver of rats treated with diethylnitrosamine and then 2-acetylaminofluorene combined with partial hepatectomy. GST-P positive foci were harvested by laser microdissection and total RNAs were extracted to allow gene expression profiles to be assessed by cDNA microarray assays. Transaldolase, rat aflatoxin B1 aldehyde reductase and gamma-glutamylcysteine synthetase were found as up-regulated genes and regucalcin as a down-regulated gene, in line with findings for hepatocellular carcinomas. The results indicate that the approach adopted is useful for understanding mechanisms of hepatocarcinogenesis and identification of new markers for rat liver pre-neoplastic foci.
+14656948	207	220	Glutathione S	Chemical
+14656948	268	281	glutathione S	Chemical
+14656948	356	359	rat	Species	10116
+14656948	533	537	rats	Species	10116
+14656948	817	820	rat	Species	10116
+14656948	1166	1169	rat	Species	10116
+14656948	442	447	GST-P	Gene	24426
+14656948	491	496	GST-P	Gene	24426
+14656948	636	641	GST-P	Gene	24426
+14656948	857	890	gamma-glutamylcysteine synthetase	Gene	25283
+14656948	834	842	aldehyde	Chemical	CHEBI:17478
+14656948	857	879	gamma-glutamylcysteine	Chemical	C017341
+14656948	991	1016	hepatocellular carcinomas	Disease	D006528
+14656948	168	171	rat	Species	10116

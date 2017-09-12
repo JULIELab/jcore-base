@@ -84,6 +84,7 @@
 		<module>jcore-xmi-reader</module>
 		<module>jcore-xmi-writer</module>
 		<module>jcore-julielab-entity-evaluator-consumer</module>
+		<module>jcore-pubtator-reader</module>
 	</modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
