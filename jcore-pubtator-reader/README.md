@@ -18,7 +18,7 @@ The PubTator format specifies document title, abstract and a list of entity anno
 | Other | de.julielab.jcore.types.EntityMention | None |
 
 In addition, the default JCoRe feature `componentId` is set to `de.julielab.jcore.reader.pubtator.PubtatorReader`.
-For the `ResourceEntry` instances used in `Gene` and `Organism` types, the features `entryId` and `source` are set. The latter to `NCBI Gene` and `NCBI Taxonomy`, respectively 
+For the `ResourceEntry` instances used in `Gene` and `Organism` types, the features `entryId` and `source` are set. The latter to `NCBI Gene` and `NCBI Taxonomy`, respectively. 
 
 ### Requirements and Dependencies
 No special dependencies.
