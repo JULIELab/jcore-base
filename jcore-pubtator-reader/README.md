@@ -43,4 +43,4 @@ No special dependencies.
 
 
 ### Reference
-[1] Some Literature?
+Chih-Hsuan Wei,  Hung-Yu Kao and Zhiyong Lu1, PubTator: a web-based text mining tool for assisting biocuration, Nucleic Acids Res. 2013 Jul; 41(Web Server issue): W518–W522.
