@@ -54,7 +54,7 @@ public class PubtatorReader extends CollectionReader_ImplBase {
 			throw new ResourceInitializationException(
 					new IllegalArgumentException("The path " + input.getAbsolutePath() + " does not exist."));
 		if (input.isDirectory())
-			inputFiles = input.listFiles((f, s) -> s.endsWith(".txt"));
+			inputFiles = input.listFiles((f, s) -> s.endsWith(".txt") || s.endsWith(".txt.gz") || s.endsWith(".txt.gzip"));
 		else
 			inputFiles = new File[] { input };
 		index = 0;

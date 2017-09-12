@@ -3,7 +3,6 @@ package de.julielab.jcore.reader.pubtator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,9 +61,9 @@ public class PubtatorDocument {
 		Matcher textMatcher = pubtatorTextLine.matcher("");
 		String line;
 		// read up to the next empty line
-		while ((line = reader.readLine()) != null) {
+		while ((line = reader.readLine()) != null && (!line.trim().isEmpty() || ret == EMPTY_DOCUMENT)) {
 			line = line.trim();
-			if (line.isEmpty())
+			if (line.isEmpty() && ret == EMPTY_DOCUMENT)
 				continue;
 			ret = readDocument;
 			try {

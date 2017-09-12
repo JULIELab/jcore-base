@@ -1,13 +1,15 @@
-# JCoRe Component Skeleton
+# JCoRe PubTator Format Reader
 
 **Descriptor Path**:
 ```
-de.julielab.jcore.{reader, ae, consumer}.NAME.desc.ARTIFACT-NAME
+de.julielab.jcore.reader.pubtator.desc.jcore-pubtator-reader
 ```
 
 ### Objective
+This Collection Reader reads files in [PubTator format](https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/tmTools/Format.html) or directories containing PubTator-formatted files. Files must have the .txt or .txt.gz extension. In the latter case, the files must be GZIP compressed.
 
 ### Requirements and Dependencies
+No special dependencies.
 
 ### Using the CR - Descriptor Configuration
 
@@ -15,22 +17,29 @@ de.julielab.jcore.{reader, ae, consumer}.NAME.desc.ARTIFACT-NAME
 
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
-| param1 | UIMA-Type | Boolean | Boolean | Description |
-| param2 | UIMA-Type | Boolean | Boolean | Description |
+| Input | String | yes | no | Path of a PubTator-formatted file or a directory containing such files. |
 
 **2. Predefined Settings**
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
-| param1 | Syntax-Description | `Example` |
-| param2 | Syntax-Description | `Example` |
+| Input | A regular file path. | data/corpora/pubtator |
 
 **3. Capabilities**
 
 | Type | Input | Output |
 |------|:-----:|:------:|
-| de.julielab.jcore.types.TYPE |  | `+` |
-| de.julielab.jcore.types.ace.TYPE | `+` |  |
+| de.julielab.jcore.types.Title |  | `+` |
+| de.julielab.jcore.types.AbstractText |  | `+` |
+| de.julielab.jcore.types.Header |  | `+` |
+| de.julielab.jcore.types.Gene |  | `+` |
+| de.julielab.jcore.types.GeneResourceEntry |  | `+` |
+| de.julielab.jcore.types.Chemical |  | `+` |
+| de.julielab.jcore.types.Disease |  | `+` |
+| de.julielab.jcore.types.Organism |  | `+` |
+| de.julielab.jcore.types.EntityMention |  | `+` |
+| de.julielab.jcore.types.ResourceEntry |  | `+` |
+
 
 
 ### Reference
