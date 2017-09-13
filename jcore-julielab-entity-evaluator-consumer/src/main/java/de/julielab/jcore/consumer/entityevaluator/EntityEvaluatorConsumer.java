@@ -54,20 +54,21 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	public final static String PARAM_OFFSET_MODE = "OffsetMode";
 	public final static String PARAM_OUTPUT_FILE = "OutputFile";
 
-
 	@ConfigurationParameter(name = PARAM_OUTPUT_COLUMNS, mandatory = true)
 	private String[] outputColumnNamesArray;
 	@ConfigurationParameter(name = PARAM_COLUMN_DEFINITIONS, mandatory = true)
 	private String[] columnDefinitionDescriptions;
 	@ConfigurationParameter(name = PARAM_ENTITY_TYPES, mandatory = false)
 	private String[] entityTypeStrings;
-	@ConfigurationParameter(name = PARAM_OFFSET_MODE, mandatory = false)
+	@ConfigurationParameter(name = PARAM_OFFSET_MODE, mandatory = false, description = "Determines the kind of offset printed out by the component for each entity. Supported are: CHARACTER_SPAN and NON_WS_CHARACTERS. The first uses the common UIMA character span offsets. The second counts only the non-whitespace characters for the offsets. This last format is used, for example, by the BioCreative 2 Gene Mention task data. Default is CHARACTERS.")
 	private OffsetMode offsetMode;
 	@ConfigurationParameter(name = PARAM_TYPE_PREFIX, mandatory = true)
 	private String typePrefix;
 	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = false)
 	private String[] featureFilters;
-	@ConfigurationParameter(name = PARAM_OUTPUT_FILE, mandatory = true)
+	@ConfigurationParameter(name = PARAM_OUTPUT_FILE, mandatory = true, description = "Output file to which all entity information is written in the format\n"
+			+ "docId EGID begin end confidence\n"
+			+ "Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.")
 	private String outputFilePath;
 
 	private Set<String> predefinedColumnNames = new HashSet<>();
