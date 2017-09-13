@@ -36,8 +36,14 @@ public class JCoReAnnotationIndexMerger {
 		annotationIndexes.forEach(i -> {
 			if (i instanceof Integer)
 				annotationTypes.add(aJCas.getCasType((Integer) i));
-			else
+			else if (i instanceof String)
 				annotationTypes.add(aJCas.getTypeSystem().getType((String) i));
+			else if (i instanceof Type)
+				annotationTypes.add((Type) i);
+			else
+				throw new IllegalArgumentException(
+						"For the specification of annotation types to merge, the CAS integer constant, the fully qualified type name or the Type instance is required. The given objects are of class "
+								+ i.getClass().getCanonicalName());
 		});
 		this.sort = sort;
 		this.coveringAnnotation = coveringAnnotation;
