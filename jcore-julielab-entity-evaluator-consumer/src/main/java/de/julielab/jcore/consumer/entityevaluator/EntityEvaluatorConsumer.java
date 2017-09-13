@@ -241,6 +241,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	 * @return
 	 */
 	private String removeLineBreak(String text) {
+		if (text == null)
+			return null;
 		String ret = text.replaceAll("\n", " ");
 		return ret;
 	}
