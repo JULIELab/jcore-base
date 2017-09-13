@@ -1,6 +1,7 @@
 package de.julielab.jcore.consumer.entityevaluator;
 
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.DOCUMENT_ID_COLUMN;
+import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.OFFSETS_COLUMN;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_COLUMN_DEFINITIONS;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_COLUMNS;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_FILE;
@@ -80,7 +81,7 @@ public class EntityEvaluatorConsumerTest {
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId", SENTENCE_ID_COLUMN + ": Sentence=/id",
 						"entityid:Chemical=/registryNumber;Disease=/specificType", "name:/:coveredText()" },
-				PARAM_OUTPUT_COLUMNS, new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, "entityid", "name"},
+				PARAM_OUTPUT_COLUMNS, new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, OFFSETS_COLUMN, "entityid", "name"},
 				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv");
 
 		jcas.setDocumentText("Aspirin is an acid. It is good against headache.");
@@ -100,8 +101,9 @@ public class EntityEvaluatorConsumerTest {
 		consumer.collectionProcessComplete();
 		
 		List<String> lines = Files.readLines(new File("src/test/resources/outfile-test.tsv"), Charset.forName("UTF-8"));
-		assertEquals(1, lines.size());
-		assertEquals("document1	document1:0	23	gene", lines.get(0));
+		assertEquals(2, lines.size());
+		assertEquals("document1	document1:0	0	7	registry 42	Aspirin", lines.get(0));
+		assertEquals("document1	document1:1	39	47	headstuff	headache", lines.get(1));
 	}
 
 	@Test

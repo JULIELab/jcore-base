@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -200,6 +199,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 			// the sentence column must be created new for each document because
 			// it is using a document-specific sentence index
 			addSentenceIdColumn(aJCas);
+			// we just always add the offsets column, if it is used of not
+			columns.put(OFFSETS_COLUMN, new OffsetsColumn());
 
 			JCoReAnnotationIndexMerger indexMerger = new JCoReAnnotationIndexMerger(entityTypes, true, null, aJCas);
 			while (indexMerger.incrementAnnotation()) {
