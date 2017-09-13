@@ -35,7 +35,7 @@ import de.julielab.jcore.utility.index.TermGenerators;
 
 public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
-	private enum OffsetMode {
+	public enum OffsetMode {
 		CHARACTER_SPAN, NON_WS_CHARACTERS
 	}
 
@@ -200,7 +200,11 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 			// it is using a document-specific sentence index
 			addSentenceIdColumn(aJCas);
 			// we just always add the offsets column, if it is used of not
-			columns.put(OFFSETS_COLUMN, new OffsetsColumn());
+			TreeMap<Integer, Integer> numWsMap = null;
+			if (offsetMode == OffsetMode.NON_WS_CHARACTERS) {
+			numWsMap = createNumWsMap(aJCas.getDocumentText());
+			}
+			columns.put(OFFSETS_COLUMN, new OffsetsColumn(numWsMap, offsetMode));
 
 			JCoReAnnotationIndexMerger indexMerger = new JCoReAnnotationIndexMerger(entityTypes, true, null, aJCas);
 			while (indexMerger.incrementAnnotation()) {
@@ -210,7 +214,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 				for (String outputColumnName : outputColumnNames) {
 					assertColumnDefined(outputColumnName);
 					Column c = columns.get(outputColumnName);
-					record[colIndex++] = c.getValue(a);
+					record[colIndex++] = removeLineBreak(c.getValue(a));
 				}
 				entityRecords.add(record);
 			}
