@@ -42,20 +42,7 @@ import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.ResourceEntry;
 
 /**
- * <<<<<<< HEAD A simple implementation of a feature path, originally adapted to
- * the needs of the EntityEvaluatorConverter. It is currently not supposed to
- * serve as a full UIMA FeaturePath replacement. However, it is thinkable that
- * the implementation will be extended in the future by whomever requires a
- * feature path more capable of what the original UIMA implementation can do.
- * 
- * UIMA discloses the {@link FeatureValuePath} which seems to be able to handle
- * arrays. However, it is marked deprecated and shouldn't be used any more. The
- * new interface to use is the {@link FeaturePath} interface. Problem is, it
- * seemingly can't handle arrays very well.
- * 
- * The current implementation is quite preliminary. It can only be used via
- * {@link #getValueAsString(FeatureStructure)}, i.e. even numeric types are
- * returned as strings. The workflow is as follows: ======= A simple
+ * A simple
  * implementation of a feature path, originally adapted to the needs of the
  * EntityEvaluatorConverter. It is currently not supposed to serve as a full
  * UIMA FeaturePath replacement. However, it is thinkable that the
@@ -69,8 +56,7 @@ import de.julielab.jcore.types.ResourceEntry;
  * 
  * The current implementation is quite preliminary. It can only be used via
  * {@link #getValueAsString(FeatureStructure)}, i.e. even numeric types are
- * returned as strings. The workflow is as follows: >>>>>>>
- * 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
+ * returned as strings. The workflow is as follows:
  * 
  * <pre>
  * JulesFeaturePath fp = new JulesFeaturePath();
@@ -78,7 +64,7 @@ import de.julielab.jcore.types.ResourceEntry;
  * String entryId = fp.getValueAsString(gene);
  * </pre>
  * 
- * <<<<<<< HEAD This example retrieves the entry ID of the first
+ * This example retrieves the entry ID of the first
  * {@link ResourceEntry} of a {@link Gene} annotation.
  * 
  * <p>
@@ -86,17 +72,7 @@ import de.julielab.jcore.types.ResourceEntry;
  * <code>/feature1/feature2/feature3</code>. The last feature must be
  * primitive-valued. If any of the features is an array, the index must be
  * given, e.g. <code>/feature1/feature2[2]/feature3</code>. Otherwise, an array
- * index out of bounds (-1) exception will be thrown. ======= This example
- * retrieves the entry ID of the first {@link ResourceEntry} of a {@link Gene}
- * annotation.
- * 
- * <p>
- * Feature paths can be any sequence of feature base names in the form
- * <code>/feature1/feature2/feature3</code>. The last feature must be
- * primitive-valued. If any of the features is an array, the index must be
- * given, e.g. <code>/feature1/feature2[2]/feature3</code>. Otherwise, an array
- * index out of bounds (-1) exception will be thrown. >>>>>>>
- * 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
+ * index out of bounds (-1) exception will be thrown.
  * </p>
  * 
  * @author faessler
