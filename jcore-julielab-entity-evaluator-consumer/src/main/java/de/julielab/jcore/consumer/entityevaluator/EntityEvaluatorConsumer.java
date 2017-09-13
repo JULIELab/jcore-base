@@ -45,52 +45,15 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	public static final String SENTENCE_ID_COLUMN = "SentenceId";
 	public static final String OFFSETS_COLUMN = "Offsets";
 
-	public static final String PARAM_ADD_DOC_ID = "AddDocId";
-	public static final String PARAM_ADD_SENT_ID = "AddSentenceId";
-	public static final String PARAM_ADD_ENTITY_OFFSETS = "AddEntityOffsets";
-	public final static String PARAM_DOC_INFORMATION_TYPE = "DocumentInformationType";
-	public final static String PARAM_DOC_ID_FEATURE_PATH = "DocumentIdFeaturePath";
-	// TODO this is now an array!
-	public final static String PARAM_ENTITY_TYPES = "EntityTypes";
-	public final static String PARAM_ENTITY_ID_FEATURE_PATHS = "EntityIdFeaturePaths";
-	// TODO implement
-	public static final String PARAM_FEATURE_FILTERS = "FeatureFilters";
-	public final static String PARAM_DISCARD_ENTITIES_WO_ID = "DiscardEntitiesWithoutId";
-	public final static String PARAM_OFFSET_MODE = "OffsetMode";
-	@Deprecated
-	public final static String PARAM_ADDITIONAL_FEATURE_PATHS = "AdditionalFeaturePaths";
-	public final static String PARAM_OUTPUT_FILE = "OutputFile";
-
 	public static final String PARAM_OUTPUT_COLUMNS = "OutputColumns";
 	public static final String PARAM_COLUMN_DEFINITIONS = "ColumnDefinitions";
 	public static final String PARAM_TYPE_PREFIX = "TypePrefix";
-	public static final String PARAM_SENTENCE_TYPE_NAME = "SentenceTypeName";
+	public final static String PARAM_ENTITY_TYPES = "EntityTypes";
+	// TODO implement
+	public static final String PARAM_FEATURE_FILTERS = "FeatureFilters";
+	public final static String PARAM_OFFSET_MODE = "OffsetMode";
+	public final static String PARAM_OUTPUT_FILE = "OutputFile";
 
-	@Deprecated
-	@ConfigurationParameter(name = PARAM_ADD_DOC_ID, mandatory = false, defaultValue = "true")
-	private boolean addDocId;
-	@Deprecated
-	@ConfigurationParameter(name = PARAM_ADD_SENT_ID, mandatory = false, defaultValue = "false")
-	private boolean addSentId;
-	@Deprecated
-	@ConfigurationParameter(name = PARAM_ADD_ENTITY_OFFSETS, mandatory = false, defaultValue = "true")
-	private boolean addEntityOffsets;
-
-	@Deprecated
-	@ConfigurationParameter(name = PARAM_ENTITY_ID_FEATURE_PATHS, mandatory = false)
-	private String[] idFeaturePaths;
-	@Deprecated
-	@ConfigurationParameter(name = PARAM_DOC_INFORMATION_TYPE, mandatory = false)
-	private String docInfoTypeString;
-	@Deprecated
-	@ConfigurationParameter(name = PARAM_DOC_ID_FEATURE_PATH, mandatory = false)
-	private String docIdFeaturePath;
-	@Deprecated
-	@ConfigurationParameter(name = PARAM_DISCARD_ENTITIES_WO_ID, mandatory = false)
-	private Boolean discardWOId;
-	@Deprecated
-	@ConfigurationParameter(name = PARAM_ADDITIONAL_FEATURE_PATHS, mandatory = false)
-	private String[] additionalFeaturePaths;
 
 	@ConfigurationParameter(name = PARAM_OUTPUT_COLUMNS, mandatory = true)
 	private String[] outputColumnNamesArray;
@@ -104,8 +67,6 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	private String typePrefix;
 	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = false)
 	private String[] featureFilters;
-	@ConfigurationParameter(name = PARAM_SENTENCE_TYPE_NAME, mandatory = false)
-	private String asdf;
 	@ConfigurationParameter(name = PARAM_OUTPUT_FILE, mandatory = true)
 	private String outputFilePath;
 
@@ -131,16 +92,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 		featureFilters = (String[]) aContext.getConfigParameterValue(PARAM_FEATURE_FILTERS);
 		outputFilePath = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_FILE);
-		addDocId = (Boolean) aContext.getConfigParameterValue(PARAM_ADD_DOC_ID);
-		addSentId = (Boolean) aContext.getConfigParameterValue(PARAM_ADD_SENT_ID);
-		addEntityOffsets = (Boolean) aContext.getConfigParameterValue(PARAM_ADD_ENTITY_OFFSETS);
 		entityTypeStrings = (String[]) aContext.getConfigParameterValue(PARAM_ENTITY_TYPES);
-		idFeaturePaths = (String[]) aContext.getConfigParameterValue(PARAM_ENTITY_ID_FEATURE_PATHS);
-		docInfoTypeString = (String) aContext.getConfigParameterValue(PARAM_DOC_INFORMATION_TYPE);
-		docIdFeaturePath = (String) aContext.getConfigParameterValue(PARAM_DOC_ID_FEATURE_PATH);
-		discardWOId = (Boolean) aContext.getConfigParameterValue(PARAM_DISCARD_ENTITIES_WO_ID);
 		String offsetModeStr = (String) aContext.getConfigParameterValue(PARAM_OFFSET_MODE);
-		additionalFeaturePaths = (String[]) aContext.getConfigParameterValue(PARAM_ADDITIONAL_FEATURE_PATHS);
 
 		outputColumnNames = new LinkedHashSet<>(Stream.of(outputColumnNamesArray).collect(Collectors.toList()));
 
@@ -163,11 +116,6 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 		predefinedColumnNames.add(OFFSETS_COLUMN);
 
 		log.info("{}: {}", PARAM_ENTITY_TYPES, entityTypeStrings);
-		log.info("{}: {}", PARAM_ENTITY_ID_FEATURE_PATHS, idFeaturePaths);
-		log.info("{}: {}", PARAM_DOC_INFORMATION_TYPE, docInfoTypeString);
-		log.info("{}: {}", PARAM_DOC_ID_FEATURE_PATH, docIdFeaturePath);
-		log.info("{}: {}", PARAM_ADDITIONAL_FEATURE_PATHS, additionalFeaturePaths);
-		log.info("{}: {}", PARAM_DISCARD_ENTITIES_WO_ID, discardWOId);
 		log.info("{}: {}", PARAM_OUTPUT_FILE, outputFilePath);
 		log.info("{}: {}", PARAM_OFFSET_MODE, offsetMode);
 	}
@@ -202,7 +150,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 			// we just always add the offsets column, if it is used of not
 			TreeMap<Integer, Integer> numWsMap = null;
 			if (offsetMode == OffsetMode.NON_WS_CHARACTERS) {
-			numWsMap = createNumWsMap(aJCas.getDocumentText());
+				numWsMap = createNumWsMap(aJCas.getDocumentText());
 			}
 			columns.put(OFFSETS_COLUMN, new OffsetsColumn(numWsMap, offsetMode));
 
@@ -219,119 +167,6 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 				entityRecords.add(record);
 			}
 
-			// Type documentInformationType = ts.getType(docInfoTypeString);
-			// if (null == documentInformationType)
-			// throw new AnalysisEngineProcessException(new
-			// IllegalArgumentException("The type \"" + docInfoTypeString
-			// + "\" was not found in the type system. Cannot proceed without
-			// valid document IDs."));
-			//
-			// FSIterator<FeatureStructure> documentInformationTypeIterator =
-			// aJCas.getIndexRepository()
-			// .getAllIndexedFS(documentInformationType);
-			// if (!documentInformationTypeIterator.isValid())
-			// throw new AnalysisEngineProcessException(
-			// new IllegalStateException("The index for the document information
-			// type \"" + docInfoTypeString
-			// + "\" is empty. Cannot proceed without valid document IDs."));
-			// FeatureStructure documentInformationAnnotation =
-			// documentInformationTypeIterator.get();
-			//
-			// FeaturePath docIdFp = aJCas.createFeaturePath();
-			// docIdFp.initialize(docIdFeaturePath);
-			// String docId =
-			// docIdFp.getValueAsString(documentInformationAnnotation);
-			//
-			// for (int typeIndex = 0; typeIndex < entityTypeStrings.length;
-			// typeIndex++) {
-			// String entityTypeString = entityTypeStrings[typeIndex];
-			//
-			// Type entityType = ts.getType(entityTypeString);
-			// if (null == entityType)
-			// throw new AnalysisEngineProcessException(new
-			// IllegalStateException(
-			// "Type " + entityTypeStrings + " could not be found in the type
-			// system."));
-			//
-			// List<JCoReFeaturePath> additionalFps = new ArrayList<>();
-			//
-			// for (int i = 0; additionalFeaturePaths != null && i <
-			// additionalFeaturePaths.length; i++) {
-			// String fp = additionalFeaturePaths[i];
-			// JCoReFeaturePath jfp = new JCoReFeaturePath();
-			// jfp.initialize(fp);
-			// additionalFps.add(jfp);
-			// }
-			//
-			// TreeMap<Integer, Integer> numWsMap = null;
-			//
-			// FSIterator<Annotation> entityIterator =
-			// aJCas.getAnnotationIndex(entityType).iterator();
-			// if (offsetMode == OffsetMode.NON_WS_CHARACTERS &&
-			// entityIterator.hasNext())
-			// numWsMap = createNumWsMap(aJCas.getDocumentText());
-			// while (entityIterator.hasNext()) {
-			// Annotation entity = entityIterator.next();
-			// int beginOffset;
-			// int endOffset;
-			// switch (offsetMode) {
-			// case CHARACTER_SPAN:
-			// beginOffset = entity.getBegin();
-			// endOffset = entity.getEnd();
-			// break;
-			// case NON_WS_CHARACTERS:
-			// // for both offsets, subtract the number of preceding
-			// // white
-			// // spaces up to the respective offset
-			// beginOffset = entity.getBegin() -
-			// numWsMap.floorEntry(entity.getBegin()).getValue();
-			// // we even have to subtract one more because we count
-			// // actual
-			// // characters while UIMA counts spans
-			// endOffset = entity.getEnd() -
-			// numWsMap.floorEntry(entity.getEnd()).getValue() - 1;
-			// break;
-			// default:
-			// throw new IllegalArgumentException(
-			// "Offset mode \"" + offsetMode + "\" is currently unsupported.");
-			// }
-			// String begin = String.valueOf(beginOffset);
-			// String end = String.valueOf(endOffset);
-			//
-			// List<String[]> additionalFpValues = new ArrayList<>();
-			// for (JCoReFeaturePath jfp : additionalFps) {
-			// String[] fpValue = jfp.getValueAsStringArray(entity);
-			// additionalFpValues.add(fpValue);
-			// }
-			// List<String> entityRecord = new ArrayList<>();
-			// for (int j = 0; j < additionalFpValues.size(); ++j) {
-			// String finalValue;
-			// String[] values = additionalFpValues.get(j);
-			// if (values == null)
-			// values = new String[0];
-			// // if there is no value, we leave the field empty
-			// if (values.length == 0)
-			// finalValue = "";
-			// // if there is only a single value, we assume that this
-			// // value should always be used
-			// else if (values.length == 1)
-			// finalValue = values[0];
-			// // if the values are of the same length as the IDs, we
-			// // assume both arrays to be parallel
-			// else if (values.length == entityIds.length)
-			// finalValue = values[i];
-			// }
-			//
-			// if (null != discardWOId && discardWOId &&
-			// StringUtils.isBlank(entityId)) {
-			// log.debug("Discarding entity {} with because it has no value of
-			// the ID feature path.", entity);
-			// continue;
-			// }
-			//
-			// entityRecords.add(entityRecord);
-			// }
-			// }
 		} catch (CASException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
