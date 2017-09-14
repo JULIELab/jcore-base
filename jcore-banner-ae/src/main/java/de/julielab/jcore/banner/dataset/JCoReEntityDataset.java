@@ -99,7 +99,7 @@ public class JCoReEntityDataset extends Dataset {
 		Random r = new Random();
 		for (Sentence sentence : sentences) {
 			int num = r.nextInt(n);
-			splitDatasets.get(num).getSentences().add(sentence);
+			((JCoReEntityDataset)splitDatasets.get(num)).sentences.add(sentence);
 		}
 		return splitDatasets;
 	}
