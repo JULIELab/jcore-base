@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import banner.eval.dataset.Dataset;
 import banner.tokenization.Tokenizer;
@@ -22,6 +24,8 @@ import banner.types.Token;
 import de.julielab.java.utilities.FileUtilities;
 
 public class JCoReEntityDataset extends Dataset {
+
+	private static final Logger log = LoggerFactory.getLogger(JCoReEntityDataset.class);
 
 	public JCoReEntityDataset(Tokenizer tokenizer) {
 		super();
@@ -74,7 +78,10 @@ public class JCoReEntityDataset extends Dataset {
 			if (t.getStart() >= characterIndex && t.getEnd() >= characterIndex)
 				return i;
 		}
-		throw new IllegalArgumentException("Could not get the token index for character index " + characterIndex + " with the following token sequence: " + tokens.stream().map(t -> t.getText()).collect(Collectors.joining(" ")));
+		log.warn("Could not get the token index for character index " + characterIndex
+				+ " with the following token sequence: "
+				+ tokens.stream().map(t -> t.getText()).collect(Collectors.joining(" ")));
+		return tokens.size() - 1;
 	}
 
 	@Override
