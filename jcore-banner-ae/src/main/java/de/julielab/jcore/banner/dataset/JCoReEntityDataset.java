@@ -17,6 +17,7 @@ import banner.types.EntityType;
 import banner.types.Mention;
 import banner.types.Mention.MentionType;
 import banner.types.Sentence;
+import banner.types.Token;
 import de.julielab.java.utilities.FileUtilities;
 
 public class JCoReEntityDataset extends Dataset {
@@ -25,7 +26,7 @@ public class JCoReEntityDataset extends Dataset {
 		super();
 		this.tokenizer = tokenizer;
 	}
-	
+
 	public JCoReEntityDataset() {
 		super();
 	}
@@ -45,6 +46,7 @@ public class JCoReEntityDataset extends Dataset {
 			sentReader.lines().forEach(s -> {
 				String[] split = s.split("\\t");
 				Sentence sentence = new Sentence(split[1], split[0], split[2]);
+				tokenizer.tokenize(sentence);
 				sentences.put(split[1], sentence);
 				this.sentences.add(sentence);
 			});
@@ -56,7 +58,8 @@ public class JCoReEntityDataset extends Dataset {
 				int begin = Integer.parseInt(split[1]);
 				int end = Integer.parseInt(split[2]);
 				EntityType label = EntityType.getType(split[3]);
-				Mention mention = new Mention(sentence, begin, end, label, MentionType.Required);
+				Mention mention = new Mention(sentence, getTokenIndex(sentence.getTokens(), begin),
+						getTokenIndex(sentence.getTokens(), end), label, MentionType.Required);
 				sentence.addMention(mention);
 			});
 		} catch (IOException e) {
@@ -64,18 +67,26 @@ public class JCoReEntityDataset extends Dataset {
 		}
 	}
 
+	private int getTokenIndex(List<Token> tokens, int characterIndex) {
+		int ret = -1;
+		for (int i = 0; i < tokens.size(); ++i) {
+			Token t = tokens.get(i);
+			if (t.getStart() >= characterIndex && t.getEnd() >= characterIndex)
+				return i;
+		}
+		return ret;
+	}
+
 	@Override
 	public List<Dataset> split(int n) {
 		List<Dataset> splitDatasets = new ArrayList<Dataset>();
-		for (int i = 0; i < n; i++)
-		{
+		for (int i = 0; i < n; i++) {
 			JCoReEntityDataset dataset = new JCoReEntityDataset(tokenizer);
 			splitDatasets.add(dataset);
 		}
 
 		Random r = new Random();
-		for (Sentence sentence : sentences)
-		{
+		for (Sentence sentence : sentences) {
 			int num = r.nextInt(n);
 			splitDatasets.get(num).getSentences().add(sentence);
 		}
