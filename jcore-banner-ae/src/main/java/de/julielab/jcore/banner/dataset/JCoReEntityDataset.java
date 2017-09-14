@@ -63,9 +63,13 @@ public class JCoReEntityDataset extends Dataset {
 				int begin = Integer.parseInt(split[1]);
 				int end = Integer.parseInt(split[2]);
 				EntityType label = EntityType.getType(split[3]);
-				Mention mention = new Mention(sentence, getTokenIndex(sentence.getTokens(), begin),
-						getTokenIndex(sentence.getTokens(), end), label, MentionType.Required);
-				sentence.addMention(mention);
+				try {
+					Mention mention = new Mention(sentence, getTokenIndex(sentence.getTokens(), begin),
+							getTokenIndex(sentence.getTokens(), end), label, MentionType.Required);
+					sentence.addMention(mention);
+				} catch (IllegalArgumentException e) {
+					log.warn("Skipping mention {}", ml);
+				}
 			});
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -81,7 +85,7 @@ public class JCoReEntityDataset extends Dataset {
 		log.warn("Could not get the token index for character index " + characterIndex
 				+ " with the following token sequence: "
 				+ tokens.stream().map(t -> t.getText()).collect(Collectors.joining(" ")));
-		return tokens.size() - 1;
+		throw new IllegalArgumentException();
 	}
 
 	@Override
