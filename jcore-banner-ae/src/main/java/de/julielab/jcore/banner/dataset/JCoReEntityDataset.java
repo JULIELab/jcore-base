@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 
@@ -68,13 +69,12 @@ public class JCoReEntityDataset extends Dataset {
 	}
 
 	private int getTokenIndex(List<Token> tokens, int characterIndex) {
-		int ret = -1;
 		for (int i = 0; i < tokens.size(); ++i) {
 			Token t = tokens.get(i);
 			if (t.getStart() >= characterIndex && t.getEnd() >= characterIndex)
 				return i;
 		}
-		return ret;
+		throw new IllegalArgumentException("Could not get the token index for character index " + characterIndex + " with the following token sequence: " + tokens.stream().map(t -> t.getText()).collect(Collectors.joining(" ")));
 	}
 
 	@Override
