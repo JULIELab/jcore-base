@@ -47,7 +47,7 @@ public class Column {
 	 * <b>/value</b>
 	 * <b>/:getCoveredText()</b>
 	 */
-	private static final Pattern typeDefinitionFormat = Pattern.compile("([^:;]+=[^:;]+|\\/:?[^;]+)");
+	private static final Pattern typeDefinitionFormat = Pattern.compile("([^:;]+=[^;]+|\\/:?[^;]+)");
 	/**
 	 * Groups type definitions in their elements:<br>
 	 * <b>Chemical</b>,<b>Gene</b>=<b>/registryNumber</b>
@@ -141,12 +141,23 @@ public class Column {
 
 	public String getValue(TOP a) {
 		String value = null;
-		JCoReFeaturePath fp = featurePathMap.get(a.getType());
+		JCoReFeaturePath fp = getMostSpecificApplicableFeaturePath(a.getType(), a.getCAS().getTypeSystem());
 		if (fp != null) {
 			value = fp.getValueAsString(a);
 		} else if (globalFeaturePath != null) {
 			value = globalFeaturePath.getValueAsString(a);
 		}
 		return value;
+	}
+
+	private JCoReFeaturePath getMostSpecificApplicableFeaturePath(Type type, TypeSystem ts) {
+		Type ret = type;
+		while(featurePathMap.get(ret)==null && ret != null) {
+			ret = ts.getParent(ret);
+		}
+		if (featurePathMap.containsKey(ret)) {
+			featurePathMap.put(type, featurePathMap.get(ret));
+		}
+		return featurePathMap.get(type);
 	}
 }

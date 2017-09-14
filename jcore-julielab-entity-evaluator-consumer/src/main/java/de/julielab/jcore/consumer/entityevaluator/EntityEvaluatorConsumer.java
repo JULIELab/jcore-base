@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -118,7 +119,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 		log.info("{}: {}", PARAM_OUTPUT_COLUMNS, outputColumnNames);
 		log.info("{}: {}", PARAM_COLUMN_DEFINITIONS, columnDefinitionDescriptions);
-		log.info("{}: {}", PARAM_FEATURE_FILTERS,featureFilters);
+		log.info("{}: {}", PARAM_FEATURE_FILTERS, featureFilters);
 		log.info("{}: {}", PARAM_ENTITY_TYPES, entityTypeStrings);
 		log.info("{}: {}", PARAM_TYPE_PREFIX, typePrefix);
 		log.info("{}: {}", PARAM_OUTPUT_FILE, outputFilePath);
@@ -148,6 +149,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 				if (entityTypeStrings != null)
 					Stream.of(entityTypeStrings).map(name -> findType(name, typePrefix, ts)).forEach(entityTypes::add);
 
+				removeSubsumedTypes(entityTypes, ts);
 			}
 			// the sentence column must be created new for each document because
 			// it is using a document-specific sentence index
@@ -174,6 +176,17 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 		} catch (CASException | ClassNotFoundException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void removeSubsumedTypes(LinkedHashSet<Object> entityTypes, TypeSystem ts) {
+		Set<Type> copy = entityTypes.stream().map(Type.class::cast).collect(Collectors.toSet());
+		for (Type refType : copy) {
+			for (Iterator<Object> typeIt = entityTypes.iterator(); typeIt.hasNext();) {
+				Type type = (Type) typeIt.next();
+				if (!refType.equals(type) && ts.subsumes(refType, type))
+					typeIt.remove();
+			}
 		}
 	}
 
