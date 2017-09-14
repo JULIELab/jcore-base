@@ -7,6 +7,7 @@
 package banner.tagging.dictionary;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -81,7 +82,10 @@ public class DictionaryTagger implements Tagger {
 		EntityType dictionaryType = EntityType.getType(dictionaryTypeName);
 
 		// Load data
-		try (java.util.Scanner scanner = new java.util.Scanner(getClass().getResourceAsStream(dictionaryFilename))) {
+		InputStream resourceAsStream = getClass().getResourceAsStream(dictionaryFilename);
+		if (null == resourceAsStream)
+			throw new IllegalArgumentException("Could not find dictionary at " + dictionaryFilename);
+		try (java.util.Scanner scanner = new java.util.Scanner(resourceAsStream)) {
 			java.util.Scanner s = scanner.useDelimiter("\\A");
 			while (s.hasNext()) {
 				String line = s.nextLine();
