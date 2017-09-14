@@ -20,6 +20,7 @@ import org.junit.Test;
 import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.Chemical;
 import de.julielab.jcore.types.Disease;
+import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Title;
@@ -48,6 +49,11 @@ public class PubtatorReaderTest {
 			assertNotNull(docId);
 			assertTrue(expectedDocIds.remove(docId));
 
+			for(EntityMention e : JCasUtil.select(jcas, EntityMention.class)) {
+				System.out.println(e.getSpecificType());
+				assertNotNull(e.getSpecificType());
+			}
+			
 			if (docId.equals("14656948")) {
 				Collection<Gene> genes = JCasUtil.select(jcas, Gene.class);
 				assertEquals(4, genes.size());
