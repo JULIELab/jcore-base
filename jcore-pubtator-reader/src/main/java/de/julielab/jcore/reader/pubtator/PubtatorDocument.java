@@ -3,6 +3,7 @@ package de.julielab.jcore.reader.pubtator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +29,7 @@ public class PubtatorDocument {
 	private String documentId;
 	private String title;
 	private String abstractText;
-	private List<PubtatorEntity> entities;
+	private List<PubtatorEntity> entities = Collections.emptyList();
 
 	public String getTitle() {
 		return title;
@@ -117,7 +118,7 @@ public class PubtatorDocument {
 	}
 
 	private void addEntity(PubtatorEntity entity) {
-		if (entities == null)
+		if (entities.isEmpty())
 			entities = new ArrayList<>();
 		entities.add(entity);
 	}
