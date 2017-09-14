@@ -6,9 +6,6 @@
 
 package banner.tagging.dictionary;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,21 +20,21 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 
 import banner.tagging.Tagger;
 import banner.tokenization.Tokenizer;
-import banner.types.Mention;
 import banner.types.EntityType;
+import banner.types.Mention;
+import banner.types.Mention.MentionType;
 import banner.types.Sentence;
 import banner.types.Token;
-import banner.types.Mention.MentionType;
 import banner.util.Trie;
 
 /**
- * This class represents a very simple dictionary-based tagger. All text subsequences which match an entry will be tagged, without regard to the
+ * This class represents a very simple dictionary-based tagger. All text
+ * subsequences which match an entry will be tagged, without regard to the
  * context.
  * 
  * @author Bob
  */
-public class DictionaryTagger implements Tagger
-{
+public class DictionaryTagger implements Tagger {
 	// TODO Add ability to do fuzzy / prefix / suffix searches
 	// TODO Add ability to associate text with both a type and an identifier
 
@@ -53,15 +50,13 @@ public class DictionaryTagger implements Tagger
 	/**
 	 * Creates a new {@link DictionaryTagger}
 	 */
-	public DictionaryTagger()
-	{
+	public DictionaryTagger() {
 		entities = new Trie<String, Set<EntityType>>();
 		notInclude = new Trie<String, Boolean>();
 	}
 
 	// TODO Determine how to combine this with loading
-	public void configure(HierarchicalConfiguration config, Tokenizer tokenizer)
-	{
+	public void configure(HierarchicalConfiguration config, Tokenizer tokenizer) {
 		HierarchicalConfiguration localConfig = config.configurationAt(this.getClass().getName());
 		filterContainedMentions = localConfig.getBoolean("filterContainedMentions", false);
 		normalizeMixedCase = localConfig.getBoolean("normalizeMixedCase", false);
@@ -71,10 +66,9 @@ public class DictionaryTagger implements Tagger
 		this.tokenizer = tokenizer;
 	}
 
-	public void load(HierarchicalConfiguration config) throws IOException
-	{
+	public void load(HierarchicalConfiguration config) throws IOException {
 		HierarchicalConfiguration localConfig = config.configurationAt(this.getClass().getName());
-		String dictionaryFilename = "/dict/single.txt";
+		String dictionaryFilename = localConfig.getString("dictionaryFile");
 		if (dictionaryFilename == null)
 			throw new IllegalArgumentException("Must specify dictionary filename");
 		String dictionaryTypeName = localConfig.getString("dictionaryType");
@@ -87,30 +81,25 @@ public class DictionaryTagger implements Tagger
 		EntityType dictionaryType = EntityType.getType(dictionaryTypeName);
 
 		// Load data
-		 java.util.Scanner s = new java.util.Scanner(getClass().getResourceAsStream(dictionaryFilename)).useDelimiter("\\A");
-		
-		while (s.hasNext())
-		{	String line = s.nextLine();
-			line = line.trim();
-			if (line.length() > 0)
-			{
-				if (delimiter == null)
-				{
-					add(line, dictionaryType);
-				}
-				else
-				{
-					// TODO Performance - don't use split
-					String[] split = line.split(delimiter);
-					add(split[column], dictionaryType);
+		try (java.util.Scanner scanner = new java.util.Scanner(getClass().getResourceAsStream(dictionaryFilename))) {
+			java.util.Scanner s = scanner.useDelimiter("\\A");
+			while (s.hasNext()) {
+				String line = s.nextLine();
+				line = line.trim();
+				if (line.length() > 0) {
+					if (delimiter == null) {
+						add(line, dictionaryType);
+					} else {
+						// TODO Performance - don't use split
+						String[] split = line.split(delimiter);
+						add(split[column], dictionaryType);
+					}
 				}
 			}
 		}
-		s.close();
 	}
 
-	protected List<String> process(String input)
-	{
+	protected List<String> process(String input) {
 		if (input == null)
 			throw new IllegalArgumentException();
 		List<String> tokens = tokenizer.getTokens(input);
@@ -119,19 +108,15 @@ public class DictionaryTagger implements Tagger
 		return tokens;
 	}
 
-	protected String transform(String str)
-	{
+	protected String transform(String str) {
 		// This has been optimized for very fast operation
 		String result = str;
-		if (normalizeMixedCase || normalizeDigits)
-		{
+		if (normalizeMixedCase || normalizeDigits) {
 			char[] chars = str.toCharArray();
-			if (normalizeMixedCase)
-			{
+			if (normalizeMixedCase) {
 				boolean hasUpper = false;
 				boolean hasLower = false;
-				for (int i = 0; i < chars.length && (!hasUpper || !hasLower); i++)
-				{
+				for (int i = 0; i < chars.length && (!hasUpper || !hasLower); i++) {
 					hasUpper |= Character.isUpperCase(chars[i]);
 					hasLower |= Character.isLowerCase(chars[i]);
 				}
@@ -150,42 +135,37 @@ public class DictionaryTagger implements Tagger
 	}
 
 	/**
-	 * Adds a single entry to the dictionary. The text is processed by the tokenizer and the resulting tokens are stored.
+	 * Adds a single entry to the dictionary. The text is processed by the
+	 * tokenizer and the resulting tokens are stored.
 	 * 
 	 * @param text
-	 *        The text to find
+	 *            The text to find
 	 * @param type
-	 *        The {@link EntityType} to tag the text with
+	 *            The {@link EntityType} to tag the text with
 	 */
-	public void add(String text, EntityType type)
-	{
+	public void add(String text, EntityType type) {
 		add(text, Collections.singleton(type));
 	}
 
-	public void add(String text, Collection<EntityType> types)
-	{
+	public void add(String text, Collection<EntityType> types) {
 		// TODO Make configurable
 		// if (text.length() == 1)
 		// return;
 		// TODO Add ability to not add items over N (eg 10) tokens long
 		List<String> tokens = process(text);
 		add(tokens, types);
-		if (generate2PartVariations)
-		{
-			if (tokens.size() == 1 && tokens.get(0).matches("[A-Za-z]+[0-9]+"))
-			{
+		if (generate2PartVariations) {
+			if (tokens.size() == 1 && tokens.get(0).matches("[A-Za-z]+[0-9]+")) {
 				int split = 0;
 				String token = tokens.get(0);
 				while (Character.isLetter(token.charAt(split)))
 					split++;
 				add2Part(token.substring(0, split), token.substring(split, token.length()), types);
 			}
-			if (tokens.size() == 2)
-			{
+			if (tokens.size() == 2) {
 				add2Part(tokens.get(0), tokens.get(1), types);
 			}
-			if (tokens.size() == 3 && (tokens.get(1).equals("-") || tokens.get(1).equals("/")))
-			{
+			if (tokens.size() == 3 && (tokens.get(1).equals("-") || tokens.get(1).equals("/"))) {
 				add2Part(tokens.get(0), tokens.get(2), types);
 			}
 		}
@@ -195,8 +175,7 @@ public class DictionaryTagger implements Tagger
 		// add(tokens.subList(0, tokens.size() - 1), types);
 	}
 
-	private void add2Part(String part1, String part2, Collection<EntityType> types)
-	{
+	private void add2Part(String part1, String part2, Collection<EntityType> types) {
 		List<String> tokens = new ArrayList<String>();
 		tokens.add(part1 + part2);
 		tokens.add(part2);
@@ -211,8 +190,7 @@ public class DictionaryTagger implements Tagger
 		add(tokens, types);
 	}
 
-	public boolean add(List<String> tokens, Collection<EntityType> types)
-	{
+	public boolean add(List<String> tokens, Collection<EntityType> types) {
 		if (tokens.size() == 0)
 			throw new IllegalArgumentException("Number of tokens must be greater than zero");
 		// Verify that the sequence to be added is not listed as not included
@@ -220,8 +198,7 @@ public class DictionaryTagger implements Tagger
 		if (value != null)
 			return false;
 		// If configured, drop parenthetical phrases at the end of the sequence
-		if (dropEndParentheticals && tokens.get(tokens.size() - 1).equals(")"))
-		{
+		if (dropEndParentheticals && tokens.get(tokens.size() - 1).equals(")")) {
 			int openParen = tokens.size() - 1;
 			while (openParen > 0 && !tokens.get(openParen).equals("("))
 				openParen--;
@@ -230,24 +207,20 @@ public class DictionaryTagger implements Tagger
 			tokens = tokens.subList(0, openParen);
 		}
 		Set<EntityType> currentTypes = entities.getValue(tokens);
-		if (currentTypes == null)
-		{
+		if (currentTypes == null) {
 			currentTypes = new HashSet<EntityType>(1);
 			entities.add(tokens, currentTypes);
 		}
 		return currentTypes.addAll(types);
 	}
 
-	public void tag(Sentence sentence)
-	{
+	public void tag(Sentence sentence) {
 		List<Token> tokens = sentence.getTokens();
 		// Lookup mentions
 		List<Mention> mentions = new LinkedList<Mention>();
-		for (int startIndex = 0; startIndex < tokens.size(); startIndex++)
-		{
+		for (int startIndex = 0; startIndex < tokens.size(); startIndex++) {
 			Trie<String, Set<EntityType>> t = entities;
-			for (int currentIndex = startIndex; currentIndex < tokens.size() && t != null; currentIndex++)
-			{
+			for (int currentIndex = startIndex; currentIndex < tokens.size() && t != null; currentIndex++) {
 				Set<EntityType> entityTypes = t.getValue();
 				if (entityTypes != null)
 					for (EntityType entityType : entityTypes)
@@ -270,25 +243,20 @@ public class DictionaryTagger implements Tagger
 		// sentence.addMention(mention);
 		// }
 
-		if (filterContainedMentions)
-		{
-			while (!mentions.isEmpty())
-			{
+		if (filterContainedMentions) {
+			while (!mentions.isEmpty()) {
 				Mention mention1 = mentions.remove(0);
 				int start = mention1.getStart();
 				int end = mention1.getEnd();
 				ArrayList<Mention> adjacentMentions = new ArrayList<Mention>();
 				Iterator<Mention> mentionIterator = mentions.iterator();
 				boolean changed = true;
-				while (changed)
-				{
+				while (changed) {
 					changed = false;
-					while (mentionIterator.hasNext())
-					{
+					while (mentionIterator.hasNext()) {
 						Mention mention2 = mentionIterator.next();
 						boolean adjacent = (end >= mention2.getStart()) && (start <= mention2.getEnd());
-						if (mention1.getEntityType().equals(mention2.getEntityType()) && adjacent)
-						{
+						if (mention1.getEntityType().equals(mention2.getEntityType()) && adjacent) {
 							adjacentMentions.add(mention2);
 							mentionIterator.remove();
 							start = Math.min(start, mention2.getStart());
@@ -299,9 +267,7 @@ public class DictionaryTagger implements Tagger
 				}
 				sentence.addMention(new Mention(sentence, start, end, mention1.getEntityType(), MentionType.Found));
 			}
-		}
-		else
-		{
+		} else {
 			for (Mention mention : mentions)
 				sentence.addMention(mention);
 		}
@@ -311,78 +277,64 @@ public class DictionaryTagger implements Tagger
 		// System.out.println("\t" + mention.getText());
 	}
 
-	public void suppress(String text)
-	{
+	public void suppress(String text) {
 		notInclude.add(process(text), Boolean.TRUE);
 	}
 
 	/**
 	 * @return The number of entries in this dictionary
 	 */
-	public int size()
-	{
+	public int size() {
 		// TODO PERFORMANCE This is a very intensive operation due to having to
 		// search the entire tree!
 		return entities.size();
 	}
 
-	public Tokenizer getTokenizer()
-	{
+	public Tokenizer getTokenizer() {
 		return tokenizer;
 	}
 
-	public void setTokenizer(Tokenizer tokenizer)
-	{
+	public void setTokenizer(Tokenizer tokenizer) {
 		this.tokenizer = tokenizer;
 	}
 
-	public boolean isFilterContainedMentions()
-	{
+	public boolean isFilterContainedMentions() {
 		return filterContainedMentions;
 	}
 
-	public void setFilterContainedMentions(boolean filterContainedMentions)
-	{
+	public void setFilterContainedMentions(boolean filterContainedMentions) {
 		this.filterContainedMentions = filterContainedMentions;
 	}
 
-	public boolean isNormalizeMixedCase()
-	{
+	public boolean isNormalizeMixedCase() {
 		return normalizeMixedCase;
 	}
 
-	public void setNormalizeMixedCase(boolean normalizeMixedCase)
-	{
+	public void setNormalizeMixedCase(boolean normalizeMixedCase) {
 		this.normalizeMixedCase = normalizeMixedCase;
 	}
 
-	public boolean isNormalizeDigits()
-	{
+	public boolean isNormalizeDigits() {
 		return normalizeDigits;
 	}
 
-	public void setNormalizeDigits(boolean normalizeDigits)
-	{
+	public void setNormalizeDigits(boolean normalizeDigits) {
 		this.normalizeDigits = normalizeDigits;
 	}
 
-	public boolean isGenerate2PartVariations()
-	{
+	public boolean isGenerate2PartVariations() {
 		return generate2PartVariations;
 	}
 
-	public void setGenerate2PartVariations(boolean generate2PartVariations)
-	{
+	public void setGenerate2PartVariations(boolean generate2PartVariations) {
 		this.generate2PartVariations = generate2PartVariations;
 	}
 
-	public boolean isDropEndParentheticals()
-	{
+	public boolean isDropEndParentheticals() {
 		return dropEndParentheticals;
 	}
 
-	public void setDropEndParentheticals(boolean dropEndParentheticals)
-	{
+	public void setDropEndParentheticals(boolean dropEndParentheticals) {
 		this.dropEndParentheticals = dropEndParentheticals;
 	}
 
