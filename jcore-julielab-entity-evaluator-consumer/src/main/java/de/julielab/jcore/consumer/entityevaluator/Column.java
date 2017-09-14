@@ -47,7 +47,7 @@ public class Column {
 	 * <b>/value</b>
 	 * <b>/:getCoveredText()</b>
 	 */
-	private static final Pattern typeDefinitionFormat = Pattern.compile("([^:;]+=[^:;]+|\\/:[^;]+)");
+	private static final Pattern typeDefinitionFormat = Pattern.compile("([^:;]+=[^:;]+|\\/:?[^;]+)");
 	/**
 	 * Groups type definitions in their elements:<br>
 	 * <b>Chemical</b>,<b>Gene</b>=<b>/registryNumber</b>

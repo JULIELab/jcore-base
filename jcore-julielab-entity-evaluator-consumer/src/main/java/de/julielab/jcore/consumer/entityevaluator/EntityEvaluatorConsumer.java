@@ -116,7 +116,11 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 		predefinedColumnNames.add(SENTENCE_ID_COLUMN);
 		predefinedColumnNames.add(OFFSETS_COLUMN);
 
+		log.info("{}: {}", PARAM_OUTPUT_COLUMNS, outputColumnNames);
+		log.info("{}: {}", PARAM_COLUMN_DEFINITIONS, columnDefinitionDescriptions);
+		log.info("{}: {}", PARAM_FEATURE_FILTERS,featureFilters);
 		log.info("{}: {}", PARAM_ENTITY_TYPES, entityTypeStrings);
+		log.info("{}: {}", PARAM_TYPE_PREFIX, typePrefix);
 		log.info("{}: {}", PARAM_OUTPUT_FILE, outputFilePath);
 		log.info("{}: {}", PARAM_OFFSET_MODE, offsetMode);
 	}

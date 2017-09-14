@@ -3,6 +3,7 @@ package de.julielab.jcore.consumer.entityevaluator;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.DOCUMENT_ID_COLUMN;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.OFFSETS_COLUMN;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_COLUMN_DEFINITIONS;
+import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OFFSET_MODE;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_COLUMNS;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_FILE;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_TYPE_PREFIX;
@@ -114,9 +115,9 @@ public class EntityEvaluatorConsumerTest {
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId", SENTENCE_ID_COLUMN + ": Sentence=/id",
-						"geneid:Gene=/resourceEntryList[0]/entryId", "name:/:coveredText()" },
+						"geneid:/specificType", "name:/:coveredText()" },
 				PARAM_OUTPUT_COLUMNS, new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, "geneid", "name", OFFSETS_COLUMN},
-				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv", EntityEvaluatorConsumer.PARAM_OFFSET_MODE, "NON_WS_CHARACTERS");
+				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv", PARAM_OFFSET_MODE, "NON_WS_CHARACTERS", EntityEvaluatorConsumer.PARAM_ENTITY_TYPES, new String[] {"Gene"});
 
 		jcas.setDocumentText("One gene one sentence.");
 		Header h = new Header(jcas);
@@ -126,11 +127,7 @@ public class EntityEvaluatorConsumerTest {
 		s.setId("sentence1");
 		s.addToIndexes();
 		Gene g = new Gene(jcas, 4, 8);
-		GeneResourceEntry re = new GeneResourceEntry(jcas);
-		re.setEntryId("23");
-		FSArray array = new FSArray(jcas, 1);
-		array.set(0, re);
-		g.setResourceEntryList(array);
+		g.setSpecificType("Growth Hormon Producer");
 		g.addToIndexes();
 
 		consumer.process(jcas.getCas());
@@ -138,7 +135,8 @@ public class EntityEvaluatorConsumerTest {
 		
 		List<String> lines = Files.readLines(new File("src/test/resources/outfile-test.tsv"), Charset.forName("UTF-8"));
 		assertEquals(1, lines.size());
-		assertEquals("document1	document1:0	23	gene	3	6", lines.get(0));
+		System.out.println(lines);
+		assertEquals("document1	document1:0	Growth Hormon Producer	gene	3	6", lines.get(0));
 	}
 
 	@Test
