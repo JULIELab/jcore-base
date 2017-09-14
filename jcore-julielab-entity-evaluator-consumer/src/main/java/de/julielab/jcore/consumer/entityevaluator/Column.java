@@ -160,4 +160,6 @@ public class Column {
 		}
 		return featurePathMap.get(type);
 	}
+	
+	public void reset() {}
 }

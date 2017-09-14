@@ -37,7 +37,11 @@ import de.julielab.jcore.utility.index.TermGenerators;
 public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 	public enum OffsetMode {
-		CHARACTER_SPAN, NON_WS_CHARACTERS
+		CharacterSpan, NonWsCharacters
+	}
+
+	public enum OffsetScope {
+		Document, Sentence
 	}
 
 	// If you add a new built-in column, don't forget to add its name to the
@@ -53,7 +57,52 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	// TODO implement
 	public static final String PARAM_FEATURE_FILTERS = "FeatureFilters";
 	public final static String PARAM_OFFSET_MODE = "OffsetMode";
+	public final static String PARAM_OFFSET_SCOPE = "OffsetScope";
 	public final static String PARAM_OUTPUT_FILE = "OutputFile";
+
+	private static final Logger log = LoggerFactory.getLogger(EntityEvaluatorConsumer.class);
+
+	/**
+	 * Returns a map where for each white space position, the number of
+	 * preceding non-whitespace characters from the beginning of <tt>input</tt>
+	 * is returned.<br/>
+	 * Thus, for each character-based offset <tt>o</tt>, the non-whitespace
+	 * offset may be retrieved using the floor entry for <tt>o</tt>, retrieving
+	 * its value and subtracting it from <tt>o</tt>.
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static TreeMap<Integer, Integer> createNumWsMap(String input) {
+		TreeMap<Integer, Integer> map = new TreeMap<>();
+		map.put(0, 0);
+		int numWs = 0;
+		boolean lastCharWasWs = false;
+		for (int i = 0; i < input.length(); ++i) {
+			if (lastCharWasWs)
+				map.put(i, numWs);
+			char c = input.charAt(i);
+			if (Character.isWhitespace(c)) {
+				++numWs;
+				lastCharWasWs = true;
+			} else {
+				lastCharWasWs = false;
+			}
+		}
+		return map;
+	}
+
+	public static Type findType(String typeName, String typePrefix, TypeSystem ts) {
+		String effectiveName = typeName.contains(".") ? typeName : typePrefix + "." + typeName;
+		Type type = ts.getType(effectiveName);
+		if (type == null)
+			type = ts.getType(typePrefix + "." + effectiveName);
+		if (type == null)
+			throw new IllegalArgumentException(
+					"The annotation type " + effectiveName + " was not found in the type system. The prefixed name \""
+							+ typePrefix + "." + effectiveName + "\" has also been tried without success.");
+		return type;
+	}
 
 	@ConfigurationParameter(name = PARAM_OUTPUT_COLUMNS, mandatory = true)
 	private String[] outputColumnNamesArray;
@@ -61,8 +110,11 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	private String[] columnDefinitionDescriptions;
 	@ConfigurationParameter(name = PARAM_ENTITY_TYPES, mandatory = false)
 	private String[] entityTypeStrings;
-	@ConfigurationParameter(name = PARAM_OFFSET_MODE, mandatory = false, description = "Determines the kind of offset printed out by the component for each entity. Supported are: CHARACTER_SPAN and NON_WS_CHARACTERS. The first uses the common UIMA character span offsets. The second counts only the non-whitespace characters for the offsets. This last format is used, for example, by the BioCreative 2 Gene Mention task data. Default is CHARACTERS.")
+	@ConfigurationParameter(name = PARAM_OFFSET_MODE, mandatory = false, description = "Determines the kind of offset printed out by the component for each entity. Supported are CharacterSpan and NonWsCharacters. The first uses the common UIMA character span offsets. The second counts only the non-whitespace characters for the offsets. This last format is used, for example, by the BioCreative 2 Gene Mention task data. Default is CharacterSpan.")
 	private OffsetMode offsetMode;
+	@ConfigurationParameter(name = PARAM_OFFSET_SCOPE, mandatory = false, description = "Document or Sentence.")
+	private OffsetScope offsetScope;
+
 	@ConfigurationParameter(name = PARAM_TYPE_PREFIX, mandatory = true)
 	private String typePrefix;
 	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = false)
@@ -71,18 +123,94 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 			+ "docId EGID begin end confidence\n"
 			+ "Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.")
 	private String outputFilePath;
-
 	private Set<String> predefinedColumnNames = new HashSet<>();
+
 	private LinkedHashSet<String> outputColumnNames;
+
 	private LinkedHashMap<String, Column> columns;
 	private LinkedHashSet<Object> entityTypes = new LinkedHashSet<>();
 
 	private File outputFile;
 
 	private List<String[]> entityRecords = new ArrayList<>();
+
 	private BufferedWriter bw;
 
-	private static final Logger log = LoggerFactory.getLogger(EntityEvaluatorConsumer.class);
+	private void addOffsetsColumn(JCas aJCas) {
+		TreeMap<Integer, Integer> numWsMap = null;
+		OffsetsColumn offsetColumn;
+		if (offsetMode == OffsetMode.NonWsCharacters && offsetScope == OffsetScope.Document) {
+			numWsMap = createNumWsMap(aJCas.getDocumentText());
+			offsetColumn = new OffsetsColumn(numWsMap, offsetMode);
+		} else if (offsetScope == OffsetScope.Document) {
+			offsetColumn = new OffsetsColumn(offsetMode);
+		} else if (offsetScope == OffsetScope.Sentence) {
+			offsetColumn = new OffsetsColumn(((SentenceIdColumn) columns.get(SENTENCE_ID_COLUMN)).getSentenceIndex(),
+					offsetMode);
+		} else
+			throw new IllegalArgumentException("Unsupported offset scope " + offsetScope);
+		columns.put(OFFSETS_COLUMN, offsetColumn);
+	}
+
+	private void addSentenceIdColumn(JCas aJCas) {
+		if (outputColumnNames.contains(SENTENCE_ID_COLUMN)) {
+			assertColumnDefined(SENTENCE_ID_COLUMN);
+			Column c = columns.get(SENTENCE_ID_COLUMN);
+			Column docIdColumn = columns.get(DOCUMENT_ID_COLUMN);
+			String documentId = null;
+			if (docIdColumn != null)
+				documentId = docIdColumn.getValue(aJCas.getDocumentAnnotationFs());
+			Type sentenceType = c.getSingleType();
+			// put all sentences into an index with an
+			// overlap-comparator - this way the index can be
+			// queried for entities and the sentence overlapping the
+			// entity will be returned
+			JCoReTreeMapAnnotationIndex<Long, ? extends Annotation> sentenceIndex = new JCoReTreeMapAnnotationIndex<>(
+					Comparators.longOverlapComparator(), TermGenerators.longOffsetTermGenerator(),
+					TermGenerators.longOffsetTermGenerator());
+			sentenceIndex.index(aJCas, sentenceType);
+			c = new SentenceIdColumn(documentId, c, sentenceIndex);
+			columns.put(SENTENCE_ID_COLUMN, c);
+		}
+	}
+
+	protected void appendEntityRecordsToFile() {
+		for (String[] entityRecord : entityRecords) {
+			try {
+				bw.write(Stream.of(entityRecord).collect(Collectors.joining("\t")) + "\n");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		entityRecords.clear();
+	}
+
+	private void assertColumnDefined(String columnName) {
+		Column c = columns.get(columnName);
+		if (c == null)
+			throw new IllegalArgumentException(
+					"The column \"" + columnName + "\" was set for output but was not defined.");
+	}
+
+	@Override
+	public void batchProcessComplete() throws AnalysisEngineProcessException {
+		super.batchProcessComplete();
+		log.debug("Batch completed. Writing {} entity records to file {}.", entityRecords.size(), outputFile.getName());
+		appendEntityRecordsToFile();
+	}
+
+	@Override
+	public void collectionProcessComplete() throws AnalysisEngineProcessException {
+		super.collectionProcessComplete();
+		log.info("Collection completed. Writing {} entity records to file {}.", entityRecords.size(),
+				outputFile.getName());
+		appendEntityRecordsToFile();
+		try {
+			bw.close();
+		} catch (IOException e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+	}
 
 	@Override
 	public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -96,11 +224,16 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 		outputFilePath = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_FILE);
 		entityTypeStrings = (String[]) aContext.getConfigParameterValue(PARAM_ENTITY_TYPES);
 		String offsetModeStr = (String) aContext.getConfigParameterValue(PARAM_OFFSET_MODE);
+		String offsetScopeStr = (String) aContext.getConfigParameterValue(PARAM_OFFSET_SCOPE);
 
 		outputColumnNames = new LinkedHashSet<>(Stream.of(outputColumnNamesArray).collect(Collectors.toList()));
 
-		offsetMode = null == offsetModeStr ? OffsetMode.CHARACTER_SPAN
-				: OffsetMode.valueOf(offsetModeStr.toUpperCase());
+		offsetMode = null == offsetModeStr ? OffsetMode.CharacterSpan : OffsetMode.valueOf(offsetModeStr);
+		if (null == offsetScopeStr) {
+			offsetScope = outputColumnNames.contains(SENTENCE_ID_COLUMN) ? OffsetScope.Sentence : OffsetScope.Document;
+		} else {
+			offsetScope = OffsetScope.valueOf(offsetScopeStr);
+		}
 
 		outputFile = new File(outputFilePath);
 		if (outputFile.exists()) {
@@ -155,11 +288,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 			// it is using a document-specific sentence index
 			addSentenceIdColumn(aJCas);
 			// we just always add the offsets column, if it is used of not
-			TreeMap<Integer, Integer> numWsMap = null;
-			if (offsetMode == OffsetMode.NON_WS_CHARACTERS) {
-				numWsMap = createNumWsMap(aJCas.getDocumentText());
-			}
-			columns.put(OFFSETS_COLUMN, new OffsetsColumn(numWsMap, offsetMode));
+			addOffsetsColumn(aJCas);
 
 			JCoReAnnotationIndexMerger indexMerger = new JCoReAnnotationIndexMerger(entityTypes, true, null, aJCas);
 			while (indexMerger.incrementAnnotation()) {
@@ -173,80 +302,13 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 				}
 				entityRecords.add(record);
 			}
-
 		} catch (CASException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void removeSubsumedTypes(LinkedHashSet<Object> entityTypes, TypeSystem ts) {
-		Set<Type> copy = entityTypes.stream().map(Type.class::cast).collect(Collectors.toSet());
-		for (Type refType : copy) {
-			for (Iterator<Object> typeIt = entityTypes.iterator(); typeIt.hasNext();) {
-				Type type = (Type) typeIt.next();
-				if (!refType.equals(type) && ts.subsumes(refType, type))
-					typeIt.remove();
-			}
-		}
-	}
-
-	private void addSentenceIdColumn(JCas aJCas) {
-		if (outputColumnNames.contains(SENTENCE_ID_COLUMN)) {
-			assertColumnDefined(SENTENCE_ID_COLUMN);
-			Column c = columns.get(SENTENCE_ID_COLUMN);
-			Column docIdColumn = columns.get(DOCUMENT_ID_COLUMN);
-			String documentId = null;
-			if (docIdColumn != null)
-				documentId = docIdColumn.getValue(aJCas.getDocumentAnnotationFs());
-			Type sentenceType = c.getSingleType();
-			// put all sentences into an index with an
-			// overlap-comparator - this way the index can be
-			// queried for entities and the sentence overlapping the
-			// entity will be returned
-			JCoReTreeMapAnnotationIndex<Long, ? extends Annotation> sentenceIndex = new JCoReTreeMapAnnotationIndex<>(
-					Comparators.longOverlapComparator(), TermGenerators.longOffsetTermGenerator(),
-					TermGenerators.longOffsetTermGenerator());
-			sentenceIndex.index(aJCas, sentenceType);
-			c = new SentenceIdColumn(documentId, c, sentenceIndex);
-			columns.put(SENTENCE_ID_COLUMN, c);
-		}
-	}
-
-	private void assertColumnDefined(String columnName) {
-		Column c = columns.get(columnName);
-		if (c == null)
-			throw new IllegalArgumentException(
-					"The column \"" + columnName + "\" was set for output but was not defined.");
-	}
-
-	/**
-	 * Returns a map where for each white space position, the number of
-	 * preceding non-whitespace characters from the beginning of <tt>input</tt>
-	 * is returned.<br/>
-	 * Thus, for each character-based offset <tt>o</tt>, the non-whitespace
-	 * offset may be retrieved using the floor entry for <tt>o</tt>, retrieving
-	 * its value and subtracting it from <tt>o</tt>.
-	 * 
-	 * @param input
-	 * @return
-	 */
-	private static TreeMap<Integer, Integer> createNumWsMap(String input) {
-		TreeMap<Integer, Integer> map = new TreeMap<>();
-		map.put(0, 0);
-		int numWs = 0;
-		boolean lastCharWasWs = false;
-		for (int i = 0; i < input.length(); ++i) {
-			if (lastCharWasWs)
-				map.put(i, numWs);
-			char c = input.charAt(i);
-			if (Character.isWhitespace(c)) {
-				++numWs;
-				lastCharWasWs = true;
-			} else {
-				lastCharWasWs = false;
-			}
-		}
-		return map;
+		// Some columns store document specific information that must be cleared
+		// before the next document is processed
+		for (Column c : columns.values())
+			c.reset();
 	}
 
 	/**
@@ -264,46 +326,14 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 		return ret;
 	}
 
-	@Override
-	public void batchProcessComplete() throws AnalysisEngineProcessException {
-		super.batchProcessComplete();
-		log.debug("Batch completed. Writing {} entity records to file {}.", entityRecords.size(), outputFile.getName());
-		appendEntityRecordsToFile();
-	}
-
-	@Override
-	public void collectionProcessComplete() throws AnalysisEngineProcessException {
-		super.collectionProcessComplete();
-		log.info("Collection completed. Writing {} entity records to file {}.", entityRecords.size(),
-				outputFile.getName());
-		appendEntityRecordsToFile();
-		try {
-			bw.close();
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
-
-	protected void appendEntityRecordsToFile() {
-		for (String[] entityRecord : entityRecords) {
-			try {
-				bw.write(Stream.of(entityRecord).collect(Collectors.joining("\t")) + "\n");
-			} catch (IOException e) {
-				e.printStackTrace();
+	private void removeSubsumedTypes(LinkedHashSet<Object> entityTypes, TypeSystem ts) {
+		Set<Type> copy = entityTypes.stream().map(Type.class::cast).collect(Collectors.toSet());
+		for (Type refType : copy) {
+			for (Iterator<Object> typeIt = entityTypes.iterator(); typeIt.hasNext();) {
+				Type type = (Type) typeIt.next();
+				if (!refType.equals(type) && ts.subsumes(refType, type))
+					typeIt.remove();
 			}
 		}
-		entityRecords.clear();
-	}
-
-	public static Type findType(String typeName, String typePrefix, TypeSystem ts) {
-		String effectiveName = typeName.contains(".") ? typeName : typePrefix + "." + typeName;
-		Type type = ts.getType(effectiveName);
-		if (type == null)
-			type = ts.getType(typePrefix + "." + effectiveName);
-		if (type == null)
-			throw new IllegalArgumentException(
-					"The annotation type " + effectiveName + " was not found in the type system. The prefixed name \""
-							+ typePrefix + "." + effectiveName + "\" has also been tried without success.");
-		return type;
 	}
 }

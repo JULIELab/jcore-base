@@ -15,7 +15,11 @@ public class SentenceIdColumn extends Column {
 	private static final Logger log = LoggerFactory.getLogger(SentenceIdColumn.class);
 
 	private JCoReTreeMapAnnotationIndex<Long,? extends Annotation> sentenceIndex;
-	Map<Annotation, String> sentenceIds = new HashMap<>();
+	public JCoReTreeMapAnnotationIndex<Long, ? extends Annotation> getSentenceIndex() {
+		return sentenceIndex;
+	}
+
+	private Map<Annotation, String> sentenceIds = new HashMap<>();
 
 	public SentenceIdColumn(String documentId, Column c, JCoReTreeMapAnnotationIndex<Long, ? extends Annotation> sentenceIndex) {
 		super(c);

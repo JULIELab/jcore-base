@@ -3,6 +3,7 @@ package de.julielab.jcore.consumer.entityevaluator;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.DOCUMENT_ID_COLUMN;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.OFFSETS_COLUMN;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_COLUMN_DEFINITIONS;
+import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_ENTITY_TYPES;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OFFSET_MODE;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_COLUMNS;
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_FILE;
@@ -84,7 +85,7 @@ public class EntityEvaluatorConsumerTest {
 						"entityid:Chemical=/registryNumber;Disease=/specificType", "name:/:coveredText()" },
 				PARAM_OUTPUT_COLUMNS,
 				new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, OFFSETS_COLUMN, "entityid", "name" },
-				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv");
+				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv", EntityEvaluatorConsumer.PARAM_OFFSET_SCOPE, "Document");
 
 		jcas.setDocumentText("Aspirin is an acid. It is good against headache.");
 		Header h = new Header(jcas);
@@ -120,7 +121,7 @@ public class EntityEvaluatorConsumerTest {
 				PARAM_OUTPUT_COLUMNS,
 				new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, "geneid", "name", OFFSETS_COLUMN },
 				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv",
-				PARAM_OFFSET_MODE, "NON_WS_CHARACTERS", EntityEvaluatorConsumer.PARAM_ENTITY_TYPES,
+				PARAM_OFFSET_MODE, "NonWsCharacters", EntityEvaluatorConsumer.PARAM_ENTITY_TYPES,
 				new String[] { "Gene" });
 
 		jcas.setDocumentText("One gene one sentence.");
@@ -157,7 +158,7 @@ public class EntityEvaluatorConsumerTest {
 				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId", SENTENCE_ID_COLUMN + ": Sentence=/id",
 						"geneid:Gene=/resourceEntryList[0]/entryId", "name:EntityMention=/:coveredText()" },
 				PARAM_OUTPUT_COLUMNS, new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, "geneid", "name" },
-				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv");
+				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv", PARAM_ENTITY_TYPES, new String[] {"Gene", "EntityMention"});
 
 		jcas.setDocumentText("One gene one sentence.");
 		Header h = new Header(jcas);
