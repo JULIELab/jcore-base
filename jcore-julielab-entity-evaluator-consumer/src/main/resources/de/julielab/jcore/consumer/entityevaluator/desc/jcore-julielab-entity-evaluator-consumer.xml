@@ -32,7 +32,14 @@
             </configurationParameter>
             <configurationParameter>
                 <name>OffsetMode</name>
-                <description>Determines the kind of offset printed out by the component for each entity. Supported are: CHARACTER_SPAN and NON_WS_CHARACTERS. The first uses the common UIMA character span offsets. The second counts only the non-whitespace characters for the offsets. This last format is used, for example, by the BioCreative 2 Gene Mention task data. Default is CHARACTERS.</description>
+                <description>Determines the kind of offset printed out by the component for each entity. Supported are CharacterSpan and NonWsCharacters. The first uses the common UIMA character span offsets. The second counts only the non-whitespace characters for the offsets. This last format is used, for example, by the BioCreative 2 Gene Mention task data. Default is CharacterSpan.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OffsetScope</name>
+                <description>Document or Sentence.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
