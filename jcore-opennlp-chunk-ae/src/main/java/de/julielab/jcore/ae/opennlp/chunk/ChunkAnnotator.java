@@ -25,13 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import opennlp.tools.chunker.ChunkerME;
-import opennlp.tools.chunker.ChunkerModel;
-import opennlp.tools.sentdetect.SentenceDetectorME;
-import opennlp.tools.sentdetect.SentenceModel;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -44,6 +40,8 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.types.Chunk;
 import de.julielab.jcore.types.ChunkADJP;
@@ -58,9 +56,8 @@ import de.julielab.jcore.types.ChunkVP;
 import de.julielab.jcore.types.POSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import opennlp.tools.chunker.ChunkerME;
+import opennlp.tools.chunker.ChunkerModel;
 
 public class ChunkAnnotator extends JCasAnnotator_ImplBase {
 
@@ -304,7 +301,7 @@ public class ChunkAnnotator extends JCasAnnotator_ImplBase {
 			else if (chunks[index].charAt(0) == 'O' || index + 1 == chunks.length) {
 				// ... complete previously started Chunk annotation 
 				if (inChunk){
-					chunkAnnotation.setEnd(tokenArray[index].getEnd());
+					chunkAnnotation.setEnd(tokenArray[index-1].getEnd());
 					chunkAnnotation.addToIndexes();
 				}
 				inChunk = false;
