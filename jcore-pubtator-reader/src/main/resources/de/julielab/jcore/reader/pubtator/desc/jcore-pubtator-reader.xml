@@ -15,6 +15,13 @@
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>AddEntities</name>
+        <description>If set to false, no entities will be added to the document text. Defaults to true.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings/>
     <typeSystemDescription>
