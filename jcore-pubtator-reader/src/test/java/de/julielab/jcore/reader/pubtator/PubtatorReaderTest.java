@@ -50,7 +50,6 @@ public class PubtatorReaderTest {
 			assertTrue(expectedDocIds.remove(docId));
 
 			for(EntityMention e : JCasUtil.select(jcas, EntityMention.class)) {
-				System.out.println(e.getSpecificType());
 				assertNotNull(e.getSpecificType());
 			}
 			

@@ -54,7 +54,7 @@ public class PubtatorReader extends CollectionReader_ImplBase {
 		super.initialize();
 		String inputDirectoryPath = (String) getConfigParameterValue(PARAM_INPUT);
 		input = new File(inputDirectoryPath);
-		addEntities = (boolean) Optional.ofNullable(getConfigParameterValue(PARAM_ADD_ENTITIES)).orElseGet(() -> false);
+		addEntities = (boolean) Optional.ofNullable(getConfigParameterValue(PARAM_ADD_ENTITIES)).orElseGet(() -> true);
 		if (!input.exists())
 			throw new ResourceInitializationException(
 					new IllegalArgumentException("The path " + input.getAbsolutePath() + " does not exist."));
