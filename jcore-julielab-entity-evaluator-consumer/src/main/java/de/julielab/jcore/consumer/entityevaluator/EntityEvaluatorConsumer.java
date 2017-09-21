@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -298,14 +299,13 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 			JCoReAnnotationIndexMerger indexMerger = new JCoReAnnotationIndexMerger(entityTypes, true, null, aJCas);
 			while (indexMerger.incrementAnnotation()) {
 				TOP a = indexMerger.getAnnotation();
-				boolean filteredOut = false;
+				int contradictions = 0;
 				for (FeatureValueFilter filter : featureFilters) {
 					if (filter.contradictsFeatureFilter(a)) {
-						filteredOut = true;
-						break;
+						++contradictions;
 					}
 				}
-				if (filteredOut)
+				if (!featureFilters.isEmpty() && contradictions == featureFilters.size())
 					continue;
 				int colIndex = 0;
 				String[] record = new String[outputColumnNames.size()];
