@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -119,6 +120,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 						new Object[] { modelFilename });
 			tagger = CRFTagger.load(modelIs, lemmatiser, posTagger, dictionary);
 			log.info("{}: {}", PARAM_CONFIG_FILE, configFilePath);
+			log.info("{}: {}", PARAM_TYPE_MAPPING, Arrays.toString(typeMappings));
 			log.info("Model: {}", modelFilename);
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
