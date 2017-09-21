@@ -15,6 +15,13 @@
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>TypeMapping</name>
+        <description>A list of mappings from entity labels to UIMA types in the form &lt;label&gt;=&lt;fully qualified type name&gt;. If not given, all entities will be realized as EntityMention instances.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings/>
     <typeSystemDescription>
