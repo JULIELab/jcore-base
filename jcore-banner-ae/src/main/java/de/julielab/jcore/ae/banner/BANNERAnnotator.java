@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -26,9 +30,11 @@ import banner.postprocessing.PostProcessor;
 import banner.tagging.CRFTagger;
 import banner.tagging.dictionary.DictionaryTagger;
 import banner.tokenization.Tokenizer;
+import banner.types.EntityType;
 import banner.types.Mention;
 import banner.types.Sentence;
-import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.JCoReTools;
 import dragon.nlp.tool.Tagger;
 import dragon.nlp.tool.lemmatiser.EngLemmatiser;
@@ -43,6 +49,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 	private final static Logger log = LoggerFactory.getLogger(BANNERAnnotator.class);
 
 	public static final String PARAM_CONFIG_FILE = "ConfigFile";
+	public static final String PARAM_TYPE_MAPPING = "TypeMapping";
 
 	private Tokenizer tokenizer;
 	private DictionaryTagger dictionary;
@@ -55,6 +62,10 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 
 	@ConfigurationParameter(name = PARAM_CONFIG_FILE, mandatory = true, description = "The XML configuration file for BANNER.")
 	private String configFilePath;
+	@ConfigurationParameter(name = PARAM_TYPE_MAPPING, mandatory = false, description = "A list of mappings from entity labels to UIMA types in the form <label>=<fully qualified type name>. If not given, all entities will be realized as EntityMention instances.")
+	private String[] typeMappings;
+
+	private Map<String, String> typeMap;
 
 	@Override
 	public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -62,6 +73,8 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 
 		try {
 			configFilePath = (String) aContext.getConfigParameterValue(PARAM_CONFIG_FILE);
+			typeMappings = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_TYPE_MAPPING))
+					.orElse(new String[0]);
 			File configFile = new File(configFilePath);
 			if (configFile.exists()) {
 				log.debug("Found configuration file {}", configFile);
@@ -82,6 +95,8 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 							new Object[] { configFilePath });
 				}
 			}
+			typeMap = Stream.of(typeMappings).map(m -> m.split("\\s*=\\s*"))
+					.collect(Collectors.toMap(s -> s[0], s -> s[1]));
 
 			tokenizer = BANNER.getTokenizer(config);
 			dictionary = BANNER.getDictionary(config);
@@ -96,7 +111,8 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 			if (new File(modelFilename).exists()) {
 				modelIs = new FileInputStream(modelFilename);
 			} else {
-				modelIs = getClass().getResourceAsStream(modelFilename.startsWith("/") ? modelFilename : "/" + modelFilename);
+				modelIs = getClass()
+						.getResourceAsStream(modelFilename.startsWith("/") ? modelFilename : "/" + modelFilename);
 			}
 			if (null == modelIs)
 				throw new ResourceInitializationException(ResourceInitializationException.COULD_NOT_ACCESS_DATA,
@@ -113,32 +129,39 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		String docId = JCoReTools.getDocId(jcas);
-		FSIterator<Annotation> sentIt = jcas.getAnnotationIndex(de.julielab.jcore.types.Sentence.type).iterator();
-		int geneCount = 0;
-		int sentCount = 0;
-		while (sentIt.hasNext()) {
-			de.julielab.jcore.types.Sentence jcoreSentence = (de.julielab.jcore.types.Sentence) sentIt.next();
-			int sentenceBegin = jcoreSentence.getBegin();
-			String sentenceId = jcoreSentence.getId() != null ? jcoreSentence.getId() : docId + ": " + sentCount++;
-			Sentence sentence = new Sentence(sentenceId, docId, jcoreSentence.getCoveredText());
-			sentence = BANNER.process(tagger, tokenizer, postProcessor, sentence);
-			for (Mention mention : sentence.getMentions()) {
-				Gene g = new Gene(jcas, sentenceBegin + mention.getStartChar(), sentenceBegin + mention.getEndChar());
-				g.setId("BANNER, " + docId + ": " + geneCount++);
-				g.setComponentId(BANNERAnnotator.class.getCanonicalName());
-				g.setConfidence(String.valueOf(mention.getProbability()));
-				g.addToIndexes();
-				/*
-				 * StringBuilder output = new StringBuilder();
-				 * output.append(line); // sentence identifier
-				 * output.append("\t"); output.append(mention.getEntityType());
-				 * output.append("\t"); output.append(mention.getStartChar());
-				 * output.append("\t"); output.append(mention.getEndChar());
-				 * output.append("\t"); output.append(mention.getText());
-				 * System.out.println(output.toString());
-				 */
+		try {
+			String docId = JCoReTools.getDocId(jcas);
+			FSIterator<Annotation> sentIt = jcas.getAnnotationIndex(de.julielab.jcore.types.Sentence.type).iterator();
+			int geneCount = 0;
+			int sentCount = 0;
+			while (sentIt.hasNext()) {
+				de.julielab.jcore.types.Sentence jcoreSentence = (de.julielab.jcore.types.Sentence) sentIt.next();
+				int sentenceBegin = jcoreSentence.getBegin();
+				String sentenceId = jcoreSentence.getId() != null ? jcoreSentence.getId() : docId + ": " + sentCount++;
+				Sentence sentence = new Sentence(sentenceId, docId, jcoreSentence.getCoveredText());
+				sentence = BANNER.process(tagger, tokenizer, postProcessor, sentence);
+				for (Mention mention : sentence.getMentions()) {
+					EntityType entityType = mention.getEntityType();
+					String typeName = typeMap.getOrDefault(entityType.getText(),
+							EntityMention.class.getCanonicalName());
+					Annotation a = JCoReAnnotationTools.getAnnotationByClassName(jcas, typeName);
+					a.setBegin(sentenceBegin + mention.getStartChar());
+					a.setEnd(sentenceBegin + mention.getEndChar());
+					if (a instanceof de.julielab.jcore.types.Annotation) {
+						de.julielab.jcore.types.Annotation jcoreA = (de.julielab.jcore.types.Annotation) a;
+						jcoreA.setId("BANNER, " + docId + ": " + geneCount++);
+						jcoreA.setComponentId(BANNERAnnotator.class.getCanonicalName());
+						jcoreA.setConfidence(String.valueOf(mention.getProbability()));
+					}
+					if (a instanceof EntityMention) {
+						EntityMention e = (EntityMention) a;
+						e.setSpecificType(entityType.getText());
+					}
+					a.addToIndexes();
+				}
 			}
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
 		}
 	}
 }

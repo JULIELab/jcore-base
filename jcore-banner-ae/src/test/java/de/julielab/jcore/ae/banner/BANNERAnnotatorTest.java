@@ -28,7 +28,7 @@ public class BANNERAnnotatorTest {
 		new Sentence(jcas, 0, jcas.getDocumentText().length()).addToIndexes();
 
 		AnalysisEngine bannerAe = AnalysisEngineFactory.createEngine(BANNERAnnotator.class,
-				BANNERAnnotator.PARAM_CONFIG_FILE, "src/test/resources/banner_ae_test.xml");
+				BANNERAnnotator.PARAM_CONFIG_FILE, "src/test/resources/banner_ae_test.xml", BANNERAnnotator.PARAM_TYPE_MAPPING, new String[] {"GENE=de.julielab.jcore.types.Gene"});
 		bannerAe.process(jcas);
 
 		// expected result from the GENE.eval.small file:
