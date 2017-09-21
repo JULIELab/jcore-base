@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -117,8 +118,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 	@ConfigurationParameter(name = PARAM_TYPE_PREFIX, mandatory = true)
 	private String typePrefix;
-	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = false)
-	private String[] featureFilters;
+	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = false, description = "Only lets those entities pass into the output file that fulfill the given feature value. The syntax is <type>:<feature path>=<value>")
+	private String[] featureFilterDefinitions;
 	@ConfigurationParameter(name = PARAM_OUTPUT_FILE, mandatory = true, description = "Output file to which all entity information is written in the format\n"
 			+ "docId EGID begin end confidence\n"
 			+ "Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.")
@@ -129,6 +130,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 	private LinkedHashMap<String, Column> columns;
 	private LinkedHashSet<Object> entityTypes = new LinkedHashSet<>();
+
+	private List<FeatureValueFilter> featureFilters;
 
 	private File outputFile;
 
@@ -220,7 +223,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 		columnDefinitionDescriptions = (String[]) aContext.getConfigParameterValue(PARAM_COLUMN_DEFINITIONS);
 		typePrefix = (String) aContext.getConfigParameterValue(PARAM_TYPE_PREFIX);
 
-		featureFilters = (String[]) aContext.getConfigParameterValue(PARAM_FEATURE_FILTERS);
+		featureFilterDefinitions = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_FEATURE_FILTERS)).orElse(new String[0]);
 		outputFilePath = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_FILE);
 		entityTypeStrings = (String[]) aContext.getConfigParameterValue(PARAM_ENTITY_TYPES);
 		String offsetModeStr = (String) aContext.getConfigParameterValue(PARAM_OFFSET_MODE);
@@ -252,7 +255,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 		log.info("{}: {}", PARAM_OUTPUT_COLUMNS, outputColumnNames);
 		log.info("{}: {}", PARAM_COLUMN_DEFINITIONS, columnDefinitionDescriptions);
-		log.info("{}: {}", PARAM_FEATURE_FILTERS, featureFilters);
+		log.info("{}: {}", PARAM_FEATURE_FILTERS, featureFilterDefinitions);
 		log.info("{}: {}", PARAM_ENTITY_TYPES, entityTypeStrings);
 		log.info("{}: {}", PARAM_TYPE_PREFIX, typePrefix);
 		log.info("{}: {}", PARAM_OUTPUT_FILE, outputFilePath);
@@ -281,8 +284,10 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 				if (entityTypeStrings != null)
 					Stream.of(entityTypeStrings).map(name -> findType(name, typePrefix, ts)).forEach(entityTypes::add);
-
 				removeSubsumedTypes(entityTypes, ts);
+
+				featureFilters = Stream.of(featureFilterDefinitions).map(d -> new FeatureValueFilter(d, typePrefix, ts))
+						.collect(Collectors.toList());
 			}
 			// the sentence column must be created new for each document because
 			// it is using a document-specific sentence index
@@ -293,6 +298,15 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 			JCoReAnnotationIndexMerger indexMerger = new JCoReAnnotationIndexMerger(entityTypes, true, null, aJCas);
 			while (indexMerger.incrementAnnotation()) {
 				TOP a = indexMerger.getAnnotation();
+				boolean filteredOut = false;
+				for (FeatureValueFilter filter : featureFilters) {
+					if (filter.contradictsFeatureFilter(a)) {
+						filteredOut = true;
+						break;
+					}
+				}
+				if (filteredOut)
+					continue;
 				int colIndex = 0;
 				String[] record = new String[outputColumnNames.size()];
 				for (String outputColumnName : outputColumnNames) {
