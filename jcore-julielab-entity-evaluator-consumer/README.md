@@ -27,9 +27,7 @@ The input and output of an AE is done via annotation objects. The classes corres
 | OffsetScope | String | false | false | Document or Sentence. |
 | TypePrefix | String | true | false | - |
 | FeatureFilters | String | false | true | - |
-| OutputFile | String | true | false | Output file to which all entity information is written in the format
-docId EGID begin end confidence
-Where the fields are separated by tab stops. |
+| OutputFile | String | true | false | Output file to which all entity information is written.|
 
 **2. Predefined Settings**
 None.
