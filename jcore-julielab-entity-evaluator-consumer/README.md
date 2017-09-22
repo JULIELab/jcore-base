@@ -17,14 +17,19 @@ The input and output of an AE is done via annotation objects. The classes corres
  In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is available under `src/main/resources/de/julielab/jcore/ ` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
 
 **1. Parameters**
-TODO
+
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
-| InputDirectory | String | yes | no | Directory where the text files reside. |
-| UseFilenameAsDocId | Boolean | no | no | If this is set to true, the document name (without extension) is used as document id. |
-| PublicationDatesAsFile | String | no | no | A file that maps document ids to publication dates |
-| ReadSubDirs | Boolean | no | no | If this is set to true, all subdirs of the InputDirectory are read. |
-| FileNameSplitUnderscore | Boolean | no | no | Only used in conjunction with "`UseFilenameAsDocId`": If this is set to true, the split to determine the filename will also be done on underscores ("`_`"). |
+| OutputColumns | String | true | true | - |
+| ColumnDefinitions | String | true | true | - |
+| EntityTypes | String | false | true | - |
+| OffsetMode | String | false | false | Determines the kind of offset printed out by the component for each entity. |
+| OffsetScope | String | false | false | Document or Sentence. |
+| TypePrefix | String | true | false | - |
+| FeatureFilters | String | false | true | - |
+| OutputFile | String | true | false | Output file to which all entity information is written in the format
+docId EGID begin end confidence
+Where the fields are separated by tab stops. |
 
 **2. Predefined Settings**
 None.
