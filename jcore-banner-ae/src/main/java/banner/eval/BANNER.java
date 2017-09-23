@@ -140,7 +140,7 @@ public class BANNER {
 		CRFTagger tagger = CRFTagger.load(BANNER.class.getClass().getResourceAsStream(modelFilename), lemmatiser,
 				posTagger, dictionary);
 		System.out.println("Completed input: "
-				+ (System.currentTimeMillis() - start));
+				+ (System.currentTimeMillis() - start) + "ms");
 
 		// TODO NEW Data input format: <identifier>\t<sentence text>
 		// TODO Data output format: <identifier>\t<type>\t<start>\t<end>\t<text>
@@ -198,7 +198,7 @@ public class BANNER {
 			sentences = CollectionsRand.randomSubset(sentences, percentage);
 		BANNER.logInput(sentences, config);
 		System.out.println("Completed input: "
-				+ (System.currentTimeMillis() - start));
+				+ (System.currentTimeMillis() - start) + "ms");
 
 		System.out.println("Training data loaded, starting training");
 		FeatureSet featureSet = new FeatureSet(tagFormat, lemmatiser,
@@ -230,7 +230,7 @@ public class BANNER {
 		Performance performance = test(dataset, tagger, config);
 		performance.print();
 		System.out.println("Elapsed time: "
-				+ (System.currentTimeMillis() - start));
+				+ (System.currentTimeMillis() - start) + "ms");
 	}
 
 	public static void eval5by2(HierarchicalConfiguration config,
@@ -295,7 +295,7 @@ public class BANNER {
 				performance.print();
 				System.out.println("Completed testing for run " + run
 						+ " cross " + cross + ": "
-						+ (System.currentTimeMillis() - start));
+						+ (System.currentTimeMillis() - start) + "ms");
 
 				tagger = null;
 				System.gc();
@@ -534,7 +534,7 @@ public class BANNER {
 		DictionaryTagger dictionary = getDictionary(config);
 		BANNER.logInput(dataset.getSentences(), config);
 		System.out.println("Completed input: "
-				+ (System.currentTimeMillis() - start));
+				+ (System.currentTimeMillis() - start) + "ms");
 
 		// Test & output results
 		start = System.currentTimeMillis();
