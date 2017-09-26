@@ -44,6 +44,11 @@
         	<version>1.7.24</version>
         	<scope>test</scope>
         </dependency>
+        <dependency>
+        	<groupId>de.julielab</groupId>
+        	<artifactId>julielab-java-utilities</artifactId>
+        	<version>1.0.0-SNAPSHOT</version>
+        </dependency>
 	</dependencies>
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
