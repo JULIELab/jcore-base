@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
@@ -6,22 +6,22 @@
   <analysisEngineMetaData>
     <name>de.julielab.jcore.medxn.ae.desc.MedAttrAE</name>
     <description>medication attribute tagger using regEx</description>
-    <version>1.0</version>
-    <vendor/>
-    <configurationParameters searchStrategy="language_fallback"/>
-    <configurationParameterSettings/>
+    <version>2.3.0</version>
+    <vendor />
+    <configurationParameters searchStrategy="language_fallback" />
+    <configurationParameterSettings />
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-all-types"/>
+        <import name="de.julielab.jcore.types.jcore-all-types" />
      </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -33,7 +33,7 @@
   <externalResourceDependencies>
     <externalResourceDependency>
       <key>regExPatterns</key>
-      <description/>
+      <description />
       <optional>false</optional>
     </externalResourceDependency>
   </externalResourceDependencies>
@@ -41,7 +41,7 @@
     <externalResources>
       <externalResource>
         <name>regExPatterns</name>
-        <description/>
+        <description />
         <fileResourceSpecifier>
           <fileUrl>file:de/julielab/jcore/ae/medxn/regex/german_regExPatterns.txt</fileUrl>
         </fileResourceSpecifier>

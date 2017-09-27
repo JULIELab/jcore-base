@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.consumer.bionlpformat.main.BioEventConsumer</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>JCoRe BioNLP Event Consumer</name>
-    <description/>
-    <version>2.1.0</version>
-    <vendor/>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>outDirectory</name>
@@ -48,9 +48,9 @@
         </value>
       </nameValuePair>
     </configurationParameterSettings>
-    <typeSystemDescription/>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typeSystemDescription />
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
         <inputs>
@@ -58,8 +58,8 @@
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.EventTrigger</type>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.ArgumentMention</type>
         </inputs>
-        <outputs/>
-        <languagesSupported/>
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
   <operationalProperties>
@@ -68,5 +68,5 @@
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </analysisEngineDescription>

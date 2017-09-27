@@ -1,22 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.ae.ecn.ECNumberAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>JCoRe Enzyme Commission Number AE</name>
     <description>This component recognizes Enzyme Comission (EC) numbers.</description>
-    <version>2.3.0-SNAPSHOT</version>
-    <vendor/>
-    <configurationParameters/>
-    <configurationParameterSettings/>
-    <typeSystemDescription/>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <version>2.3.0</version>
+    <vendor />
+    <configurationParameters />
+    <configurationParameterSettings />
+    <typeSystemDescription />
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
   <operationalProperties>
@@ -25,5 +25,5 @@
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </analysisEngineDescription>

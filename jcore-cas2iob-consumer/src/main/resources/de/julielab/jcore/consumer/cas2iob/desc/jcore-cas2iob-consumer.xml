@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.consumer.cas2iob.main.ToIOBConsumer</implementationName>
   <processingResourceMetaData>
     <name>JCoRe CAS to IOB Consumer</name>
-    <description/>
-    <version>2.0.0</version>
-    <vendor/>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>labels</name>
@@ -55,7 +55,7 @@
       <nameValuePair>
         <name>labels</name>
         <value>
-          <array/>
+          <array />
         </value>
       </nameValuePair>
       <nameValuePair>
@@ -95,18 +95,18 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
-        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+        <import name="de.julielab.jcore.types.jcore-document-structure-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -115,5 +115,5 @@
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </casConsumerDescription>
