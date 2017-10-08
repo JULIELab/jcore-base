@@ -47,15 +47,16 @@ public class BC2GMDataset extends Dataset
 		String sentenceFilename = localConfig.getString("sentenceFilename");
 		String mentionsFilename = localConfig.getString("mentionTestFilename");
 		String alternateMentionsFilename = localConfig.getString("mentionAlternateFilename");
-		load(sentenceFilename, mentionsFilename, alternateMentionsFilename);
+		String geneLabel = localConfig.getString("geneLabel");
+		load(sentenceFilename, mentionsFilename, alternateMentionsFilename, geneLabel);
 	}
 
-	public void load(String sentenceFilename, String mentionsFilename, String alternateMentionsFilename)
+	public void load(String sentenceFilename, String mentionsFilename, String alternateMentionsFilename, String geneLabel)
 	{
 		try
 		{
 			BufferedReader mentionTestFile = new BufferedReader(new FileReader(mentionsFilename));
-			HashMap<String, LinkedList<Tag>> tags = getTags(mentionTestFile);
+			HashMap<String, LinkedList<Tag>> tags = getTags(mentionTestFile, geneLabel);
 			mentionTestFile.close();
 			HashMap<String, LinkedList<Tag>> alternateTags = null;
 			if (alternateMentionsFilename != null)
@@ -88,9 +89,9 @@ public class BC2GMDataset extends Dataset
 		}
 	}
 
-	protected HashMap<String, LinkedList<Tag>> getTags(BufferedReader tagFile) throws IOException
+	protected HashMap<String, LinkedList<Tag>> getTags(BufferedReader tagFile, String geneLabel) throws IOException
 	{
-		EntityType type = EntityType.getType("GENE");
+		EntityType type = EntityType.getType(geneLabel != null && !geneLabel.isEmpty() ? geneLabel : "GENE");
 		HashMap<String, LinkedList<Tag>> tags = new HashMap<String, LinkedList<Tag>>();
 
 		String line = tagFile.readLine();
