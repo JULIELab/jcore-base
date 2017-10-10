@@ -158,6 +158,7 @@ public class NETagger {
 
 			model = new CRF(data.getPipe(), null);
 			//((CRF) model).addStatesForLabelsConnectedAsIn(data);
+			// using 2nd order brings minor performance improvements
 			((CRF) model).addStatesForBiLabelsConnectedAsIn(data);
 
 			// get trainer
