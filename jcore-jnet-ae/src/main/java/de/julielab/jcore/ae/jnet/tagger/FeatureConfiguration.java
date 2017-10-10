@@ -39,7 +39,7 @@ public class FeatureConfiguration {
 			return true;
 		}
 		else {
-			System.out.println(propName + ": true");
+			System.out.println(propName + ": false");
 			return false;
 		}
 	}

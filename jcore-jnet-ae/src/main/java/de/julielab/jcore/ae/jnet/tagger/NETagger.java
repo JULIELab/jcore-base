@@ -157,7 +157,8 @@ public class NETagger {
 		if (!max_ent) {
 
 			model = new CRF(data.getPipe(), null);
-			((CRF) model).addStatesForLabelsConnectedAsIn(data);
+			//((CRF) model).addStatesForLabelsConnectedAsIn(data);
+			((CRF) model).addStatesForBiLabelsConnectedAsIn(data);
 
 			// get trainer
 			final CRFTrainerByLabelLikelihood crfTrainer = new CRFTrainerByLabelLikelihood((CRF) model);
