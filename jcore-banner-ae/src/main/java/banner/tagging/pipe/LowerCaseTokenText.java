@@ -49,7 +49,7 @@ public class LowerCaseTokenText extends Pipe
 				if (prefix == null)
 					featureName = text;
 				else
-					featureName = prefix + text;
+					featureName = prefix;
 				t.setFeatureValue(featureName, 1.0);
 			}
 		}
