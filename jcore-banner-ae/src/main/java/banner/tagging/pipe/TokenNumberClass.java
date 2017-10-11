@@ -56,7 +56,7 @@ public class TokenNumberClass extends Pipe
 				if (prefix == null)
 					featureName = text;
 				else
-					featureName = prefix;
+					featureName = prefix + text;
 				t.setFeatureValue(featureName, 1.0);
 			}
 		}
