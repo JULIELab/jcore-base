@@ -62,7 +62,7 @@ public class BC2GMDataset extends Dataset
 			if (alternateMentionsFilename != null)
 			{
 				BufferedReader mentionAlternateFile = new BufferedReader(new FileReader(alternateMentionsFilename));
-				alternateTags = new HashMap<String, LinkedList<Tag>>(getAlternateTags(mentionAlternateFile));
+				alternateTags = new HashMap<String, LinkedList<Tag>>(getAlternateTags(mentionAlternateFile, geneLabel));
 				mentionAlternateFile.close();
 			}
 
@@ -128,7 +128,7 @@ public class BC2GMDataset extends Dataset
 		return tags;
 	}
 
-	protected HashMap<String, LinkedList<Tag>> getAlternateTags(BufferedReader tagFile) throws IOException
+	protected HashMap<String, LinkedList<Tag>> getAlternateTags(BufferedReader tagFile, String geneLabel) throws IOException
 	{
 		HashMap<String, LinkedList<Tag>> tags = new HashMap<String, LinkedList<Tag>>();
 
@@ -139,7 +139,7 @@ public class BC2GMDataset extends Dataset
 			LinkedList<Tag> tagList = tags.get(split[0]);
 			if (tagList == null)
 				tagList = new LinkedList<Tag>();
-			EntityType type = EntityType.getType("GENE");
+			EntityType type = EntityType.getType(geneLabel != null && !geneLabel.isEmpty() ? geneLabel : "GENE");
 			Tag tag = new Tag(type, Integer.parseInt(split[1]), Integer.parseInt(split[2]));
 			tagList.add(tag);
 			tags.put(split[0], tagList);
