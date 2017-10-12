@@ -6,14 +6,14 @@
 
 package banner.tagging.pipe;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
 import banner.tagging.Tagger;
 import banner.types.Mention;
-import banner.types.Sentence;
 import banner.types.Mention.MentionType;
-
+import banner.types.Sentence;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.Token;
@@ -60,8 +60,12 @@ public class Pretagger extends Pipe
 			{
 				String featureName = prefix + mention.getEntityType().getText();
 				token.setFeatureValue(featureName, 1);
+//				System.out.println("HIER: " + preSentence.getTokens().get(i) + ": " + featureName);
 			}
 		}
+		
+		 
+		
 		return carrier;
 	}
 }
