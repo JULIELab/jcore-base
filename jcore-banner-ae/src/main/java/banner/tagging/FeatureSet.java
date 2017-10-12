@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import banner.tagging.pipe.ChemicalSuffix;
 import banner.tagging.pipe.LChar;
 import banner.tagging.pipe.LemmaPOS;
 import banner.tagging.pipe.LowerCaseTokenText;
+import banner.tagging.pipe.MentionTypeHint;
 import banner.tagging.pipe.Pretagger;
+import banner.tagging.pipe.ProteinSymbols;
 import banner.tagging.pipe.RChar;
 import banner.tagging.pipe.Sentence2TokenSequence;
 import banner.tagging.pipe.SimFind;
@@ -122,6 +125,11 @@ public class FeatureSet implements Serializable
 		pipes.add(new RegexMatches("ISPUNCT", Pattern.compile("[`~!@#$%^&*()-=_+\\[\\]\\\\{}|;\':\\\",./<>?]+")));
 		//siddhartha added these;
 		pipes.add(simFindFilename == null ? new Noop() : new SimFind(simFindFilename));
+		
+		pipes.add(new ChemicalSuffix("CHEM_SUFF="));
+		pipes.add(new MentionTypeHint("MENTION_TYPE="));
+		pipes.add(new ProteinSymbols("PROT_SYM="));
+		
 		pipes.add(new OffsetConjunctions(new int[][] { { -2 }, { -1 }, { 1 }, { 2 } }));
 		pipes.add(new TokenSequence2FeatureVectorSequence(true, true));
 		return new SerialPipes(pipes);
