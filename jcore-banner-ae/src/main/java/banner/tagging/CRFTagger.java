@@ -127,7 +127,7 @@ public class CRFTagger implements Tagger
 		// Train on data subsets
 		// TODO Make this configurable
 		// crfTrainer.train(instances, 10, new double[] {0.2, 0.4, 0.6, 0.8});
-		crfTrainer.train(instances, 10, new double[] { 0.2, 0.5, 0.8 });
+//		crfTrainer.train(instances, 10, new double[] { 0.2, 0.5, 0.8 });
 		// Train to convergence
 		// crfTrainer.train(instances, 70);
 		crfTrainer.train(instances);
