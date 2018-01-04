@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.iexml.IEXMLFileReader</implementationName>
   <processingResourceMetaData>
     <name>JCoRe IEXML Reader</name>
-    <description/>
-    <version>2.0.0</version>
+    <description />
+    <version>2.3.0</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
@@ -33,20 +33,20 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-all-types"/>
+        <import name="de.julielab.jcore.types.jcore-all-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
+        <inputs />
         <outputs>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.mantra.Unit</type>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.mantra.Entity</type>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.mantra.DocumentInformation</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -55,5 +55,5 @@
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </collectionReaderDescription>

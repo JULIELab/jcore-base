@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.msdoc2txt.main.MSdoc2txtReader</implementationName>
   <processingResourceMetaData>
     <name>JCoRe MSdoc2txt Reader</name>
-    <description/>
-    <version>1.0</version>
+    <description />
+    <version>2.3.0</version>
     <vendor>JULIELab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
@@ -52,19 +52,19 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
+        <inputs />
         <outputs>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.Date</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -73,5 +73,5 @@
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </collectionReaderDescription>
