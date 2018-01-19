@@ -21,7 +21,7 @@ The input and output of an AE is done via annotation objects. The classes corres
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
 | OutputColumns | String | true | true | An array of names referring to definitions in the ColumnDefinitions parameter. The columns will be written tab-separated into the output file in the exact order given here. This means that this parameter determines the order of the output columns and also which columns are output at all. It is possible and valid to only print out a subset of all defined columns. |
-| ColumnDefinitions | String | true | true | - |
+| ColumnDefinitions | String | true | true | Predefined: DocumentId, SentenceId, SentenceId |
 | EntityTypes | String | false | true | - |
 | OffsetMode | String | false | false | Determines the kind of offset printed out by the component for each entity. |
 | OffsetScope | String | false | false | Document or Sentence. |
