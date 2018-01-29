@@ -50,11 +50,15 @@ public class ConllConsumer extends JCasAnnotator_ImplBase {
 	public static final String PARAM_OUTPUT_DIR = "outputDir";
 	public static final String PARAM_DEPENDENCY_PARSE = "dependencyParse";
 	private static final Boolean DEFAULT_DEPENDENCY_PARSE = false;
+	public static final String PARAM_POS_TAG = "posTag";
+	private static final Boolean DEFAULT_POS_TAG = true;
 	
 	@ConfigurationParameter(name = PARAM_OUTPUT_DIR, mandatory = true)
 	private String outputDir;
 	@ConfigurationParameter(name = PARAM_DEPENDENCY_PARSE, mandatory = false)
-	private Boolean dependencyParse; 
+	private Boolean dependencyParse;
+	@ConfigurationParameter(name = PARAM_POS_TAG, mandatory = false)
+	private Boolean posTag; 
 	
 	int docs = 0;
 
@@ -67,6 +71,9 @@ public class ConllConsumer extends JCasAnnotator_ImplBase {
 		
 		dependencyParse = (aContext.getConfigParameterValue(PARAM_DEPENDENCY_PARSE) != null) ?
 			(Boolean) aContext.getConfigParameterValue(PARAM_DEPENDENCY_PARSE) : DEFAULT_DEPENDENCY_PARSE;
+			
+		posTag = (aContext.getConfigParameterValue(PARAM_POS_TAG) != null) ?
+				(Boolean) aContext.getConfigParameterValue(PARAM_POS_TAG) : DEFAULT_POS_TAG;
 	}
 
 	@Override
@@ -96,7 +103,7 @@ public class ConllConsumer extends JCasAnnotator_ImplBase {
 					Token token = toks2convert.get(i);
 					Token head = null;
 					String depLabel = "ROOT";
-					String pos = null;
+					String pos = "None";
 					int headNumber = 0;
 
 					if (token.getDepRel() == null) {
@@ -116,12 +123,17 @@ public class ConllConsumer extends JCasAnnotator_ImplBase {
 						if (head != null)
 							depLabel = depRel.getLabel();
 					}
+					
+					if (posTag) {
+						pos = token.getPosTag(0).getValue();
+					}
+					
 					String line = //see http://barcelona.research.yahoo.net/dokuwiki/doku.php?id=conll2008:format
 						(i + 1) + //ID
 						"\t" + token.getCoveredText() + //FORM
 						"\t" + token.getCoveredText() + //LEMMA
-						"\t" + token.getPosTag(0).getValue() + //GPOS 
-						"\t" + token.getPosTag(0).getValue() + //PPOS
+						"\t" + pos + //GPOS 
+						"\t" + pos + //PPOS
 						"\t" + "_" + //SPLIT_FORM
 						"\t" + "_" + //SPLIT_LEMMA
 						"\t" + "_" + //PPOSS

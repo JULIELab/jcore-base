@@ -20,6 +20,7 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.julielab.jcore.ae.biosem.BioSemEventAnnotator;

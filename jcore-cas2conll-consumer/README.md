@@ -20,7 +20,8 @@ This consumer writes annotations in a UIMA CAS out to the CoNLL format. If two a
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
 | outputDir | String | yes | no | Path to directory where CoNLL-files should be written to. |
-| dependencyParse | Boolean | no | no | Whether dependency parsing should be activated or not, default is false. |
+| dependencyParse | Boolean | no | no | Whether dependency parsing should be written or not, default is false. |
+| posTag | Boolean | no | no | Whether POS Tags should be written or not, default is true. |
 
 
 **2. Predefined Settings**
@@ -28,7 +29,8 @@ This consumer writes annotations in a UIMA CAS out to the CoNLL format. If two a
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
 | outputDir | valid path to an output location | `data/outFiles` |
-| dependencyParse | Boolean | `true` |
+| dependencyParse | Boolean | `false` |
+| posTag | Boolean | `true` |
 
 **3. Capabilities**
 
@@ -36,5 +38,6 @@ This consumer writes annotations in a UIMA CAS out to the CoNLL format. If two a
 |------|:-----:|:------:|
 |de.julielab.jcore.types.Sentence  | `+` |  |
 |de.julielab.jcore.types.Token  | `+` |  |
+|de.julielab.jcore.types.POSTag  | `+` |  |
 |de.julielab.jcore.types.DependencyRelation  | `+` |  |
 |de.julielab.jcore.types.Header  | `+` |  |
