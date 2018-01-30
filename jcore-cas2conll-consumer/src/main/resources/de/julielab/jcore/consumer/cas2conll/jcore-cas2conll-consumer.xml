@@ -27,6 +27,12 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>lemma</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -43,6 +49,12 @@
       </nameValuePair>
       <nameValuePair>
         <name>posTag</name>
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>lemma</name>
         <value>
           <boolean>true</boolean>
         </value>

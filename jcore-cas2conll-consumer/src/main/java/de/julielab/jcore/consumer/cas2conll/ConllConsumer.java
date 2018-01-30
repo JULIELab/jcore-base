@@ -52,13 +52,17 @@ public class ConllConsumer extends JCasAnnotator_ImplBase {
 	private static final Boolean DEFAULT_DEPENDENCY_PARSE = false;
 	public static final String PARAM_POS_TAG = "posTag";
 	private static final Boolean DEFAULT_POS_TAG = true;
+	public static final String PARAM_LEMMA = "lemma";
+	private static final Boolean DEFAULT_LEMMA = true;
 	
 	@ConfigurationParameter(name = PARAM_OUTPUT_DIR, mandatory = true)
 	private String outputDir;
 	@ConfigurationParameter(name = PARAM_DEPENDENCY_PARSE, mandatory = false)
 	private Boolean dependencyParse;
 	@ConfigurationParameter(name = PARAM_POS_TAG, mandatory = false)
-	private Boolean posTag; 
+	private Boolean posTag;
+	@ConfigurationParameter(name = PARAM_LEMMA, mandatory = false)
+	private Boolean lemma;
 	
 	int docs = 0;
 
@@ -74,6 +78,9 @@ public class ConllConsumer extends JCasAnnotator_ImplBase {
 			
 		posTag = (aContext.getConfigParameterValue(PARAM_POS_TAG) != null) ?
 				(Boolean) aContext.getConfigParameterValue(PARAM_POS_TAG) : DEFAULT_POS_TAG;
+				
+		lemma = (aContext.getConfigParameterValue(PARAM_LEMMA) != null) ?
+				(Boolean) aContext.getConfigParameterValue(PARAM_LEMMA) : DEFAULT_LEMMA;
 	}
 
 	@Override
@@ -104,6 +111,7 @@ public class ConllConsumer extends JCasAnnotator_ImplBase {
 					Token head = null;
 					String depLabel = "ROOT";
 					String pos = "None";
+					String lemmaForm = token.getCoveredText();
 					int headNumber = 0;
 
 					if (token.getDepRel() == null) {
@@ -128,10 +136,14 @@ public class ConllConsumer extends JCasAnnotator_ImplBase {
 						pos = token.getPosTag(0).getValue();
 					}
 					
+					if (lemma) {
+						lemmaForm = token.getLemma().getValue();
+					}
+					
 					String line = //see http://barcelona.research.yahoo.net/dokuwiki/doku.php?id=conll2008:format
 						(i + 1) + //ID
 						"\t" + token.getCoveredText() + //FORM
-						"\t" + token.getCoveredText() + //LEMMA
+						"\t" + lemmaForm + //LEMMA
 						"\t" + pos + //GPOS 
 						"\t" + pos + //PPOS
 						"\t" + "_" + //SPLIT_FORM
