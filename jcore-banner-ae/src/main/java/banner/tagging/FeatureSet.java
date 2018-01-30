@@ -1,24 +1,19 @@
 package banner.tagging;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import banner.tagging.pipe.ChemicalSuffix;
 import banner.tagging.pipe.LChar;
 import banner.tagging.pipe.LemmaPOS;
 import banner.tagging.pipe.LowerCaseTokenText;
-import banner.tagging.pipe.MentionTypeHint;
 import banner.tagging.pipe.Pretagger;
-import banner.tagging.pipe.ProteinSymbols;
 import banner.tagging.pipe.RChar;
 import banner.tagging.pipe.Sentence2TokenSequence;
 import banner.tagging.pipe.SimFind;
 import banner.tagging.pipe.TokenNumberClass;
 import banner.tagging.pipe.TokenWordClass;
-import banner.tagging.pipe.WordEmbeddingPipe;
 import banner.types.Mention.MentionType;
 import banner.types.Sentence.OverlapOption;
 import cc.mallet.pipe.Noop;
@@ -125,12 +120,6 @@ public class FeatureSet implements Serializable
 		pipes.add(new RegexMatches("GREEK", Pattern.compile(GREEK, Pattern.CASE_INSENSITIVE)));
 		// TODO try breaking this into several sets (brackets, sentence marks, etc.)
 		pipes.add(new RegexMatches("ISPUNCT", Pattern.compile("[`~!@#$%^&*()-=_+\\[\\]\\\\{}|;\':\\\",./<>?]+")));
-		try {
-			pipes.add(new WordEmbeddingPipe("EMBEDDING_"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		//siddhartha added these;
 		pipes.add(simFindFilename == null ? new Noop() : new SimFind(simFindFilename));
 		
