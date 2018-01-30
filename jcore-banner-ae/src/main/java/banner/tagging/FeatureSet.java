@@ -139,7 +139,7 @@ public class FeatureSet implements Serializable
 //		pipes.add(new ProteinSymbols("PROT_SYM="));
 		
 		pipes.add(new OffsetConjunctions(new int[][] { { -2 }, { -1 }, { 1 }, { 2 } }));
-		pipes.add(new TokenSequence2FeatureVectorSequence(true, true));
+		pipes.add(new TokenSequence2FeatureVectorSequence(false, true));
 		return new SerialPipes(pipes);
 	}
 }
