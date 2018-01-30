@@ -9,6 +9,15 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
 
+/**
+ * Taken from GNormPlus code: Wei, C. H., Kao, H. Y., & Lu, Z. (2015).
+ * GNormPlus: An Integrative Approach for Tagging Genes, Gene Families, and
+ * Protein Domains. BioMed Research International, 2015.
+ * https://doi.org/10.1155/2015/918710
+ * 
+ * @author faessler
+ *
+ */
 public class ProteinSymbols extends Pipe {
 
 	/**
