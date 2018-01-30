@@ -1,5 +1,6 @@
 package banner.tagging;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
@@ -17,6 +18,7 @@ import banner.tagging.pipe.Sentence2TokenSequence;
 import banner.tagging.pipe.SimFind;
 import banner.tagging.pipe.TokenNumberClass;
 import banner.tagging.pipe.TokenWordClass;
+import banner.tagging.pipe.WordEmbeddingPipe;
 import banner.types.Mention.MentionType;
 import banner.types.Sentence.OverlapOption;
 import cc.mallet.pipe.Noop;
@@ -123,6 +125,12 @@ public class FeatureSet implements Serializable
 		pipes.add(new RegexMatches("GREEK", Pattern.compile(GREEK, Pattern.CASE_INSENSITIVE)));
 		// TODO try breaking this into several sets (brackets, sentence marks, etc.)
 		pipes.add(new RegexMatches("ISPUNCT", Pattern.compile("[`~!@#$%^&*()-=_+\\[\\]\\\\{}|;\':\\\",./<>?]+")));
+		try {
+			pipes.add(new WordEmbeddingPipe("EMBEDDING_"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//siddhartha added these;
 		pipes.add(simFindFilename == null ? new Noop() : new SimFind(simFindFilename));
 		
@@ -131,7 +139,7 @@ public class FeatureSet implements Serializable
 //		pipes.add(new ProteinSymbols("PROT_SYM="));
 		
 		pipes.add(new OffsetConjunctions(new int[][] { { -2 }, { -1 }, { 1 }, { 2 } }));
-		pipes.add(new TokenSequence2FeatureVectorSequence(false, true));
+		pipes.add(new TokenSequence2FeatureVectorSequence(true, true));
 		return new SerialPipes(pipes);
 	}
 }
