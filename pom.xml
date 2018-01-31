@@ -52,8 +52,6 @@
 		<module>jcore-dta-reader</module>
 		<module>jcore-ec-code-ae</module>
 		<module>jcore-file-reader</module>
-		
-<!-- 		<module>jcore-gene-species-assigner</module> -->
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
 		<module>jcore-ign-reader</module>
@@ -85,6 +83,7 @@
 		<module>jcore-xmi-writer</module>
 		<module>jcore-julielab-entity-evaluator-consumer</module>
 		<module>jcore-pubtator-reader</module>
+		<module>jcore-db-reader</module>
 	</modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
