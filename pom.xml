@@ -84,6 +84,7 @@
 		<module>jcore-julielab-entity-evaluator-consumer</module>
 		<module>jcore-pubtator-reader</module>
 		<module>jcore-db-reader</module>
+		<module>jcore-xml-db-reader</module>
 	</modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>

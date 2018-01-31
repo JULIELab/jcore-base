@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jules.reader.DBMedlineReader</implementationName>
+  <processingResourceMetaData>
+    <name>DBMedlineReader</name>
+    <description/>
+    <version>0.0.1</version>
+    <vendor/>
+    <configurationParameters>
+      <configurationParameter>
+        <name>BatchSize</name>
+        <description>Determines how many documents are read from the database in one fetch.</description>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>DBDriver</name>
+        <description>JDBC driver class. Defaults to org.postgresql.Driver</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>MappingFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>Table</name>
+        <description>The name of the table which holds the document IDs to be processed. The reader automatically determines the data table which stores the actuall Medline XML data.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>dbcConfigFile</name>
+        <description>Path to a configuration file for the DataBaseConnector.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>AdditionalTables</name>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>AdditionalTableSchema</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>RowMapping</name>
+        <description>A mapping item has the following form:
+&lt;column index&gt;=&lt;uima type&gt;#&lt;type feature&gt;:&lt;feature
+datatype&gt;:defaultValue
+where the defaultValue is optional. Example:
+"2=de.julielab.jules.types.max_xmi_id#id:int:0"
+maps the content of the third (index 2) retrieved column (may
+also belong to an additional table!) to feature "id" of the type
+"d.j.j.t.max_xmi_id" which is a int. In case there is no value
+returned from the database for a document, use a 0 as default.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>MappingFile</name>
+        <value>
+          <string>medlineMappingFile.xml</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>BatchSize</name>
+        <value>
+          <integer>1000</integer>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration/>
+</collectionReaderDescription>
