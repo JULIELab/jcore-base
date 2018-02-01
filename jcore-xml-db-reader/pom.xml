@@ -110,4 +110,5 @@ The reader requires a configuration file which determines the database connectio
 			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
+	<url>https://github.com/JULIELab/jcore-base/jcore-xml-db-reader</url>
 </project>

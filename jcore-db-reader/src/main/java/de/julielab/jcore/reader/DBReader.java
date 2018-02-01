@@ -144,7 +144,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 	 * The name of the resource is assured by convention only as alternative
 	 * names are not reject from the descriptor when entering them manually.
 	 */
-	public static final String PARAM_DBC_CONFIG_NAME = "dbcConfigFile";
+	public static final String PARAM_JEDIS_CONFIG_NAME = "JedisConfigFile";
 	/**
 	 * Boolean parameter. Indicates whether the read subset table is to be reset
 	 * before reading.
@@ -163,8 +163,6 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 	 * element.
 	 */
 	public static final String PARAM_ADDITIONAL_TABLE_SCHEMA = "AdditionalTableSchema";
-
-	private static final Logger LOG = LoggerFactory.getLogger(DBReader.class);
 
 	/**
 	 * Default size of document batches fetched from the database. The default
@@ -217,7 +215,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 	protected String whereCondition;
 	@ConfigurationParameter(name = PARAM_LIMIT)
 	protected Integer limitParameter;
-	@ConfigurationParameter(name = PARAM_DBC_CONFIG_NAME, mandatory = true)
+	@ConfigurationParameter(name = PARAM_JEDIS_CONFIG_NAME, mandatory = true)
 	String dbcConfig;
 	@ConfigurationParameter(name = PARAM_RESET_TABLE, defaultValue = "false")
 	private Boolean resetTable;
@@ -254,7 +252,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 		this.fetchIdsProactively = fetchIdsProactively;
 		if (resetTable == null)
 			resetTable = false;
-		dbcConfig = (String) getConfigParameterValue(PARAM_DBC_CONFIG_NAME);
+		dbcConfig = (String) getConfigParameterValue(PARAM_JEDIS_CONFIG_NAME);
 
 		checkParameters();
 
@@ -264,12 +262,12 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			try {
 				is = new FileInputStream(dbcConfig);
 			} catch (FileNotFoundException e) {
-				LOG.error("File '{}' was not found.", dbcConfig);
+				log.error("File '{}' was not found.", dbcConfig);
 				throw new ResourceInitializationException(e);
 			}
 		}
 		// if (is == null)
-		// LOG.warn("No DataBaseConfiguration was found, will use default ->
+		// log.warn("No DataBaseConfiguration was found, will use default ->
 		// prepare for errors!");
 
 		dbc = new DataBaseConnector(is, batchSize);
@@ -294,7 +292,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
 		} else {
 			if (batchSize == 0)
-				LOG.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
+				log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
 			if (resetTable)
 				dbc.resetSubset(tableName);
 
@@ -325,10 +323,10 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 	}
 
 	private void logConfigurationState() {
-		LOG.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
-		LOG.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
-		LOG.info("BatchSize is set to {}.", batchSize);
-		LOG.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
+		log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
+		log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
+		log.info("BatchSize is set to {}.", batchSize);
+		log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
 	}
 
 	/**
@@ -380,7 +378,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			}
 			// We have really tried...
 			if (null == resultTableName) {
-				LOG.warn("The table " + additionalTableNames[i] + " does not exist!");
+				log.warn("The table " + additionalTableNames[i] + " does not exist!");
 				// Use the original given name so that the user get's an
 				// understandable error message and nothing about table names
 				// being null.
@@ -405,7 +403,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			throw new IllegalArgumentException("Parameter '" + PARAM_TABLE + "' is not specified.");
 		}
 		if (dbcConfig == null || dbcConfig.length() == 0) {
-			throw new IllegalArgumentException("Parameter '" + PARAM_DBC_CONFIG_NAME + "' is not specified.");
+			throw new IllegalArgumentException("Parameter '" + PARAM_JEDIS_CONFIG_NAME + "' is not specified.");
 		}
 		if (additionalTableNames != null & additionalTableSchema == null) {
 			throw new IllegalArgumentException("If multiple tables will be joined"
@@ -441,7 +439,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			// Only fetch ID batches in advance when the parameter is set to
 			// true.
 			if (fetchIdsProactively) {
-				LOG.debug("Fetching new documents in a background thread.");
+				log.debug("Fetching new documents in a background thread.");
 				start();
 			}
 		}
@@ -455,7 +453,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			// database have been read, only the rest of documents.
 			int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
 			ids = dbc.retrieveAndMark(tableName, getReaderComponentName(), hostName, pid, limit, selectionOrder);
-			if (LOG.isTraceEnabled()) {
+			if (log.isTraceEnabled()) {
 				List<String> idStrings = new ArrayList<>();
 				for (Object[] o : ids) {
 					List<String> pkElements = new ArrayList<>();
@@ -465,13 +463,13 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 					}
 					idStrings.add(StringUtils.join(pkElements, "-"));
 				}
-				LOG.trace("Reserved the following document IDs for processing: " + idStrings);
+				log.trace("Reserved the following document IDs for processing: " + idStrings);
 			}
 			numberFetchedDocIDs += ids.size();
-			LOG.debug("Retrieved {} document IDs to fetch from the database.", ids.size());
+			log.debug("Retrieved {} document IDs to fetch from the database.", ids.size());
 
 			if (ids.size() > 0) {
-				LOG.debug("Fetching {} documents from the database.", ids.size());
+				log.debug("Fetching {} documents from the database.", ids.size());
 				if (timestamp == null) {
 					if (!joinTables) {
 						documents = dbc.queryIDAndXML(ids, dataTable);
@@ -481,7 +479,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 				} else
 					documents = dbc.queryWithTime(ids, dataTable, timestamp);
 			} else {
-				LOG.debug("No unfetched documents left.");
+				log.debug("No unfetched documents left.");
 				// Return empty iterator to avoid NPE.
 				documents = new DBCIterator<byte[][]>() {
 
@@ -511,13 +509,13 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			// IDs now in a classic sequential manner.
 			if (!fetchIdsProactively) {
 				// Use run as we don't have a use for real threads anyway.
-				LOG.debug("Fetching new documents (without employing a background thread).");
+				log.debug("Fetching new documents (without employing a background thread).");
 				run();
 			}
 			try {
 				// If this is a background thread started with start(): Wait for
 				// the IDs to be retrieved, i.e. that run() ends.
-				LOG.debug("Waiting for the background thread to finish fetching documents to return them.");
+				log.debug("Waiting for the background thread to finish fetching documents to return them.");
 				join();
 				return documents;
 			} catch (InterruptedException e) {
@@ -605,7 +603,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 		// }
 
 		if (xmlBytes.hasNext()) {
-			LOG.debug("Returning next document.");
+			log.debug("Returning next document.");
 			next = xmlBytes.next();
 		}
 		if (!xmlBytes.hasNext()) { // Don't merge with
@@ -615,10 +613,10 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			// fetchDocumentBatch();
 			xmlBytes = retriever.getDocuments();
 			if (!xmlBytes.hasNext()) {
-				LOG.debug("No more documents, settings 'hasNext' to false.");
+				log.debug("No more documents, settings 'hasNext' to false.");
 				hasNext = false;
 			} else if (fetchIdsProactively) {
-				LOG.debug("Creating new background thread.");
+				log.debug("Creating new background thread.");
 				retriever = new RetrievingThread();
 			}
 		}
