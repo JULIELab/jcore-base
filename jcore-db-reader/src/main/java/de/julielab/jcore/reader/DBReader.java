@@ -97,23 +97,22 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 	public static final String PARAM_DB_DRIVER = "DBDriver";
 	public static final String PARAM_BATCH_SIZE = "BatchSize";
 	/**
-	 * String parameter. Determines the table from which rows are read and
-	 * returned. Both subset and data tables are allowed. For data tables, an
-	 * optional 'where' condition can be specified, restricting the rows to be
-	 * returned. Note that only reading from subset tables works correctly for
-	 * concurrent access of multiple readers (for data tables each reader will
-	 * return the whole table).
+	 * String parameter. Determines the table from which rows are read and returned.
+	 * Both subset and data tables are allowed. For data tables, an optional 'where'
+	 * condition can be specified, restricting the rows to be returned. Note that
+	 * only reading from subset tables works correctly for concurrent access of
+	 * multiple readers (for data tables each reader will return the whole table).
 	 */
 	public static final String PARAM_TABLE = "Table";
 	/**
-	 * String parameter representing a long value. If not null, only documents
-	 * with a timestamp newer then the passed value will be processed.
+	 * String parameter representing a long value. If not null, only documents with
+	 * a timestamp newer then the passed value will be processed.
 	 */
 	public static final String PARAM_TIMESTAMP = "Timestamp";
 	/**
-	 * Boolean parameter. Determines whether to return random samples of
-	 * unprocessed documents rather than proceeding sequentially. This parameter
-	 * is defined for subset reading only.
+	 * Boolean parameter. Determines whether to return random samples of unprocessed
+	 * documents rather than proceeding sequentially. This parameter is defined for
+	 * subset reading only.
 	 */
 	public static final String PARAM_SELECTION_ORDER = "RandomSelection";
 	/**
@@ -126,23 +125,23 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 	 */
 	public static final String PARAM_FETCH_IDS_PROACTIVELY = "FetchIdsProactively";
 	/**
-	 * String parameter. Used only when reading directly from data tables. Only
-	 * rows are returned which satisfy the specified 'where' clause. If empty or
-	 * set to <code>null</code>, all rows are returned.
+	 * String parameter. Used only when reading directly from data tables. Only rows
+	 * are returned which satisfy the specified 'where' clause. If empty or set to
+	 * <code>null</code>, all rows are returned.
 	 */
 	public static final String PARAM_WHERE_CONDITION = "WhereCondition";
 	/**
-	 * Integer parameter. Determines the maximum amount of documents being read
-	 * by this reader. The reader will also not mark more documents to be in
-	 * process as specified with this parameter.
+	 * Integer parameter. Determines the maximum amount of documents being read by
+	 * this reader. The reader will also not mark more documents to be in process as
+	 * specified with this parameter.
 	 */
 	public static final String PARAM_LIMIT = "Limit";
 
 	/**
 	 * Constant denoting the name of the external dependency representing the
 	 * configuration file for the DataBaseConnector.<br>
-	 * The name of the resource is assured by convention only as alternative
-	 * names are not reject from the descriptor when entering them manually.
+	 * The name of the resource is assured by convention only as alternative names
+	 * are not reject from the descriptor when entering them manually.
 	 */
 	public static final String PARAM_JEDIS_CONFIG_NAME = "JedisConfigFile";
 	/**
@@ -158,25 +157,24 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 	public static final String PARAM_ADDITIONAL_TABLES = "AdditionalTables";
 	/**
 	 * Multi-valued String parameter indicating different schemas in case tables
-	 * will be joined. The schema for the referenced data table has to be the
-	 * first element. The schema for the additional tables has to be the second
-	 * element.
+	 * will be joined. The schema for the referenced data table has to be the first
+	 * element. The schema for the additional tables has to be the second element.
 	 */
 	public static final String PARAM_ADDITIONAL_TABLE_SCHEMA = "AdditionalTableSchema";
 
 	/**
-	 * Default size of document batches fetched from the database. The default
-	 * is {@value #DEFAULT_BATCH_SIZE}.
+	 * Default size of document batches fetched from the database. The default is
+	 * {@value #DEFAULT_BATCH_SIZE}.
 	 */
 	private static final String DEFAULT_BATCH_SIZE = "50";
 
 	@ConfigurationParameter(name = PARAM_BATCH_SIZE, defaultValue = DEFAULT_BATCH_SIZE)
 	protected int batchSize;
 	/**
-	 * Currently unused because the Hikari JDBC library should recognize the
-	 * correct driver. However, there seem to be cases where this doesn't work
-	 * (HSQLDB). So we keep the parameter for later. When this issue comes up,
-	 * the driver would have to be set manually. This isn't done right now.
+	 * Currently unused because the Hikari JDBC library should recognize the correct
+	 * driver. However, there seem to be cases where this doesn't work (HSQLDB). So
+	 * we keep the parameter for later. When this issue comes up, the driver would
+	 * have to be set manually. This isn't done right now.
 	 */
 	@ConfigurationParameter(name = PARAM_DB_DRIVER)
 	protected String driver;
@@ -233,8 +231,6 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 		if (driver == null)
 			driver = "org.postgresql.Driver";
 		Integer batchSize = (Integer) getConfigParameterValue(PARAM_BATCH_SIZE);
-		// TODO Error when table not given (due to wrong written parameter name
-		// for instance)
 		tableName = (String) getConfigParameterValue(PARAM_TABLE);
 		additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
 		additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
@@ -266,9 +262,6 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 				throw new ResourceInitializationException(e);
 			}
 		}
-		// if (is == null)
-		// log.warn("No DataBaseConfiguration was found, will use default ->
-		// prepare for errors!");
 
 		dbc = new DataBaseConnector(is, batchSize);
 
@@ -310,7 +303,6 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 				checkAndAdjustAdditionalTables();
 
 				schemas = new String[numAdditionalTables + 1];
-				// schemas[0] = additionalTableSchemas[0];
 				schemas[0] = dbc.getActiveTableSchema();
 				for (int i = 1; i < schemas.length; i++) {
 					schemas[i] = additionalTableSchema;
@@ -324,24 +316,23 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 
 	private void logConfigurationState() {
 		log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
-		log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
+		if (log.isInfoEnabled())
+			log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
 		log.info("BatchSize is set to {}.", batchSize);
 		log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
 	}
 
 	/**
-	 * Checks whether the given additional tables exist. If not, it is checked
-	 * if the table names contain dots which are reserved for schema
-	 * qualification in Postgres. It is tried again to find the tables with
-	 * underscores ('_'), then. The tables are also searched in the data schema.
-	 * When the names contain dots, the substring up to the first dot is tried
-	 * as schema qualification before prepending the data schema.
+	 * Checks whether the given additional tables exist. If not, it is checked if
+	 * the table names contain dots which are reserved for schema qualification in
+	 * Postgres. It is tried again to find the tables with underscores ('_'), then.
+	 * The tables are also searched in the data schema. When the names contain dots,
+	 * the substring up to the first dot is tried as schema qualification before
+	 * prepending the data schema.
 	 */
 	private void checkAndAdjustAdditionalTables() {
 		List<String> foundTables = new ArrayList<String>();
 		foundTables.add(dataTable);
-		// tables = new String[numAdditionalTables + 1];
-		// tables[0] = dataTable;
 		for (int i = 0; i < additionalTableNames.length; i++) {
 			String resultTableName = null;
 			if (dbc.tableExists(additionalTableNames[i]))
@@ -378,13 +369,8 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			}
 			// We have really tried...
 			if (null == resultTableName) {
-				log.warn("The table " + additionalTableNames[i] + " does not exist!");
-				// Use the original given name so that the user get's an
-				// understandable error message and nothing about table names
-				// being null.
-				// tables[i + 1] = additionalTableNames[i];
+				log.warn("The table {} does not exist!", additionalTableNames[i]);
 			} else
-				// tables[i + 1] = resultTableName;
 				foundTables.add(resultTableName);
 		}
 		tables = foundTables.toArray(new String[foundTables.size()]);
@@ -395,19 +381,19 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 
 	/**
 	 * This method checks whether the required parameters are set to meaningful
-	 * values and throws an IllegalArgumentException when not. TODO: I guess it
-	 * should rather be "ResourceInitializationException"...
+	 * values and throws an IllegalArgumentException when not.
+	 * @throws ResourceInitializationException 
 	 */
-	private void checkParameters() {
+	private void checkParameters() throws ResourceInitializationException {
 		if (tableName == null || tableName.length() == 0) {
-			throw new IllegalArgumentException("Parameter '" + PARAM_TABLE + "' is not specified.");
+			throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[] {PARAM_TABLE});
 		}
 		if (dbcConfig == null || dbcConfig.length() == 0) {
-			throw new IllegalArgumentException("Parameter '" + PARAM_JEDIS_CONFIG_NAME + "' is not specified.");
+			throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[] {PARAM_JEDIS_CONFIG_NAME});
 		}
-		if (additionalTableNames != null & additionalTableSchema == null) {
-			throw new IllegalArgumentException("If multiple tables will be joined"
-					+ " the table schema for the additional tables (besides the base document table which should be configured using the database connector configuration) must be specified.");
+		if (additionalTableNames != null && additionalTableSchema == null) {
+			throw new ResourceInitializationException(new IllegalArgumentException("If multiple tables will be joined"
+					+ " the table schema for the additional tables (besides the base document table which should be configured using the database connector configuration) must be specified."));
 		}
 	}
 
@@ -419,9 +405,9 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 	 * {@link DBReader#getNextArrayArray()}.
 	 * </p>
 	 * <p>
-	 * The class manages itself the <code>FetchIdsProactively</code> parameter
-	 * which can be given to the reader. When set to <code>false</code>, no ID
-	 * batches are fetched in advance but are fetched exactly on demand in
+	 * The class manages itself the <code>FetchIdsProactively</code> parameter which
+	 * can be given to the reader. When set to <code>false</code>, no ID batches are
+	 * fetched in advance but are fetched exactly on demand in
 	 * {@link DBReader#getNextArrayArray()}.
 	 * </p>
 	 * <p>
@@ -536,8 +522,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 
 	/**
 	 * Returns the next byte[][] containing a byte[] for the pmid at [0] and a
-	 * byte[] for the XML at [1] or null if there are no unprocessed documents
-	 * left.
+	 * byte[] for the XML at [1] or null if there are no unprocessed documents left.
 	 * 
 	 * @return Document document - the document
 	 * @throws CollectionException
@@ -583,24 +568,10 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 		// will yet exist. Initialize it.
 		if (retriever == null) {
 			retriever = new RetrievingThread();
-			// if (!joinTables) {
-			// xmlBytes = dbc.queryIDAndXML(retriever.getIds(), dataTable);
-			// } else {
-			// // Join multiple tables.
-			// xmlBytes = dbc.queryIDAndXML(retriever.getIds(), tables,
-			// schemas);
-			// }
 			xmlBytes = retriever.getDocuments();
 			if (fetchIdsProactively)
 				retriever = new RetrievingThread();
 		}
-
-		// Can happen when not using proactive fetching of document IDs (set
-		// in this method at the bottom).
-		// Means we will fetch the documents exactly when requested, not before.
-		// if (xmlBytes == null) {
-		// fetchDocumentBatch();
-		// }
 
 		if (xmlBytes.hasNext()) {
 			log.debug("Returning next document.");
@@ -609,8 +580,6 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 		if (!xmlBytes.hasNext()) { // Don't merge with
 									// the if above, the
 									// check
-			// has to happen after xmlBytes.next()
-			// fetchDocumentBatch();
 			xmlBytes = retriever.getDocuments();
 			if (!xmlBytes.hasNext()) {
 				log.debug("No more documents, settings 'hasNext' to false.");
@@ -620,40 +589,8 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 				retriever = new RetrievingThread();
 			}
 		}
-		// else if (!xmlBytes.hasNext()) {
-		// // NOTE: This can cause problems when reading with multiple readers
-		// // from one table: The reader returns true for hasNext() because
-		// // there were unprocessed documents left in the table. But since the
-		// // read does not fetch these documents itself, another reader could
-		// // fetch them while this reader waits for the next call of this
-		// // method (only then new documents are fetched). By then it would be
-		// // possible that there are no documents left to read and a
-		// // NullPointerException could happen.
-		// hasNext = dbc.hasUnfetchedRows(tableName);
-		// xmlBytes = null;
-		// }
 		return next;
 	}
-
-	/**
-	 * 
-	 */
-	// private void fetchDocumentBatch() {
-	// List<Object[]> ids = retriever.getIds();
-	// if (ids.isEmpty()) {
-	// hasNext = false;
-	// } else {
-	// retriever = new RetrievingThread();
-	// if (timestamp == null) {
-	// if (!joinTables) {
-	// xmlBytes = dbc.queryIDAndXML(ids, dataTable);
-	// } else {
-	// xmlBytes = dbc.queryIDAndXML(ids, tables, schemas);
-	// }
-	// } else
-	// xmlBytes = dbc.queryWithTime(ids, dataTable, timestamp);
-	// }
-	// }
 
 	protected int unprocessedDocumentCount() {
 		int unprocessed = -1;
@@ -674,7 +611,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 
 	public String getPID() {
 		String id = ManagementFactory.getRuntimeMXBean().getName();
-		return id.substring(0, id.indexOf("@"));
+		return id.substring(0, id.indexOf('@'));
 	}
 
 	public String getHostName() {
@@ -713,7 +650,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 		try {
 			// remove previously added dbMetaData
 			JCasUtil.select(cas.getJCas(), DBProcessingMetaData.class).forEach(x -> x.removeFromIndexes());
-			
+
 			DBProcessingMetaData dbMetaData = new DBProcessingMetaData(cas.getJCas());
 			List<Integer> pkIndices = dbc.getPrimaryKeyIndices();
 			StringArray pkArray = new StringArray(cas.getJCas(), pkIndices.size());
@@ -727,7 +664,8 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			dbMetaData.setPrimaryKey(pkArray);
 
 			if (!readDataTable)
-				dbMetaData.setSubsetTable(tableName.contains(".") ? tableName : dbc.getActivePGSchema() + "." + tableName);
+				dbMetaData.setSubsetTable(
+						tableName.contains(".") ? tableName : dbc.getActivePGSchema() + "." + tableName);
 
 			dbMetaData.addToIndexes();
 			return pkString;
@@ -735,10 +673,11 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 			throw new CollectionException(e);
 		}
 	}
-	
+
 	/**
 	 * 
-	 * @return The component name of the reader to fill in the subset table's pipeline status field
+	 * @return The component name of the reader to fill in the subset table's
+	 *         pipeline status field
 	 */
 	protected abstract String getReaderComponentName();
 

@@ -109,6 +109,10 @@ The reader requires a configuration file which determines the database connectio
 			<artifactId>jcore-types</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>de.julielab</groupId>
+			<artifactId>jcore-descriptor-creator</artifactId>
+		</dependency>
 	</dependencies>
 	<url>https://github.com/JULIELab/jcore-base/jcore-xml-db-reader</url>
 </project>
