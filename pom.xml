@@ -85,6 +85,7 @@
 		<module>jcore-pubtator-reader</module>
 		<module>jcore-db-reader</module>
 		<module>jcore-xml-db-reader</module>
+		<module>jcore-xmi-db-reader</module>
 	</modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
