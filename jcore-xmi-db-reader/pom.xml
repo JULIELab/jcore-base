@@ -35,7 +35,7 @@
 			<artifactId>jcore-descriptor-creator</artifactId>
 		</dependency>
 	</dependencies>
-	<url>https://github.com/JULIELab/jcore-projects/tree/master/jcore-xmi-db-reader</url>
+	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-db-reader</url>
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>

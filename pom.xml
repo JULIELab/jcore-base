@@ -86,6 +86,7 @@
 		<module>jcore-db-reader</module>
 		<module>jcore-xml-db-reader</module>
 		<module>jcore-xmi-db-reader</module>
+		<module>jcore-xmi-db-writer</module>
 	</modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>

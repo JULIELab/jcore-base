@@ -11,7 +11,7 @@ The `jcore-xmi-splitter` project is able to extract portions from XMI data that 
 This component employs this assembly step to read XMI annotation data, that is stored in the document database across different tables, back into a CAS instance. It is also possible to read complete XMI data without the assembly step (see the <code>ReadsBaseDocument</code> configuration parameter).
 
 ### Requirements and Dependencies
-This component requires a PostgreSQL database managed via the JeDIS project and populated by the `jcore-xmi-db-writer` component.
+This component requires a PostgreSQL database set up via the JeDIS project and populated by the `jcore-xmi-db-writer` component.
 
 ### Using the CR - Descriptor Configuration
 
