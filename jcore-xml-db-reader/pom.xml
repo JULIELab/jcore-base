@@ -12,7 +12,7 @@ The reader requires a configuration file which determines the database connectio
 
 	<parent>
 		<groupId>de.julielab</groupId>
-		<artifactId>jcore-parent</artifactId>
+		<artifactId>jcore-base</artifactId>
 		<version>2.3.0-SNAPSHOT</version>
 	</parent>
 	<build>
@@ -49,20 +49,13 @@ The reader requires a configuration file which determines the database connectio
 	<dependencies>
 		<dependency>
 			<groupId>de.julielab</groupId>
-			<artifactId>jules-abstract-db-reader-jcore-sync</artifactId>
+			<artifactId>jcore-db-reader</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 
 
 
 
-		<dependency>
-			<groupId>org.dbunit</groupId>
-			<artifactId>dbunit</artifactId>
-			<version>2.5.3</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -71,18 +64,6 @@ The reader requires a configuration file which determines the database connectio
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.5</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>julie-medline-manager</artifactId>
-			<version>[1.2.1,2)</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>julie-medline-manager</artifactId>
-			<version>[1.2.1,2)</version>
-			<type>test-jar</type>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -108,10 +89,6 @@ The reader requires a configuration file which determines the database connectio
 			<groupId>de.julielab</groupId>
 			<artifactId>jcore-types</artifactId>
 			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-descriptor-creator</artifactId>
 		</dependency>
 	</dependencies>
 	<url>https://github.com/JULIELab/jcore-base/jcore-xml-db-reader</url>

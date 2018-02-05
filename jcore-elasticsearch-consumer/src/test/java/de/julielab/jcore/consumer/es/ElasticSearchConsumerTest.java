@@ -128,6 +128,7 @@ public class ElasticSearchConsumerTest {
 		Document document = generator.addFields(cas, new Document());
 
 		ElasticSearchConsumer consumer = new ElasticSearchConsumer();
+		System.setProperty("ES_CONSUMER_TEST_MODE", "true");
 		consumer.initialize(UimaContextFactory.createUimaContext());
 		Method method = ElasticSearchConsumer.class.getDeclaredMethod("createIndexSource", Document.class);
 		method.setAccessible(true);

@@ -48,8 +48,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
 
+import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
-import de.julielab.jules.reader.DBReader;
 import de.julielab.xml.JulieXMLConstants;
 
 /**

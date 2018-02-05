@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>jcore-parent</artifactId>
+		<artifactId>jcore-base</artifactId>
 		<groupId>de.julielab</groupId>
 		<version>2.3.0-SNAPSHOT</version>
 	</parent>
@@ -29,10 +29,6 @@
 			<groupId>de.julielab</groupId>
 			<artifactId>jcore-utilities</artifactId>
 			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-descriptor-creator</artifactId>
 		</dependency>
 	</dependencies>
 	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-db-reader</url>

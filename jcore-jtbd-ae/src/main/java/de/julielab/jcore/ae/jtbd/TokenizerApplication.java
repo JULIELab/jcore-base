@@ -73,9 +73,8 @@ public class TokenizerApplication {
 	 * @param predictions
 	 * @return
 	 */
-	private static EvalResult do9010Evaluation(final File orgSentencesFile,
-			final File tokSentencesFile, final ArrayList<String> errors,
-			final ArrayList<String> predictions) {
+	private static EvalResult do9010Evaluation(final File orgSentencesFile, final File tokSentencesFile,
+			final ArrayList<String> errors, final ArrayList<String> predictions) {
 
 		final ArrayList<String> orgSentences = readFile(orgSentencesFile);
 		final ArrayList<String> tokSentences = readFile(tokSentencesFile);
@@ -92,8 +91,7 @@ public class TokenizerApplication {
 			System.err.println("Error: no test files for this split.");
 			System.exit(-1);
 		}
-		System.out.println("all: " + sizeAll + "\ttrain: " + sizeTrain + "\t"
-				+ "test: " + sizeTest);
+		System.out.println("all: " + sizeAll + "\ttrain: " + sizeTrain + "\t" + "test: " + sizeTest);
 
 		final ArrayList<String> trainOrgSentences = new ArrayList<String>();
 		final ArrayList<String> trainTokSentences = new ArrayList<String>();
@@ -115,8 +113,8 @@ public class TokenizerApplication {
 		// System.out.println(trainTokSentences.toString());
 		// System.out.println(predictOrgSentences.toString());
 		// System.out.println(predictTokSentences.toString());
-		return doEvaluation(trainOrgSentences, trainTokSentences,
-				predictOrgSentences, predictTokSentences, predictions, errors);
+		return doEvaluation(trainOrgSentences, trainTokSentences, predictOrgSentences, predictTokSentences, predictions,
+				errors);
 
 	}
 
@@ -126,26 +124,21 @@ public class TokenizerApplication {
 	 * @param orgSentencesFile
 	 * @param tokSentencesFile
 	 */
-	private static void doCheck(final File orgSentencesFile,
-			final File tokSentencesFile) {
+	private static void doCheck(final File orgSentencesFile, final File tokSentencesFile) {
 
 		final Tokenizer tokenizer = new Tokenizer();
 
-		System.out.println("checking on files: \n * "
-				+ orgSentencesFile.toString() + "\n * "
+		System.out.println("checking on files: \n * " + orgSentencesFile.toString() + "\n * "
 				+ tokSentencesFile.toString() + "\n");
 
 		final ArrayList<String> orgSentences = readFile(orgSentencesFile);
 		final ArrayList<String> tokSentences = readFile(tokSentencesFile);
 
-		final InstanceList trainData = tokenizer.makeTrainingData(orgSentences,
-				tokSentences);
+		final InstanceList trainData = tokenizer.makeTrainingData(orgSentences, tokSentences);
 		final Pipe myPipe = trainData.getPipe();
 		// System.out.println("\n" + myPipe.getDataAlphabet().toString());
-		System.out.println("\n\n\n# Features resulting from training data: "
-				+ myPipe.getDataAlphabet().size());
-		System.out
-		.println("(critical sentences were omitted for feature generation)");
+		System.out.println("\n\n\n# Features resulting from training data: " + myPipe.getDataAlphabet().size());
+		System.out.println("(critical sentences were omitted for feature generation)");
 
 		System.out.println("Done.");
 
@@ -162,8 +155,7 @@ public class TokenizerApplication {
 	 * @param predictions
 	 * @return
 	 */
-	private static double doCrossEvaluation(final int n,
-			final File orgSentencesFile, final File tokSentencesFile,
+	private static double doCrossEvaluation(final int n, final File orgSentencesFile, final File tokSentencesFile,
 			final ArrayList<String> errors, final ArrayList<String> predictions) {
 
 		final ArrayList<String> orgSentences = readFile(orgSentencesFile);
@@ -178,8 +170,7 @@ public class TokenizerApplication {
 		final int sizeAll = orgSentences.size();
 		final int sizeLastRound = sizeRound + (sizeAll % n);
 		System.out.println("number of files in directory: " + sizeAll);
-		System.out.println("size of each/last round: " + sizeRound + "/"
-				+ sizeLastRound);
+		System.out.println("size of each/last round: " + sizeRound + "/" + sizeLastRound);
 		System.out.println();
 
 		final EvalResult[] er = new EvalResult[n]; //
@@ -220,19 +211,16 @@ public class TokenizerApplication {
 
 			// now evaluate for this round
 			System.out.println("training size: " + trainOrgSentences.size());
-			System.out
-			.println("prediction size: " + predictOrgSentences.size());
-			er[i] = doEvaluation(trainOrgSentences, trainTokSentences,
-					predictOrgSentences, predictTokSentences, predictions,
-					errors);
+			System.out.println("prediction size: " + predictOrgSentences.size());
+			er[i] = doEvaluation(trainOrgSentences, trainTokSentences, predictOrgSentences, predictTokSentences,
+					predictions, errors);
 		}
 
 		final DecimalFormat df = new DecimalFormat("0.000");
 		for (int i = 0; i < er.length; i++) {
 			avgAcc += er[i].ACC;
 			avgF += er[i].getF();
-			System.out.println("ACC in round " + i + ": "
-					+ df.format(er[i].ACC));
+			System.out.println("ACC in round " + i + ": " + df.format(er[i].ACC));
 		}
 		avgAcc = avgAcc / n;
 		avgF = avgF / n;
@@ -257,25 +245,21 @@ public class TokenizerApplication {
 	 * @param predictions
 	 * @return
 	 */
-	public static EvalResult doEvaluation(
-			final ArrayList<String> trainOrgSentences,
-			final ArrayList<String> trainTokSentences,
-			final ArrayList<String> predictOrgSentences,
-			final ArrayList<String> predictTokSentences,
-			final ArrayList<String> errors, final ArrayList<String> predictions) {
+	public static EvalResult doEvaluation(final ArrayList<String> trainOrgSentences,
+			final ArrayList<String> trainTokSentences, final ArrayList<String> predictOrgSentences,
+			final ArrayList<String> predictTokSentences, final ArrayList<String> errors,
+			final ArrayList<String> predictions) {
 
 		final Tokenizer tokenizer = new Tokenizer();
 
 		// 1. training
-		final InstanceList trainData = tokenizer.makeTrainingData(
-				trainOrgSentences, trainTokSentences);
+		final InstanceList trainData = tokenizer.makeTrainingData(trainOrgSentences, trainTokSentences);
 		final Pipe myPipe = trainData.getPipe();
 
 		System.out.println("training model...");
 		tokenizer.train(trainData, myPipe);
 
-		return doEvaluation(tokenizer.getModel(), predictOrgSentences,
-				predictTokSentences, errors, predictions);
+		return doEvaluation(tokenizer.getModel(), predictOrgSentences, predictTokSentences, errors, predictions);
 	}
 
 	/**
@@ -290,17 +274,15 @@ public class TokenizerApplication {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static EvalResult doEvaluation(final CRF crf,
-			final ArrayList<String> predictOrgSentences,
-			final ArrayList<String> predictTokSentences,
-			final ArrayList<String> errors, final ArrayList<String> predictions) {
+	private static EvalResult doEvaluation(final CRF crf, final ArrayList<String> predictOrgSentences,
+			final ArrayList<String> predictTokSentences, final ArrayList<String> errors,
+			final ArrayList<String> predictions) {
 
 		final Tokenizer tokenizer = new Tokenizer();
 		tokenizer.setModel(crf);
 
 		// 2. prediction
-		final InstanceList predData = tokenizer.makePredictionData(
-				predictOrgSentences, predictTokSentences);
+		final InstanceList predData = tokenizer.makePredictionData(predictOrgSentences, predictTokSentences);
 
 		int nrDecisions = 0;
 		int corrDecisions = 0;
@@ -310,20 +292,16 @@ public class TokenizerApplication {
 		for (int i = 0; i < predData.size(); i++) {
 			final String orgSentence = predictOrgSentences.get(i);
 			final String tokSentence = predictTokSentences.get(i);
-			String sentenceBoundary = orgSentence.substring(
-					orgSentence.length() - 1, orgSentence.length());
+			String sentenceBoundary = orgSentence.substring(orgSentence.length() - 1, orgSentence.length());
 
 			final Instance inst = predData.get(i);
 			ArrayList<Unit> units = null;
 			units = tokenizer.predict(inst);
 
 			// 3. evaluation
-			final ArrayList<String> orgLabels = tokenizer
-					.getLabelsFromLabelSequence((LabelSequence) inst
-							.getTarget());
+			final ArrayList<String> orgLabels = tokenizer.getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
 
-			final ArrayList<String> wSpaces = (ArrayList<String>) inst
-					.getSource();
+			final ArrayList<String> wSpaces = (ArrayList<String>) inst.getSource();
 
 			String sentence = "";
 
@@ -345,17 +323,13 @@ public class TokenizerApplication {
 						localCorr++;
 					else {
 						hasError = true;
-						if (orgLabels.get(j).equals("P")
-								&& units.get(j).label.equals("N"))
+						if (orgLabels.get(j).equals("P") && units.get(j).label.equals("N"))
 							fn++;
-						if (orgLabels.get(j).equals("N")
-								&& units.get(j).label.equals("P"))
+						if (orgLabels.get(j).equals("N") && units.get(j).label.equals("P"))
 							fp++;
 
-						errors.add("@" + orgLabels.get(j) + "->"
-								+ units.get(j).label);
-						errors.add(tokenizer.showErrorContext(j, units,
-								orgLabels));
+						errors.add("@" + orgLabels.get(j) + "->" + units.get(j).label);
+						errors.add(tokenizer.showErrorContext(j, units, orgLabels));
 
 					}
 				}
@@ -373,8 +347,7 @@ public class TokenizerApplication {
 			// System.out.println("GOLD: " + tokSentence);
 
 			// System.out.println();
-			if (!sentence.substring(sentence.length() - 1, sentence.length())
-					.equals(" "))
+			if (!sentence.substring(sentence.length() - 1, sentence.length()).equals(" "))
 				sentenceBoundary = " " + sentenceBoundary;
 
 			predictions.add(sentence + sentenceBoundary);
@@ -413,14 +386,13 @@ public class TokenizerApplication {
 	 * @param inDir
 	 *            the directory with the documents to be tokenized
 	 * @param outDir
-	 *            the directory where the tokenized documents should be written
-	 *            to
+	 *            the directory where the tokenized documents should be written to
 	 * @param modelFile
 	 *            the model to use for tokenization
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public static void doPrediction(final File inDir, final File outDir,
-			final String modelFilename) throws IOException {
+	public static void doPrediction(final File inDir, final File outDir, final String modelFilename)
+			throws IOException {
 
 		final Tokenizer tokenizer = new Tokenizer();
 		try {
@@ -437,7 +409,7 @@ public class TokenizerApplication {
 			final long start = System.currentTimeMillis();
 
 			List<String> orgSentences = FileUtils.readLines(predictOrgFile, "utf-8");
-					//readFile(predictOrgFile); //TODO erik fragen was er davon hätl
+			// readFile(predictOrgFile); //TODO erik fragen was er davon hätl
 			ArrayList<String> tokSentences = new ArrayList<String>();
 
 			ArrayList<String> predictions = new ArrayList<String>();
@@ -447,33 +419,31 @@ public class TokenizerApplication {
 				tokSentences.add("");
 
 			// make prediction data
-			InstanceList predData = tokenizer.makePredictionData(orgSentences,
-					tokSentences);
+			InstanceList predData = tokenizer.makePredictionData(orgSentences, tokSentences);
 
 			// predict
 			for (int i = 0; i < predData.size(); i++) {
-				final String orgSentence = orgSentences.get(i);
-				final char lastChar = orgSentence
-						.charAt(orgSentence.length() - 1);
-
-				final Instance inst = predData.get(i);
-				ArrayList<Unit> units = null;
-				units = tokenizer.predict(inst);
-
-				// ArrayList<Unit> units = (ArrayList) inst.getName();
-
 				String sentence = "";
+				final String orgSentence = orgSentences.get(i);
+				if (!orgSentence.isEmpty()) {
+					final char lastChar = orgSentence.charAt(orgSentence.length() - 1);
 
-				for (int j = 0; j < units.size(); j++) {
-					final String sp = (units.get(j).label.equals("P")) ? " "
-							: "";
-					sentence += units.get(j).rep + sp;
+					final Instance inst = predData.get(i);
+					ArrayList<Unit> units = null;
+					units = tokenizer.predict(inst);
+
+					// ArrayList<Unit> units = (ArrayList) inst.getName();
+
+					for (int j = 0; j < units.size(); j++) {
+						final String sp = (units.get(j).label.equals("P")) ? " " : "";
+						sentence += units.get(j).rep + sp;
+					}
+
+					if (EOSSymbols.contains(lastChar))
+						sentence += " " + lastChar;
+
+					sentence = sentence.replaceAll(" +", " ");
 				}
-
-				if (EOSSymbols.contains(lastChar))
-					sentence += " " + lastChar;
-
-				sentence = sentence.replaceAll(" +", " ");
 
 				predictions.add(sentence);
 
@@ -481,8 +451,7 @@ public class TokenizerApplication {
 
 			// write predictions into file
 			final String fName = predictOrgFile.toString();
-			final String newfName = fName.substring(fName.lastIndexOf("/") + 1,
-					fName.length());
+			final String newfName = fName.substring(fName.lastIndexOf("/") + 1, fName.length());
 			final File fNew = new File(outDir.toString() + "/" + newfName);
 			writeFile(predictions, fNew);
 			// System.out.println("\ntokenized sentences written to: " +
@@ -510,8 +479,8 @@ public class TokenizerApplication {
 	 * @param tokSentencesFile
 	 * @param modelFilename
 	 */
-	public static void doTraining(final File orgSentencesFile,
-			final File tokSentencesFile, final String modelFilename) {
+	public static void doTraining(final File orgSentencesFile, final File tokSentencesFile,
+			final String modelFilename) {
 
 		final Tokenizer tokenizer = new Tokenizer();
 
@@ -519,8 +488,7 @@ public class TokenizerApplication {
 		final ArrayList<String> trainOrgSentences = readFile(orgSentencesFile);
 
 		// get training data
-		final InstanceList trainData = tokenizer.makeTrainingData(
-				trainOrgSentences, trainTokSentences);
+		final InstanceList trainData = tokenizer.makeTrainingData(trainOrgSentences, trainTokSentences);
 		final Pipe myPipe = trainData.getPipe();
 
 		// train a model
@@ -562,8 +530,8 @@ public class TokenizerApplication {
 
 	/**
 	 * reads in all lines of a file and writes each line as a string into an
-	 * arraylist the following lines are omitted: - empty lines - those
-	 * consisting of spaces only - and lines with less than 2 characters
+	 * arraylist the following lines are omitted: - empty lines - those consisting
+	 * of spaces only - and lines with less than 2 characters
 	 *
 	 * @param myFile
 	 * @return
@@ -619,8 +587,7 @@ public class TokenizerApplication {
 	 */
 	private static void start9010ValidationMode(final String[] args) {
 		if (args.length != 5) {
-			System.err
-			.println("usage: JTBD s <sent-file> <tok-file> <predout-file> <errout-file>");
+			System.err.println("usage: JTBD s <sent-file> <tok-file> <predout-file> <errout-file>");
 			System.exit(-1);
 		}
 		final File orgSentencesFile = new File(args[1]);
@@ -630,8 +597,7 @@ public class TokenizerApplication {
 
 		final ArrayList<String> errors = new ArrayList<String>();
 		final ArrayList<String> predictions = new ArrayList<String>();
-		do9010Evaluation(orgSentencesFile, tokSentencesFile, predictions,
-				errors);
+		do9010Evaluation(orgSentencesFile, tokSentencesFile, predictions, errors);
 
 		writeFile(predictions, predOutFile);
 		writeFile(errors, errOutFile);
@@ -661,8 +627,7 @@ public class TokenizerApplication {
 	 */
 	private static void startCompareValidationMode(final String[] args) {
 		if (args.length != 6) {
-			System.err
-			.println("usage: JTBD e <modelFile> <sent-file> <tok-file> <predout-file> <errout-file>");
+			System.err.println("usage: JTBD e <modelFile> <sent-file> <tok-file> <predout-file> <errout-file>");
 			System.exit(-1);
 		}
 
@@ -670,8 +635,7 @@ public class TokenizerApplication {
 		CRF crf = null;
 		try {
 			// load model
-			in = new ObjectInputStream(new GZIPInputStream(new FileInputStream(
-					args[1])));
+			in = new ObjectInputStream(new GZIPInputStream(new FileInputStream(args[1])));
 			crf = (CRF) in.readObject();
 			in.close();
 		} catch (final Exception e) {
@@ -698,7 +662,7 @@ public class TokenizerApplication {
 	 *
 	 * @param args
 	 *            the command line arguments
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private static void startPredictionMode(final String[] args) throws IOException {
 		if (args.length != 4) {
@@ -708,15 +672,13 @@ public class TokenizerApplication {
 
 		final File inDir = new File(args[1]);
 		if (!inDir.isDirectory()) {
-			System.err
-			.println("Error: the specified input directory does not exist.");
+			System.err.println("Error: the specified input directory does not exist.");
 			System.exit(-1);
 		}
 
 		final File outDir = new File(args[2]);
 		if (!outDir.isDirectory() || !outDir.canWrite()) {
-			System.err
-			.println("Error: the specified output directory does not exist or is not writable.");
+			System.err.println("Error: the specified output directory does not exist or is not writable.");
 			System.exit(-1);
 		}
 
@@ -733,8 +695,7 @@ public class TokenizerApplication {
 	 */
 	private static void startTrainingMode(final String[] args) {
 		if (args.length != 4) {
-			System.err
-			.println("usage: JTBD t <sent-file> <tok-file> <model-file>");
+			System.err.println("usage: JTBD t <sent-file> <tok-file> <model-file>");
 			System.exit(-1);
 		}
 
@@ -753,8 +714,7 @@ public class TokenizerApplication {
 	 */
 	private static void startXValidationMode(final String[] args) {
 		if (args.length != 6) {
-			System.err
-			.println("usage: JTBD x <sent-file> <tok-file> <cross-val-rounds> <predout-file> <errout-file>");
+			System.err.println("usage: JTBD x <sent-file> <tok-file> <cross-val-rounds> <predout-file> <errout-file>");
 			System.exit(-1);
 		}
 		final File orgSentencesFile = new File(args[1]);
@@ -766,8 +726,7 @@ public class TokenizerApplication {
 		final ArrayList<String> errors = new ArrayList<String>();
 		final ArrayList<String> predictions = new ArrayList<String>();
 
-		doCrossEvaluation(n, orgSentencesFile, tokSentencesFile, predictions,
-				errors);
+		doCrossEvaluation(n, orgSentencesFile, tokSentencesFile, predictions, errors);
 
 		writeFile(predictions, predOutFile);
 		writeFile(errors, errOutFile);
@@ -788,8 +747,7 @@ public class TokenizerApplication {
 				fw.write(lines.get(i) + "\n");
 			fw.close();
 		} catch (final Exception e) {
-			System.err
-			.println("ERR: error writing file: " + outFile.toString());
+			System.err.println("ERR: error writing file: " + outFile.toString());
 			e.printStackTrace();
 			System.exit(-1);
 		}

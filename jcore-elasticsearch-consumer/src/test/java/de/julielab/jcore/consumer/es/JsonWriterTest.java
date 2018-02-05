@@ -75,7 +75,8 @@ public class JsonWriterTest {
 		header.setTestAuthors(authorArray);
 		header.addToIndexes();
 
-		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/jcore-elasticsearch-json-consumer", JsonWriter.PARAM_FIELD_GENERATORS, new String[] {TestFieldGeneratorBlackBeauty.class.getCanonicalName()}, JsonWriter.PARAM_OUTPUT_DIR, "src/test/resources/json-output");
+		System.setProperty("ES_CONSUMER_TEST_MODE", "true");
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-consumer", JsonWriter.PARAM_FIELD_GENERATORS, new String[] {TestFieldGeneratorBlackBeauty.class.getCanonicalName()}, JsonWriter.PARAM_OUTPUT_DIR, "src/test/resources/json-output");
 		consumer.process(cas.getCas());
 		consumer.collectionProcessComplete();
 		

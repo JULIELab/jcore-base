@@ -23,7 +23,7 @@
  * </ul>
  **/
 
-package de.julielab.jcore.reader;
+package de.julielab.jcore.reader.db;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import de.julielab.jcore.reader.DBReader;
+import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.utility.JCoReTools;

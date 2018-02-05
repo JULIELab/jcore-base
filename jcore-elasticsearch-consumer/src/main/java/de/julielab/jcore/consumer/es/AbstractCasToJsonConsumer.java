@@ -95,7 +95,7 @@ public abstract class AbstractCasToJsonConsumer extends JCasAnnotator_ImplBase {
 				}
 			}
 		}
-		if (fieldGenerators.isEmpty() && documentGenerators.isEmpty())
+		if (fieldGenerators.isEmpty() && documentGenerators.isEmpty() && System.getProperty("ES_CONSUMER_TEST_MODE") == null)
 			throw new ResourceInitializationException(new IllegalArgumentException(
 					"Both FieldGenerators and DocumentGenerators are empty. At least one must be non-empty to create any documents."));
 
