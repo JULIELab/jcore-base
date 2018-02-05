@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.julielab</groupId>
+    <artifactId>jcore-parent</artifactId>
+    <version>2.3.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jcore-elasticsearch-consumer</artifactId>
+  <name>JCoRe  ElasticSearch Consumer</name>
+  <description>This component converts CAS annotations into a JSON format that originates from Solr's preanalyzed field type. At the JulieLab, there is an ElasticSearch plugin making this format accessible also by ElasticSearch. Configuration happens right in Java code. Note that the component is also able to generate perfectly valid ElasticSearch default JSON which does not require the plugin. Then, however, the preanalyzed data format cannot be used because this is the format that required the ElasticSearch plugin.</description>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.slf4j</groupId>
+  		<artifactId>slf4j-api</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.httpcomponents</groupId>
+  		<artifactId>httpclient</artifactId>
+  		<version>4.3.5</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.lucene</groupId>
+  		<artifactId>lucene-analyzers-common</artifactId>
+  		<version>4.10.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>ch.qos.logback</groupId>
+  		<artifactId>logback-classic</artifactId>
+  		<scope>test</scope>
+  	</dependency>
+  		<dependency>
+  		<groupId>com.google.guava</groupId>
+  		<artifactId>guava</artifactId>
+  		<version>18.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.google.code.gson</groupId>
+  		<artifactId>gson</artifactId>
+  		<version>2.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.julielab</groupId>
+  		<artifactId>jcore-utilities</artifactId>
+  		<version>${project.parent.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.julielab</groupId>
+  		<artifactId>jcore-types</artifactId>
+  		<version>${project.parent.version}</version>
+  		<scope>test</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.ibm.icu</groupId>
+  		<artifactId>icu4j</artifactId>
+  		<version>55.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.julielab</groupId>
+  		<artifactId>jcore-descriptor-creator</artifactId>
+  	</dependency>
+  </dependencies>
+  <organization>
+  	<name>JULIE Lab Jena, Germany</name>
+  	<url>http://www.julielab.de</url>
+  </organization>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-elasticsearch-consumer</url>
+</project>

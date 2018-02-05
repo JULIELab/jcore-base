@@ -32,6 +32,16 @@ The database then serves as a document storage and concurrent access management 
 | jedisConfigFile | String | true | false |   The JeDIS configuration.   |
 | ResetTable | Boolean | true | false |   Whether the subset table, from which data is read, should be reset at initialization of the reader. Must not be set to <code>true</code> when multiple readers concurrently read from the same subset table.   |
 
+The <code>RowMapping</code> allows to specify returned table columns to be mapped to UIMA types and features.
+A mapping item has the following form:
+			// <column index>=<uima type>#<type feature>:<feature
+			// datatype>:defaultValue
+			// where the defaultValue is optional. Example:
+			// 2=de.julielab.jules.types.max_xmi_id#id:int:0
+			// maps the content of the third (index 2) retrieved column (may
+			// also belong to an additional table!) to feature "id" of the type
+			// "d.j.j.t.max_xmi_id" which is a int. In case there is no value
+			// returned from the database for a document, use a 0 as default. 
 
 **2. Capabilities**
 
