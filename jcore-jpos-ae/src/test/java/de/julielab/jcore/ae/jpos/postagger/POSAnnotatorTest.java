@@ -16,7 +16,6 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.julielab.jcore.types.STTSMedPOSTag;
@@ -72,10 +71,7 @@ public class POSAnnotatorTest {
 		// postags3.addToIndexes();
 		// t3.setPosTag(postags3);
 	}
-
-	// Ignored because currently, the test model isn't working. It has to be
-	// replaced by a new one.
-	@Ignore
+	
 	@Test
 	public void testProcess() throws Exception {
 
