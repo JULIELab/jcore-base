@@ -8,8 +8,10 @@ A prerequisite for CPEs to be run with this runner is that they need to use a Co
 ## Running CPEs
 
 To run a CPE file call the runner like this
-    export CLASSPATH=<component JARs and classes>
-    java de.julielab.jcore.cpe.DBCPERunner <parameters>
+```
+export CLASSPATH=<component JARs and classes>
+java de.julielab.jcore.cpe.DBCPERunner <parameters>
+```
     
 The following parameters are possible
 
