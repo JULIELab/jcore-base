@@ -54,6 +54,7 @@
 		<module>jcore-dta-reader</module>
 		<module>jcore-ec-code-ae</module>
 		<module>jcore-elasticsearch-consumer</module>
+		<module>jcore-event-flattener-ae</module>
 		<module>jcore-feature-value-replacement-ae</module>
 		<module>jcore-file-reader</module>
 		<module>jcore-iexml-consumer</module>
