@@ -46,8 +46,7 @@
 		<module>jcore-bionlpformat-consumer</module>
 		<module>jcore-bionlpformat-reader</module>
 		<module>jcore-biosem-ae</module>
-		<module>jcore-cas2conll-consumer</module>
-		<module>jcore-cas2iob-consumer</module>
+		<module>jcore-conll-consumer</module>
 		<module>jcore-coordination-baseline-ae</module>
 		<module>jcore-cpe-db-runner</module>
 		<module>jcore-db-reader</module>
@@ -60,6 +59,7 @@
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
 		<module>jcore-ign-reader</module>
+		<module>jcore-iob-consumer</module>
 		<module>jcore-jnet-ae</module>
 		<module>jcore-jpos-ae</module>
 		<module>jcore-jsbd-ae</module>
