@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import de.julielab.jcore.ae.biosem.BioSemEventAnnotator;
 import de.julielab.jcore.ae.biosem.DBUtilsProviderImpl;
-import de.julielab.jcore.consumer.bionlp09event.main.EventConsumer;
+import de.julielab.jcore.consumer.bionlpformat.main.BioEventConsumer;
 import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
 import de.julielab.jcore.types.EventMention;
 
@@ -41,9 +41,9 @@ public class BioSemEventAnnotatorTest {
 				"file:src/test/resources/de/julielab/jcore/ae/biosemannotator.test.properties");
 		AnalysisEngine engine = AnalysisEngineFactory.createEngine(BioSemEventAnnotator.class,
 				BioSemEventAnnotator.RESOURCE_TRAINED_DB, dbResourceDescription);
-		AnalysisEngine bioNlpSTWriter = AnalysisEngineFactory.createEngine(EventConsumer.class,
-				EventConsumer.DIRECTORY_PARAM, "src/test/resources/test-predict-out",
-				EventConsumer.BIOEVENT_SERVICE_MODE_PARAM, false);
+		AnalysisEngine bioNlpSTWriter = AnalysisEngineFactory.createEngine(BioEventConsumer.class,
+				BioEventConsumer.DIRECTORY_PARAM, "src/test/resources/test-predict-out",
+				BioEventConsumer.BIOEVENT_SERVICE_MODE_PARAM, false);
 
 		// first, delete the possibly already existing old test output file
 		File testOutputFile = new File("src/test/resources/test-predict-out/1313226.a2");
