@@ -76,7 +76,7 @@ public class MSdoc2txtReaderTest {
 		 * Create dummies of *.doc-files.
 		 */
 
-		new File(DIRECTORY_INPUT).mkdir();
+		new File(DIRECTORY_INPUT).mkdirs();
 
 		new File(DIR1).mkdir();
 		new File(SUBDIR1).mkdir();
