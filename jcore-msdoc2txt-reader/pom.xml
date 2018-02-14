@@ -6,10 +6,10 @@
     <artifactId>jcore-base</artifactId>
     <version>2.3.0-SNAPSHOT</version>
   </parent>
-  <artifactId>jcore-msdoc2txt-reader</artifactId>
-  <name>JCoRe MSdoc2txt Reader</name>
+  <artifactId>jcore-msdoc-reader</artifactId>
+  <name>JCoRe MSdoc Reader</name>
   <description>Reads MS doc files; derived from UIMA example &quot;FileSystemCollectionReader&quot; and the JCoRe component File Reader</description>
-  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-msdoc2txt-reader</url>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-msdoc-reader</url>
   <organization>
   	<name>JULIE Lab Jena, Germany</name>
   	<url>http://www.julielab.de</url>

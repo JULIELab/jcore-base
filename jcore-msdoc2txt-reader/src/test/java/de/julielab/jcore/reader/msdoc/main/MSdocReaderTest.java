@@ -1,5 +1,5 @@
 /**
- * MSdoc2txtReaderTest.java
+ * MSdocReaderTest.java
  *
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials
@@ -14,7 +14,7 @@
  * Tests for class <code>FileReader</code>, a UIMA <code>CollctionReader</code>.
  */
 
-package de.julielab.jcore.reader.msdoc2txt.main;
+package de.julielab.jcore.reader.msdoc.main;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,11 +40,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MSdoc2txtReaderTest {
+import de.julielab.jcore.reader.msdoc.main.MSdocReader;
+import de.julielab.jcore.reader.msdoc.main.ReadSingleMSdoc;
+
+public class MSdocReaderTest {
 	/**
 	 * Path to the FileReader descriptor
 	 */
-	private static final String DESC_FILE_READER = "src/main/resources/de/julielab/jcore/reader/msdoc2txt/desc/jcore-msdoc2txt-reader.xml";
+	private static final String DESC_FILE_READER = "src/main/resources/de/julielab/jcore/reader/msdoc/desc/jcore-msdoc-reader.xml";
 
 	/**
 	 * CAS for UIMA
@@ -107,7 +110,7 @@ public class MSdoc2txtReaderTest {
 		fileReader.setConfigParameterValue("InputDirectory", DIRECTORY_INPUT);
 		fileReader.setConfigParameterValue("UseFilenameAsDocId", true);
 		fileReader.setConfigParameterValue("ReadSubDirs", true);
-		fileReader.setConfigParameterValue(MSdoc2txtReader.ALLOWED_FILE_EXTENSIONS, new String[] { "doc" });
+		fileReader.setConfigParameterValue(MSdocReader.ALLOWED_FILE_EXTENSIONS, new String[] { "doc" });
 		fileReader.reconfigure();
 
 		cas = CasCreationUtils.createCas((AnalysisEngineMetaData) fileReader.getMetaData());

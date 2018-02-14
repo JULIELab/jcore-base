@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>de.julielab.jcore.reader.msdoc2txt.main.MSdoc2txtReader</implementationName>
+  <implementationName>de.julielab.jcore.reader.msdoc.main.MSdocReader</implementationName>
   <processingResourceMetaData>
-    <name>JCoRe MSdoc2txt Reader</name>
+    <name>JCoRe MSdoc Reader</name>
     <description/>
     <version>1.0</version>
     <vendor>JULIELab Jena, Germany</vendor>

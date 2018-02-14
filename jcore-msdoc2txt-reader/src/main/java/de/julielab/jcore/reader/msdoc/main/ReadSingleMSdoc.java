@@ -1,5 +1,5 @@
 /**
- * MSdoc2txtReader.java
+ * MSdocReader.java
  * 
  * @author Christina Lohr
  *
@@ -33,7 +33,7 @@
  * Non-readable characters are removed, see characterChecker().
  */
 
-package de.julielab.jcore.reader.msdoc2txt.main;
+package de.julielab.jcore.reader.msdoc.main;
 
 import java.io.FileInputStream;
 import java.io.InputStream;

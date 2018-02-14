@@ -1,5 +1,5 @@
 /**
- * MSdoc2txtReader.java
+ * MSdocReader.java
  *
  * Copyright (c) 2017, JULIE Lab.
  * All rights reserved. This program and the accompanying materials
@@ -17,7 +17,7 @@
  * Derived form Apache UIMA example <code>FileSystemCollectionReader</code>.
  **/
 
-package de.julielab.jcore.reader.msdoc2txt.main;
+package de.julielab.jcore.reader.msdoc.main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,7 +38,7 @@ import org.apache.uima.util.ProgressImpl;
 
 import de.julielab.jcore.types.pubmed.Header;
 
-public class MSdoc2txtReader extends CollectionReader_ImplBase {
+public class MSdocReader extends CollectionReader_ImplBase {
 	public static final String DIRECTORY_INPUT = "InputDirectory";
 	public static final String FILENAME_AS_DOC_ID = "UseFilenameAsDocId";
 	public static final String ALLOWED_FILE_EXTENSIONS = "AllowedFileExtensions";

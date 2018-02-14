@@ -70,7 +70,7 @@
 		<module>jcore-linnaeus-species-ae</module>
 		<module>jcore-mantra-xml-types</module>
 		<module>jcore-medxn-ae</module>
-		<module>jcore-msdoc2txt-reader</module>
+		<module>jcore-msdoc-reader</module>
 		<module>jcore-mstparser-ae</module>
 		<module>jcore-muc7-reader</module>
 		<module>jcore-opennlp-chunk-ae</module>
