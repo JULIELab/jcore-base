@@ -155,7 +155,7 @@ public class MSdoc2txtReader extends CollectionReader_ImplBase {
 		}
 
 		// writeArtifactIntoTXT(file.getPath(), textOnly);
-		writeArtifactIntoTXT(file.getPath(), textWithMarkedTables);
+//		writeArtifactIntoTXT(file.getPath(), textWithMarkedTables);
 		// writeArtifactIntoTXT(file.getPath(), textHTML);
 
 	}
