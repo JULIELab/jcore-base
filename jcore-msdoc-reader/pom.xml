@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.julielab</groupId>
+    <artifactId>jcore-base</artifactId>
+    <version>2.3.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jcore-msdoc-reader</artifactId>
+  <name>JCoRe MSdoc Reader</name>
+  <description>Reads MS doc files; derived from UIMA example &quot;FileSystemCollectionReader&quot; and the JCoRe component File Reader</description>
+  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-msdoc-reader</url>
+  <organization>
+  	<name>JULIE Lab Jena, Germany</name>
+  	<url>http://www.julielab.de</url>
+  </organization>
+  <dependencies>
+  	<dependency>
+  		<groupId>de.julielab</groupId>
+  		<artifactId>jcore-types</artifactId>
+  		<version>${jcore-version}</version>
+  	</dependency>
+  
+  	<dependency>
+  		<groupId>org.apache.poi</groupId>
+  		<artifactId>poi</artifactId>
+  		<version>3.15</version>
+  	</dependency>
+    <dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-scratchpad</artifactId>
+    <version>3.15</version>
+  </dependency>
+
+
+
+    <dependency>
+    	<groupId>org.apache.poi</groupId>
+    	<artifactId>poi-ooxml</artifactId>
+    	<version>3.16</version>
+    </dependency>
+  </dependencies>
+  </project>
