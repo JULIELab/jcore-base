@@ -1,12 +1,12 @@
 package de.julielab.jcore.reader.dta;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,7 +22,6 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
-import com.ximpleware.ParseException;
 import com.ximpleware.VTDNav;
 
 import de.julielab.jcore.reader.dta.util.DTAUtils;
@@ -35,11 +34,9 @@ import de.julielab.jcore.types.extensions.dta.DWDS2Wissenschaft;
 import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 import de.julielab.jcore.types.extensions.dta.Header;
 import de.julielab.jcore.types.extensions.dta.PersonInfo;
-import de.julielab.xml.FileTooBigException;
 import de.julielab.xml.JulieXMLTools;
 
 public class DTAFileReaderTest {
-	
 
 	public enum Version {
 		v2016("2016_format"), v2017("2017_format");
@@ -47,10 +44,10 @@ public class DTAFileReaderTest {
 		private static final String TEST_FILE_NAME = "/short-arnim_wunderhorn01_1806.tcf.xml";
 		private final String versionString;
 
-		static String[] getTestDirs(){
-			return Arrays.stream(Version.values()).map(v -> TEST_DIR+v.versionString).toArray(String[]::new);
+		String getTestDir() {
+			return TEST_DIR + versionString;
 		}
-		
+
 		String getTestFileForVersion() {
 			return TEST_DIR + versionString + TEST_FILE_NAME;
 		}
@@ -71,7 +68,7 @@ public class DTAFileReaderTest {
 		final JCas jcas = JCasFactory.createJCas();
 		final VTDNav nav = getNav(testFile);
 		DTAFileReader.readDocument(jcas, nav, testFile, normalize);
-		DTAFileReader.readHeader(jcas, nav, testFile, version==Version.v2017);
+		DTAFileReader.readHeader(jcas, nav, testFile, version == Version.v2017);
 		return jcas;
 	}
 
@@ -85,8 +82,9 @@ public class DTAFileReaderTest {
 
 	@Test
 	public void testDoProcessDirectory() throws Exception {
-		for (String testDir : Version.getTestDirs()){
-			CollectionReader reader = DTAUtils.getReader(testDir, true);
+		
+		for (Version v : Version.values()) {
+			CollectionReader reader = DTAUtils.getReader(v.getTestDir(), true, v == Version.v2017);
 			CAS cas = JCasFactory.createJCas().getCas();
 			int processed = 0;
 			while (reader.hasNext()) {
@@ -152,7 +150,8 @@ public class DTAFileReaderTest {
 
 			// persons
 			assertEquals(2, h.getAuthors().size());
-			assertEquals(6, h.getEditors().size());
+			assertEquals(version == Version.v2017 ? 8 : 6,
+					h.getEditors().size());
 			final PersonInfo arnim = (PersonInfo) h.getAuthors().get(0);
 			assertEquals("Arnim", arnim.getSurename());
 			assertEquals("Achim von", arnim.getForename());
@@ -160,12 +159,16 @@ public class DTAFileReaderTest {
 
 			//classification
 			final FSArray classes = h.getClassifications();
-			assertEquals(3, classes.size());
+			assertEquals(version == Version.v2017 ? 2 : 3, classes.size());
 			assertTrue(containsClassification(classes, DTABelletristik.class));
 			assertTrue(
 					containsClassification(classes, DWDS1Belletristik.class));
-			assertTrue(
-					containsClassification(classes, DWDS2Wissenschaft.class));
+			if (version == Version.v2017)
+				assertFalse(containsClassification(classes,
+						DWDS2Wissenschaft.class));
+			else
+				assertTrue(containsClassification(classes,
+						DWDS2Wissenschaft.class));
 			assertTrue(h.getIsCoreCorpus());
 
 			//year

@@ -23,7 +23,6 @@ import java.util.Map;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
@@ -87,9 +86,9 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 				XPATH_TEXT_CORPUS + "POStags", "@tagset").keySet())
 			if (!tagset.equals("stts"))
 				return false;
-		final String xpathProfileDesc = xpath2017 ? XPATH_PROFILE_DESC_2017 : XPATH_PROFILE_DESC_2016;
+		final String langXpath = xpath2017 ? XPATH_PROFILE_DESC_2017 + "cmdp:langUsage/cmdp:language": XPATH_PROFILE_DESC_2016 + "langUsage/language";
 		for (final String[] language : mapAttribute2Text(xmlFileName, nav,
-				xpathProfileDesc + "langUsage/language", ".").values())
+				langXpath , ".").values())
 			if ((language.length != 1) || !language[0].equals("German"))
 				return false;
 		return true;
@@ -440,18 +439,12 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		h.addToIndexes();
 	}
 
-	@ConfigurationParameter(name = PARAM_INPUTFILE)
-	private String inputFile;
-
-	@ConfigurationParameter(name = PARAM_NORMALIZE)
-	private boolean normalize;
-	
-	@ConfigurationParameter(name = PARAM_FORMAT_2017)
-	private boolean format2017;
 
 	private final List<File> inputFiles = new ArrayList<>();
 
 	private int counter = 0;
+	private boolean format2017 = true;
+	private boolean normalize = true;
 
 	@Override
 	public void close() throws IOException {
@@ -466,7 +459,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 					new FileInputStream(file), 1024);
 			final String xmlFileName = file.getCanonicalPath();
 			LOGGER.info("Reading file:" + counter + " - " + xmlFileName);
-			if (!formatIsOk(xmlFileName, nav,format2017))
+			if (!formatIsOk(xmlFileName, nav, format2017))
 				LOGGER.info("Skipping file:" + counter + " - " + xmlFileName);
 			else {
 				readDocument(jcas, nav, xmlFileName, normalize);
@@ -494,10 +487,16 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	public void initialize() throws ResourceInitializationException {
 		final String filename = (String) this
 				.getConfigParameterValue(PARAM_INPUTFILE);
+		
 		final Object o = this.getConfigParameterValue(PARAM_NORMALIZE);
 		if (o != null)
 			normalize = (boolean) o;
-		normalize = true;
+		
+		final Object o2 = this.getConfigParameterValue(PARAM_FORMAT_2017);
+		if (o2 != null)
+			format2017 = (boolean) o2;
+		
+		LOGGER.info("Parameters: inputfile=" +filename + " normalize= " + normalize + " 2017format="+format2017);
 
 		final File inputFile = new File(filename);
 
