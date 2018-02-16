@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
 import java.util.zip.GZIPInputStream;
@@ -214,15 +215,13 @@ public class SentenceSplitterApplication {
 	 */
 	private static void startPredictionMode(String[] args) {
 		System.out.println("doing the sentence splitting...");
-		if (args.length != 4) {
+		if (args.length < 4) {
 			System.err.println("usage: JSBD p <inDir> <outDir> <modelFilename> [<postprocessing>]");
 			System.exit(-1);
 		}
 		
-		if (args.length > 4) {
-			if (PostprocessingFilter.POSTPROC_STREAM.anyMatch(x -> args[4].equals(x))) {
+		if (args.length > 4 && PostprocessingFilter.POSTPROC_STREAM.anyMatch(args[4]::equals)) {
 				doPostprocessing = args[4];
-			}
 		}
 
 		File inDir = new File(args[1]);
@@ -475,14 +474,14 @@ public class SentenceSplitterApplication {
 		for (int i = 0; i < predictData.size(); i++) {
 			Instance inst = (Instance) predictData.get(i);
 			String abstractName = (String) inst.getSource();
-			ArrayList<Unit> units = null;
+			List<Unit> units = null;
 			try {
 				units = tpFunctions.predict(inst, doPostprocessing);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 
-			ArrayList<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
+			List<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
 
 			for (int j = 0; j < units.size(); j++) {
 				String unitRep = units.get(j).rep;
@@ -562,14 +561,14 @@ public class SentenceSplitterApplication {
 		for (int i = 0; i < predictData.size(); i++) {
 			Instance inst = predictData.get(i);
 			String abstractName = (String) inst.getSource();
-			ArrayList<Unit> units = null;
+			List<Unit> units = null;
 			try {
 				units = tpFunctions.predict(inst, doPostprocessing);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 
-			ArrayList<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
+			List<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
 
 			// for postprocessing
 			// if (doPostprocessing) {
@@ -684,13 +683,13 @@ public class SentenceSplitterApplication {
 				System.out.println(i + " files done...");
 			}
 
-			ArrayList<String> fileLines = sentenceSplitter.readFile(inFiles[i]);
+			List<String> fileLines = sentenceSplitter.readFile(inFiles[i]);
 
 			tmp = new Instance(fileLines, "", "", inFiles[i].getName());
 			inst = myPipe.instanceFrom(tmp);
 			fileLines = null;
 
-			ArrayList<Unit> units = null;
+			List<Unit> units = null;
 
 			try {
 				units = sentenceSplitter.predict(inst, doPostprocessing);

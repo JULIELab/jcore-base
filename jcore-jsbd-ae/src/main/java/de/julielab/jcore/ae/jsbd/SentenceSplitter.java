@@ -30,9 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.TreeSet;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -160,7 +159,7 @@ public class SentenceSplitter {
 	 * @param doPostprocessing
 	 * @return ArrayList of Unit objects
 	 */
-	public ArrayList<Unit> predict(ArrayList<String> lines, String postprocessingFilter) {
+	public List<Unit> predict(List<String> lines, String postprocessingFilter) {
 		if (trained == false || model == null) {
 			throw new IllegalStateException("No model available. Train or load trained model first.");
 		}
@@ -175,7 +174,7 @@ public class SentenceSplitter {
 	 * @param doPostProcessing
 	 * @return ArrayList of Unit objects
 	 */
-	public ArrayList<Unit> predict(Instance inst, String filterName) {
+	public List<Unit> predict(Instance inst, String filterName) {
 		if (trained == false || model == null) {
 			throw new IllegalStateException("No model available. Train or load trained model first.");
 		}
@@ -183,8 +182,8 @@ public class SentenceSplitter {
 		// get sequence
 		Sequence input = (Sequence) inst.getData();
 		@SuppressWarnings("unchecked")
-		ArrayList<Unit> units = (ArrayList<Unit>) inst.getName();
-		ArrayList<String> labelList = new ArrayList<String>();
+		List<Unit> units = (List<Unit>) inst.getName();
+		List<String> labelList = new ArrayList<>();
 
 		// transduce and generate output
 		Sequence<String> crfOutput = model.transduce(input);

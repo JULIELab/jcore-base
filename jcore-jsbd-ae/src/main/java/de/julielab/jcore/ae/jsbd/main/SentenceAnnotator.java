@@ -216,11 +216,11 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	}
 
 	private void doSegmentation(JCas aJCas, String text, int offset) throws AnalysisEngineProcessException {
-		ArrayList<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<String>();
 		lines.add(text);
 
 		// make prediction
-		ArrayList<Unit> units;
+		List<Unit> units;
 		units = sentenceSplitter.predict(lines, postprocessingFilter);
 
 		// add to UIMA annotations
@@ -238,7 +238,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	 *            all sentence units as returned by JSBD
 	 * @param offset
 	 */
-	private void addAnnotations(JCas aJCas, ArrayList<Unit> units, int offset) {
+	private void addAnnotations(JCas aJCas, List<Unit> units, int offset) {
 		int start = 0;
 		for (int i = 0; i < units.size(); i++) {
 			Unit myUnit = units.get(i);
