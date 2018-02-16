@@ -95,7 +95,7 @@ public class MedEventReader  extends CollectionReader_ImplBase {
 
     @Override
     public Progress[] getProgress() {
-        return new Progress[] { new ProgressImpl(i, files.length, "docs") };
+        return new Progress[] { new ProgressImpl(i, files.length, files[i].getName().substring(0, files[i].getName().indexOf("."))) };
     }
 
     @Override
