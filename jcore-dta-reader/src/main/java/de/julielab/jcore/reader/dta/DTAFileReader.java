@@ -53,32 +53,43 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	public static final String PARAM_INPUTFILE = "inputFile";
 	public static final String PARAM_NORMALIZE = "normalize";
+	public static final String PARAM_FORMAT_2017 = "format2017";
 
 	private static final String XPATH_TEXT_CORPUS = "/D-Spin/TextCorpus/";
-	private static final String XPATH_TEI_HEADER = "/D-Spin/MetaData/source/CMD/Components/teiHeader/";
+	private static final String XPATH_TEI_HEADER_2016 = "/D-Spin/MetaData/source/CMD/Components/teiHeader/";
+	private static final String XPATH_TEI_HEADER_2017 = "/D-Spin/MetaData/source/cmd:CMD/cmd:Components/cmdp:teiHeader/";
 
-	private static final String XPATH_PROFILE_DESC = XPATH_TEI_HEADER
+	private static final String XPATH_PROFILE_DESC_2016 = XPATH_TEI_HEADER_2016
 			+ "profileDesc/";
-	private static final String XPATH_TITLE_STMT = XPATH_TEI_HEADER
+	private static final String XPATH_PROFILE_DESC_2017 = XPATH_TEI_HEADER_2017
+			+ "cmdp:profileDesc/";
+	private static final String XPATH_TITLE_STMT_2016 = XPATH_TEI_HEADER_2016
 			+ "fileDesc/titleStmt/";
-	static final String XPATH_PUBLICATION_STMT = XPATH_TEI_HEADER
+	private static final String XPATH_TITLE_STMT_2017 = XPATH_TEI_HEADER_2017
+			+ "cmdp:fileDesc/cmdp:titleStmt/";
+	static final String XPATH_PUBLICATION_STMT_2016 = XPATH_TEI_HEADER_2016
 			+ "fileDesc/sourceDesc/biblFull/publicationStmt/";
-	private static final String XPATH_YEAR = XPATH_PUBLICATION_STMT + "date";
+	static final String XPATH_PUBLICATION_STMT_2017 = XPATH_TEI_HEADER_2017
+			+ "cmdp:fileDesc/cmdp:sourceDesc/cmdp:biblFull/cmdp:publicationStmt/";
+	private static final String XPATH_YEAR_2016 = XPATH_PUBLICATION_STMT_2016 + "date";
+	private static final String XPATH_YEAR_2017 = XPATH_PUBLICATION_STMT_2017 + "cmdp:date";
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(DTAFileReader.class);
 	private static final Joiner NEW_LINE_JOINER = Joiner.on("\n");
 
+
 	/**
 	 * Checks some assumptions about xml file, e.g., tagset and language
 	 */
-	static boolean formatIsOk(final String xmlFileName, final VTDNav nav) {
+	static boolean formatIsOk(final String xmlFileName, final VTDNav nav, final boolean xpath2017) {
 		// Tagset <POStags tagset="stts">
 		for (final String tagset : mapAttribute2Text(xmlFileName, nav,
 				XPATH_TEXT_CORPUS + "POStags", "@tagset").keySet())
 			if (!tagset.equals("stts"))
 				return false;
+		final String xpathProfileDesc = xpath2017 ? XPATH_PROFILE_DESC_2017 : XPATH_PROFILE_DESC_2016;
 		for (final String[] language : mapAttribute2Text(xmlFileName, nav,
-				XPATH_PROFILE_DESC + "langUsage/language", ".").values())
+				xpathProfileDesc + "langUsage/language", ".").values())
 			if ((language.length != 1) || !language[0].equals("German"))
 				return false;
 		return true;
@@ -170,17 +181,20 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	 * Extracts PersonInfo for a PersonType, all already added to indexes
 	 */
 	static FSArray getPersons(final JCas jcas, final VTDNav vn,
-			final String xmlFileName, final PersonType personType) {
+			final String xmlFileName, final PersonType personType, final boolean xpath2017) {
 		final List<PersonInfo> personList = new ArrayList<>();
-		final String forEachXpath = XPATH_TITLE_STMT + personType + "/persName";
+		final String forEachXpath = xpath2017 ? 
+				XPATH_TITLE_STMT_2017 + "cmdp:"+personType + "/cmdp:persName" :
+					XPATH_TITLE_STMT_2016 + personType + "/persName";
 
 		final List<Map<String, String>> fields = new ArrayList<>();
 		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "surname",
-				JulieXMLConstants.XPATH, "surname"));
+				JulieXMLConstants.XPATH, 
+				xpath2017 ? "cmdp:surname" :"surname" ));
 		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "forename",
-				JulieXMLConstants.XPATH, "forename"));
+				JulieXMLConstants.XPATH, xpath2017 ? "cmdp:forename" : "forename"));
 		fields.add(ImmutableMap.of(JulieXMLConstants.NAME, "idno",
-				JulieXMLConstants.XPATH, "idno/idno[@type='PND']"));
+				JulieXMLConstants.XPATH, xpath2017 ? "cmdp:idno/cmdp:idno[@type='PND']" :" idno/idno[@type='PND']"));
 		final Iterator<Map<String, Object>> iterator = JulieXMLTools
 				.constructRowIterator(vn, forEachXpath, fields, xmlFileName);
 		while (iterator.hasNext()) {
@@ -335,21 +349,24 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 	 * @throws NoSuchMethodException
 	 */
 	static void readHeader(final JCas jcas, final VTDNav nav,
-			final String xmlFileName) throws NoSuchMethodException,
+			final String xmlFileName, final boolean xpath2017) throws NoSuchMethodException,
 			SecurityException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		final Header h = new Header(jcas);
 
 		// titles
+		final String titleXpath = xpath2017 ? 
+				XPATH_TITLE_STMT_2017 +"cmdp:title"
+				: XPATH_TITLE_STMT_2016 + "title";
 		final Map<String, String[]> titles = mapAttribute2Text(xmlFileName,
-				nav, XPATH_TITLE_STMT + "title", "@type");
+				nav, titleXpath, "@type");
 		h.setTitle(getEntry(xmlFileName, "main", titles));
 		final String[] subTitle = titles.get("sub");
 		if (subTitle != null)
 			h.setSubtitle(NEW_LINE_JOINER.join(subTitle));
 		boolean moreThanOne = false;
 		for (final String volume : getAttributeForEach(xmlFileName, nav,
-				XPATH_TITLE_STMT + "title[@type='volume']", "@n")) {
+				titleXpath+"[@type='volume']", "@n")) {
 			if (moreThanOne)
 				throw new IllegalArgumentException(xmlFileName
 						+ " has more than one volume!");
@@ -358,12 +375,15 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		}
 
 		// author
-		h.setAuthors(getPersons(jcas, nav, xmlFileName, PersonType.author));
-		h.setEditors(getPersons(jcas, nav, xmlFileName, PersonType.editor));
+		h.setAuthors(getPersons(jcas, nav, xmlFileName, PersonType.author, xpath2017));
+		h.setEditors(getPersons(jcas, nav, xmlFileName, PersonType.editor, xpath2017));
 
 		// classification
+		final String classXpath = xpath2017 ? 
+				XPATH_PROFILE_DESC_2017 + "cmdp:textClass/cmdp:classCode"
+				: XPATH_PROFILE_DESC_2016 + "textClass/classCode";
 		final Map<String, String[]> classInfo = mapAttribute2Text(xmlFileName,
-				nav, XPATH_PROFILE_DESC + "textClass/classCode", "@scheme");
+				nav, classXpath, "@scheme");
 
 		h.setIsCoreCorpus(MappingService.isCoreCorpus(classInfo));
 
@@ -376,7 +396,7 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 		//year
 		final Map<String, String[]> yearInfo = mapAttribute2Text(xmlFileName,
-				nav, XPATH_YEAR, "@type");
+				nav, (xpath2017 ? XPATH_YEAR_2017 : XPATH_YEAR_2016), "@type");
 		String[] year = null;
 		if (yearInfo.containsKey("creation"))
 			year = yearInfo.get("creation");
@@ -391,9 +411,13 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		h.setYear(year[0]);
 
 		//publication
+		final String placeXpath = xpath2017 ? 
+				XPATH_PUBLICATION_STMT_2017
+				+ "cmdp:pubPlace"
+				: XPATH_PUBLICATION_STMT_2016
+				+ "pubPlace";
 		final List<String> publicationPlaces = DTAFileReader.getTexts(
-				xmlFileName, nav, DTAFileReader.XPATH_PUBLICATION_STMT
-						+ "pubPlace");
+				xmlFileName, nav, placeXpath);
 		final StringArray pubArray = new StringArray(jcas,
 				publicationPlaces.size());
 		for (int i = 0; i < publicationPlaces.size(); ++i)
@@ -401,8 +425,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 		pubArray.addToIndexes();
 		h.setPublicationPlaces(pubArray);
 
+		final String publisherXpath = xpath2017 ? 
+				XPATH_PUBLICATION_STMT_2017 + "cmdp:publisher/cmdp:name"
+				: XPATH_PUBLICATION_STMT_2016 + "publisher/name";
 		final List<String> publisher = DTAFileReader.getTexts(xmlFileName, nav,
-				DTAFileReader.XPATH_PUBLICATION_STMT + "publisher/name");
+				publisherXpath);
 		final StringArray publisherArray = new StringArray(jcas,
 				publisher.size());
 		for (int i = 0; i < publisher.size(); ++i)
@@ -418,6 +445,9 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 
 	@ConfigurationParameter(name = PARAM_NORMALIZE)
 	private boolean normalize;
+	
+	@ConfigurationParameter(name = PARAM_FORMAT_2017)
+	private boolean format2017;
 
 	private final List<File> inputFiles = new ArrayList<>();
 
@@ -436,11 +466,11 @@ public class DTAFileReader extends CollectionReader_ImplBase {
 					new FileInputStream(file), 1024);
 			final String xmlFileName = file.getCanonicalPath();
 			LOGGER.info("Reading file:" + counter + " - " + xmlFileName);
-			if (!formatIsOk(xmlFileName, nav))
+			if (!formatIsOk(xmlFileName, nav,format2017))
 				LOGGER.info("Skipping file:" + counter + " - " + xmlFileName);
 			else {
 				readDocument(jcas, nav, xmlFileName, normalize);
-				readHeader(jcas, nav, xmlFileName);
+				readHeader(jcas, nav, xmlFileName,format2017);
 				LOGGER.info("Read file:" + counter + " - " + xmlFileName);
 			}
 			counter++;
