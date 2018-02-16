@@ -1,4 +1,4 @@
-package de.julielab.jcore.ae.jsbd.PostprocessingFilters;
+package de.julielab.jcore.ae.jsbd.postprocessingfilters;
 
 import java.util.ArrayList;
 import java.util.List;

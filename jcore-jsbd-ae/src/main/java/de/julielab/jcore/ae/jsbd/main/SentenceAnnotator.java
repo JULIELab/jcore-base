@@ -21,21 +21,17 @@ package de.julielab.jcore.ae.jsbd.main;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Type;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -47,14 +43,11 @@ import de.julielab.jcore.ae.jsbd.SentenceSplitter;
 import de.julielab.jcore.ae.jsbd.Unit;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
-import de.julielab.jcore.types.Sentence;
 
 public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 
 	public static final String PARAM_MODEL_FILE = "ModelFilename";
 	public static final String PARAM_POSTPROCESSING = "Postprocessing";
-	@Deprecated
-	public static final String PARAM_PROCESSING_SCOPE = "ProcessingScope";
 
 	public static final String PARAM_SENTENCE_DELIMITER_TYPES = "SentenceDelimiterTypes";
 	/**
@@ -63,12 +56,9 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SentenceAnnotator.class);
 
 	// activate post processing
-	@ConfigurationParameter(name = PARAM_POSTPROCESSING, mandatory = false, defaultValue = { "false" })
+	@ConfigurationParameter(name = PARAM_POSTPROCESSING, mandatory = false, defaultValue = {
+			"false" }, description = "One of 'biomed' or 'medical'. Does some post processing to e.g. respect parenthesis and don't put a sentence boundary withing in a pair of opening and closing parenthesis.")
 	private String postprocessingFilter = null;
-
-	@ConfigurationParameter(name = PARAM_PROCESSING_SCOPE, mandatory = false)
-	@Deprecated
-	private String processingScope;
 
 	@ConfigurationParameter(name = PARAM_SENTENCE_DELIMITER_TYPES, mandatory = false, description = "An array of annotation types that should never begin or end within a sentence. For example, sentences should never reach out of a paragraph or a section heading.")
 	private LinkedHashSet<Object> sentenceDelimiterTypes;
@@ -77,8 +67,6 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	private String modelFilename;
 
 	private SentenceSplitter sentenceSplitter;
-	@Deprecated
-	private Type scopeType;
 
 	/**
 	 * initiaziation of JSBD: load the model, set post processing
@@ -87,17 +75,13 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	 */
 	public void initialize(UimaContext aContext) throws ResourceInitializationException {
 
-		LOGGER.info("[JSBD] initializing...");
-
 		// invoke default initialization
 		super.initialize(aContext);
 
-		// get parameters
-
-		// initialize sentenceSplitter
-		sentenceSplitter = new SentenceSplitter();
 		try {
-			LOGGER.info("[JSBD] initializing JSBD Annotator ...");
+			// initialize sentenceSplitter
+			sentenceSplitter = new SentenceSplitter();
+			LOGGER.info("initializing JSBD Annotator ...");
 			// Get configuration parameter values
 			modelFilename = (String) aContext.getConfigParameterValue(PARAM_MODEL_FILE);
 
@@ -115,49 +99,27 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 							+ "\" could be found neither in the file system nor in the classpath.");
 			}
 			sentenceSplitter.readModel(modelIs);
-		} catch (RuntimeException e) {
+
+			// this parameter is not mandatory, so first check whether it is there
+			Object pp = aContext.getConfigParameterValue(PARAM_POSTPROCESSING);
+			if (pp != null) {
+				postprocessingFilter = (String) pp;
+			}
+
+			String[] sentenceDelimiterTypesArray = (String[]) aContext
+					.getConfigParameterValue(PARAM_SENTENCE_DELIMITER_TYPES);
+			if (null != sentenceDelimiterTypesArray)
+				sentenceDelimiterTypes = new LinkedHashSet<>(Arrays.asList(sentenceDelimiterTypesArray));
+		} catch (ClassNotFoundException | IOException e) {
 			throw new ResourceInitializationException(e);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-
-		// this parameter is not mandatory, so first check whether it is there
-		Object pp = aContext.getConfigParameterValue("Postprocessing");
-		if (pp != null) {
-			postprocessingFilter = (String) aContext.getConfigParameterValue("Postprocessing");
-		}
-
-		// this parameter is not mandatory, so first check whether it is there
-		Object obj = aContext.getConfigParameterValue("ProcessingScope");
-		if (obj != null) {
-			processingScope = (String) aContext.getConfigParameterValue("ProcessingScope");
-			processingScope = processingScope.trim();
-			if (processingScope.length() == 0)
-				processingScope = null;
-		} else {
-			processingScope = null;
-		}
-		LOGGER.info("initialize() - processing scope set to: "
-				+ ((processingScope == null) ? "document text" : processingScope));
-
-		String[] sentenceDelimiterTypesArray = (String[]) aContext
-				.getConfigParameterValue(PARAM_SENTENCE_DELIMITER_TYPES);
-		if (null != sentenceDelimiterTypesArray)
-			sentenceDelimiterTypes = new LinkedHashSet<>(Arrays.asList(sentenceDelimiterTypesArray));
 	}
 
 	/**
 	 * process method is in charge of doing the sentence splitting. If
-	 * processingScope is set, we iterate over Annotation objects of this type
-	 * and do the sentence splitting within this scope. Otherwise, the whole
-	 * document text is considered.
+	 * processingScope is set, we iterate over Annotation objects of this type and
+	 * do the sentence splitting within this scope. Otherwise, the whole document
+	 * text is considered.
 	 * 
 	 * @throws AnalysisEngineProcessException
 	 */
@@ -184,7 +146,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 					borders.add(a.getEnd());
 				}
 				borders.sort(null);
-				
+
 				// now do sentence segmentation between annotation borders
 				for (int i = 1; i < borders.size(); ++i) {
 					int start = borders.get(i - 1);
@@ -228,9 +190,9 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	}
 
 	/**
-	 * Add all the sentences to CAS. Sentence is split into single units, for
-	 * each such unit we decide whether this unit is at the end of a sentence.
-	 * If so, this unit gets the label "EOS" (end-of-sentence).
+	 * Add all the sentences to CAS. Sentence is split into single units, for each
+	 * such unit we decide whether this unit is at the end of a sentence. If so,
+	 * this unit gets the label "EOS" (end-of-sentence).
 	 * 
 	 * @param aJCas
 	 *            the associated JCas
@@ -262,4 +224,3 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 		}
 	}
 }
-

@@ -34,7 +34,7 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
-import de.julielab.jcore.ae.jsbd.PostprocessingFilters.PostprocessingFilter;
+import de.julielab.jcore.ae.jsbd.postprocessingfilters.PostprocessingFilter;
 
 /**
  * * The user interface (command line version) for the JULIE Sentence Boundary Detector. Includes

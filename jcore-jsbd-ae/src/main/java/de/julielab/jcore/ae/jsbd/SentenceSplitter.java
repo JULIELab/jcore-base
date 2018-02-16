@@ -49,7 +49,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.types.Sequence;
-import de.julielab.jcore.ae.jsbd.PostprocessingFilters.PostprocessingFilter;
+import de.julielab.jcore.ae.jsbd.postprocessingfilters.PostprocessingFilter;
 
 public class SentenceSplitter {
 
