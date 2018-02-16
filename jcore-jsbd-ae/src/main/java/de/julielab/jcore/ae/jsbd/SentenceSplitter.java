@@ -160,7 +160,7 @@ public class SentenceSplitter {
 	 * @return ArrayList of Unit objects
 	 */
 	public List<Unit> predict(List<String> lines, String postprocessingFilter) {
-		if (trained == false || model == null) {
+		if (!trained || model == null) {
 			throw new IllegalStateException("No model available. Train or load trained model first.");
 		}
 		Instance inst = model.getInputPipe().instanceFrom(new Instance(lines, "", "", ""));
@@ -175,7 +175,7 @@ public class SentenceSplitter {
 	 * @return ArrayList of Unit objects
 	 */
 	public List<Unit> predict(Instance inst, String filterName) {
-		if (trained == false || model == null) {
+		if (!trained || model == null) {
 			throw new IllegalStateException("No model available. Train or load trained model first.");
 		}
 

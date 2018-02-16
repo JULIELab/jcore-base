@@ -19,6 +19,8 @@ package de.julielab.jcore.ae.jsbd;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,8 +63,8 @@ class Abstract2UnitPipe extends Pipe {
 
 		String abstractFileName = (String) carrier.getSource();
 		@SuppressWarnings("unchecked")
-		ArrayList<String> lines = (ArrayList<String>) carrier.getData();
-		HashMap<String, Integer> unitFreq = getUnitFrequency(lines);
+		List<String> lines = (ArrayList<String>) carrier.getData();
+		Map<String, Integer> unitFreq = getUnitFrequency(lines);
 
 		// the features for each token
 		TokenSequence data = new TokenSequence();
@@ -70,20 +72,20 @@ class Abstract2UnitPipe extends Pipe {
 		// the labels (IS/EOS) for each token of the text
 		LabelSequence target = new LabelSequence((LabelAlphabet) getTargetAlphabet());
 
-		ArrayList<Unit> unitInfo = new ArrayList<Unit>();
+		List<Unit> unitInfo = new ArrayList<>();
 
 		// now go through lines and add a Token object for each token
 		for (int i = 0; i < lines.size(); i++) {
 
-			String line = (String) lines.get(i);
+			String line = lines.get(i);
 			if (line.length() == 0) {
 				// ignore empty lines
 				continue;
 			}
 
-			ArrayList<Unit> units = getUnits(line);
+			List<Unit> units = getUnits(line);
 
-			if (units.size() == 0)
+			if (units.isEmpty())
 				continue;
 
 			for (int j = 0; j < units.size(); j++) {
@@ -274,12 +276,12 @@ class Abstract2UnitPipe extends Pipe {
 	 *            the input file split into single lines
 	 * @return
 	 */
-	private HashMap<String, Integer> getUnitFrequency(ArrayList<String> lines) {
-		HashMap<String, Integer> freq = new HashMap<String, Integer>();
+	private Map<String, Integer> getUnitFrequency(List<String> lines) {
+		Map<String, Integer> freq = new HashMap<>();
 		for (int i = 0; i < lines.size(); i++) {
 			String line = lines.get(i);
 
-			ArrayList<Unit> units = getUnits(line);
+			List<Unit> units = getUnits(line);
 
 			for (int j = 0; j < units.size(); j++) {
 				Unit u = units.get(j);

@@ -19,6 +19,8 @@
 
 package de.julielab.jcore.ae.jsbd.main;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +29,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
@@ -48,8 +53,8 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 
 	public static final String PARAM_MODEL_FILE = "ModelFilename";
 	public static final String PARAM_POSTPROCESSING = "Postprocessing";
-
 	public static final String PARAM_SENTENCE_DELIMITER_TYPES = "SentenceDelimiterTypes";
+	public static final String PARAM_IGNORED_TYPES = "IgnoredTypes";
 	/**
 	 * Logger for this class
 	 */
@@ -65,6 +70,9 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 
 	@ConfigurationParameter(name = PARAM_MODEL_FILE, mandatory = true)
 	private String modelFilename;
+
+	@ConfigurationParameter(name = PARAM_IGNORED_TYPES, mandatory = false, description = "An array of fully qualified type names. Annotations of these types will be ignored from sentence splitting. This means that sentence splitting happens as if the covered text of these annotations would not exist in the text. This helps for references, for example, which otherwise might confuse the sentence splitting. A post-processing step tries to extend sentences include such annotations if they appear directly after the sentence (e.g. references: '...as Smith et al. have shown.1 Further text follows...').")
+	private Set<String> ignoredTypes;
 
 	private SentenceSplitter sentenceSplitter;
 
@@ -110,6 +118,10 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 					.getConfigParameterValue(PARAM_SENTENCE_DELIMITER_TYPES);
 			if (null != sentenceDelimiterTypesArray)
 				sentenceDelimiterTypes = new LinkedHashSet<>(Arrays.asList(sentenceDelimiterTypesArray));
+
+			String[] ignoredTypesArray = (String[]) aContext.getConfigParameterValue(PARAM_IGNORED_TYPES);
+			if (null != ignoredTypesArray)
+				ignoredTypes = Stream.of(ignoredTypesArray).collect(toSet());
 		} catch (ClassNotFoundException | IOException e) {
 			throw new ResourceInitializationException(e);
 		}
@@ -135,7 +147,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 				// the idea: collect all start and end offsets of sentence
 				// delimiter annotations (sections, titles, captions, ...) in a
 				// list and sort ascending; then, perform sentence segmentation
-				// between every two adjacent offsets. This way, so sentence can
+				// between every two adjacent offsets. This way, no sentence can
 				// cross any delimiter annotation border
 				List<Integer> borders = new ArrayList<>();
 				borders.add(0);
@@ -165,25 +177,22 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 			} catch (ClassNotFoundException e) {
 				throw new AnalysisEngineProcessException(e);
 			}
-		} else
-
-		{
+		} else {
 			// if no processingScope set -> use documentText
 			if (aJCas.getDocumentText() != null && aJCas.getDocumentText().length() > 0) {
 				doSegmentation(aJCas, aJCas.getDocumentText(), 0);
 			} else {
-				LOGGER.warn("process() - document text empty. Skipping this document.");
+				LOGGER.warn("document text empty. Skipping this document.");
 			}
 		}
 	}
 
 	private void doSegmentation(JCas aJCas, String text, int offset) throws AnalysisEngineProcessException {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		lines.add(text);
 
 		// make prediction
-		List<Unit> units;
-		units = sentenceSplitter.predict(lines, postprocessingFilter);
+		List<Unit> units = sentenceSplitter.predict(lines, postprocessingFilter);
 
 		// add to UIMA annotations
 		addAnnotations(aJCas, units, offset);
