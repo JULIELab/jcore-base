@@ -1,7 +1,6 @@
 package de.julielab.jcore.reader.pmc.parser;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.ximpleware.NavException;
 
