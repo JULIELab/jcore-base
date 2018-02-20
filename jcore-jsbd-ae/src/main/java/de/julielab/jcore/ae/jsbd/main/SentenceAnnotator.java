@@ -29,7 +29,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -66,7 +69,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	private String postprocessingFilter = null;
 
 	@ConfigurationParameter(name = PARAM_SENTENCE_DELIMITER_TYPES, mandatory = false, description = "An array of annotation types that should never begin or end within a sentence. For example, sentences should never reach out of a paragraph or a section heading.")
-	private LinkedHashSet<Object> sentenceDelimiterTypes;
+	private Set<String> sentenceDelimiterTypes;
 
 	@ConfigurationParameter(name = PARAM_MODEL_FILE, mandatory = true)
 	private String modelFilename;
@@ -188,8 +191,12 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	}
 
 	private void doSegmentation(JCas aJCas, String text, int offset) throws AnalysisEngineProcessException {
+		String textToSplit = text;
+		if (!ignoredTypes.isEmpty()) {
+//			textToSplit = removeIgnoredTypesText()
+		}
 		List<String> lines = new ArrayList<>();
-		lines.add(text);
+		lines.add(textToSplit);
 
 		// make prediction
 		List<Unit> units = sentenceSplitter.predict(lines, postprocessingFilter);
