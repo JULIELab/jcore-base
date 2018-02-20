@@ -3,6 +3,7 @@ package de.julielab.jcore.utility;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
@@ -30,16 +31,28 @@ public class JCoReAnnotationIndexMerger {
 	private boolean sort;
 	private AnnotationFS coveringAnnotation;
 
-	public JCoReAnnotationIndexMerger(LinkedHashSet<Object> annotationIndexes, boolean sort,
-			AnnotationFS coveringAnnotation, JCas aJCas) throws ClassNotFoundException {
-		this.annotationTypes = new LinkedHashSet<Type>();
-		annotationIndexes.forEach(i -> {
+	/**
+	 * Constructs a new annotation index merger.
+	 * 
+	 * @param annotationTypes
+	 *            The CAS integer constant of the types, the qualified Java class
+	 *            names of the types or the {@link Type} object of the types to
+	 *            merge the annotation indexes.
+	 * @param sort If set to <tt>true</tt>, the annotations will be returned sorted ascendingly by begin offset.
+	 * @param coveringAnnotation May be null. If given, the returned annotations will be restricted to those covered by the given annotation.
+	 * @param aJCas The CAS containing the annotations.
+	 * @throws ClassNotFoundException
+	 */
+	public JCoReAnnotationIndexMerger(Set<?> annotationTypes, boolean sort, AnnotationFS coveringAnnotation, JCas aJCas)
+			throws ClassNotFoundException {
+		this.annotationTypes = new LinkedHashSet<>();
+		annotationTypes.forEach(i -> {
 			if (i instanceof Integer)
-				annotationTypes.add(aJCas.getCasType((Integer) i));
+				this.annotationTypes.add(aJCas.getCasType((Integer) i));
 			else if (i instanceof String)
-				annotationTypes.add(aJCas.getTypeSystem().getType((String) i));
+				this.annotationTypes.add(aJCas.getTypeSystem().getType((String) i));
 			else if (i instanceof Type)
-				annotationTypes.add((Type) i);
+				this.annotationTypes.add((Type) i);
 			else
 				throw new IllegalArgumentException(
 						"For the specification of annotation types to merge, the CAS integer constant, the fully qualified type name or the Type instance is required. The given objects are of class "
@@ -143,7 +156,7 @@ public class JCoReAnnotationIndexMerger {
 					// itself which is not the behavior we need
 					List<? extends Annotation> coveredAnnotations = JCoReAnnotationTools.getIncludedAnnotations(aJCas,
 							(Annotation) coveringAnnotation, annotationClass);
-					JCoReFSListIterator<? extends TOP> fsit = (JCoReFSListIterator<? extends TOP>) new JCoReFSListIterator<>(
+					JCoReFSListIterator<? extends TOP> fsit = new JCoReFSListIterator<>(
 							coveredAnnotations);
 					annotationIterators.add(fsit);
 				}
