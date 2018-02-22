@@ -20,6 +20,7 @@ import org.apache.uima.jcas.JCas;
 public class JCoReCondensedDocumentText {
 	private NavigableMap<Integer, Integer> spanSumMap;
 	private String condensedText;
+	private JCas cas;
 
 	/**
 	 * <p>
@@ -36,6 +37,7 @@ public class JCoReCondensedDocumentText {
 	 *             If <tt>cutAwayTypes</tt> contains non-existing type names.
 	 */
 	public JCoReCondensedDocumentText(JCas cas, Set<String> cutAwayTypes) throws ClassNotFoundException {
+		this.cas = cas;
 		buildMap(cas, cutAwayTypes);
 	}
 
@@ -112,11 +114,13 @@ public class JCoReCondensedDocumentText {
 	 *         associated with <tt>condensedOffset</tt>.
 	 */
 	public int getOriginalOffsetForCondensedOffset(int condensedOffset) {
+		if (spanSumMap == null)
+			return condensedOffset;
 		Entry<Integer, Integer> floorEntry = spanSumMap.floorEntry(condensedOffset);
 		return condensedOffset + floorEntry.getValue();
 	}
 
 	public String getCodensedText() {
-		return condensedText;
+		return condensedText != null ? condensedText : cas.getDocumentText();
 	}
 }
