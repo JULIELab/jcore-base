@@ -51,13 +51,14 @@ import de.julielab.jcore.ae.jsbd.SentenceSplitter;
 import de.julielab.jcore.ae.jsbd.Unit;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
+import de.julielab.jcore.utility.JCoReCondensedDocumentText;
 
 public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 
 	public static final String PARAM_MODEL_FILE = "ModelFilename";
 	public static final String PARAM_POSTPROCESSING = "Postprocessing";
 	public static final String PARAM_SENTENCE_DELIMITER_TYPES = "SentenceDelimiterTypes";
-	public static final String PARAM_IGNORED_TYPES = "IgnoredTypes";
+	public static final String PARAM_CUT_AWAY_TYPES = "CutAwayTypes";
 	/**
 	 * Logger for this class
 	 */
@@ -74,8 +75,8 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	@ConfigurationParameter(name = PARAM_MODEL_FILE, mandatory = true)
 	private String modelFilename;
 
-	@ConfigurationParameter(name = PARAM_IGNORED_TYPES, mandatory = false, description = "An array of fully qualified type names. Annotations of these types will be ignored from sentence splitting. This means that sentence splitting happens as if the covered text of these annotations would not exist in the text. This helps for references, for example, which otherwise might confuse the sentence splitting. A post-processing step tries to extend sentences include such annotations if they appear directly after the sentence (e.g. references: '...as Smith et al. have shown.1 Further text follows...').")
-	private Set<String> ignoredTypes;
+	@ConfigurationParameter(name = PARAM_CUT_AWAY_TYPES, mandatory = false, description = "An array of fully qualified type names. Document text covered by annotations of these types will be ignored from sentence splitting. This means that sentence splitting happens as if the covered text of these annotations would not exist in the text. This helps for references, for example, which otherwise might confuse the sentence splitting. A post-processing step tries to extend sentences include such annotations if they appear directly after the sentence (e.g. references: '...as Smith et al. have shown.1 Further text follows...').")
+	private Set<String> cutAwayTypes;
 
 	private SentenceSplitter sentenceSplitter;
 
@@ -122,9 +123,9 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 			if (null != sentenceDelimiterTypesArray)
 				sentenceDelimiterTypes = new LinkedHashSet<>(Arrays.asList(sentenceDelimiterTypesArray));
 
-			String[] ignoredTypesArray = (String[]) aContext.getConfigParameterValue(PARAM_IGNORED_TYPES);
+			String[] ignoredTypesArray = (String[]) aContext.getConfigParameterValue(PARAM_CUT_AWAY_TYPES);
 			if (null != ignoredTypesArray)
-				ignoredTypes = Stream.of(ignoredTypesArray).collect(toSet());
+				cutAwayTypes = Stream.of(ignoredTypesArray).collect(toSet());
 		} catch (ClassNotFoundException | IOException e) {
 			throw new ResourceInitializationException(e);
 		}
@@ -139,6 +140,13 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	 * @throws AnalysisEngineProcessException
 	 */
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+		JCoReCondensedDocumentText documentText;
+		try {
+			// If there are no cut-away types, the document text will remain unchanged.
+			documentText = new JCoReCondensedDocumentText(aJCas, cutAwayTypes);
+		} catch (ClassNotFoundException e1) {
+			throw new AnalysisEngineProcessException(e1);
+		}
 
 		if (sentenceDelimiterTypes != null) {
 			try {
@@ -157,8 +165,12 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 				borders.add(aJCas.getDocumentText().length());
 				while (indexMerger.incrementAnnotation()) {
 					Annotation a = (Annotation) indexMerger.getAnnotation();
-					borders.add(a.getBegin());
-					borders.add(a.getEnd());
+					// Here we convert the original offsets to the condensed offsets. If there are
+					// no cut-away types, the offsets will just remain unchanged. Otherwise we now
+					// have the borders of the condensed text passages associated with the sentence
+					// delimiter annotation.
+					borders.add(documentText.getCondensedOffsetForOriginalOffset(a.getBegin()));
+					borders.add(documentText.getCondensedOffsetForOriginalOffset(a.getEnd()));
 				}
 				borders.sort(null);
 
@@ -172,9 +184,9 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 						++start;
 
 					// get the string between the current annotation borders and recognize sentences
-					String textSpan = aJCas.getDocumentText().substring(start, end);
+					String textSpan = documentText.getCodensedText().substring(start, end);
 					if (!StringUtils.isBlank(textSpan))
-						doSegmentation(aJCas, textSpan, start);
+						doSegmentation(documentText, textSpan, start);
 				}
 
 			} catch (ClassNotFoundException e) {
@@ -183,26 +195,22 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 		} else {
 			// if no processingScope set -> use documentText
 			if (aJCas.getDocumentText() != null && aJCas.getDocumentText().length() > 0) {
-				doSegmentation(aJCas, aJCas.getDocumentText(), 0);
+				doSegmentation(documentText, documentText.getCodensedText(), 0);
 			} else {
 				LOGGER.warn("document text empty. Skipping this document.");
 			}
 		}
 	}
 
-	private void doSegmentation(JCas aJCas, String text, int offset) throws AnalysisEngineProcessException {
-		String textToSplit = text;
-		if (!ignoredTypes.isEmpty()) {
-//			textToSplit = removeIgnoredTypesText()
-		}
+	private void doSegmentation(JCoReCondensedDocumentText documentText, String text, int offset) {
 		List<String> lines = new ArrayList<>();
-		lines.add(textToSplit);
+		lines.add(text);
 
 		// make prediction
 		List<Unit> units = sentenceSplitter.predict(lines, postprocessingFilter);
 
 		// add to UIMA annotations
-		addAnnotations(aJCas, units, offset);
+		addAnnotations(documentText, units, offset);
 	}
 
 	/**
@@ -210,13 +218,13 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 	 * such unit we decide whether this unit is at the end of a sentence. If so,
 	 * this unit gets the label "EOS" (end-of-sentence).
 	 * 
-	 * @param aJCas
+	 * @param documentText
 	 *            the associated JCas
 	 * @param units
 	 *            all sentence units as returned by JSBD
 	 * @param offset
 	 */
-	private void addAnnotations(JCas aJCas, List<Unit> units, int offset) {
+	private void addAnnotations(JCoReCondensedDocumentText documentText, List<Unit> units, int offset) {
 		int start = 0;
 		for (int i = 0; i < units.size(); i++) {
 			Unit myUnit = units.get(i);
@@ -229,9 +237,9 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 			if (decision.equals("EOS") || (i == units.size() - 1)) {
 				// end-of-sentence predicted (EOS)
 				// or last unit reached (finish a last sentence here!)
-				Sentence annotation = new Sentence(aJCas);
-				annotation.setBegin(start + offset);
-				annotation.setEnd(myUnit.end + offset);
+				Sentence annotation = new Sentence(documentText.getCas());
+				annotation.setBegin(documentText.getOriginalOffsetForCondensedOffset(start + offset));
+				annotation.setEnd(documentText.getOriginalOffsetForCondensedOffset(myUnit.end + offset));
 				annotation.setComponentId(this.getClass().getName());
 				annotation.addToIndexes();
 				start = -1;

@@ -163,7 +163,7 @@ public class SentenceSplitter {
 		if (!trained || model == null) {
 			throw new IllegalStateException("No model available. Train or load trained model first.");
 		}
-		Instance inst = model.getInputPipe().instanceFrom(new Instance(lines, "", "", ""));
+		Instance inst = model.getInputPipe().instanceFrom(new Instance(lines, null, null, null));
 		return predict(inst, postprocessingFilter);
 	}
 

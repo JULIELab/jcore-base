@@ -63,7 +63,7 @@ class Abstract2UnitPipe extends Pipe {
 
 		String abstractFileName = (String) carrier.getSource();
 		@SuppressWarnings("unchecked")
-		List<String> lines = (ArrayList<String>) carrier.getData();
+		List<String> lines = (List<String>) carrier.getData();
 		Map<String, Integer> unitFreq = getUnitFrequency(lines);
 
 		// the features for each token
@@ -78,7 +78,7 @@ class Abstract2UnitPipe extends Pipe {
 		for (int i = 0; i < lines.size(); i++) {
 
 			String line = lines.get(i);
-			if (line.length() == 0) {
+			if (line.isEmpty()) {
 				// ignore empty lines
 				continue;
 			}
@@ -270,7 +270,7 @@ class Abstract2UnitPipe extends Pipe {
 	}
 
 	/**
-	 * get the frequence of occurrence of this unit in the abstract
+	 * get the frequency of occurrence of this unit in the abstract
 	 * 
 	 * @param lines
 	 *            the input file split into single lines
@@ -304,10 +304,10 @@ class Abstract2UnitPipe extends Pipe {
 	 * @param line
 	 * @return
 	 */
-	private ArrayList<Unit> getUnits(String line) {
+	private List<Unit> getUnits(String line) {
 
 		Matcher m = splitPattern.matcher(line);
-		ArrayList<Unit> units = new ArrayList<Unit>();
+		List<Unit> units = new ArrayList<>();
 
 		while (m.find()) {
 			int begin = m.start();
