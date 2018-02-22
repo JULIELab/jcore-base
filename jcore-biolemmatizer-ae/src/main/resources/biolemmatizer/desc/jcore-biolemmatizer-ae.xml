@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>biolemmatizer.BioLemmatizer</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>BioLemmatizer</name>
+    <description/>
+    <version>1.0.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters/>
+    <configurationParameterSettings/>
+    <typeSystemDescription/>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities/>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+<resourceManagerConfiguration/>
+</analysisEngineDescription>
