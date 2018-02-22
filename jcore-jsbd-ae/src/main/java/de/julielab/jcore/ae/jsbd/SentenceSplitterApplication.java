@@ -93,7 +93,7 @@ public class SentenceSplitterApplication {
 	private static void startCompareValidationMode(String[] args) {
 		System.out.println("performing evaluation previously trained model.");
 
-		if (args.length != 4) {
+		if (args.length < 4) {
 			System.err.println("usage: JSBD e <modelFile> <predictInDir> <errorFile> [<postprocessing>]");
 			System.exit(-1);
 		}
@@ -140,7 +140,7 @@ public class SentenceSplitterApplication {
 	private static void start9010ValidationMode(String[] args) {
 		System.out.println("performing evaluation on 90/10 split");
 
-		if (args.length != 3) {
+		if (args.length < 3) {
 			System.err.println("usage: JSBD s <textDir> <errorFile>  [<postprocessing>]");
 			System.exit(-1);
 		}
@@ -174,7 +174,7 @@ public class SentenceSplitterApplication {
 	 */
 	private static void startXValidationMode(String[] args) {
 		System.out.println("performing cross-validation");
-		if (args.length != 4) {
+		if (args.length < 4) {
 			System.err.println("usage: JSBD x <textDir> <cross-val-rounds> <errorFile> [<postprocessing>]");
 			System.exit(-1);
 		}
