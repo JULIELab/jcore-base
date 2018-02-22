@@ -1,4 +1,4 @@
-package de.julielab.jcore.ae.jsbd.main;
+package de.julielab.jcore.utility;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import de.julielab.jcore.types.InternalReference;
 
-public class ReducedDocumentTextTest {
+public class JCoReCutAwayDocumentTextTest {
 	@Test
 	public void testReduce() throws Exception {
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
@@ -22,13 +22,13 @@ public class ReducedDocumentTextTest {
 		InternalReference ref2 = new InternalReference(jcas, 30, 31);
 		ref2.addToIndexes();
 
-		ReducedDocumentText reducedText = new ReducedDocumentText(jcas,
+		JCoReCutAwayDocumentText reducedText = new JCoReCutAwayDocumentText(jcas,
 				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())));
 		assertEquals("This sentence has references.", reducedText.getReducedText());
-		assertEquals(0, reducedText.getOriginalOffsetForReducedOffset(0));
-		assertEquals(13, reducedText.getOriginalOffsetForReducedOffset(13));
-		assertEquals(15, reducedText.getOriginalOffsetForReducedOffset(14));
-		assertEquals(30, reducedText.getOriginalOffsetForReducedOffset(29));
+		assertEquals(0, reducedText.getOriginalOffsetForCutAwayOffset(0));
+		assertEquals(13, reducedText.getOriginalOffsetForCutAwayOffset(13));
+		assertEquals(15, reducedText.getOriginalOffsetForCutAwayOffset(14));
+		assertEquals(30, reducedText.getOriginalOffsetForCutAwayOffset(29));
 	}
 	@Test
 	public void testReduce2() throws Exception {
@@ -40,12 +40,12 @@ public class ReducedDocumentTextTest {
 		InternalReference ref2 = new InternalReference(jcas, 29, 30);
 		ref2.addToIndexes();
 
-		ReducedDocumentText reducedText = new ReducedDocumentText(jcas,
+		JCoReCutAwayDocumentText reducedText = new JCoReCutAwayDocumentText(jcas,
 				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())));
 		assertEquals("This sentence has references.", reducedText.getReducedText());
-		assertEquals(0, reducedText.getOriginalOffsetForReducedOffset(0));
-		assertEquals(13, reducedText.getOriginalOffsetForReducedOffset(13));
-		assertEquals(15, reducedText.getOriginalOffsetForReducedOffset(14));
-		assertEquals(31, reducedText.getOriginalOffsetForReducedOffset(29));
+		assertEquals(0, reducedText.getOriginalOffsetForCutAwayOffset(0));
+		assertEquals(13, reducedText.getOriginalOffsetForCutAwayOffset(13));
+		assertEquals(15, reducedText.getOriginalOffsetForCutAwayOffset(14));
+		assertEquals(31, reducedText.getOriginalOffsetForCutAwayOffset(29));
 	}
 }
