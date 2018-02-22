@@ -22,13 +22,19 @@ public class JCoReCondensedDocumentTextTest {
 		InternalReference ref2 = new InternalReference(jcas, 30, 31);
 		ref2.addToIndexes();
 
-		JCoReCondensedDocumentText reducedText = new JCoReCondensedDocumentText(jcas,
+		JCoReCondensedDocumentText condensedText = new JCoReCondensedDocumentText(jcas,
 				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())));
-		assertEquals("This sentence has references.", reducedText.getCodensedText());
-		assertEquals(0, reducedText.getOriginalOffsetForCondensedOffset(0));
-		assertEquals(13, reducedText.getOriginalOffsetForCondensedOffset(13));
-		assertEquals(15, reducedText.getOriginalOffsetForCondensedOffset(14));
-		assertEquals(30, reducedText.getOriginalOffsetForCondensedOffset(29));
+		assertEquals("This sentence has references.", condensedText.getCodensedText());
+		assertEquals(0, condensedText.getOriginalOffsetForCondensedOffset(0));
+		assertEquals(13, condensedText.getOriginalOffsetForCondensedOffset(13));
+		assertEquals(15, condensedText.getOriginalOffsetForCondensedOffset(14));
+		assertEquals(30, condensedText.getOriginalOffsetForCondensedOffset(29));
+		
+		assertEquals(0, condensedText.getCondensedOffsetForOriginalOffset(0));
+		assertEquals(13, condensedText.getCondensedOffsetForOriginalOffset(13));
+		assertEquals(14, condensedText.getCondensedOffsetForOriginalOffset(15));
+		assertEquals(29, condensedText.getCondensedOffsetForOriginalOffset(30));
+		assertEquals(29, condensedText.getCondensedOffsetForOriginalOffset(31));
 	}
 	@Test
 	public void testReduce2() throws Exception {
@@ -40,12 +46,18 @@ public class JCoReCondensedDocumentTextTest {
 		InternalReference ref2 = new InternalReference(jcas, 29, 30);
 		ref2.addToIndexes();
 
-		JCoReCondensedDocumentText reducedText = new JCoReCondensedDocumentText(jcas,
+		JCoReCondensedDocumentText condensedText = new JCoReCondensedDocumentText(jcas,
 				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())));
-		assertEquals("This sentence has references.", reducedText.getCodensedText());
-		assertEquals(0, reducedText.getOriginalOffsetForCondensedOffset(0));
-		assertEquals(13, reducedText.getOriginalOffsetForCondensedOffset(13));
-		assertEquals(15, reducedText.getOriginalOffsetForCondensedOffset(14));
-		assertEquals(31, reducedText.getOriginalOffsetForCondensedOffset(29));
+		assertEquals("This sentence has references.", condensedText.getCodensedText());
+		assertEquals(0, condensedText.getOriginalOffsetForCondensedOffset(0));
+		assertEquals(13, condensedText.getOriginalOffsetForCondensedOffset(13));
+		assertEquals(15, condensedText.getOriginalOffsetForCondensedOffset(14));
+		assertEquals(31, condensedText.getOriginalOffsetForCondensedOffset(29));
+		
+		assertEquals(0, condensedText.getCondensedOffsetForOriginalOffset(0));
+		assertEquals(13, condensedText.getCondensedOffsetForOriginalOffset(13));
+		assertEquals(14, condensedText.getCondensedOffsetForOriginalOffset(15));
+		assertEquals(28, condensedText.getCondensedOffsetForOriginalOffset(30));
+		assertEquals(29, condensedText.getCondensedOffsetForOriginalOffset(31));
 	}
 }

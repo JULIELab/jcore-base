@@ -18,9 +18,14 @@ import org.apache.uima.jcas.JCas;
  *
  */
 public class JCoReCondensedDocumentText {
-	private NavigableMap<Integer, Integer> spanSumMap;
+	private NavigableMap<Integer, Integer> condensedPos2SumCutMap;
+	private NavigableMap<Integer, Integer> originalPos2SumCutMap;
 	private String condensedText;
 	private JCas cas;
+
+	public JCas getCas() {
+		return cas;
+	}
 
 	/**
 	 * <p>
@@ -66,24 +71,28 @@ public class JCoReCondensedDocumentText {
 		if (cutAwayTypes == null || cutAwayTypes.isEmpty())
 			return;
 		StringBuilder sb = new StringBuilder();
-		spanSumMap = new TreeMap<>();
-		spanSumMap.put(0, 0);
+		condensedPos2SumCutMap = new TreeMap<>();
+		condensedPos2SumCutMap.put(0, 0);
+		originalPos2SumCutMap = new TreeMap<>();
+		originalPos2SumCutMap.put(0, 0);
 		JCoReAnnotationIndexMerger merger = new JCoReAnnotationIndexMerger(cutAwayTypes, true, null, cas);
-		int spanSum = 0;
+		int cutSum = 0;
 		int lastBegin = 0;
 		int lastEnd = -1;
 		// For each ignored annotation, there could be following annotations overlapping
 		// with the first, effectively enlargeing the ignored span. Thus, we iterate
 		// until we find an ignored annotation the has a positive (not 0) distance to a
-		// previous one. Then, we store the length of the span of ignored annotations
+		// previous one. Then, we store the length of the span of cut-away annotations
 		// for the largest end of the previous annotations.
 		while (merger.incrementAnnotation()) {
 			int end = merger.getCurrentEnd();
 			int begin = merger.getCurrentBegin();
 
 			if (lastEnd > 0 && begin > lastEnd) {
-				spanSum += lastEnd - lastBegin;
-				spanSumMap.put(lastEnd - spanSum + 1, spanSum);
+				cutSum += lastEnd - lastBegin;
+				int condensedPosition = lastEnd - cutSum + 1;
+				condensedPos2SumCutMap.put(condensedPosition, cutSum);
+				originalPos2SumCutMap.put(lastEnd, cutSum);
 				lastBegin = begin;
 				sb.append(cas.getDocumentText().substring(lastEnd, begin));
 			} else if (lastEnd < 0) {
@@ -96,8 +105,10 @@ public class JCoReCondensedDocumentText {
 		// for, we need to take care of the very last ignored annotation after the loop
 		// - it has never been handled itself.
 		if (lastEnd > 0) {
-			spanSum += lastEnd - lastBegin;
-			spanSumMap.put(lastEnd - spanSum + 1, spanSum);
+			cutSum += lastEnd - lastBegin;
+			int condensedPosition = lastEnd - cutSum + 1;
+			condensedPos2SumCutMap.put(condensedPosition, cutSum);
+			originalPos2SumCutMap.put(lastEnd, cutSum);
 		}
 		if (lastEnd < cas.getDocumentText().length())
 			sb.append(cas.getDocumentText().substring(lastEnd, cas.getDocumentText().length()));
@@ -114,10 +125,26 @@ public class JCoReCondensedDocumentText {
 	 *         associated with <tt>condensedOffset</tt>.
 	 */
 	public int getOriginalOffsetForCondensedOffset(int condensedOffset) {
-		if (spanSumMap == null)
+		if (condensedPos2SumCutMap == null)
 			return condensedOffset;
-		Entry<Integer, Integer> floorEntry = spanSumMap.floorEntry(condensedOffset);
+		Entry<Integer, Integer> floorEntry = condensedPos2SumCutMap.floorEntry(condensedOffset);
 		return condensedOffset + floorEntry.getValue();
+	}
+	
+	/**
+	 * Given a character offset relative to the original CAS document text, this method
+	 * returns the corresponding offset in the condensed document text.
+	 * 
+	 * @param originalOffset
+	 *            The character offset in the originalOffset document CAS text string.
+	 * @return The character offset relative to the condensed document text
+	 *         associated with <tt>originalOffset</tt>.
+	 */
+	public int getCondensedOffsetForOriginalOffset(int originalOffset) {
+		if (originalPos2SumCutMap == null)
+			return originalOffset;
+		Entry<Integer, Integer> floorEntry = originalPos2SumCutMap.floorEntry(originalOffset);
+		return originalOffset - floorEntry.getValue();
 	}
 
 	public String getCodensedText() {
