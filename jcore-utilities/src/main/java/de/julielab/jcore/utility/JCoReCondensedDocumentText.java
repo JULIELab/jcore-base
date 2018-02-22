@@ -17,19 +17,39 @@ import org.apache.uima.jcas.JCas;
  * @author faessler
  *
  */
-public class JCoReCutAwayDocumentText {
+public class JCoReCondensedDocumentText {
 	private NavigableMap<Integer, Integer> spanSumMap;
-	private String cutText;
+	private String condensedText;
 
-	public JCoReCutAwayDocumentText(JCas cas, Set<String> cutAwayTypes) throws ClassNotFoundException {
+	/**
+	 * <p>
+	 * Cuts away the covered text of annotations of a type in <tt>cutAwayTypes</tt>
+	 * from the <tt>cas</tt> document text. If <tt>cutAwayTypes</tt> is null or
+	 * empty, this class' methods will return the original CAS data.
+	 * </p>
+	 * 
+	 * @param cas
+	 *            The CAS for which the document text should be cut.
+	 * @param cutAwayTypes
+	 *            The types for cutting. May be null.
+	 * @throws ClassNotFoundException
+	 *             If <tt>cutAwayTypes</tt> contains non-existing type names.
+	 */
+	public JCoReCondensedDocumentText(JCas cas, Set<String> cutAwayTypes) throws ClassNotFoundException {
 		buildMap(cas, cutAwayTypes);
 	}
 
 	/**
+	 * <p>
 	 * Creates a map that maps those positions of the small-cut text that correspond
 	 * to an intermediate next position after a cut-away annotation in the original
 	 * text to the sum of ranges covered by cut-away annotations up to the original
 	 * offset.
+	 * </p>
+	 * <p>
+	 * If <tt>cutAwayTypes</tt> is empty, no work will be done and the methods of
+	 * this class we return the original text and offets of the CAS.
+	 * </p>
 	 * 
 	 * @param cas
 	 *            The CAS for create a cut-away document text for.
@@ -37,9 +57,12 @@ public class JCoReCutAwayDocumentText {
 	 *            The qualified type names of the annotations whose covered text
 	 *            should be cut away.
 	 * @throws ClassNotFoundException
-	 *             If <tt>cutAwayTypes</tt> contains type identifiers to non-existing types.
+	 *             If <tt>cutAwayTypes</tt> contains type identifiers to
+	 *             non-existing types.
 	 */
 	public void buildMap(JCas cas, Set<String> cutAwayTypes) throws ClassNotFoundException {
+		if (cutAwayTypes == null || cutAwayTypes.isEmpty())
+			return;
 		StringBuilder sb = new StringBuilder();
 		spanSumMap = new TreeMap<>();
 		spanSumMap.put(0, 0);
@@ -76,15 +99,24 @@ public class JCoReCutAwayDocumentText {
 		}
 		if (lastEnd < cas.getDocumentText().length())
 			sb.append(cas.getDocumentText().substring(lastEnd, cas.getDocumentText().length()));
-		cutText = sb.toString();
+		condensedText = sb.toString();
 	}
 
-	public int getOriginalOffsetForCutAwayOffset(int cutAwayOffset) {
-		Entry<Integer, Integer> floorEntry = spanSumMap.floorEntry(cutAwayOffset);
-		return cutAwayOffset + floorEntry.getValue();
+	/**
+	 * Given a character offset relative to the condensed document text, this method
+	 * returns the corresponding offset in the original CAS document text.
+	 * 
+	 * @param condensedOffset
+	 *            The character offset in the condensed document text string.
+	 * @return The character offset relative to the original CAS document text
+	 *         associated with <tt>condensedOffset</tt>.
+	 */
+	public int getOriginalOffsetForCondensedOffset(int condensedOffset) {
+		Entry<Integer, Integer> floorEntry = spanSumMap.floorEntry(condensedOffset);
+		return condensedOffset + floorEntry.getValue();
 	}
 
-	public String getReducedText() {
-		return cutText;
+	public String getCodensedText() {
+		return condensedText;
 	}
 }

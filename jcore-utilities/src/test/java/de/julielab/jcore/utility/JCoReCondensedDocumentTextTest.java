@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import de.julielab.jcore.types.InternalReference;
 
-public class JCoReCutAwayDocumentTextTest {
+public class JCoReCondensedDocumentTextTest {
 	@Test
 	public void testReduce() throws Exception {
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
@@ -22,13 +22,13 @@ public class JCoReCutAwayDocumentTextTest {
 		InternalReference ref2 = new InternalReference(jcas, 30, 31);
 		ref2.addToIndexes();
 
-		JCoReCutAwayDocumentText reducedText = new JCoReCutAwayDocumentText(jcas,
+		JCoReCondensedDocumentText reducedText = new JCoReCondensedDocumentText(jcas,
 				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())));
-		assertEquals("This sentence has references.", reducedText.getReducedText());
-		assertEquals(0, reducedText.getOriginalOffsetForCutAwayOffset(0));
-		assertEquals(13, reducedText.getOriginalOffsetForCutAwayOffset(13));
-		assertEquals(15, reducedText.getOriginalOffsetForCutAwayOffset(14));
-		assertEquals(30, reducedText.getOriginalOffsetForCutAwayOffset(29));
+		assertEquals("This sentence has references.", reducedText.getCodensedText());
+		assertEquals(0, reducedText.getOriginalOffsetForCondensedOffset(0));
+		assertEquals(13, reducedText.getOriginalOffsetForCondensedOffset(13));
+		assertEquals(15, reducedText.getOriginalOffsetForCondensedOffset(14));
+		assertEquals(30, reducedText.getOriginalOffsetForCondensedOffset(29));
 	}
 	@Test
 	public void testReduce2() throws Exception {
@@ -40,12 +40,12 @@ public class JCoReCutAwayDocumentTextTest {
 		InternalReference ref2 = new InternalReference(jcas, 29, 30);
 		ref2.addToIndexes();
 
-		JCoReCutAwayDocumentText reducedText = new JCoReCutAwayDocumentText(jcas,
+		JCoReCondensedDocumentText reducedText = new JCoReCondensedDocumentText(jcas,
 				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())));
-		assertEquals("This sentence has references.", reducedText.getReducedText());
-		assertEquals(0, reducedText.getOriginalOffsetForCutAwayOffset(0));
-		assertEquals(13, reducedText.getOriginalOffsetForCutAwayOffset(13));
-		assertEquals(15, reducedText.getOriginalOffsetForCutAwayOffset(14));
-		assertEquals(31, reducedText.getOriginalOffsetForCutAwayOffset(29));
+		assertEquals("This sentence has references.", reducedText.getCodensedText());
+		assertEquals(0, reducedText.getOriginalOffsetForCondensedOffset(0));
+		assertEquals(13, reducedText.getOriginalOffsetForCondensedOffset(13));
+		assertEquals(15, reducedText.getOriginalOffsetForCondensedOffset(14));
+		assertEquals(31, reducedText.getOriginalOffsetForCondensedOffset(29));
 	}
 }
