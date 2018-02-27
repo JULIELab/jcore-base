@@ -4,15 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jcore-biolemmatizer-ae</artifactId>
 	<packaging>jar</packaging>
-	<groupId>de.julielab</groupId>
 
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
 		<version>2.3.0-SNAPSHOT</version>
 	</parent>
-
-	<version>1.0.0</version>
 
 	<dependencies>
 		<dependency>
@@ -54,4 +51,22 @@
       		<url>http://svn.code.sf.net/p/bionlp/code/repo</url>
     	</repository>
   	</repositories>
+  	<build>
+  		<plugins>
+  			<plugin>
+    		<groupId>org.apache.maven.plugins</groupId>
+    		<artifactId>maven-surefire-plugin</artifactId>
+    		<version>2.20</version>
+    		<configuration>
+        		<forkCount>3</forkCount>
+        		<reuseForks>true</reuseForks>
+        		<argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+        		<systemPropertyVariables>
+            		<databaseSchema>MY_TEST_SCHEMA_${surefire.forkNumber}</databaseSchema>
+        		</systemPropertyVariables>
+        		<workingDirectory>FORK_DIRECTORY_${surefire.forkNumber}</workingDirectory>
+    		</configuration>
+  		</plugin>
+  	</plugins>
+  	</build>
 </project>

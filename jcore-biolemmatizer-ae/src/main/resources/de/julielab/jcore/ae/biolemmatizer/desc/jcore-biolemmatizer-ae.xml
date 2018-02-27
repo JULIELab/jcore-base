@@ -2,7 +2,7 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
-  <annotatorImplementationName>biolemmatizer.BioLemmatizer</annotatorImplementationName>
+  <annotatorImplementationName>de.julielab.jcore.ae.biolemmatizer.BioLemmatizer</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>BioLemmatizer</name>
     <description/>

@@ -2,7 +2,7 @@
 
 **Descriptor Path**:
 ```
-biolemmatizer.desc.jcore-biolemmatizer-ae
+de.julielab.jcore.ae.jtbd.desc.jcore-biolemmatizer-ae
 ```
 
 ### Objective
