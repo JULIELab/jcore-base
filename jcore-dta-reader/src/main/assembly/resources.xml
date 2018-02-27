@@ -10,6 +10,6 @@
 			</directory>
 			<outputDirectory>resources/system/desc/primitive</outputDirectory>
 			<fileMode>0750</fileMode>
-		</fileSet>		
+		</fileSet>
 	</fileSets>
 </assembly>

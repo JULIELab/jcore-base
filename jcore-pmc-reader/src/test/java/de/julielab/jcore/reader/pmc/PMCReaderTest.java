@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CollectionReader;
@@ -22,12 +23,14 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
 import de.julielab.jcore.types.AbstractSection;
 import de.julielab.jcore.types.Caption;
 import de.julielab.jcore.types.Figure;
 import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.InternalReference;
 import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.Paragraph;
 import de.julielab.jcore.types.Section;
@@ -91,6 +94,28 @@ public class PMCReaderTest {
 			cas.reset();
 		}
 		assertTrue(expectedIds.isEmpty());
+	}
+	
+	@Test
+	public void testPmcReader3() throws Exception {
+		// read a single file, parse it and right it to XMI for manual review
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+				"src/test/resources/documents-misc/PMC4303521.nxml.gz");
+		assertTrue(reader.hasNext());
+		int count = 0;
+		while (reader.hasNext()) {
+			reader.getNext(cas.getCas());
+			++count;
+		}
+		assertEquals(1, count);
+		FSIterator<Annotation> it = cas.getAnnotationIndex(InternalReference.type).iterator();
+		while (it.hasNext()) {
+			Annotation a = it.next();
+			System.out.println(a.getBegin() + "-" + a.getEnd());
+		}
+		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("4303521.xmi"));
 	}
 
 	@Test

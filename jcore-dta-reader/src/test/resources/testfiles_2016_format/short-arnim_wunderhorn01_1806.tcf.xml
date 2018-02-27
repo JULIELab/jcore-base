@@ -137,7 +137,7 @@
 			<correction tokenIDs="w8" operation="replace">gesammelt</correction>
 			<correction tokenIDs="w16" operation="replace">deutsche</correction>
 			<correction tokenIDs="w22" operation="replace">bei</correction>
-			<correction tokenIDs="w27" operation="replace"/>
+			<correction tokenIDs="w27" operation="replace" />
 		</orthography>
 	</TextCorpus>
 

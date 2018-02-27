@@ -19,11 +19,21 @@ import de.julielab.jcore.reader.pmc.PMCReader;
 import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
 
 /**
+ * <p>
+ * This is the default class to extend when creating new element parsers. It
+ * implements the {@link #parseElement(ElementParsingResult)} method where it
+ * extracts the element text and adds it as a {@link TextParsingResult} to the
+ * current {@link ElementParsingResult}. Call this method from the
+ * {@link NxmlElementParser#parseElement(ElementParsingResult)} implementations
+ * in subclasses to have the element text set appropriatly.
+ * </p>
+ * <p>
  * A generic element parser that is applicable to any element of the document
  * body. Parses the text contents from the element and calls specialized parsers
  * for child elements. This class is configured externally by the
  * <tt>elementproperties.yml</tt> file found in
  * <tt>src/main/resources/de/julielab/jcore/reader/pmc/resources/</tt>
+ * </p>
  * 
  * @author faessler
  *
@@ -48,9 +58,7 @@ public class DefaultElementParser extends NxmlElementParser {
 	@Override
 	protected void parseElement(ElementParsingResult result) throws ElementParsingException {
 		try {
-			// checkCursorPosition();
 			int elementDepth = vn.getCurrentDepth();
-			// boolean omitElement = determineOmitElement();
 			boolean omitElement = (boolean) getApplicableProperties().orElse(Collections.emptyMap())
 					.getOrDefault(ElementProperties.OMIT_ELEMENT, false);
 			if (omitElement) {
@@ -105,8 +113,6 @@ public class DefaultElementParser extends NxmlElementParser {
 					break;
 				}
 			}
-			// result.setLastTokenIndex(i);
-			// return result;
 		} catch (NavException e) {
 			throw new ElementParsingException(e);
 		}
@@ -124,12 +130,15 @@ public class DefaultElementParser extends NxmlElementParser {
 		if (typeName.equals(ElementProperties.TYPE_NONE))
 			return;
 
-//		@SuppressWarnings("unchecked")
-//		Map<String, Object> defaultFeatureValues = (Map<String, Object>) nxmlDocumentParser
-//				.getTagProperties(elementName)
-//				.getOrDefault(ElementProperties.DEFAULT_FEATURE_VALUES, Collections.emptyMap());
+		// @SuppressWarnings("unchecked")
+		// Map<String, Object> defaultFeatureValues = (Map<String, Object>)
+		// nxmlDocumentParser
+		// .getTagProperties(elementName)
+		// .getOrDefault(ElementProperties.DEFAULT_FEATURE_VALUES,
+		// Collections.emptyMap());
 		@SuppressWarnings("unchecked")
-		Map<String, Object> defaultFeatureValues = (Map<String, Object>) getApplicableProperties().orElse(Collections.emptyMap())
+		Map<String, Object> defaultFeatureValues = (Map<String, Object>) getApplicableProperties()
+				.orElse(Collections.emptyMap())
 				.getOrDefault(ElementProperties.DEFAULT_FEATURE_VALUES, Collections.emptyMap());
 		for (String featureName : defaultFeatureValues.keySet()) {
 			Feature feature = nxmlDocumentParser.cas.getTypeSystem().getType(typeName)
@@ -172,28 +181,27 @@ public class DefaultElementParser extends NxmlElementParser {
 	/**
 	 * <p>
 	 * This method returns the UIMA annotation that will be used to annotate the
-	 * contents of this element. The default is
-	 * {@link ElementProperties#TYPE_NONE} indicating no annotation. For each
-	 * element that should receive an annotation, an appropriate entry should go
-	 * into the <tt>elementproperties.xml</tt> file. This file configures
-	 * element properties for the default parser. Alternatively, a parser
-	 * extending the default parser may overwrite this method and return an
-	 * annotation of the desired type.
+	 * contents of this element. The default is {@link ElementProperties#TYPE_NONE}
+	 * indicating no annotation. For each element that should receive an annotation,
+	 * an appropriate entry should go into the <tt>elementproperties.xml</tt> file.
+	 * This file configures element properties for the default parser.
+	 * Alternatively, a parser extending the default parser may overwrite this
+	 * method and return an annotation of the desired type.
 	 * </p>
 	 * <p>
 	 * This method is called while the VTDNav cursor is still positioned on the
-	 * starting tag token. Thus, attributes of the element may also be parsed
-	 * within this method into fields of the extending parser, if required. To
-	 * avoid side effects, the use of {@link VTDNav#push()} and
-	 * {@link VTDNav#pop()} is advisable in case the VTDNav cursor is moved.
-	 * Also, when parsing attribute values into parser fields, keep in mind that
-	 * most parsers might be called recursively so a parser cannot have a real
-	 * state and fields will be overwritten with the next call to their
-	 * {@link #parse()} method. For this reason, this class discloses its
-	 * ParsingResult through the field {@link #result} to subclasses. You should
-	 * immediately write all required information into {@link #result} by
-	 * overwriting {@link #editResult(ElementParsingResult)} and not rely on any
-	 * state of the parser.
+	 * starting tag token. Thus, attributes of the element may also be parsed within
+	 * this method into fields of the extending parser, if required. To avoid side
+	 * effects, the use of {@link VTDNav#push()} and {@link VTDNav#pop()} is
+	 * advisable in case the VTDNav cursor is moved. Also, when parsing attribute
+	 * values into parser fields, keep in mind that most parsers might be called
+	 * recursively so a parser cannot have a real state and fields will be
+	 * overwritten with the next call to their {@link #parse()} method. For this
+	 * reason, this class discloses its ParsingResult through the field
+	 * {@link #result} to subclasses. You should immediately write all required
+	 * information into {@link #result} by overwriting
+	 * {@link #editResult(ElementParsingResult)} and not rely on any state of the
+	 * parser.
 	 * </p>
 	 * 
 	 * @return The UIMA element annotation.
@@ -226,8 +234,8 @@ public class DefaultElementParser extends NxmlElementParser {
 	 * attributes.
 	 * 
 	 * @return An optional with the found properties map or an empty optional if
-	 *         there is no configuration for the current element in the
-	 *         properties file.
+	 *         there is no configuration for the current element in the properties
+	 *         file.
 	 * @throws NavException
 	 *             If something during parsing goes wrong.
 	 */
