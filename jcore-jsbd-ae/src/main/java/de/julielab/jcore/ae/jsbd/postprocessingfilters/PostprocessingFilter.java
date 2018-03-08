@@ -37,7 +37,6 @@ public class PostprocessingFilter {
 	 * 
 	 * @param predLabels
 	 * @param units
-	 * @param abbrList
 	 * @return
 	 */
 	public static List<String> medicalPostprocessingFilter(List<String> predLabels, List<Unit> units) {
@@ -115,7 +114,6 @@ public class PostprocessingFilter {
 	 * 
 	 * @param predLabels
 	 * @param units
-	 * @param abbrList
 	 * @return
 	 */
 	public static List<String> biomedPostprocessingFilter(List<String> predLabels, List<Unit> units) {

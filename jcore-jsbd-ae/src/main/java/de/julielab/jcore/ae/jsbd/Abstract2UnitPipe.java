@@ -37,7 +37,8 @@ class Abstract2UnitPipe extends Pipe {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Pattern splitPattern = Pattern.compile("[^\\s]+");
+    private final Matcher splitPattern = Pattern.compile("[^\\s]+").matcher("");
+    private final Matcher punctuationPattern = Pattern.compile("\\p{P}").matcher("");
 
 	TreeSet<String> eosSymbols;
 
@@ -304,18 +305,31 @@ class Abstract2UnitPipe extends Pipe {
 	 * @param line
 	 * @return
 	 */
-	private List<Unit> getUnits(String line) {
+    private ArrayList<Unit> getUnits(String line) {
 
-		Matcher m = splitPattern.matcher(line);
-		List<Unit> units = new ArrayList<>();
+        Matcher m = splitPattern.reset(line);
+        ArrayList<Unit> units = new ArrayList<>();
 
-		while (m.find()) {
-			int begin = m.start();
-			int end = m.end();
-			String rep = m.group();
-			units.add(new Unit(begin, end, rep));
-		}
-		return units;
+        while (m.find()) {
+            String rep = m.group();
+            int begin = m.start();
+            int end = m.end();
 
-	}
+            Matcher punctMatcher = punctuationPattern.reset(rep);
+            int newBegin = begin;
+            while (punctMatcher.find()) {
+                String punctRep = punctMatcher.group();
+                int punctEnd = begin + punctMatcher.start();
+                punctEnd = begin + punctMatcher.end();
+
+                units.add(new Unit(begin, punctEnd, line.substring(newBegin, punctEnd)));
+                newBegin = punctEnd;
+            }
+            begin = newBegin;
+            if (begin < end && begin < line.length())
+                units.add(new Unit(begin, end, line.substring(begin, end)));
+        }
+        return units;
+
+    }
 }

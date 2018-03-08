@@ -72,7 +72,12 @@
 	</build>
 
 	<dependencies>
-        <dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.9.1</version>
+		</dependency>
+		<dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
             <version>${project.parent.version}</version>
