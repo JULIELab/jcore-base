@@ -1,5 +1,5 @@
 {
   "exposable": "false",
   "maven-artifact": "jcore-banner-ae",
-  "descriptor-location": ""
+  "descriptor-location": "de.julielab.jcore.ae.banner.desc.jcore-banner-ae.xml"
 }
