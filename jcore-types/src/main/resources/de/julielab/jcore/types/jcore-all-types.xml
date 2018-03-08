@@ -15,6 +15,7 @@
     <import location="jcore-semantics-biology-types.xml"/>
     <import location="jcore-semantics-concept-types.xml"/>
     <import location="jcore-semantics-mention-types.xml"/>
+    <import location="jcore-affect-types.xml"/>
     <import location="extensions/jcore-ace-types.xml"/>
     <import location="extensions/jcore-dta-types.xml"/>
   	<import location="extensions/jcore-document-meta-extension-types.xml"/>

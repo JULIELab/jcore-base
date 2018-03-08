@@ -59,8 +59,11 @@
 		<module>jcore-file-reader</module>
 		<module>jcore-iexml-consumer</module>
 		<module>jcore-iexml-reader</module>
+<<<<<<< HEAD
 		<module>jcore-ign-reader</module>
 		<module>jcore-iob-consumer</module>
+=======
+>>>>>>> 27d1a20c709b2b6c4d9f29031bbdca8809cb1d2c
 		<module>jcore-jnet-ae</module>
 		<module>jcore-jpos-ae</module>
 		<module>jcore-jsbd-ae</module>
@@ -70,9 +73,12 @@
 		<module>jcore-lingpipe-porterstemmer-ae</module>
 		<module>jcore-linnaeus-species-ae</module>
 		<module>jcore-mantra-xml-types</module>
+<<<<<<< HEAD
 		<module>jcore-medxn-ae</module>
 		<module>jcore-msdoc-reader</module>
 		<module>jcore-mstparser-ae</module>
+=======
+>>>>>>> 27d1a20c709b2b6c4d9f29031bbdca8809cb1d2c
 		<module>jcore-muc7-reader</module>
 		<module>jcore-opennlp-chunk-ae</module>
 		<module>jcore-opennlp-parser-ae</module>
@@ -89,11 +95,15 @@
 		<module>jcore-xml-reader</module>
 		<module>jcore-xmi-reader</module>
 		<module>jcore-xmi-writer</module>
+<<<<<<< HEAD
 		<module>jcore-xml-db-reader</module>
 		<module>jcore-xmi-db-reader</module>
 		<module>jcore-xmi-db-writer</module>
     <module>jcore-biolemmatizer-ae</module>
   </modules>
+=======
+	</modules>
+>>>>>>> 27d1a20c709b2b6c4d9f29031bbdca8809cb1d2c
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
         <developerConnection>scm:git:git://github.com/JULIELab/jcore-base.git</developerConnection>

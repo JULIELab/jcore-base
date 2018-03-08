@@ -12,7 +12,11 @@ The JULIE Lab Lingpipe Porterstemmer is an UIMA Analysis Engine that annotates t
 ### Requirements and Dependencies
 The input and output of an AE is done via annotation objects. The classes corresponding to these objects are part of the [JCoRe Type System](https://github.com/JULIELab/jcore-base/tree/master/jcore-types).
 
+<<<<<<< HEAD
 ### Using the AE - Descriptor Configuration
+=======
+### Using the CR - Descriptor Configuration
+>>>>>>> 27d1a20c709b2b6c4d9f29031bbdca8809cb1d2c
 In UIMA, each component is configured by a descriptor in XML. Such a preconfigured descriptor is avaiable under `src/main/resources/de/julielab/jcore/ae/lingpipe/porterstemmer/desc` but it can be further edited if so desired; see [UIMA SDK User's Guide](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tools/tools.html#ugr.tools.cde) for further information.
 
 
@@ -37,5 +41,9 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 
 ### Reference
+<<<<<<< HEAD
 M.F. Porter. 1980. An algorithm for suffix stripping. Program, Vol. 14 No.3, pp. 130-137.  
 Peter Willett. 2006. The Porter stemming algorithm: then and now. Program, Volume 40 Issue: 3, pages 219-223.
+=======
+Porterstemmertokenizerfactory (Lingpipe API)". Alias-i.com. N.p., 2017. Web. 18 Apr. 2017.
+>>>>>>> 27d1a20c709b2b6c4d9f29031bbdca8809cb1d2c
