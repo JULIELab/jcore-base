@@ -1,17 +1,17 @@
-/** 
+/**
  * Abstract2UnitPipe.java
- * 
+ *
  * Copyright (c) 2015, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the BSD-2-Clause License
- * 
+ *
  * Author: tomanek
- * 
+ *
  * Current version: 2.0
  * Since version:   1.0
  *
- * Creation date: Aug 01, 2006 
- * 
+ * Creation date: Aug 01, 2006
+ *
  * The base pipe used converting an abstract into a sequence of Unit objects.
  **/
 
@@ -37,17 +37,19 @@ class Abstract2UnitPipe extends Pipe {
 
 	private static final long serialVersionUID = 1L;
 
-    private final Matcher splitPattern = Pattern.compile("[^\\s]+").matcher("");
-    private final Matcher punctuationPattern = Pattern.compile("\\p{P}").matcher("");
+    private static final Pattern splitPattern = Pattern.compile("[^\\s]+");
+    private static final Pattern punctuationPattern = Pattern.compile("\\p{P}");
 
 	TreeSet<String> eosSymbols;
 
 	TreeSet<String> abbrList;
+    private boolean splitAfterPunctuation;
 
-	Abstract2UnitPipe() {
+    Abstract2UnitPipe(boolean splitAfterPunctuation) {
 		super (new Alphabet(), new LabelAlphabet());
+        this.splitAfterPunctuation = splitAfterPunctuation;
 
-		// initialize the list of end-of-sentence symbols and abbreviations
+        // initialize the list of end-of-sentence symbols and abbreviations
 		eosSymbols = new EOSSymbols().getSymbols();
 		abbrList = (new AbbreviationsMedical()).getSet();
 	}
@@ -55,7 +57,7 @@ class Abstract2UnitPipe extends Pipe {
 	/**
 	 * This pipe gets an Instance object, where the variable source is assumed to be the abstract
 	 * filename, data is the abstract file read in.
-	 * 
+	 *
 	 * Unit objects are created for this abstract (see MedInfo 2007 paper). For each Unit a label is
 	 * predicted: "IS" means "inside sentence", "EOS" means "end-of-sentence", i.e., such a Unit is
 	 * at the end of a sentence.
@@ -97,6 +99,10 @@ class Abstract2UnitPipe extends Pipe {
 				Token token = new Token(currUnitRep);
 
 				// --- add features here ---
+
+                // check if this unit is embedded within a token, i.e. there is no whitespace after this unit
+                if (units.get(j).isTokenInternal)
+                    token.setFeatureValue("istokeninternal=", 1);
 
 				// on EOSSymbols
 				if (containsEOSSymbol(currUnitRep))
@@ -211,7 +217,7 @@ class Abstract2UnitPipe extends Pipe {
 
 	/**
 	 * counts the number of EOS symbols contained in the token
-	 * 
+	 *
 	 * @param token
 	 * @return int
 	 */
@@ -228,7 +234,7 @@ class Abstract2UnitPipe extends Pipe {
 
 	/**
 	 * checks whether the token ends with a EOSSymbol
-	 * 
+	 *
 	 * @param token
 	 * @return true if containes EOS symbol
 	 */
@@ -244,7 +250,7 @@ class Abstract2UnitPipe extends Pipe {
 	/**
 	 * returns the last char of a token, if this char is a EOSSymbol. Otherwise an empty string is
 	 * returned.
-	 * 
+	 *
 	 * @param token
 	 * @return
 	 */
@@ -260,7 +266,7 @@ class Abstract2UnitPipe extends Pipe {
 	/**
 	 * remove the EOSSymbol from the string token representation. If token does not end with
 	 * EOSsymbol, the original token is returned.
-	 * 
+	 *
 	 * @return
 	 */
 	private String getPlainUnit(String unitRep) {
@@ -272,7 +278,7 @@ class Abstract2UnitPipe extends Pipe {
 
 	/**
 	 * get the frequency of occurrence of this unit in the abstract
-	 * 
+	 *
 	 * @param lines
 	 *            the input file split into single lines
 	 * @return
@@ -301,33 +307,36 @@ class Abstract2UnitPipe extends Pipe {
 	/**
 	 * returns a string array containing all units for one line this is done using a regexp matcher
 	 * the line is split it all whitespace characters
-	 * 
+	 *
 	 * @param line
 	 * @return
 	 */
-    private ArrayList<Unit> getUnits(String line) {
+    private List<Unit> getUnits(String line) {
 
-        Matcher m = splitPattern.reset(line);
-        ArrayList<Unit> units = new ArrayList<>();
+        Matcher m = splitPattern.matcher(line);
+        List<Unit> units = new ArrayList<>();
 
         while (m.find()) {
             String rep = m.group();
             int begin = m.start();
             int end = m.end();
 
-            Matcher punctMatcher = punctuationPattern.reset(rep);
             int newBegin = begin;
-            while (punctMatcher.find()) {
-                String punctRep = punctMatcher.group();
-                int punctEnd = begin + punctMatcher.start();
-                punctEnd = begin + punctMatcher.end();
+            if (splitAfterPunctuation) {
+                Matcher punctMatcher = punctuationPattern.matcher(rep);
+                while (punctMatcher.find()) {
+                    String punctRep = punctMatcher.group();
+                    int punctEnd = begin + punctMatcher.start();
+                    punctEnd = begin + punctMatcher.end();
 
-                units.add(new Unit(begin, punctEnd, line.substring(newBegin, punctEnd)));
-                newBegin = punctEnd;
+                    boolean isTokenInternal = punctEnd < end;
+                    units.add(new Unit(begin, punctEnd, line.substring(newBegin, punctEnd), isTokenInternal));
+                    newBegin = punctEnd;
+                }
             }
             begin = newBegin;
             if (begin < end && begin < line.length())
-                units.add(new Unit(begin, end, line.substring(begin, end)));
+                units.add(new Unit(begin, end, line.substring(begin, end), false));
         }
         return units;
 

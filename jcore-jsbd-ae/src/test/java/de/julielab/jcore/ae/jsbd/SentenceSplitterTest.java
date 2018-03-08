@@ -70,7 +70,7 @@ public class SentenceSplitterTest {
 
 		File[] trainFiles = getTrainFiles();
 		SentenceSplitter sentenceSplitter = new SentenceSplitter();
-		InstanceList trainData = sentenceSplitter.makeTrainingData(trainFiles, false);
+		InstanceList trainData = sentenceSplitter.makeTrainingData(trainFiles, false, false);
 		Pipe trainPipe = trainData.getPipe();
 		sentenceSplitter.train(trainData, trainPipe);
 		sentenceSplitter.writeModel(FILENAME_TRAIN_MODEL_OUTPUT);

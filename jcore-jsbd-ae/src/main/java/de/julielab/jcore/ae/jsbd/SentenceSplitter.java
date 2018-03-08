@@ -102,14 +102,14 @@ public class SentenceSplitter {
 	 *            if true the tokens offset and not is string representation is stored in the instance source
 	 * @return InstanceList with training data
 	 */
-	public InstanceList makeTrainingData(File[] trainFiles, boolean useTokenOffset) {
+	public InstanceList makeTrainingData(File[] trainFiles, boolean useTokenOffset, boolean splitUnitsAfterPunctuation) {
 
 		LabelAlphabet dict = new LabelAlphabet();
 		dict.lookupLabel("EOS", true); // end of sentence label
 		dict.lookupLabel("IS", true); // inside sentence label
 
 		Pipe myPipe =
-				new SerialPipes(new Pipe[] { new Abstract2UnitPipe(),
+				new SerialPipes(new Pipe[] { new Abstract2UnitPipe(splitUnitsAfterPunctuation),
 						new OffsetConjunctions(new int[][] { { -1 }, { 0 }, { 1 } }),
 						new TokenSequence2FeatureVectorSequence(true, true) });
 		InstanceList instList = new InstanceList(myPipe);
@@ -156,7 +156,7 @@ public class SentenceSplitter {
 	 * predict a couple of lines
 	 * 
 	 * @param lines
-	 * @param doPostprocessing
+	 * @param postprocessingFilter
 	 * @return ArrayList of Unit objects
 	 */
 	public List<Unit> predict(List<String> lines, String postprocessingFilter) {
@@ -171,7 +171,7 @@ public class SentenceSplitter {
 	 * predict a single Instance
 	 * 
 	 * @param inst
-	 * @param doPostProcessing
+	 * @param filterName
 	 * @return ArrayList of Unit objects
 	 */
 	public List<Unit> predict(Instance inst, String filterName) {
@@ -245,7 +245,7 @@ public class SentenceSplitter {
 	/**
 	 * load a previously trained FeatureSubsetModel (CRF4+Properties) which was stored as serialized object to disk.
 	 * 
-	 * @param filename
+	 * @param file
 	 *            where to find the serialized featureSubsetModel (full path!)
 	 */
 	public void readModel(File file) throws IOException, FileNotFoundException, ClassNotFoundException {

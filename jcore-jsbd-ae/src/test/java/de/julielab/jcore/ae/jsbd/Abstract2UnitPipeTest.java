@@ -22,14 +22,10 @@ public class Abstract2UnitPipeTest {
 
     @Before
     public void init() {
-        pipe = new Abstract2UnitPipe();
+        pipe = new Abstract2UnitPipe(false);
     }
 
-    /**
-     * @Ignore We don't want EOS within tokens
-     */
     @Test
-    @Ignore
     public void testPipeInnerEosToken() {
         ArrayList<String> list = new ArrayList<String>(1);
         //Testing "q.e.d"
@@ -47,6 +43,7 @@ public class Abstract2UnitPipeTest {
 
     @Test
     public void testSplitAtPunctuation() {
+        pipe = new Abstract2UnitPipe(true);
         List<String> list = new ArrayList<>();
         list.add("sentenceEnd.SentenceBegin");
         Instance inst = pipe.pipe(new Instance(list, null, null, null));
@@ -55,8 +52,11 @@ public class Abstract2UnitPipeTest {
         assertThat(tokens).hasSize(2);
         Token token = tokens.get(0);
         assertThat(token.getText()).isEqualTo("sentenceEnd.");
+        assertSimilar(token.getFeatureValue("istokeninternal="), 1.0);
         token = tokens.get(1);
         assertThat(token.getText()).isEqualTo("SentenceBegin");
+        assertSimilar(token.getFeatureValue("istokeninternal="), 0.0);
+        pipe = new Abstract2UnitPipe(false);
     }
 
     @Test
@@ -162,7 +162,6 @@ public class Abstract2UnitPipeTest {
         Instance inst = pipe.pipe(new Instance(list, "", "", ""));
 
         TokenSequence tokens = (TokenSequence) inst.getData();
-        assertThat(tokens).hasSize(10);
 
         Token token = (Token) tokens.get(4);
 
