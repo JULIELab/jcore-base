@@ -159,7 +159,9 @@ public class SentenceSplitterApplication {
 		File[] abstractArray = abstractDir.listFiles();
 		TreeSet<String> errorList = new TreeSet<String>();
 
-		EvalResult er = do9010Evaluation(abstractArray, errorList, Boolean.parseBoolean(args[3]));
+        boolean splitUnitsAfterPunctuation = Boolean.parseBoolean(args[3]);
+        System.out.println("Allow sentence split after all punctuation: " + splitUnitsAfterPunctuation);
+        EvalResult er = do9010Evaluation(abstractArray, errorList, splitUnitsAfterPunctuation);
 		writeFile(errorList, new File(args[2]));
 
 		System.out.println("\n\nAccuracy on 90/10 split: " + er.ACC);
@@ -200,7 +202,9 @@ public class SentenceSplitterApplication {
 
 		TreeSet<String> errorList = new TreeSet<String>();
 
-		double acc = doCrossEvaluation(abstractArray, n, errorList, Boolean.parseBoolean(args[4]));
+        boolean splitUnitsAfterPunctuation = Boolean.parseBoolean(args[4]);
+        System.out.println("Allowing sentence split after all punctuation: " + splitUnitsAfterPunctuation);
+        double acc = doCrossEvaluation(abstractArray, n, errorList, splitUnitsAfterPunctuation);
 		writeFile(errorList, new File(args[3]));
 
 		System.out.println("\n\nAccuracy on cross validation: " + acc);
@@ -263,6 +267,7 @@ public class SentenceSplitterApplication {
 
 		System.out.println("number of files to train on: " + trainFiles.length);
         boolean splitUnitsAfterPunctuation = Boolean.parseBoolean((args[2]));
+        System.out.println("Allow sentence split after all punctuation: " + splitUnitsAfterPunctuation);
 		String modelFilename = args[3];
 		doTraining(trainFiles, splitUnitsAfterPunctuation, modelFilename);
 
