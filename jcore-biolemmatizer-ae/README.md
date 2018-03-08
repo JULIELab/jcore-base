@@ -12,7 +12,7 @@ terms that are specific for the biomedical domain.
 
 
 ### Requirements and Dependencies  
-The BioLemmatizer 1.2 is needed. For further information about this component see source link below.
+The BioLemmatizer 1.2 is needed. For further information about this component see Source Link below.
 
 
 **1. Capabilities**
