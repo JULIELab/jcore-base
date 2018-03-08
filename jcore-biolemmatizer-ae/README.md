@@ -6,7 +6,7 @@ de.julielab.jcore.ae.biolemmatizer.desc.jcore-biolemmatizer-ae
 ```
 
 ### Objective
-This AE uses the BioLemmatizer 1.2 as lemmatization tool for morphological analysis of biomedical 
+This AE uses the BioLemmatizer 1.2 as lemmatization tool for morphological analyses of biomedical 
 literature downloaded from SourceForge. It analyses standard English lexems as well as 
 terms that are specific for the biomedical domain.  
 
