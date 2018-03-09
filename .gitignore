@@ -5,8 +5,14 @@
 .project
 .classpath
 .DS_Store
+<<<<<<< HEAD
 .idea
 target
 *.iml
 **/*.iml
 
+=======
+/target/
+*.iml
+**/*.iml
+>>>>>>> 27d1a20c709b2b6c4d9f29031bbdca8809cb1d2c

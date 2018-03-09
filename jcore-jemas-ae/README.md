@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # JCoRe JEmAS
 This is a UIMA AE implementation of the core functionality of [JEmAS, the Jena Emotion Analysis System](https://github.com/JULIELab/JEmAS).
 
@@ -38,3 +39,8 @@ The input and output of an AE is done via annotation objects. The classes corres
 
 ### Reference
 [1] Sven Buechel and Udo Hahn: Emotion Analysis as a Regression Problem - Dimensional Models and Their Implications on Emotion Representation and Metrical Evaluation. In: ECAI 2016. 22nd European Conference on Artificial Intelligence. August 29 - September 2, 2016, The Hague, Netherlands, pp. 1114-1122.
+=======
+# JEmAS
+
+This is a UIMA AE implementation of the core functionality of JEmAS, the Jena Emotion Analysis System.
+>>>>>>> 27d1a20c709b2b6c4d9f29031bbdca8809cb1d2c

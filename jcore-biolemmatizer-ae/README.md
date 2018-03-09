@@ -12,8 +12,7 @@ terms that are specific for the biomedical domain.
 
 
 ### Requirements and Dependencies  
-The BioLemmatizer 1.2 is needed. The BioLexicon which is used for lemmatization is part of the 
-'fat jar' (biolemmatizer-core-1.2-jar-with-dependencies.jar) distributed by the source link below.
+The BioLemmatizer 1.2 is needed. For further information about this component see Source Link below.
 
 
 **1. Capabilities**
