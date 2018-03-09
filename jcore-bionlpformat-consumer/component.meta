@@ -1,0 +1,7 @@
+{
+  "exposable": true,
+  "maven-artifact": "jcore-bionlpformat-consumer",
+  "descriptor-location": "de.julielab.jcore.consumer.bionlpformat.desc.bionlpformat-consumer-biomedical-sharedtask.xml",
+  "category": "consumer",
+  "group": "shared task"
+}

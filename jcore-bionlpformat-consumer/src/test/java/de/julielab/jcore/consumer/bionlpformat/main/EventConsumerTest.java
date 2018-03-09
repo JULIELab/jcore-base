@@ -4,7 +4,7 @@
  * are made available under the terms of the BSD-2-Clause License
  */
 
-package de.julielab.jcore.consumer.bionlp09event.main;
+package de.julielab.jcore.consumer.bionlpformat.main;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +26,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.julielab.jcore.consumer.bionlpformat.main.BioEventConsumer;
 import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.ArgumentMention;
 import de.julielab.jcore.types.EntityMention;

@@ -1,0 +1,7 @@
+{
+  "exposable": true,
+  "maven-artifact": "jcore-bionlpformat-reader",
+  "descriptor-location": "de.julielab.jcore.reader.bionlpformat.desc.bionlpformat-reader-biomedical-sharedtask.xml",
+  "category": "reader",
+  "group": "shared task"
+}
