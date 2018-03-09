@@ -1,5 +1,7 @@
 {
   "exposable": "true",
   "maven-artifact": "jcore-ace-reader",
-  "descriptor-location": "de.julielab.jcore.reader.ace.desc.jcore-ace-reader.xml"
+  "descriptor-location": "de.julielab.jcore.reader.ace.desc.jcore-ace-reader.xml",
+  "category": "reader",
+  "group": "shared task"
 }
