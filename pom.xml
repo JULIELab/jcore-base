@@ -92,7 +92,6 @@
 		<module>jcore-xml-db-reader</module>
 		<module>jcore-xmi-db-reader</module>
 		<module>jcore-xmi-db-writer</module>
-    <module>jcore-biolemmatizer-ae</module>
   </modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>

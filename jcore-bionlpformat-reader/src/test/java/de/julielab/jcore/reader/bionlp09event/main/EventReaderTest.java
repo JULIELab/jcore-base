@@ -32,7 +32,7 @@ import de.julielab.jcore.types.pubmed.Header;
 @Ignore
 public class EventReaderTest {
 
-	private static final String DESCRIPTOR_FILE = "src/test/resources/de/julielab/jcore/reader/bionlp09event/desc/EventReaderTest.xml";
+	private static final String DESCRIPTOR_FILE = "src/test/resources/de/julielab/jcore/reader/bionlpformat/desc/EventReaderTest.xml";
 	private CollectionReader collectionReader;
 
 	@Before

@@ -4,7 +4,7 @@
  * are made available under the terms of the BSD-2-Clause License
  */
 
-package de.julielab.jcore.consumer.bionlp09event.utils;
+package de.julielab.jcore.consumer.bionlpformat.utils;
 
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.apache.uima.fit.factory.JCasFactory;
 
-import de.julielab.jcore.consumer.bionlpformat.utils.EventTriggerWriter;
 import de.julielab.jcore.types.EventTrigger;
 
 public class EventTriggerWriterTest {

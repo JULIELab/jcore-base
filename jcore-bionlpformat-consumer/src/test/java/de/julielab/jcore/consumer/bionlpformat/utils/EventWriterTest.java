@@ -4,7 +4,7 @@
  * are made available under the terms of the BSD-2-Clause License
  */
 
-package de.julielab.jcore.consumer.bionlp09event.utils;
+package de.julielab.jcore.consumer.bionlpformat.utils;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.createMock;
@@ -21,10 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.apache.uima.fit.factory.JCasFactory;
 
-import de.julielab.jcore.consumer.bionlpformat.utils.EntityWriter;
-import de.julielab.jcore.consumer.bionlpformat.utils.EventTriggerWriter;
-import de.julielab.jcore.consumer.bionlpformat.utils.BioEventWriter;
-import de.julielab.jcore.consumer.bionlpformat.utils.ProteinWriter;
 import de.julielab.jcore.types.ArgumentMention;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.EventMention;

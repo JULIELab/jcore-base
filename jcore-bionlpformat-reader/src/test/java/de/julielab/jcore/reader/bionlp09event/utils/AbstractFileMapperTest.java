@@ -30,7 +30,7 @@ import de.julielab.jcore.types.pubmed.Header;
 
 public class AbstractFileMapperTest {
 
-    private static final String DESCRIPTOR_FILE = "src/test/resources/de/julielab/jcore/reader/bionlp09event/desc/EventReaderTest.xml";
+    private static final String DESCRIPTOR_FILE = "src/test/resources/de/julielab/jcore/reader/bionlpformat/desc/EventReaderTest.xml";
     private JCas cas;
     private TextFileMapper abstractFileMapper;
 
