@@ -3,5 +3,5 @@
   "maven-artifact": "jcore-biolemmatizer-ae",
   "descriptor-location": "de.julielab.jcore.ae.biolemmatizer.desc.jcore-biolemmatizer-ae.xml",
   "category": "ae",
-  "group": "Semantic"
+  "group": "semantic"
 }
