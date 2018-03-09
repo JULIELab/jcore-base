@@ -1,5 +1,5 @@
 {
-  "exposable": "true",
+  "exposable": true,
   "maven-artifact": "jcore-ace-reader",
   "descriptor-location": "de.julielab.jcore.reader.ace.desc.jcore-ace-reader.xml",
   "category": "reader",
