@@ -30,9 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.TreeSet;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -50,7 +49,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.types.Sequence;
-import de.julielab.jcore.ae.jsbd.PostprocessingFilters.PostprocessingFilter;
+import de.julielab.jcore.ae.jsbd.postprocessingfilters.PostprocessingFilter;
 
 public class SentenceSplitter {
 
@@ -103,14 +102,14 @@ public class SentenceSplitter {
 	 *            if true the tokens offset and not is string representation is stored in the instance source
 	 * @return InstanceList with training data
 	 */
-	public InstanceList makeTrainingData(File[] trainFiles, boolean useTokenOffset) {
+	public InstanceList makeTrainingData(File[] trainFiles, boolean useTokenOffset, boolean splitUnitsAfterPunctuation) {
 
 		LabelAlphabet dict = new LabelAlphabet();
 		dict.lookupLabel("EOS", true); // end of sentence label
 		dict.lookupLabel("IS", true); // inside sentence label
 
 		Pipe myPipe =
-				new SerialPipes(new Pipe[] { new Abstract2UnitPipe(),
+				new SerialPipes(new Pipe[] { new Abstract2UnitPipe(splitUnitsAfterPunctuation),
 						new OffsetConjunctions(new int[][] { { -1 }, { 0 }, { 1 } }),
 						new TokenSequence2FeatureVectorSequence(true, true) });
 		InstanceList instList = new InstanceList(myPipe);
@@ -157,14 +156,14 @@ public class SentenceSplitter {
 	 * predict a couple of lines
 	 * 
 	 * @param lines
-	 * @param doPostprocessing
+	 * @param postprocessingFilter
 	 * @return ArrayList of Unit objects
 	 */
-	public ArrayList<Unit> predict(ArrayList<String> lines, String postprocessingFilter) {
-		if (trained == false || model == null) {
+	public List<Unit> predict(List<String> lines, String postprocessingFilter) {
+		if (!trained || model == null) {
 			throw new IllegalStateException("No model available. Train or load trained model first.");
 		}
-		Instance inst = model.getInputPipe().instanceFrom(new Instance(lines, "", "", ""));
+		Instance inst = model.getInputPipe().instanceFrom(new Instance(lines, null, null, null));
 		return predict(inst, postprocessingFilter);
 	}
 
@@ -172,19 +171,19 @@ public class SentenceSplitter {
 	 * predict a single Instance
 	 * 
 	 * @param inst
-	 * @param doPostProcessing
+	 * @param filterName
 	 * @return ArrayList of Unit objects
 	 */
-	public ArrayList<Unit> predict(Instance inst, String filterName) {
-		if (trained == false || model == null) {
+	public List<Unit> predict(Instance inst, String filterName) {
+		if (!trained || model == null) {
 			throw new IllegalStateException("No model available. Train or load trained model first.");
 		}
 
 		// get sequence
 		Sequence input = (Sequence) inst.getData();
 		@SuppressWarnings("unchecked")
-		ArrayList<Unit> units = (ArrayList<Unit>) inst.getName();
-		ArrayList<String> labelList = new ArrayList<String>();
+		List<Unit> units = (List<Unit>) inst.getName();
+		List<String> labelList = new ArrayList<>();
 
 		// transduce and generate output
 		Sequence<String> crfOutput = model.transduce(input);
@@ -246,7 +245,7 @@ public class SentenceSplitter {
 	/**
 	 * load a previously trained FeatureSubsetModel (CRF4+Properties) which was stored as serialized object to disk.
 	 * 
-	 * @param filename
+	 * @param file
 	 *            where to find the serialized featureSubsetModel (full path!)
 	 */
 	public void readModel(File file) throws IOException, FileNotFoundException, ClassNotFoundException {
