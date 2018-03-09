@@ -3,5 +3,5 @@
   "maven-artifact": "jcore-banner-ae",
   "descriptor-location": "de.julielab.jcore.ae.banner.desc.jcore-banner-ae.xml",
   "category": "ae",
-  "group": "Semantic"
+  "group": "semantic"
 }
