@@ -1,4 +1,5 @@
 {
+  "name": "JCoRe BioNLP Format Reader",
   "exposable": true,
   "maven-artifact": "jcore-bionlpformat-reader",
   "descriptor-location":
