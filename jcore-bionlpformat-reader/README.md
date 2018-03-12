@@ -3,7 +3,9 @@ Reader that converts [BioNLP Shared Task](http://www.nactem.ac.uk/tsujii/GENIA/S
 
 **Descriptor Path**:
 ```
-de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader
+de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-biomedical-sharedtask
+de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-medical
+de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-segment
 ```
 
 ### Objective
