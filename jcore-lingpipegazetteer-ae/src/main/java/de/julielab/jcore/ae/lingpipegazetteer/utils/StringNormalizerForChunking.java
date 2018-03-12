@@ -6,11 +6,12 @@
 
 package de.julielab.jcore.ae.lingpipegazetteer.utils;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 import java.util.TreeSet;
 
 import com.aliasi.tokenizer.Tokenizer;
@@ -153,7 +154,7 @@ public class StringNormalizerForChunking {
 		char[] strChars = str.toCharArray();
 		Tokenizer tokenizer = tokenizerFactory.tokenizer(strChars, 0, strChars.length);
 		StringBuilder sb = new StringBuilder();
-		Stack<String> tokenS = new Stack<>();
+		ArrayDeque<String> tokenS = new ArrayDeque<>();
 		Map<Integer, Integer> deleteCandidateOffsetMap = new HashMap<>();
 		// According to the lingpipe API documentation, one starts with the next
 		// whitespace.
@@ -186,8 +187,9 @@ public class StringNormalizerForChunking {
 				}
 			} else {
 				if (!tokenS.isEmpty()) {
-					for (int i = 0; i < tokenS.size(); i++)
-						sb.append(tokenS.get(i));
+					for (String s : tokenS) {
+						sb.append(s);
+					}
 					tokenS.clear();
 					ns.offsetMap.putAll(deleteCandidateOffsetMap);
 					deleteCandidateOffsetMap.clear();
@@ -209,7 +211,7 @@ public class StringNormalizerForChunking {
 		return ns;
 	}
 
-	private static int sumOfStack(Stack<String> stack) {
+	private static int sumOfStack(Deque<String> stack) {
 		int sum = 0;
 		for (String i : stack)
 			sum += i.length();

@@ -24,13 +24,15 @@ public class Unit {
 	public int begin; // start offset
 	public int end;  // end offset
 	public String rep; // string representation of this unit
+	public boolean isTokenInternal;
 	public String label;  // the predicted label
 	
 	
-	public Unit(int begin, int end, String rep) {
+	public Unit(int begin, int end, String rep, boolean isTokenInternal) {
 		this.begin=begin;
 		this.end=end;
 		this.rep=rep;
+		this.isTokenInternal = isTokenInternal;
 		this.label="O";
 	}
 

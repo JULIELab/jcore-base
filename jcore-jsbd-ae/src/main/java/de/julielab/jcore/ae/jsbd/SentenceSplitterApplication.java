@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
 import java.util.zip.GZIPInputStream;
@@ -33,7 +34,7 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
-import de.julielab.jcore.ae.jsbd.PostprocessingFilters.PostprocessingFilter;
+import de.julielab.jcore.ae.jsbd.postprocessingfilters.PostprocessingFilter;
 
 /**
  * * The user interface (command line version) for the JULIE Sentence Boundary Detector. Includes
@@ -92,7 +93,7 @@ public class SentenceSplitterApplication {
 	private static void startCompareValidationMode(String[] args) {
 		System.out.println("performing evaluation previously trained model.");
 
-		if (args.length != 4) {
+		if (args.length < 4) {
 			System.err.println("usage: JSBD e <modelFile> <predictInDir> <errorFile> [<postprocessing>]");
 			System.exit(-1);
 		}
@@ -139,12 +140,12 @@ public class SentenceSplitterApplication {
 	private static void start9010ValidationMode(String[] args) {
 		System.out.println("performing evaluation on 90/10 split");
 
-		if (args.length != 3) {
-			System.err.println("usage: JSBD s <textDir> <errorFile>  [<postprocessing>]");
+		if (args.length < 4) {
+			System.err.println("usage: JSBD s <textDir> <errorFile> <allow split on all punctuation (false: splits only occur before whitespaces)> [<postprocessing>]");
 			System.exit(-1);
 		}
 		
-		if (args.length > 3) {
+		if (args.length > 4) {
 			if (PostprocessingFilter.POSTPROC_STREAM.anyMatch(x -> args[4].equals(x))) {
 				doPostprocessing = args[4];
 			}
@@ -158,7 +159,9 @@ public class SentenceSplitterApplication {
 		File[] abstractArray = abstractDir.listFiles();
 		TreeSet<String> errorList = new TreeSet<String>();
 
-		EvalResult er = do9010Evaluation(abstractArray, errorList);
+        boolean splitUnitsAfterPunctuation = Boolean.parseBoolean(args[3]);
+        System.out.println("Allow sentence split after all punctuation: " + splitUnitsAfterPunctuation);
+        EvalResult er = do9010Evaluation(abstractArray, errorList, splitUnitsAfterPunctuation);
 		writeFile(errorList, new File(args[2]));
 
 		System.out.println("\n\nAccuracy on 90/10 split: " + er.ACC);
@@ -173,14 +176,14 @@ public class SentenceSplitterApplication {
 	 */
 	private static void startXValidationMode(String[] args) {
 		System.out.println("performing cross-validation");
-		if (args.length != 4) {
-			System.err.println("usage: JSBD x <textDir> <cross-val-rounds> <errorFile> [<postprocessing>]");
+		if (args.length < 5) {
+			System.err.println("usage: JSBD x <textDir> <cross-val-rounds> <errorFile> <allow split on all punctuation (false: splits only occur before whitespaces)> [<postprocessing>]");
 			System.exit(-1);
 		}
 
-		if (args.length > 4) {
-			if (PostprocessingFilter.POSTPROC_STREAM.anyMatch(x -> args[4].equals(x))) {
-				doPostprocessing = args[4];
+		if (args.length > 5) {
+			if (PostprocessingFilter.POSTPROC_STREAM.anyMatch(x -> args[5].equals(x))) {
+				doPostprocessing = args[5];
 			}
 		}
 		
@@ -199,7 +202,9 @@ public class SentenceSplitterApplication {
 
 		TreeSet<String> errorList = new TreeSet<String>();
 
-		double acc = doCrossEvaluation(abstractArray, n, errorList);
+        boolean splitUnitsAfterPunctuation = Boolean.parseBoolean(args[4]);
+        System.out.println("Allowing sentence split after all punctuation: " + splitUnitsAfterPunctuation);
+        double acc = doCrossEvaluation(abstractArray, n, errorList, splitUnitsAfterPunctuation);
 		writeFile(errorList, new File(args[3]));
 
 		System.out.println("\n\nAccuracy on cross validation: " + acc);
@@ -214,15 +219,13 @@ public class SentenceSplitterApplication {
 	 */
 	private static void startPredictionMode(String[] args) {
 		System.out.println("doing the sentence splitting...");
-		if (args.length != 4) {
+		if (args.length < 4) {
 			System.err.println("usage: JSBD p <inDir> <outDir> <modelFilename> [<postprocessing>]");
 			System.exit(-1);
 		}
 		
-		if (args.length > 4) {
-			if (PostprocessingFilter.POSTPROC_STREAM.anyMatch(x -> args[4].equals(x))) {
+		if (args.length > 4 && PostprocessingFilter.POSTPROC_STREAM.anyMatch(args[4]::equals)) {
 				doPostprocessing = args[4];
-			}
 		}
 
 		File inDir = new File(args[1]);
@@ -250,8 +253,8 @@ public class SentenceSplitterApplication {
 	 */
 	private static void startTrainingMode(String[] args) {
 		System.out.println("training the model...");
-		if (args.length != 3) {
-			System.err.println("usage: JSBD t <trainDir> <modelFilename>");
+		if (args.length != 4) {
+			System.err.println("usage: JSBD t <trainDir> <allow split on all punctuation (false: splits only occur before whitespaces)> <modelFilename>");
 			System.exit(-1);
 		}
 
@@ -263,8 +266,10 @@ public class SentenceSplitterApplication {
 		File[] trainFiles = trainDir.listFiles();
 
 		System.out.println("number of files to train on: " + trainFiles.length);
-		String modelFilename = args[2];
-		doTraining(trainFiles, modelFilename);
+        boolean splitUnitsAfterPunctuation = Boolean.parseBoolean((args[2]));
+        System.out.println("Allow sentence split after all punctuation: " + splitUnitsAfterPunctuation);
+		String modelFilename = args[3];
+		doTraining(trainFiles, splitUnitsAfterPunctuation, modelFilename);
 
 		System.out.println("Saved model to: " + modelFilename);
 	}
@@ -289,7 +294,7 @@ public class SentenceSplitterApplication {
 		}
 		File[] abstractArray = abstractDir.listFiles();
 		// check data for validity:
-		doCheckAbstracts(abstractArray);
+		doCheckAbstracts(abstractArray, false);
 		System.exit(0);
 	}
 
@@ -298,9 +303,9 @@ public class SentenceSplitterApplication {
 	 * 
 	 * @param abstractList
 	 */
-	private static void doCheckAbstracts(File[] abstractList) {
+	private static void doCheckAbstracts(File[] abstractList, boolean splitUnitsAfterPunctuation) {
 		SentenceSplitter tpFunctions = new SentenceSplitter();
-		tpFunctions.makeTrainingData(abstractList, false);
+		tpFunctions.makeTrainingData(abstractList, false, splitUnitsAfterPunctuation);
 
 		System.out.println("done.");
 	}
@@ -308,7 +313,7 @@ public class SentenceSplitterApplication {
 	/**
 	 * evaluation via 90-10 split of data
 	 */
-	private static EvalResult do9010Evaluation(File[] abstractArray, TreeSet<String> errorList) {
+	private static EvalResult do9010Evaluation(File[] abstractArray, TreeSet<String> errorList, boolean splitUnitsAfterPunctuation) {
 
 		ArrayList<File> abstractList = new ArrayList<File>();
 		for (int i = 0; i < abstractArray.length; i++)
@@ -336,7 +341,7 @@ public class SentenceSplitterApplication {
 		for (int i = sizeTrain; i < abstractList.size(); i++)
 			predictFiles[j++] = abstractList.get(i);
 
-		return doEvaluation(trainFiles, predictFiles, errorList);
+		return doEvaluation(trainFiles, predictFiles, errorList, splitUnitsAfterPunctuation);
 	}
 
 	/**
@@ -348,7 +353,7 @@ public class SentenceSplitterApplication {
 	 *            the number of rounds for cross-validation
 	 * @return avg accuracy over all x-validation rounds
 	 */
-	private static double doCrossEvaluation(File[] abstractArray, int n, TreeSet<String> errorList) {
+	private static double doCrossEvaluation(File[] abstractArray, int n, TreeSet<String> errorList, boolean splitUnitsAfterPunctuation) {
 
 		ArrayList<File> abstractList = new ArrayList<File>();
 		for (int i = 0; i < abstractArray.length; i++)
@@ -414,7 +419,7 @@ public class SentenceSplitterApplication {
 			// now evaluate for this round
 			System.out.println("training size: " + trainFiles.length);
 			System.out.println("prediction size: " + predictFiles.length);
-			evalResults[i] = doEvaluation(trainFiles, predictFiles, errorList);
+			evalResults[i] = doEvaluation(trainFiles, predictFiles, errorList, splitUnitsAfterPunctuation);
 		}
 
 		DecimalFormat df = new DecimalFormat("0.000");
@@ -444,7 +449,7 @@ public class SentenceSplitterApplication {
 	 *            write classification errors there stored...
 	 * @return accuracy
 	 */
-	private static EvalResult doEvaluation(File[] trainFiles, File[] predictFiles, TreeSet<String> errorList) {
+	private static EvalResult doEvaluation(File[] trainFiles, File[] predictFiles, TreeSet<String> errorList, boolean splitUnitsAfterPunctuation) {
 
 		SentenceSplitter tpFunctions = new SentenceSplitter();
 
@@ -452,7 +457,7 @@ public class SentenceSplitterApplication {
 		EOSSymbols eoss = new EOSSymbols();
 
 		// get training data
-		InstanceList trainData = tpFunctions.makeTrainingData(trainFiles, false);
+		InstanceList trainData = tpFunctions.makeTrainingData(trainFiles, splitUnitsAfterPunctuation, false);
 		Pipe myPipe = trainData.getPipe();
 
 		// train a model
@@ -475,14 +480,14 @@ public class SentenceSplitterApplication {
 		for (int i = 0; i < predictData.size(); i++) {
 			Instance inst = (Instance) predictData.get(i);
 			String abstractName = (String) inst.getSource();
-			ArrayList<Unit> units = null;
+			List<Unit> units = null;
 			try {
 				units = tpFunctions.predict(inst, doPostprocessing);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 
-			ArrayList<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
+			List<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
 
 			for (int j = 0; j < units.size(); j++) {
 				String unitRep = units.get(j).rep;
@@ -562,14 +567,14 @@ public class SentenceSplitterApplication {
 		for (int i = 0; i < predictData.size(); i++) {
 			Instance inst = predictData.get(i);
 			String abstractName = (String) inst.getSource();
-			ArrayList<Unit> units = null;
+			List<Unit> units = null;
 			try {
 				units = tpFunctions.predict(inst, doPostprocessing);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 
-			ArrayList<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
+			List<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
 
 			// for postprocessing
 			// if (doPostprocessing) {
@@ -626,17 +631,17 @@ public class SentenceSplitterApplication {
 	 * to train a sentence boundary detector input: abstracts with one sentence per line outout: a
 	 * crf model stored in file
 	 * 
-	 * @param trainDir
+	 * @param trainFiles
 	 *            the directory with training abstracts
-	 * @param modelFile
+	 * @param modelFilename
 	 *            the file to store the trained model
 	 */
-	private static void doTraining(File[] trainFiles, String modelFilename) {
+	private static void doTraining(File[] trainFiles, boolean splitUnitsAfterPunctuation, String modelFilename) {
 		SentenceSplitter sentenceSplitter = new SentenceSplitter();
 
 		// get training data
 		System.out.println("making training data...");
-		InstanceList trainData = sentenceSplitter.makeTrainingData(trainFiles, false);
+		InstanceList trainData = sentenceSplitter.makeTrainingData(trainFiles, false, splitUnitsAfterPunctuation);
 		Pipe myPipe = trainData.getPipe();
 
 		// train a model
@@ -649,11 +654,11 @@ public class SentenceSplitterApplication {
 	 * this performs sentence splitting input: files with all sentences of an abstract within one
 	 * line output: files with one sentence per line
 	 * 
-	 * @param inDir
+	 * @param inFiles
 	 *            the input
 	 * @param outDir
 	 *            the output, where to store the splitted sentences
-	 * @param the
+	 * @param modelFilename
 	 *            the stored model to load
 	 */
 	private static void doPrediction(File[] inFiles, File outDir, String modelFilename) {
@@ -684,13 +689,13 @@ public class SentenceSplitterApplication {
 				System.out.println(i + " files done...");
 			}
 
-			ArrayList<String> fileLines = sentenceSplitter.readFile(inFiles[i]);
+			List<String> fileLines = sentenceSplitter.readFile(inFiles[i]);
 
 			tmp = new Instance(fileLines, "", "", inFiles[i].getName());
 			inst = myPipe.instanceFrom(tmp);
 			fileLines = null;
 
-			ArrayList<Unit> units = null;
+			List<Unit> units = null;
 
 			try {
 				units = sentenceSplitter.predict(inst, doPostprocessing);

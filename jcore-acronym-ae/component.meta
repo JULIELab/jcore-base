@@ -1,7 +1,8 @@
 {
+  "name": "JCoRe Acronym AE",
   "exposable": true,
   "maven-artifact": "jcore-acronym-ae",
-  "descriptor-location": "de.julielab.jcore.ae.acronymtagger.desc.jcore-acronym-ae.xml",
+  "descriptor-location": ["de.julielab.jcore.ae.acronymtagger.desc.jcore-acronym-ae"],
   "category": "ae",
-  "group": "Morpho-Syntactic"
+  "group": "morpho syntactic"
 }

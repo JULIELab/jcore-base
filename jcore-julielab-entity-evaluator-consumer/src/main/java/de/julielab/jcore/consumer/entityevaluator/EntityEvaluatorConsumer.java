@@ -4,12 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
@@ -75,8 +75,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	 * @param input
 	 * @return
 	 */
-	public static TreeMap<Integer, Integer> createNumWsMap(String input) {
-		TreeMap<Integer, Integer> map = new TreeMap<>();
+	public static NavigableMap<Integer, Integer> createNumWsMap(String input) {
+		NavigableMap<Integer, Integer> map = new TreeMap<>();
 		map.put(0, 0);
 		int numWs = 0;
 		boolean lastCharWasWs = false;
@@ -141,7 +141,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	private BufferedWriter bw;
 
 	private void addOffsetsColumn(JCas aJCas) {
-		TreeMap<Integer, Integer> numWsMap = null;
+		NavigableMap<Integer, Integer> numWsMap = null;
 		OffsetsColumn offsetColumn;
 		if (offsetMode == OffsetMode.NonWsCharacters && offsetScope == OffsetScope.Document) {
 			numWsMap = createNumWsMap(aJCas.getDocumentText());

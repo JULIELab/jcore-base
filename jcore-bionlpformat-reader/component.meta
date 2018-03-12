@@ -1,0 +1,11 @@
+{
+  "name": "JCoRe BioNLP Format Reader",
+  "exposable": true,
+  "maven-artifact": "jcore-bionlpformat-reader",
+  "descriptor-location":
+  ["de.julielab.jcore.reader.bionlpformat.desc.bionlpformat-reader-biomedical-sharedtask",
+  "de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-medical",
+  "de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-segment"],
+  "category": "reader",
+  "group": "shared task"
+}

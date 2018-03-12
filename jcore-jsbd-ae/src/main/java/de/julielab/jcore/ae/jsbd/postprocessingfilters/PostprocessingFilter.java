@@ -1,6 +1,7 @@
-package de.julielab.jcore.ae.jsbd.PostprocessingFilters;
+package de.julielab.jcore.ae.jsbd.postprocessingfilters;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
@@ -12,23 +13,23 @@ public class PostprocessingFilter {
 	public static final String BIOMED_POSTPROC = "biomed";
 	public static final String MEDICAL_POSTPROC = "medical";
 	
-	public static final Stream<String> POSTPROC_STREAM = Stream.of("biomed", "medical");
+	public static final Stream<String> POSTPROC_STREAM = Stream.of(BIOMED_POSTPROC, MEDICAL_POSTPROC);
 	
 	public enum Mode {
 		BIOMED {
 	        @Override
-	        public ArrayList<String> process(ArrayList<String> predLabels, ArrayList<Unit> units) {
+	        public List<String> process(List<String> predLabels, List<Unit> units) {
 	        	return biomedPostprocessingFilter(predLabels, units);
 			}
 	    },
 	    MEDICAL {
 	        @Override
-	        public ArrayList<String> process(ArrayList<String> predLabels, ArrayList<Unit> units) {
+	        public List<String> process(List<String> predLabels, List<Unit> units) {
 	        	return medicalPostprocessingFilter(predLabels, units);
 			}
 	    };
 
-	    public abstract ArrayList<String> process(ArrayList<String> predLabels, ArrayList<Unit> units);
+	    public abstract List<String> process(List<String> predLabels, List<Unit> units);
 	}
 
 	/**
@@ -36,15 +37,14 @@ public class PostprocessingFilter {
 	 * 
 	 * @param predLabels
 	 * @param units
-	 * @param abbrList
 	 * @return
 	 */
-	public static ArrayList<String> medicalPostprocessingFilter(ArrayList<String> predLabels, ArrayList<Unit> units) {
+	public static List<String> medicalPostprocessingFilter(List<String> predLabels, List<Unit> units) {
 		AbbreviationsMedical abr = new AbbreviationsMedical();
 		TreeSet<String> abrSet = abr.getSet();
 
-		String[] labels = (String[]) predLabels.toArray(new String[predLabels.size()]);
-		ArrayList<String> newPred = new ArrayList<String>();
+		String[] labels = predLabels.toArray(new String[predLabels.size()]);
+		List<String> newPred = new ArrayList<>();
 
 		// do not set an EOS after opening bracket until bracket is closed again
 		int openNormalBrackets = 0;
@@ -114,15 +114,14 @@ public class PostprocessingFilter {
 	 * 
 	 * @param predLabels
 	 * @param units
-	 * @param abbrList
 	 * @return
 	 */
-	public static ArrayList<String> biomedPostprocessingFilter(ArrayList<String> predLabels, ArrayList<Unit> units) {
+	public static List<String> biomedPostprocessingFilter(List<String> predLabels, List<Unit> units) {
 
 		AbbreviationsBiomed abr = new AbbreviationsBiomed();
 		TreeSet<String> abrSet = abr.getSet();
 
-		String[] labels = (String[]) predLabels.toArray(new String[predLabels.size()]);
+		String[] labels = predLabels.toArray(new String[predLabels.size()]);
 		ArrayList<String> newPred = new ArrayList<String>();
 
 		// do not set an EOS after opening bracket until bracket is closed again
