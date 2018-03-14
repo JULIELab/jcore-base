@@ -37,7 +37,7 @@
 			<version>1.2</version>
 		</dependency>
 	</dependencies>
-	<name>BioLemmatizer</name>
+	<name>JCoRe BioLemmatizer</name>
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>
