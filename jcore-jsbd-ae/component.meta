@@ -1,0 +1,8 @@
+{
+  "name": "JCoRe Sentence Boundary Detector",
+  "exposable": true,
+  "maven-artifact": "jcore-jsbd-ae",
+  "descriptor-location": ["de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae"],
+  "category": "ae",
+  "group": "morpho syntactic"
+}
