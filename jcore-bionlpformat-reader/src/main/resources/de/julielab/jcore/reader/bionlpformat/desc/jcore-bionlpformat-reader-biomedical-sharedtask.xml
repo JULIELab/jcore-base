@@ -3,7 +3,7 @@
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.bionlpformat.main.BioEventReader</implementationName>
   <processingResourceMetaData>
-    <name>BioNLP 09 Event Reader</name>
+    <name>JCoRe BioNLP Event Reader</name>
     <description/>
     <version>2.0.0</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
