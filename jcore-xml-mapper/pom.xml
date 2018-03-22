@@ -14,13 +14,6 @@
 	</parent>
 	
 	<build>
-	<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>1.0</version>
-			</extension>
-		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -54,7 +47,7 @@
 		<dependency>
 			<groupId>de.julielab</groupId>
 			<artifactId>julie-xml-tools</artifactId>
-			<version>0.3.2-SNAPSHOT</version>
+			<version>0.3.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

@@ -18,6 +18,7 @@
 package de.julielab.jcore.ae.jsbd.main;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import de.julielab.jcore.types.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Range;
 import org.apache.uima.UIMAException;
@@ -49,10 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.ae.jsbd.types.TestScope;
-import de.julielab.jcore.types.Caption;
-import de.julielab.jcore.types.Paragraph;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Title;
 
 public class SentenceAnnotatorTest {
 
@@ -237,6 +235,24 @@ public class SentenceAnnotatorTest {
 		}
 		assertTrue(expectedSpans.isEmpty());
 	}
+
+	@Test
+	public void testSentenceWhitespaces() throws Exception {
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+
+		// This text is taken from pmid 23092121
+		jCas.setDocumentText("  : We present a theoretical study of the electronic subband structure and collective electronic excitation associated with plasmon and surface plasmon modes in metal-based hollow nanosphere. The dependence of the electronic subband energy on the sample parameters of the hollow nanosphere is examined.");
+
+		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+				"de/julielab/jcore/ae/jsbd/model/test-model.gz");
+
+		jsbd.process(jCas.getCas());
+
+
+        Sentence sentence = JCasUtil.select(jCas, Sentence.class).iterator().next();
+        assertFalse(sentence.getCoveredText().startsWith(" "));
+    }
 
 }
 

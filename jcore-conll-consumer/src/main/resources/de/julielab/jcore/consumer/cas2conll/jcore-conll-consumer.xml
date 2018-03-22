@@ -4,7 +4,7 @@
   <primitive>true</primitive>
   <annotatorImplementationName>de.julielab.jcore.consumer.cas2conll.ConllConsumer</annotatorImplementationName>
   <analysisEngineMetaData>
-    <name>Cas2Conll Consumer</name>
+    <name>JCoRe Conll Consumer</name>
     <description/>
     <version>2.3.0</version>
     <vendor/>

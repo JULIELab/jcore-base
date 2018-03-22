@@ -6,11 +6,6 @@
 
 package de.julielab.jcore.reader.xmlmapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import de.julielab.jcore.types.*;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
@@ -33,6 +29,7 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -46,19 +43,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import de.julielab.jcore.types.AbstractText;
-import de.julielab.jcore.types.AuthorInfo;
-import de.julielab.jcore.types.Chemical;
-import de.julielab.jcore.types.DBInfo;
-import de.julielab.jcore.types.Date;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.Journal;
-import de.julielab.jcore.types.Keyword;
-import de.julielab.jcore.types.MeshHeading;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Title;
 import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
+
+import static org.junit.Assert.*;
 
 /**
  * Test for class MedlineReader
@@ -268,7 +256,6 @@ public class XMLReaderTest {
 		JCas jCas = cas.getJCas();
 		Header header = (Header) jCas.getAnnotationIndex(Header.type).iterator().next();
 		AuthorInfo authorInfo = header.getAuthors(0);
-		System.out.println(authorInfo.getAffiliation().charAt(61));
 	}
 
 	private void checkHeader(CAS cas) {
@@ -290,34 +277,50 @@ public class XMLReaderTest {
 		}
 	}
 
-	private void checkMeSHList(CAS cas) {
+	private void checkMeSHList(CAS cas) throws CASException {
 		// fail("es werden die booleans von den nachfolgenden werten genommen");
-		String[] meshList = new String[] { "Animalsfalsenullfalse", "Calcium Channels\n			falsemetabolismtrue",
-				"Membrane Proteins\n			falsemetabolismtrue", "Signal Transduction\n			falsenullfalse",
-				"T-Lymphocytes\n			falsemetabolismtrue", "Protein Binding\n			falsenullfalse",
-				"Humansfalsenullfalse", "Calciumfalsemetabolismfalse" };
-		Iterator<Annotation> typeIterator = getTypeIterator(cas, MeshHeading.type);
-		int i = 0;
-		while (typeIterator.hasNext()) {
-			MeshHeading annotation = (MeshHeading) typeIterator.next();
-			assertEquals(meshList[i++], annotation.getDescriptorName() + annotation.getDescriptorNameMajorTopic()
-					+ annotation.getQualifierName() + annotation.getQualifierNameMajorTopic());
-		}
+		String[] meshList = new String[] { "Animalsfalsenullfalse",
+                "Calciumfalsemetabolismfalse",
+                "Calcium Channels\n"+
+                        "			falsemetabolismtrue",
+                "Humansfalsenullfalse",
+                "Membrane Proteins\n"+
+                        "			falsemetabolismtrue",
+                "Protein Binding\n"+
+                        "			falsenullfalse",
+                "Signal Transduction\n"+
+                        "			falsenullfalse",
+                "T-Lymphocytes\n"+
+                        "			falsemetabolismtrue" };
+        String[] actual = new String[meshList.length];
+        ManualDescriptor manualDescriptor = JCasUtil.selectSingle(cas.getJCas(), ManualDescriptor.class);
+        for (int j = 0; j < manualDescriptor.getMeSHList().size(); ++j) {
+            MeshHeading annotation = manualDescriptor.getMeSHList(j);
+            String extractedFromCas = annotation.getDescriptorName() + annotation.getDescriptorNameMajorTopic()
+                    + annotation.getQualifierName() + annotation.getQualifierNameMajorTopic();
+            actual[j] = extractedFromCas;
+        }
+        assertArrayEquals(meshList, actual );
 	}
 
-	private void checkPubTypeList(CAS cas) {
-		String[] journalStrings = new String[] { "Journal Article1600-065X2311Immunological reviewsImmunol Rev148-59",
-				"Research Support, N.I.H., Intramural\n			1600-065X2311Immunological reviewsImmunol Rev148-59",
-				"Review1600-065X2311Immunological reviewsImmunol Rev148-59",
-				"Research Support, N.I.H., Extramural\n			1600-065X2311Immunological reviewsImmunol Rev148-59" };
-		Iterator<Annotation> typeIterator = getTypeIterator(cas, Journal.type);
-		int i = 0;
-		while (typeIterator.hasNext()) {
-			Journal annotation = (Journal) typeIterator.next();
-			assertEquals(journalStrings[i++],
-					annotation.getName() + annotation.getISSN() + annotation.getVolume() + annotation.getIssue()
-							+ annotation.getTitle() + annotation.getShortTitle() + annotation.getPages());
-		}
+	private void checkPubTypeList(CAS cas) throws CASException {
+        String[] journalStrings = new String[] { "Journal Article1600-065X2311Immunological reviewsImmunol Rev148-59",
+                "Research Support, N.I.H., Extramural\n"+
+                        "			1600-065X2311Immunological reviewsImmunol Rev148-59",
+                "Research Support, N.I.H., Intramural\n"+
+                        "			1600-065X2311Immunological reviewsImmunol Rev148-59",
+                "Review1600-065X2311Immunological reviewsImmunol Rev148-59" };
+        Iterator<Annotation> typeIterator = getTypeIterator(cas, Journal.type);
+
+        String[] actual = new String[journalStrings.length];
+        Header header = JCasUtil.selectSingle(cas.getJCas(), Header.class);
+        for (int j = 0; j < header.getPubTypeList().size(); ++j) {
+            Journal annotation = (Journal) header.getPubTypeList(j);
+            String extractedFromCas = annotation.getName() + annotation.getISSN() + annotation.getVolume() + annotation.getIssue()
+                    + annotation.getTitle() + annotation.getShortTitle() + annotation.getPages();
+            actual[j] = extractedFromCas;
+        }
+        assertArrayEquals(journalStrings, actual );
 	}
 
 	private void checkPubDate(CAS cas) {
@@ -352,7 +355,6 @@ public class XMLReaderTest {
 		Iterator<Annotation> typeIterator = getTypeIterator(cas, AbstractText.type);
 		if (typeIterator.hasNext()) {
 			AbstractText abstractText = (AbstractText) typeIterator.next();
-			System.out.println("hier: " + abstractText.getBegin() + " " + abstractText.getEnd());
 			text = abstractText.getCoveredText();
 		}
 		assertEquals(abstractText, text);
@@ -1012,9 +1014,6 @@ public class XMLReaderTest {
 			assertTrue("Sentence has an ID", s.getId() != null);
 			assertTrue("Sentence has an Begin", s.getBegin() >= 0);
 			assertTrue("Sentence has an End", s.getEnd() >= 0);
-			// System.out.println("id = " + s.getId() + "begin = " +
-			// s.getBegin() + " end = " + s.getEnd());
-			// System.out.println(s.getCoveredText());
 			count++;
 		}
 		if (count == 0)
@@ -1190,5 +1189,6 @@ public class XMLReaderTest {
 		// modifications to the mapping file. Take care to make it possible that
 		// there possibly are no structured parts in the abstract (there still
 		// exists both).
+        // EF March 2018: Haven't I done this already? Structured abstracts are handled
 	}
 }
