@@ -1,0 +1,8 @@
+{
+  "name": "JCoRe BioSem AE",
+  "exposable": false,
+  "maven-artifact": "jcore-biosem-ae",
+  "descriptor-location": [],
+  "category": "consumer",
+  "group": "semantic"
+}
