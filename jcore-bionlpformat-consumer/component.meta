@@ -6,5 +6,6 @@
   [{"location":"de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-biomedical-sharedtask","category":"consumer"},
   {"location":"de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-medical","category":"consumer"},
   {"location":"de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-segment", "category":"consumer"}],
+  "category":"consumer",
   "group": "shared task"
 }
