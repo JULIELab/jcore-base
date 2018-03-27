@@ -37,7 +37,7 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import location="file:/C:/Users/Philipp/jcore-xml-multiplier/src/test/resources/FileTypeSystemDescriptor.xml"/>
+        <import location="file:/C:/jcore-base-fork/jcore-xml-multiplier-reader/src/test/resources/MultiplierTypeSystem.xml"/>
       </imports>
     </typeSystemDescription>
     <fsIndexCollection/>
