@@ -114,7 +114,7 @@ public class XMLMultiplierReaderTest extends TestCase {
     			XMLMultiplierReader.PARAM_INPUT_FILE, "src/test/resources/pubmedXML/pubmedsample18n0001copy.xml",
                 XMLMultiplierReader.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
          
-         	JCas cas = JCasFactory.createJCas("src/test/resources/FileTypeSystemDescriptor");
+         	JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
          	xmlMultiplierReader.getNext(cas.getCas());
          	FSIterator<Annotation> it = cas.getAnnotationIndex(PubmedXMLFile.type).iterator();
        		if (it.hasNext()){
@@ -134,7 +134,7 @@ public class XMLMultiplierReaderTest extends TestCase {
     		File directory = new File("src/test/resources/pubmedXML/");
     		int i = 0;
     		while (xmlMultiplierReader.hasNext()) {
-    			JCas cas = JCasFactory.createJCas("src/test/resources/FileTypeSystemDescriptor");
+    			JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
     			xmlMultiplierReader.getNext(cas.getCas());
     			FSIterator<Annotation> it = cas.getAnnotationIndex(PubmedXMLFile.type).iterator();
     			if (it.hasNext()){
@@ -152,15 +152,15 @@ public class XMLMultiplierReaderTest extends TestCase {
     /**
      * Test if a missing inputDirectroy parameter in the descriptor causes an {@link ResourceInitializationException}
      */
-    public void testMissingInputDirectory() {
-        try {
-        	xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR);
-            fail("Expected exception was not thrown");
-        } catch (Exception e) {
-            assertTrue("Exception should be an instance of ResourceInitializationException , but was "
-                    + e.getClass().getName(), e instanceof ResourceInitializationException);
-        }
-    }
+//    public void testMissingInputDirectory() {
+//        try {
+//        	xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR);
+//            fail("Expected exception was not thrown");
+//        } catch (Exception e) {
+//            assertTrue("Exception should be an instance of ResourceInitializationException , but was "
+//                    + e.getClass().getName(), e instanceof ResourceInitializationException);
+//        }
+//    }
 
     /**
      * Processes all CASes by the medlineReader

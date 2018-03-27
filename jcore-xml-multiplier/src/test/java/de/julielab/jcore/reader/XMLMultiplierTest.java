@@ -84,7 +84,7 @@ public class XMLMultiplierTest extends TestCase {
         xmlMultiplier = AnalysisEngineFactory.createEngine(DESC_XML_MULTIPLIER_DIR, 
                 XMLMultiplier.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
         try {
-        	JCas cas = JCasFactory.createJCas("src/test/resources/FileTypeSystemDescriptor");
+        	JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
         	PubmedXMLFile file = new PubmedXMLFile(cas);
         	file.setFileToRead("src/test/resources/pubmedXML/pubmedsample18n0001copy.xml");
         	file.addToIndexes();
@@ -107,7 +107,7 @@ public class XMLMultiplierTest extends TestCase {
         xmlMultiplier = AnalysisEngineFactory.createEngine(DESC_XML_MULTIPLIER_DIR, 
                 XMLMultiplier.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
         try {
-        	JCas cas = JCasFactory.createJCas("src/test/resources/FileTypeSystemDescriptor");
+        	JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
         	PubmedXMLFile file = new PubmedXMLFile(cas);
         	file.setFileToRead("src/test/resources/pubmedXML/pubmedsample18n0001.xml.gz");
         	file.addToIndexes();
@@ -130,7 +130,7 @@ public class XMLMultiplierTest extends TestCase {
     	xmlMultiplier = AnalysisEngineFactory.createEngine(DESC_XML_MULTIPLIER_DIR, 
                 XMLMultiplier.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
         try {
-        	JCas cas = JCasFactory.createJCas("src/test/resources/FileTypeSystemDescriptor");
+        	JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
         	PubmedXMLFile file = new PubmedXMLFile(cas);
         	file.setFileToRead("src/test/resources/pubmedXML/pubmedsample18n0001.xml.gz");
         	file.addToIndexes();

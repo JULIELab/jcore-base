@@ -1,19 +1,20 @@
 
 
-/* First created by JCasGen Thu Mar 22 17:37:32 CET 2018 */
+/* First created by JCasGen Tue Mar 27 14:20:54 CEST 2018 */
 package de.julielab.jcore.types;
 
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 
+import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** Type for Pubmed XML files that contain multiple medline citations.
- * Updated by JCasGen Thu Mar 22 17:37:32 CET 2018
- * XML source: C:/Users/Philipp/workspace4/jcore-xml-multiplier-reader/src/test/resources/FileTypeSystemDescriptor.xml
+ * Updated by JCasGen Tue Mar 27 14:20:54 CEST 2018
+ * XML source: C:/jcore-base-fork/jcore-xml-multiplier-reader/src/test/resources/MultiplierTypeSystem.xml
  * @generated */
-public class PubmedXMLFile extends DocumentAnnotation {
+public class PubmedXMLFile extends Annotation {
   /** @generated
    * @ordered 
    */

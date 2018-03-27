@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Wed Mar 21 14:47:03 CET 2018 */
+/* First created by JCasGen Tue Mar 27 14:21:41 CEST 2018 */
 package de.julielab.jcore.types;
 
 import org.apache.uima.jcas.JCas;
@@ -8,11 +8,12 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
+import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** Type for Pubmed XML files that contain multiple medline citations.
- * Updated by JCasGen Wed Mar 21 14:47:03 CET 2018
+ * Updated by JCasGen Tue Mar 27 14:21:41 CEST 2018
  * @generated */
-public class PubmedXMLFile_Type extends DocumentAnnotation_Type {
+public class PubmedXMLFile_Type extends Annotation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
   public final static int typeIndexID = PubmedXMLFile.typeIndexID;
