@@ -2,6 +2,6 @@
   "name": "JCoRe ACE Reader",
   "exposable": true,
   "maven-artifact": "jcore-ace-reader",
-  "descriptors": [{"location": "de.julielab.jcore.reader.ace.desc.jcore-ace-reader", "category": "reader}],
+  "descriptors": [{"location": "de.julielab.jcore.reader.ace.desc.jcore-ace-reader", "category": "reader"}],
   "group": "shared task"
 }
