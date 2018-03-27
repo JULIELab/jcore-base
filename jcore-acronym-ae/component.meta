@@ -3,5 +3,6 @@
   "exposable": true,
   "maven-artifact": "jcore-acronym-ae",
   "descriptors": [{"location":"de.julielab.jcore.ae.acronymtagger.desc.jcore-acronym-ae", "category":"ae"}],
+  "category":"ae",
   "group": "morpho syntactic"
 }
