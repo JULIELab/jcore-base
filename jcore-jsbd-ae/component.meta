@@ -2,7 +2,7 @@
   "name": "JCoRe Sentence Boundary Detector",
   "exposable": false,
   "maven-artifact": "jcore-jsbd-ae",
-  "descriptor-location": ["de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae"],
+  "descriptors": [{"locations":"de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae", "category":"ae"}],
   "category": "ae",
   "group": "morpho syntactic"
 }
