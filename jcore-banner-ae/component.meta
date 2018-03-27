@@ -3,5 +3,6 @@
   "exposable": false,
   "maven-artifact": "jcore-banner-ae",
   "descriptors": [{"location": "de.julielab.jcore.ae.banner.desc.jcore-banner-ae", "category":"ae"}],
+  "category":"ae",
   "group": "semantic"
 }
