@@ -1,0 +1,351 @@
+/**
+ * XMLMultiplierReaderTest.java
+ *
+ * Copyright (c) 2015, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the BSD-2-Clause License
+ *
+ * Author: muehlhausen
+ *
+ * Current version: 1.9
+ * Since version:   1.0
+ *
+ * Creation date: Dec 11, 2006
+ *
+ * Test for class de.julielab.jcore.reader.XMLReader
+ **/
+
+package de.julielab.jcore.reader;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import junit.framework.TestCase;
+
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLInputSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.julielab.jcore.reader.xml.XMLMultiplierReader;
+import de.julielab.jcore.types.Journal;
+import de.julielab.jcore.types.PubmedXMLFile;
+import de.julielab.jcore.types.pubmed.Header;
+
+/**
+ * Test for class XML Reader
+ */
+public class XMLMultiplierReaderTest extends TestCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(XMLMultiplierReaderTest.class);
+
+    private static final boolean DEBUG_MODE = true;
+
+    /**
+     * Path to the MedlineReader descriptor without inputDir parameter (and no single file attribute)
+     */
+    private static final String DESC_XML_MULTIPLIER_READER_DIR = "src/test/resources/XMLMultiplierReader";
+
+    
+    /**
+     * Test data, format: citationStatus, language, pmid
+     */
+//    private static final String[] EXPECTED_HEADER = { "MEDLINE", "eng", "11119751.xml" };
+
+    
+    private static final String DIR_CAS_OUTPUT = "src/test/resources/medlineXML/";
+
+    /**
+     * Default constructor
+     */
+    public XMLMultiplierReaderTest() {
+        super();
+        if (DEBUG_MODE) {
+            LOGGER.info("XMLMultiplierReader test is in DEBUG_MODE !!!!!!!!!!!!");
+        }
+    }
+
+    /**
+     * Object to be tested
+     */
+    private CollectionReader xmlMultiplierReader;
+
+    /**
+     * CAS array with CAS objects that where processed by the medlineReader
+     */
+    private ArrayList<CAS> cases = new ArrayList<CAS>();
+
+    /**
+     * Test main functionality of the {@link CollectionReader}
+     * @throws IOException 
+     * @throws UIMAException 
+     */
+//    public void testGetNextCas() throws UIMAException, IOException {
+//    	xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR,
+//    			XMLMultiplierReader.PARAM_INPUT_FILE, "src/test/resources/pubmedXML/pubmedsample18n0001copy.xml",
+//                XMLMultiplierReader.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
+//        processAllCases();
+//        checkAllDocumentTexts();
+//    }
+
+    /**
+     * Test the reading of a single file instead of a directory
+     *
+     * @throws ResourceInitializationException
+     */
+    public void testGetNextCas_singleFile() throws ResourceInitializationException {
+    	try {
+    		xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR,
+    			XMLMultiplierReader.PARAM_INPUT_FILE, "src/test/resources/pubmedXML/pubmedsample18n0001copy.xml",
+                XMLMultiplierReader.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
+         
+         	JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
+         	xmlMultiplierReader.getNext(cas.getCas());
+         	FSIterator<Annotation> it = cas.getAnnotationIndex(PubmedXMLFile.type).iterator();
+       		if (it.hasNext()){
+       			PubmedXMLFile fileType = (PubmedXMLFile) it.next();
+       			System.out.println(fileType.getFileToRead());
+       		}
+         } catch (Exception e) {
+         	e.printStackTrace();
+         }
+     }
+    
+    public void testGetNextCas_directory() throws ResourceInitializationException {
+    	try {
+    		xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR,
+    			XMLMultiplierReader.PARAM_INPUT_DIR, "src/test/resources/pubmedXML/",
+                XMLMultiplierReader.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
+    		File directory = new File("src/test/resources/pubmedXML/");
+    		int i = 0;
+    		while (xmlMultiplierReader.hasNext()) {
+    			JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
+    			xmlMultiplierReader.getNext(cas.getCas());
+    			FSIterator<Annotation> it = cas.getAnnotationIndex(PubmedXMLFile.type).iterator();
+    			if (it.hasNext()){
+    				PubmedXMLFile fileType = (PubmedXMLFile) it.next();
+    				System.out.println(fileType.getFileToRead());
+    				assertEquals(directory.listFiles()[i].getAbsolutePath(), fileType.getFileToRead());
+    				i++;
+    			}
+       		}
+         } catch (Exception e) {
+         	e.printStackTrace();
+         }
+     }
+
+    /**
+     * Test if a missing inputDirectroy parameter in the descriptor causes an {@link ResourceInitializationException}
+     */
+//    public void testMissingInputDirectory() {
+//        try {
+//        	xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR);
+//            fail("Expected exception was not thrown");
+//        } catch (Exception e) {
+//            assertTrue("Exception should be an instance of ResourceInitializationException , but was "
+//                    + e.getClass().getName(), e instanceof ResourceInitializationException);
+//        }
+//    }
+
+    /**
+     * Processes all CASes by the medlineReader
+     */
+//    private void processAllCases() {
+//
+//        try {
+//            while (xmlMultiplierReader.hasNext()) {
+//                CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlMultiplierReader.getMetaData());
+//                xmlMultiplierReader.getNext(cas);
+//                if (DEBUG_MODE) {
+//                    serializeCas(cas);
+//                }
+//                cases.add(cas);
+//            }
+//        } catch (CollectionException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (ResourceInitializationException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    /**
+     * Write CAS to XMI
+     *
+     * @param cas
+     */
+//    private void serializeCas(CAS cas) {
+//        try {
+//            XmiCasSerializer.serialize(cas, new FileOutputStream(new File(DIR_CAS_OUTPUT + getPMID(cas) + ".xmi")));
+//        } catch (FileNotFoundException e) {
+//            LOGGER.error("Error:", e);
+//        } catch (SAXException e) {
+//            LOGGER.error("Error:", e);
+//        }
+//    }
+
+    /**
+     * Create a {@link CollectionReader}
+     *
+     * @param descAnalysisEngine
+     * @return
+     * @throws ResourceInitializationException
+     * @throws IOException
+     * @throws InvalidXMLException
+     * @throws Exception
+     *             e.g. ResourceInitializationException
+     */
+    private CollectionReader getCollectionReader(String descAnalysisEngine) throws Exception {
+        CollectionReader collectionReader = null;
+        XMLInputSource source;
+        source = new XMLInputSource(descAnalysisEngine);
+        ResourceSpecifier resourceSpecifier = (ResourceSpecifier) UIMAFramework.getXMLParser().parse(source);
+        collectionReader = UIMAFramework.produceCollectionReader(resourceSpecifier);
+        return collectionReader;
+    }
+
+    /**
+     * Test if the CAS returned by the collectionReader has a non-empty document text returns
+     */
+//    private void checkAllDocumentTexts() {
+//
+//        for (int i = 0; i < cases.size(); i++) {
+//
+//            String text = cases.get(i).getDocumentText();
+//
+//            // assertTrue(((text == null) ? "null" : text), (text != null) &&
+//            // (!text.equals("")));
+//            LOGGER.debug("--------------- PMID = " + getPMID(cases.get(i)) + "------------------------");
+//            assertNotNull(text);
+//            assertNotSame("", text);
+//        }
+//    }
+
+
+    private boolean checkDoi(CAS cas, String expectedDoi) {
+        Iterator<Annotation> iter = getTypeIterator(cas, Header.type);
+        while (iter.hasNext()) {
+            Header header = (Header) iter.next();
+            if (header.getDoi().equals(expectedDoi)) {
+                return true;
+            } else {
+                LOGGER.warn("Expected DOI: " + expectedDoi + ", actual:" + header.getDoi());
+            }
+        }
+        return false;
+    }
+
+    private boolean checkPubTypeList(CAS cas, String[] expectedPubTypes) {
+        Iterator<Annotation> iter = getTypeIterator(cas, Journal.type);
+        assertTrue(iter.hasNext());
+        List<String> expectedPubTypeList = Arrays.asList(expectedPubTypes);
+        int checkCount = 0;
+        while (iter.hasNext()) {
+            Journal journal = (Journal) iter.next();
+            if (!expectedPubTypeList.contains(journal.getName())) {
+                return false;
+            }
+            checkCount++;
+        }
+        if (checkCount != expectedPubTypes.length) {
+            LOGGER.warn("Did not found all expected PubTypes. expected: " + expectedPubTypes.length + ", actual:"
+                    + checkCount);
+            return false;
+        }
+        return true;
+    }
+
+    private void checkJournalTitle(CAS cas, String expectedJournalTitle) {
+        Iterator<Annotation> iter = getTypeIterator(cas, Journal.type);
+        assertTrue(iter.hasNext());
+        while (iter.hasNext()) {
+            Journal journal = (Journal) iter.next();
+            assertEquals(expectedJournalTitle, journal.getTitle());
+        }
+    }
+
+     /**
+     * Checks if Header is contained correctly in the CAS
+     *
+     * @param cas
+     *            the CAS to be tested
+     * @param headerData
+     *            test data for the header Type
+     * @return true, if test data is correctly contained in CAS
+     */
+    private boolean checkHeader(CAS cas, String[] headerData) {
+
+        Iterator<Annotation> iter = getTypeIterator(cas, Header.type);
+
+        Header header = (Header) iter.next();
+        if (header.getAuthors() == null || header.getPubTypeList() == null
+                || !header.getCitationStatus().equals(headerData[0]) || !header.getLanguage().equals(headerData[1])
+                || !header.getSource().endsWith(headerData[2])) {
+
+            return false;
+        }
+        // it is wrong if there is more than one header
+        if (iter.hasNext()) {
+            return false;
+        }
+        return true;
+    }
+
+ 
+ 
+     /**
+     * Gets an Iterator<Annotation> over the the CAS for the specific type
+     *
+     * @param cas
+     *            the CAS
+     * @param type
+     *            the type
+     * @return the iterator
+     */
+    private Iterator<Annotation> getTypeIterator(CAS cas, int type) {
+
+        Iterator<Annotation> iter = null;
+        try {
+            iter = cas.getJCas().getJFSIndexRepository().getAnnotationIndex(type).iterator();
+        } catch (CASException e) {
+            e.printStackTrace();
+        }
+        return iter;
+    }
+
+    /**
+     * Checks if a String is contained in an array of Strings
+     *
+     * @param string
+     *            the string that is tested to be contained
+     * @param array
+     *            the array that contains the string or not
+     * @return true if the string is contained in the array
+     */
+    private boolean isContained(String string, String[] array) {
+        boolean isContained = false;
+        for (int i = 0; i < array.length; i++) {
+            if (string.equals(array[i])) {
+                isContained = true;
+                break;
+            }
+        }
+        return isContained;
+    }
+}
