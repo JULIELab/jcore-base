@@ -2,7 +2,7 @@
   "name": "JCoRe BioLemmatizer AE",
   "exposable": true,
   "maven-artifact": "jcore-biolemmatizer-ae",
-  "descriptor-location": ["de.julielab.jcore.ae.biolemmatizer.desc.jcore-biolemmatizer-ae"],
+  "descriptors": [{"location":"de.julielab.jcore.ae.biolemmatizer.desc.jcore-biolemmatizer-ae", "category":"ae"}],
   "category": "ae",
   "group": "semantic"
 }
