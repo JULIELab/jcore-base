@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.JCasIterator;
 import org.apache.uima.cas.FSIterator;
@@ -31,6 +32,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.InvalidXMLException;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +41,12 @@ import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.PubmedXMLFile;
 import de.julielab.jcore.types.pubmed.Header;
 
+import static org.junit.Assert.*;
+
 /**
  * Test for class XML Reader
  */
-public class XMLMultiplierTest extends TestCase {
+public class XMLMultiplierTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLMultiplierTest.class);
 
@@ -57,17 +61,6 @@ public class XMLMultiplierTest extends TestCase {
      * PMIDs in pubmed18nsample0001copy.xml
      */
  
-
-    /**
-     * Default constructor
-     */
-    public XMLMultiplierTest() {
-        super();
-        if (DEBUG_MODE) {
-            LOGGER.info("XMLMultiplier test is in DEBUG_MODE !!!!!!!!!!!!");
-        }
-    }
-
     /**
      * Object to be tested
      */
@@ -80,21 +73,23 @@ public class XMLMultiplierTest extends TestCase {
          * @throws IOException 
          * @throws InvalidXMLException 
      */
+        @Test
     public void testProcessSingleFile() throws ResourceInitializationException, InvalidXMLException, IOException {
         xmlMultiplier = AnalysisEngineFactory.createEngine(DESC_XML_MULTIPLIER_DIR, 
                 XMLMultiplier.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
         try {
-        	JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
+        	JCas cas = JCasFactory.createJCas("de.julielab.jcore.multiplier.xml.types.MultiplierTypeSystem");
         	PubmedXMLFile file = new PubmedXMLFile(cas);
         	file.setFileToRead("src/test/resources/pubmedXML/pubmedsample18n0001copy.xml");
         	file.addToIndexes();
         	JCasIterator casIter = xmlMultiplier.processAndOutputNewCASes(cas);
+            assertTrue(casIter.hasNext());
         	while (casIter.hasNext()) {
         		JCas currentCas = casIter.next();
         		FSIterator<Annotation> it = currentCas.getAnnotationIndex(AbstractText.type).iterator();
         		if (it.hasNext()){
         			AbstractText text = (AbstractText) it.next();
-        			System.out.println(text.getCoveredText());
+        			assertNotNull(text);
         		}
         		currentCas.release();
         	}
@@ -102,22 +97,24 @@ public class XMLMultiplierTest extends TestCase {
         	e.printStackTrace();
         }
     }
-    
+
+    @Test
     public void testProcessSingleZippedFile() throws ResourceInitializationException, InvalidXMLException, IOException {
         xmlMultiplier = AnalysisEngineFactory.createEngine(DESC_XML_MULTIPLIER_DIR, 
                 XMLMultiplier.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
         try {
-        	JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
+        	JCas cas = JCasFactory.createJCas("de.julielab.jcore.multiplier.xml.types.MultiplierTypeSystem");
         	PubmedXMLFile file = new PubmedXMLFile(cas);
         	file.setFileToRead("src/test/resources/pubmedXML/pubmedsample18n0001.xml.gz");
         	file.addToIndexes();
         	JCasIterator casIter = xmlMultiplier.processAndOutputNewCASes(cas);
+        	assertTrue(casIter.hasNext());
         	while (casIter.hasNext()) {
         		JCas currentCas = casIter.next();
         		FSIterator<Annotation> it = currentCas.getAnnotationIndex(AbstractText.type).iterator();
         		if (it.hasNext()){
         			AbstractText text = (AbstractText) it.next();
-        			System.out.println(text.getCoveredText());
+                    assertNotNull(text);
         		}
         		currentCas.release();
         	}
@@ -125,16 +122,18 @@ public class XMLMultiplierTest extends TestCase {
         	e.printStackTrace();
         }
     }
-    
+
+    @Test
     public void testCheckIds() throws InvalidXMLException, ResourceInitializationException, IOException {
     	xmlMultiplier = AnalysisEngineFactory.createEngine(DESC_XML_MULTIPLIER_DIR, 
                 XMLMultiplier.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
         try {
-        	JCas cas = JCasFactory.createJCas("src/test/resources/MultiplierTypeSystem");
+        	JCas cas = JCasFactory.createJCas("de.julielab.jcore.multiplier.xml.types.MultiplierTypeSystem");
         	PubmedXMLFile file = new PubmedXMLFile(cas);
         	file.setFileToRead("src/test/resources/pubmedXML/pubmedsample18n0001.xml.gz");
         	file.addToIndexes();
         	JCasIterator casIter = xmlMultiplier.processAndOutputNewCASes(cas);
+			assertTrue(casIter.hasNext());
         	while (casIter.hasNext()) {
         		JCas currentCas = casIter.next();
         		FSIterator<Annotation> it = currentCas.getAnnotationIndex(Header.type).iterator();
