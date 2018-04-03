@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.acronymtagger.desc.jcore-acronym-ae"
+            "location": "de.julielab.jcore.ae.acronymtagger.desc.jcore-acronym-ae"
         }
     ],
     "exposable": true,

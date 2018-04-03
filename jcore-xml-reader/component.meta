@@ -4,11 +4,11 @@
     "descriptors": [
         {
             "category": "multiplier",
-            "location": "src.main.resources.de.julielab.jcore.reader.xml.desc.PubmedXMLMultiplier"
+            "location": "de.julielab.jcore.reader.xml.desc.PubmedXMLMultiplier"
         },
         {
             "category": "reader",
-            "location": "src.main.resources.de.julielab.jcore.reader.xml.desc.XMLMultiplierReader"
+            "location": "de.julielab.jcore.reader.xml.desc.XMLMultiplierReader"
         }
     ],
     "exposable": true,

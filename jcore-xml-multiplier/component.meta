@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "multiplier",
-            "location": "src.main.resources.de.julielab.jcore.multiplier.xml.desc.PubmedXMLMultiplier"
+            "location": "de.julielab.jcore.multiplier.xml.desc.PubmedXMLMultiplier"
         }
     ],
     "exposable": true,

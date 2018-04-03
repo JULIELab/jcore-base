@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.lingpipe.porterstemmer.desc.jcore-lingpipe-porterstemmer-ae"
+            "location": "de.julielab.jcore.ae.lingpipe.porterstemmer.desc.jcore-lingpipe-porterstemmer-ae"
         }
     ],
     "exposable": true,

@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.opennlppostag.desc.jcore-opennlppostag"
+            "location": "de.julielab.jcore.ae.opennlppostag.desc.jcore-opennlppostag"
         }
     ],
     "exposable": true,

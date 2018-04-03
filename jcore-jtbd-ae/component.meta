@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.jtbd.desc.jcore-jtbd"
+            "location": "de.julielab.jcore.ae.jtbd.desc.jcore-jtbd"
         }
     ],
     "exposable": true,

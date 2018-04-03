@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.reader.ace.desc.jcore-ace-reader"
+            "location": "de.julielab.jcore.reader.ace.desc.jcore-ace-reader"
         }
     ],
     "exposable": true,

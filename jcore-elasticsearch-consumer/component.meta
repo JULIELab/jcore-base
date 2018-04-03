@@ -4,11 +4,11 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.consumer.es.desc.jcore-elasticsearch-consumer"
+            "location": "de.julielab.jcore.consumer.es.desc.jcore-elasticsearch-consumer"
         },
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.consumer.es.desc.jcore-json-consumer"
+            "location": "de.julielab.jcore.consumer.es.desc.jcore-json-consumer"
         }
     ],
     "exposable": true,

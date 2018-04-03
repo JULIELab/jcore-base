@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.jnet.desc.jcore-jnet-ae"
+            "location": "de.julielab.jcore.ae.jnet.desc.jcore-jnet-ae"
         }
     ],
     "exposable": true,

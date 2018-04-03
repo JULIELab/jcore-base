@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer"
+            "location": "de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer"
         }
     ],
     "exposable": true,

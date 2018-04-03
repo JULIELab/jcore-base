@@ -4,15 +4,15 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-biomedical-sharedtask"
+            "location": "de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-biomedical-sharedtask"
         },
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-medical"
+            "location": "de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-medical"
         },
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-segment"
+            "location": "de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-segment"
         }
     ],
     "exposable": true,

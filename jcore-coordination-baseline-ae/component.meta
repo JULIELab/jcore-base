@@ -4,19 +4,19 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-conjunct"
+            "location": "de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-conjunct"
         },
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-coordination"
+            "location": "de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-coordination"
         },
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-eee"
+            "location": "de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-eee"
         },
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-ellipsis"
+            "location": "de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-ellipsis"
         }
     ],
     "exposable": true,

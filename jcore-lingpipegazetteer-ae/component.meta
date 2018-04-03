@@ -4,11 +4,11 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.lingpipegazetteer.desc.GazetteerGeneAnnotator"
+            "location": "de.julielab.jcore.ae.lingpipegazetteer.desc.GazetteerGeneAnnotator"
         },
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.lingpipegazetteer.desc.jules-lingpipe-dictionary-ae"
+            "location": "de.julielab.jcore.ae.lingpipegazetteer.desc.jules-lingpipe-dictionary-ae"
         }
     ],
     "exposable": true,

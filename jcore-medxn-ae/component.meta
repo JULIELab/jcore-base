@@ -4,15 +4,15 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.medxn.desc.MedNormAE"
+            "location": "de.julielab.jcore.ae.medxn.desc.MedNormAE"
         },
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.medxn.desc.jcore-medxn-ae-attributes-german"
+            "location": "de.julielab.jcore.ae.medxn.desc.jcore-medxn-ae-attributes-german"
         },
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.medxn.desc.jcore-medxn-ae-extractor-german"
+            "location": "de.julielab.jcore.ae.medxn.desc.jcore-medxn-ae-extractor-german"
         }
     ],
     "exposable": true,

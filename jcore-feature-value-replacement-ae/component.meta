@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.fvr.desc.jcore-feature-value-replacement-ae"
+            "location": "de.julielab.jcore.ae.fvr.desc.jcore-feature-value-replacement-ae"
         }
     ],
     "exposable": true,

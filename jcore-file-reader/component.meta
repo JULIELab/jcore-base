@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "reader",
-            "location": "src.main.resources.de.julielab.jcore.reader.file.desc.jcore-file-reader"
+            "location": "de.julielab.jcore.reader.file.desc.jcore-file-reader"
         }
     ],
     "exposable": true,

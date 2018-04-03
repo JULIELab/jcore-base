@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.mstparser.desc.jcore-mstparser"
+            "location": "de.julielab.jcore.ae.mstparser.desc.jcore-mstparser"
         }
     ],
     "exposable": true,

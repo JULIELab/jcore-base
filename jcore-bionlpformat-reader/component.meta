@@ -4,15 +4,15 @@
     "descriptors": [
         {
             "category": "reader",
-            "location": "src.main.resources.de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-biomedical-sharedtask"
+            "location": "de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-biomedical-sharedtask"
         },
         {
             "category": "reader",
-            "location": "src.main.resources.de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-medical"
+            "location": "de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-medical"
         },
         {
             "category": "reader",
-            "location": "src.main.resources.de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-segment"
+            "location": "de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-segment"
         }
     ],
     "exposable": true,

@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.ae.eventflattener.desc.jcore-event-flattener-ae"
+            "location": "de.julielab.jcore.ae.eventflattener.desc.jcore-event-flattener-ae"
         }
     ],
     "exposable": true,

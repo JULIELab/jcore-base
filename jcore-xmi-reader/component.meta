@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "reader",
-            "location": "src.main.resources.de.julielab.jcore.reader.xmi.desc.jcore-xmi-reader"
+            "location": "de.julielab.jcore.reader.xmi.desc.jcore-xmi-reader"
         }
     ],
     "exposable": true,

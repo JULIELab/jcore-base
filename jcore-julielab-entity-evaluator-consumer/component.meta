@@ -4,7 +4,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "src.main.resources.de.julielab.jcore.consumer.entityevaluator.desc.jcore-julielab-entity-evaluator-consumer"
+            "location": "de.julielab.jcore.consumer.entityevaluator.desc.jcore-julielab-entity-evaluator-consumer"
         }
     ],
     "exposable": true,
