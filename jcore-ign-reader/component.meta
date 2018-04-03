@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "Collection Reader for the IGN corpus in BioC format as accessible at https://sites.google.com/site/hongjiedai/projects/the-ign-corpus.",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.ign.desc.jcore-ign-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-ign-reader",
+    "name": "JCoRe IGN Reader"
+}

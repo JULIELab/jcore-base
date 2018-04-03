@@ -1,8 +1,9 @@
 {
-  "name": "JCoRe Conll Consumer",
-  "exposable": true,
-  "maven-artifact": "jcore-conll-consumer",
-  "descriptors": [{"location":"de.julielab.jcore.consumer.desc.conll.jcore-conll-consumer","category":"consumer"}],
-  "category": "consumer",
-  "group": "general"
+    "category": "consumer",
+    "description": "",
+    "descriptors": [],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": "jcore-conll-consumer",
+    "name": "JCoRe CONLL Consumer"
 }

@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "Reads CAS XMI data from a relational database (Postgres). Thus, the stored CASes may then be processed further.",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.xmi.desc.jcore-xmi-db-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-xmi-db-reader",
+    "name": "JCoRe XMI Database Reader"
+}

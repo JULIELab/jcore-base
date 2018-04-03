@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "JCoRe MUC7 Reader.\nA Collection Reader that converts MUC-7 files to CAS objects (only corefs).",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.muc7.desc.jcore-muc7-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-muc7-reader",
+    "name": "JCoRe MUC7 Reader"
+}

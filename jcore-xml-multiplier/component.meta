@@ -1,0 +1,14 @@
+{
+    "category": "multiplier",
+    "description": "A CAS Multiplier that employs the JCoRe XML mapper to read XML documents. A mapping file must be delivered to determine which XML file elements have to be converted to which CAS annotation types and features. This is the base component for the JCoRe PubMed and Medline readers.",
+    "descriptors": [
+        {
+            "category": "multiplier",
+            "location": "src.main.resources.de.julielab.jcore.multiplier.xml.desc.PubmedXMLMultiplier"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-xml-multiplier",
+    "name": "JCoRe XML Multiplier"
+}

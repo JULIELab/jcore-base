@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "Reads MS doc files; derived from UIMA example \"FileSystemCollectionReader\" and the JCoRe component File Reader",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.msdoc.desc.jcore-msdoc-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-msdoc-reader",
+    "name": "JCoRe MSdoc Reader"
+}

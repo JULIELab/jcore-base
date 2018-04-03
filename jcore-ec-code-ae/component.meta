@@ -1,0 +1,9 @@
+{
+    "category": "ae",
+    "description": "This component recognizes Enzyme Comission (EC) numbers.",
+    "descriptors": [],
+    "exposable": false,
+    "group": "default",
+    "maven-artifact": "jcore-ecn-code-ae",
+    "name": "JCoRe Enzyme Commission Number AE"
+}

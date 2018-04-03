@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "A Collection Reader that converts XML, stored in a database, to CAS objects.\nThe conversion is the same employed by the jcore-xml-reader, making use of the jcore-xml-mapper.\nThe reader requires a configuration file which determines the database connection, the table schema and the PostgreSQL schema (namespace) to use.",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.xml.desc.jcore-xml-db-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-xml-db-reader",
+    "name": "JCoRe XML Database Reader"
+}

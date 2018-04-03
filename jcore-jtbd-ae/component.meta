@@ -1,0 +1,14 @@
+{
+    "category": "ae",
+    "description": "UIMA Wrapper for the JULIE Token Boundary Detector.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.jtbd.desc.jcore-jtbd"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-jtbd-ae",
+    "name": "JCoRe Token Annotator"
+}

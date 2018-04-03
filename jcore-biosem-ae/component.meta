@@ -1,8 +1,9 @@
 {
-  "name": "JCoRe BioSem AE",
-  "exposable": false,
-  "maven-artifact": "jcore-biosem-ae",
-  "descriptors": [],
-  "category": "consumer",
-  "group": "semantic"
+    "category": "ae",
+    "description": "A UIMA wrapper around the BioSem Event Extractor from the University of Amsterdam.\nhttp://www.ncbi.nlm.nih.gov/pubmed/22859502",
+    "descriptors": [],
+    "exposable": false,
+    "group": "semantic",
+    "maven-artifact": "jcore-biosem-ae",
+    "name": "JCoRe BioSem Event Annotator"
 }

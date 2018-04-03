@@ -1,11 +1,22 @@
 {
-  "name": "JCoRe BioNLP Format Reader",
-  "exposable": true,
-  "maven-artifact": "jcore-bionlpformat-reader",
-  "descriptors":
-  [{"location":"de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-biomedical-sharedtask","category":"reader"},
-  {"location":"de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-medical","category":"reader"},
-  {"location":"de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-segment", "category":"reader"}],
-  "category": "reader",
-  "group": "shared task"
+    "category": "reader",
+    "description": "This reader generates CAS' from data that adheres to the BioNLP-ST format.",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-biomedical-sharedtask"
+        },
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-medical"
+        },
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-segment"
+        }
+    ],
+    "exposable": true,
+    "group": "shared task",
+    "maven-artifact": "jcore-bionlpformat-reader",
+    "name": "JCoRe BioNLP Format Reader"
 }

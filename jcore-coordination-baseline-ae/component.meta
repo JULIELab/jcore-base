@@ -1,0 +1,26 @@
+{
+    "category": "ae",
+    "description": "This is a baseline approach to the Coordination Resolution problem. It is used in our jcore-coordination-ae, that is only accessible on GitHub due to being in an unfinished state.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-conjunct"
+        },
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-coordination"
+        },
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-eee"
+        },
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.coordbaseline.desc.jcore-coordination-baseline-ae-ellipsis"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-coordination-baseline-ae",
+    "name": "JCoRe Coordination Tagger Baseline"
+}

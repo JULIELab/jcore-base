@@ -1,0 +1,9 @@
+{
+    "category": "reader",
+    "description": "Abstract database reader for database driven processing",
+    "descriptors": [],
+    "exposable": false,
+    "group": "default",
+    "maven-artifact": "jcore-db-reader",
+    "name": "JCoRe Database Reader"
+}

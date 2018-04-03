@@ -1,0 +1,14 @@
+{
+    "category": "ae",
+    "description": "UIMA wrapper for the OpenNLP Parser. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe components.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.opennlpparser.desc.jcore-opennlpparser"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-opennlp-parser-ae",
+    "name": "JCoRe OpenNLP Constituency Parser"
+}

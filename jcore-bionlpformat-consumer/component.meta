@@ -1,11 +1,22 @@
 {
-  "name": "JCoRe BioNLP Format Consumer",
-  "exposable": true,
-  "maven-artifact": "jcore-bionlpformat-consumer",
-  "descriptors":
-  [{"location":"de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-biomedical-sharedtask","category":"consumer"},
-  {"location":"de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-medical","category":"consumer"},
-  {"location":"de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-segment", "category":"consumer"}],
-  "category":"consumer",
-  "group": "shared task"
+    "category": "consumer",
+    "description": "This consumer is used to generate BioNLP-ST (2009) compliant data from a CAS.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-biomedical-sharedtask"
+        },
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-medical"
+        },
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-segment"
+        }
+    ],
+    "exposable": true,
+    "group": "shared task",
+    "maven-artifact": "jcore-bionlpformat-consumer",
+    "name": "JCoRe BioNLP Format Consumer"
 }

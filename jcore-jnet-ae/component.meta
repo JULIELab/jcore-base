@@ -1,0 +1,14 @@
+{
+    "category": "ae",
+    "description": "Named Entity Tagger and its UIMA wrapper.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.jnet.desc.jcore-jnet-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-jnet-ae",
+    "name": "JCoRe JNET AE"
+}

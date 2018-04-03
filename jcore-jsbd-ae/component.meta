@@ -1,8 +1,14 @@
 {
-  "name": "JCoRe Sentence Boundary Detector",
-  "exposable": false,
-  "maven-artifact": "jcore-jsbd-ae",
-  "descriptors": [{"location":"de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae", "category":"ae"}],
-  "category": "ae",
-  "group": "morpho syntactic"
+    "category": "ae",
+    "description": "UIMA Wrapper for the JULIE Sentence Boundary Detector.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae"
+        }
+    ],
+    "exposable": false,
+    "group": "morpho syntactic",
+    "maven-artifact": "jcore-jsbd-ae",
+    "name": "JCoRe Sentence Annotator"
 }

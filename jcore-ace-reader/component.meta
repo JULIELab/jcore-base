@@ -1,8 +1,14 @@
 {
-  "name": "JCoRe ACE Reader",
-  "exposable": true,
-  "maven-artifact": "jcore-ace-reader",
-  "descriptors": [{"location": "de.julielab.jcore.reader.ace.desc.jcore-ace-reader", "category": "reader"}],
-  "category":"reader",
-  "group": "shared task"
+    "category": "reader",
+    "description": "JCoRe ACE Reader.\nA Collection Reader that converts ACE-XML files to CAS objects.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.reader.ace.desc.jcore-ace-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "shared task",
+    "maven-artifact": "jcore-ace-reader",
+    "name": "JCoRe ACE Reader"
 }

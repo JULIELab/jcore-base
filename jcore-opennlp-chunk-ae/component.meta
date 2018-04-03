@@ -1,0 +1,9 @@
+{
+    "category": "ae",
+    "description": "UIMA wrapper for the OpenNLP Chunker. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe components.",
+    "descriptors": [],
+    "exposable": false,
+    "group": "default",
+    "maven-artifact": "jcore-opennlp-chunk-ae",
+    "name": "JCoRe Open NLP Chunker"
+}

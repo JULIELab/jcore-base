@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "A Collection Reader that reads XML documents for XML Multipliers. ",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.xml.desc.XMLMultiplierReader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-xml-multiplier-reader",
+    "name": "JCoRe XML Multiplier Reader"
+}

@@ -1,8 +1,14 @@
 {
-  "name": "JCoRe Banner AE",
-  "exposable": false,
-  "maven-artifact": "jcore-banner-ae",
-  "descriptors": [{"location": "de.julielab.jcore.ae.banner.desc.jcore-banner-ae", "category":"ae"}],
-  "category":"ae",
-  "group": "semantic"
+    "category": "ae",
+    "description": "Banner gene tagging tool.\nBases on version 0.0.12-SNAPSHOT from scm:git:git@github.com:oaqa/banner.git.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.banner.desc.jcore-banner-ae"
+        }
+    ],
+    "exposable": false,
+    "group": "semantic",
+    "maven-artifact": "jcore-banner-ae",
+    "name": "JCoRe Banner"
 }

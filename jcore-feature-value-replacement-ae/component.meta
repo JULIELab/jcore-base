@@ -1,0 +1,14 @@
+{
+    "category": "ae",
+    "description": "This analysis engine simply replaces feature values of feature structures with other values as defined by an external resource, e.g. file. For instance, all NCBI Gene IDs could be mapped to Ensemble IDs.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.fvr.desc.jcore-feature-value-replacement-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-feature-value-replacement-ae",
+    "name": "JCoRe Feature Value Replacement AE"
+}

@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "Reader for IEXML files as used in the Mantra project/challenge",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.iexml.desc.jcore-iexml-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-iexml-reader",
+    "name": "JCoRe IEXML Reader"
+}

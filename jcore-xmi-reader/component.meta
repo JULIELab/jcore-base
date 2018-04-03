@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "Reads in XMI representions of CAS objects from files and converts them to CAS objects.\nIs able to read (g)zipped files and can recursively search subdirectories for XMI files to read.",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.xmi.desc.jcore-xmi-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-xmi-reader",
+    "name": "JCoRe XMI Collection Reader"
+}

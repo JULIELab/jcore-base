@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "A UIMA reader for the Pubmed Central NXML format.",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.pmc.desc.jcore-pmc-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-pmc-reader",
+    "name": "JCoRe PubMed Central Reader"
+}

@@ -1,0 +1,14 @@
+{
+    "category": "ae",
+    "description": "UIMA wrapper for the OpenNLP POS Tagger. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe components.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.opennlppostag.desc.jcore-opennlppostag"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-opennlp-postag-ae",
+    "name": "JCoRe OpenNLP POS Tagger"
+}

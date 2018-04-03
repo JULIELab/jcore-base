@@ -1,0 +1,14 @@
+{
+    "category": "consumer",
+    "description": "",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-txt-consumer",
+    "name": "JCoRe TXT Consumer"
+}

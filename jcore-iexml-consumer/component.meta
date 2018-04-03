@@ -1,0 +1,14 @@
+{
+    "category": "consumer",
+    "description": "Generates stand-off IEXML files as used in the Mantra challenge.",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "src.main.resources.de.julielab.jcore.consumer.iexml.desc.jcore-iexml-consumer"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-iexml-consumer",
+    "name": "JCoRe IEXML Consumer"
+}

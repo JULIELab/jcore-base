@@ -1,0 +1,14 @@
+{
+    "category": "reader",
+    "description": "Reader for DTA files (German digital humanities corpus)",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.dta.desc.jcore-dta-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-dta-reader",
+    "name": "JCoRe DTA Reader"
+}

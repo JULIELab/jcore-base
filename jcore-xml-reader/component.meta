@@ -1,0 +1,18 @@
+{
+    "category": "reader",
+    "description": "A Collection Reader that employs the JCoRe XML mapper to read XML documents. A mapping file must be delivered to determine which XML file elements have to be converted to which CAS annotation types and features. This is the base component for the JCoRe PubMed and Medline readers.",
+    "descriptors": [
+        {
+            "category": "multiplier",
+            "location": "src.main.resources.de.julielab.jcore.reader.xml.desc.PubmedXMLMultiplier"
+        },
+        {
+            "category": "reader",
+            "location": "src.main.resources.de.julielab.jcore.reader.xml.desc.XMLMultiplierReader"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-xml-reader",
+    "name": "JCoRe XML Reader"
+}

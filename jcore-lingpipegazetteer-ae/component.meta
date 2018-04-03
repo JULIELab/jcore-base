@@ -1,0 +1,18 @@
+{
+    "category": "ae",
+    "description": "Basically used as NE tagger based on Lingpipe's dictionary-lookup tagger.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.lingpipegazetteer.desc.GazetteerGeneAnnotator"
+        },
+        {
+            "category": "ae",
+            "location": "src.main.resources.de.julielab.jcore.ae.lingpipegazetteer.desc.jules-lingpipe-dictionary-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-lingpipe-gazetteer-ae",
+    "name": "JCoRe Lingpipe Gazetteer AE"
+}

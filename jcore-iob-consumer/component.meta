@@ -1,0 +1,14 @@
+{
+    "category": "consumer",
+    "description": "A CAS Consumer that converts UIMA annotations into IOB format",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "src.main.resources.de.julielab.jcore.consumer.cas2iob.desc.jcore-cas2iob-consumer"
+        }
+    ],
+    "exposable": true,
+    "group": "default",
+    "maven-artifact": "jcore-iob-consumer",
+    "name": "JCoRe CAS to IOB Consumer"
+}
