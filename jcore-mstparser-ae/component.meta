@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-mstparser-ae",
     "name": "JCoRe MST Parser AE"
 }

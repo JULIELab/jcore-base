@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-ign-reader",
     "name": "JCoRe IGN Reader"
 }

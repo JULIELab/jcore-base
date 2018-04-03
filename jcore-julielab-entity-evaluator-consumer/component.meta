@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-julielab-entity-evaluator-consumer",
     "name": "JCoRe JULIE Lab Entity Evaluator Converter"
 }

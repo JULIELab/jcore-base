@@ -7,7 +7,7 @@
             "location": "de.julielab.jcore.ae.banner.desc.jcore-banner-ae"
         }
     ],
-    "exposable": false,
+    "exposable": true,
     "group": "semantic",
     "maven-artifact": "jcore-banner-ae",
     "name": "JCoRe Banner"

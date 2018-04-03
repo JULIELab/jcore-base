@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-xmi-reader",
     "name": "JCoRe XMI Collection Reader"
 }

@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-linnaeus-species-ae",
     "name": "JCoRe Linnaeus Species Tagger"
 }

@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-jpos-ae",
     "name": "JCoRe JPOS AE"
 }

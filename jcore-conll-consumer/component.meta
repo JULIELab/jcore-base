@@ -2,7 +2,7 @@
     "category": "consumer",
     "description": "",
     "descriptors": [],
-    "exposable": true,
+    "exposable": false,
     "group": "general",
     "maven-artifact": "jcore-conll-consumer",
     "name": "JCoRe CONLL Consumer"

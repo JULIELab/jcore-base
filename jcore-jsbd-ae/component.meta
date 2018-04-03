@@ -7,7 +7,7 @@
             "location": "de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae"
         }
     ],
-    "exposable": false,
+    "exposable": true,
     "group": "morpho syntactic",
     "maven-artifact": "jcore-jsbd-ae",
     "name": "JCoRe Sentence Annotator"

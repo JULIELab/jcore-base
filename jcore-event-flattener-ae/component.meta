@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-event-flattener-ae",
     "name": "JCoRe Event Flattener AE"
 }

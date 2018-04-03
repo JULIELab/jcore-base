@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-txt-consumer",
     "name": "JCoRe TXT Consumer"
 }

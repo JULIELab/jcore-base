@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-feature-value-replacement-ae",
     "name": "JCoRe Feature Value Replacement AE"
 }

@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-lingpipe-porterstemmer-ae",
     "name": "JCoRe Lingpipe Porter Stemmer AE"
 }

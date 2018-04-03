@@ -8,7 +8,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-iob-consumer",
     "name": "JCoRe CAS to IOB Consumer"
 }

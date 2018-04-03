@@ -12,7 +12,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-lingpipe-gazetteer-ae",
     "name": "JCoRe Lingpipe Gazetteer AE"
 }

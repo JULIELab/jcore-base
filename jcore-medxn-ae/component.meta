@@ -16,7 +16,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-medxn-ae",
     "name": "JCoRe MedXN"
 }

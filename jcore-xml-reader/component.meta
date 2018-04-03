@@ -12,7 +12,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-xml-reader",
     "name": "JCoRe XML Reader"
 }

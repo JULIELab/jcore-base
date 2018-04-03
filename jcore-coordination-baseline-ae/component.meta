@@ -20,7 +20,7 @@
         }
     ],
     "exposable": true,
-    "group": "default",
+    "group": "general",
     "maven-artifact": "jcore-coordination-baseline-ae",
     "name": "JCoRe Coordination Tagger Baseline"
 }
