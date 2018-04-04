@@ -30,6 +30,9 @@
 								<typeSystemInclude>
 									src/main/resources/de/julielab/jcore/types/jcore-all-types.xml
 								</typeSystemInclude>
+								<typeSystemInclude>
+									src/main/resources/de/julielab/jcore/types/casmultiplier/jcore-uri-multiplier-types.xml
+								</typeSystemInclude>
 							</typeSystemIncludes>
 
 							<!-- OPTIONAL -->
