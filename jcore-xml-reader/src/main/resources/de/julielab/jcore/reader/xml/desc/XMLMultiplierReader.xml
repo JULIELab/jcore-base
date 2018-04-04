@@ -25,7 +25,7 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.MultiplierTypeSystem"/>
+        <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
       </imports>
     </typeSystemDescription>
     <fsIndexCollection/>

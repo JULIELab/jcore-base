@@ -19,7 +19,7 @@ package de.julielab.jcore.reader;
 
 import de.julielab.jcore.reader.xml.XMLMultiplierReader;
 import de.julielab.jcore.types.Journal;
-import de.julielab.jcore.types.XMLFile;
+import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import de.julielab.jcore.types.pubmed.Header;
 import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
@@ -93,34 +93,33 @@ public class XMLMultiplierReaderTest extends TestCase {
      */
     public void testGetNextCas_singleFile() throws Exception {
         xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR,
-                XMLMultiplierReader.PARAM_INPUT_FILE, "src/test/resources/pubmedXML/pubmedsample18n0001copy.xml",
-                XMLMultiplierReader.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
+                XMLMultiplierReader.PARAM_INPUT_FILE, "src/test/resources/pubmedXML/pubmedsample18n0001copy.xml");
 
-        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-types", "de.julielab.jcore.reader.xml.types.MultiplierTypeSystem");
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-types",   "de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types");
         xmlMultiplierReader.getNext(cas.getCas());
-        FSIterator<Annotation> it = cas.getAnnotationIndex(XMLFile.type).iterator();
+        FSIterator<Annotation> it = cas.getAnnotationIndex(JCoReURI.type).iterator();
         if (it.hasNext()) {
-            XMLFile fileType = (XMLFile) it.next();
-            System.out.println(fileType.getFileToRead());
+            JCoReURI fileType = (JCoReURI) it.next();
+            System.out.println(fileType.getUri());
         }
 
     }
 
     public void testGetNextCas_directory() throws Exception {
         xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR,
-                XMLMultiplierReader.PARAM_INPUT_DIR, "src/test/resources/pubmedXML/",
-                XMLMultiplierReader.PARAM_MAPPING_FILE, "src/test/resources/medlineCitationMappingFile.xml");
+                XMLMultiplierReader.PARAM_INPUT_DIR, "src/test/resources/pubmedXML/");
         File directory = new File("src/test/resources/pubmedXML/");
         int i = 0;
         assertTrue(xmlMultiplierReader.hasNext());
         while (xmlMultiplierReader.hasNext()) {
-            JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-types", "de.julielab.jcore.reader.xml.types.MultiplierTypeSystem");
+            JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-types",
+                    "de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types");
             xmlMultiplierReader.getNext(cas.getCas());
-            FSIterator<Annotation> it = cas.getAnnotationIndex(XMLFile.type).iterator();
+            FSIterator<Annotation> it = cas.getAnnotationIndex(JCoReURI.type).iterator();
             assertTrue(it.hasNext());
             if (it.hasNext()) {
-                XMLFile fileType = (XMLFile) it.next();
-                assertEquals(directory.listFiles()[i].getAbsolutePath(), fileType.getFileToRead());
+                JCoReURI fileType = (JCoReURI) it.next();
+                assertEquals(directory.listFiles()[i].toURI().toString(), fileType.getUri());
                 i++;
             }
         }

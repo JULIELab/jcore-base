@@ -70,7 +70,7 @@
       <imports>
         <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
       <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
-      <import name="de.julielab.jcore.multiplier.xml.types.MultiplierTypeSystem"/>
+        <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
@@ -78,7 +78,7 @@
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.XMLFile</type>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.casmultiplier.JCoReURI</type>
         </inputs>
         <outputs>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.AbstractText</type>

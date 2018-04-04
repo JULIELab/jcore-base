@@ -17,32 +17,21 @@
 
 package de.julielab.jcore.reader.xml;
 
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.XMLFile;
+import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Type;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.factory.AnnotationFactory;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 
-/**
- * CollectionReader for MEDLINE (www.pubmed.gov) Abstracts in XML that
- * initializes some information in the CAS
- * 
- * @author muehlhausen
- */
 
 public class XMLMultiplierReader extends CollectionReader_ImplBase {
 
@@ -64,19 +53,6 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
 	public static final String PARAM_INPUT_FILE = "InputFile";
 
 	/**
-	 * Configuration parameter defined in the descriptor
-	 */
-	public static final String PARAM_MAPPING_FILE = "MappingFile";
-
-	/**
-	 * Configuration parameter defined in the descriptor. Defaults to
-	 * "de.julielab.jcore.types.Header". Must be assignment compatible to
-	 * "de.julielab.jcore.types.Header". Only required when no header is built
-	 * by the XML mapper.
-	 */
-	public static final String PARAM_HEADER_TYPE = "HeaderType";
-
-	/**
 	 * List of all files with abstracts XML
 	 */
 	private File[] files;
@@ -86,17 +62,6 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
 	 */
 	private int currentIndex = 0;
 
-	/**
-	 * Mapper which maps XML to a cas with the jules type system via an XML
-	 * configuration file.
-	 */
-//	private XMLMapper xmlMapper;
-
-	@ConfigurationParameter(name = PARAM_MAPPING_FILE)
-	private String mappingFileStr;
-
-	@ConfigurationParameter(name = PARAM_HEADER_TYPE, mandatory = false)
-	private String headerTypeName;
 	@ConfigurationParameter(name = PARAM_INPUT_DIR, mandatory = false)
 	private String directoryName;
 	@ConfigurationParameter(name = PARAM_INPUT_FILE, mandatory = false)
@@ -109,115 +74,31 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
 	 */
 	@Override
 	public void initialize() throws ResourceInitializationException {
-
-		LOGGER.debug("initialize() - Initializing Medline Reader...");
-
-		headerTypeName = (String) getConfigParameterValue(PARAM_HEADER_TYPE);
-		if (null == headerTypeName)
-			headerTypeName = "de.julielab.jcore.types.Header";
-		mappingFileStr = (String) getConfigParameterValue(PARAM_MAPPING_FILE);
-		InputStream is = null;
-
-		LOGGER.info("Header type set to {}. A header of this type is only created if no header is created using the XML mapping file.", headerTypeName);
-		LOGGER.info("Mapping file is searched as file or classpath resource at {}", mappingFileStr);
-
-		File mappingFile = new File(mappingFileStr);
-		if (mappingFile.exists()) {
-			try {
-				is = new FileInputStream(mappingFile);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-				throw new ResourceInitializationException(e1);
-			}
-		} else {
-			if (!mappingFileStr.startsWith("/"))
-				mappingFileStr = "/" + mappingFileStr;
-
-			is = getClass().getResourceAsStream(mappingFileStr);
-			if (is == null) {
-				throw new IllegalArgumentException(
-						"MappingFile "
-								+ mappingFileStr
-								+ " could not be found as a file or on the classpath (note that the prefixing '/' is added automatically if not already present for classpath lookup)");
-			}
-		}
-
-//		try {
-//			xmlMapper = new XMLMapper(is);
-//		} catch (FileNotFoundException e) {
-//			throw new ResourceInitializationException(e);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-
 		files = getFilesFromInputDirectory();
 	}
 
 	/**
 	 * @see org.apache.uima.collection.CollectionReader#getNext(CAS)
 	 */
-	public void getNext(CAS cas) throws IOException, CollectionException {
+	public void getNext(CAS cas) throws CollectionException {
 
 		File file = files[currentIndex++];
 
 		LOGGER.debug("getNext(CAS) - Reading file " + file.getName());
 
 		try {
-			XMLFile fileType = new XMLFile(cas.getJCas());
-        	fileType.setFileToRead(file.getAbsolutePath());
+			JCoReURI fileType = new JCoReURI(cas.getJCas());
+        	fileType.setUri(file.toURI().toString());
         	fileType.addToIndexes();
-			// if PMID filed was empty, set File Name
-
 		} catch (Exception e) {
 			LOGGER.error("Exception in getNext(): file: " + file, e);
 			throw new CollectionException(e);
 		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		try {
-			checkHeader(file.getName(), cas.getJCas());
-		} catch (CASException e) {
-			LOGGER.error("Exception in getNext(): file: " + file, e);
 			throw new CollectionException(e);
 		}
-
 	}
 
-	@SuppressWarnings("unchecked")
-	private void checkHeader(String name, JCas cas) throws CollectionException {
-		Type headerType = cas.getTypeSystem().getType(headerTypeName);
-		if (null == headerType)
-			throw new CollectionException(CASException.JCAS_INIT_ERROR, new Object[] { "Header type \"" + headerTypeName
-					+ "\" could not be found in the type system." });
-		FSIterator<Annotation> headerIter = cas.getAnnotationIndex(headerType).iterator();
-		if (headerIter.hasNext()) {
-			try {
-				Header header = (Header) headerIter.next();
-				if (header.getDocId() == null || header.getDocId() == "" || header.getDocId() == "-1") {
-					header.setDocId(name);
-				}
-			} catch (ClassCastException e) {
-				LOGGER.error("Configured header type is {}. However, the header type must be assignment compatible to de.julielab.jcore.types.Header.",
-						headerTypeName);
-				throw new CollectionException(e);
-			}
-
-		} else {
-			Class<? extends Header> headerClass;
-			try {
-				headerClass = (Class<? extends Header>) Class.forName(headerTypeName);
-			} catch (ClassNotFoundException e) {
-				LOGGER.error("Header type class {} could not be found.", headerTypeName);
-				throw new CollectionException(e);
-			}
-			Header header = AnnotationFactory.createAnnotation(cas, 0, 0, headerClass);
-			header.setDocId(name);
-			header.addToIndexes();
-		}
-
-	}
-
-	/**
+		/**
 	 * Get files from directory that is specified in the configuration parameter
 	 * PARAM_INPUTDIR of the collection reader descriptor.
 	 * 
@@ -291,7 +172,7 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
 	/**
 	 * @see org.apache.uima.collection.CollectionReader#hasNext()
 	 */
-	public boolean hasNext() throws IOException, CollectionException {
+	public boolean hasNext() {
 		return currentIndex < files.length;
 	}
 
@@ -305,6 +186,6 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
 	/**
 	 * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
 	 */
-	public void close() throws IOException {
+	public void close() {
 	}
 }

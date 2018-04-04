@@ -19,7 +19,7 @@ package de.julielab.jcore.multiplier.xml;
 
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.XMLFile;
+import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
 import org.apache.uima.UimaContext;
@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -86,13 +87,13 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 	private File[] files;
 
 	/**
-	 * Current file number
+	 * Current currentUri number
 	 */
 	private int currentIndex = 0;
 
 	/**
 	 * Mapper which maps XML to a cas with the jules type system via an XML
-	 * configuration file.
+	 * configuration currentUri.
 	 */
 	private XMLMapper xmlMapper;
 	
@@ -102,10 +103,10 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 	private Iterator<Map<String, Object>> rowIterator;
 
 	/**
-	 * File to read passed from the Collection Reader CAS 
+	 * File to read passed from the Collection Reader CAS
 	 */
-	private String file;
-	
+	private String currentUri;
+
 	/**
 	 * Passes parameters to initialize() 
 	 */
@@ -136,8 +137,8 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 		forEach = (String) aContext.getConfigParameterValue(PARAM_FOR_EACH);
 		InputStream is = null;
 
-		LOGGER.info("Header type set to {}. A header of this type is only created if no header is created using the XML mapping file.", headerTypeName);
-		LOGGER.info("Mapping file is searched as file or classpath resource at {}", mappingFileStr);
+		LOGGER.info("Header type set to {}. A header of this type is only created if no header is created using the XML mapping currentUri.", headerTypeName);
+		LOGGER.info("Mapping currentUri is searched as currentUri or classpath resource at {}", mappingFileStr);
 
 		File mappingFile = new File(mappingFileStr);
 		if (mappingFile.exists()) {
@@ -156,7 +157,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 				throw new IllegalArgumentException(
 						"MappingFile "
 								+ mappingFileStr
-								+ " could not be found as a file or on the classpath (note that the prefixing '/' is added automatically if not already present for classpath lookup)");
+								+ " could not be found as a currentUri or on the classpath (note that the prefixing '/' is added automatically if not already present for classpath lookup)");
 			}
 		}
 
@@ -172,9 +173,9 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 	@Override
 	public void process(JCas cas) throws AnalysisEngineProcessException {
 
-		XMLFile xmlFile = JCasUtil.selectSingle(cas, XMLFile.class);
-		file = xmlFile.getFileToRead();
-		LOGGER.debug("process(JCas) - Reading file " + file);
+		JCoReURI xmlFile = JCasUtil.selectSingle(cas, JCoReURI.class);
+		currentUri = xmlFile.getUri();
+		LOGGER.debug("process(JCas) - Reading currentUri " + currentUri);
 		String[] fieldPaths = new String [1];
 		fieldPaths[0] = ".";
 		List<Map<String, String>> fields = new ArrayList<>();
@@ -186,8 +187,15 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 			field.put(JulieXMLConstants.RETURN_XML_FRAGMENT, "true");
 			fields.add(field);
 		};
-		rowIterator = JulieXMLTools.constructRowIterator(file, 1024, forEach, fields, false);
-	}
+        try {
+            rowIterator = JulieXMLTools.constructRowIterator(
+                    JulieXMLTools.readStream(new java.net.URI(currentUri).toURL().openStream(), 1024),
+                    1024, forEach, fields, currentUri);
+        } catch (IOException | URISyntaxException e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+
+    }
 	
 	@Override
 	public AbstractCas next() throws AnalysisEngineProcessException {
@@ -195,19 +203,19 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 		
 		Map<String, Object> row = rowIterator.next();
 		String xmlFragment = (String) row.get("fieldvalue" + 0);
-		String identifier = file;
+		String identifier = currentUri;
 		try {
 			xmlMapper.parse(xmlFragment.getBytes(), identifier.getBytes(), cas);
 		} catch (Exception e) {
-			LOGGER.error("Exception in next(): file: " + file, e);
+			LOGGER.error("Exception in next(): currentUri: " + currentUri, e);
 			throw new AnalysisEngineProcessException(e);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 		try {
-			checkHeader(file, cas);
+			checkHeader(currentUri, cas);
 		} catch (CASException e) {
-			LOGGER.error("Exception in next(): file: " + file, e);
+			LOGGER.error("Exception in next(): currentUri: " + currentUri, e);
 			throw new AnalysisEngineProcessException(e);
 		}
 		return cas;
