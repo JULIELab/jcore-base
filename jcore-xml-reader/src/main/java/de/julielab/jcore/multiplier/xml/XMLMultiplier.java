@@ -17,11 +17,13 @@
 
 package de.julielab.jcore.multiplier.xml;
 
+import de.julielab.java.utilities.UriUtils;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
+import jdk.nashorn.internal.runtime.URIUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -29,6 +31,7 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
+import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.factory.AnnotationFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -43,13 +46,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
 
-/**
- * CollectionReader for MEDLINE (www.pubmed.gov) Abstracts in XML that
- * initializes some information in the CAS
- * 
- * @author muehlhausen
- */
-
+@OperationalProperties(outputsNewCases = true, modifiesCas = false)
 public class XMLMultiplier extends JCasMultiplier_ImplBase {
 
 	/**
@@ -89,7 +86,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 	/**
 	 * Current currentUri number
 	 */
-	private int currentIndex = 0;
+	private int currentIndex = 1;
 
 	/**
 	 * Mapper which maps XML to a cas with the jules type system via an XML
@@ -175,6 +172,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 
 		JCoReURI xmlFile = JCasUtil.selectSingle(cas, JCoReURI.class);
 		currentUri = xmlFile.getUri();
+        currentIndex = 1;
 		LOGGER.debug("process(JCas) - Reading currentUri " + currentUri);
 		String[] fieldPaths = new String [1];
 		fieldPaths[0] = ".";
@@ -189,7 +187,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 		};
         try {
             rowIterator = JulieXMLTools.constructRowIterator(
-                    JulieXMLTools.readStream(new java.net.URI(currentUri).toURL().openStream(), 1024),
+                    JulieXMLTools.readStream(UriUtils.getInputStreamFromUri(new java.net.URI(currentUri)), 1024),
                     1024, forEach, fields, currentUri);
         } catch (IOException | URISyntaxException e) {
             throw new AnalysisEngineProcessException(e);
@@ -203,7 +201,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 		
 		Map<String, Object> row = rowIterator.next();
 		String xmlFragment = (String) row.get("fieldvalue" + 0);
-		String identifier = currentUri;
+		String identifier = currentUri + "#" + currentIndex++;
 		try {
 			xmlMapper.parse(xmlFragment.getBytes(), identifier.getBytes(), cas);
 		} catch (Exception e) {

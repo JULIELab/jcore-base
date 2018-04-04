@@ -23,6 +23,11 @@
   		<artifactId>logback-classic</artifactId>
   		<scope>test</scope>
   	</dependency>
+	  <dependency>
+		  <groupId>de.julielab</groupId>
+		  <artifactId>julielab-java-utilities</artifactId>
+		  <version>1.0.1-SNAPSHOT</version>
+	  </dependency>
   </dependencies>
   <organization>
   	<name>JULIE Lab, Germany</name>
