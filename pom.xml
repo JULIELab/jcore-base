@@ -86,8 +86,6 @@
 		<module>jcore-types</module>
 		<module>jcore-utilities</module>
 		<module>jcore-xml-mapper</module>
-		<module>jcore-xml-multiplier</module>
-		<module>jcore-xml-multiplier-reader</module>
 		<module>jcore-xml-reader</module>
 		<module>jcore-xmi-reader</module>
 		<module>jcore-xmi-writer</module>
