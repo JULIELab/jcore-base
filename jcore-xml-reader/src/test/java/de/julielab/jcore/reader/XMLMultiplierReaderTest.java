@@ -93,7 +93,7 @@ public class XMLMultiplierReaderTest extends TestCase {
      */
     public void testGetNextCas_singleFile() throws Exception {
         xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR,
-                XMLMultiplierReader.PARAM_INPUT_FILE, "src/test/resources/pubmedXML/pubmedsample18n0001copy.xml");
+                XMLMultiplierReader.PARAM_INPUT_FILE, "src/test/resources/pubmedXML/pubmedsample18n0001.xml.gz");
 
         JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-types",   "de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types");
         xmlMultiplierReader.getNext(cas.getCas());
