@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "Arconym Tagger\nbased on the SCHWARTZ & HEARST Algorithm:\nAriel S. Schwartz and Marti A. Hearst: A Simple Algorithm For Identifying Abbreviation Definitions in Biomedical Text. In: Pacific Symposium on Biocomputing, 2003.",
     "descriptors": [
         {

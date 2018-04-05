@@ -1,5 +1,7 @@
 {
-    "category": "reader",
+    "categories": [
+        "reader"
+    ],
     "description": "Collection Reader for the IGN corpus in BioC format as accessible at https://sites.google.com/site/hongjiedai/projects/the-ign-corpus.",
     "descriptors": [
         {

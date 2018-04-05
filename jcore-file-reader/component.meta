@@ -1,5 +1,7 @@
 {
-    "category": "reader",
+    "categories": [
+        "reader"
+    ],
     "description": "Reads simple text files; derived from UIMA example \"FileSystemCollectionReader\"",
     "descriptors": [
         {

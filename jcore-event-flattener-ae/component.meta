@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "This component reads de.julielab.jcore.types.EventMention annotations and converts event structures into de.julielab.jcore.types.ext.FlattenedRelation annotation. The purpose of FlattenedRelations is to represent complex event structures in a more simple manner. This can be helpful for visualization or further processing.",
     "descriptors": [
         {

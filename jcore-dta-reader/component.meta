@@ -1,5 +1,7 @@
 {
-    "category": "reader",
+    "categories": [
+        "reader"
+    ],
     "description": "Reader for DTA files (German digital humanities corpus)",
     "descriptors": [
         {

@@ -1,5 +1,7 @@
 {
-    "category": "reader",
+    "categories": [
+        "reader"
+    ],
     "description": "Abstract database reader for database driven processing",
     "descriptors": [],
     "exposable": false,

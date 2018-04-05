@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "UIMA Wrapper for the JULIE Sentence Boundary Detector.",
     "descriptors": [
         {

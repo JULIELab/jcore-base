@@ -1,5 +1,7 @@
 {
-    "category": "reader",
+    "categories": [
+        "reader"
+    ],
     "description": "JCoRe MUC7 Reader.\nA Collection Reader that converts MUC-7 files to CAS objects (only corefs).",
     "descriptors": [
         {

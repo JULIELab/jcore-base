@@ -1,5 +1,7 @@
 {
-    "category": "reader",
+    "categories": [
+        "reader"
+    ],
     "description": "Reads CAS XMI data from a relational database (Postgres). Thus, the stored CASes may then be processed further.",
     "descriptors": [
         {

@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "This component applies the Porter stemming algorithm to all tokens in the CAS.",
     "descriptors": [
         {

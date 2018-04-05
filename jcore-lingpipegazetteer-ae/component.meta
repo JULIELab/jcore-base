@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "Basically used as NE tagger based on Lingpipe's dictionary-lookup tagger.",
     "descriptors": [
         {

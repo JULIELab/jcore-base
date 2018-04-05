@@ -1,5 +1,8 @@
 {
-    "category": "reader",
+    "categories": [
+        "ae",
+        "reader"
+    ],
     "description": "JCoRe ACE Reader.\nA Collection Reader that converts ACE-XML files to CAS objects.",
     "descriptors": [
         {

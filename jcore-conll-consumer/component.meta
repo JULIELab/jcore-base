@@ -1,5 +1,7 @@
 {
-    "category": "consumer",
+    "categories": [
+        "consumer"
+    ],
     "description": "",
     "descriptors": [],
     "exposable": false,

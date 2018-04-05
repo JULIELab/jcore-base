@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "Named Entity Tagger and its UIMA wrapper.",
     "descriptors": [
         {

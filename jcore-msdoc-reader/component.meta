@@ -1,5 +1,7 @@
 {
-    "category": "reader",
+    "categories": [
+        "reader"
+    ],
     "description": "Reads MS doc files; derived from UIMA example \"FileSystemCollectionReader\" and the JCoRe component File Reader",
     "descriptors": [
         {

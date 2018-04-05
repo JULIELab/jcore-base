@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "Banner gene tagging tool.\nBases on version 0.0.12-SNAPSHOT from scm:git:git@github.com:oaqa/banner.git.",
     "descriptors": [
         {

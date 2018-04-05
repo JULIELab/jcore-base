@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "Slightly modified version of the MST parser to fit into the UIMA framework.\nThis dependency parser determines all syntactic dependencies between words within a sentence. Certain level of adaptation of the original source code was necessary to neatly integrate the parser in UIMA.",
     "descriptors": [
         {

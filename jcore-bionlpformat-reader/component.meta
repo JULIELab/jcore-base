@@ -1,5 +1,7 @@
 {
-    "category": "reader",
+    "categories": [
+        "reader"
+    ],
     "description": "This reader generates CAS' from data that adheres to the BioNLP-ST format.",
     "descriptors": [
         {

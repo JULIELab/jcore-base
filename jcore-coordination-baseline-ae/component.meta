@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "This is a baseline approach to the Coordination Resolution problem. It is used in our jcore-coordination-ae, that is only accessible on GitHub due to being in an unfinished state.",
     "descriptors": [
         {

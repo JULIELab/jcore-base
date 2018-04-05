@@ -1,5 +1,8 @@
 {
-    "category": "consumer",
+    "categories": [
+        "ae",
+        "consumer"
+    ],
     "description": "This consumer is used to generate BioNLP-ST (2009) compliant data from a CAS.",
     "descriptors": [
         {

@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "JPOS MaxEnt POS Tagger and its UIMA wrapper.",
     "descriptors": [
         {

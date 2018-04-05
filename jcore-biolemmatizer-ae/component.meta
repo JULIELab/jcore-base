@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "Lemmatization tool for morphological analysis of biomedical literature downloaded from SourceForge",
     "descriptors": [
         {

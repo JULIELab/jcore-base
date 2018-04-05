@@ -1,5 +1,7 @@
 {
-    "category": "reader",
+    "categories": [
+        "reader"
+    ],
     "description": "Reader for IEXML files as used in the Mantra project/challenge",
     "descriptors": [
         {

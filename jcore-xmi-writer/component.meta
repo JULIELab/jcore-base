@@ -1,5 +1,8 @@
 {
-    "category": "consumer",
+    "categories": [
+        "ae",
+        "consumer"
+    ],
     "description": "JCoRe XMI Writer. A CAS consumer that writes/converts CAS objects to XMI files.",
     "descriptors": [
         {

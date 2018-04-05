@@ -1,5 +1,7 @@
 {
-    "category": "consumer",
+    "categories": [
+        "consumer"
+    ],
     "description": "A CAS Consumer that converts UIMA annotations into IOB format",
     "descriptors": [
         {

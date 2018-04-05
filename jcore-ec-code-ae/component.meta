@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "This component recognizes Enzyme Comission (EC) numbers.",
     "descriptors": [],
     "exposable": false,

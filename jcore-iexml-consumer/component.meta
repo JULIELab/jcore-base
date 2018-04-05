@@ -1,5 +1,7 @@
 {
-    "category": "consumer",
+    "categories": [
+        "consumer"
+    ],
     "description": "Generates stand-off IEXML files as used in the Mantra challenge.",
     "descriptors": [
         {

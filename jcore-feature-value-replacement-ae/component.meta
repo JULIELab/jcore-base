@@ -1,5 +1,7 @@
 {
-    "category": "ae",
+    "categories": [
+        "ae"
+    ],
     "description": "This analysis engine simply replaces feature values of feature structures with other values as defined by an external resource, e.g. file. For instance, all NCBI Gene IDs could be mapped to Ensemble IDs.",
     "descriptors": [
         {
