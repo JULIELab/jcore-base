@@ -1,0 +1,16 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "UIMA Wrapper for the Stanford CoreNLP Lemmatizer.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.stanford.lemma.desc.jcore-stanford-lemmatizer"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": "jcore-stanford-lemmatizer",
+    "name": "JCoRe Stanford Lemmatizer"
+}
