@@ -17,13 +17,12 @@
 
 package de.julielab.jcore.multiplier.xml;
 
-import de.julielab.java.utilities.UriUtils;
+import de.julielab.java.utilities.UriUtilities;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
-import jdk.nashorn.internal.runtime.URIUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -187,7 +186,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 		};
         try {
             rowIterator = JulieXMLTools.constructRowIterator(
-                    JulieXMLTools.readStream(UriUtils.getInputStreamFromUri(new java.net.URI(currentUri)), 1024),
+                    JulieXMLTools.readStream(UriUtilities.getInputStreamFromUri(new java.net.URI(currentUri)), 1024),
                     1024, forEach, fields, currentUri);
         } catch (IOException | URISyntaxException e) {
             throw new AnalysisEngineProcessException(e);
