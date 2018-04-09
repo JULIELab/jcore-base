@@ -25,14 +25,25 @@
  **/
 package de.julielab.jcore.ae.lingpipegazetteer.uima;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-
+import com.aliasi.chunk.Chunk;
+import com.aliasi.chunk.Chunker;
+import com.aliasi.chunk.Chunking;
+import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
+import com.aliasi.tokenizer.TokenizerFactory;
+import com.ibm.icu.text.Transliterator;
+import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProvider;
+import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
+import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
+import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking.NormalizedString;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.AbbreviationLongform;
+import de.julielab.jcore.types.ConceptMention;
+import de.julielab.jcore.types.mantra.Entity;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
+import de.julielab.jcore.utility.index.IndexTermGenerator;
+import de.julielab.jcore.utility.index.JCoReHashMapAnnotationIndex;
+import de.julielab.jcore.utility.index.TermGenerators;
+import de.julielab.jcore.utility.index.TermGenerators.LongOffsetIndexTermGenerator;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -47,26 +58,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aliasi.chunk.Chunk;
-import com.aliasi.chunk.Chunker;
-import com.aliasi.chunk.Chunking;
-import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
-import com.aliasi.tokenizer.TokenizerFactory;
-import com.ibm.icu.text.Transliterator;
-
-import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProvider;
-import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
-import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
-import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking.NormalizedString;
-import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.AbbreviationLongform;
-import de.julielab.jcore.types.ConceptMention;
-import de.julielab.jcore.types.mantra.Entity;
-import de.julielab.jcore.utility.JCoReAnnotationTools;
-import de.julielab.jcore.utility.index.IndexTermGenerator;
-import de.julielab.jcore.utility.index.JCoReHashMapAnnotationIndex;
-import de.julielab.jcore.utility.index.TermGenerators;
-import de.julielab.jcore.utility.index.TermGenerators.LongOffsetIndexTermGenerator;
+import java.util.*;
 
 public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
@@ -104,9 +96,6 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 	// public final static String PARAM_TRANSLITERATE_TEXT =
 	// "TransliterateText";
 
-	// @ConfigurationParameter(name = PARAM_USE_APPROXIMATE_MATCHING,
-	// defaultValue = "false")
-	private boolean useApproximateMatching = false;
 	@ConfigurationParameter(name = PARAM_USE_MANTRA_MODE, defaultValue = "false")
 	private boolean mantraMode = false;
 
@@ -115,12 +104,6 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 	private boolean checkAcronyms = true;
 	@ConfigurationParameter(name = PARAM_OUTPUT_TYPE)
 	private String outputType = null;
-	// @ConfigurationParameter(name = PARAM_TRANSLITERATE_TEXT, defaultValue =
-	// "false")
-	private boolean transliterate;
-	// @ConfigurationParameter(name = PARAM_NORMALIZE_TEXT, defaultValue =
-	// "false")
-	private boolean normalize;
 
 	@ExternalResource(key = CHUNKER_RESOURCE_NAME, mandatory = true)
 	private ChunkerProvider provider;
@@ -129,7 +112,6 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 	 */
 	private Transliterator transliterator;
 	private Chunker gazetteer = null;
-	private boolean caseSensitive;
 	private TokenizerFactory normalizationTokenFactory;
 	private Set<String> stopWords;
 
@@ -184,13 +166,6 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 			LOGGER.error("Exception while initializing", e);
 		}
 
-		// gazetteer type
-		useApproximateMatching = provider.getUseApproximateMatching();// (Boolean)
-																		// aContext.getConfigParameterValue(PARAM_USE_APPROXIMATE_MATCHING);
-		LOGGER.info(
-				"Use approximate matching (the actual used edit distance is defined by the ChunkerProvider implementation): {}",
-				useApproximateMatching);
-
 		// check acronyms
 		checkAcronyms = (Boolean) aContext.getConfigParameterValue(PARAM_CHECK_ACRONYMS);
 		LOGGER.info(
@@ -200,33 +175,18 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
 		Boolean normalizeBoolean = provider.getNormalize();// (Boolean)
 															// aContext.getConfigParameterValue(PARAM_NORMALIZE_TEXT);
-		normalize = false;
-		if (normalizeBoolean != null) {
-			normalize = normalizeBoolean;
+		if (normalizeBoolean) {
 			normalizationTokenFactory = new IndoEuropeanTokenizerFactory();
 		}
-		LOGGER.info("Normalize CAS document text (i.e. do stemming and remove possessive 's): {}", normalize);
+		LOGGER.info("Normalize CAS document text (i.e. do stemming and remove possessive 's): {}", provider.getNormalize());
 
 		Boolean transliterateBoolean = provider.getTransliterate();// (Boolean)
 																	// aContext.getConfigParameterValue(PARAM_TRANSLITERATE_TEXT);
-		transliterate = false;
-		if (transliterateBoolean != null) {
-			transliterate = transliterateBoolean;
+		if (transliterateBoolean) {
 			transliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower");
 		}
 		LOGGER.info("Transliterate CAS document text (i.e. transform accented characters to their base forms): {}",
-				transliterate);
-
-		if (useApproximateMatching) {
-			// match case-(in)sensitive
-			Boolean caseSensitiveBoolean = provider.getCaseSensitive();// (Boolean)
-																		// aContext.getConfigParameterValue(PARAM_CASE_SENSITIVE);
-			caseSensitive = false;
-			if (caseSensitiveBoolean != null) {
-				caseSensitive = caseSensitiveBoolean;
-			}
-			LOGGER.info("Dictionary matching is case sensitive (text is not lower cased): {}", caseSensitive);
-		}
+				provider.getTransliterate());
 
 		// define output level
 		outputType = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_TYPE);
@@ -248,10 +208,10 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 		String docText = aJCas.getDocumentText();
 		if (docText == null || docText.length() == 0)
 			return;
-		if (useApproximateMatching && !transliterate && !caseSensitive)
+		if (provider.getUseApproximateMatching() && !provider.getTransliterate() && !provider.getCaseSensitive())
 			docText = docText.toLowerCase();
 		NormalizedString normalizedDocText = null;
-		if (normalize) {
+		if (provider.getNormalize()) {
 			normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory,
 					transliterator);
 		}
@@ -264,12 +224,12 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
 		LOGGER.debug("Performing actual Gazetteer annotation...");
 		Chunking chunking;
-		if (normalize)
+		if (provider.getNormalize())
 			chunking = gazetteer.chunk(normalizedDocText.string);
 		else
 			chunking = gazetteer.chunk(docText);
 		LOGGER.debug("Gazetteer annotation done.");
-		if (useApproximateMatching) {
+		if (provider.getUseApproximateMatching()) {
 			/*
 			 * handle matches found by approx matching: this means especially overlapping
 			 * matches with different scores (doesn't happen with exact matches)
@@ -540,7 +500,7 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 		// Annotation anno;
 		int start;
 		int end;
-		if (normalize) {
+		if (provider.getNormalize()) {
 			try {
 				start = normalizedDocText.getOriginalOffset(chunk.start());
 				end = normalizedDocText.getOriginalOffset(chunk.end());
@@ -614,8 +574,8 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 			return;
 		}
 
-		int start = normalize ? normalizedDocText.getOriginalOffset(chunk.start()) : chunk.start();
-		int end = normalize ? normalizedDocText.getOriginalOffset(chunk.end()) : chunk.end();
+		int start = provider.getNormalize() ? normalizedDocText.getOriginalOffset(chunk.start()) : chunk.start();
+		int end = provider.getNormalize() ? normalizedDocText.getOriginalOffset(chunk.end()) : chunk.end();
 
 		try {
 			if (mantraMode) {

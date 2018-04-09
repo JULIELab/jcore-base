@@ -13,110 +13,15 @@
 		<version>2.3.0-SNAPSHOT</version>
 	</parent>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources/desc/mantra</directory>
-				<includes>
-					<include>LingpipeMantraBaselineDE.xml</include>
-					<include>LingpipeMantraBaselineEN.xml</include>
-					<include>LingpipeMantraBaselineES.xml</include>
-					<include>LingpipeMantraBaselineFR.xml</include>
-					<include>LingpipeMantraBaselineNL.xml</include>
-					<include>LingpipeMantraBaselinePT.xml</include>
-				</includes>
-				<targetPath>desc/mantra</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/resources/dictionaryProperties/mantra</directory>
-				<includes>
-					<include>MantraBaselineDE.propterties</include>
-					<include>MantraBaselineEN.propterties</include>
-					<include>MantraBaselineES.propterties</include>
-					<include>MantraBaselineFR.propterties</include>
-					<include>MantraBaselineNL.propterties</include>
-					<include>MantraBaselinePT.propterties</include>
-				</includes>
-				<targetPath>dictionaryProperties/mantra</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/resources/stopwords</directory>
-				<includes>
-					<include>DE_from_unine.ch</include>
-					<include>EN_from_unine.ch</include>
-					<include>ES_from_unine.ch</include>
-					<include>FR_from_unine.ch</include>
-					<include>PT_from_unine.ch</include>
-					<include>NL_from_snowball</include>
-				</includes>
-				<targetPath>stopwords/mantra</targetPath>
-			</resource>
-		</resources>
-<!-- 		<pluginManagement> -->
-<!-- 			<plugins> -->
-<!-- 				<plugin> -->
-<!-- 					<groupId>org.eclipse.m2e</groupId> -->
-<!-- 					<artifactId>lifecycle-mapping</artifactId> -->
-<!-- 					<version>1.0.0</version> -->
-<!-- 					<configuration> -->
-<!-- 						<lifecycleMappingMetadata> -->
-<!-- 							<pluginExecutions> -->
-<!-- 								copy-dependency plugin -->
-<!-- 								<pluginExecution> -->
-<!-- 									<pluginExecutionFilter> -->
-<!-- 										<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 										<artifactId>maven-dependency-plugin</artifactId> -->
-<!-- 										<versionRange>[1.0.0,)</versionRange> -->
-<!-- 										<goals> -->
-<!-- 											<goal>copy-dependencies</goal> -->
-<!-- 										</goals> -->
-<!-- 									</pluginExecutionFilter> -->
-<!-- 									<action> -->
-<!-- 										<ignore /> -->
-<!-- 									</action> -->
-<!-- 								</pluginExecution> -->
-<!-- 							</pluginExecutions> -->
-<!-- 						</lifecycleMappingMetadata> -->
-<!-- 					</configuration> -->
-<!-- 				</plugin> -->
-<!-- 			</plugins> -->
-<!-- 		</pluginManagement> -->
-		<plugins>
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-dependency-plugin</artifactId> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>copy-dependencies</id> -->
-<!-- 						<goals> -->
-<!-- 							<goal>copy-dependencies</goal> -->
-<!-- 						</goals> -->
-<!-- 						<phase>package</phase> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 				<configuration> -->
-<!-- 					<outputDirectory>${project.build.directory}/lib</outputDirectory> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<outputDirectory>${project.build.directory}/lib</outputDirectory>
-				</configuration>
-			</plugin>
-
-		</plugins>
-
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>1.0</version>
-			</extension>
-		</extensions>
-	</build>
 
 	<dependencies>
-	   <dependency>
+		<dependency>
+			<groupId>de.julielab</groupId>
+			<artifactId>jcore-descriptor-creator</artifactId>
+			<version>2.3.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+        <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
             <version>${jcore-version}</version>
@@ -133,7 +38,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
