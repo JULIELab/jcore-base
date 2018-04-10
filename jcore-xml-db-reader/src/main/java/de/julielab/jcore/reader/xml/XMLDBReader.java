@@ -142,7 +142,7 @@ public class XMLDBReader extends DBReader {
 	 * .CAS)
 	 */
 	public void getNext(CAS cas) throws IOException, CollectionException {
-		byte[][] arrayArray = getNextArtefactData(cas);
+		byte[][] arrayArray = getNextArtifactData(cas);
 		List<Integer> pkIndices = dbc.getPrimaryKeyIndices();
 
 		// get index of xmlData;

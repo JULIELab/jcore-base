@@ -218,7 +218,7 @@ public class XmiDBReader extends DBReader {
 
 		LinkedHashMap<String, InputStream> xmiData = new LinkedHashMap<String, InputStream>();
 		log.trace("Retrieving document data from the database.");
-		byte[][] data = getNextArtefactData(aCAS);
+		byte[][] data = getNextArtifactData(aCAS);
 		log.trace("Got document data with {} fields.", null != data ? data.length : 0);
 		String docId = getPkStringFromData(data);
 		log.debug("Reading document with ID {} as delivered from database.", docId);

@@ -3,8 +3,11 @@
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.xml.XMLMultiplierReader</implementationName>
   <processingResourceMetaData>
-    <name>MedlineReaderDescriptor_missingInputDir</name>
-    <description/>
+    <name>JCoRe XML Multiplier Reader</name>
+    <description>
+      This reader is to be used with the JCoRe XML CAS Multiplier. The reader merely distributes the files to
+      be read. The actual parsing is done by the multiplier.
+    </description>
     <version>1.0</version>
     <vendor/>
     <configurationParameters>
