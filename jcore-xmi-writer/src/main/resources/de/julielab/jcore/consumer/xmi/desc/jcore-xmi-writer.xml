@@ -11,7 +11,7 @@
     <configurationParameters>
       <configurationParameter>
         <name>OutputDirectory</name>
-        <description>Consumer writes the XMI to this direcory</description>
+        <description>Consumer writes the XMI to this directory</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>

@@ -6,11 +6,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "de.julielab.jcore.ae.lingpipegazetteer.desc.GazetteerGeneAnnotator"
-        },
-        {
-            "category": "ae",
-            "location": "de.julielab.jcore.ae.lingpipegazetteer.desc.jules-lingpipe-dictionary-ae"
+            "location": "de.julielab.jcore.ae.lingpipegazetteer.desc.jcore-lingpipe-gazetteer-ae"
         }
     ],
     "exposable": true,

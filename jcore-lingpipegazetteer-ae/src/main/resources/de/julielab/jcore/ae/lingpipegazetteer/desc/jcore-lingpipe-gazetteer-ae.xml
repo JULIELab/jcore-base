@@ -3,7 +3,7 @@
     <primitive>true</primitive>
     <annotatorImplementationName>de.julielab.jcore.ae.lingpipegazetteer.uima.GazetteerAnnotator</annotatorImplementationName>
     <analysisEngineMetaData>
-        <name>GazetteerAnnotator, Descriptor Template</name>
+        <name>GazetteerAnnotator, Template Descriptor</name>
         <description>
             This is a minimal template for the use with the JCoRe component using the Lingpipe Gazetteer Chunker.
             It must be set which exact annotation type should be created for recognized dictionary entries and
