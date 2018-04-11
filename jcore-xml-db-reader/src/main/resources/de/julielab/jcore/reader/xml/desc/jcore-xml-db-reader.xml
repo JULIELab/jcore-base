@@ -13,7 +13,7 @@
                 <description/>
                 <type>String</type>
                 <multiValued>true</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>MappingFile</name>
@@ -27,21 +27,21 @@
                 <description/>
                 <type>Integer</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>DBDriver</name>
                 <description/>
                 <type>String</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>Timestamp</name>
                 <description/>
                 <type>String</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>Table</name>
@@ -55,21 +55,21 @@
                 <description/>
                 <type>String</type>
                 <multiValued>true</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>AdditionalTableSchema</name>
                 <description/>
                 <type>String</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>RandomSelection</name>
                 <description/>
-                <type>String</type>
+                <type>Boolean</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>FetchIdsProactively</name>
@@ -83,7 +83,7 @@
                 <description/>
                 <type>String</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>Limit</name>
@@ -93,7 +93,7 @@
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
-                <name>jedisConfigFile</name>
+                <name>costosysConfigFile</name>
                 <description/>
                 <type>String</type>
                 <multiValued>false</multiValued>
@@ -104,7 +104,7 @@
                 <description/>
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>

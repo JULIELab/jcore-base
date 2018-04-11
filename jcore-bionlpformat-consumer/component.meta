@@ -1,20 +1,19 @@
 {
     "categories": [
-        "ae",
         "consumer"
     ],
     "description": "This consumer is used to generate BioNLP-ST (2009) compliant data from a CAS.",
     "descriptors": [
         {
-            "category": "ae",
+            "category": "consumer",
             "location": "de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-biomedical-sharedtask"
         },
         {
-            "category": "ae",
+            "category": "consumer",
             "location": "de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-medical"
         },
         {
-            "category": "ae",
+            "category": "consumer",
             "location": "de.julielab.jcore.consumer.bionlpformat.desc.jcore-bionlpformat-consumer-segment"
         }
     ],

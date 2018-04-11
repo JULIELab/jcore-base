@@ -1,12 +1,11 @@
 {
     "categories": [
-        "ae",
         "consumer"
     ],
     "description": "",
     "descriptors": [
         {
-            "category": "ae",
+            "category": "consumer",
             "location": "de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer"
         }
     ],

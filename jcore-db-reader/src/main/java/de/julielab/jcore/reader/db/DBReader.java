@@ -140,7 +140,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
      * The name of the resource is assured by convention only as alternative names
      * are not reject from the descriptor when entering them manually.
      */
-    public static final String PARAM_JEDIS_CONFIG_NAME = "JedisConfigFile";
+    public static final String PARAM_COSTOSYS_CONFIG_NAME = "CostosysConfigFile";
     /**
      * Boolean parameter. Indicates whether the read subset table is to be reset
      * before reading.
@@ -199,7 +199,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
     @ConfigurationParameter(name = PARAM_LIMIT)
     protected Integer limitParameter;
     protected Boolean readDataTable = false;
-    @ConfigurationParameter(name = PARAM_JEDIS_CONFIG_NAME, mandatory = true)
+    @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG_NAME, mandatory = true)
     String dbcConfig;
     private String hostName;
     private String pid;
@@ -240,7 +240,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
         this.fetchIdsProactively = fetchIdsProactively;
         if (resetTable == null)
             resetTable = false;
-        dbcConfig = (String) getConfigParameterValue(PARAM_JEDIS_CONFIG_NAME);
+        dbcConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
 
         checkParameters();
 
@@ -381,7 +381,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
             throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_TABLE});
         }
         if (dbcConfig == null || dbcConfig.length() == 0) {
-            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_JEDIS_CONFIG_NAME});
+            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_COSTOSYS_CONFIG_NAME});
         }
         if (additionalTableNames != null && additionalTableSchema == null) {
             throw new ResourceInitializationException(new IllegalArgumentException("If multiple tables will be joined"

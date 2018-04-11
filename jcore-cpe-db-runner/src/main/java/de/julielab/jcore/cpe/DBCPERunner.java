@@ -190,7 +190,7 @@ public class DBCPERunner {
 		ConfigurationParameterSettings parameterSettings = reader.getMetaData()
 				.getConfigurationParameterSettings();
 		configuration = (String) parameterSettings
-				.getParameterValue(DBReader.PARAM_JEDIS_CONFIG_NAME);
+				.getParameterValue(DBReader.PARAM_COSTOSYS_CONFIG_NAME);
 		LOGGER.info("DBCConfiguration taken from Medline Reader: "
 				+ configuration);
 
