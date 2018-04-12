@@ -9,6 +9,9 @@
             It must be set which exact annotation type should be created for recognized dictionary entries and
             a chunker configuration must be provided as an
             external resource and bound to the 'DictionaryChunkerProvider' resource dependency.
+            The external resource expects a Java properties file contains a reference to the dictionary to load
+            and some parameter settings for dictionary processing and tagging. Refer to
+            https://github.com/JULIELab/jcore-base/tree/master/jcore-lingpipegazetteer-ae for more information.
         </description>
         <version>2.6</version>
         <vendor>julielab</vendor>

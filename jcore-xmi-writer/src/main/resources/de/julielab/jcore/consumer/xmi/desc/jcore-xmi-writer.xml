@@ -78,7 +78,7 @@ Default is false.</description>
     </capabilities>
     <operationalProperties>
       <modifiesCas>false</modifiesCas>
-      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
