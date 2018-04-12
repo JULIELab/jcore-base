@@ -72,8 +72,10 @@
         <externalResources>
             <externalResource>
                 <name>ConfigurableDictionaryChunkerProvider</name>
-                <description>Provides the MeSH dictionary chunker instance and all configuration required
-                    for dictionary loading and tagging.</description>
+                <description>Employs the configurable alternative chunker implementation. This alternative
+                implementation is primarily meant for approximate matching and should used in this intent.
+                It offers text normalization for better dictionary matching and the removal of accents (transliteration).
+                It is configured in the component descriptor and directly references the dictionary URL.</description>
                 <configurableDataResourceSpecifier>
                     <url>
 
