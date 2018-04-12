@@ -13,7 +13,7 @@
             external resource and bound to the 'DictionaryChunkerProvider' resource dependency.
             In this descriptor, the external resource is configurable. That is, it points directly to the
             dictionary file and has a set of parameters for dictionary processing and tagging directly
-            embedded into the descriptor. Refer to
+            embedded into the descriptor. The current parameter settings will work but may be changed. Refer to
             https://github.com/JULIELab/jcore-base/tree/master/jcore-lingpipegazetteer-ae for more information.
         </description>
         <version>2.6</version>
