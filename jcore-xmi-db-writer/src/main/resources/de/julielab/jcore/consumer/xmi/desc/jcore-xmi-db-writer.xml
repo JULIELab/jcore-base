@@ -10,7 +10,7 @@
     <vendor>JULIE Lab, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
-        <name>jedisConfigFile</name>
+        <name>CostosysConfigFile</name>
         <description>File path to the DataBaseConnector configuration file.</description>
         <type>String</type>
         <multiValued>false</multiValued>

@@ -16,7 +16,7 @@
         <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>jedisConfigFile</name>
+        <name>CostosysConfigFile</name>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>

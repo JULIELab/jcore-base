@@ -93,7 +93,7 @@
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
-                <name>costosysConfigFile</name>
+                <name>CostosysConfigFile</name>
                 <description/>
                 <type>String</type>
                 <multiValued>false</multiValued>
