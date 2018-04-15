@@ -117,7 +117,7 @@
             <nameValuePair>
                 <name>RandomSelection</name>
                 <value>
-                    <string/>
+                    <boolean>false</boolean>
                 </value>
             </nameValuePair>
             <nameValuePair>
