@@ -3,8 +3,10 @@
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.xml.XMLDBReader</implementationName>
     <processingResourceMetaData>
-        <name>de.julielab.jcore.reader.xml.XMLDBReader</name>
-        <description>An instantiation of the jcore-xml-db-reader specialized for Pubmed/Medline documents.</description>
+        <name>JCoRe XML Database Reader</name>
+        <description>A collection reader that receives XML document data from a PostgreSQL database. It employs the
+        jcore-xml-mapper to populate UIMA CAS instances with the XML data according to a mapping file. For the same
+        functionality without using a database, refer to the jcore-xml-reader.</description>
         <version>unknown</version>
         <vendor>JULIE Lab, Germany</vendor>
         <configurationParameters>
