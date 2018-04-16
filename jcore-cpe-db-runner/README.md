@@ -1,6 +1,6 @@
 # JCoRe CPE Database Runner
 
-The JCoRe CPE DB Runner is used for reading documents from a PostgreSQL database that has tables created by the [JeDIS](https://github.com/JULIELab/jedis) project. The runner has `StatusCallbackListener` that tracks the processing and logs processing status changes of documents into the database subset table which is read. It sets documents to have finished processing or to have errors.
+The JCoRe CPE DB Runner is used for reading documents from a PostgreSQL database that has tables created by the [CoStoSys](https://github.com/JULIELab/costosys) project. The runner has `StatusCallbackListener` that tracks the processing and logs processing status changes of documents into the database subset table which is read. It sets documents to have finished processing or to have errors.
 
 Thus, this component is not a CollectionReader, AnalysisEngine or Consumer but a meta-component that runs a whole CPE (Collection Processing Engine) given by its descriptor. This is typically done by calling the main class `de.julielab.jcore.cpe.DBCPERunner` from the command line where all component dependencies must reside on the classpath. Thus, this project is most commonly used as a dependency in pipeline projects.
 A prerequisite for CPEs to be run with this runner is that they need to use a CollectionReader that extends the [jcore-db-reader](https://github.com/JULIELab/jcore-base/tree/master/jcore-db-reader). The JeDIS configuration will be taken from the reader to establish a database connection for status updates to the subset table.
