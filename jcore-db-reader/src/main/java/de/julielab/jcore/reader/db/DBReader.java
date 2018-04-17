@@ -40,6 +40,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -90,204 +91,26 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
  * @author landefeld/hellrich/faessler
  *
  */
-public abstract class DBReader extends CollectionReader_ImplBase {
+public abstract class DBReader extends DBReaderBase {
 
-    public static final String PARAM_DB_DRIVER = "DBDriver";
-    public static final String PARAM_BATCH_SIZE = "BatchSize";
-    /**
-     * String parameter. Determines the table from which rows are read and returned.
-     * Both subset and data tables are allowed. For data tables, an optional 'where'
-     * condition can be specified, restricting the rows to be returned. Note that
-     * only reading from subset tables works correctly for concurrent access of
-     * multiple readers (for data tables each reader will return the whole table).
-     */
-    public static final String PARAM_TABLE = "Table";
-    /**
-     * String parameter representing a long value. If not null, only documents with
-     * a timestamp newer then the passed value will be processed.
-     */
-    public static final String PARAM_TIMESTAMP = "Timestamp";
-    /**
-     * Boolean parameter. Determines whether to return random samples of unprocessed
-     * documents rather than proceeding sequentially. This parameter is defined for
-     * subset reading only.
-     */
-    public static final String PARAM_SELECTION_ORDER = "RandomSelection";
-    /**
-     * Boolean parameter. Determines whether a background thread should be used
-     * which fetches the next batch of document IDs to process while the former
-     * batch is already being processed. Using the background thread boosts
-     * performance as waiting time is minimized. However, as the next batch of
-     * documents is marked in advance as being in process, this approach is only
-     * suitable when reading all available data.
-     */
-    public static final String PARAM_FETCH_IDS_PROACTIVELY = "FetchIdsProactively";
-    /**
-     * String parameter. Used only when reading directly from data tables. Only rows
-     * are returned which satisfy the specified 'where' clause. If empty or set to
-     * <code>null</code>, all rows are returned.
-     */
-    public static final String PARAM_WHERE_CONDITION = "WhereCondition";
-    /**
-     * Integer parameter. Determines the maximum amount of documents being read by
-     * this reader. The reader will also not mark more documents to be in process as
-     * specified with this parameter.
-     */
-    public static final String PARAM_LIMIT = "Limit";
-    /**
-     * Constant denoting the name of the external dependency representing the
-     * configuration file for the DataBaseConnector.<br>
-     * The name of the resource is assured by convention only as alternative names
-     * are not reject from the descriptor when entering them manually.
-     */
-    public static final String PARAM_COSTOSYS_CONFIG_NAME = "CostosysConfigFile";
-    /**
-     * Boolean parameter. Indicates whether the read subset table is to be reset
-     * before reading.
-     */
-    public static final String PARAM_RESET_TABLE = "ResetTable";
-    /**
-     * Multi-valued String parameter indicating which tables will be read from
-     * additionally to the referenced data table. The tables will be joined to a
-     * single CAS.
-     */
-    public static final String PARAM_ADDITIONAL_TABLES = "AdditionalTables";
-    /**
-     * Multi-valued String parameter indicating different schemas in case tables
-     * will be joined. The schema for the referenced data table has to be the first
-     * element. The schema for the additional tables has to be the second element.
-     */
-    public static final String PARAM_ADDITIONAL_TABLE_SCHEMA = "AdditionalTableSchema";
-    private static final Logger log = LoggerFactory.getLogger(DBReader.class);
-    /**
-     * Default size of document batches fetched from the database. The default is
-     * {@value #DEFAULT_BATCH_SIZE}.
-     */
-    private static final String DEFAULT_BATCH_SIZE = "50";
+    private final static Logger log = LoggerFactory.getLogger(DBReader.class);
 
-    @ConfigurationParameter(name = PARAM_BATCH_SIZE, defaultValue = DEFAULT_BATCH_SIZE)
-    protected int batchSize;
-    /**
-     * Currently unused because the Hikari JDBC library should recognize the correct
-     * driver. However, there seem to be cases where this doesn't work (HSQLDB). So
-     * we keep the parameter for later. When this issue comes up, the driver would
-     * have to be set manually. This isn't done right now.
-     */
-    @ConfigurationParameter(name = PARAM_DB_DRIVER)
-    protected String driver;
-    @ConfigurationParameter(name = PARAM_TABLE, mandatory = true)
-    protected String tableName;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES)
-    protected String[] additionalTableNames;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMA)
-    protected String additionalTableSchema;
-    protected String[] tables;
-    protected boolean joinTables = false;
-    protected int numAdditionalTables;
-    protected DataBaseConnector dbc;
-    protected boolean hasNext;
-    protected DBCIterator<byte[][]> xmlBytes;
-    // This variable block is only used when reading subsets.
-    protected String dataTable;
-    protected RetrievingThread retriever;
-    @ConfigurationParameter(name = PARAM_SELECTION_ORDER, defaultValue = "")
-    protected String selectionOrder;
-    @ConfigurationParameter(name = PARAM_FETCH_IDS_PROACTIVELY, defaultValue = "true")
-    protected Boolean fetchIdsProactively;
-    @ConfigurationParameter(name = PARAM_WHERE_CONDITION)
-    protected String whereCondition;
-    @ConfigurationParameter(name = PARAM_LIMIT)
-    protected Integer limitParameter;
-    protected Boolean readDataTable = false;
-    @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG_NAME, mandatory = true)
-    String dbcConfig;
-    private String hostName;
-    private String pid;
-    @ConfigurationParameter(name = PARAM_TIMESTAMP)
-    private String timestamp;
-    private int totalDocumentCount;
-    private int processedDocuments = 0;
-    private volatile int numberFetchedDocIDs = 0;
+
+    // Internal state fields
+    private RetrievingThread retriever;
     private String[] schemas;
-    @ConfigurationParameter(name = PARAM_RESET_TABLE, defaultValue = "false")
-    private Boolean resetTable;
 
     @Override
-    public void initialize() throws ResourceInitializationException {
+    public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize();
 
-        hostName = getHostName();
-        pid = getPID();
-
-        driver = (String) getConfigParameterValue(PARAM_DB_DRIVER);
-        if (driver == null)
-            driver = "org.postgresql.Driver";
-        Integer batchSize = (Integer) getConfigParameterValue(PARAM_BATCH_SIZE);
-        tableName = (String) getConfigParameterValue(PARAM_TABLE);
-        additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
-        additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
-        timestamp = (String) getConfigParameterValue(PARAM_TIMESTAMP);
-        selectionOrder = (String) getConfigParameterValue(PARAM_SELECTION_ORDER);
-        Boolean fetchIdsProactively = (Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY);
-        whereCondition = (String) getConfigParameterValue(PARAM_WHERE_CONDITION);
-        limitParameter = (Integer) getConfigParameterValue(PARAM_LIMIT);
-        resetTable = (Boolean) getConfigParameterValue(PARAM_RESET_TABLE);
-        if (batchSize == null)
-            batchSize = Integer.parseInt(DEFAULT_BATCH_SIZE);
-        this.batchSize = batchSize;
-        if (fetchIdsProactively == null)
-            fetchIdsProactively = true;
-        this.fetchIdsProactively = fetchIdsProactively;
-        if (resetTable == null)
-            resetTable = false;
-        dbcConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
-
-        checkParameters();
-
-        InputStream is = null;
-        is = getClass().getResourceAsStream(dbcConfig.startsWith("/") ? dbcConfig : "/" + dbcConfig);
-        if (is == null && dbcConfig != null && dbcConfig.length() > 0) {
-            try {
-                is = new FileInputStream(dbcConfig);
-            } catch (FileNotFoundException e) {
-                log.error("File '{}' was not found.", dbcConfig);
-                throw new ResourceInitializationException(e);
-            }
-        }
-
-        dbc = new DataBaseConnector(is, batchSize);
-
-        // Check whether the table we are supposed to read from actually exists.
-        if (!dbc.tableExists(tableName)) {
-            throw new ResourceInitializationException(
-                    new IllegalArgumentException("The configured table \"" + tableName + "\" does not exist."));
-        }
 
         // Check whether a subset table name or a data table name was given.
-        if (dbc.getReferencedTable(tableName) == null) {
-            if (additionalTableNames != null)
-                throw new NotImplementedException("At the moment mutiple tables can only be joined"
-                        + " if the data table is referenced by a subset, for which the name has to be"
-                        + " given in the Table parameter.");
-            dbc.checkTableDefinition(tableName);
-            readDataTable = true;
+        if (readDataTable) {
+            log.debug("Fetching first batch of data table entries." );
             xmlBytes = dbc.queryDataTable(tableName, whereCondition);
             hasNext = xmlBytes.hasNext();
-            Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
-            totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
         } else {
-            if (batchSize == 0)
-                log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
-            if (resetTable)
-                dbc.resetSubset(tableName);
-
-            dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
-
-            Integer unprocessedDocs = unprocessedDocumentCount();
-            totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
-            dataTable = dbc.getReferencedTable(tableName);
-            hasNext = dbc.hasUnfetchedRows(tableName);
-
             if (additionalTableNames != null && additionalTableNames.length > 0) {
                 joinTables = true;
 
@@ -303,16 +126,9 @@ public abstract class DBReader extends CollectionReader_ImplBase {
                 numAdditionalTables = 0;
             }
         }
-        logConfigurationState();
     }
 
-    private void logConfigurationState() {
-        log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
-        if (log.isInfoEnabled())
-            log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
-        log.info("BatchSize is set to {}.", batchSize);
-        log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
-    }
+
 
     /**
      * Checks whether the given additional tables exist. If not, it is checked if
@@ -450,7 +266,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
         }
         if (!xmlBytes.hasNext()) { // Don't merge with
             // the if above, the
-            // check
+            // check must be executed despite lazy evaluation
             xmlBytes = retriever.getDocuments();
             if (!xmlBytes.hasNext()) {
                 log.debug("No more documents, settings 'hasNext' to false.");
@@ -554,13 +370,11 @@ public abstract class DBReader extends CollectionReader_ImplBase {
 
     /**
      * <p>
-     * This class is charged to retrieve batches of document IDs which will be
-     * returned for processing afterwards. Note that this thread only fetches
-     * document IDs, not documents themselves. This is done in
-     * {@link DBReader#getNextArtifactData}.
+     * This class is charged with retrieving batches of document IDs and documents while previously fetched documents
+     * are in process.
      * </p>
      * <p>
-     * The class manages itself the <code>FetchIdsProactively</code> parameter which
+     * The class manages the <code>FetchIdsProactively</code> parameter which
      * can be given to the reader. When set to <code>false</code>, no ID batches are
      * fetched in advance but are fetched exactly on demand in
      * {@link DBReader#getNextArtifactData}.

@@ -12,8 +12,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>de.julielab</groupId>
-			<artifactId>jedis</artifactId>
-			<version>${jedis-version}</version>
+			<artifactId>costosys</artifactId>
+			<version>${costosys-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.julielab</groupId>

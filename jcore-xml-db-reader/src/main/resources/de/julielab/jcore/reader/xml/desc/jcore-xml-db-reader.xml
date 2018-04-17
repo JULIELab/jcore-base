@@ -92,7 +92,7 @@
                 <description/>
                 <type>Integer</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>CostosysConfigFile</name>
