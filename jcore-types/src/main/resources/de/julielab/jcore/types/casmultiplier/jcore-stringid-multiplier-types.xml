@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <name>JCoRe File Multiplier Types</name>
-  <description>This is a type system for usage with a CAS multiplier. It should not be included into the
-  jcore-all-types type system. This particular type system holds a array containing strings that represent the IDs of
-    documents to read. Using an array is used to read batches of document which makes database access more
-  efficient, for example.</description>
-  <version>2.3.0-SNAPSHOT</version>
-  <vendor>JULIE Lab Jena, Germany</vendor>
-  <types>
-    <typeDescription>
-      <name>de.julielab.jcore.types.casmultiplier.DocumentIds</name>
-      <description>An array of identifier strings denoting a document. The CAS multiplier receiving the identifiers
-        must have all information to actually read the document.</description>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
-      <features>
-        <featureDescription>
-          <name>identifiers</name>
-          <description>The document IDs to be read by the CAS multiplier.</description>
-          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
-        </featureDescription>
-      </features>
-    </typeDescription>
-  </types>
+    <name>JCoRe File Multiplier Types</name>
+    <description>This is a type system for usage with a CAS multiplier. It should not be included into the
+        jcore-all-types type system. This particular type system holds a array containing strings that represent the IDs
+        of
+        documents to read. Using an array is used to read batches of document which makes database access more
+        efficient, for example.
+    </description>
+    <version>2.3.0-SNAPSHOT</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <types>
+        <typeDescription>
+            <name>de.julielab.jcore.types.casmultiplier.DocumentIds</name>
+            <description>An array of identifier strings denoting a document. The CAS multiplier receiving the
+                identifiers
+                must have all information to actually read the document.
+            </description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>identifiers</name>
+                    <description>The document IDs to be read by the CAS multiplier.</description>
+                    <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+                    <elementType>uima.cas.StringArray</elementType>
+                </featureDescription>
+            </features>
+        </typeDescription>
+    </types>
 </typeSystemDescription>

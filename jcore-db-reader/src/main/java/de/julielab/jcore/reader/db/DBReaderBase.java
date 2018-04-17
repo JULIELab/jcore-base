@@ -1,9 +1,6 @@
 package de.julielab.jcore.reader.db;
 
-import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -40,7 +37,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
      * documents rather than proceeding sequentially. This parameter is defined for
      * subset reading only.
      */
-    public static final String PARAM_SELECTION_ORDER = "RandomSelection";
+    public static final String PARAM_SELECTION_ORDER = "SelectionOrder";
     /**
      * Boolean parameter. Determines whether a background thread should be used
      * which fetches the next batch of document IDs to process while the former
@@ -74,18 +71,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
      * before reading.
      */
     public static final String PARAM_RESET_TABLE = "ResetTable";
-    /**
-     * Multi-valued String parameter indicating which tables will be read from
-     * additionally to the referenced data table. The tables will be joined to a
-     * single CAS.
-     */
-    public static final String PARAM_ADDITIONAL_TABLES = "AdditionalTables";
-    /**
-     * Multi-valued String parameter indicating different schemas in case tables
-     * will be joined. The schema for the referenced data table has to be the first
-     * element. The schema for the additional tables has to be the second element.
-     */
-    public static final String PARAM_ADDITIONAL_TABLE_SCHEMA = "AdditionalTableSchema";
+
     private static final Logger log = LoggerFactory.getLogger(DBReaderBase.class);
     /**
      * Default size of document batches fetched from the database. The default is
@@ -105,10 +91,6 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     protected String driver;
     @ConfigurationParameter(name = PARAM_TABLE, mandatory = true)
     protected String tableName;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES)
-    protected String[] additionalTableNames;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMA)
-    protected String additionalTableSchema;
     @ConfigurationParameter(name = PARAM_SELECTION_ORDER, defaultValue = "")
     protected String selectionOrder;
     @ConfigurationParameter(name = PARAM_FETCH_IDS_PROACTIVELY, defaultValue = "true")
@@ -118,13 +100,12 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     @ConfigurationParameter(name = PARAM_LIMIT)
     protected Integer limitParameter;
 
+
     protected volatile int numberFetchedDocIDs = 0;
     protected String[] tables;
     protected boolean joinTables = false;
-    protected int numAdditionalTables;
     protected DataBaseConnector dbc;
     protected boolean hasNext;
-    protected DBCIterator<byte[][]> xmlBytes;
     protected String dataTable;
     protected Boolean readDataTable = false;
     protected int totalDocumentCount;
@@ -136,7 +117,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     protected String hostName;
     protected String pid;
     @ConfigurationParameter(name = PARAM_RESET_TABLE, defaultValue = "false")
-    private Boolean resetTable;
+    protected Boolean resetTable;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -148,8 +129,6 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
         driver = (String) getConfigParameterValue(PARAM_DB_DRIVER);
         Integer batchSize = (Integer) getConfigParameterValue(PARAM_BATCH_SIZE);
         tableName = (String) getConfigParameterValue(PARAM_TABLE);
-        additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
-        additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
         timestamp = (String) getConfigParameterValue(PARAM_TIMESTAMP);
         selectionOrder = (String) getConfigParameterValue(PARAM_SELECTION_ORDER);
         Boolean fetchIdsProactively = (Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY);
@@ -187,29 +166,6 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
                     new IllegalArgumentException("The configured table \"" + tableName + "\" does not exist."));
         }
 
-        // Check whether a subset table name or a data table name was given.
-        if (dbc.getReferencedTable(tableName) == null) {
-            if (additionalTableNames != null)
-                throw new NotImplementedException("At the moment multiple tables can only be joined"
-                        + " if the data table is referenced by a subset, for which the name has to be"
-                        + " given in the Table parameter.");
-            dbc.checkTableDefinition(tableName);
-            readDataTable = true;
-            Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
-            totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
-        } else {
-            if (batchSize == 0)
-                log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
-            if (resetTable)
-                dbc.resetSubset(tableName);
-
-            dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
-
-            Integer unprocessedDocs = unprocessedDocumentCount();
-            totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
-            dataTable = dbc.getReferencedTable(tableName);
-            hasNext = dbc.hasUnfetchedRows(tableName);
-        }
         logConfigurationState();
     }
 
@@ -230,8 +186,6 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
 
     private void logConfigurationState() {
         log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
-        if (log.isInfoEnabled())
-            log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
         log.info("BatchSize is set to {}.", batchSize);
         log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
     }

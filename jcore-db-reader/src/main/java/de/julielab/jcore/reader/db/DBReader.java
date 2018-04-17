@@ -25,26 +25,14 @@
 
 package de.julielab.jcore.reader.db;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import de.julielab.jcore.types.ext.DBProcessingMetaData;
+import de.julielab.xmlData.dataBase.DBCIterator;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
-import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.cas.StringArray;
@@ -54,9 +42,15 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.ext.DBProcessingMetaData;
-import de.julielab.xmlData.dataBase.DBCIterator;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Base for UIMA collection readers using a (PostgreSQL) database to retrieve
@@ -89,45 +83,74 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
  * </p>
  *
  * @author landefeld/hellrich/faessler
- *
  */
 public abstract class DBReader extends DBReaderBase {
 
     private final static Logger log = LoggerFactory.getLogger(DBReader.class);
 
+    /**
+     * Multi-valued String parameter indicating which tables will be read from
+     * additionally to the referenced data table. The tables will be joined to a
+     * single CAS.
+     */
+    public static final String PARAM_ADDITIONAL_TABLES = "AdditionalTables";
+    /**
+     * Multi-valued String parameter indicating different schemas in case tables
+     * will be joined. The schema for the referenced data table has to be the first
+     * element. The schema for the additional tables has to be the second element.
+     */
+    public static final String PARAM_ADDITIONAL_TABLE_SCHEMA = "AdditionalTableSchema";
+
+    // Configuration
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES)
+    protected String[] additionalTableNames;
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMA)
+    protected String additionalTableSchema;
+    protected int numAdditionalTables;
 
     // Internal state fields
     private RetrievingThread retriever;
     private String[] schemas;
+    private DBCIterator<byte[][]> xmlBytes;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize();
 
+        additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
+        additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
 
         // Check whether a subset table name or a data table name was given.
+        // Check whether a subset table name or a data table name was given.
         if (readDataTable) {
-            log.debug("Fetching first batch of data table entries." );
-            xmlBytes = dbc.queryDataTable(tableName, whereCondition);
-            hasNext = xmlBytes.hasNext();
+            if (additionalTableNames != null)
+                throw new NotImplementedException("At the moment multiple tables can only be joined"
+                        + " if the data table is referenced by a subset, for which the name has to be"
+                        + " given in the Table parameter.");
+            dbc.checkTableDefinition(tableName);
+            readDataTable = true;
+            Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
+            totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
         } else {
-            if (additionalTableNames != null && additionalTableNames.length > 0) {
-                joinTables = true;
+            if (batchSize == 0)
+                log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
+            if (resetTable)
+                dbc.resetSubset(tableName);
 
-                numAdditionalTables = additionalTableNames.length;
-                checkAndAdjustAdditionalTables();
+            dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
 
-                schemas = new String[numAdditionalTables + 1];
-                schemas[0] = dbc.getActiveTableSchema();
-                for (int i = 1; i < schemas.length; i++) {
-                    schemas[i] = additionalTableSchema;
-                }
-            } else {
-                numAdditionalTables = 0;
-            }
+            Integer unprocessedDocs = unprocessedDocumentCount();
+            totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
+            dataTable = dbc.getReferencedTable(tableName);
+            hasNext = dbc.hasUnfetchedRows(tableName);
         }
+        logConfigurationState();
     }
 
+    private void logConfigurationState() {
+        if (log.isInfoEnabled())
+            log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
+    }
 
 
     /**
@@ -190,15 +213,10 @@ public abstract class DBReader extends DBReaderBase {
     /**
      * This method checks whether the required parameters are set to meaningful
      * values and throws an IllegalArgumentException when not.
+     *
      * @throws ResourceInitializationException
      */
     private void checkParameters() throws ResourceInitializationException {
-        if (tableName == null || tableName.length() == 0) {
-            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_TABLE});
-        }
-        if (dbcConfig == null || dbcConfig.length() == 0) {
-            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_COSTOSYS_CONFIG_NAME});
-        }
         if (additionalTableNames != null && additionalTableSchema == null) {
             throw new ResourceInitializationException(new IllegalArgumentException("If multiple tables will be joined"
                     + " the table schema for the additional tables (besides the base document table which should be configured using the database connector configuration) must be specified."));
@@ -316,6 +334,7 @@ public abstract class DBReader extends DBReaderBase {
     public void close() throws IOException {
         if (xmlBytes != null)
             xmlBytes.close();
+        dbc.close();
         dbc = null;
     }
 
@@ -362,9 +381,8 @@ public abstract class DBReader extends DBReaderBase {
     }
 
     /**
-     *
      * @return The component name of the reader to fill in the subset table's
-     *         pipeline status field
+     * pipeline status field
      */
     protected abstract String getReaderComponentName();
 
@@ -384,7 +402,6 @@ public abstract class DBReader extends DBReaderBase {
      * </p>
      *
      * @author hellrich/faessler
-     *
      */
     protected class RetrievingThread extends Thread {
         private List<Object[]> ids;
