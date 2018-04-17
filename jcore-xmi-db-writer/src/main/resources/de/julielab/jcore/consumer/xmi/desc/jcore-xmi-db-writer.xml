@@ -79,7 +79,7 @@
         <mandatory>false</mandatory>
       </configurationParameter>
     <configurationParameter>
-        <name>IncreasedAttributeSize</name>
+          <name>IncreasedAttributeSize</name>
         <description>UIMA XMI serialization stores the document text as an XML attribute to the 'sofa' element.  Some XML parsers - e.g. Woodstox - impose a maximum size of bytes allowed in attribute values. Thus, for large documents an exception might be thrown when trying to split them via the XMI splitter. This parameter allows to set the maximum attribute size in order to circumvent the error.</description>
         <type>Integer</type>
         <multiValued>false</multiValued>

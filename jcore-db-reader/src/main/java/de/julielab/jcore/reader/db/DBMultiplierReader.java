@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DBMultiplierReader extends DBReaderBase {
+public class DBMultiplierReader extends DBSubsetReader {
     private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
 
     // Internal state fields
@@ -30,8 +30,7 @@ public class DBMultiplierReader extends DBReaderBase {
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
-        super.initialize();
-
+        super.initialize(context);
 
         // Check whether a subset table name or a data table name was given.
         if (readDataTable) {

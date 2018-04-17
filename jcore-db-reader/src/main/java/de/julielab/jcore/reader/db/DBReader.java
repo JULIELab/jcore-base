@@ -35,6 +35,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
@@ -84,7 +85,7 @@ import java.util.Map;
  *
  * @author landefeld/hellrich/faessler
  */
-public abstract class DBReader extends DBReaderBase {
+public abstract class DBReader extends DBSubsetReader {
 
     private final static Logger log = LoggerFactory.getLogger(DBReader.class);
 
@@ -102,9 +103,9 @@ public abstract class DBReader extends DBReaderBase {
     public static final String PARAM_ADDITIONAL_TABLE_SCHEMA = "AdditionalTableSchema";
 
     // Configuration
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES)
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false)
     protected String[] additionalTableNames;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMA)
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMA, mandatory = false)
     protected String additionalTableSchema;
     protected int numAdditionalTables;
 
@@ -115,12 +116,11 @@ public abstract class DBReader extends DBReaderBase {
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
-        super.initialize();
+        super.initialize(context);
 
         additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
         additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
 
-        // Check whether a subset table name or a data table name was given.
         // Check whether a subset table name or a data table name was given.
         if (readDataTable) {
             if (additionalTableNames != null)
@@ -239,7 +239,7 @@ public abstract class DBReader extends DBReaderBase {
      * @return Document document - the document
      * @throws CollectionException
      */
-    public byte[][] getNextArtifactData(CAS aCAS) throws CollectionException {
+    public byte[][] getNextArtifactData() throws CollectionException {
 
         byte[][] next = null;
         if (readDataTable)

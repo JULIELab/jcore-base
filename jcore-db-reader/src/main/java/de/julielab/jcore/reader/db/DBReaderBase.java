@@ -66,11 +66,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
      * are not reject from the descriptor when entering them manually.
      */
     public static final String PARAM_COSTOSYS_CONFIG_NAME = "CostosysConfigFile";
-    /**
-     * Boolean parameter. Indicates whether the read subset table is to be reset
-     * before reading.
-     */
-    public static final String PARAM_RESET_TABLE = "ResetTable";
+
 
     private static final Logger log = LoggerFactory.getLogger(DBReaderBase.class);
     /**
@@ -87,17 +83,17 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
      * we keep the parameter for later. When this issue comes up, the driver would
      * have to be set manually. This isn't done right now.
      */
-    @ConfigurationParameter(name = PARAM_DB_DRIVER)
+    @ConfigurationParameter(name = PARAM_DB_DRIVER, mandatory = false)
     protected String driver;
     @ConfigurationParameter(name = PARAM_TABLE, mandatory = true)
     protected String tableName;
-    @ConfigurationParameter(name = PARAM_SELECTION_ORDER, defaultValue = "")
+    @ConfigurationParameter(name = PARAM_SELECTION_ORDER, defaultValue = "", mandatory = false)
     protected String selectionOrder;
     @ConfigurationParameter(name = PARAM_FETCH_IDS_PROACTIVELY, defaultValue = "true")
     protected Boolean fetchIdsProactively;
-    @ConfigurationParameter(name = PARAM_WHERE_CONDITION)
+    @ConfigurationParameter(name = PARAM_WHERE_CONDITION, mandatory = false)
     protected String whereCondition;
-    @ConfigurationParameter(name = PARAM_LIMIT)
+    @ConfigurationParameter(name = PARAM_LIMIT, mandatory = false)
     protected Integer limitParameter;
 
 
@@ -112,37 +108,29 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     protected int processedDocuments = 0;
     @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG_NAME, mandatory = true)
     String dbcConfig;
-    @ConfigurationParameter(name = PARAM_TIMESTAMP)
-    protected String timestamp;
-    protected String hostName;
-    protected String pid;
-    @ConfigurationParameter(name = PARAM_RESET_TABLE, defaultValue = "false")
-    protected Boolean resetTable;
+
+
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
-        super.initialize();
+        super.initialize(context);
 
-        hostName = getHostName();
-        pid = getPID();
 
         driver = (String) getConfigParameterValue(PARAM_DB_DRIVER);
         Integer batchSize = (Integer) getConfigParameterValue(PARAM_BATCH_SIZE);
         tableName = (String) getConfigParameterValue(PARAM_TABLE);
-        timestamp = (String) getConfigParameterValue(PARAM_TIMESTAMP);
         selectionOrder = (String) getConfigParameterValue(PARAM_SELECTION_ORDER);
         Boolean fetchIdsProactively = (Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY);
         whereCondition = (String) getConfigParameterValue(PARAM_WHERE_CONDITION);
         limitParameter = (Integer) getConfigParameterValue(PARAM_LIMIT);
-        resetTable = (Boolean) getConfigParameterValue(PARAM_RESET_TABLE);
+
         if (batchSize == null)
             batchSize = Integer.parseInt(DEFAULT_BATCH_SIZE);
         this.batchSize = batchSize;
         if (fetchIdsProactively == null)
             fetchIdsProactively = true;
         this.fetchIdsProactively = fetchIdsProactively;
-        if (resetTable == null)
-            resetTable = false;
+
         dbcConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
 
         checkParameters();
@@ -187,24 +175,6 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     private void logConfigurationState() {
         log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
         log.info("BatchSize is set to {}.", batchSize);
-        log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
-    }
-
-    private String getPID() {
-        String id = ManagementFactory.getRuntimeMXBean().getName();
-        return id.substring(0, id.indexOf('@'));
-    }
-
-    private String getHostName() {
-        InetAddress address;
-        String hostName;
-        try {
-            address = InetAddress.getLocalHost();
-            hostName = address.getHostName();
-        } catch (UnknownHostException e) {
-            throw new IllegalStateException(e);
-        }
-        return hostName;
     }
 
     protected int unprocessedDocumentCount() {
