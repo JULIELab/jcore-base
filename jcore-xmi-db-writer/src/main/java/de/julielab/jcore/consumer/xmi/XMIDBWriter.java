@@ -73,7 +73,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
 	private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
 
-	public static final String PARAM_DBC_CONFIG = "dbcConfigFile";
+	public static final String PARAM_COSTOSYS_CONFIG = "CostosysConfigFile";
 
 	public static final String PARAM_UPDATE_MODE = "UpdateMode";
 
@@ -191,7 +191,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 		super.initialize(aContext);
 		checkParameters(aContext);
 
-		String dbcConfigPath = (String) aContext.getConfigParameterValue(PARAM_DBC_CONFIG);
+		String dbcConfigPath = (String) aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG);
 		updateMode = aContext.getConfigParameterValue(PARAM_UPDATE_MODE) == null ? false
 				: (Boolean) aContext.getConfigParameterValue(PARAM_UPDATE_MODE);
 		deleteObsolete = aContext.getConfigParameterValue(PARAM_DELETE_OBSOLETE_ANNOTATIONS) == null ? false
@@ -231,7 +231,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 			}
 			if (is == null) {
 				log.error("DatabaseConnector configuration {} could not be found as file or a classpath resource.", dbcConfigPath);
-				throw new ResourceInitializationException(ResourceInitializationException.NO_RESOURCE_FOR_PARAMETERS, new Object[] {PARAM_DBC_CONFIG});
+				throw new ResourceInitializationException(ResourceInitializationException.NO_RESOURCE_FOR_PARAMETERS, new Object[] {PARAM_COSTOSYS_CONFIG});
 			}
 			dbc = new DataBaseConnector(is);
 		} catch (FileNotFoundException e1) {
@@ -320,7 +320,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 	}
 
 	private void checkParameters(UimaContext aContext) throws ResourceInitializationException {
-		if (aContext.getConfigParameterValue(PARAM_DBC_CONFIG) == null)
+		if (aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG) == null)
 			throw new ResourceInitializationException(new IllegalStateException(
 					"The database configuration file is null. You must provide the path to a valid configuration file."));
 		if (aContext.getConfigParameterValue(PARAM_TABLE_DOCUMENT) == null)
