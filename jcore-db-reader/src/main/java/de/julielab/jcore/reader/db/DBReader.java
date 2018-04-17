@@ -112,7 +112,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
      * documents rather than proceeding sequentially. This parameter is defined for
      * subset reading only.
      */
-    public static final String PARAM_SELECTION_ORDER = "RandomSelection";
+    public static final String PARAM_SELECTION_ORDER = "SelectionOrder";
     /**
      * Boolean parameter. Determines whether a background thread should be used
      * which fetches the next batch of document IDs to process while the former

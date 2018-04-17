@@ -92,7 +92,7 @@
                 <description/>
                 <type>Integer</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>CostosysConfigFile</name>
@@ -110,6 +110,24 @@
             </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
+            <nameValuePair>
+                <name>Table</name>
+                <value>
+                    <string/>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>CostosysConfigFile</name>
+                <value>
+                    <string/>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>MappingFile</name>
+                <value>
+                    <string/>
+                </value>
+            </nameValuePair>
             <nameValuePair>
                 <name>BatchSize</name>
                 <value>
