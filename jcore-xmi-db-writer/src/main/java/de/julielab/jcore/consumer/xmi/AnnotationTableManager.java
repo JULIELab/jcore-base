@@ -164,7 +164,9 @@ public class AnnotationTableManager {
 				addAnnotationTableToList(effectiveTableName);
 		} catch (SQLException e) {
 			log.warn(
-					"SQLException was thrown when creating tables. Possibly its an concurrency issue and it has been tried to create the tables although they had already been created by another process in the meantime. Error was: {}",
+					"SQLException was thrown when creating tables. Possibly it is a concurrency issue and it has been " +
+							"tried to create the tables although they had already been created by another process " +
+							"in the meantime. Error was: {}",
 					e);
 		}
 	}

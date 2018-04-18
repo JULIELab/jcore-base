@@ -104,12 +104,21 @@ public class XmiDataInserter {
                 // this lambda says "give me the name of ith field of the
                 // current field configuration"
                 Function<Integer, String> fName = num -> fields.get(num).get(JulieXMLConstants.NAME);
-                row.put(fName.apply(0), results.docId);
-                row.put(fName.apply(1), results.data);
-                log.trace("{}={}", fName.apply(0), results.docId);
-                log.trace("{}={}", fName.apply(1), results.data);
+
+                // We need to fill the, possibly complex, primary key with the values from the actual
+                // document ID. We here assume that the order of document ID elements directly corresponds
+                // to the order of the primary key definition in the field configuration.
+                int i = 0;
+                for (Integer pkIndex : fieldConfig.getPrimaryKeyFieldNumbers()) {
+                    row.put(fName.apply(pkIndex), results.docId.getId()[i++]);
+                    if (log.isTraceEnabled())
+                        log.trace("{}={}", fName.apply(pkIndex), row.get(fName.apply(pkIndex)));
+                }
+                row.put(fName.apply(i++), results.data);
+                if (log.isTraceEnabled())
+                    log.trace("{}={}", fName.apply(i - 1), row.get(fName.apply(i - 1)));
                 if (results.getClass().equals(DocumentXmiData.class)) {
-                    if (fieldConfig.getFields().size() < 4)
+                    if (fieldConfig.getFields().size() - fieldConfig.getPrimaryKey().length < 3)
                         throw new IllegalArgumentException("The XMI data table schema is set to the schema with name " +
                                 "\"" + schemaDocument + "\" that specifies the fields \"" +
                                 StringUtils.join(fieldConfig.getColumns(), ",") + "\". However, this schema " +
@@ -117,10 +126,10 @@ public class XmiDataInserter {
                                 "document storage since the storage requires two extra fields to store the maximum XMI " +
                                 "ID of the document and the sofa mapping.");
                     DocumentXmiData docResults = (DocumentXmiData) results;
-                    row.put(fName.apply(2), docResults.newXmiId);
-                    row.put(fName.apply(3), docResults.serializedSofaXmiIdMap);
-                    log.trace("{}={}", fName.apply(2), docResults.newXmiId);
-                    log.trace("{}={}", fName.apply(3), docResults.serializedSofaXmiIdMap);
+                    row.put("max_xmi_id", docResults.newXmiId);
+                    log.trace("{}={}", "max_xmi_id", docResults.newXmiId);
+                    row.put("sofa_mapping", docResults.serializedSofaXmiIdMap);
+                    log.trace("{}={}", "sofa_mapping", docResults.serializedSofaXmiIdMap);
                 }
 
                 index++;

@@ -210,6 +210,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             throw new ResourceInitializationException(e1);
         }
 
+        // TODO derive the field configuration programmatically from the active data table schema
         schemaDocument = doGzip ? "xmi_text_gzip" : "xmi_text";
         schemaAnnotation = doGzip ? "xmi_annotation_gzip" : "xmi_annotation";
         if (storeAll) {
