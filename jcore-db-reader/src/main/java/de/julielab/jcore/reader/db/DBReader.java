@@ -27,6 +27,7 @@ package de.julielab.jcore.reader.db;
 
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xmlData.dataBase.DBCIterator;
+import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
@@ -120,30 +121,36 @@ public abstract class DBReader extends DBSubsetReader {
 
         additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
         additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
+        checkAndAdjustAdditionalTables();
 
-        // Check whether a subset table name or a data table name was given.
-        if (readDataTable) {
-            if (additionalTableNames != null)
-                throw new NotImplementedException("At the moment multiple tables can only be joined"
-                        + " if the data table is referenced by a subset, for which the name has to be"
-                        + " given in the Table parameter.");
-            dbc.checkTableDefinition(tableName);
-            readDataTable = true;
-            Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
-            totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
-        } else {
-            if (batchSize == 0)
-                log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
-            if (resetTable)
-                dbc.resetSubset(tableName);
+        try {
+            // Check whether a subset table name or a data table name was given.
+            if (readDataTable) {
+                if (additionalTableNames != null)
+                    throw new NotImplementedException("At the moment multiple tables can only be joined"
+                            + " if the data table is referenced by a subset, for which the name has to be"
+                            + " given in the Table parameter.");
+                dbc.checkTableDefinition(tableName);
+                readDataTable = true;
+                Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
+                totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
+            } else {
+                if (batchSize == 0)
+                    log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
+                if (resetTable)
+                    dbc.resetSubset(tableName);
 
-            dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
+                dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
 
-            Integer unprocessedDocs = unprocessedDocumentCount();
-            totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
-            dataTable = dbc.getReferencedTable(tableName);
-            hasNext = dbc.hasUnfetchedRows(tableName);
+                Integer unprocessedDocs = unprocessedDocumentCount();
+                totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
+                dataTable = dbc.getReferencedTable(tableName);
+                hasNext = dbc.hasUnfetchedRows(tableName);
+            }
+        } catch (TableSchemaMismatchException e) {
+            throw new ResourceInitializationException(e);
         }
+        checkParameters();
         logConfigurationState();
     }
 

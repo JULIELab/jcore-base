@@ -141,8 +141,8 @@ public class XMLDBReader extends DBReader {
 	 * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas
 	 * .CAS)
 	 */
-	public void getNext(CAS cas) throws IOException, CollectionException {
-		byte[][] arrayArray = getNextArtifactData(cas);
+	public void getNext(JCas jcas) throws IOException, CollectionException {
+		byte[][] arrayArray = getNextArtifactData(jcas);
 		List<Integer> pkIndices = dbc.getPrimaryKeyIndices();
 
 		// get index of xmlData;
