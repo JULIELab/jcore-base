@@ -21,7 +21,7 @@ public class DocumentXmiData extends XmiData {
 	public Integer newXmiId;
 	public String serializedSofaXmiIdMap;
 
-	public DocumentXmiData(String docId, Object storedData, Integer newXmiId, Map<Integer, String> currentSofaXmiIdMap) {
+	public DocumentXmiData(DocumentId docId, Object storedData, Integer newXmiId, Map<Integer, String> currentSofaXmiIdMap) {
 		super(docId, storedData);
 		this.newXmiId = newXmiId;
 		setSofaXmiIdMap(currentSofaXmiIdMap);

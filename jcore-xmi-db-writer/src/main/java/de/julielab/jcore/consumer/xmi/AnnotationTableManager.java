@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class AnnotationTableManager {
 	private List<String> annotationsToStore;
 
 	public AnnotationTableManager(DataBaseConnector dbc, String rawDocumentTableName, List<String> annotationsToStore,
-			String documentTableSchema, String annotationTableSchema, Boolean storeAll, Boolean storeBaseDocument) {
+			String documentTableSchema, String annotationTableSchema, Boolean storeAll, Boolean storeBaseDocument) throws TableSchemaMismatchException {
 		this.dbc = dbc;
 		this.annotationsToStore = annotationsToStore;
 		this.documentTableSchema = documentTableSchema;
@@ -132,12 +133,12 @@ public class AnnotationTableManager {
 		return obsoleteAnnotationTables;
 	}
 
-	void createTable(String tableName, String schema) {
+	void createTable(String tableName, String schema) throws TableSchemaMismatchException {
 		String effectiveTableName = convertAnnotationTypeToTableName(tableName, storeAll);
 		try {
 			if (!dbc.tableExists(effectiveTableName)) {
 				log.info("Creating table '{}' with schema '{}' (columns: {}).",
-						new Object[] { effectiveTableName, schema, dbc.getFieldConfiguration(schema).getColumns() });
+						effectiveTableName, schema, dbc.getFieldConfiguration(schema).getColumns() );
 				if (storeAll) {
 					dbc.createTable(effectiveTableName, schema,
 							"Created by " + XMIDBWriter.class.getName() + " on " + new Date());
