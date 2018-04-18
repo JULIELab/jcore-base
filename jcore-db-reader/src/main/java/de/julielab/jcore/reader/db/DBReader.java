@@ -44,6 +44,8 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
@@ -88,8 +90,6 @@ import java.util.Map;
  */
 public abstract class DBReader extends DBSubsetReader {
 
-    private final static Logger log = LoggerFactory.getLogger(DBReader.class);
-
     /**
      * Multi-valued String parameter indicating which tables will be read from
      * additionally to the referenced data table. The tables will be joined to a
@@ -102,7 +102,7 @@ public abstract class DBReader extends DBSubsetReader {
      * element. The schema for the additional tables has to be the second element.
      */
     public static final String PARAM_ADDITIONAL_TABLE_SCHEMA = "AdditionalTableSchema";
-
+    private final static Logger log = LoggerFactory.getLogger(DBReader.class);
     // Configuration
     @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false)
     protected String[] additionalTableNames;
@@ -146,6 +146,21 @@ public abstract class DBReader extends DBSubsetReader {
                 totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
                 dataTable = dbc.getReferencedTable(tableName);
                 hasNext = dbc.hasUnfetchedRows(tableName);
+
+                if (additionalTableNames != null && additionalTableNames.length > 0) {
+                    joinTables = true;
+
+                    numAdditionalTables = additionalTableNames.length;
+                    checkAndAdjustAdditionalTables();
+
+                    schemas = new String[numAdditionalTables + 1];
+                    schemas[0] = dbc.getActiveTableSchema();
+                    for (int i = 1; i < schemas.length; i++) {
+                        schemas[i] = additionalTableSchema;
+                    }
+                } else {
+                    numAdditionalTables = 0;
+                }
             }
         } catch (TableSchemaMismatchException e) {
             throw new ResourceInitializationException(e);
@@ -153,6 +168,98 @@ public abstract class DBReader extends DBSubsetReader {
         checkParameters();
         logConfigurationState();
     }
+
+
+//     super.initialize();
+//
+//    hostName = getHostName();
+//    pid = getPID();
+//
+//    driver = (String) getConfigParameterValue(PARAM_DB_DRIVER);
+//        if (driver == null)
+//    driver = "org.postgresql.Driver";
+//    Integer batchSize = (Integer) getConfigParameterValue(PARAM_BATCH_SIZE);
+//    tableName = (String) getConfigParameterValue(PARAM_TABLE);
+//    additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
+//    additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
+//    timestamp = (String) getConfigParameterValue(PARAM_TIMESTAMP);
+//    selectionOrder = (String) getConfigParameterValue(PARAM_SELECTION_ORDER);
+//    Boolean fetchIdsProactively = (Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY);
+//    whereCondition = (String) getConfigParameterValue(PARAM_WHERE_CONDITION);
+//    limitParameter = (Integer) getConfigParameterValue(PARAM_LIMIT);
+//    resetTable = (Boolean) getConfigParameterValue(PARAM_RESET_TABLE);
+//        if (batchSize == null)
+//    batchSize = Integer.parseInt(DEFAULT_BATCH_SIZE);
+//        this.batchSize = batchSize;
+//        if (fetchIdsProactively == null)
+//    fetchIdsProactively = true;
+//        this.fetchIdsProactively = fetchIdsProactively;
+//        if (resetTable == null)
+//    resetTable = false;
+//    dbcConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
+//
+//    checkParameters();
+//
+//    InputStream is = null;
+//    is = getClass().getResourceAsStream(dbcConfig.startsWith("/") ? dbcConfig : "/" + dbcConfig);
+//        if (is == null && dbcConfig != null && dbcConfig.length() > 0) {
+//        try {
+//            is = new FileInputStream(dbcConfig);
+//        } catch (FileNotFoundException e) {
+//            log.error("File '{}' was not found.", dbcConfig);
+//            throw new ResourceInitializationException(e);
+//        }
+//    }
+//
+//    dbc = new DataBaseConnector(is, batchSize);
+//
+//    // Check whether the table we are supposed to read from actually exists.
+//        if (!dbc.tableExists(tableName)) {
+//        throw new ResourceInitializationException(
+//                new IllegalArgumentException("The configured table \"" + tableName + "\" does not exist."));
+//    }
+//
+//    // Check whether a subset table name or a data table name was given.
+//        if (dbc.getReferencedTable(tableName) == null) {
+//        if (additionalTableNames != null)
+//            throw new NotImplementedException("At the moment mutiple tables can only be joined"
+//                    + " if the data table is referenced by a subset, for which the name has to be"
+//                    + " given in the Table parameter.");
+//        dbc.checkTableDefinition(tableName);
+//        readDataTable = true;
+//        xmlBytes = dbc.queryDataTable(tableName, whereCondition);
+//        hasNext = xmlBytes.hasNext();
+//        Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
+//        totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
+//    } else {
+//        if (batchSize == 0)
+//            log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
+//        if (resetTable)
+//            dbc.resetSubset(tableName);
+//
+//        dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
+//
+//        Integer unprocessedDocs = unprocessedDocumentCount();
+//        totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
+//        dataTable = dbc.getReferencedTable(tableName);
+//        hasNext = dbc.hasUnfetchedRows(tableName);
+//
+//        if (additionalTableNames != null && additionalTableNames.length > 0) {
+//            joinTables = true;
+//
+//            numAdditionalTables = additionalTableNames.length;
+//            checkAndAdjustAdditionalTables();
+//
+//            schemas = new String[numAdditionalTables + 1];
+//            schemas[0] = dbc.getActiveTableSchema();
+//            for (int i = 1; i < schemas.length; i++) {
+//                schemas[i] = additionalTableSchema;
+//            }
+//        } else {
+//            numAdditionalTables = 0;
+//        }
+//    }
+//    logConfigurationState();
 
     private void logConfigurationState() {
         if (log.isInfoEnabled())
