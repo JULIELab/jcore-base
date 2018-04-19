@@ -73,7 +73,7 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 	private static final String GZIP_EXTENSION = ".gz";
 
 	private final static String DEFAULT_FILE_NAME_TYPE = "de.julielab.jcore.types.Header";
-	private final static String DEFAULT_FILE_NAME_FEATURE = "source";
+	private final static String DEFAULT_FILE_NAME_FEATURE = "docId";
 	private final static boolean DEFAULT_COMPRESS = false;
 	private final static boolean DEFAULT_COMPRESS_SINGLE = false;
 	private final static boolean DEFAULT_CREATE_BATCH_SUBDIRS = false;
