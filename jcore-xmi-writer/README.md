@@ -19,8 +19,8 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 |----------------|----------------|-----------|-------------|-------------|
 | outputDir | String | yes | yes | Path to an output directory |
 | createBatchSubdirs| Boolean | no | no | If subdirectories should be created, default value is false |
-| fileNameTypeName | String | yes | no | The name of the file name type |
-| fileNameFeatureName| String | no | no | The name of the file name feature |
+| fileNameTypeName | String | yes | no | The name of the file name type. Defaults to `de.julielab.jcore.types.Header`. |
+| fileNameFeatureName| String | no | no | The name of the file name feature. Defaults to `docId`. |
 | compressSingle| Boolean | no | no | If the Xmi's should be compressed in one batch, default false |
 | compress | Boolean | no | no | Only plays a role if compresssSingle is false. Decides whether the Xmi should be compressed with gzip (multiple files compression), default false |
 
