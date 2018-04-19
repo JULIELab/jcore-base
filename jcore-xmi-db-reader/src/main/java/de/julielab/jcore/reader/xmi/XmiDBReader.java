@@ -13,9 +13,6 @@
  * Creation date: 12.12.2012
  **/
 
-/**
- * 
- */
 package de.julielab.jcore.reader.xmi;
 
 import java.io.ByteArrayInputStream;
@@ -106,8 +103,7 @@ public class XmiDBReader extends DBReader {
 		// the unzipping happens automatically.
 		boolean fieldIsSetToGzip = Boolean
 				.parseBoolean(dbc.getFieldConfiguration().getFields().get(1).get(JulieXMLConstants.GZIP));
-		doGzip = getConfigParameterValue(PARAM_DO_GUNZIP) == null ? false
-				: ((Boolean) getConfigParameterValue(PARAM_DO_GUNZIP)) && !fieldIsSetToGzip;
+		doGzip = getConfigParameterValue(PARAM_DO_GUNZIP) != null && (((Boolean) getConfigParameterValue(PARAM_DO_GUNZIP)) && !fieldIsSetToGzip);
 		storeMaxXmiId = (Boolean) (getConfigParameterValue(PARAM_STORE_XMI_ID) == null ? false
 				: getConfigParameterValue(PARAM_STORE_XMI_ID));
 		logFinalXmi = (Boolean) (getConfigParameterValue(PARAM_LOG_FINAL_XMI) == null ? false
@@ -143,7 +139,7 @@ public class XmiDBReader extends DBReader {
 						+ dbc.getFieldConfiguration().getFields().get(1).get(JulieXMLConstants.NAME) + " is set to "
 						+ fieldIsSetToGzip + "; if 'true', then un-gzip is performed by the XML tools)");
 		log.info("{}: {}", PARAM_STORE_XMI_ID, storeMaxXmiId);
-		log.info("{}: {} ", PARAM_LOG_FINAL_XMI, logFinalXmi);
+		log.info("{}: {}", PARAM_LOG_FINAL_XMI, logFinalXmi);
 		log.info("{}: {}", PARAM_READS_BASE_DOCUMENT, readsBaseDocument);
 		log.info("{}: {}", PARAM_INCREASED_ATTRIBUTE_SIZE, maxXmlAttributeSize);
 		log.info("{}: {}", PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE, xercesAttributeBufferSize);
@@ -161,7 +157,7 @@ public class XmiDBReader extends DBReader {
 				Statement stmt = conn.createStatement();
 				String sql = String.format("SELECT %s,%s FROM %s", XmiSplitConstants.PREFIX, XmiSplitConstants.NS_URI,
 						dbc.getActiveDataPGSchema() + "." + XmiSplitConstants.XMI_NS_TABLE);
-				ResultSet rs = stmt.executeQuery(String.format(sql));
+				ResultSet rs = stmt.executeQuery(sql);
 				while (rs.next())
 					map.put(rs.getString(1), rs.getString(2));
 			} catch (SQLException e) {
@@ -219,7 +215,7 @@ public class XmiDBReader extends DBReader {
 			initializationComplete = true;
 		}
 
-		LinkedHashMap<String, InputStream> xmiData = new LinkedHashMap<String, InputStream>();
+		LinkedHashMap<String, InputStream> xmiData = new LinkedHashMap<>();
 		log.trace("Retrieving document data from the database.");
 		byte[][] data = getNextArtifactData(aCAS);
 		log.trace("Got document data with {} fields.", null != data ? data.length : 0);
@@ -355,7 +351,7 @@ public class XmiDBReader extends DBReader {
 		}
 	}
 
-	private void storeMaxXmiIdAndSofaMappings(CAS aCAS, byte[][] data) throws CollectionException, CASException {
+	private void storeMaxXmiIdAndSofaMappings(CAS aCAS, byte[][] data) throws CASException {
 		if (storeMaxXmiId && data.length > 2) {
 			String docId = JCoReTools.getDocId(aCAS.getJCas());
 			byte[] maxXmiIdBytes = data[2];
