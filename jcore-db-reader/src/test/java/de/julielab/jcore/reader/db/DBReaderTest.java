@@ -40,16 +40,15 @@ public class DBReaderTest {
         dbc.createTable(Constants.DEFAULT_DATA_TABLE_NAME, "Test data table for DBReaderTest.");
         dbc.importFromXMLFile("src/test/resources/pubmedsample18n0001.xml.gz", Constants.DEFAULT_DATA_TABLE_NAME);
         dbc.createSubsetTable("testsubset", Constants.DEFAULT_DATA_TABLE_NAME, "Test subset");
-//        String hiddenConfigPath = "src/test/resources/hiddenConfig.txt";
-//        try (BufferedWriter w = new BufferedWriter(new FileWriter(hiddenConfigPath))) {
-//            w.write(postgres.getDatabaseName());
-//            w.newLine();
-//            w.write(postgres.getUsername());
-//            w.newLine();
-//            w.write(postgres.getPassword());
-//            w.newLine();
-//        }
-//        System.setProperty(Constants.HIDDEN_CONFIG_PATH, hiddenConfigPath);
+        String hiddenConfigPath = "src/test/resources/hiddenConfig.txt";
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(hiddenConfigPath))) {
+            w.write(postgres.getDatabaseName());
+            w.newLine();
+            w.write(postgres.getUsername());
+            w.newLine();
+            w.write(postgres.getPassword());
+        }
+        System.setProperty(Constants.HIDDEN_CONFIG_PATH, hiddenConfigPath);
     }
 
     @Test
