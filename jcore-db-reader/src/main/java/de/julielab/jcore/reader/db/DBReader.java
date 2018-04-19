@@ -121,7 +121,6 @@ public abstract class DBReader extends DBSubsetReader {
 
         additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
         additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
-        checkAndAdjustAdditionalTables();
 
         try {
             // Check whether a subset table name or a data table name was given.
@@ -140,17 +139,18 @@ public abstract class DBReader extends DBSubsetReader {
                 if (resetTable)
                     dbc.resetSubset(tableName);
 
-                dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
 
                 Integer unprocessedDocs = unprocessedDocumentCount();
                 totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
                 dataTable = dbc.getReferencedTable(tableName);
                 hasNext = dbc.hasUnfetchedRows(tableName);
+                log.debug("Checking if the subset table \"{}\" has unfetched rows. Result: {}", tableName, hasNext);
 
                 if (additionalTableNames != null && additionalTableNames.length > 0) {
                     joinTables = true;
 
                     numAdditionalTables = additionalTableNames.length;
+                    dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
                     checkAndAdjustAdditionalTables();
 
                     schemas = new String[numAdditionalTables + 1];
@@ -354,6 +354,7 @@ public abstract class DBReader extends DBSubsetReader {
      * @throws CollectionException
      */
     public byte[][] getNextArtifactData() throws CollectionException {
+log.trace("Fetching next document from the current database batch");
 
         byte[][] next = null;
         if (readDataTable)
@@ -381,15 +382,19 @@ public abstract class DBReader extends DBSubsetReader {
     }
 
     private byte[][] getNextFromSubset() {
+        log.trace("Reading in subset table mode.");
         byte[][] next = null;
 
         // When this method is called for the first time, no retriever thread
         // will yet exist. Initialize it.
         if (retriever == null) {
+            log.trace("Creating new RetrievingThread for fetching the first document batch");
             retriever = new RetrievingThread();
             xmlBytes = retriever.getDocuments();
-            if (fetchIdsProactively)
+            if (fetchIdsProactively) {
+                log.trace("Creating background RetrievingThread to immediately fetch the next document batch");
                 retriever = new RetrievingThread();
+            }
         }
 
         if (xmlBytes.hasNext()) {
@@ -404,7 +409,7 @@ public abstract class DBReader extends DBSubsetReader {
                 log.debug("No more documents, settings 'hasNext' to false.");
                 hasNext = false;
             } else if (fetchIdsProactively) {
-                log.debug("Creating new background thread.");
+                log.trace("Creating background RetrievingThread to immediately fetch the next document batch");
                 retriever = new RetrievingThread();
             }
         }
@@ -420,32 +425,32 @@ public abstract class DBReader extends DBSubsetReader {
         return unprocessed;
     }
 
-    protected void throwCollectionException(CollectionException e) throws CollectionException {
-        throw e;
-    }
+//    protected void throwCollectionException(CollectionException e) throws CollectionException {
+//        throw e;
+//    }
 
     public Progress[] getProgress() {
         return new Progress[]{new ProgressImpl(processedDocuments, totalDocumentCount, Progress.ENTITIES, true)};
     }
 
-    public String getPID() {
-        String id = ManagementFactory.getRuntimeMXBean().getName();
-        return id.substring(0, id.indexOf('@'));
-    }
+//    public String getPID() {
+//        String id = ManagementFactory.getRuntimeMXBean().getName();
+//        return id.substring(0, id.indexOf('@'));
+//    }
+//
+//    public String getHostName() {
+//        InetAddress address;
+//        String hostName;
+//        try {
+//            address = InetAddress.getLocalHost();
+//            hostName = address.getHostName();
+//        } catch (UnknownHostException e) {
+//            throw new IllegalStateException(e);
+//        }
+//        return hostName;
+//    }
 
-    public String getHostName() {
-        InetAddress address;
-        String hostName;
-        try {
-            address = InetAddress.getLocalHost();
-            hostName = address.getHostName();
-        } catch (UnknownHostException e) {
-            throw new IllegalStateException(e);
-        }
-        return hostName;
-    }
-
-    public void close() throws IOException {
+    public void close(){
         if (xmlBytes != null)
             xmlBytes.close();
         dbc.close();

@@ -4,6 +4,7 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
+import java.util.Optional;
 
 public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
 
@@ -115,46 +118,53 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
 
-
         driver = (String) getConfigParameterValue(PARAM_DB_DRIVER);
-        Integer batchSize = (Integer) getConfigParameterValue(PARAM_BATCH_SIZE);
+        Integer batchSize = Optional.ofNullable((Integer) getConfigParameterValue(PARAM_BATCH_SIZE)).orElseGet(() -> Integer.parseInt(DEFAULT_BATCH_SIZE));
         tableName = (String) getConfigParameterValue(PARAM_TABLE);
         selectionOrder = (String) getConfigParameterValue(PARAM_SELECTION_ORDER);
-        Boolean fetchIdsProactively = (Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY);
+        Boolean fetchIdsProactively = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY)).orElseGet(() -> true);
         whereCondition = (String) getConfigParameterValue(PARAM_WHERE_CONDITION);
         limitParameter = (Integer) getConfigParameterValue(PARAM_LIMIT);
-
-        if (batchSize == null)
-            batchSize = Integer.parseInt(DEFAULT_BATCH_SIZE);
         this.batchSize = batchSize;
-        if (fetchIdsProactively == null)
-            fetchIdsProactively = true;
         this.fetchIdsProactively = fetchIdsProactively;
 
         dbcConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
 
         checkParameters();
 
-        InputStream is = null;
-        is = getClass().getResourceAsStream(dbcConfig.startsWith("/") ? dbcConfig : "/" + dbcConfig);
-        if (is == null && dbcConfig != null && dbcConfig.length() > 0) {
-            try {
-                is = new FileInputStream(dbcConfig);
-            } catch (FileNotFoundException e) {
-                log.error("File '{}' was not found.", dbcConfig);
-                throw new ResourceInitializationException(e);
-            }
+        try {
+            dbc = new DataBaseConnector(dbcConfig);
+            dbc.setQueryBatchSize(batchSize);
+            checkTableExists();
+            determineDataTable();
+            logConfigurationState();
+        } catch (FileNotFoundException e) {
+            throw new ResourceInitializationException(e);
         }
+    }
 
-        dbc = new DataBaseConnector(is, batchSize);
-
+    private void checkTableExists() throws ResourceInitializationException {
         // Check whether the table we are supposed to read from actually exists.
         if (!dbc.tableExists(tableName)) {
             throw new ResourceInitializationException(
                     new IllegalArgumentException("The configured table \"" + tableName + "\" does not exist."));
         }
+    }
 
-        logConfigurationState();
+    private void determineDataTable() throws ResourceInitializationException {
+        try {
+            String nextDataTable = dbc.getNextDataTable(tableName);
+            if (nextDataTable != null) {
+                readDataTable = false;
+                dataTable = nextDataTable;
+            } else {
+                log.info("The table \"{}\" is a data table, documents will not be marked to be in process and no " +
+                        "synchronization will of multiple DB readers will happen.");
+                readDataTable = true;
+            }
+        } catch (SQLException e) {
+            throw new ResourceInitializationException(e);
+        }
     }
 
     /**

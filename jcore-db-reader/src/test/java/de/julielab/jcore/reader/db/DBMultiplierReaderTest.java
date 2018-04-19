@@ -25,32 +25,16 @@ import java.io.*;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-
-public class DBReaderTest {
+public class DBMultiplierReaderTest {
     @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
 
     @BeforeClass
     public static void setup() throws SQLException, IOException {
-        DataBaseConnector dbc = new DataBaseConnector(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
-        dbc.setActiveTableSchema("medline_2017");
-        dbc.createTable(Constants.DEFAULT_DATA_TABLE_NAME, "Test data table for DBReaderTest.");
-        dbc.importFromXMLFile("src/test/resources/pubmedsample18n0001.xml.gz", Constants.DEFAULT_DATA_TABLE_NAME);
-        dbc.createSubsetTable("testsubset", Constants.DEFAULT_DATA_TABLE_NAME, "Test subset");
-        dbc.initRandomSubset(20, "testsubset", Constants.DEFAULT_DATA_TABLE_NAME);
-        String hiddenConfigPath = "src/test/resources/hiddenConfig.txt";
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(hiddenConfigPath))) {
-            w.write(postgres.getDatabaseName());
-            w.newLine();
-            w.write(postgres.getUsername());
-            w.newLine();
-            w.write(postgres.getPassword());
-            w.newLine();
-            w.newLine();
-        }
-        System.setProperty(Constants.HIDDEN_CONFIG_PATH, hiddenConfigPath);
+       DBSetupUtil.setupDatabase(postgres);
     }
 
     @Test
@@ -62,16 +46,15 @@ public class DBReaderTest {
         costosysconfig.setProperty("databaseConnectorConfiguration.DBConnectionInformation.DBConnections.DBConnection[@name]", postgres.getDatabaseName());
         costosysconfig.setProperty("databaseConnectorConfiguration.DBConnectionInformation.DBConnections.DBConnection[@url]", postgres.getJdbcUrl());
         FileHandler fh = new FileHandler((FileBased) costosysconfig);
-        String costosysConfig = "src/test/resources/testconfig.xml";
+        String costosysConfig = "src/test/resources/testconfig-.xml";
         fh.save(costosysConfig);
-        CollectionReader reader = CollectionReaderFactory.createReader(DBReaderTestImpl.class,
+        CollectionReader reader = CollectionReaderFactory.createReader(DBReaderTest.DBReaderTestImpl.class,
                 DBReader.PARAM_BATCH_SIZE, 5,
                 DBReader.PARAM_TABLE, "testsubset",
                 DBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig);
         assertTrue(reader.hasNext());
         int docCount = 0;
-        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
-                "de.julielab.jcore.types.jcore-document-structure-types");
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-stringid-multiplier-types");
         while (reader.hasNext()) {
             reader.getNext(jCas.getCas());
             assertNotNull(JCoReTools.getDocId(jCas));
@@ -81,21 +64,4 @@ public class DBReaderTest {
         assertEquals(20, docCount);
     }
 
-    public static class DBReaderTestImpl extends DBReader {
-        private final static Logger log = LoggerFactory.getLogger(DBReaderTestImpl.class);
-
-        @Override
-        protected String getReaderComponentName() {
-            return "Test DB Reader Implementation";
-        }
-
-        @Override
-        public void getNext(JCas jCas) throws IOException, CollectionException {
-            byte[][] artifactData = getNextArtifactData();
-
-            log.trace("Getting next document from database");
-            XMLMapper xmlMapper = new XMLMapper(new FileInputStream(new File("src/test/resources/medline2016MappingFile.xml")));
-            xmlMapper.parse(artifactData[1], artifactData[0], jCas);
-        }
-    }
 }

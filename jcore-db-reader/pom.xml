@@ -15,7 +15,13 @@
 			<groupId>de.julielab</groupId>
 			<artifactId>costosys</artifactId>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-utilities</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
