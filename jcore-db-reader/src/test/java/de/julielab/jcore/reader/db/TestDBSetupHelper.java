@@ -2,6 +2,10 @@ package de.julielab.jcore.reader.db;
 
 import de.julielab.xmlData.Constants;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
+import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.io.FileBased;
+import org.apache.commons.configuration2.io.FileHandler;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.BufferedWriter;
@@ -9,7 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class DBSetupUtil {
+public class TestDBSetupHelper {
 
     public static void setupDatabase(PostgreSQLContainer postgres) throws SQLException {
         DataBaseConnector dbc = new DataBaseConnector(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
@@ -31,5 +35,17 @@ public class DBSetupUtil {
             e.printStackTrace();
         }
         System.setProperty(Constants.HIDDEN_CONFIG_PATH, hiddenConfigPath);
+    }
+
+    public static String createTestCostosysConfig(String schemaName, PostgreSQLContainer postgres) throws ConfigurationException {
+        XMLConfiguration costosysconfig = new XMLConfiguration();
+        costosysconfig.setProperty("databaseConnectorConfiguration.DBSchemaInformation.activeTableSchema",schemaName);
+        costosysconfig.setProperty("databaseConnectorConfiguration.DBConnectionInformation.activeDBConnection", postgres.getDatabaseName());
+        costosysconfig.setProperty("databaseConnectorConfiguration.DBConnectionInformation.DBConnections.DBConnection[@name]", postgres.getDatabaseName());
+        costosysconfig.setProperty("databaseConnectorConfiguration.DBConnectionInformation.DBConnections.DBConnection[@url]", postgres.getJdbcUrl());
+        FileHandler fh = new FileHandler((FileBased) costosysconfig);
+        String costosysConfig = "src/test/resources/testconfig.xml";
+        fh.save(costosysConfig);
+        return costosysConfig;
     }
 }

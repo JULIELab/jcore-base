@@ -38,11 +38,13 @@ public class DBMultiplierReader extends DBSubsetReader {
                     "set to " + tableName + " which is a data table. Reading from data tables is " +
                     "currently not supported."));
         }
+        hasNext = dbc.hasUnfetchedRows(tableName);
     }
 
     @Override
     public void getNext(JCas jCas) throws IOException, CollectionException {
         List<Object[]> idList = getNextDocumentIdBatch();
+        log.trace("Received a list of {} ID from the database.", idList.size());
         DocumentIds documentIds = new DocumentIds(jCas);
         FSArray ids = new FSArray(jCas, idList.size());
         for (int i = 0; i < idList.size(); i++) {
@@ -60,20 +62,20 @@ public class DBMultiplierReader extends DBSubsetReader {
     }
 
 
-    /**
-     * This method checks whether the required parameters are set to meaningful
-     * values and throws an IllegalArgumentException when not.
-     *
-     * @throws ResourceInitializationException
-     */
-    private void checkParameters() throws ResourceInitializationException {
-        if (tableName == null || tableName.length() == 0) {
-            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_TABLE});
-        }
-        if (dbcConfig == null || dbcConfig.length() == 0) {
-            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_COSTOSYS_CONFIG_NAME});
-        }
-    }
+//    /**
+//     * This method checks whether the required parameters are set to meaningful
+//     * values and throws an IllegalArgumentException when not.
+//     *
+//     * @throws ResourceInitializationException
+//     */
+//    private void checkParameters() throws ResourceInitializationException {
+//        if (tableName == null || tableName.length() == 0) {
+//            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_TABLE});
+//        }
+//        if (dbcConfig == null || dbcConfig.length() == 0) {
+//            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_COSTOSYS_CONFIG_NAME});
+//        }
+//    }
 
     /*
      * If you overwrite this method you have to call super.hasNext().

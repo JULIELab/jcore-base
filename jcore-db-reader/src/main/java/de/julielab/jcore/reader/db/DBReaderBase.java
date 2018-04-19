@@ -4,17 +4,11 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -30,26 +24,15 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
      * multiple readers (for data tables each reader will return the whole table).
      */
     public static final String PARAM_TABLE = "Table";
-    /**
-     * String parameter representing a long value. If not null, only documents with
-     * a timestamp newer then the passed value will be processed.
-     */
-    public static final String PARAM_TIMESTAMP = "Timestamp";
+
     /**
      * Boolean parameter. Determines whether to return random samples of unprocessed
      * documents rather than proceeding sequentially. This parameter is defined for
      * subset reading only.
      */
     public static final String PARAM_SELECTION_ORDER = "SelectionOrder";
-    /**
-     * Boolean parameter. Determines whether a background thread should be used
-     * which fetches the next batch of document IDs to process while the former
-     * batch is already being processed. Using the background thread boosts
-     * performance as waiting time is minimized. However, as the next batch of
-     * documents is marked in advance as being in process, this approach is only
-     * suitable when reading all available data.
-     */
-    public static final String PARAM_FETCH_IDS_PROACTIVELY = "FetchIdsProactively";
+
+
     /**
      * String parameter. Used only when reading directly from data tables. Only rows
      * are returned which satisfy the specified 'where' clause. If empty or set to
@@ -92,8 +75,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     protected String tableName;
     @ConfigurationParameter(name = PARAM_SELECTION_ORDER, defaultValue = "", mandatory = false)
     protected String selectionOrder;
-    @ConfigurationParameter(name = PARAM_FETCH_IDS_PROACTIVELY, defaultValue = "true")
-    protected Boolean fetchIdsProactively;
+
     @ConfigurationParameter(name = PARAM_WHERE_CONDITION, mandatory = false)
     protected String whereCondition;
     @ConfigurationParameter(name = PARAM_LIMIT, mandatory = false)
@@ -101,7 +83,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
 
 
     protected volatile int numberFetchedDocIDs = 0;
-    protected String[] tables;
+
     protected boolean joinTables = false;
     protected DataBaseConnector dbc;
     protected boolean hasNext;
@@ -119,14 +101,12 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
         super.initialize(context);
 
         driver = (String) getConfigParameterValue(PARAM_DB_DRIVER);
-        Integer batchSize = Optional.ofNullable((Integer) getConfigParameterValue(PARAM_BATCH_SIZE)).orElseGet(() -> Integer.parseInt(DEFAULT_BATCH_SIZE));
+        Integer batchSize = Optional.ofNullable((Integer) getConfigParameterValue(PARAM_BATCH_SIZE)).orElse(Integer.parseInt(DEFAULT_BATCH_SIZE));
         tableName = (String) getConfigParameterValue(PARAM_TABLE);
         selectionOrder = (String) getConfigParameterValue(PARAM_SELECTION_ORDER);
-        Boolean fetchIdsProactively = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY)).orElseGet(() -> true);
         whereCondition = (String) getConfigParameterValue(PARAM_WHERE_CONDITION);
         limitParameter = (Integer) getConfigParameterValue(PARAM_LIMIT);
         this.batchSize = batchSize;
-        this.fetchIdsProactively = fetchIdsProactively;
 
         dbcConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
 

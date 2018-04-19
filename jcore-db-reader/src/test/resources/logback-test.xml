@@ -10,6 +10,7 @@
     </appender>
 
     <logger name="de.julielab" level="DEBUG"/>
+    <logger name="de.julielab.jcore.reader.db.DBMultiplierReader" level="TRACE"/>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
