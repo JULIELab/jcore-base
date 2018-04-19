@@ -17,12 +17,12 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
-| outputDir | String | yes | yes | Path to an output directory |
-| createBatchSubdirs| Boolean | no | no | If subdirectories should be created, default value is false |
-| fileNameTypeName | String | yes | no | The name of the file name type. Defaults to `de.julielab.jcore.types.Header`. |
-| fileNameFeatureName| String | no | no | The name of the file name feature. Defaults to `docId`. |
-| compressSingle| Boolean | no | no | If the Xmi's should be compressed in one batch, default false |
-| compress | Boolean | no | no | Only plays a role if compresssSingle is false. Decides whether the Xmi should be compressed with gzip (multiple files compression), default false |
+| OutputDirectory | String | yes | yes | Path to an output directory |
+| CreateBatchSubDirs| Boolean | no | no | If subdirectories should be created, default value is false |
+| FileNameType | String | yes | no | The name of the file name type. |
+| FileNameFeature| String | no | no | The name of the file name feature. |
+| CompressSingle| Boolean | no | no | If the Xmi's should be compressed in one batch, default false |
+| Compress | Boolean | no | no | Only plays a role if compresssSingle is false. Decides whether the Xmi should be compressed with gzip (multiple files compression), default false |
 
 
 
@@ -30,12 +30,12 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
-| outputDir | Valid Path to an output directory | `data/XMIOutputData` |
-| createBatchSubdirs | Boolean | `true` |
-| fileNameTypeName | A valid name of the file name type| `de.julielab.jcore.types.Header` |
-| fileNameFeatureName | A valid name of the file name feature | `docId` |
-| compressSingle | Boolean | `false` |
-| compress | Boolean | `false` |
+| OutputDirectory | Valid Path to an output directory | `data/XMIOutputData` |
+| CreateBatchSubDirs | Boolean | `true` |
+| FileNameType | A valid name of the file name type| `de.julielab.jcore.types.Header` |
+| FileNameFeature | A valid name of the file name feature | `docId` |
+| CompressSingle | Boolean | `false` |
+| Compress | Boolean | `false` |
 
 
 
