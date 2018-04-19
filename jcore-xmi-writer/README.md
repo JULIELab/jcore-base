@@ -33,7 +33,7 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 | outputDir | Valid Path to an output directory | `data/XMIOutputData` |
 | createBatchSubdirs | Boolean | `true` |
 | fileNameTypeName | A valid name of the file name type| `de.julielab.jcore.types.Header` |
-| fileNameFeatureName | A valid name of the file name feature | `source` |
+| fileNameFeatureName | A valid name of the file name feature | `docId` |
 | compressSingle | Boolean | `false` |
 | compress | Boolean | `false` |
 
