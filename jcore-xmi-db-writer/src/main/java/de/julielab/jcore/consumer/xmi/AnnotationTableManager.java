@@ -111,7 +111,7 @@ public class AnnotationTableManager {
 			// first get the names of all annotation tables
 			try (Connection conn = dbc.getConn()) {
 				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT " + TABLE_NAME + " FROM " + ANNOTATION_LIST_TABLE);
+				ResultSet rs = stmt.executeQuery("SELECT " + TABLE_NAME + " FROM " + dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE);
 				while (rs.next()) {
 					obsoleteAnnotationTables.add(rs.getString(1));
 				}
