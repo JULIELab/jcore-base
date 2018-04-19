@@ -8,10 +8,10 @@ package de.julielab.jcore.consumer.xmi;
  * 
  */
 public class XmiData {
-	public XmiData(String docId, Object storedData) {
+	public XmiData(DocumentId docId, Object storedData) {
 		this.docId = docId;
 		data = storedData;
 	}
-	public String docId;
+	public DocumentId docId;
 	public Object data;
 }

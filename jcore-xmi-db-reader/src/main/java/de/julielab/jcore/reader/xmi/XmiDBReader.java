@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,12 +35,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -303,14 +306,20 @@ public class XmiDBReader extends DBReader {
 				}
 				byte[] xmiByteData = baos.toByteArray();
 				if (logFinalXmi)
-					log.info(new String(xmiByteData));
+					log.info(new String(xmiByteData, StandardCharsets.UTF_8));
 				documentIS = new ByteArrayInputStream(xmiByteData);
 				try {
 					log.trace("Deserializing XMI data into the CAS.");
 
 					JCoReTools.deserializeXmi(aCAS, documentIS, xercesAttributeBufferSize);
 				} catch (SAXException e) {
-					log.error("SAXException while deserializing CAS XMI data.", e);
+                    String docData = new String(xmiByteData, StandardCharsets.UTF_8);
+                    if (!docData.contains("xmi:XMI xmlns:xmi=\"http://www.omg.org/XMI\""))
+                        throw new CollectionException(new IllegalArgumentException("The document that has been received from the database does not " +
+                                "appear to contain XMI data. The beginning of the document data is: " +
+                                StringUtils.abbreviate(docData, 200)));
+                    log.error("SAXException while deserializing CAS XMI data from a segmented and re-assemblied XMI " +
+                            "document. Beginning of data was: {}", StringUtils.abbreviate(docData, 200));
 					throw new CollectionException(e);
 				} catch (OutOfMemoryError e) {
 					log.error("Document with ID {} caused an OutOfMemoryError; trying to skip and read the next document instead. The error was: ", docId, e);
@@ -325,7 +334,13 @@ public class XmiDBReader extends DBReader {
 					else
 						XmiCasDeserializer.deserialize(documentIS, aCAS);
 				} catch (SAXException e) {
-					e.printStackTrace();
+                    String docData = new String(documentXmi, StandardCharsets.UTF_8);
+                    if (!docData.contains("xmi:XMI xmlns:xmi=\"http://www.omg.org/XMI\""))
+                        throw new CollectionException(new IllegalArgumentException("The document that has been received from the database does not " +
+                            "appear to contain XMI data. The beginning of the document data is: " +
+                            StringUtils.abbreviate(docData, 200)));
+                    log.error("SAXException while deserializing CAS XMI data. Beginning of data was: {}", StringUtils.abbreviate(docData, 200));
+                    throw new CollectionException(e);
 				}
 			}
 			log.trace("Setting max XMI ID to the CAS.");
