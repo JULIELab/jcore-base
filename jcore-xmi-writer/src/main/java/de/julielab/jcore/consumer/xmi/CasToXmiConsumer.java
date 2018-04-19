@@ -95,7 +95,7 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 	private String fileNameFeatureName;
 	
 	private File currentSubDir;
-	private static AtomicInteger doc;
+	private static AtomicInteger doc = new AtomicInteger();
 
 	private ZipOutputStream zipOutStream;
 	private BufferedOutputStream outStream;
