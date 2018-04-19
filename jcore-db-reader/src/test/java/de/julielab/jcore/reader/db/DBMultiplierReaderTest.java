@@ -30,7 +30,7 @@ public class DBMultiplierReaderTest {
     }
 
     @Test
-    public void testDBReader() throws UIMAException, IOException, ConfigurationException {
+    public void testDBMultiplierReader() throws UIMAException, IOException, ConfigurationException {
 
         String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBMultiplierReader.class,
@@ -38,7 +38,7 @@ public class DBMultiplierReaderTest {
                 DBReader.PARAM_TABLE, "testsubset",
                 DBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig);
         assertTrue(reader.hasNext());
-        int docCount = 0;
+        int batchCount = 0;
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-stringid-multiplier-types");
         while (reader.hasNext()) {
             reader.getNext(jCas.getCas());
@@ -46,10 +46,10 @@ public class DBMultiplierReaderTest {
             assertNotNull(documentIds);
             assertNotNull(documentIds.getIdentifiers());
             assertEquals(5, documentIds.getIdentifiers().size());
-            ++docCount;
+            ++batchCount;
             jCas.reset();
         }
-        assertEquals(20, docCount);
+        assertEquals(4, batchCount);
     }
 
 }

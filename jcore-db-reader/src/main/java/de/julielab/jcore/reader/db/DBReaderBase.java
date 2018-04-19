@@ -87,13 +87,10 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     protected boolean joinTables = false;
     protected DataBaseConnector dbc;
     protected boolean hasNext;
-    protected String dataTable;
-    protected Boolean readDataTable = false;
     protected int totalDocumentCount;
     protected int processedDocuments = 0;
     @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG_NAME, mandatory = true)
     String dbcConfig;
-
 
 
     @Override
@@ -116,7 +113,6 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
             dbc = new DataBaseConnector(dbcConfig);
             dbc.setQueryBatchSize(batchSize);
             checkTableExists();
-            determineDataTable();
             logConfigurationState();
         } catch (FileNotFoundException e) {
             throw new ResourceInitializationException(e);
@@ -131,21 +127,6 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
         }
     }
 
-    private void determineDataTable() throws ResourceInitializationException {
-        try {
-            String nextDataTable = dbc.getNextDataTable(tableName);
-            if (nextDataTable != null) {
-                readDataTable = false;
-                dataTable = nextDataTable;
-            } else {
-                log.info("The table \"{}\" is a data table, documents will not be marked to be in process and no " +
-                        "synchronization will of multiple DB readers will happen.");
-                readDataTable = true;
-            }
-        } catch (SQLException e) {
-            throw new ResourceInitializationException(e);
-        }
-    }
 
     /**
      * This method checks whether the required parameters are set to meaningful
@@ -163,16 +144,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     }
 
     private void logConfigurationState() {
-        log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
         log.info("BatchSize is set to {}.", batchSize);
     }
 
-    protected int unprocessedDocumentCount() {
-        int unprocessed = -1;
-        if (readDataTable) {
-            unprocessed = totalDocumentCount - processedDocuments;
-        } else
-            unprocessed = dbc.countUnprocessed(tableName);
-        return unprocessed;
-    }
 }

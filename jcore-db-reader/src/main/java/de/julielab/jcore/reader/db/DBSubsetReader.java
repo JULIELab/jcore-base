@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,8 @@ public abstract class DBSubsetReader extends DBReaderBase {
     protected int numAdditionalTables;
     protected String hostName;
     protected String pid;
-
+    protected String dataTable;
+    protected Boolean readDataTable = false;
     protected String[] tables;
     protected String[] schemas;
 
@@ -97,8 +99,9 @@ public abstract class DBSubsetReader extends DBReaderBase {
                 if (resetTable)
                     dbc.resetSubset(tableName);
 
+                determineDataTable();
 
-                Integer unprocessedDocs = unprocessedDocumentCount();
+                Integer unprocessedDocs = dbc.countUnprocessed(tableName);
                 totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
                 dataTable = dbc.getReferencedTable(tableName);
                 hasNext = dbc.hasUnfetchedRows(tableName);
@@ -142,6 +145,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
         log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
         if (log.isInfoEnabled())
             log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
+        log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
     }
 
     /**
@@ -235,4 +239,22 @@ public abstract class DBSubsetReader extends DBReaderBase {
         }
         return hostName;
     }
+
+    private void determineDataTable() throws ResourceInitializationException {
+        try {
+            String nextDataTable = dbc.getNextDataTable(tableName);
+            if (nextDataTable != null) {
+                readDataTable = false;
+                dataTable = nextDataTable;
+            } else {
+                log.info("The table \"{}\" is a data table, documents will not be marked to be in process and no " +
+                        "synchronization will of multiple DB readers will happen.");
+                readDataTable = true;
+            }
+        } catch (SQLException e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
+
+
 }

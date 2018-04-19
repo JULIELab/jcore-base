@@ -1,6 +1,9 @@
 package de.julielab.jcore.reader.db;
 
 import de.julielab.jcore.types.casmultiplier.DocumentIds;
+import de.julielab.xmlData.cli.TableNotFoundException;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
+import de.julielab.xmlData.dataBase.SubsetStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
@@ -18,6 +21,7 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +43,19 @@ public class DBMultiplierReader extends DBSubsetReader {
                     "currently not supported."));
         }
         hasNext = dbc.hasUnfetchedRows(tableName);
+//        try {
+//            SubsetStatus status = dbc.status(tableName, EnumSet.of(
+//                    DataBaseConnector.StatusElement.IN_PROCESS,
+//                    DataBaseConnector.StatusElement.IS_PROCESSED,
+//                    DataBaseConnector.StatusElement.TOTAL));
+//            han
+//        } catch (TableNotFoundException e) {
+//            throw new ResourceInitializationException(e);
+//        }
     }
 
     @Override
-    public void getNext(JCas jCas) throws IOException, CollectionException {
+    public void getNext(JCas jCas) throws CollectionException {
         List<Object[]> idList = getNextDocumentIdBatch();
         log.trace("Received a list of {} ID from the database.", idList.size());
         DocumentIds documentIds = new DocumentIds(jCas);
@@ -83,6 +96,8 @@ public class DBMultiplierReader extends DBSubsetReader {
      * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
      */
     public boolean hasNext() throws IOException, CollectionException {
+        if (retriever != null)
+            return !retriever.getDocumentIds().isEmpty();
         return hasNext;
     }
 
@@ -95,14 +110,16 @@ public class DBMultiplierReader extends DBSubsetReader {
      */
     public List<Object[]> getNextDocumentIdBatch() throws CollectionException {
 
-        List<Object[]> next = null;
+        List<Object[]> next;
         if (readDataTable)
             next = getNextFromDataTable();
         else
             next = getNextFromSubset();
 
         if (next != null)
-            ++processedDocuments;
+            processedDocuments += next.size();
+
+
 
         return next;
     }
