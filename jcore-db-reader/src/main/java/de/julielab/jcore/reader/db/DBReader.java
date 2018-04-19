@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.cas.CAS;
@@ -88,7 +89,6 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
  * </p>
  *
  * @author landefeld/hellrich/faessler
- *
  */
 public abstract class DBReader extends CollectionReader_ImplBase {
 
@@ -263,45 +263,49 @@ public abstract class DBReader extends CollectionReader_ImplBase {
                     new IllegalArgumentException("The configured table \"" + tableName + "\" does not exist."));
         }
 
-        // Check whether a subset table name or a data table name was given.
-        if (dbc.getReferencedTable(tableName) == null) {
-            if (additionalTableNames != null)
-                throw new NotImplementedException("At the moment mutiple tables can only be joined"
-                        + " if the data table is referenced by a subset, for which the name has to be"
-                        + " given in the Table parameter.");
-            dbc.checkTableDefinition(tableName);
-            readDataTable = true;
-            xmlBytes = dbc.queryDataTable(tableName, whereCondition);
-            hasNext = xmlBytes.hasNext();
-            Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
-            totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
-        } else {
-            if (batchSize == 0)
-                log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
-            if (resetTable)
-                dbc.resetSubset(tableName);
-
-            dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
-
-            Integer unprocessedDocs = unprocessedDocumentCount();
-            totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
-            dataTable = dbc.getReferencedTable(tableName);
-            hasNext = dbc.hasUnfetchedRows(tableName);
-
-            if (additionalTableNames != null && additionalTableNames.length > 0) {
-                joinTables = true;
-
-                numAdditionalTables = additionalTableNames.length;
-                checkAndAdjustAdditionalTables();
-
-                schemas = new String[numAdditionalTables + 1];
-                schemas[0] = dbc.getActiveTableSchema();
-                for (int i = 1; i < schemas.length; i++) {
-                    schemas[i] = additionalTableSchema;
-                }
+        try {
+            // Check whether a subset table name or a data table name was given.
+            if (dbc.getReferencedTable(tableName) == null) {
+                if (additionalTableNames != null)
+                    throw new NotImplementedException("At the moment mutiple tables can only be joined"
+                            + " if the data table is referenced by a subset, for which the name has to be"
+                            + " given in the Table parameter.");
+                dbc.checkTableDefinition(tableName);
+                readDataTable = true;
+                xmlBytes = dbc.queryDataTable(tableName, whereCondition);
+                hasNext = xmlBytes.hasNext();
+                Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
+                totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
             } else {
-                numAdditionalTables = 0;
+                if (batchSize == 0)
+                    log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
+                if (resetTable)
+                    dbc.resetSubset(tableName);
+
+
+                Integer unprocessedDocs = unprocessedDocumentCount();
+                totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
+                dataTable = dbc.getReferencedTable(tableName);
+                hasNext = dbc.hasUnfetchedRows(tableName);
+
+                if (additionalTableNames != null && additionalTableNames.length > 0) {
+                    dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
+                    joinTables = true;
+
+                    numAdditionalTables = additionalTableNames.length;
+                    checkAndAdjustAdditionalTables();
+
+                    schemas = new String[numAdditionalTables + 1];
+                    schemas[0] = dbc.getActiveTableSchema();
+                    for (int i = 1; i < schemas.length; i++) {
+                        schemas[i] = additionalTableSchema;
+                    }
+                } else {
+                    numAdditionalTables = 0;
+                }
             }
+        } catch (TableSchemaMismatchException e) {
+            throw new ResourceInitializationException(e);
         }
         logConfigurationState();
     }
@@ -374,6 +378,7 @@ public abstract class DBReader extends CollectionReader_ImplBase {
     /**
      * This method checks whether the required parameters are set to meaningful
      * values and throws an IllegalArgumentException when not.
+     *
      * @throws ResourceInitializationException
      */
     private void checkParameters() throws ResourceInitializationException {
@@ -546,9 +551,8 @@ public abstract class DBReader extends CollectionReader_ImplBase {
     }
 
     /**
-     *
      * @return The component name of the reader to fill in the subset table's
-     *         pipeline status field
+     * pipeline status field
      */
     protected abstract String getReaderComponentName();
 
@@ -570,7 +574,6 @@ public abstract class DBReader extends CollectionReader_ImplBase {
      * </p>
      *
      * @author hellrich/faessler
-     *
      */
     protected class RetrievingThread extends Thread {
         private List<Object[]> ids;
