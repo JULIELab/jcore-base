@@ -28,15 +28,12 @@ package de.julielab.jcore.reader.db;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
@@ -44,17 +41,11 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Base for UIMA collection readers using a (PostgreSQL) database to retrieve
@@ -120,8 +111,8 @@ public abstract class DBReader extends DBSubsetReader {
 //    Integer batchSize = (Integer) getConfigParameterValue(PARAM_BATCH_SIZE);
 //    tableName = (String) getConfigParameterValue(PARAM_TABLE);
 //    additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
-//    additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
-//    timestamp = (String) getConfigParameterValue(PARAM_TIMESTAMP);
+//    additionalTableSchemas = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
+//    dataTimestamp = (String) getConfigParameterValue(PARAM_DATA_TIMESTAMP);
 //    selectionOrder = (String) getConfigParameterValue(PARAM_SELECTION_ORDER);
 //    Boolean fetchIdsProactively = (Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY);
 //    whereCondition = (String) getConfigParameterValue(PARAM_WHERE_CONDITION);
@@ -135,17 +126,17 @@ public abstract class DBReader extends DBSubsetReader {
 //        this.fetchIdsProactively = fetchIdsProactively;
 //        if (resetTable == null)
 //    resetTable = false;
-//    dbcConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
+//    costosysConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
 //
 //    checkParameters();
 //
 //    InputStream is = null;
-//    is = getClass().getResourceAsStream(dbcConfig.startsWith("/") ? dbcConfig : "/" + dbcConfig);
-//        if (is == null && dbcConfig != null && dbcConfig.length() > 0) {
+//    is = getClass().getResourceAsStream(costosysConfig.startsWith("/") ? costosysConfig : "/" + costosysConfig);
+//        if (is == null && costosysConfig != null && costosysConfig.length() > 0) {
 //        try {
-//            is = new FileInputStream(dbcConfig);
+//            is = new FileInputStream(costosysConfig);
 //        } catch (FileNotFoundException e) {
-//            log.error("File '{}' was not found.", dbcConfig);
+//            log.error("File '{}' was not found.", costosysConfig);
 //            throw new ResourceInitializationException(e);
 //        }
 //    }
@@ -176,7 +167,7 @@ public abstract class DBReader extends DBSubsetReader {
 //        if (resetTable)
 //            dbc.resetSubset(tableName);
 //
-//        dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
+//        dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchemas);
 //
 //        Integer unprocessedDocs = unprocessedDocumentCount();
 //        totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
@@ -192,7 +183,7 @@ public abstract class DBReader extends DBSubsetReader {
 //            schemas = new String[numAdditionalTables + 1];
 //            schemas[0] = dbc.getActiveTableSchema();
 //            for (int i = 1; i < schemas.length; i++) {
-//                schemas[i] = additionalTableSchema;
+//                schemas[i] = additionalTableSchemas;
 //            }
 //        } else {
 //            numAdditionalTables = 0;
@@ -400,32 +391,39 @@ log.trace("Fetching next document from the current database batch");
             // the limit comes to its end or almost all documents in the
             // database have been read, only the rest of documents.
             int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
-            ids = dbc.retrieveAndMark(tableName, getReaderComponentName(), hostName, pid, limit, selectionOrder);
-            if (log.isTraceEnabled()) {
-                List<String> idStrings = new ArrayList<>();
-                for (Object[] o : ids) {
-                    List<String> pkElements = new ArrayList<>();
-                    for (int i = 0; i < o.length; i++) {
-                        Object object = o[i];
-                        pkElements.add(String.valueOf(object));
+            try {
+                ids = dbc.retrieveAndMark(tableName, getReaderComponentName(), hostName, pid, limit, selectionOrder);
+                if (log.isTraceEnabled()) {
+                    List<String> idStrings = new ArrayList<>();
+                    for (Object[] o : ids) {
+                        List<String> pkElements = new ArrayList<>();
+                        for (int i = 0; i < o.length; i++) {
+                            Object object = o[i];
+                            pkElements.add(String.valueOf(object));
+                        }
+                        idStrings.add(StringUtils.join(pkElements, "-"));
                     }
-                    idStrings.add(StringUtils.join(pkElements, "-"));
+                    log.trace("Reserved the following document IDs for processing: " + idStrings);
                 }
-                log.trace("Reserved the following document IDs for processing: " + idStrings);
+            } catch (TableSchemaMismatchException e) {
+                log.error("Table schema mismatch: The active table schema {} specified in the CoStoSys configuration" +
+                                " file {} does not match the columns in the subset table {}: {}", dbc.getActiveTableSchema(),
+                        costosysConfig, tableName, e.getMessage());
+                throw new IllegalArgumentException(e);
             }
             numberFetchedDocIDs += ids.size();
             log.debug("Retrieved {} document IDs to fetch from the database.", ids.size());
 
             if (ids.size() > 0) {
                 log.debug("Fetching {} documents from the database.", ids.size());
-                if (timestamp == null) {
+                if (dataTimestamp == null) {
                     if (!joinTables) {
                         documents = dbc.queryIDAndXML(ids, dataTable);
                     } else {
                         documents = dbc.queryIDAndXML(ids, tables, schemas);
                     }
                 } else
-                    documents = dbc.queryWithTime(ids, dataTable, timestamp);
+                    documents = dbc.queryWithTime(ids, dataTable, dataTimestamp);
             } else {
                 log.debug("No unfetched documents left.");
                 // Return empty iterator to avoid NPE.

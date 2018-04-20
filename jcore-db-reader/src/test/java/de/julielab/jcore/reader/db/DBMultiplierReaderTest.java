@@ -16,6 +16,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.io.*;
 import java.sql.SQLException;
 
+import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_BATCH_SIZE;
+import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_COSTOSYS_CONFIG_NAME;
+import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_TABLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -34,9 +37,9 @@ public class DBMultiplierReaderTest {
 
         String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBMultiplierReader.class,
-                DBReader.PARAM_BATCH_SIZE, 5,
-                DBReader.PARAM_TABLE, "testsubset",
-                DBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig);
+                PARAM_BATCH_SIZE, 5,
+                PARAM_TABLE, "testsubset",
+                PARAM_COSTOSYS_CONFIG_NAME, costosysConfig);
         assertTrue(reader.hasNext());
         int batchCount = 0;
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-stringid-multiplier-types");

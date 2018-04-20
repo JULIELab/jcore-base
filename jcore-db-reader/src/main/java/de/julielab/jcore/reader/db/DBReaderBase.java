@@ -9,50 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
-import java.sql.SQLException;
 import java.util.Optional;
 
+import static de.julielab.jcore.reader.db.TableReaderConstants.*;
+
 public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
-
-    public static final String PARAM_DB_DRIVER = "DBDriver";
-    public static final String PARAM_BATCH_SIZE = "BatchSize";
-    /**
-     * String parameter. Determines the table from which rows are read and returned.
-     * Both subset and data tables are allowed. For data tables, an optional 'where'
-     * condition can be specified, restricting the rows to be returned. Note that
-     * only reading from subset tables works correctly for concurrent access of
-     * multiple readers (for data tables each reader will return the whole table).
-     */
-    public static final String PARAM_TABLE = "Table";
-
-    /**
-     * Boolean parameter. Determines whether to return random samples of unprocessed
-     * documents rather than proceeding sequentially. This parameter is defined for
-     * subset reading only.
-     */
-    public static final String PARAM_SELECTION_ORDER = "SelectionOrder";
-
-
-    /**
-     * String parameter. Used only when reading directly from data tables. Only rows
-     * are returned which satisfy the specified 'where' clause. If empty or set to
-     * <code>null</code>, all rows are returned.
-     */
-    public static final String PARAM_WHERE_CONDITION = "WhereCondition";
-    /**
-     * Integer parameter. Determines the maximum amount of documents being read by
-     * this reader. The reader will also not mark more documents to be in process as
-     * specified with this parameter.
-     */
-    public static final String PARAM_LIMIT = "Limit";
-    /**
-     * Constant denoting the name of the external dependency representing the
-     * configuration file for the DataBaseConnector.<br>
-     * The name of the resource is assured by convention only as alternative names
-     * are not reject from the descriptor when entering them manually.
-     */
-    public static final String PARAM_COSTOSYS_CONFIG_NAME = "CostosysConfigFile";
-
 
     private static final Logger log = LoggerFactory.getLogger(DBReaderBase.class);
     /**
@@ -63,20 +24,29 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
 
     @ConfigurationParameter(name = PARAM_BATCH_SIZE, defaultValue = DEFAULT_BATCH_SIZE)
     protected int batchSize;
-    /**
-     * Currently unused because the Hikari JDBC library should recognize the correct
-     * driver. However, there seem to be cases where this doesn't work (HSQLDB). So
-     * we keep the parameter for later. When this issue comes up, the driver would
-     * have to be set manually. This isn't done right now.
-     */
-    @ConfigurationParameter(name = PARAM_DB_DRIVER, mandatory = false)
+
+    @ConfigurationParameter(name = PARAM_DB_DRIVER, mandatory = false, description = "Currently unused because the " +
+            "Hikari JDBC library should recognize the correct driver. However, there seem to be cases where this " +
+            "doesn't work (HSQLDB). So we keep the parameter for later. When this issue comes up, the driver would " +
+            "have to be set manually. This isn't done right now.")
     protected String driver;
-    @ConfigurationParameter(name = PARAM_TABLE, mandatory = true)
+    @ConfigurationParameter(name = PARAM_TABLE, description = "The data or subset database table to read from. The " +
+            "name will be resolved against the active Postgres schema defined in the CoStoSys configuration file." +
+            "However, if the name contains a schema qualification (i.e. 'schemaname.tablename), the configuration " +
+            "file will be ignored in this point.")
     protected String tableName;
-    @ConfigurationParameter(name = PARAM_SELECTION_ORDER, defaultValue = "", mandatory = false)
+    @ConfigurationParameter(name = PARAM_SELECTION_ORDER, defaultValue = "", mandatory = false, description =
+            "WARNING: Potential SQL injection vulnerability. Do not let unknown users interact with your database " +
+                    "with this component. An SQL " +
+                    "ORDER clause specifying in which order the documents in the target database table should be processed. " +
+                    "Only the clause itself must be specified, the ORDER keyword is automatically added.")
     protected String selectionOrder;
 
-    @ConfigurationParameter(name = PARAM_WHERE_CONDITION, mandatory = false)
+    @ConfigurationParameter(name = PARAM_WHERE_CONDITION, mandatory = false,
+            description = "WARNING: Potential SQL injection vulnerability. Do not let unknown users interact with your " +
+                    "database with this component. An SQL WHERE clause " +
+                    "restricting the documents to be read. Only the clause itself must be specified, the WHERE keyword " +
+                    "is added automatically.")
     protected String whereCondition;
     @ConfigurationParameter(name = PARAM_LIMIT, mandatory = false)
     protected Integer limitParameter;
@@ -89,8 +59,13 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     protected boolean hasNext;
     protected int totalDocumentCount;
     protected int processedDocuments = 0;
-    @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG_NAME, mandatory = true)
-    String dbcConfig;
+    @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG_NAME, mandatory = true, description = "File path or classpath" +
+            " resource location to the CoStoSys XML configuration. This configuration must specify the table schema " +
+            "of the table referred to by the 'tableName' parameter as active table schema. The active table schema " +
+            "is always the schema of the data table that is either queried directly for documents or, if 'tableName' " +
+            "points to a subset table, indirectly through the subset table. Make also sure that the active " +
+            "database connection in the configuration points to the correct database.")
+    String costosysConfig;
 
 
     @Override
@@ -98,19 +73,17 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
         super.initialize(context);
 
         driver = (String) getConfigParameterValue(PARAM_DB_DRIVER);
-        Integer batchSize = Optional.ofNullable((Integer) getConfigParameterValue(PARAM_BATCH_SIZE)).orElse(Integer.parseInt(DEFAULT_BATCH_SIZE));
+        batchSize = Optional.ofNullable((Integer) getConfigParameterValue(PARAM_BATCH_SIZE)).orElse(Integer.parseInt(DEFAULT_BATCH_SIZE));
         tableName = (String) getConfigParameterValue(PARAM_TABLE);
         selectionOrder = (String) getConfigParameterValue(PARAM_SELECTION_ORDER);
         whereCondition = (String) getConfigParameterValue(PARAM_WHERE_CONDITION);
         limitParameter = (Integer) getConfigParameterValue(PARAM_LIMIT);
-        this.batchSize = batchSize;
-
-        dbcConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
+        costosysConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
 
         checkParameters();
 
         try {
-            dbc = new DataBaseConnector(dbcConfig);
+            dbc = new DataBaseConnector(costosysConfig);
             dbc.setQueryBatchSize(batchSize);
             checkTableExists();
             logConfigurationState();
@@ -138,7 +111,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
         if (tableName == null || tableName.length() == 0) {
             throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_TABLE});
         }
-        if (dbcConfig == null || dbcConfig.length() == 0) {
+        if (costosysConfig == null || costosysConfig.length() == 0) {
             throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_COSTOSYS_CONFIG_NAME});
         }
     }

@@ -13,54 +13,46 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+import static de.julielab.jcore.reader.db.SubsetReaderConstants.*;
 
 public abstract class DBSubsetReader extends DBReaderBase {
-    /**
-     * Multi-valued String parameter indicating which tables will be read from
-     * additionally to the referenced data table. The tables will be joined to a
-     * single CAS.
-     */
-    public static final String PARAM_ADDITIONAL_TABLES = "AdditionalTables";
-    /**
-     * Multi-valued String parameter indicating different schemas in case tables
-     * will be joined. The schema for the referenced data table has to be the first
-     * element. The schema for the additional tables has to be the second element.
-     */
-    public static final String PARAM_ADDITIONAL_TABLE_SCHEMA = "AdditionalTableSchema";
-    /**
-     * Boolean parameter. Determines whether a background thread should be used
-     * which fetches the next batch of document IDs to process while the former
-     * batch is already being processed. Using the background thread boosts
-     * performance as waiting time is minimized. However, as the next batch of
-     * documents is marked in advance as being in process, this approach is only
-     * suitable when reading all available data.
-     */
-    public static final String PARAM_FETCH_IDS_PROACTIVELY = "FetchIdsProactively";
-    /**
-     * Boolean parameter. Indicates whether the read subset table is to be reset
-     * before reading.
-     */
-    public static final String PARAM_RESET_TABLE = "ResetTable";
-    /**
-     * String parameter representing a long value. If not null, only documents with
-     * a timestamp newer then the passed value will be processed.
-     */
-    public static final String PARAM_TIMESTAMP = "Timestamp";
+
     private final static Logger log = LoggerFactory.getLogger(DBSubsetReader.class);
-    @ConfigurationParameter(name = PARAM_RESET_TABLE, defaultValue = "false", mandatory = false)
+    @ConfigurationParameter(name = PARAM_RESET_TABLE, defaultValue = "false", mandatory = false, description = "If set " +
+            "to true and the parameter 'tableName' is set to a subset table, the subset table will be reset at" +
+            "the initialization of the reader to be ready for processing of the whole subset. Do not use when multiple " +
+            "readers read the same subset table.")
     protected Boolean resetTable;
-    @ConfigurationParameter(name = PARAM_TIMESTAMP, mandatory = false)
-    protected String timestamp;
-    @ConfigurationParameter(name = PARAM_FETCH_IDS_PROACTIVELY, defaultValue = "true")
+    @ConfigurationParameter(name = PARAM_DATA_TIMESTAMP, mandatory = false, description = "PostgreSQL timestamp " +
+            "expression that is evaluated against the data table. The data table schema, which must be the " +
+            "active data table schema in the CoStoSys configuration as always, must specify a single timestamp " +
+            "field for this parameter to work. Only data rows with a timestamp value larger than the given " +
+            "timestamp expression will be processed. Note that when reading from a subset table, there may be " +
+            "subset rows indicated to be in process which are finally not read from the data table. This is " +
+            "an implementational shortcoming and might be addressed if respective feature requests are given " +
+            "through the JULIE Lab GitHub page or JCoRe issues.")
+    protected String dataTimestamp;
+    @ConfigurationParameter(name = PARAM_FETCH_IDS_PROACTIVELY, defaultValue = "true", description = "If set to " +
+            "true and when reading from a subset table, batches of document IDs will be retrieved in a background " +
+            "thread while the previous batch is already in process. This is meant to minimize waiting time " +
+            "for the database. Deactivate this feature if you encounter issues with databaase connections.")
     protected Boolean fetchIdsProactively;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false)
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = "An array of table " +
+            "names. By default, the table names will be resolved against the active data postgres schema " +
+            "configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains " +
+            "a dot, the active data schema will be ignored. When reading documents from the document data table, " +
+            "the additional tables will be joined onto the data table using the primary keys of the queried " +
+            "documents. Using the table schema for the additional documents defined by the 'AdditionalTableSchema' " +
+            "parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned " +
+            "together with the main document data. This mechanism is most prominently used to retrieve annotation table " +
+            "data together with the original document text in XMI format for the JeDIS system.")
     protected String[] additionalTableNames;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMA, mandatory = false)
-    protected String additionalTableSchema;
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMA, mandatory = false, description = "The table schemas " +
+            "that corresponds to the additional tables given with the 'AdditionalTables' parameter. If only one schema " +
+            "name is given, that schema must apply to all additional tables.")
+    protected String[] additionalTableSchemas;
     protected int numAdditionalTables;
     protected String hostName;
     protected String pid;
@@ -76,11 +68,12 @@ public abstract class DBSubsetReader extends DBReaderBase {
         hostName = getHostName();
         pid = getPID();
 
-        timestamp = (String) getConfigParameterValue(PARAM_TIMESTAMP);
+        dataTimestamp = (String) getConfigParameterValue(PARAM_DATA_TIMESTAMP);
         resetTable = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_RESET_TABLE)).orElse(false);
         this.fetchIdsProactively = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY)).orElse(true);
         additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
-        additionalTableSchema = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
+        additionalTableSchemas = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
+        checkParameters();
         try {
             // Check whether a subset table name or a data table name was given.
             if (readDataTable) {
@@ -111,14 +104,13 @@ public abstract class DBSubsetReader extends DBReaderBase {
                     joinTables = true;
 
                     numAdditionalTables = additionalTableNames.length;
-                    dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchema);
+                    dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchemas);
                     checkAndAdjustAdditionalTables();
 
+                    // Assemble the data table schema together with all additional table schemas in one array.
                     schemas = new String[numAdditionalTables + 1];
                     schemas[0] = dbc.getActiveTableSchema();
-                    for (int i = 1; i < schemas.length; i++) {
-                        schemas[i] = additionalTableSchema;
-                    }
+                    System.arraycopy(additionalTableSchemas, 0, schemas, 1, additionalTableSchemas.length);
                 } else {
                     numAdditionalTables = 0;
                 }
@@ -126,7 +118,6 @@ public abstract class DBSubsetReader extends DBReaderBase {
         } catch (TableSchemaMismatchException e) {
             throw new ResourceInitializationException(e);
         }
-        checkParameters();
         logConfigurationState();
     }
     /**
@@ -136,10 +127,29 @@ public abstract class DBSubsetReader extends DBReaderBase {
      * @throws ResourceInitializationException
      */
     private void checkParameters() throws ResourceInitializationException {
-        if (additionalTableNames != null && additionalTableSchema == null) {
+        if (additionalTableNames != null && additionalTableSchemas == null) {
             throw new ResourceInitializationException(new IllegalArgumentException("If multiple tables will be joined"
                     + " the table schema for the additional tables (besides the base document table which should be configured using the database connector configuration) must be specified."));
         }
+        List<Integer> nullindexes = new ArrayList<>();
+        for (int i = 0; additionalTableNames != null && i < additionalTableNames.length; i++) {
+            String additionalTableName = additionalTableNames[i];
+            if (StringUtils.isBlank(additionalTableName))
+                nullindexes.add(i);
+        }
+        if (!nullindexes.isEmpty())
+            throw new ResourceInitializationException(new IllegalArgumentException("The following 0-based array indexes " +
+                    "of the passed additional tables were null or empty: " + nullindexes));
+
+        nullindexes.clear();
+        for (int i = 0; additionalTableSchemas != null && i < additionalTableSchemas.length; i++) {
+            String additionalTableSchemaName = additionalTableSchemas[i];
+            if (StringUtils.isBlank(additionalTableSchemaName))
+                nullindexes.add(i);
+        }
+        if (!nullindexes.isEmpty())
+            throw new ResourceInitializationException(new IllegalArgumentException("The following 0-based array indexes " +
+                    "of the passed additional table schemas were null or empty: " + nullindexes));
     }
     private void logConfigurationState() {
         log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);

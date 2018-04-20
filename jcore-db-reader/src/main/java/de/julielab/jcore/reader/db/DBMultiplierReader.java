@@ -1,9 +1,7 @@
 package de.julielab.jcore.reader.db;
 
 import de.julielab.jcore.types.casmultiplier.DocumentIds;
-import de.julielab.xmlData.cli.TableNotFoundException;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
-import de.julielab.xmlData.dataBase.SubsetStatus;
+import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
@@ -17,20 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
+
+import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_TABLE;
 
 public class DBMultiplierReader extends DBSubsetReader {
     private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
 
     // Internal state fields
     private DBMultiplierReader.RetrievingThread retriever;
-    private String[] schemas;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -43,15 +37,6 @@ public class DBMultiplierReader extends DBSubsetReader {
                     "currently not supported."));
         }
         hasNext = dbc.hasUnfetchedRows(tableName);
-//        try {
-//            SubsetStatus status = dbc.status(tableName, EnumSet.of(
-//                    DataBaseConnector.StatusElement.IN_PROCESS,
-//                    DataBaseConnector.StatusElement.IS_PROCESSED,
-//                    DataBaseConnector.StatusElement.TOTAL));
-//            han
-//        } catch (TableNotFoundException e) {
-//            throw new ResourceInitializationException(e);
-//        }
     }
 
     @Override
@@ -85,7 +70,7 @@ public class DBMultiplierReader extends DBSubsetReader {
 //        if (tableName == null || tableName.length() == 0) {
 //            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_TABLE});
 //        }
-//        if (dbcConfig == null || dbcConfig.length() == 0) {
+//        if (costosysConfig == null || costosysConfig.length() == 0) {
 //            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_COSTOSYS_CONFIG_NAME});
 //        }
 //    }
@@ -214,21 +199,28 @@ public class DBMultiplierReader extends DBSubsetReader {
             // the limit comes to its end or almost all documents in the
             // database have been read, only the rest of documents.
             int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
-            ids = dbc.retrieveAndMark(tableName, getClass().getSimpleName(), hostName, pid, limit, selectionOrder);
-            if (log.isTraceEnabled()) {
-                List<String> idStrings = new ArrayList<>();
-                for (Object[] o : ids) {
-                    List<String> pkElements = new ArrayList<>();
-                    for (int i = 0; i < o.length; i++) {
-                        Object object = o[i];
-                        pkElements.add(String.valueOf(object));
+            try {
+                ids = dbc.retrieveAndMark(tableName, getClass().getSimpleName(), hostName, pid, limit, selectionOrder);
+                if (log.isTraceEnabled()) {
+                    List<String> idStrings = new ArrayList<>();
+                    for (Object[] o : ids) {
+                        List<String> pkElements = new ArrayList<>();
+                        for (int i = 0; i < o.length; i++) {
+                            Object object = o[i];
+                            pkElements.add(String.valueOf(object));
+                        }
+                        idStrings.add(StringUtils.join(pkElements, "-"));
                     }
-                    idStrings.add(StringUtils.join(pkElements, "-"));
+                    log.trace("Reserved the following document IDs for processing: " + idStrings);
                 }
-                log.trace("Reserved the following document IDs for processing: " + idStrings);
+                numberFetchedDocIDs += ids.size();
+                log.debug("Retrieved {} document IDs to fetch from the database.", ids.size());
+            } catch (TableSchemaMismatchException e) {
+                log.error("Table schema mismatch: The active table schema {} specified in the CoStoSys configuration" +
+                        " file {} does not match the columns in the subset table {}: {}", dbc.getActiveTableSchema(),
+                        costosysConfig, tableName, e.getMessage());
+                throw new IllegalArgumentException(e);
             }
-            numberFetchedDocIDs += ids.size();
-            log.debug("Retrieved {} document IDs to fetch from the database.", ids.size());
         }
 
         public List<Object[]> getDocumentIds() {
