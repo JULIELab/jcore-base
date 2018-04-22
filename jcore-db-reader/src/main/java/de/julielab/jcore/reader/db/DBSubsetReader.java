@@ -19,6 +19,18 @@ import static de.julielab.jcore.reader.db.SubsetReaderConstants.*;
 
 public abstract class DBSubsetReader extends DBReaderBase {
 
+    public static final String DESC_ADDITIONAL_TABLES = "An array of table " +
+            "names. By default, the table names will be resolved against the active data postgres schema " +
+            "configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains " +
+            "a dot, the active data schema will be ignored. When reading documents from the document data table, " +
+            "the additional tables will be joined onto the data table using the primary keys of the queried " +
+            "documents. Using the table schema for the additional documents defined by the 'AdditionalTableSchema' " +
+            "parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned " +
+            "together with the main document data. This mechanism is most prominently used to retrieve annotation table " +
+            "data together with the original document text in XMI format for the JeDIS system.";
+    public static final String DESC_ADDITIONAL_TABLE_SCHEMAS = "The table schemas " +
+            "that corresponds to the additional tables given with the 'AdditionalTables' parameter. If only one schema " +
+            "name is given, that schema must apply to all additional tables.";
     private final static Logger log = LoggerFactory.getLogger(DBSubsetReader.class);
     @ConfigurationParameter(name = PARAM_RESET_TABLE, defaultValue = "false", mandatory = false, description = "If set " +
             "to true and the parameter 'Table' is set to a subset table, the subset table will be reset at" +
@@ -39,19 +51,9 @@ public abstract class DBSubsetReader extends DBReaderBase {
             "thread while the previous batch is already in process. This is meant to minimize waiting time " +
             "for the database. Deactivate this feature if you encounter issues with databaase connections.")
     protected Boolean fetchIdsProactively;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = "An array of table " +
-            "names. By default, the table names will be resolved against the active data postgres schema " +
-            "configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains " +
-            "a dot, the active data schema will be ignored. When reading documents from the document data table, " +
-            "the additional tables will be joined onto the data table using the primary keys of the queried " +
-            "documents. Using the table schema for the additional documents defined by the 'AdditionalTableSchema' " +
-            "parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned " +
-            "together with the main document data. This mechanism is most prominently used to retrieve annotation table " +
-            "data together with the original document text in XMI format for the JeDIS system.")
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = DESC_ADDITIONAL_TABLES)
     protected String[] additionalTableNames;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMA, mandatory = false, description = "The table schemas " +
-            "that corresponds to the additional tables given with the 'AdditionalTables' parameter. If only one schema " +
-            "name is given, that schema must apply to all additional tables.")
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMAS, mandatory = false, description = DESC_ADDITIONAL_TABLE_SCHEMAS)
     protected String[] additionalTableSchemas;
     protected int numAdditionalTables;
     protected String hostName;
@@ -72,7 +74,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
         resetTable = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_RESET_TABLE)).orElse(false);
         this.fetchIdsProactively = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY)).orElse(true);
         additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
-        additionalTableSchemas = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
+        additionalTableSchemas = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMAS);
         checkParameters();
         try {
             // Check whether a subset table name or a data table name was given.
@@ -120,6 +122,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
         }
         logConfigurationState();
     }
+
     /**
      * This method checks whether the required parameters are set to meaningful
      * values and throws an IllegalArgumentException when not.
@@ -151,6 +154,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
             throw new ResourceInitializationException(new IllegalArgumentException("The following 0-based array indexes " +
                     "of the passed additional table schemas were null or empty: " + nullindexes));
     }
+
     private void logConfigurationState() {
         log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
         if (log.isInfoEnabled())
@@ -218,6 +222,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
 
     /**
      * Convenience method for extending classes.
+     *
      * @return
      */
     @SuppressWarnings("unchecked")

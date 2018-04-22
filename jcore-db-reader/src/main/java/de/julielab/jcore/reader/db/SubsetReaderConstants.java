@@ -12,7 +12,7 @@ public class SubsetReaderConstants {
      * will be joined. The schema for the referenced data table has to be the first
      * element. The schema for the additional tables has to be the second element.
      */
-    public static final String PARAM_ADDITIONAL_TABLE_SCHEMA = "AdditionalTableSchemas";
+    public static final String PARAM_ADDITIONAL_TABLE_SCHEMAS = "AdditionalTableSchemas";
     /**
      * Boolean parameter. Determines whether a background thread should be used
      * which fetches the next batch of document IDs to process while the former

@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.julielab.jcore.reader.db.DBSubsetReader.DESC_ADDITIONAL_TABLES;
+import static de.julielab.jcore.reader.db.DBSubsetReader.DESC_ADDITIONAL_TABLE_SCHEMAS;
+import static de.julielab.jcore.reader.db.SubsetReaderConstants.PARAM_ADDITIONAL_TABLES;
+import static de.julielab.jcore.reader.db.SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS;
 import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_COSTOSYS_CONFIG_NAME;
 import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_DB_DRIVER;
 
@@ -47,9 +51,13 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
             "points to a subset table, indirectly through the subset table. Make also sure that the active " +
             "database connection in the configuration points to the correct database.")
     private String costosysConfig;
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = DESC_ADDITIONAL_TABLES)
+    protected String[] additionalTableNames;
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMAS, mandatory = false, description = DESC_ADDITIONAL_TABLE_SCHEMAS)
+    protected String[] additionalTableSchemas;
 
 
-    private DataBaseConnector dbc;
+    protected DataBaseConnector dbc;
     protected DBCIterator<byte[][]> documentDataIterator;
 
     @Override
@@ -69,6 +77,7 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
 
     @Override
     public void process(JCas aJCas) {
+        // TODO table joining
         RowBatch rowbatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
         List<Object[]> documentIdsForQuery = new ArrayList<>();
         FSArray identifiers = rowbatch.getIdentifiers();
