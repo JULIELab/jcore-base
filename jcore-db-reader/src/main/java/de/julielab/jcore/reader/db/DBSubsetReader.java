@@ -1,8 +1,10 @@
 package de.julielab.jcore.reader.db;
 
+import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -55,7 +57,6 @@ public abstract class DBSubsetReader extends DBReaderBase {
     protected String[] additionalTableNames;
     @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMAS, mandatory = false, description = DESC_ADDITIONAL_TABLE_SCHEMAS)
     protected String[] additionalTableSchemas;
-    protected int numAdditionalTables;
     protected String hostName;
     protected String pid;
     protected String dataTable;
@@ -75,7 +76,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
         this.fetchIdsProactively = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY)).orElse(true);
         additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
         additionalTableSchemas = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMAS);
-        checkParameters();
+        checkAdditionalTableParameters(additionalTableNames, additionalTableSchemas);
         try {
             // Check whether a subset table name or a data table name was given.
             if (readDataTable) {
@@ -105,16 +106,19 @@ public abstract class DBSubsetReader extends DBReaderBase {
                 if (additionalTableNames != null && additionalTableNames.length > 0) {
                     joinTables = true;
 
-                    numAdditionalTables = additionalTableNames.length;
                     dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchemas);
-                    checkAndAdjustAdditionalTables();
+                    ImmutablePair<Integer, String[]> additionalTableNumAndNames = checkAndAdjustAdditionalTables(dbc, dataTable, additionalTableNames);
+                    int numAdditionalTables = additionalTableNumAndNames.getLeft();
+                    tables = additionalTableNumAndNames.getRight();
 
                     // Assemble the data table schema together with all additional table schemas in one array.
                     schemas = new String[numAdditionalTables + 1];
                     schemas[0] = dbc.getActiveTableSchema();
                     System.arraycopy(additionalTableSchemas, 0, schemas, 1, additionalTableSchemas.length);
                 } else {
-                    numAdditionalTables = 0;
+                    tables = new String[]{dataTable};
+                    schemas = new String[1];
+                    schemas[0] = dbc.getActiveTableSchema();
                 }
             }
         } catch (TableSchemaMismatchException e) {
@@ -123,100 +127,12 @@ public abstract class DBSubsetReader extends DBReaderBase {
         logConfigurationState();
     }
 
-    /**
-     * This method checks whether the required parameters are set to meaningful
-     * values and throws an IllegalArgumentException when not.
-     *
-     * @throws ResourceInitializationException
-     */
-    private void checkParameters() throws ResourceInitializationException {
-        if (additionalTableNames != null && additionalTableSchemas == null) {
-            throw new ResourceInitializationException(new IllegalArgumentException("If multiple tables will be joined"
-                    + " the table schema for the additional tables (besides the base document table which should be configured using the database connector configuration) must be specified."));
-        }
-        List<Integer> nullindexes = new ArrayList<>();
-        for (int i = 0; additionalTableNames != null && i < additionalTableNames.length; i++) {
-            String additionalTableName = additionalTableNames[i];
-            if (StringUtils.isBlank(additionalTableName))
-                nullindexes.add(i);
-        }
-        if (!nullindexes.isEmpty())
-            throw new ResourceInitializationException(new IllegalArgumentException("The following 0-based array indexes " +
-                    "of the passed additional tables were null or empty: " + nullindexes));
-
-        nullindexes.clear();
-        for (int i = 0; additionalTableSchemas != null && i < additionalTableSchemas.length; i++) {
-            String additionalTableSchemaName = additionalTableSchemas[i];
-            if (StringUtils.isBlank(additionalTableSchemaName))
-                nullindexes.add(i);
-        }
-        if (!nullindexes.isEmpty())
-            throw new ResourceInitializationException(new IllegalArgumentException("The following 0-based array indexes " +
-                    "of the passed additional table schemas were null or empty: " + nullindexes));
-    }
 
     private void logConfigurationState() {
         log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
         if (log.isInfoEnabled())
             log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
         log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
-    }
-
-    /**
-     * Checks whether the given additional tables exist. If not, it is checked if
-     * the table names contain dots which are reserved for schema qualification in
-     * Postgres. It is tried again to find the tables with underscores ('_'), then.
-     * The tables are also searched in the data schema. When the names contain dots,
-     * the substring up to the first dot is tried as schema qualification before
-     * prepending the data schema.
-     */
-    private void checkAndAdjustAdditionalTables() {
-        List<String> foundTables = new ArrayList<String>();
-        foundTables.add(dataTable);
-        for (int i = 0; i < additionalTableNames.length; i++) {
-            String resultTableName = null;
-            if (dbc.tableExists(additionalTableNames[i]))
-                resultTableName = additionalTableNames[i];
-            // Try with default data postgres schema prepended.
-            if (null == resultTableName) {
-                String tn = dbc.getActiveDataPGSchema() + "." + additionalTableNames[i];
-                if (dbc.tableExists(tn))
-                    resultTableName = tn;
-            }
-            // Try with all dots converted to underscores but the first dot, so
-            // that the substring up to the first dot could be a schema
-            // qualification.
-            if (null == resultTableName) {
-                int dotIndex = additionalTableNames[i].indexOf('.');
-                String prefix = additionalTableNames[i].substring(0, dotIndex);
-                String rest = additionalTableNames[i].substring(dotIndex + 1);
-                String tn = prefix + "." + rest.replaceAll("\\.", "_");
-                if (dbc.tableExists(tn))
-                    resultTableName = tn;
-            }
-            // Try with the original name but all dots converted to underscores.
-            if (null == resultTableName) {
-                String tn = additionalTableNames[i].replaceAll("\\.", "_");
-                if (dbc.tableExists(tn))
-                    resultTableName = tn;
-            }
-            // Try with all all dots converted to underscored and the active
-            // data schema prepended.
-            if (null == resultTableName) {
-                String tn = dbc.getActiveDataPGSchema() + "." + additionalTableNames[i].replaceAll("\\.", "_");
-                if (dbc.tableExists(tn))
-                    resultTableName = tn;
-            }
-            // We have really tried...
-            if (null == resultTableName) {
-                log.warn("The table {} does not exist!", additionalTableNames[i]);
-            } else
-                foundTables.add(resultTableName);
-        }
-        tables = foundTables.toArray(new String[foundTables.size()]);
-        // -1 because here we also have added the document table which is not an
-        // additional table but the main table!
-        numAdditionalTables = tables.length - 1;
     }
 
 
@@ -271,5 +187,94 @@ public abstract class DBSubsetReader extends DBReaderBase {
         }
     }
 
+    /**
+     * This method checks whether the required parameters are set to meaningful
+     * values and throws an IllegalArgumentException when not.
+     *
+     * @throws ResourceInitializationException
+     */
+    protected void checkAdditionalTableParameters(String[] additionalTableNames, String[] additionalTableSchemas) throws ResourceInitializationException {
+        if (additionalTableNames != null && additionalTableSchemas == null) {
+            throw new ResourceInitializationException(new IllegalArgumentException("If multiple tables will be joined"
+                    + " the table schema for the additional tables (besides the base document table which should be configured using the database connector configuration) must be specified."));
+        }
+        List<Integer> nullindexes = new ArrayList<>();
+        for (int i = 0; additionalTableNames != null && i < additionalTableNames.length; i++) {
+            String additionalTableName = additionalTableNames[i];
+            if (StringUtils.isBlank(additionalTableName))
+                nullindexes.add(i);
+        }
+        if (!nullindexes.isEmpty())
+            throw new ResourceInitializationException(new IllegalArgumentException("The following 0-based array indexes " +
+                    "of the passed additional tables were null or empty: " + nullindexes));
+
+        nullindexes.clear();
+        for (int i = 0; additionalTableSchemas != null && i < additionalTableSchemas.length; i++) {
+            String additionalTableSchemaName = additionalTableSchemas[i];
+            if (StringUtils.isBlank(additionalTableSchemaName))
+                nullindexes.add(i);
+        }
+        if (!nullindexes.isEmpty())
+            throw new ResourceInitializationException(new IllegalArgumentException("The following 0-based array indexes " +
+                    "of the passed additional table schemas were null or empty: " + nullindexes));
+    }
+
+    /**
+     * Checks whether the given additional tables exist. If not, it is checked if
+     * the table names contain dots which are reserved for schema qualification in
+     * Postgres. It is tried again to find the tables with underscores ('_'), then.
+     * The tables are also searched in the data schema. When the names contain dots,
+     * the substring up to the first dot is tried as schema qualification before
+     * prepending the data schema.
+     */
+    protected ImmutablePair<Integer, String[]> checkAndAdjustAdditionalTables(DataBaseConnector dbc, String dataTable, String[] additionalTableNames) {
+        List<String> foundTables = new ArrayList<>();
+        foundTables.add(dataTable);
+        for (int i = 0; i < additionalTableNames.length; i++) {
+            String resultTableName = null;
+            if (dbc.tableExists(additionalTableNames[i]))
+                resultTableName = additionalTableNames[i];
+            // Try with default data postgres schema prepended.
+            if (null == resultTableName) {
+                String tn = dbc.getActiveDataPGSchema() + "." + additionalTableNames[i];
+                if (dbc.tableExists(tn))
+                    resultTableName = tn;
+            }
+            // Try with all dots converted to underscores but the first dot, so
+            // that the substring up to the first dot could be a schema
+            // qualification.
+            if (null == resultTableName) {
+                int dotIndex = additionalTableNames[i].indexOf('.');
+                String prefix = additionalTableNames[i].substring(0, dotIndex);
+                String rest = additionalTableNames[i].substring(dotIndex + 1);
+                String tn = prefix + "." + rest.replaceAll("\\.", "_");
+                if (dbc.tableExists(tn))
+                    resultTableName = tn;
+            }
+            // Try with the original name but all dots converted to underscores.
+            if (null == resultTableName) {
+                String tn = additionalTableNames[i].replaceAll("\\.", "_");
+                if (dbc.tableExists(tn))
+                    resultTableName = tn;
+            }
+            // Try with all all dots converted to underscored and the active
+            // data schema prepended.
+            if (null == resultTableName) {
+                String tn = dbc.getActiveDataPGSchema() + "." + additionalTableNames[i].replaceAll("\\.", "_");
+                if (dbc.tableExists(tn))
+                    resultTableName = tn;
+            }
+            // We have really tried...
+            if (null == resultTableName) {
+                log.warn("The table {} does not exist!", additionalTableNames[i]);
+            } else
+                foundTables.add(resultTableName);
+        }
+        String[] tables = foundTables.toArray(new String[foundTables.size()]);
+        // -1 because here we also have added the document table which is not an
+        // additional table but the main table!
+        int numAdditionalTables = tables.length - 1;
+        return new ImmutablePair<Integer, String[]>(numAdditionalTables, tables);
+    }
 
 }

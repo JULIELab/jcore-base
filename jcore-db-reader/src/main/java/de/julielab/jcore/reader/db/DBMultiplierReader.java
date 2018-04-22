@@ -56,8 +56,20 @@ public class DBMultiplierReader extends DBSubsetReader {
             }
             ids.set(i, keys);
         }
+
+        StringArray tableArray = new StringArray(jCas, tables.length);
+        StringArray schemaArray = new StringArray(jCas, tables.length);
+        for (int i = 0; i < tables.length; i++) {
+            String table = tables[i];
+            String schema = schemas[i];
+            tableArray.set(i, table);
+            schemaArray.set(i, schema);
+        }
+
         rowbatch.setIdentifiers(ids);
-        rowbatch.setTable(dataTable);
+        rowbatch.setTables(tableArray);
+        rowbatch.setTableSchemas(schemaArray);
+        rowbatch.setCostosysConfiguration(costosysConfig);
         rowbatch.addToIndexes();
     }
 
@@ -175,8 +187,7 @@ public class DBMultiplierReader extends DBSubsetReader {
                     List<String> idStrings = new ArrayList<>();
                     for (Object[] o : ids) {
                         List<String> pkElements = new ArrayList<>();
-                        for (int i = 0; i < o.length; i++) {
-                            Object object = o[i];
+                        for (Object object : o) {
                             pkElements.add(String.valueOf(object));
                         }
                         idStrings.add(StringUtils.join(pkElements, "-"));

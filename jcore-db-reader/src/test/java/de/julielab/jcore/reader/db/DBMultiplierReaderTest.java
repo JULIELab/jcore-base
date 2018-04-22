@@ -46,8 +46,8 @@ public class DBMultiplierReaderTest {
             assertNotNull(rowbatch);
             assertNotNull(rowbatch.getIdentifiers());
             assertEquals(5, rowbatch.getIdentifiers().size());
-            assertNotNull(rowbatch.getTable());
-            assertEquals(Constants.DEFAULT_DATA_TABLE_NAME, rowbatch.getTable());
+            assertNotNull(rowbatch.getTables());
+            assertEquals(Constants.DEFAULT_DATA_TABLE_NAME, rowbatch.getTables(0));
             ++batchCount;
             jCas.reset();
         }
