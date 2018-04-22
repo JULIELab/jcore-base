@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
@@ -79,6 +80,16 @@ import java.util.List;
  *
  * @author landefeld/hellrich/faessler
  */
+@ResourceMetaData(name = "JCoRe Database Reader", description = "A collection reader that fetches documents from a " +
+        "PostgreSQL database. It is an abstract class and must be extended to actually populate CAS instances. " +
+        "It works with " +
+        "the corpus storage system (CoStoSys), thus subset tables may be specified to read from in the 'Table' " +
+        "parameter. Then, the reader will mark batches of IDs read from the subset as being 'in process', allowing " +
+        "multiple DBReaders in different pipelines to be synchronized and not read documents multiple times. " +
+        "Additional tables can be specified that will be joined to the main document database. This is used to " +
+        "load annotations that have been stored in separate tables. The jcore-xmi-db-writer is able to write " +
+        "such annotation tables. All the mentioned components are part of the JeDIS system for document " +
+        "annotation and management.")
 public abstract class DBReader extends DBSubsetReader {
 
 

@@ -3,12 +3,10 @@ package de.julielab.jcore.reader.db;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
@@ -21,13 +19,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.julielab.jcore.reader.db.DBSubsetReader.DESC_ADDITIONAL_TABLES;
-import static de.julielab.jcore.reader.db.DBSubsetReader.DESC_ADDITIONAL_TABLE_SCHEMAS;
-import static de.julielab.jcore.reader.db.SubsetReaderConstants.PARAM_ADDITIONAL_TABLES;
-import static de.julielab.jcore.reader.db.SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS;
-import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_COSTOSYS_CONFIG_NAME;
-import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_DB_DRIVER;
-
 /**
  * A multiplier retrieving feature structures of type of {@link RowBatch} in its {@link #process(JCas)} method.
  * Each <code>RowBatch</code> lists IDs of documents to read and the table to read them from.
@@ -36,9 +27,13 @@ import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_DB_DRIVER;
  * to retrieve document data and use it to populate CAS instances in the {@link JCasMultiplier_ImplBase#next()}
  * method.
  */
+@ResourceMetaData( name = "JCoRe Abstract Database Multiplier", description = "A multiplier that receives document IDs to read from a database table from the " +
+        "DBMultiplierReader. The reader also delivers the path to the corpus storage system (CoStoSys) configuration and additional tables " +
+        "for joining with the main data table. This multiplier class is abstract and cannot be used directly." +
+        "Extending classes must implement the next() method to actually read documents from the database and " +
+        "populate CASes with them. This component is a part of the JeDIS system.")
 public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
 
-    private final static Logger log = LoggerFactory.getLogger(DBMultiplier.class);
     protected DataBaseConnector dbc;
     protected DBCIterator<byte[][]> documentDataIterator;
     // This is set anew with every call to process()

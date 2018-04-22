@@ -6,6 +6,7 @@ import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
@@ -20,6 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@ResourceMetaData(name="JCoRe Database Multiplier Reader", description = "A collection reader that receives the IDs of documents from a database table. " +
+        "Additional tables may be specified which will, together with the IDs, be sent to a CAS multiplier extending" +
+        "the DBMultiplierReader. The multiplier will read documents and the joined additional tables according to the " +
+        "list of document IDs sent by this reader. The component leverages the corpus storage system (CoStoSys) for this " +
+        "purpose and is part of the JeDIS system.")
 public class DBMultiplierReader extends DBSubsetReader {
     private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
 
