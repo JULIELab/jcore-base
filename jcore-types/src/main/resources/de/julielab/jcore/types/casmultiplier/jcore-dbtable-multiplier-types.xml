@@ -25,8 +25,21 @@
                     <elementType>uima.cas.StringArray</elementType>
                 </featureDescription>
                 <featureDescription>
-                    <name>table</name>
-                    <description>The document table to read the given IDs from.</description>
+                    <name>tables</name>
+                    <description>The tables to read the given IDs from. If there is more than one array entry, the
+                        additional tables are joined by primary key to the first table. The first table must always
+                        be the document data table. The additional tables might hold annotations segmented away
+                        from the base document, for example.</description>
+                    <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>tableSchemas</name>
+                    <description>The CoStoSys table schemas of the tables to read.</description>
+                    <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>costosysConfiguration</name>
+                    <description>The CoStoSys configuration file path or classpath location.</description>
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
             </features>
