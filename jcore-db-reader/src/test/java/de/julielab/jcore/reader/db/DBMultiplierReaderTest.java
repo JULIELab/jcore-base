@@ -1,6 +1,7 @@
 package de.julielab.jcore.reader.db;
 
-import de.julielab.jcore.types.casmultiplier.DocumentIds;
+import de.julielab.jcore.types.casmultiplier.RowBatch;
+import de.julielab.xmlData.Constants;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionReader;
@@ -13,15 +14,11 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.io.*;
+import java.io.IOException;
 import java.sql.SQLException;
 
-import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_BATCH_SIZE;
-import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_COSTOSYS_CONFIG_NAME;
-import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_TABLE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static de.julielab.jcore.reader.db.TableReaderConstants.*;
+import static org.junit.Assert.*;
 
 public class DBMultiplierReaderTest {
     @ClassRule
@@ -42,13 +39,15 @@ public class DBMultiplierReaderTest {
                 PARAM_COSTOSYS_CONFIG_NAME, costosysConfig);
         assertTrue(reader.hasNext());
         int batchCount = 0;
-        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-stringid-multiplier-types");
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types");
         while (reader.hasNext()) {
             reader.getNext(jCas.getCas());
-            DocumentIds documentIds = JCasUtil.selectSingle(jCas, DocumentIds.class);
-            assertNotNull(documentIds);
-            assertNotNull(documentIds.getIdentifiers());
-            assertEquals(5, documentIds.getIdentifiers().size());
+            RowBatch rowbatch = JCasUtil.selectSingle(jCas, RowBatch.class);
+            assertNotNull(rowbatch);
+            assertNotNull(rowbatch.getIdentifiers());
+            assertEquals(5, rowbatch.getIdentifiers().size());
+            assertNotNull(rowbatch.getTable());
+            assertEquals(Constants.DEFAULT_DATA_TABLE_NAME, rowbatch.getTable());
             ++batchCount;
             jCas.reset();
         }

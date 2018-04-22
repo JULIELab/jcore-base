@@ -21,7 +21,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
 
     private final static Logger log = LoggerFactory.getLogger(DBSubsetReader.class);
     @ConfigurationParameter(name = PARAM_RESET_TABLE, defaultValue = "false", mandatory = false, description = "If set " +
-            "to true and the parameter 'tableName' is set to a subset table, the subset table will be reset at" +
+            "to true and the parameter 'Table' is set to a subset table, the subset table will be reset at" +
             "the initialization of the reader to be ready for processing of the whole subset. Do not use when multiple " +
             "readers read the same subset table.")
     protected Boolean resetTable;

@@ -99,104 +99,6 @@ public abstract class DBReader extends DBSubsetReader {
         }
     }
 
-
-//     super.initialize();
-//
-//    hostName = getHostName();
-//    pid = getPID();
-//
-//    driver = (String) getConfigParameterValue(PARAM_DB_DRIVER);
-//        if (driver == null)
-//    driver = "org.postgresql.Driver";
-//    Integer batchSize = (Integer) getConfigParameterValue(PARAM_BATCH_SIZE);
-//    tableName = (String) getConfigParameterValue(PARAM_TABLE);
-//    additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
-//    additionalTableSchemas = (String) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMA);
-//    dataTimestamp = (String) getConfigParameterValue(PARAM_DATA_TIMESTAMP);
-//    selectionOrder = (String) getConfigParameterValue(PARAM_SELECTION_ORDER);
-//    Boolean fetchIdsProactively = (Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY);
-//    whereCondition = (String) getConfigParameterValue(PARAM_WHERE_CONDITION);
-//    limitParameter = (Integer) getConfigParameterValue(PARAM_LIMIT);
-//    resetTable = (Boolean) getConfigParameterValue(PARAM_RESET_TABLE);
-//        if (batchSize == null)
-//    batchSize = Integer.parseInt(DEFAULT_BATCH_SIZE);
-//        this.batchSize = batchSize;
-//        if (fetchIdsProactively == null)
-//    fetchIdsProactively = true;
-//        this.fetchIdsProactively = fetchIdsProactively;
-//        if (resetTable == null)
-//    resetTable = false;
-//    costosysConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
-//
-//    checkParameters();
-//
-//    InputStream is = null;
-//    is = getClass().getResourceAsStream(costosysConfig.startsWith("/") ? costosysConfig : "/" + costosysConfig);
-//        if (is == null && costosysConfig != null && costosysConfig.length() > 0) {
-//        try {
-//            is = new FileInputStream(costosysConfig);
-//        } catch (FileNotFoundException e) {
-//            log.error("File '{}' was not found.", costosysConfig);
-//            throw new ResourceInitializationException(e);
-//        }
-//    }
-//
-//    dbc = new DataBaseConnector(is, batchSize);
-//
-//    // Check whether the table we are supposed to read from actually exists.
-//        if (!dbc.tableExists(tableName)) {
-//        throw new ResourceInitializationException(
-//                new IllegalArgumentException("The configured table \"" + tableName + "\" does not exist."));
-//    }
-//
-//    // Check whether a subset table name or a data table name was given.
-//        if (dbc.getReferencedTable(tableName) == null) {
-//        if (additionalTableNames != null)
-//            throw new NotImplementedException("At the moment mutiple tables can only be joined"
-//                    + " if the data table is referenced by a subset, for which the name has to be"
-//                    + " given in the Table parameter.");
-//        dbc.checkTableDefinition(tableName);
-//        readDataTable = true;
-//        xmlBytes = dbc.queryDataTable(tableName, whereCondition);
-//        hasNext = xmlBytes.hasNext();
-//        Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
-//        totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
-//    } else {
-//        if (batchSize == 0)
-//            log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
-//        if (resetTable)
-//            dbc.resetSubset(tableName);
-//
-//        dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchemas);
-//
-//        Integer unprocessedDocs = unprocessedDocumentCount();
-//        totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
-//        dataTable = dbc.getReferencedTable(tableName);
-//        hasNext = dbc.hasUnfetchedRows(tableName);
-//
-//        if (additionalTableNames != null && additionalTableNames.length > 0) {
-//            joinTables = true;
-//
-//            numAdditionalTables = additionalTableNames.length;
-//            checkAndAdjustAdditionalTables();
-//
-//            schemas = new String[numAdditionalTables + 1];
-//            schemas[0] = dbc.getActiveTableSchema();
-//            for (int i = 1; i < schemas.length; i++) {
-//                schemas[i] = additionalTableSchemas;
-//            }
-//        } else {
-//            numAdditionalTables = 0;
-//        }
-//    }
-//    logConfigurationState();
-
-
-
-
-
-
-
     /*
      * If you overwrite this method you have to call super.hasNext().
      *
@@ -418,9 +320,9 @@ log.trace("Fetching next document from the current database batch");
                 log.debug("Fetching {} documents from the database.", ids.size());
                 if (dataTimestamp == null) {
                     if (!joinTables) {
-                        documents = dbc.queryIDAndXML(ids, dataTable);
+                        documents = dbc.retrieveColumnsByTableSchema(ids, dataTable);
                     } else {
-                        documents = dbc.queryIDAndXML(ids, tables, schemas);
+                        documents = dbc.retrieveColumnsByTableSchema(ids, tables, schemas);
                     }
                 } else
                     documents = dbc.queryWithTime(ids, dataTable, dataTimestamp);

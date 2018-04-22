@@ -44,7 +44,8 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
 
     @ConfigurationParameter(name = PARAM_WHERE_CONDITION, mandatory = false,
             description = "WARNING: Potential SQL injection vulnerability. Do not let unknown users interact with your " +
-                    "database with this component. An SQL WHERE clause " +
+                    "database with this component. Only used when reading data tables directly. No effect when the " +
+                    "'tableName' parameter specifies a subset table. The parameter value should be an SQL WHERE clause " +
                     "restricting the documents to be read. Only the clause itself must be specified, the WHERE keyword " +
                     "is added automatically.")
     protected String whereCondition;
@@ -61,7 +62,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
     protected int processedDocuments = 0;
     @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG_NAME, mandatory = true, description = "File path or classpath" +
             " resource location to the CoStoSys XML configuration. This configuration must specify the table schema " +
-            "of the table referred to by the 'tableName' parameter as active table schema. The active table schema " +
+            "of the table referred to by the 'Table' parameter as active table schema. The active table schema " +
             "is always the schema of the data table that is either queried directly for documents or, if 'tableName' " +
             "points to a subset table, indirectly through the subset table. Make also sure that the active " +
             "database connection in the configuration points to the correct database.")

@@ -1,6 +1,7 @@
 package de.julielab.jcore.reader.db;
 
-import de.julielab.jcore.types.casmultiplier.DocumentIds;
+import de.julielab.jcore.types.casmultiplier.RowBatch;
+import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
@@ -16,15 +17,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import static de.julielab.jcore.reader.db.TableReaderConstants.PARAM_TABLE;
 
 public class DBMultiplierReader extends DBSubsetReader {
     private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
 
     // Internal state fields
     private DBMultiplierReader.RetrievingThread retriever;
+    private DBCIterator<Object[]> dataTableDocumentIds;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -32,18 +33,18 @@ public class DBMultiplierReader extends DBSubsetReader {
 
         // Check whether a subset table name or a data table name was given.
         if (readDataTable) {
-            throw new ResourceInitializationException(new IllegalArgumentException("The parameter " + PARAM_TABLE + " is " +
-                    "set to " + tableName + " which is a data table. Reading from data tables is " +
-                    "currently not supported."));
+            dataTableDocumentIds = dbc.query(tableName, Arrays.asList(dbc.getFieldConfiguration(dbc.getActiveTableSchema()).getPrimaryKey()));
+            hasNext = dataTableDocumentIds.hasNext();
+        } else {
+            hasNext = dbc.hasUnfetchedRows(tableName);
         }
-        hasNext = dbc.hasUnfetchedRows(tableName);
     }
 
     @Override
     public void getNext(JCas jCas) throws CollectionException {
         List<Object[]> idList = getNextDocumentIdBatch();
         log.trace("Received a list of {} ID from the database.", idList.size());
-        DocumentIds documentIds = new DocumentIds(jCas);
+        RowBatch rowbatch = new RowBatch(jCas);
         FSArray ids = new FSArray(jCas, idList.size());
         for (int i = 0; i < idList.size(); i++) {
             Object[] objects = idList.get(i);
@@ -55,25 +56,11 @@ public class DBMultiplierReader extends DBSubsetReader {
             }
             ids.set(i, keys);
         }
-        documentIds.setIdentifiers(ids);
-        documentIds.addToIndexes();
+        rowbatch.setIdentifiers(ids);
+        rowbatch.setTable(dataTable);
+        rowbatch.addToIndexes();
     }
 
-
-//    /**
-//     * This method checks whether the required parameters are set to meaningful
-//     * values and throws an IllegalArgumentException when not.
-//     *
-//     * @throws ResourceInitializationException
-//     */
-//    private void checkParameters() throws ResourceInitializationException {
-//        if (tableName == null || tableName.length() == 0) {
-//            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_TABLE});
-//        }
-//        if (costosysConfig == null || costosysConfig.length() == 0) {
-//            throw new ResourceInitializationException(ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[]{PARAM_COSTOSYS_CONFIG_NAME});
-//        }
-//    }
 
     /*
      * If you overwrite this method you have to call super.hasNext().
@@ -87,13 +74,10 @@ public class DBMultiplierReader extends DBSubsetReader {
     }
 
     /**
-     * Returns the next byte[][] containing a byte[] for the pmid at [0] and a
-     * byte[] for the XML at [1] or null if there are no unprocessed documents left.
-     *
-     * @return Document document - the document
-     * @throws CollectionException
+     * Returns the next batch of document IDs from the database table given by the 'Table' parameter.
+     * @return A list of document IDs from the read table.
      */
-    public List<Object[]> getNextDocumentIdBatch() throws CollectionException {
+    public List<Object[]> getNextDocumentIdBatch() {
 
         List<Object[]> next;
         if (readDataTable)
@@ -105,23 +89,21 @@ public class DBMultiplierReader extends DBSubsetReader {
             processedDocuments += next.size();
 
 
-
         return next;
     }
 
     private List<Object[]> getNextFromDataTable() {
-//        byte[][] next = null;
-//        // Must be set to true again if the iterator has more elements.
-//        hasNext = false;
-//        next = xmlBytes.next();
-//        // totalDocumentCount could be set to the Limit parameter. Thus we
-//        // should stop when we reach the limit. and not set hasNext back to
-//        // true.
-//        if (processedDocuments < totalDocumentCount - 1)
-//            hasNext = xmlBytes.hasNext();
-//        return next;
-        // TODO support this
-        return null;
+        List<Object[]> next = new ArrayList<>(batchSize);
+        // Must be set to true again if the iterator has more elements.
+        hasNext = false;
+        while(dataTableDocumentIds.hasNext() && next.size() < batchSize)
+          next.add(dataTableDocumentIds.next());
+        // totalDocumentCount could be set to the Limit parameter. Thus we
+        // should stop when we reach the limit. and not set hasNext back to
+        // true.
+        if (processedDocuments < totalDocumentCount - 1)
+            hasNext = dataTableDocumentIds.hasNext();
+        return next;
     }
 
     private List<Object[]> getNextFromSubset() {
@@ -140,18 +122,6 @@ public class DBMultiplierReader extends DBSubsetReader {
         return idList;
     }
 
-    protected int unprocessedDocumentCount() {
-        int unprocessed = -1;
-        if (readDataTable) {
-            unprocessed = totalDocumentCount - processedDocuments;
-        } else
-            unprocessed = dbc.countUnprocessed(tableName);
-        return unprocessed;
-    }
-
-    protected void throwCollectionException(CollectionException e) throws CollectionException {
-        throw e;
-    }
 
     public Progress[] getProgress() {
         return new Progress[]{new ProgressImpl(processedDocuments, totalDocumentCount, Progress.ENTITIES, true)};
@@ -217,7 +187,7 @@ public class DBMultiplierReader extends DBSubsetReader {
                 log.debug("Retrieved {} document IDs to fetch from the database.", ids.size());
             } catch (TableSchemaMismatchException e) {
                 log.error("Table schema mismatch: The active table schema {} specified in the CoStoSys configuration" +
-                        " file {} does not match the columns in the subset table {}: {}", dbc.getActiveTableSchema(),
+                                " file {} does not match the columns in the subset table {}: {}", dbc.getActiveTableSchema(),
                         costosysConfig, tableName, e.getMessage());
                 throw new IllegalArgumentException(e);
             }
@@ -225,7 +195,7 @@ public class DBMultiplierReader extends DBSubsetReader {
 
         public List<Object[]> getDocumentIds() {
             // If we don't use this as a background thread, we have to get the
-            // IDs now in a classic sequential manner.
+            // IDs now in a sequential manner.
             if (!fetchIdsProactively) {
                 // Use run as we don't have a use for real threads anyway.
                 log.debug("Fetching new documents (without employing a background thread).");

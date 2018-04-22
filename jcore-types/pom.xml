@@ -34,7 +34,7 @@
 									src/main/resources/de/julielab/jcore/types/casmultiplier/jcore-uri-multiplier-types.xml
 								</typeSystemInclude>
                                 <typeSystemInclude>
-                                    src/main/resources/de/julielab/jcore/types/casmultiplier/jcore-stringid-multiplier-types.xml
+                                    src/main/resources/de/julielab/jcore/types/casmultiplier/jcore-dbtable-multiplier-types.xml
                                 </typeSystemInclude>
 							</typeSystemIncludes>
 

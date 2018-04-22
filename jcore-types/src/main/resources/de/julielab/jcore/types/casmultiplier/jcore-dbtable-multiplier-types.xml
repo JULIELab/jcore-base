@@ -3,18 +3,18 @@
     <name>JCoRe File Multiplier Types</name>
     <description>This is a type system for usage with a CAS multiplier. It should not be included into the
         jcore-all-types type system. This particular type system holds a array containing strings that represent the IDs
-        of
-        documents to read. Using an array is used to read batches of document which makes database access more
-        efficient, for example.
+        of documents to read from a database table. Using an array is used to read batches of document which make
+        database access more efficient, for example. Since the primary keys of database tables may have multiple
+        elements, a document ID is represented as a StringArray.
     </description>
     <version>2.3.0-SNAPSHOT</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
     <types>
         <typeDescription>
-            <name>de.julielab.jcore.types.casmultiplier.DocumentIds</name>
-            <description>An array of identifier strings denoting a document. The CAS multiplier receiving the
-                identifiers
-                must have all information to actually read the document.
+            <name>de.julielab.jcore.types.casmultiplier.RowBatch</name>
+            <description>A batch of rows of a database table. An array of identifier strings denotes a documents.
+                The name of the table to retrieve the IDs from is another feature of this type. The CAS multiplier
+                receiving instances of this type must have access to the correct database.
             </description>
             <supertypeName>uima.tcas.Annotation</supertypeName>
             <features>
@@ -23,6 +23,11 @@
                     <description>The document IDs to be read by the CAS multiplier.</description>
                     <rangeTypeName>uima.cas.FSArray</rangeTypeName>
                     <elementType>uima.cas.StringArray</elementType>
+                </featureDescription>
+                <featureDescription>
+                    <name>table</name>
+                    <description>The document table to read the given IDs from.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
             </features>
         </typeDescription>
