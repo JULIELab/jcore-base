@@ -31,13 +31,18 @@ import java.util.List;
         "DBMultiplierReader. The reader also delivers the path to the corpus storage system (CoStoSys) configuration and additional tables " +
         "for joining with the main data table. This multiplier class is abstract and cannot be used directly." +
         "Extending classes must implement the next() method to actually read documents from the database and " +
-        "populate CASes with them. This component is a part of the JeDIS system.")
+        "populate CASes with them. This component is a part of the Jena Document Information System, JeDIS.",
+        vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
 public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
 
     protected DataBaseConnector dbc;
     protected DBCIterator<byte[][]> documentDataIterator;
     // This is set anew with every call to process()
     private boolean initialized;
+    protected String[] tables;
+    protected String[] schemaNames;
+    protected boolean readDataTable;
+
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -61,6 +66,7 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
         RowBatch rowbatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
         if (!initialized) {
             dbc = getDataBaseConnector(rowbatch.getCostosysConfiguration());
+            readDataTable = dbc.getReferencedTable(rowbatch.getTables(0)) == null;
             initialized = true;
         }
         List<Object[]> documentIdsForQuery = new ArrayList<>();
@@ -69,9 +75,11 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
             StringArray primaryKey = (StringArray) identifiers.get(i);
             documentIdsForQuery.add(primaryKey.toArray());
         }
+        tables = rowbatch.getTables().toStringArray();
+        schemaNames = rowbatch.getTableSchemas().toStringArray();
         documentDataIterator = dbc.retrieveColumnsByTableSchema(documentIdsForQuery,
-                rowbatch.getTables().toStringArray(),
-                rowbatch.getTableSchemas().toStringArray());
+                tables,
+                schemaNames);
     }
 
     @Override

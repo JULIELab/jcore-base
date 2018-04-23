@@ -22,6 +22,7 @@ import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
@@ -35,6 +36,16 @@ import java.io.IOException;
  *
  * @author faessler
  */
+@ResourceMetaData(name = "XML Database Reader", description = "A collection reader that employs the jcore-xml-mapper " +
+        "to parse XML documents from a PostgreSQL database into CAS instances. For this purpose, the reader requires " +
+        "a mapping file for the jcore-xml-mapper that defines how to map the document XML structure onto CAS types. " +
+        "Which exact data is read from the database table is determines by the table schema that is configured as " +
+        "active in the corpus storage system (CoStoSys) configuration file. If this table schema defines multiple " +
+        "columns to be retrieved, the 'RowMapping' parameter must be set to specify how the extra columns are mapped " +
+        "into the CAS. The reader also supports the joining with more tables to load data distributed across" +
+        "multiple data tables, which then also must be mapped via the 'RowMapping'. This mechanism and " +
+        "this component are part of the Jena Document Information System, JeDIS."
+        , vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
 public class XMLDBReader extends DBReader {
 
     public static final String PARAM_ROW_MAPPING = Initializer.PARAM_ROW_MAPPING;
@@ -72,9 +83,16 @@ public class XMLDBReader extends DBReader {
      */
     public void getNext(JCas jcas) throws IOException, CollectionException {
         byte[][] documentData = getNextArtifactData();
-       casPopulator.populateCas(jcas, documentData,
-               (docData, jCas) -> setDBProcessingMetaData(docData, jCas));
+        populateCas(jcas, documentData);
+    }
 
+    private void populateCas(JCas jcas, byte[][] documentData) throws CollectionException {
+        try {
+            casPopulator.populateCas(jcas, documentData,
+                    (docData, jCas) -> setDBProcessingMetaData(dbc, readDataTable, tableName, docData, jCas));
+        } catch (CasPopulationException e) {
+            throw new CollectionException(e);
+        }
     }
 
 

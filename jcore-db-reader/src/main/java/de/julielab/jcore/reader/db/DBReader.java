@@ -27,6 +27,7 @@ package de.julielab.jcore.reader.db;
 
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xmlData.dataBase.DBCIterator;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
@@ -88,8 +89,11 @@ import java.util.List;
         "multiple DBReaders in different pipelines to be synchronized and not read documents multiple times. " +
         "Additional tables can be specified that will be joined to the main document database. This is used to " +
         "load annotations that have been stored in separate tables. The jcore-xmi-db-writer is able to write " +
-        "such annotation tables. All the mentioned components are part of the JeDIS system for document " +
-        "annotation and management.")
+        "such annotation tables and the jcore-xmi-db-reader implements the assembly of such distributed annotation data." +
+        " All mentioned components are part of the Jena Document Information System, JeDIS," +
+        " for document " +
+        "annotation and management."
+        , vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
 public abstract class DBReader extends DBSubsetReader {
 
 
@@ -231,7 +235,7 @@ public abstract class DBReader extends DBSubsetReader {
     }
 
 
-    protected String setDBProcessingMetaData(byte[][] data, JCas cas) {
+    public static String setDBProcessingMetaData(DataBaseConnector dbc, boolean readDataTable, String tableName, byte[][] data, JCas cas) {
         String pkString = null;
         // remove previously added dbMetaData
         JCasUtil.select(cas, DBProcessingMetaData.class).forEach(x -> x.removeFromIndexes());

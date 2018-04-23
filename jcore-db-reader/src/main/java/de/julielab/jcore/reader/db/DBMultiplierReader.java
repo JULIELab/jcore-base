@@ -25,7 +25,8 @@ import java.util.List;
         "Additional tables may be specified which will, together with the IDs, be sent to a CAS multiplier extending" +
         "the DBMultiplierReader. The multiplier will read documents and the joined additional tables according to the " +
         "list of document IDs sent by this reader. The component leverages the corpus storage system (CoStoSys) for this " +
-        "purpose and is part of the JeDIS system.")
+        "purpose and is part of the Jena Document Information System, JeDIS."
+        , vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
 public class DBMultiplierReader extends DBSubsetReader {
     private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
 

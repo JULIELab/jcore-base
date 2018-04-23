@@ -29,7 +29,7 @@ private final static Logger LOGGER = LoggerFactory.getLogger(CasPopulator.class)
         this.dbProcessingMetaDataSetter = dbProcessingMetaDataSetter;
     }
 
-    public void populateCas(JCas jcas, byte[][] arrayArray, BiConsumer<byte[][], JCas> dbProcessingMetaDataSetter) throws CollectionException {
+    public void populateCas(JCas jcas, byte[][] arrayArray, BiConsumer<byte[][], JCas> dbProcessingMetaDataSetter) throws CasPopulationException {
         List<Integer> pkIndices = dbc.getPrimaryKeyIndices();
 
         // get index of xmlData;
@@ -85,9 +85,9 @@ private final static Logger LOGGER = LoggerFactory.getLogger(CasPopulator.class)
             dbProcessingMetaDataSetter.accept(arrayArray, jcas);
         } catch (Exception e) {
             LOGGER.error("getNext(CAS), primaryKeyValue = " + new String(identifier), e);
-            throw new CollectionException(e);
+            throw new CasPopulationException(e);
         } catch (Throwable e) {
-            throw new CollectionException(e);
+            throw new CasPopulationException(e);
         }
     }
 }
