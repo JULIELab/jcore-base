@@ -1,39 +1,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>jcore-base</artifactId>
-		<groupId>de.julielab</groupId>
-		<version>2.3.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>jcore-xmi-db-reader</artifactId>
-	<name>JCoRe XMI Database Reader</name>
-	<description>Reads CAS XMI data from a relational database (Postgres). Thus, the stored CASes may then be processed further.</description>
-	<dependencies>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-db-reader</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-xmi-splitter</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-types</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-utilities</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-	</dependencies>
-	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-db-reader</url>
-	<organization>
-		<name>JULIE Lab Jena, Germany</name>
-		<url>http://www.julielab.de</url>
-	</organization>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jcore-base</artifactId>
+        <groupId>de.julielab</groupId>
+        <version>2.3.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>jcore-xmi-db-reader</artifactId>
+    <name>JCoRe XMI Database Reader</name>
+    <description>Reads CAS XMI data from a relational database (Postgres). Thus, the stored CASes may then be processed
+        further.
+    </description>
+    <dependencies>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-db-reader</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-xmi-splitter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-utilities</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>julie-xml-tools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>costosys</artifactId>
+        </dependency></dependencies>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-db-reader</url>
+    <organization>
+        <name>JULIE Lab Jena, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
 </project>
