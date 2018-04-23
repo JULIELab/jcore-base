@@ -3,9 +3,12 @@
     <name>JCoRe File Multiplier Types</name>
     <description>This is a type system for usage with a CAS multiplier. It should not be included into the
         jcore-all-types type system. This particular type system holds a array containing strings that represent the IDs
-        of documents to read from a database table. Using an array is used to read batches of document which make
+        of documents to read from database tables. Using an array is used to read batches of document which make
         database access more efficient, for example. Since the primary keys of database tables may have multiple
-        elements, a document ID is represented as a StringArray.
+        elements, a document ID is represented as a StringArray. Multiple tables may be specified in which case
+        the tables should be joined on the given document primary keys. This mechanism may be used to read a
+        base document and annotations that have been previously created and stored in separate tables. This is
+        part of the Jena Document Information System, JeDIS.
     </description>
     <version>2.3.0-SNAPSHOT</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
@@ -40,6 +43,14 @@
                 <featureDescription>
                     <name>costosysConfiguration</name>
                     <description>The CoStoSys configuration file path or classpath location.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>subsetTable</name>
+                    <description>The subset table that was primarily specified to read from and that references the
+                        data table. The data table will be the first (and possibly only) entry of the tables feature.
+                        This feature will be null if the multiplier reader did not read from a subset but directly
+                        from a data table..</description>
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
             </features>
