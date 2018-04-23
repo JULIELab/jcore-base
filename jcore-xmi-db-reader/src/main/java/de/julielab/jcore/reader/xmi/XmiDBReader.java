@@ -57,22 +57,7 @@ public class XmiDBReader extends DBReader implements Initializable {
     public static final String PARAM_INCREASED_ATTRIBUTE_SIZE = Initializer.PARAM_INCREASED_ATTRIBUTE_SIZE;
     public static final String PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE = Initializer.PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE;
     private final static Logger log = LoggerFactory.getLogger(XmiDBReader.class);
-    private Boolean storeMaxXmiId;
-    private int xercesAttributeBufferSize;
 
-    private XmiBuilder builder;
-    private Boolean logFinalXmi;
-
-    /**
-     * Determines whether we read the namespace table and apply its contents to
-     * the read XMI or not. For full-document storage, the namespaces are
-     * included in the document XMI and adding them again would make the XMI
-     * invalid.
-     */
-    private Boolean readsBaseDocument;
-
-    private int numDataRetrievedDataFields;
-    private int numAdditionalTables;
     private Initializer initializer;
     private CasPopulator casPopulator;
 
@@ -128,43 +113,6 @@ public class XmiDBReader extends DBReader implements Initializable {
     @Override
     protected String getReaderComponentName() {
         return getClass().getSimpleName();
-    }
-
-
-    @Override
-    public void setStoreMaxXmiId(boolean storeMaxXmiId) {
-        this.storeMaxXmiId = storeMaxXmiId;
-    }
-
-
-    @Override
-    public void setXercesAttributeBufferSize(int size) {
-        this.xercesAttributeBufferSize = size;
-    }
-
-    @Override
-    public void setReadsBaseDocument(boolean readsBaseDocument) {
-        this.readsBaseDocument = readsBaseDocument;
-    }
-
-    @Override
-    public void setNumAdditionalTables(int numAdditionalTables) {
-        this.numAdditionalTables = numAdditionalTables;
-    }
-
-    @Override
-    public void setNumDataRetrievedDataFields(int numDataRetrievedDataFields) {
-        this.numDataRetrievedDataFields = numDataRetrievedDataFields;
-    }
-
-    @Override
-    public void setBuilder(XmiBuilder builder) {
-        this.builder = builder;
-    }
-
-    @Override
-    public void setLogFinalXmi(boolean logFinalXmi) {
-        this.logFinalXmi = logFinalXmi;
     }
 
     /**

@@ -42,6 +42,15 @@ public class CasPopulator {
     private final String tableName;
     private boolean joinTables;
 
+    /**
+     * Takes document and annotation data from a XMI reader or XMI multiplier. Assembles a complete XMI document from
+     * these data and populates a CAS with them. This class employs the XmiBuilder to assemble the XMI document.
+     *
+     * @param dataTable The table that is read for document data.
+     * @param initializer The {@link Initializer} instance used to initialize the component that creates this class.
+     * @param readDataTable Whether the data table is read directly in contrast of reading from a subset table.
+     * @param tableName The name of table that is primarily read. May be a data table or a subset table.
+     */
     public CasPopulator(String dataTable, Initializer initializer, Boolean readDataTable, String tableName) {
         this.dbc = initializer.getDataBaseConnector();
         this.readsDataTable = readDataTable;
@@ -58,6 +67,13 @@ public class CasPopulator {
         this.storeMaxXmiId = initializer.getStoreMaxXmiId();
     }
 
+    /**
+     * Retrieves document text and annotation XMI from <code>data</code>, assembles it into one single XMI document,
+     * if necessary, and deserializes the XMI into the <code>jCas</code>.
+     * @param data The XMI data that was read from one or more database tables.
+     * @param jCas The CAS to populate.
+     * @throws CasPopulationException If deserialization fails.
+     */
     public void populateCas(byte[][] data, JCas jCas) throws CasPopulationException {
 
         String docId = getPkStringFromData(data);

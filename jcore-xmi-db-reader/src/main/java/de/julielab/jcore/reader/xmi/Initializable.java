@@ -2,14 +2,13 @@ package de.julielab.jcore.reader.xmi;
 
 import de.julielab.xml.XmiBuilder;
 
+/**
+ * This interface primarily allows to use the same initialization code for {@link XmiDBReader} and {@link XmiDBMultiplier}
+ * through an instance of {@link Initializer}. The two methods it defines are necessary because they deliver information
+ * that is now known to the multiplier during initialization time and thus cannot be added to the constructor of the
+ * initializer.
+ */
 public interface Initializable {
-    void setStoreMaxXmiId(boolean storeMaxXmiId);
-    void setXercesAttributeBufferSize(int size);
-    void setReadsBaseDocument(boolean readsBaseDocument);
-    void setNumAdditionalTables(int numAdditionalTables);
-    void setNumDataRetrievedDataFields(int numDataRetrievedDataFields);
-    void setBuilder(XmiBuilder builder);
-    void setLogFinalXmi(boolean logFinalXmi);
 
     String[] getAdditionalTableNames();
     String[] getTables();

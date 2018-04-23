@@ -110,13 +110,7 @@ public class Initializer {
         log.info("Data columns set for retrieval: {}",
                 Arrays.toString(dbc.getFieldConfiguration().getColumnsToRetrieve()));
 
-        initializable.setBuilder(builder);
-        initializable.setLogFinalXmi(logFinalXmi);
-        initializable.setXercesAttributeBufferSize(xercesAttributeBufferSize);
-        initializable.setNumAdditionalTables(numAdditionalTables);
-        initializable.setReadsBaseDocument(readsBaseDocument);
-        initializable.setStoreMaxXmiId(storeMaxXmiId);
-        initializable.setNumDataRetrievedDataFields(numDataRetrievedDataFields);
+
     }
 
     public void initializeAnnotationTableNames(JCas jCas) throws ResourceInitializationException {
