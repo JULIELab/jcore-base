@@ -40,15 +40,18 @@ public class DBMultiplierReader extends DBSubsetReader {
 
         // Check whether a subset table name or a data table name was given.
         if (readDataTable) {
+            log.debug("Reading from data table {}", tableName);
             dataTableDocumentIds = dbc.query(tableName, Arrays.asList(dbc.getFieldConfiguration(dbc.getActiveTableSchema()).getPrimaryKey()));
             hasNext = dataTableDocumentIds.hasNext();
         } else {
+            log.debug("Reading from subset table {}", tableName);
             hasNext = dbc.hasUnfetchedRows(tableName);
         }
     }
 
     @Override
     public void getNext(JCas jCas) throws CollectionException {
+        log.trace("Requesting next batch of document IDs from the database.");
         List<Object[]> idList = getNextDocumentIdBatch();
         log.trace("Received a list of {} ID from the database.", idList.size());
         RowBatch rowbatch = new RowBatch(jCas);
@@ -115,13 +118,16 @@ public class DBMultiplierReader extends DBSubsetReader {
         List<Object[]> next = new ArrayList<>(batchSize);
         // Must be set to true again if the iterator has more elements.
         hasNext = false;
+        log.trace("Filling document ID list with the next batch of documents.");
         while(dataTableDocumentIds.hasNext() && next.size() < batchSize)
           next.add(dataTableDocumentIds.next());
         // totalDocumentCount could be set to the Limit parameter. Thus we
         // should stop when we reach the limit. and not set hasNext back to
         // true.
-        if (processedDocuments < totalDocumentCount - 1)
+        if (processedDocuments < totalDocumentCount - 1) {
+            log.trace("Checking if there are more documents to read from the data table.");
             hasNext = dataTableDocumentIds.hasNext();
+        }
         return next;
     }
 

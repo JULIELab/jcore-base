@@ -3,6 +3,7 @@ package de.julielab.jcore.reader.db;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.jcore.utility.JCoReTools;
+import de.julielab.xmlData.Constants;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UIMAException;
@@ -29,8 +30,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import static de.julielab.jcore.reader.db.TableReaderConstants.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.*;
 
 public class DBMultiplierTest {
     private final static Logger log = LoggerFactory.getLogger(DBMultiplierTest.class);
@@ -44,8 +47,9 @@ public class DBMultiplierTest {
 
     @Test
     public void testDBMultiplierReader() throws UIMAException, IOException, ConfigurationException {
-
-        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", postgres);
+// This test does not really need 2 connections, but the other test in the class needs it. Since the connection pools
+// are cached in a static map, the pool created here will also be used in the other test even if it has its own configuration.
+        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", 2, postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBMultiplierReader.class,
                 PARAM_BATCH_SIZE, 5,
                 PARAM_TABLE, "testsubset",
@@ -61,16 +65,55 @@ public class DBMultiplierTest {
             assertTrue(rowBatch.getIdentifiers().size() > 0);
             JCasIterator jCasIterator = multiplier.processAndOutputNewCASes(jCas);
             while (jCasIterator.hasNext()) {
-                ++numReadDocs;
                 JCas mJCas = jCasIterator.next();
                 assertNotNull(mJCas.getDocumentText());
                 assertTrue(JCoReTools.getDocId(mJCas) != null);
                 assertTrue(JCoReTools.getDocId(mJCas).length() > 0);
                 log.debug(StringUtils.abbreviate(mJCas.getDocumentText(), 200));
                 mJCas.release();
+                ++numReadDocs;
             }
             jCas.reset();
         }
+        assertEquals(20, numReadDocs);
+    }
+
+    @Test
+    public void testDBMultiplierFromDataTable() throws UIMAException, IOException, ConfigurationException {
+
+        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", 2, postgres);
+        CollectionReader reader = CollectionReaderFactory.createReader(DBMultiplierReader.class,
+                PARAM_BATCH_SIZE, 5,
+                PARAM_TABLE, Constants.DEFAULT_DATA_TABLE_NAME,
+                PARAM_COSTOSYS_CONFIG_NAME, costosysConfig);
+        AnalysisEngine multiplier = AnalysisEngineFactory.createEngine(TestMultiplier.class,
+                TableReaderConstants.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig);
+        assertTrue(reader.hasNext());
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types");
+        int numReadDocs = 0;
+        while (reader.hasNext()) {
+            reader.getNext(jCas.getCas());
+            RowBatch rowBatch = JCasUtil.selectSingle(jCas, RowBatch.class);
+            log.trace("Got batch of {} document IDs from the multiplier reader", rowBatch.getIdentifiers().size());
+            assertTrue(rowBatch.getIdentifiers().size() > 0);
+            assertTrue(rowBatch.getIdentifiers().size() < 50);
+            JCasIterator jCasIterator = multiplier.processAndOutputNewCASes(jCas);
+            log.trace("Got iterator from multiplier, now reading the multiplier documents");
+            int numDoc = 0;
+            while (jCasIterator.hasNext()) {
+                log.trace("Reader multiplier document no. {}", ++numDoc);
+                JCas mJCas = jCasIterator.next();
+                assertNotNull(mJCas.getDocumentText());
+                assertTrue(JCoReTools.getDocId(mJCas) != null);
+                assertTrue(JCoReTools.getDocId(mJCas).length() > 0);
+                log.debug(StringUtils.abbreviate(mJCas.getDocumentText(), 200));
+                mJCas.release();
+                numReadDocs++;
+            }
+            jCas.reset();
+            log.trace("Processed batch of multiplier documents, now getting the next batch from the reader.");
+        }
+        assertEquals(177, numReadDocs);
     }
 
     public static class TestMultiplier extends DBMultiplier {

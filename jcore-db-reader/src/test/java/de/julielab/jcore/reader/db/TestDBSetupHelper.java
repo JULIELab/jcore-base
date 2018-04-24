@@ -15,6 +15,12 @@ import java.sql.SQLException;
 
 public class TestDBSetupHelper {
 
+    /**
+     * Imports the file "src/test/resources/pubmedsample18n0001.xml.gz" into the empty database, and creates a subset
+     * named "testsubset"
+     * @param postgres
+     * @throws SQLException
+     */
     public static void setupDatabase(PostgreSQLContainer postgres) throws SQLException {
         DataBaseConnector dbc = new DataBaseConnector(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
         dbc.setActiveTableSchema("medline_2017");
@@ -35,14 +41,17 @@ public class TestDBSetupHelper {
             e.printStackTrace();
         }
         System.setProperty(Constants.HIDDEN_CONFIG_PATH, hiddenConfigPath);
+        dbc.close();
     }
 
-    public static String createTestCostosysConfig(String schemaName, PostgreSQLContainer postgres) throws ConfigurationException {
+    public static String createTestCostosysConfig(String schemaName, int maxActiveConnections, PostgreSQLContainer postgres) throws ConfigurationException {
         XMLConfiguration costosysconfig = new XMLConfiguration();
         costosysconfig.setProperty("databaseConnectorConfiguration.DBSchemaInformation.activeTableSchema",schemaName);
         costosysconfig.setProperty("databaseConnectorConfiguration.DBConnectionInformation.activeDBConnection", postgres.getDatabaseName());
         costosysconfig.setProperty("databaseConnectorConfiguration.DBConnectionInformation.DBConnections.DBConnection[@name]", postgres.getDatabaseName());
         costosysconfig.setProperty("databaseConnectorConfiguration.DBConnectionInformation.DBConnections.DBConnection[@url]", postgres.getJdbcUrl());
+        costosysconfig.setProperty("databaseConnectorConfiguration.DBConnectionInformation.maxActiveDBConnections", maxActiveConnections);
+
         FileHandler fh = new FileHandler((FileBased) costosysconfig);
         String costosysConfig = "src/test/resources/testconfig.xml";
         fh.save(costosysConfig);

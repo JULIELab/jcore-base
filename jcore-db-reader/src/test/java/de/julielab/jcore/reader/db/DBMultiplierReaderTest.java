@@ -32,7 +32,7 @@ public class DBMultiplierReaderTest {
     @Test
     public void testDBMultiplierReader() throws UIMAException, IOException, ConfigurationException {
 
-        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", postgres);
+        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", 1, postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBMultiplierReader.class,
                 PARAM_BATCH_SIZE, 5,
                 PARAM_TABLE, "testsubset",

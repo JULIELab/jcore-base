@@ -3,6 +3,7 @@ package de.julielab.jcore.reader.db;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
+import de.julielab.xmlData.dataBase.util.UnobtainableConnectionException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
+import java.sql.SQLTransientConnectionException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +76,17 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
         tableName = rowbatch.getTableName();
         if (!initialized) {
             dbc = getDataBaseConnector(rowbatch.getCostosysConfiguration());
-            String referencedTable = dbc.getReferencedTable(rowbatch.getTables(0));
+            String referencedTable = null;
+            try {
+                referencedTable = dbc.getReferencedTable(rowbatch.getTables(0));
+            } catch (UnobtainableConnectionException e) {
+                throw new AnalysisEngineProcessException(new IllegalArgumentException("The maximum database connection " +
+                        "pool size is smaller than 2. However, when reading from database tables, one connection is " +
+                        "required the whole time to read documents via cursor from the database and another connection " +
+                        "is required to do data consistency checks. Set the number of active connections in the " +
+                        "CoStoSys configuration file at least to 2.", e));
+
+            }
             readDataTable = referencedTable == null;
             dataTable = referencedTable == null ? tables[0] : referencedTable;
             initialized = true;

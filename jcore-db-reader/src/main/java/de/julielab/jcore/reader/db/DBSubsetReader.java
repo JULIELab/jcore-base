@@ -77,6 +77,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
         additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
         additionalTableSchemas = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMAS);
         checkAdditionalTableParameters(additionalTableNames, additionalTableSchemas);
+        determineDataTable();
         try {
             // Check whether a subset table name or a data table name was given.
             if (readDataTable) {
@@ -88,14 +89,14 @@ public abstract class DBSubsetReader extends DBReaderBase {
                 readDataTable = true;
                 Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
                 totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
-                hasNext = dbc.queryDataTable(tableName, whereCondition).hasNext();
+                hasNext = !dbc.isEmpty(tableName);
+                tables = new String[]{tableName};
+                schemas = new String[]{dbc.getActiveTableSchema()};
             } else {
                 if (batchSize == 0)
                     log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
                 if (resetTable)
                     dbc.resetSubset(tableName);
-
-                determineDataTable();
 
                 Integer unprocessedDocs = dbc.countUnprocessed(tableName);
                 totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
@@ -179,7 +180,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
                 dataTable = nextDataTable;
             } else {
                 log.info("The table \"{}\" is a data table, documents will not be marked to be in process and no " +
-                        "synchronization will of multiple DB readers will happen.");
+                        "synchronization of multiple DB readers will happen.", tableName);
                 readDataTable = true;
             }
         } catch (SQLException e) {
