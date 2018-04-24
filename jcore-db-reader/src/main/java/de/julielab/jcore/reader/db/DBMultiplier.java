@@ -27,7 +27,7 @@ import java.util.List;
  * to retrieve document data and use it to populate CAS instances in the {@link JCasMultiplier_ImplBase#next()}
  * method.
  */
-@ResourceMetaData( name = "JCoRe Abstract Database Multiplier", description = "A multiplier that receives document IDs to read from a database table from the " +
+@ResourceMetaData(name = "JCoRe Abstract Database Multiplier", description = "A multiplier that receives document IDs to read from a database table from the " +
         "DBMultiplierReader. The reader also delivers the path to the corpus storage system (CoStoSys) configuration and additional tables " +
         "for joining with the main data table. This multiplier class is abstract and cannot be used directly." +
         "Extending classes must implement the next() method to actually read documents from the database and " +
@@ -37,12 +37,17 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
 
     protected DataBaseConnector dbc;
     protected DBCIterator<byte[][]> documentDataIterator;
-    // This is set anew with every call to process()
-    private boolean initialized;
     protected String[] tables;
     protected String[] schemaNames;
+    /**
+     * This is the name that the user has passed as the table to read to the multiplier reader. This might be a
+     * data table or a subset table. The {@link #tables} field always contains the data tables to read from.
+     */
+    protected String tableName;
     protected boolean readDataTable;
-
+    protected String dataTable;
+    // This is set anew with every call to process()
+    private boolean initialized;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -64,9 +69,14 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
         RowBatch rowbatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
+        tables = rowbatch.getTables().toStringArray();
+        schemaNames = rowbatch.getTableSchemas().toStringArray();
+        tableName = rowbatch.getTableName();
         if (!initialized) {
             dbc = getDataBaseConnector(rowbatch.getCostosysConfiguration());
-            readDataTable = dbc.getReferencedTable(rowbatch.getTables(0)) == null;
+            String referencedTable = dbc.getReferencedTable(rowbatch.getTables(0));
+            readDataTable = referencedTable == null;
+            dataTable = referencedTable == null ? tables[0] : referencedTable;
             initialized = true;
         }
         List<Object[]> documentIdsForQuery = new ArrayList<>();
@@ -75,11 +85,17 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
             StringArray primaryKey = (StringArray) identifiers.get(i);
             documentIdsForQuery.add(primaryKey.toArray());
         }
-        tables = rowbatch.getTables().toStringArray();
-        schemaNames = rowbatch.getTableSchemas().toStringArray();
         documentDataIterator = dbc.retrieveColumnsByTableSchema(documentIdsForQuery,
                 tables,
                 schemaNames);
+    }
+
+    public String[] getAdditionalTableNames() {
+        if (tables == null)
+            throw new IllegalStateException("This method may only be called after process() has been called.");
+        String[] additionalTables = new String[tables.length - 1];
+        System.arraycopy(tables, 1, additionalTables, 0, additionalTables.length);
+        return additionalTables;
     }
 
     @Override

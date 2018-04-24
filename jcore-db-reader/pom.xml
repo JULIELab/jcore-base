@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<artifactId>jcore-base</artifactId>
-		<groupId>de.julielab</groupId>
-		<version>2.3.0-SNAPSHOT</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>jcore-db-reader</artifactId>
-	<name>JCoRe Database Reader</name>
-	<description>Abstract database reader for database driven processing</description>
-	<dependencies>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>costosys</artifactId>
-		</dependency>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>jcore-base</artifactId>
+        <groupId>de.julielab</groupId>
+        <version>2.3.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jcore-db-reader</artifactId>
+    <name>JCoRe Database Reader</name>
+    <description>Abstract database reader for database driven processing</description>
+    <dependencies>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>costosys</artifactId>
+        </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-utilities</artifactId>
@@ -22,19 +22,20 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-types</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>provided</scope>
-		</dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-descriptor-creator</artifactId>
-        </dependency><dependency>
+        </dependency>
+        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
             <version>1.6.0</version>
@@ -74,6 +75,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-	<properties>
-	</properties>
+    <properties>
+    </properties>
 </project>
