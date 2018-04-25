@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
+import de.julielab.xml.util.XMISplitterException;
 import de.julielab.xmlData.config.FieldConfig;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.uima.UimaContext;
@@ -50,11 +51,14 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -71,80 +75,85 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
 /**
  * @author faessler
  */
+@ResourceMetaData(name="JCoRe XMI Database Writer", vendor = "JULIE Lab Jena, Germany", description = "This component " +
+        "is capable of storing the standard UIMA serialization of documents in one or even multiple database tables. " +
+        "The UIMA serialization format is XMI, an XML format that expressed an annotation graph. This component " +
+        "either stores the whole annotation graph in XMI format in a database row, together with the document ID. " +
+        "Alternatively, it makes use of the jcore-xmi-splitter to segment the annotation graph with respect to a " +
+        "user specified list of annotation types. Then, the XMI data of each annotation type is extracted from the " +
+        "document XMI data and stored in a separate table. The tables are created automatically according to the " +
+        "primary key of the active table schema in the Corpus Storage System (CoStoSys) configuration file that is " +
+        "also given as a parameter. The jcore-xmi-db-reader is capable of reading this kind of distributed annotation " +
+        "graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This component is part " +
+        "of the Jena Document Information System, JeDIS.")
 public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_COSTOSYS_CONFIG = "CostosysConfigFile";
     public static final String PARAM_UPDATE_MODE = "UpdateMode";
     public static final String PARAM_DO_GZIP = "PerformGZIP";
-    /**
-     * Boolean parameter indicating if the whole xmi data should be stored. In
-     * this case there must not be any annotations specified for selection.
-     */
     public static final String PARAM_STORE_ALL = "StoreEntireXmiData";
-    /**
-     * String parameter indicating the name of the table where the xmi data will
-     * be stored (if <b>StoreEntireXmiData</b> is selected) or where the next
-     * possible xmi id is updated (if there are <b>AnnotationsToStore</b>
-     * specified for selection) as well as where the base document will be
-     * stored (if optionally <b>StoreBaseDocument</b> is selected).
-     */
+
     public static final String PARAM_TABLE_DOCUMENT = "DocumentTable";
-    /**
-     * Multi-valued String parameter indicating which annotations are specified
-     * for selection. The names should be given as qualified java names. If not,
-     * the qualified java name is retrieved from the types namespace and used as
-     * table name.
-     */
     public static final String PARAM_ADDITIONAL_TABLES = "AnnotationsToStore";
-    /**
-     * String parameter indicating if annotations that are features of the
-     * selected annotations should also be stored.
-     */
     public static final String PARAM_STORE_RECURSIVELY = "StoreRecursively";
-    /**
-     * Array parameter that takes Java annotation type names. These names will
-     * be stored with the base document, if it is stored.
-     */
+
     public static final String PARAM_BASE_DOCUMENT_ANNOTATION_TYPES = "BaseDocumentAnnotationTypes";
-    /**
-     * Boolean parameter that indicates whether annotations, that have become
-     * obsolete by updating referenced annotations, should be deleted from their
-     * table. This can help to avoid errors when there is a chance that the
-     * obsolete annotations could be read later, leading to invalid XMI.
-     * However, when those annotations will just be updated next, the overhead
-     * of deleting them would not be necessary.
-     */
+
     public static final String PARAM_DELETE_OBSOLETE_ANNOTATIONS = "DeleteObsoleteAnnotations";
-    /**
-     * Integer that defines the maximum attribute size for the XMIs. Standard
-     * (parser wise) is 65536 * 8.
-     */
     public static final String PARAM_ATTRIBUTE_SIZE = "IncreasedAttributeSize";
-    /**
-     * Subset tables store the name of the last component that has sent data for
-     * a document. This parameter allows to specify a custom name for each CAS
-     * DB Consumer. Defaults to the implementation class name.
-     */
+
     public static final String PARAM_COMPONENT_DB_NAME = "ComponentDbName";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
-    /**
-     * Boolean parameter indicating if the base document should be stored as
-     * well when annotations are specified for selection. In this case
-     * <b>FirstAnnotationType</b> has to be given in order to determine the
-     * elements that belong to the base document.
-     */
     private static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
     private DataBaseConnector dbc;
+    @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "Is set to false, the attempt to write new data " +
+            "into an XMI document or annotation table that already has data for the respective document, will result " +
+            "in an error. If set to true, there will first occur a check if there already is XMI data for the " +
+            "currently written document and, if so, the contents will be updated. It is important to keep in " +
+            "mind that the update also includes empty data. That is, if an annotation type is specified in " +
+            "'AdditionalTables' for which the current does not have data, possibly existing data will just be " +
+            "deleted.")
     private Boolean updateMode;
+    @ConfigurationParameter(name = PARAM_DELETE_OBSOLETE_ANNOTATIONS, mandatory = false, defaultValue = "false",
+            description = "Boolean parameter that indicates whether annotations, that have become obsolete by updating " +
+                    "referenced annotations, should be deleted from their table. This can help to avoid errors when there " +
+                    "is a chance that the obsolete annotations could be read later, leading to invalid XMI. However, when " +
+                    "those annotations will just be updated next, the overhead of deleting them would not be necessary. ")
     private Boolean deleteObsolete;
+    @ConfigurationParameter(name = PARAM_DO_GZIP, description = "Determines if the XMI data should be stored " +
+            "compressed or uncompressed. Without compression, the data will be directly viewable in a database " +
+            "browser, whereas compressed data appears as opaque byte sequence. Compression is supposed to " +
+            "reduce traffic over the network and save storage space on the database server.")
     private Boolean doGzip;
-
+    @ConfigurationParameter(name = PARAM_ATTRIBUTE_SIZE, description = "Integer that defines the maximum attribute size for " +
+            "the XMIs. Standard (parser wise) is 65536 * 8. It may be necessary to rise this value for larger documents " +
+            "since the document text is stored as an attribute of an XMI element.")
     private Integer attributeSize;
+    @ConfigurationParameter(name = PARAM_STORE_ALL, description = "Boolean parameter indicating if the whole document " +
+            "should be stored as one large XMI data block. " +
+            "In this case there must not be any annotations specified for selection and the 'StoreBaseDocument' " +
+            "parameter will have no effect.")
     private Boolean storeAll;
+    @ConfigurationParameter(name = PARAM_TABLE_DOCUMENT, description = "String parameter indicating the name of the " +
+            "table where the XMI data will be stored (if StoreEntireXmiData is true) or " +
+            "where the base document will be stored (if StoreBaseDocument is true). ")
     private String docTableName;
     private List<String> annotationsToStore;
+    @ConfigurationParameter(name = PARAM_STORE_RECURSIVELY, description = "Only in effect when storing annotations " +
+            "separately from the base document. If set to true, annotations that are referenced by other annotations, " +
+            "i.e. are (direct or indirect) features of other annotations, they " +
+            "will be stored in the same table as the referencing annotation. For example, POS tags may be store " +
+            "together with tokens this way. If, however, a referenced annotation type is itself to be stored, " +
+            "it will be segmented away and stored in its own table.")
     private Boolean recursively;
+    @ConfigurationParameter(name = PARAM_STORE_BASE_DOCUMENT, description = "Boolean parameter indicating if the base " +
+            "document should be stored as well when annotations are specified for selection. The base document is " +
+            "the part of the XMI file that includes the document text. If you want to store annotations right with " +
+            "the base document, specify those in the 'BaseDocumentAnnotationTypes' parameter.")
     private Boolean storeBaseDocument;
+    @ConfigurationParameter(name = PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, mandatory = false, description = "Array " +
+            "parameter that takes Java annotation type names. These names will be stored with the base document, " +
+            "if the 'StoreBaseDocument' parameter is set to true.")
     private Set<String> baseDocumentAnnotationTypes;
 
     private XmiSplitter splitter;
@@ -166,9 +175,25 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
     private XmiDataInserter annotationInserter;
 
+    @ConfigurationParameter(name = PARAM_COMPONENT_DB_NAME, description = " Subset tables store the name of the last " +
+            "component that has sent data for a document. This parameter allows to specify a custom name for each CAS " +
+            "DB Consumer. Defaults to the implementation class name.", defaultValue = "XMIDBWriter")
     private String componentDbName;
 
     private String subsetTable;
+    @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG, description = "File path or classpath resource location " +
+            "of a Corpus Storage System (CoStoSys) configuration file. This file specifies the database to " +
+            "write the XMI data into and the data table schema. This schema must at least define the primary key " +
+            "columns that the storage tables should have for each document. The primary key is currently just " +
+            "the document ID. Thus, at the moment, primary keys can only consist of a single element when using " +
+            "this component. This is a shortcoming of this specific component and must be changed here, if necessary.")
+    private String dbcConfigPath;
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = "An array of qualified " +
+            "UIMA type names. Annotations of those types are segmented away from the serialized document annotation " +
+            "graph in XMI format for storage in separate tables. When the 'StoreRecursively' parameter is set to true, " +
+            "annotations are stored together with referenced annotations, if those are not specified in the list " +
+            "of additional tables themselves.")
+    private String[] annotations;
 
     /*
      * (non-Javadoc)
@@ -182,7 +207,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         super.initialize(aContext);
         checkParameters(aContext);
 
-        String dbcConfigPath = (String) aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG);
+        dbcConfigPath = (String) aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG);
         updateMode = aContext.getConfigParameterValue(PARAM_UPDATE_MODE) == null ? false
                 : (Boolean) aContext.getConfigParameterValue(PARAM_UPDATE_MODE);
         deleteObsolete = aContext.getConfigParameterValue(PARAM_DELETE_OBSOLETE_ANNOTATIONS) == null ? false
@@ -218,7 +243,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             annotationsToStore.add(docTableName);
             recursively = false;
         } else {
-            String[] annotations = (String[]) aContext.getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
+            annotations = (String[]) aContext.getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
             if (null != annotations)
                 annotationsToStore = new ArrayList<String>(Arrays.asList(annotations));
             else
@@ -460,8 +485,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             }
             // as the very last thing, add this document to the processed list
             annotationInserter.addProcessedDocumentId(docId);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | XMISplitterException e) {
             throw new AnalysisEngineProcessException(e);
         }
     }
