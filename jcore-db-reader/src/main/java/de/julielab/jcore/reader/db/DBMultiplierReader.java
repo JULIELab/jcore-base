@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @ResourceMetaData(name="JCoRe Database Multiplier Reader", description = "A collection reader that receives the IDs of documents from a database table. " +
-        "Additional tables may be specified which will, together with the IDs, be sent to a CAS multiplier extending" +
+        "Additional tables may be specified which will, together with the IDs, be sent to a CAS multiplier extending " +
         "the DBMultiplierReader. The multiplier will read documents and the joined additional tables according to the " +
         "list of document IDs sent by this reader. The component leverages the corpus storage system (CoStoSys) for this " +
         "purpose and is part of the Jena Document Information System, JeDIS."

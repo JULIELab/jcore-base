@@ -17,7 +17,7 @@ public class TestDBSetupHelper {
 
     /**
      * Imports the file "src/test/resources/pubmedsample18n0001.xml.gz" into the empty database, and creates a subset
-     * named "testsubset"
+     * named "testsubset" of size 20.
      * @param postgres
      * @throws SQLException
      */

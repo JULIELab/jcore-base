@@ -21,7 +21,7 @@ import static de.julielab.jcore.reader.db.SubsetReaderConstants.*;
 
 public abstract class DBSubsetReader extends DBReaderBase {
 
-    public static final String DESC_ADDITIONAL_TABLES = "An array of table " +
+    static final String DESC_ADDITIONAL_TABLES = "An array of table " +
             "names. By default, the table names will be resolved against the active data postgres schema " +
             "configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains " +
             "a dot, the active data schema will be ignored. When reading documents from the document data table, " +
@@ -30,7 +30,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
             "parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned " +
             "together with the main document data. This mechanism is most prominently used to retrieve annotation table " +
             "data together with the original document text in XMI format for the JeDIS system.";
-    public static final String DESC_ADDITIONAL_TABLE_SCHEMAS = "The table schemas " +
+    static final String DESC_ADDITIONAL_TABLE_SCHEMAS = "The table schemas " +
             "that corresponds to the additional tables given with the 'AdditionalTables' parameter. If only one schema " +
             "name is given, that schema must apply to all additional tables.";
     private final static Logger log = LoggerFactory.getLogger(DBSubsetReader.class);

@@ -7,6 +7,7 @@ import de.julielab.xmlData.dataBase.util.UnobtainableConnectionException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -35,6 +36,7 @@ import java.util.List;
         "Extending classes must implement the next() method to actually read documents from the database and " +
         "populate CASes with them. This component is a part of the Jena Document Information System, JeDIS.",
         vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
+@OperationalProperties(outputsNewCases = true)
 public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
 
     protected DataBaseConnector dbc;
