@@ -87,7 +87,6 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
         "graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This component is part " +
         "of the Jena Document Information System, JeDIS.")
 public class XMIDBWriter extends JCasAnnotator_ImplBase {
-
     public static final String PARAM_COSTOSYS_CONFIG = "CostosysConfigFile";
     public static final String PARAM_UPDATE_MODE = "UpdateMode";
     public static final String PARAM_DO_GZIP = "PerformGZIP";
@@ -104,7 +103,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_COMPONENT_DB_NAME = "ComponentDbName";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
-    private static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
+    public static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "Is set to false, the attempt to write new data " +
             "into an XMI document or annotation table that already has data for the respective document, will result " +
@@ -136,7 +135,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private Boolean storeAll;
     @ConfigurationParameter(name = PARAM_TABLE_DOCUMENT, description = "String parameter indicating the name of the " +
             "table where the XMI data will be stored (if StoreEntireXmiData is true) or " +
-            "where the base document will be stored (if StoreBaseDocument is true). ")
+            "where the base document will be stored (if StoreBaseDocument is true). If the name is schema qualified, " +
+            "i.e. contains a dot, the table name will be used as provided. If no schema is qualified, the active " +
+            "data postgres schema as configured in the CoStoSys configuration will be used to find or create the " +
+            "table.")
     private String docTableName;
     private List<String> annotationsToStore;
     @ConfigurationParameter(name = PARAM_STORE_RECURSIVELY, description = "Only in effect when storing annotations " +
@@ -153,7 +155,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private Boolean storeBaseDocument;
     @ConfigurationParameter(name = PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, mandatory = false, description = "Array " +
             "parameter that takes Java annotation type names. These names will be stored with the base document, " +
-            "if the 'StoreBaseDocument' parameter is set to true.")
+            "if the 'StoreBaseDocument' parameter is set to true. The table names are directly derived from the " +
+            "annotation type names by converting dots to underlines and adding a postgres schema qualification " +
+            "according to the active data postgres schema defined in the CoStoSys configuration. If an annotation " +
+            "table should be stored or looked up in another postgres schema, prepend the type name with the " +
+            "string 'q:' and the schema name, e.g. 'q:myschema.de.julielab.jcore.types.Token.")
     private Set<String> baseDocumentAnnotationTypes;
 
     private XmiSplitter splitter;
@@ -258,7 +264,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         } catch (TableSchemaMismatchException e) {
             throw new ResourceInitializationException(e);
         }
-        effectiveDocTableName = annotationTableManager.convertAnnotationTypeToTableName(docTableName, storeAll);
+        effectiveDocTableName = annotationTableManager.getEffectiveDocumentTableName(docTableName);
         // does currently only compare the primary keys...
         checkTableDefinition(effectiveDocTableName, schemaDocument);
         // Important: The document table must come first because the
