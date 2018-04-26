@@ -1,6 +1,9 @@
 package de.julielab.jcore.reader.db;
 
+import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
+import de.julielab.jcore.types.ext.DBProcessingMetaData;
+import de.julielab.xmlData.config.FieldConfig;
 import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.UnobtainableConnectionException;
@@ -18,8 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLTransientConnectionException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -52,6 +57,7 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
     protected String dataTable;
     // This is set anew with every call to process()
     private boolean initialized;
+    private StringArray pkArray;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -72,14 +78,13 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
 
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-        // TODO set dbprocessingdata, especially the subset table
         RowBatch rowbatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
         tables = rowbatch.getTables().toStringArray();
         schemaNames = rowbatch.getTableSchemas().toStringArray();
         tableName = rowbatch.getTableName();
         if (!initialized) {
             dbc = getDataBaseConnector(rowbatch.getCostosysConfiguration());
-            String referencedTable = null;
+            String referencedTable;
             try {
                 referencedTable = dbc.getReferencedTable(rowbatch.getTables(0));
             } catch (UnobtainableConnectionException e) {
@@ -103,6 +108,10 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
         documentDataIterator = dbc.retrieveColumnsByTableSchema(documentIdsForQuery,
                 tables,
                 schemaNames);
+
+        DBProcessingMetaData processingMetaData = new DBProcessingMetaData(aJCas);
+        if (!readDataTable)
+            processingMetaData.setSubsetTable(tableName);
     }
 
     public String[] getAdditionalTableNames() {

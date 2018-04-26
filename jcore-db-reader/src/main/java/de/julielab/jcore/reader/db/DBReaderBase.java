@@ -22,7 +22,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
      */
     private static final String DEFAULT_BATCH_SIZE = "50";
 
-    @ConfigurationParameter(name = PARAM_BATCH_SIZE, defaultValue = DEFAULT_BATCH_SIZE)
+    @ConfigurationParameter(name = PARAM_BATCH_SIZE, defaultValue = DEFAULT_BATCH_SIZE, mandatory = false)
     protected int batchSize;
 
     @ConfigurationParameter(name = PARAM_DB_DRIVER, mandatory = false, description = "Currently unused because the " +
@@ -66,7 +66,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
             "is always the schema of the data table that is either queried directly for documents or, if 'tableName' " +
             "points to a subset table, indirectly through the subset table. Make also sure that the active " +
             "database connection in the configuration points to the correct database.")
-    String costosysConfig;
+    protected String costosysConfig;
 
 
     @Override
@@ -84,7 +84,9 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
         checkParameters();
 
         try {
-            dbc = new DataBaseConnector(costosysConfig);
+            // It might happen that a subclass has already initialized the DBC
+            if (dbc == null)
+                dbc = new DataBaseConnector(costosysConfig);
             dbc.setQueryBatchSize(batchSize);
             checkTableExists();
             logConfigurationState();

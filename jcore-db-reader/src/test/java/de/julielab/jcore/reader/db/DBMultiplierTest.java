@@ -57,7 +57,8 @@ public class DBMultiplierTest {
         AnalysisEngine multiplier = AnalysisEngineFactory.createEngine(TestMultiplier.class,
                 TableReaderConstants.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig);
         assertTrue(reader.hasNext());
-        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types");
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types",
+                "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
         int numReadDocs = 0;
         while (reader.hasNext()) {
             reader.getNext(jCas.getCas());
@@ -89,7 +90,8 @@ public class DBMultiplierTest {
         AnalysisEngine multiplier = AnalysisEngineFactory.createEngine(TestMultiplier.class,
                 TableReaderConstants.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig);
         assertTrue(reader.hasNext());
-        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types");
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types",
+                "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
         int numReadDocs = 0;
         while (reader.hasNext()) {
             reader.getNext(jCas.getCas());

@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -48,6 +49,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static de.julielab.jcore.reader.db.SubsetReaderConstants.PARAM_DATA_TIMESTAMP;
 
 /**
  * Base for UIMA collection readers using a (PostgreSQL) database to retrieve
@@ -98,7 +101,15 @@ public abstract class DBReader extends DBSubsetReader {
 
 
     private final static Logger log = LoggerFactory.getLogger(DBReader.class);
-
+    @ConfigurationParameter(name = PARAM_DATA_TIMESTAMP, mandatory = false, description = "PostgreSQL timestamp " +
+            "expression that is evaluated against the data table. The data table schema, which must be the " +
+            "active data table schema in the CoStoSys configuration as always, must specify a single timestamp " +
+            "field for this parameter to work. Only data rows with a timestamp value larger than the given " +
+            "timestamp expression will be processed. Note that when reading from a subset table, there may be " +
+            "subset rows indicated to be in process which are finally not read from the data table. This is " +
+            "an implementational shortcoming and might be addressed if respective feature requests are given " +
+            "through the JULIE Lab GitHub page or JCoRe issues.")
+    protected String dataTimestamp;
 
     // Internal state fields
     private RetrievingThread retriever;
@@ -108,8 +119,9 @@ public abstract class DBReader extends DBSubsetReader {
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
-
+        dataTimestamp = (String) getConfigParameterValue(PARAM_DATA_TIMESTAMP);
         if (readDataTable && hasNext) {
+            log.debug("Querying data table {} with schema {} and where condition {}", tableName, dbc.getActiveTableSchema(), whereCondition);
             xmlBytes = dbc.queryDataTable(tableName, whereCondition);
         }
     }
@@ -305,12 +317,16 @@ protected class RetrievingThread extends Thread {
             log.debug("Fetching {} documents from the database.", ids.size());
             if (dataTimestamp == null) {
                 if (!joinTables) {
+                    log.trace("Fetching data from the data table {} without additional tables.", dataTable);
                     documents = dbc.retrieveColumnsByTableSchema(ids, dataTable);
                 } else {
+                    log.trace("Fetching data by joining tables {}. The used table schemas are {}.", tables, schemas);
                     documents = dbc.retrieveColumnsByTableSchema(ids, tables, schemas);
                 }
-            } else
+            } else {
+                log.trace("Fetching data from data table {} that is newer than timestamp {}", dataTable, dataTimestamp);
                 documents = dbc.queryWithTime(ids, dataTable, dataTimestamp);
+            }
         } else {
             log.debug("No unfetched documents left.");
             // Return empty iterator to avoid NPE.

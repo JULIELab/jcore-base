@@ -5,6 +5,7 @@ import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -16,6 +17,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.julielab.jcore.reader.db.SubsetReaderConstants.*;
 
@@ -39,15 +41,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
             "the initialization of the reader to be ready for processing of the whole subset. Do not use when multiple " +
             "readers read the same subset table.")
     protected Boolean resetTable;
-    @ConfigurationParameter(name = PARAM_DATA_TIMESTAMP, mandatory = false, description = "PostgreSQL timestamp " +
-            "expression that is evaluated against the data table. The data table schema, which must be the " +
-            "active data table schema in the CoStoSys configuration as always, must specify a single timestamp " +
-            "field for this parameter to work. Only data rows with a timestamp value larger than the given " +
-            "timestamp expression will be processed. Note that when reading from a subset table, there may be " +
-            "subset rows indicated to be in process which are finally not read from the data table. This is " +
-            "an implementational shortcoming and might be addressed if respective feature requests are given " +
-            "through the JULIE Lab GitHub page or JCoRe issues.")
-    protected String dataTimestamp;
+
     @ConfigurationParameter(name = PARAM_FETCH_IDS_PROACTIVELY, defaultValue = "true", description = "If set to " +
             "true and when reading from a subset table, batches of document IDs will be retrieved in a background " +
             "thread while the previous batch is already in process. This is meant to minimize waiting time " +
@@ -71,11 +65,11 @@ public abstract class DBSubsetReader extends DBReaderBase {
         hostName = getHostName();
         pid = getPID();
 
-        dataTimestamp = (String) getConfigParameterValue(PARAM_DATA_TIMESTAMP);
+
         resetTable = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_RESET_TABLE)).orElse(false);
         this.fetchIdsProactively = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY)).orElse(true);
         additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
-        additionalTableSchemas = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMAS);
+        additionalTableSchemas = (String[]) context.getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMAS);
         checkAdditionalTableParameters(additionalTableNames, additionalTableSchemas);
         determineDataTable();
         try {
@@ -105,6 +99,8 @@ public abstract class DBSubsetReader extends DBReaderBase {
                 log.debug("Checking if the subset table \"{}\" has unfetched rows. Result: {}", tableName, hasNext);
 
                 if (additionalTableNames != null && additionalTableNames.length > 0) {
+                    log.debug("Additional tables were given: {}", additionalTableNames);
+                    log.debug("Preparing for reading from multiple tables.");
                     joinTables = true;
 
                     dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchemas);
@@ -114,9 +110,13 @@ public abstract class DBSubsetReader extends DBReaderBase {
 
                     // Assemble the data table schema together with all additional table schemas in one array.
                     schemas = new String[numAdditionalTables + 1];
+                    if (additionalTableSchemas.length == 1)
+                        Arrays.fill(schemas, additionalTableSchemas[0]);
+                    else
+                        System.arraycopy(additionalTableSchemas, 0, schemas, 1, additionalTableSchemas.length);
                     schemas[0] = dbc.getActiveTableSchema();
-                    System.arraycopy(additionalTableSchemas, 0, schemas, 1, additionalTableSchemas.length);
                 } else {
+                    log.debug("No additional tables were given, reading data solely from table {}", dataTable);
                     tables = new String[]{dataTable};
                     schemas = new String[1];
                     schemas[0] = dbc.getActiveTableSchema();
@@ -134,6 +134,8 @@ public abstract class DBSubsetReader extends DBReaderBase {
         if (log.isInfoEnabled())
             log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
         log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);
+        log.info("List of all tables to read: {}", tables);
+        log.info("List of the table schemas: {}", schemas);
     }
 
 
@@ -145,14 +147,8 @@ public abstract class DBSubsetReader extends DBReaderBase {
     @SuppressWarnings("unchecked")
     protected List<Map<String, Object>> getAllRetrievedColumns() {
         List<Map<String, Object>> fields = new ArrayList<Map<String, Object>>();
-        List<Object> numColumnsAndFields = dbc.getNumColumnsAndFields(joinTables, tables, schemas);
-        for (int i = 1; i < numColumnsAndFields.size(); i++) {
-            List<Map<String, Object>> retrievedSchemaFields = (List<Map<String, Object>>) numColumnsAndFields.get(i);
-            for (Map<String, Object> field : retrievedSchemaFields)
-                fields.add(field);
-        }
-        return fields;
-
+       Pair<Integer, List<Map<String, String>>> numColumnsAndFields = dbc.getNumColumnsAndFields(joinTables, schemas);
+        return numColumnsAndFields.getRight().stream().map(HashMap<String, Object>::new).collect(Collectors.toList());
     }
 
     private String getPID() {

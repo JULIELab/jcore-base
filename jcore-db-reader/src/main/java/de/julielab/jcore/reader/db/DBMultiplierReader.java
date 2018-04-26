@@ -6,6 +6,7 @@ import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
@@ -21,15 +22,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@ResourceMetaData(name="JCoRe Database Multiplier Reader", description = "A collection reader that receives the IDs of documents from a database table. " +
+import static de.julielab.jcore.reader.db.SubsetReaderConstants.*;
+import static de.julielab.jcore.reader.db.SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS;
+
+@ResourceMetaData(name = "JCoRe Database Multiplier Reader", description = "A collection reader that receives the IDs of documents from a database table. " +
         "Additional tables may be specified which will, together with the IDs, be sent to a CAS multiplier extending " +
         "the DBMultiplierReader. The multiplier will read documents and the joined additional tables according to the " +
         "list of document IDs sent by this reader. The component leverages the corpus storage system (CoStoSys) for this " +
         "purpose and is part of the Jena Document Information System, JeDIS."
         , vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
 public class DBMultiplierReader extends DBSubsetReader {
-    private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
+    public static final String PARAM_RESET_TABLE = SubsetReaderConstants.PARAM_RESET_TABLE;
+    public final static String PARAM_TABLE = TableReaderConstants.PARAM_TABLE;
+    public final static String PARAM_COSTOSYS_CONFIG_NAME = TableReaderConstants.PARAM_COSTOSYS_CONFIG_NAME;
+    public final static String PARAM_DATA_TIMESTAMP = SubsetReaderConstants.PARAM_DATA_TIMESTAMP;
+    public final static String PARAM_ADDITIONAL_TABLES = SubsetReaderConstants.PARAM_ADDITIONAL_TABLES;
+    public final static String PARAM_ADDITIONAL_TABLE_SCHEMAS = SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS;
+    public final static String PARAM_FETCH_IDS_PROACTIVELY = SubsetReaderConstants.PARAM_FETCH_IDS_PROACTIVELY;
 
+    private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
     // Internal state fields
     private DBMultiplierReader.RetrievingThread retriever;
     private DBCIterator<Object[]> dataTableDocumentIds;
@@ -97,6 +108,7 @@ public class DBMultiplierReader extends DBSubsetReader {
 
     /**
      * Returns the next batch of document IDs from the database table given by the 'Table' parameter.
+     *
      * @return A list of document IDs from the read table.
      */
     public List<Object[]> getNextDocumentIdBatch() {
@@ -119,8 +131,8 @@ public class DBMultiplierReader extends DBSubsetReader {
         // Must be set to true again if the iterator has more elements.
         hasNext = false;
         log.trace("Filling document ID list with the next batch of documents.");
-        while(dataTableDocumentIds.hasNext() && next.size() < batchSize)
-          next.add(dataTableDocumentIds.next());
+        while (dataTableDocumentIds.hasNext() && next.size() < batchSize)
+            next.add(dataTableDocumentIds.next());
         // totalDocumentCount could be set to the Limit parameter. Thus we
         // should stop when we reach the limit. and not set hasNext back to
         // true.
@@ -153,6 +165,7 @@ public class DBMultiplierReader extends DBSubsetReader {
     }
 
     public void close() {
+        if (dbc != null)
         dbc.close();
         dbc = null;
     }
