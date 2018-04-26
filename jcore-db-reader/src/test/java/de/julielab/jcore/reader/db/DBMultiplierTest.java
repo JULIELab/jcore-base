@@ -1,5 +1,6 @@
 package de.julielab.jcore.reader.db;
 
+import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.jcore.utility.JCoReTools;
@@ -42,14 +43,14 @@ public class DBMultiplierTest {
 
     @BeforeClass
     public static void setup() throws SQLException, IOException {
-        TestDBSetupHelper.setupDatabase(postgres);
+        DBTestUtils.setupDatabase("src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 20, postgres);
     }
 
     @Test
     public void testDBMultiplierReader() throws UIMAException, IOException, ConfigurationException {
 // This test does not really need 2 connections, but the other test in the class needs it. Since the connection pools
 // are cached in a static map, the pool created here will also be used in the other test even if it has its own configuration.
-        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", 2, postgres);
+        String costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 2, postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBMultiplierReader.class,
                 PARAM_BATCH_SIZE, 5,
                 PARAM_TABLE, "testsubset",
@@ -82,7 +83,7 @@ public class DBMultiplierTest {
     @Test
     public void testDBMultiplierFromDataTable() throws UIMAException, IOException, ConfigurationException {
 
-        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", 2, postgres);
+        String costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 2, postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBMultiplierReader.class,
                 PARAM_BATCH_SIZE, 5,
                 PARAM_TABLE, Constants.DEFAULT_DATA_TABLE_NAME,

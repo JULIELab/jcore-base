@@ -1,5 +1,6 @@
 package de.julielab.jcore.reader.db;
 
+import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xmlData.Constants;
@@ -34,12 +35,12 @@ public class DBReaderTest {
 
     @BeforeClass
     public static void setup() throws SQLException {
-       TestDBSetupHelper.setupDatabase(postgres);
+       DBTestUtils.setupDatabase("src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 20, postgres);
     }
 
     @Test
     public void testDBReader() throws UIMAException, IOException, ConfigurationException {
-        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", 1, postgres);
+        String costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBReaderTestImpl.class,
                 PARAM_BATCH_SIZE, 5,
                 PARAM_TABLE, "testsubset",
@@ -59,7 +60,7 @@ public class DBReaderTest {
 
     @Test
     public void testReadDataTable() throws ConfigurationException, UIMAException, IOException {
-        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", 1, postgres);
+        String costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
         // Here, we do not specify the subset table but the data table directly
         CollectionReader reader = CollectionReaderFactory.createReader(DBReaderTestImpl.class,
                 PARAM_BATCH_SIZE, 5,

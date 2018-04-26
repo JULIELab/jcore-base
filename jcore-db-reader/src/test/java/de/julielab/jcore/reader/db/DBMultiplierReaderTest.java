@@ -1,5 +1,6 @@
 package de.julielab.jcore.reader.db;
 
+import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.xmlData.Constants;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -25,14 +26,14 @@ public class DBMultiplierReaderTest {
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
 
     @BeforeClass
-    public static void setup() throws SQLException, IOException {
-        TestDBSetupHelper.setupDatabase(postgres);
+    public static void setup() throws SQLException {
+        DBTestUtils.setupDatabase("src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 20, postgres);
     }
 
     @Test
     public void testDBMultiplierReader() throws UIMAException, IOException, ConfigurationException {
 
-        String costosysConfig = TestDBSetupHelper.createTestCostosysConfig("medline_2017", 1, postgres);
+        String costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBMultiplierReader.class,
                 PARAM_BATCH_SIZE, 5,
                 PARAM_TABLE, "testsubset",
