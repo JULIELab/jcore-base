@@ -48,6 +48,15 @@
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
             <artifactId>jcore-pubmed-db-reader</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>

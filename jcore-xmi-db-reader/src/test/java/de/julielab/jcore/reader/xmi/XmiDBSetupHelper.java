@@ -1,7 +1,10 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.jcore.reader.db.DBMultiplierReader;
+import de.julielab.jcore.reader.xml.XMLDBMultiplier;
 import de.julielab.xmlData.Constants;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
+import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -22,7 +25,7 @@ public class XmiDBSetupHelper {
      * @param postgres
      * @throws SQLException
      */
-    public static void setupDatabase(PostgreSQLContainer postgres) throws SQLException, ResourceInitializationException, IOException, InvalidXMLException {
+    public static void setupDatabase(PostgreSQLContainer postgres) throws SQLException, UIMAException, IOException {
         writeHiddenConfig(postgres);
         DataBaseConnector dbc = new DataBaseConnector(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
         dbc.setActiveTableSchema("medline_2017");
@@ -31,7 +34,8 @@ public class XmiDBSetupHelper {
         dbc.createSubsetTable("testsubset", Constants.DEFAULT_DATA_TABLE_NAME, "Test subset");
         dbc.initRandomSubset(20, "testsubset", Constants.DEFAULT_DATA_TABLE_NAME);
 
-      //  CollectionReaderFactory.createReader("de.julielab.jcore.reader.xml.desc.jcore-pubmed-multiplier-reader.xml", XMLMul)
+        // TODO not finished!
+        CollectionReader pubmedXmlReader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.xml.desc.jcore-pubmed-multiplier-reader.xml", DBMultiplierReader.PARAM_TABLE, "testsubset", DBMultiplierReader.PARAM_COSTOSYS_CONFIG_NAME);
         AnalysisEngine jsbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae-biomedical-english");
         AnalysisEngine jtbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jtbd.desc.jcore-jtbd-ae-biomedical-english");
 

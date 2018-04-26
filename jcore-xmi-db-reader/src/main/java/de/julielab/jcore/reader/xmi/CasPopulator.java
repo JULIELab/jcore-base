@@ -109,7 +109,7 @@ public class CasPopulator {
                     throw new CollectionException(new IllegalStateException(
                             "The number of retrieved fields does not match the expected number (expected: "
                                     + (numAdditionalTables + 4) + ", actual: " + data.length + "). Make sure"
-                                    + " to set the field \"pmid\" in the annotation schema to false, since this"
+                                    + " to set the primary key fields in the annotation schema to false, since this"
                                     + " should be retrieved only once from the document table."));
                 }
                 // Construct the input for the XmiBuilder.

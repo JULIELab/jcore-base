@@ -15,6 +15,6 @@ public class XmiDBReaderTest {
 
     @BeforeClass
     public static void setup() throws SQLException, ResourceInitializationException, IOException, InvalidXMLException {
-        XmiDBSetupHelper.setupDatabase(postgres);
+        //XmiDBSetupHelper.setupDatabase(postgres);
     }
 }
