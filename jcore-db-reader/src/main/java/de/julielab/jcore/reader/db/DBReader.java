@@ -123,6 +123,8 @@ public abstract class DBReader extends DBSubsetReader {
         return hasNext;
     }
 
+
+
     /**
      * Returns the next byte[][] containing a byte[] for the pmid at [0] and a
      * byte[] for the XML at [1] or null if there are no unprocessed documents left.
@@ -193,39 +195,11 @@ public abstract class DBReader extends DBSubsetReader {
         return next;
     }
 
-    protected int unprocessedDocumentCount() {
-        int unprocessed = -1;
-        if (readDataTable) {
-            unprocessed = totalDocumentCount - processedDocuments;
-        } else
-            unprocessed = dbc.countUnprocessed(tableName);
-        return unprocessed;
-    }
 
-//    protected void throwCollectionException(CollectionException e) throws CollectionException {
-//        throw e;
-//    }
 
     public Progress[] getProgress() {
         return new Progress[]{new ProgressImpl(processedDocuments, totalDocumentCount, Progress.ENTITIES, true)};
     }
-
-//    public String getPID() {
-//        String id = ManagementFactory.getRuntimeMXBean().getName();
-//        return id.substring(0, id.indexOf('@'));
-//    }
-//
-//    public String getHostName() {
-//        InetAddress address;
-//        String hostName;
-//        try {
-//            address = InetAddress.getLocalHost();
-//            hostName = address.getHostName();
-//        } catch (UnknownHostException e) {
-//            throw new IllegalStateException(e);
-//        }
-//        return hostName;
-//    }
 
     public void close() {
         if (xmlBytes != null)
@@ -363,6 +337,8 @@ protected class RetrievingThread extends Thread {
         }
     }
 
+
+
     public DBCIterator<byte[][]> getDocuments() {
         // If we don't use this as a background thread, we have to get the
         // IDs now in a classic sequential manner.
@@ -382,6 +358,7 @@ protected class RetrievingThread extends Thread {
         }
         return null;
     }
+
 }
 
 }

@@ -49,7 +49,6 @@
 		<module>jcore-biosem-ae</module>
 		<module>jcore-conll-consumer</module>
 		<module>jcore-coordination-baseline-ae</module>
-		<module>jcore-cpe-db-runner</module>
 		<module>jcore-db-reader</module>
 		<module>jcore-dta-reader</module>
 		<module>jcore-ec-code-ae</module>

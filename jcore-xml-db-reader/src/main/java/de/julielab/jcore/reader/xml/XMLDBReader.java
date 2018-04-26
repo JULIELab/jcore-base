@@ -36,13 +36,13 @@ import java.io.IOException;
  *
  * @author faessler
  */
-@ResourceMetaData(name = "XML Database Reader", description = "A collection reader that employs the jcore-xml-mapper " +
+@ResourceMetaData(name = "JCoRe XML Database Reader", description = "A collection reader that employs the jcore-xml-mapper " +
         "to parse XML documents from a PostgreSQL database into CAS instances. For this purpose, the reader requires " +
         "a mapping file for the jcore-xml-mapper that defines how to map the document XML structure onto CAS types. " +
         "Which exact data is read from the database table is determines by the table schema that is configured as " +
         "active in the corpus storage system (CoStoSys) configuration file. If this table schema defines multiple " +
         "columns to be retrieved, the 'RowMapping' parameter must be set to specify how the extra columns are mapped " +
-        "into the CAS. The reader also supports the joining with more tables to load data distributed across" +
+        "into the CAS. The reader also supports the joining with more tables to load data distributed across " +
         "multiple data tables, which then also must be mapped via the 'RowMapping'. This mechanism and " +
         "this component are part of the Jena Document Information System, JeDIS."
         , vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
@@ -57,16 +57,27 @@ public class XMLDBReader extends DBReader {
     protected XMLMapper xmlMapper;
     protected int totalDocumentCount;
     protected int processedDocuments;
-    @ConfigurationParameter(name = PARAM_ROW_MAPPING)
+    public final static String DESC_ROW_MAPPING = "In case that the CoStoSys active table schema " +
+            "specified more than two columns to be retrieved, the other columns need a mapping into the CAS." +
+            "A mapping item has the following form: " +
+            "<column index>=<uima type>#<type feature>:<feature datatype>:defaultValue " +
+            "where the defaultValue is optional. Example: 2=de.julielab.jules.types.max_xmi_id#id:int:0 maps the content " +
+            "of the third (index 2, zero-based) retrieved column (may also belong to an additional table!) to feature \"id\" " +
+            "of the type \"d.j.j.t.max_xmi_id\" which is an int. In case there is no value returned from the database " +
+            "for a document, use a 0 as default.";
+    @ConfigurationParameter(name = PARAM_ROW_MAPPING,description = DESC_ROW_MAPPING,mandatory = false)
     protected String[] rowMappingArray;
-    @ConfigurationParameter(name = PARAM_MAPPING_FILE, mandatory = true)
+    public final static String DESC_MAPPING_FILE = "An XML mapping file following the specification " +
+            "required by the jcore-xml-mapper. The mapping file specifies how contents from an XML docuent are to be " +
+            "brought into the CAS.";
+    @ConfigurationParameter(name = PARAM_MAPPING_FILE, description = DESC_MAPPING_FILE)
     protected String mappingFileStr;
     private Row2CasMapper row2CasMapper;
     private CasPopulator casPopulator;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
-        super.initialize();
+        super.initialize(context);
         mappingFileStr = (String) getConfigParameterValue(PARAM_MAPPING_FILE);
         rowMappingArray = (String[]) getConfigParameterValue(PARAM_ROW_MAPPING);
         Initializer initializer = new Initializer(mappingFileStr, rowMappingArray, () -> getAllRetrievedColumns());
@@ -95,11 +106,6 @@ public class XMLDBReader extends DBReader {
         }
     }
 
-
-    @Override
-    public Progress[] getProgress() {
-        return new Progress[]{new ProgressImpl(processedDocuments, totalDocumentCount, Progress.ENTITIES, true)};
-    }
 
     @Override
     protected String getReaderComponentName() {

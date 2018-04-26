@@ -10,21 +10,23 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@ResourceMetaData(name="XML Database Multiplier", description = "This CAS multiplier receives information about " +
+@ResourceMetaData(name = "JCoRe XML Database Multiplier", description = "This CAS multiplier receives information about " +
         "documents to be read from an instance of the XML Database Multiplier reader from the jcore-db-reader project. " +
         "The multiplier employs the jcore-xml-mapper to map the document XML structure into CAS instances. It also " +
-        "supports additional tables sent be the DB Multiplier Reader that are then joined to the main table. This " +
-        "mechanism is used to load separatly data from additional database tables and populate the " +
+        "supports additional tables sent by the DB Multiplier Reader that are then joined to the main table. This " +
+        "mechanism is used to load separate data from additional database tables and populate the " +
         "CAS with them via the 'RowMapping' parameter. This component is part of the Jena Document Information System, " +
         "JeDIS."
         , vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
 public class XMLDBMultiplier extends DBMultiplier {
-
+private final static Logger log = LoggerFactory.getLogger(XMLDBMultiplier.class);
     public static final String PARAM_ROW_MAPPING = Initializer.PARAM_ROW_MAPPING;
     public static final String PARAM_MAPPING_FILE = Initializer.PARAM_MAPPING_FILE;
     /**
@@ -32,9 +34,9 @@ public class XMLDBMultiplier extends DBMultiplier {
      * via an XML configuration file.
      */
     protected XMLMapper xmlMapper;
-    @ConfigurationParameter(name = PARAM_ROW_MAPPING)
+    @ConfigurationParameter(name = PARAM_ROW_MAPPING, mandatory = false, description = XMLDBReader.DESC_ROW_MAPPING)
     protected String[] rowMappingArray;
-    @ConfigurationParameter(name = PARAM_MAPPING_FILE, mandatory = true)
+    @ConfigurationParameter(name = PARAM_MAPPING_FILE, description = XMLDBReader.DESC_MAPPING_FILE)
     protected String mappingFileStr;
     private Row2CasMapper row2CasMapper;
     private CasPopulator casPopulator;
@@ -44,14 +46,13 @@ public class XMLDBMultiplier extends DBMultiplier {
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         super.initialize(aContext);
-        mappingFileStr = (String)aContext. getConfigParameterValue(PARAM_MAPPING_FILE);
-        rowMappingArray = (String[])aContext. getConfigParameterValue(PARAM_ROW_MAPPING);
+        mappingFileStr = (String) aContext.getConfigParameterValue(PARAM_MAPPING_FILE);
+        rowMappingArray = (String[]) aContext.getConfigParameterValue(PARAM_ROW_MAPPING);
 
         // We don't know yet which tables to read. Thus, we leave the row mapping out.
         // We will now once the DBMultiplier#process(JCas) will have been run.
         Initializer initializer = new Initializer(mappingFileStr, null, null);
         xmlMapper = initializer.getXmlMapper();
-        casPopulator = new CasPopulator(dbc, xmlMapper, row2CasMapper, rowMappingArray);
         initialized = false;
     }
 
@@ -59,17 +60,25 @@ public class XMLDBMultiplier extends DBMultiplier {
     @Override
     public AbstractCas next() throws AnalysisEngineProcessException {
         JCas jCas = getEmptyJCas();
-        if (documentDataIterator.hasNext()) {
-            if (!initialized) {
-                try {
-                    row2CasMapper = new Row2CasMapper(rowMappingArray, () -> getAllRetrievedColumns());
-                } catch (ResourceInitializationException e) {
-                    throw new AnalysisEngineProcessException(e);
+        try {
+            if (documentDataIterator.hasNext()) {
+                if (!initialized) {
+                    try {
+                        row2CasMapper = new Row2CasMapper(rowMappingArray, () -> getAllRetrievedColumns());
+                    } catch (ResourceInitializationException e) {
+                        throw new AnalysisEngineProcessException(e);
+                    }
+                    // The DBC is initialized in the super class in the process() method. Thus, at this point
+                    // the DBC should be set.
+                    casPopulator = new CasPopulator(dbc, xmlMapper, row2CasMapper, rowMappingArray);
+                    initialized = true;
                 }
-                initialized = true;
+                byte[][] documentData = documentDataIterator.next();
+                populateCas(jCas, documentData);
             }
-            byte[][] documentData = documentDataIterator.next();
-            populateCas(jCas, documentData);
+        } catch (Exception e) {
+            log.error("Exception occurred: ", e);
+            throw e;
         }
         return jCas;
     }
@@ -77,7 +86,7 @@ public class XMLDBMultiplier extends DBMultiplier {
     private void populateCas(JCas jCas, byte[][] documentData) throws AnalysisEngineProcessException {
         try {
             casPopulator.populateCas(jCas, documentData,
-                    (docData, jcas) -> DBReader.setDBProcessingMetaData(dbc, readDataTable, tables[0], docData, jcas));
+                    (docData, jcas) -> DBReader.setDBProcessingMetaData(dbc, readDataTable, tableName, docData, jcas));
         } catch (CasPopulationException e) {
             throw new AnalysisEngineProcessException(e);
         }

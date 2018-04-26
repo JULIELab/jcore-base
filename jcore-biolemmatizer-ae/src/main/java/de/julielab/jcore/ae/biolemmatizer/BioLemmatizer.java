@@ -1,4 +1,3 @@
-
 package de.julielab.jcore.ae.biolemmatizer;
 
 import java.util.Collection;
@@ -18,45 +17,60 @@ import de.julielab.jcore.types.POSTag;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.Lemma;
 import edu.ucdenver.ccp.nlp.biolemmatizer.LemmataEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BioLemmatizer extends JCasAnnotator_ImplBase {
-	
-	public static edu.ucdenver.ccp.nlp.biolemmatizer.BioLemmatizer bioLemm;
-	
-//	private final static Logger log = LoggerFactory.getLogger(BioLemmatizer.class);
-	
-	@Override
-	public void initialize(final UimaContext aContext) throws ResourceInitializationException {
-		bioLemm = new edu.ucdenver.ccp.nlp.biolemmatizer.BioLemmatizer();
-	}
+    private final static Logger log = LoggerFactory.getLogger(BioLemmatizer.class);
+    public static edu.ucdenver.ccp.nlp.biolemmatizer.BioLemmatizer bioLemm;
 
-	@Override
-	public void process(final JCas aJCas) throws AnalysisEngineProcessException {
-		try {
-			AnnotationIndex<Annotation> jcoreTokenIndex = aJCas.getAnnotationIndex(Token.type);
-			FSIterator<Annotation> tokenIterator = jcoreTokenIndex.iterator();
-			while (tokenIterator.hasNext()) {
-				Token token = (Token) tokenIterator.get();
-				String tokenString = token.getCoveredText();
-				LemmataEntry lemmaEntry;
-				if (token.getPosTag() != null) {
-					POSTag posTag = token.getPosTag(0);
-					String tag = posTag.getValue();
-					lemmaEntry = bioLemm.lemmatizeByLexiconAndRules(tokenString, tag);
-				} else {
-					lemmaEntry = bioLemm.lemmatizeByLexiconAndRules(tokenString, "");
-				}
-				Collection<LemmataEntry.Lemma> lemmaCollection = lemmaEntry.getLemmas();
-				LemmataEntry.Lemma lemma = lemmaCollection.iterator().next();
-				String lem = lemma.getLemma();
-				Lemma jcoreLemma = new Lemma(aJCas, token.getBegin(), token.getEnd());
-				jcoreLemma.setValue(lem);
-				token.setLemma(jcoreLemma);
-				tokenIterator.next();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	private final static Logger log = LoggerFactory.getLogger(BioLemmatizer.class);
+
+    @Override
+    public void initialize(final UimaContext aContext) throws ResourceInitializationException {
+        bioLemm = new edu.ucdenver.ccp.nlp.biolemmatizer.BioLemmatizer();
+    }
+
+    @Override
+    public void process(final JCas aJCas) throws AnalysisEngineProcessException {
+        String tokenString = null;
+        String tag = null;
+        try {
+            AnnotationIndex<Annotation> jcoreTokenIndex = aJCas.getAnnotationIndex(Token.type);
+            FSIterator<Annotation> tokenIterator = jcoreTokenIndex.iterator();
+            while (tokenIterator.hasNext()) {
+                Token token = (Token) tokenIterator.get();
+                tokenString = token.getCoveredText();
+                LemmataEntry lemmaEntry = null;
+                try {
+                    if (token.getPosTag() != null) {
+                        POSTag posTag = token.getPosTag(0);
+                        tag = posTag.getValue();
+                        lemmaEntry = bioLemm.lemmatizeByLexiconAndRules(tokenString, tag);
+                    } else {
+                        lemmaEntry = bioLemm.lemmatizeByLexiconAndRules(tokenString, "");
+                    }
+                } catch (java.lang.IllegalStateException | java.lang.IndexOutOfBoundsException e) {
+                    // These two exceptions happen all the time due to internal stuff of the lemmatizer; log and ignore
+                    log.debug("BioLemmatizer-internal exception: ", e);
+                }
+                if (lemmaEntry != null) {
+                    Collection<LemmataEntry.Lemma> lemmaCollection = lemmaEntry.getLemmas();
+                    LemmataEntry.Lemma lemma = lemmaCollection.iterator().next();
+                    String lem = lemma.getLemma();
+                    Lemma jcoreLemma = new Lemma(aJCas, token.getBegin(), token.getEnd());
+                    jcoreLemma.setValue(lem);
+                    token.setLemma(jcoreLemma);
+                } else {
+                    Lemma jcoreLemma = new Lemma(aJCas, token.getBegin(), token.getEnd());
+                    jcoreLemma.setValue(tokenString);
+                    token.setLemma(jcoreLemma);
+                }
+                tokenIterator.next();
+            }
+        } catch (Exception e) {
+            log.error("Exception occurred:", e);
+        }
+    }
 
 }

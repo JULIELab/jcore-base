@@ -98,14 +98,14 @@ public class XMLReader extends CollectionReader_ImplBase {
 	 */
 	private XMLMapper xmlMapper;
 
-	@org.apache.uima.fit.descriptor.ConfigurationParameter(name = PARAM_MAPPING_FILE)
+	@ConfigurationParameter(name = PARAM_MAPPING_FILE)
 	private String mappingFileStr;
 
-	@org.apache.uima.fit.descriptor.ConfigurationParameter(name = PARAM_HEADER_TYPE, mandatory = false)
+	@ConfigurationParameter(name = PARAM_HEADER_TYPE, mandatory = false)
 	private String headerTypeName;
 	@ConfigurationParameter(name = PARAM_INPUT_DIR, mandatory = false)
 	private String directoryName;
-	@org.apache.uima.fit.descriptor.ConfigurationParameter(name = PARAM_INPUT_FILE, mandatory = false)
+	@ConfigurationParameter(name = PARAM_INPUT_FILE, mandatory = false)
 	private String isSingleFileProcessing;
 
 	/*

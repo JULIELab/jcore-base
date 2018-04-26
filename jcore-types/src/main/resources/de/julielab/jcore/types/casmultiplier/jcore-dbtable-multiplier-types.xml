@@ -46,11 +46,12 @@
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
                 <featureDescription>
-                    <name>subsetTable</name>
-                    <description>The subset table that was primarily specified to read from and that references the
-                        data table. The data table will be the first (and possibly only) entry of the tables feature.
+                    <name>tableName</name>
+                    <description>The table name that was primarily specified to read from in the multiplier reader.
+                        This may be a data table or a subset table. The data table will also be the first (and possibly only)
+                        entry of the tables feature.
                         This feature will be null if the multiplier reader did not read from a subset but directly
-                        from a data table..</description>
+                        from a data table.</description>
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
             </features>

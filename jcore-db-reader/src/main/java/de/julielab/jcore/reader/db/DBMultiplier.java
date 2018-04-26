@@ -72,6 +72,7 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
 
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
+        // TODO set dbprocessingdata, especially the subset table
         RowBatch rowbatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
         tables = rowbatch.getTables().toStringArray();
         schemaNames = rowbatch.getTableSchemas().toStringArray();

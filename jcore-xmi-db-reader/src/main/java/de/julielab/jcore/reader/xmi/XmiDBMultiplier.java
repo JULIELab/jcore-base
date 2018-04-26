@@ -10,6 +10,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 
+
+
+
     private Initializer initializer;
     private CasPopulator casPopulator;
 
