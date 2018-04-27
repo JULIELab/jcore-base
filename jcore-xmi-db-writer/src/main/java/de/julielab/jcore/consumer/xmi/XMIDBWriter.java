@@ -21,11 +21,8 @@ package de.julielab.jcore.consumer.xmi;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +40,6 @@ import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
 import de.julielab.xml.util.XMISplitterException;
-import de.julielab.xmlData.config.FieldConfig;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -56,9 +52,7 @@ import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -75,7 +69,7 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
 /**
  * @author faessler
  */
-@ResourceMetaData(name="JCoRe XMI Database Writer", vendor = "JULIE Lab Jena, Germany", description = "This component " +
+@ResourceMetaData(name = "JCoRe XMI Database Writer", vendor = "JULIE Lab Jena, Germany", description = "This component " +
         "is capable of storing the standard UIMA serialization of documents in one or even multiple database tables. " +
         "The UIMA serialization format is XMI, an XML format that expressed an annotation graph. This component " +
         "either stores the whole annotation graph in XMI format in a database row, together with the document ID. " +
@@ -102,8 +96,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_ATTRIBUTE_SIZE = "IncreasedAttributeSize";
 
     public static final String PARAM_COMPONENT_DB_NAME = "ComponentDbName";
-    private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     public static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
+    private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "Is set to false, the attempt to write new data " +
             "into an XMI document or annotation table that already has data for the respective document, will result " +
@@ -139,7 +133,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "i.e. contains a dot, the table name will be used as provided. If no schema is qualified, the active " +
             "data postgres schema as configured in the CoStoSys configuration will be used to find or create the " +
             "table.")
-    private String docTableName;
+    private String docTableParamValue;
     private List<String> annotationsToStore;
     @ConfigurationParameter(name = PARAM_STORE_RECURSIVELY, description = "Only in effect when storing annotations " +
             "separately from the base document. If set to true, annotations that are referenced by other annotations, " +
@@ -222,7 +216,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 : (Boolean) aContext.getConfigParameterValue(PARAM_DO_GZIP);
         storeAll = (Boolean) aContext.getConfigParameterValue(PARAM_STORE_ALL) == null ? false
                 : (Boolean) aContext.getConfigParameterValue(PARAM_STORE_ALL);
-        docTableName = (String) aContext.getConfigParameterValue(PARAM_TABLE_DOCUMENT);
+        docTableParamValue = (String) aContext.getConfigParameterValue(PARAM_TABLE_DOCUMENT);
         storeBaseDocument = aContext.getConfigParameterValue(PARAM_STORE_BASE_DOCUMENT) == null ? false
                 : (Boolean) aContext.getConfigParameterValue(PARAM_STORE_BASE_DOCUMENT);
         baseDocumentAnnotationTypes = Arrays.stream(
@@ -241,12 +235,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             throw new ResourceInitializationException(e1);
         }
 
-        // TODO derive the field configuration programmatically from the active data table schema
-        schemaDocument = doGzip ? "xmi_text_gzip" : "xmi_text";
-        schemaAnnotation = doGzip ? "xmi_annotation_gzip" : "xmi_annotation";
+        schemaDocument = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
+        schemaAnnotation = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
         if (storeAll) {
             annotationsToStore = new ArrayList<String>();
-            annotationsToStore.add(docTableName);
+            annotationsToStore.add(docTableParamValue);
             recursively = false;
         } else {
             annotations = (String[]) aContext.getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
@@ -259,25 +252,27 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
 
         try {
-            annotationTableManager = new AnnotationTableManager(dbc, docTableName, annotationsToStore, schemaDocument,
+            annotationTableManager = new AnnotationTableManager(dbc, docTableParamValue, annotationsToStore, schemaDocument,
                     schemaAnnotation, storeAll, storeBaseDocument);
         } catch (TableSchemaMismatchException e) {
             throw new ResourceInitializationException(e);
         }
-        effectiveDocTableName = annotationTableManager.getEffectiveDocumentTableName(docTableName);
+        effectiveDocTableName = annotationTableManager.getEffectiveDocumentTableName(docTableParamValue);
         // does currently only compare the primary keys...
-        checkTableDefinition(effectiveDocTableName, schemaDocument);
+        if (dbc.tableExists(effectiveDocTableName))
+            checkTableDefinition(effectiveDocTableName, schemaDocument);
         // Important: The document table must come first because the
         // annotation tables have foreign keys to the document table.
         // Thus, we can't add annotations for documents not in the
         // document table.
         if (storeBaseDocument) {
-            serializedCASes.put(effectiveDocTableName, new ArrayList<XmiData>());
+            serializedCASes.put(effectiveDocTableName, new ArrayList<>());
         }
         List<String> annotationsToStoreTableNames = new ArrayList<>();
         for (String annotation : annotationsToStore) {
             String annotationTableName = annotationTableManager.convertAnnotationTypeToTableName(annotation, storeAll);
-            checkTableDefinition(annotationTableName, schemaAnnotation);
+            if (dbc.tableExists(annotationTableName))
+                checkTableDefinition(annotationTableName, schemaAnnotation);
             serializedCASes.put(annotationTableName, new ArrayList<>());
             tablesWithoutData.put(annotationTableName, new ArrayList<>());
             annotationsToStoreTableNames.add(annotationTableName);
@@ -292,19 +287,18 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     tablesWithoutData.put(table, new ArrayList<>());
             }
         }
-
         if (storeAll) {
             if (null != attributeSize) {
-                splitter = new XmiSplitter(docTableName, attributeSize);
+                splitter = new XmiSplitter(docTableParamValue, attributeSize);
             } else {
-                splitter = new XmiSplitter(docTableName);
+                splitter = new XmiSplitter(docTableParamValue);
             }
         } else {
             if (null != attributeSize) {
-                splitter = new XmiSplitter(annotationsToStore, recursively, storeBaseDocument, docTableName,
+                splitter = new XmiSplitter(annotationsToStore, recursively, storeBaseDocument, docTableParamValue,
                         baseDocumentAnnotationTypes, attributeSize);
             } else {
-                splitter = new XmiSplitter(annotationsToStore, recursively, storeBaseDocument, docTableName,
+                splitter = new XmiSplitter(annotationsToStore, recursively, storeBaseDocument, docTableParamValue,
                         baseDocumentAnnotationTypes);
             }
         }
@@ -321,8 +315,16 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Annotation table schema (only required if annotations are stored separatly): {}", schemaAnnotation);
 
         metaTableManager = new MetaTableManager(dbc);
-        annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, docTableName, effectiveDocTableName, dbc,
+        annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, docTableParamValue, effectiveDocTableName, dbc,
                 schemaDocument, schemaAnnotation, storeAll, storeBaseDocument, updateMode, componentDbName);
+
+//  [de.julielab.jcore.types.Token, de.julielab.jcore.types.Sentence]
+//[public.de_julielab_jcore_types_Token, public.de_julielab_jcore_types_Sentence]
+//[_data.documents, public.de_julielab_jcore_types_Token, public.de_julielab_jcore_types_Sentence]
+//
+//        System.out.println(annotationsToStore);
+//        System.out.println(annotationsToStoreTableNames);
+//        System.out.println(serializedCASes.keySet());
     }
 
     private void checkTableDefinition(String annotationTableName, String schemaAnnotation) throws ResourceInitializationException {
@@ -368,7 +370,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
         DocumentId docId = getDocumentId(aJCas);
         if (docId == null) return;
-
         int nextXmiId = determineNextXmiId(aJCas, docId);
         Map<String, Integer> baseDocumentSofaIdMap = getOriginalSofaIdMappings(aJCas, docId);
         // and now delete the XMI meta data
@@ -421,9 +422,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             // adapt the map keys to table names (currently, the keys are the
             // Java type names)
             Map<String, ByteArrayOutputStream> convertedMap = new HashMap<>();
-            for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet())
-                convertedMap.put(annotationTableManager.convertAnnotationTypeToTableName(e.getKey(), storeAll),
-                        e.getValue());
+            for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet()) {
+                if (!e.getKey().equals(docTableParamValue))
+                    convertedMap.put(annotationTableManager.convertAnnotationTypeToTableName(e.getKey(), storeAll),
+                            e.getValue());
+                else
+                    convertedMap.put(effectiveDocTableName, e.getValue());
+            }
             splitXmiData = convertedMap;
             Integer newXmiId = result.maxXmiId;
             Map<String, String> nsAndXmiVersionMap = result.namespaces;

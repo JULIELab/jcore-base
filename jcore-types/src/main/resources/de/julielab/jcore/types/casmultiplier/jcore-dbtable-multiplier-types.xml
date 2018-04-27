@@ -54,6 +54,12 @@
                         from a data table.</description>
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
+                <featureDescription>
+                    <name>gzipped</name>
+                    <description>Indicates whether the document data to be read is compressed in GZIP format in the
+                        database table.</description>
+                    <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+                </featureDescription>
             </features>
         </typeDescription>
     </types>

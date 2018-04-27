@@ -3,6 +3,7 @@ package de.julielab.jcore.reader.xml;
 import de.julielab.jcore.reader.db.DBMultiplier;
 import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
@@ -14,8 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ResourceMetaData(name = "JCoRe XML Database Multiplier", description = "This CAS multiplier receives information about " +
         "documents to be read from an instance of the XML Database Multiplier reader from the jcore-db-reader project. " +
@@ -94,13 +97,7 @@ private final static Logger log = LoggerFactory.getLogger(XMLDBMultiplier.class)
 
     protected List<Map<String, Object>> getAllRetrievedColumns() {
         List<Map<String, Object>> fields = new ArrayList<Map<String, Object>>();
-        List<Object> numColumnsAndFields = dbc.getNumColumnsAndFields(tables.length > 1, tables, schemaNames);
-        for (int i = 1; i < numColumnsAndFields.size(); i++) {
-            List<Map<String, Object>> retrievedSchemaFields = (List<Map<String, Object>>) numColumnsAndFields.get(i);
-            for (Map<String, Object> field : retrievedSchemaFields)
-                fields.add(field);
-        }
-        return fields;
-
+        Pair<Integer, List<Map<String, String>>> numColumnsAndFields = dbc.getNumColumnsAndFields(tables.length > 1, schemaNames);
+        return numColumnsAndFields.getRight().stream().map(HashMap<String, Object>::new).collect(Collectors.toList());
     }
 }

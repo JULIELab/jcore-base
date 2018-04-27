@@ -1,28 +1,22 @@
 package de.julielab.jcore.consumer.xmi;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Function;
-
-import de.julielab.jcore.types.ace.Document;
+import de.julielab.xml.JulieXMLConstants;
+import de.julielab.xmlData.Constants;
+import de.julielab.xmlData.config.FieldConfig;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.xml.JulieXMLConstants;
-import de.julielab.xmlData.Constants;
-import de.julielab.xmlData.config.FieldConfig;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class XmiDataInserter {
 
@@ -76,7 +70,10 @@ public class XmiDataInserter {
      */
     public void sendXmiDataToDatabase(LinkedHashMap<String, List<XmiData>> serializedCASes,
                                       Map<String, List<DocumentId>> tablesWithoutData, String subsetTableName) throws XmiDataInsertionException {
-
+        if (log.isTraceEnabled()) {
+            log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
+            log.trace("Sending {} XMI data items", serializedCASes.entrySet().stream().map(Entry::getValue).collect(Collectors.summingInt(v -> v.size())));
+        }
         class RowIterator implements Iterator<Map<String, Object>> {
 
             private int index = 0;

@@ -14,7 +14,9 @@ import java.util.Optional;
 import static de.julielab.jcore.reader.db.TableReaderConstants.*;
 
 public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
-
+    public static final String PARAM_TABLE = TableReaderConstants.PARAM_TABLE;
+    public static final String PARAM_COSTOSYS_CONFIG_NAME = TableReaderConstants.PARAM_COSTOSYS_CONFIG_NAME;
+    public static final String PARAM_BATCH_SIZE = TableReaderConstants.PARAM_BATCH_SIZE;
     private static final Logger log = LoggerFactory.getLogger(DBReaderBase.class);
     /**
      * Default size of document batches fetched from the database. The default is

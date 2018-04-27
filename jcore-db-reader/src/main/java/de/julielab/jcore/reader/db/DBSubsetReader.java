@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 import static de.julielab.jcore.reader.db.SubsetReaderConstants.*;
 
 public abstract class DBSubsetReader extends DBReaderBase {
+    public final static String PARAM_ADDITIONAL_TABLES = SubsetReaderConstants.PARAM_ADDITIONAL_TABLES;
+    public static final String PARAM_RESET_TABLE = SubsetReaderConstants.PARAM_RESET_TABLE;
 
     static final String DESC_ADDITIONAL_TABLES = "An array of table " +
             "names. By default, the table names will be resolved against the active data postgres schema " +
@@ -99,7 +101,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
                 log.debug("Checking if the subset table \"{}\" has unfetched rows. Result: {}", tableName, hasNext);
 
                 if (additionalTableNames != null && additionalTableNames.length > 0) {
-                    log.debug("Additional tables were given: {}", additionalTableNames);
+                    log.debug("Additional tables were given: {}", Arrays.toString(additionalTableNames));
                     log.debug("Preparing for reading from multiple tables.");
                     joinTables = true;
 
@@ -121,6 +123,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
                     schemas = new String[1];
                     schemas[0] = dbc.getActiveTableSchema();
                 }
+                dbc.checkTableDefinition(dataTable, schemas[0]);
             }
         } catch (TableSchemaMismatchException e) {
             throw new ResourceInitializationException(e);
@@ -147,7 +150,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
     @SuppressWarnings("unchecked")
     protected List<Map<String, Object>> getAllRetrievedColumns() {
         List<Map<String, Object>> fields = new ArrayList<Map<String, Object>>();
-       Pair<Integer, List<Map<String, String>>> numColumnsAndFields = dbc.getNumColumnsAndFields(joinTables, schemas);
+        Pair<Integer, List<Map<String, String>>> numColumnsAndFields = dbc.getNumColumnsAndFields(joinTables, schemas);
         return numColumnsAndFields.getRight().stream().map(HashMap<String, Object>::new).collect(Collectors.toList());
     }
 
@@ -168,17 +171,18 @@ public abstract class DBSubsetReader extends DBReaderBase {
         return hostName;
     }
 
+    /**
+     * Determines the data table. This may be the specified table itself or, if it is a subset, the first referenced data table.
+     *
+     * @throws ResourceInitializationException If an SQL exception occurs.
+     */
     private void determineDataTable() throws ResourceInitializationException {
         try {
-            String nextDataTable = dbc.getNextDataTable(tableName);
-            if (nextDataTable != null) {
-                readDataTable = false;
-                dataTable = nextDataTable;
-            } else {
+            readDataTable = dbc.isDataTable(tableName);
+            dataTable = dbc.getNextOrThisDataTable(tableName);
+            if (readDataTable)
                 log.info("The table \"{}\" is a data table, documents will not be marked to be in process and no " +
                         "synchronization of multiple DB readers will happen.", tableName);
-                readDataTable = true;
-            }
         } catch (SQLException e) {
             throw new ResourceInitializationException(e);
         }
@@ -263,7 +267,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
             }
             // We have really tried...
             if (null == resultTableName) {
-                log.warn("The table {} does not exist!", additionalTableNames[i]);
+                throw new IllegalArgumentException("The table " + additionalTableNames[i] + " does not exist.");
             } else
                 foundTables.add(resultTableName);
         }

@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -84,6 +85,8 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
     private Set<String> cutAwayTypes;
 
     private SentenceSplitter sentenceSplitter;
+
+    private static AtomicInteger numEmptyCases = new AtomicInteger();
 
     /**
      * initiaziation of JSBD: load the model, set post processing
@@ -202,7 +205,14 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             if (aJCas.getDocumentText() != null && aJCas.getDocumentText().length() > 0) {
                 doSegmentation(documentText, documentText.getCodensedText(), 0);
             } else {
-                LOGGER.warn("document text empty. Skipping this document.");
+                if (numEmptyCases.get() < 10) {
+                    LOGGER.debug("document text empty. Skipping this document.");
+                    numEmptyCases.incrementAndGet();
+                } else if (numEmptyCases.get() == 10){
+                    LOGGER.warn("Encountered 10 documents with an empty text body. This message will not appear again " +
+                            "to avoid scrolling in cases where this is expected.");
+                }
+
             }
         }
     }

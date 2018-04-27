@@ -26,7 +26,6 @@ private final static Logger LOGGER = LoggerFactory.getLogger(CasPopulator.class)
         this.xmlMapper = xmlMapper;
         this.row2CasMapper = row2CasMapper;
         this.rowMappingArray = rowMappingArray;
-        this.dbProcessingMetaDataSetter = dbProcessingMetaDataSetter;
     }
 
     public void populateCas(JCas jcas, byte[][] arrayArray, BiConsumer<byte[][], JCas> dbProcessingMetaDataSetter) throws CasPopulationException {

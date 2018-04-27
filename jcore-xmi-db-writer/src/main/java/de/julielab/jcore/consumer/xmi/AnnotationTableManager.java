@@ -48,7 +48,7 @@ public class AnnotationTableManager {
         this.annotationTableSchema = annotationTableSchema;
         this.storeAll = storeAll;
         this.storeBaseDocument = storeBaseDocument;
-        this.dbDocumentTableName = convertAnnotationTypeToTableName(rawDocumentTableName, storeAll);
+        this.dbDocumentTableName = getEffectiveDocumentTableName(rawDocumentTableName);
         createTable(rawDocumentTableName, documentTableSchema);
         for (String annotation : annotationsToStore)
             createTable(annotation, annotationTableSchema);
@@ -67,7 +67,7 @@ public class AnnotationTableManager {
      * @return The normalized table name
      */
     String convertAnnotationTypeToTableName(String tableNameParameter, boolean storeAll) {
-        if (storeAll)
+        if (storeAll || tableNameParameter.equals(dbDocumentTableName))
             return getEffectiveDocumentTableName(tableNameParameter);
         // A table cannot be created if the name contains dots. All annotation
         // tables
@@ -145,6 +145,8 @@ public class AnnotationTableManager {
 
     void createTable(String tableName, String schema) throws TableSchemaMismatchException {
         String effectiveTableName = convertAnnotationTypeToTableName(tableName, storeAll);
+        if (getEffectiveDocumentTableName(tableName).equals(dbDocumentTableName))
+            effectiveTableName = dbDocumentTableName;
         try {
             if (!dbc.tableExists(effectiveTableName)) {
                 log.info("Creating table '{}' with schema '{}' (columns: {}).",
