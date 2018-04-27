@@ -19,10 +19,15 @@
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
-            <artifactId>jcore-xmi-splitter</artifactId>
+            <artifactId>jcore-types</artifactId>
             <version>${project.parent.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-xmi-splitter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency><dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
             <version>${project.parent.version}</version>
@@ -57,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
-            <artifactId>jcore-pubmed-db-reader</artifactId>
+            <artifactId>jcore-medline-db-reader</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>

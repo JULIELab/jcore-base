@@ -1,16 +1,18 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.jcore.consumer.xmi.XMIDBWriter;
 import de.julielab.jcore.reader.db.DBMultiplierReader;
-import de.julielab.jcore.reader.xml.XMLDBMultiplier;
+import de.julielab.jcore.types.*;
 import de.julielab.xmlData.Constants;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.jcas.JCas;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.BufferedWriter;
@@ -19,42 +21,38 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class XmiDBSetupHelper {
-    /**
-     * Imports the file "src/test/resources/pubmedsample18n0001.xml.gz" into the empty database, and creates a subset
-     * named "testsubset" of size 20.
-     * @param postgres
-     * @throws SQLException
-     */
-    public static void setupDatabase(PostgreSQLContainer postgres) throws SQLException, UIMAException, IOException {
-        writeHiddenConfig(postgres);
-        DataBaseConnector dbc = new DataBaseConnector(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
-        dbc.setActiveTableSchema("medline_2017");
-        dbc.createTable(Constants.DEFAULT_DATA_TABLE_NAME, "Test data table for DBReaderTest.");
-        dbc.importFromXMLFile("src/test/resources/pubmedsample18n0001.xml.gz", Constants.DEFAULT_DATA_TABLE_NAME);
-        dbc.createSubsetTable("testsubset", Constants.DEFAULT_DATA_TABLE_NAME, "Test subset");
-        dbc.initRandomSubset(20, "testsubset", Constants.DEFAULT_DATA_TABLE_NAME);
-
-        // TODO not finished!
-        CollectionReader pubmedXmlReader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.xml.desc.jcore-pubmed-multiplier-reader.xml", DBMultiplierReader.PARAM_TABLE, "testsubset", DBMultiplierReader.PARAM_COSTOSYS_CONFIG_NAME);
+    public static void processAndSplitData(String costosysConfig, String table, PostgreSQLContainer postgres) throws SQLException, UIMAException, IOException {
+        CollectionReader pubmedXmlReader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.medline-db.desc.jcore-medline-db-reader",
+                DBMultiplierReader.PARAM_TABLE, table,
+                DBMultiplierReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
+                DBMultiplierReader.PARAM_RESET_TABLE, true);
         AnalysisEngine jsbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae-biomedical-english");
         AnalysisEngine jtbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jtbd.desc.jcore-jtbd-ae-biomedical-english");
-
-        dbc.close();
+        AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
+                XMIDBWriter.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
+                XMIDBWriter.PARAM_STORE_ALL, false,
+                XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,
+                XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents",
+                XMIDBWriter.PARAM_DO_GZIP, false,
+                XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), Header.class.getCanonicalName()}
+                );
+        JCas jCas = getJCasWithRequiredTypes();
+        while (pubmedXmlReader.hasNext()) {
+            pubmedXmlReader.getNext(jCas.getCas());
+            jsbd.process(jCas);
+            jtbd.process(jCas);
+            xmiWriter.process(jCas);
+            jCas.reset();
+        }
+        xmiWriter.collectionProcessComplete();
     }
 
-    private static void writeHiddenConfig(PostgreSQLContainer postgres) {
-        String hiddenConfigPath = "src/test/resources/hiddenConfig.txt";
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(hiddenConfigPath))) {
-            w.write(postgres.getDatabaseName());
-            w.newLine();
-            w.write(postgres.getUsername());
-            w.newLine();
-            w.write(postgres.getPassword());
-            w.newLine();
-            w.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.setProperty(Constants.HIDDEN_CONFIG_PATH, hiddenConfigPath);
+    public static JCas getJCasWithRequiredTypes() throws UIMAException {
+        return JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+                "de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types",
+                "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types",
+                "de.julielab.jcore.types.jcore-xmi-splitter-types");
     }
 }
