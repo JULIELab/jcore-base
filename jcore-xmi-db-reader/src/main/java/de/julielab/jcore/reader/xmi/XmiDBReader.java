@@ -101,28 +101,7 @@ public class XmiDBReader extends DBReader implements Initializable {
                 FieldConfig xmiAnnotationTableSchema = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip);
                 setConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS, new String[]{xmiAnnotationTableSchema.getName()});
             }
-            try {
-                tableName = (String) getConfigParameterValue(PARAM_TABLE);
-                dataTable = dbc.getNextOrThisDataTable(tableName);
-                dbc.checkTableDefinition(dataTable, xmiDocumentTableSchema.getName());
-            } catch (SQLException e) {
-                throw new ResourceInitializationException(e);
-            } catch (TableSchemaMismatchException e) {
-                try {
-                    if (dbc.isDataTable(tableName))
-                    log.error("The table {} specified to read for the " + getMetaData().getName() + " does not match the " +
-                            "XMI text storage data schema. Either the DoGzip parameter does not match the setting that " +
-                            "was used for the XMI DB Consumer or the specified table is not an XMI table.");
-                    else
-                        log.error("The subset table {} specified to read for the " + getMetaData().getName() + " " +
-                                "references the data table \"" + dataTable + "\". This data table does not match the " +
-                                "XMI text storage data schema. Either the DoGzip parameter does not match the setting that " +
-                                "was used for the XMI DB Consumer or the specified table is not an XMI table.");
-                    throw new ResourceInitializationException(e);
-                } catch (SQLException e1) {
-                    throw new ResourceInitializationException(e1);
-                }
-            }
+            XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName(), context);
         }
         super.initialize(context);
         initializer = new Initializer(this, dbc, additionalTableNames, joinTables);
@@ -145,10 +124,6 @@ public class XmiDBReader extends DBReader implements Initializable {
         log.trace("Retrieving document data from the database.");
         byte[][] data = getNextArtifactData();
         log.trace("Got document data with {} fields.", null != data ? data.length : 0);
-        for (int i = 0; i < data.length; i++) {
-            byte[] datum = data[i];
-            System.out.println(new String(datum));
-        }
         populateCas(jCas, data);
     }
 

@@ -16,6 +16,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.InvalidXMLException;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -25,21 +26,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class XmiDBReaderTest {
     @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
-    private static String subsetTable;
+    private static String xmisubset;
 
     @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
-        subsetTable = DBTestUtils.setupDatabase(dbc, "src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 177, postgres);
+        String subsetTable = DBTestUtils.setupDatabase(dbc, "src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 177, postgres);
         XmiDBSetupHelper.processAndSplitData(costosysConfig, subsetTable, postgres);
         assertTrue("The data document table exists", dbc.tableExists("_data.documents"));
+        xmisubset = "xmisubset";
+        dbc.createSubsetTable(xmisubset, "_data.documents", "Test XMI subset");
+        dbc.initSubset(xmisubset, "_data.documents");
         dbc.close();
     }
 
@@ -49,7 +54,7 @@ public class XmiDBReaderTest {
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
                 XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
-                XmiDBReader.PARAM_TABLE, subsetTable,
+                XmiDBReader.PARAM_TABLE, xmisubset,
                 XmiDBReader.PARAM_DO_GZIP, false,
                 XmiDBReader.PARAM_RESET_TABLE, true
         );
@@ -65,6 +70,7 @@ public class XmiDBReaderTest {
             JCasUtil.select(jCas, Sentence.class).stream().map(Annotation::getCoveredText).forEach(sentenceText::add);
             jCas.reset();
         }
-        System.out.println(tokenText);
+        assertFalse(tokenText.isEmpty());
+        assertFalse(sentenceText.isEmpty());
     }
 }
