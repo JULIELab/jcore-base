@@ -101,7 +101,7 @@ public class XmiDBReader extends DBReader implements Initializable {
                 FieldConfig xmiAnnotationTableSchema = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip);
                 setConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS, new String[]{xmiAnnotationTableSchema.getName()});
             }
-            XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName(), context);
+            XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName());
         }
         super.initialize(context);
         initializer = new Initializer(this, dbc, additionalTableNames, joinTables);
