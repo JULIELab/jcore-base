@@ -1,166 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>de.julielab.jcore.reader.xmi.XmiDBReader</implementationName>
-  <processingResourceMetaData>
-    <name>DBCasXmiReader</name>
-    <description>The Table-Parameter is for the subset table name that references the table containing the document-xmi. If additional (annotation) tables will be read from they have to be specified in the AdditionalTables-Parameter. The annotations should be given as fully qualified java names (e.g. de.julielab.jules.types.Token). If the short name of the type ist given (e.g. Token), the fully qualified java name will be retrieved from the types namespace. In case document and annotation tables will be joined, their schemas have to be specified as well, i.e. the document schema as first and the annotation schema as second element of the TableSchemas-Parameter. Note that in the annotation schema pmid should be set to retrieve=false, since this must only be retrieved one from the document table.</description>
-    <version>0.0.1</version>
-    <vendor/>
-    <configurationParameters>
-      <configurationParameter>
-        <name>Table</name>
-        <description>The name of the table which holds the document IDs to be processed. The reader automatically determines the data table which stores the actuall Medline XML data.</description>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>true</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>CostosysConfigFile</name>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>true</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>PerformGUNZIP</name>
-        <description>If the stored CAS objects are GZIPed, you have to set this parameter to true for proper decoding.</description>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>AdditionalTables</name>
-        <type>String</type>
-        <multiValued>true</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>AdditionalTableSchema</name>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>StoreMaxXmiId</name>
-        <description>Whether or not to store the max XMI ID in an UIMA type in the CAS. Since the respective type is not part of the general type system, this should be set to false whenever the whole CAS is serialized to XMI after reading with this reader. Otherwise, there could be problems when deserializing the XMI files when the max XMI type is missing.</description>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>BatchSize</name>
-        <description>Determines the size of batches of documents fetched from the database.</description>
-        <type>Integer</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>LogFinalXmi</name>
-        <description>If set to true, the final XMI data that is then deserializied into a CAS object, is logged on the DEBUG level.</description>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>ResetTable</name>
-        <description>Indicates whether the read subset table is to be reset before reading. False by default.</description>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>FetchIdsProactively</name>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    <configurationParameter>
-        <name>ReadsBaseDocument</name>
-        <description>If no additional tables for annotation are specified, the default assumption is that a complete XMI document with namespace declarations, XML header etc. is read. However, if only the bare base document - meant for use with separate annotation tables - is read, this will lead to invalid XML. Setting this parameter to 'true' creates valid XML when reading base XMI documents. If this additional tables are given, this parameter's value is of no consequence (as only base document can be used together with additional annotation tables).</description>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    <configurationParameter>
-        <name>IncreasedAttributeSize</name>
-        <description>UIMA XMI serialization stores the document text as an XML attribute to the 'sofa' element.  Some XML parsers - e.g. Woodstox - impose a maximum size of bytes allowed in attribute values. Thus, for large documents an exception might be thrown when trying to assemble them via the XMI builder. This parameter allows to set the maximum attribute size in order to circumvent the error.</description>
-        <type>Integer</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    <configurationParameter>
-        <name>XercesAttributeBufferSize</name>
-        <description>WARNING: This parameter only has effect when the JULIE Lab version of Xerces is on the classpath.
-The Xerces parser used by the default UIMA XMI deserialization spends a lot of time filling its attribute buffers when reading large XMI documents. This parameter allows to set a larger initial buffer size to circumvent the resizing of the buffers. The unit is in characters.</description>
-        <type>Integer</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    </configurationParameters>
-    <configurationParameterSettings>
-      <nameValuePair>
-        <name>PerformGUNZIP</name>
-        <value>
-          <boolean>false</boolean>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>AdditionalTableSchema</name>
-        <value>
-          <string>xmi_annotation_gzip</string>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>StoreMaxXmiId</name>
-        <value>
-          <boolean>true</boolean>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>LogFinalXmi</name>
-        <value>
-          <boolean>false</boolean>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>ResetTable</name>
-        <value>
-          <boolean>false</boolean>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>FetchIdsProactively</name>
-        <value>
-          <boolean>true</boolean>
-        </value>
-      </nameValuePair>
-    <nameValuePair>
-        <name>IncreasedAttributeSize</name>
-        <value>
-          <integer>25000000</integer>
-        </value>
-      </nameValuePair>
-    </configurationParameterSettings>
-    <typeSystemDescription>
-      <imports>
-        <import name="de.julielab.jcore.types.jcore-xmi-splitter-types"/>
-        <import name="de.julielab.jcore.types.jcore-all-types"/>
-      </imports>
-    </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
-    <capabilities>
-      <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
-      </capability>
-    </capabilities>
-    <operationalProperties>
-      <modifiesCas>true</modifiesCas>
-      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
-      <outputsNewCASes>true</outputsNewCASes>
-    </operationalProperties>
-  </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.reader.xmi.XmiDBReader</implementationName>
+    <processingResourceMetaData>
+        <name>JCoRe Database Reader</name>
+        <description>Reads XMI data from a database using CoStoSys.</description>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name>DoGzip</name>
+                <description>Whether or not the XMI data in the database is compressed. This parameter is also set by the jcore-xmi-db-writer and determines if the data will be stored compressed or not.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ReadsBaseDocument</name>
+                <description>Indicates if this reader reads segmented annotation data. If set to false, the XMI data is expected to represent complete annotated documents. If it is set to true, a segmented annotation graph is expected and the table given with the 'Table' parameter will contain the document text together with some basic annotations. What exactly is stored in which manner is determined by the jcore-xmi-db-consumer used to write the data into the database.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>StoreMaxXmiId</name>
+                <description>This parameter is required to be set to true, if this reader is contained in a pipeline that also contains a jcore-xmi-db-writer andthe writer will segment the CAS annotation graph and store only parts of it. Then, it is important to keep track of the free XMI element IDs that may be assigned to new annotation elements to avoid ID clashes when assembling an XMI document from separately stored annotation graph segments.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>IncreasedAttributeSize</name>
+                <description>Maxmimum XML attribute size in bytes. Since the CAS document text is stored as an XMI attribute, it might happen for large documents that there is an error because the maximum attribute size is exceeded. This parameter allows to specify the maxmimum  attribute size in order to avoid such errors. Should only be set if required.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>XercesAttributeBufferSize</name>
+                <description>Initial XML parser buffer size in bytes. For large documents, it can happen that XMI parsing is extremely slow. By employing monitoring tools like the jconsole or (j)visualvm, the hot spots of work can be identified. If one of those is the XML attribute buffer resizing, this parameter should be set to a size that makes buffer resizing unnecessary.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ResetTable</name>
+                <description>If set to true and the parameter 'Table' is set to a subset table, the subset table will be reset atthe initialization of the reader to be ready for processing of the whole subset. Do not use when multiple readers read the same subset table.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>FetchIdsProactively</name>
+                <description>If set to true and when reading from a subset table, batches of document IDs will be retrieved in a background thread while the previous batch is already in process. This is meant to minimize waiting time for the database. Deactivate this feature if you encounter issues with databaase connections.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTables</name>
+                <description>An array of table names. By default, the table names will be resolved against the active data postgres schema configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains a dot, the active data schema will be ignored. When reading documents from the document data table, the additional tables will be joined onto the data table using the primary keys of the queried documents. Using the table schema for the additional documents defined by the 'AdditionalTableSchema' parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned together with the main document data. This mechanism is most prominently used to retrieve annotation table data together with the original document text in XMI format for the JeDIS system.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>BatchSize</name>
+                <description/>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>Table</name>
+                <description>The data or subset database table to read from. The name will be resolved against the active Postgres schema defined in the CoStoSys configuration file.However, if the name contains a schema qualification (i.e. 'schemaname.tablename), the configuration file will be ignored in this point.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SelectionOrder</name>
+                <description>WARNING: Potential SQL injection vulnerability. Do not let unknown users interact with your database with this component. An SQL ORDER clause specifying in which order the documents in the target database table should be processed. Only the clause itself must be specified, the ORDER keyword is automatically added.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>CostosysConfigFile</name>
+                <description>File path or classpath resource location to the CoStoSys XML configuration. This configuration must specify the table schema of the table referred to by the 'Table' parameter as active table schema. The active table schema is always the schema of the data table that is either queried directly for documents or, if 'tableName' points to a subset table, indirectly through the subset table. Make also sure that the active database connection in the configuration points to the correct database.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>ResetTable</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>FetchIdsProactively</name>
+                <value>
+                    <boolean>true</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>BatchSize</name>
+                <value>
+                    <integer>50</integer>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>SelectionOrder</name>
+                <value>
+                    <string/>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-xmi-splitter-types"/>
+                <import name="de.julielab.jcore.types.jcore-all-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
 </collectionReaderDescription>

@@ -82,7 +82,7 @@ public class Initializer {
         Optional.ofNullable((Integer) context.getConfigParameterValue(PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE))
                 .ifPresent(v -> xercesAttributeBufferSize = v);
         initializationComplete = true;
-        numAdditionalTables = additionalTableNames.length;
+        numAdditionalTables = additionalTableNames == null ? 0 : additionalTableNames.length;
         if (joinTables)
             for (String annotation : additionalTableNames) {
                 if (!annotation.contains(".")) {

@@ -35,6 +35,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
@@ -54,6 +55,10 @@ import java.util.stream.Collectors;
 /**
  * @author faessler
  */
+@ResourceMetaData(name = "JCoRe XMI Database Reader", vendor = "JULIE Lab Jena, Germany", description = "A database reader" +
+        "that expects serialized UIMA CAS objects in XMI format as input. The reader has the capability to read " +
+        "segmented annotation graphs that have been stored by the jcore-xmi-db-writer. This component is part of the " +
+        "Jena Document Information System, JeDIS.")
 public class XmiDBReader extends DBReader implements Initializable {
 
     public static final String PARAM_STORE_XMI_ID = Initializer.PARAM_STORE_XMI_ID;
@@ -64,15 +69,32 @@ public class XmiDBReader extends DBReader implements Initializable {
     public static final String PARAM_DO_GZIP = "DoGzip";
 
     private final static Logger log = LoggerFactory.getLogger(XmiDBReader.class);
-    @ConfigurationParameter(name = PARAM_DO_GZIP)
+    @ConfigurationParameter(name = PARAM_DO_GZIP, description = "Whether or not the XMI data in the database is compressed. " +
+            "This parameter is also set by the jcore-xmi-db-writer and determines if the data will be stored compressed or not.")
     private Boolean doGzip;
-    @ConfigurationParameter(name = PARAM_READS_BASE_DOCUMENT)
+    @ConfigurationParameter(name = PARAM_READS_BASE_DOCUMENT, description = "Indicates if this reader reads segmented " +
+            "annotation data. If set to false, the XMI data is expected to represent complete annotated documents. " +
+            "If it is set to true, a segmented annotation graph is expected and the table given with the 'Table' parameter " +
+            "will contain the document text together with some basic annotations. What exactly is stored in which manner " +
+            "is determined by the jcore-xmi-db-consumer used to write the data into the database.")
     private Boolean readsBaseDocument;
-    @ConfigurationParameter(name = PARAM_STORE_XMI_ID, mandatory = false)
+    @ConfigurationParameter(name = PARAM_STORE_XMI_ID, mandatory = false, description = "This parameter is required " +
+            "to be set to true, if this reader is contained in a pipeline that also contains a jcore-xmi-db-writer and" +
+            "the writer will segment the CAS annotation graph and store only parts of it. Then, it is important to " +
+            "keep track of the free XMI element IDs that may be assigned to new annotation elements to avoid " +
+            "ID clashes when assembling an XMI document from separately stored annotation graph segments.")
     private Boolean storeMaxXmiId;
-    @ConfigurationParameter(name = PARAM_INCREASED_ATTRIBUTE_SIZE, mandatory = false)
+    @ConfigurationParameter(name = PARAM_INCREASED_ATTRIBUTE_SIZE, mandatory = false, description = "Maxmimum XML attribute " +
+            "size in bytes. Since the CAS " +
+            "document text is stored as an XMI attribute, it might happen for large documents that there is an error " +
+            "because the maximum attribute size is exceeded. This parameter allows to specify the maxmimum " +
+            " attribute size in order to avoid such errors. Should only be set if required.")
     private int maxXmlAttributeSize;
-    @ConfigurationParameter(name = PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE, mandatory = false)
+    @ConfigurationParameter(name = PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE, mandatory = false, description = "Initial XML " +
+            "parser buffer size in bytes. For large documents, " +
+            "it can happen that XMI parsing is extremely slow. By employing monitoring tools like the jconsole or " +
+            "(j)visualvm, the hot spots of work can be identified. If one of those is the XML attribute buffer " +
+            "resizing, this parameter should be set to a size that makes buffer resizing unnecessary.")
     private int xercesAttributeBufferSize;
 
     private Initializer initializer;
