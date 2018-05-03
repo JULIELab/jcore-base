@@ -180,6 +180,12 @@
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>de.julielab.jcore.types.DocumentClass</elementType>
         </featureDescription>
+        <featureDescription>
+          <name>documentTopics</name>
+          <description>A list of document topics derived from a topic model.</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jcore.types.DocumentTopics</elementType>
+        </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
@@ -453,6 +459,38 @@
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>de.julielab.jcore.types.FullTextLink</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.DocumentTopics</name>
+      <description>Topics label documents with vectors weights for their semantically most prominent words</description>
+      <supertypeName>de.julielab.jcore.types.DocumentAnnotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>Weights</name>
+          <description>Vector of weights denoting the semantical descriptivity of one word for the respective topic</description>
+          <rangeTypeName>uima.cas.DoubleArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>IDs</name>
+          <description>IDs for topics determined by the modeling implementation</description>
+          <rangeTypeName>uima.cas.IntegerArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>ModelID</name>
+          <description>ID identifying the model holding the topics to be labeled</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>TopicWords</name>
+          <description>The top words for the respective topic</description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>ModelVersion</name>
+          <description>Version of the model holding the topics</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
