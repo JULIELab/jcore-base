@@ -389,7 +389,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             }
         }
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayOutputStream baos;
         try {
             baos = new ByteArrayOutputStream();
             OutputStream os = baos;
