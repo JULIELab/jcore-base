@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>TopicLabeling</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe-Topic-Labeling-AE</name>
+    <description/>
+    <version>2.3.0-SNAPSHOT</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters/>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import location="../../../../../../../../../../jcore-topicmodeling-types/src/main/resources/jcore-topicmodeling-types.xml"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities/>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+<resourceManagerConfiguration>
+    <imports>
+    <!-- 
+      <import location="../../../../../../../../../../jcore-topicmodeling-types/src/main/java/de/julielab/jcore/types/Topics.java"/>
+       -->
+      <import location="../../../../../../../../../../jcore-topicmodeling-types/src/main/resources/jcore-topicmodeling-types.xml"/>
+    </imports>
+  </resourceManagerConfiguration>
+</analysisEngineDescription>

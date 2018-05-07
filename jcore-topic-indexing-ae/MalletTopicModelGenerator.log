@@ -1,0 +1,11 @@
+2018-05-07 15:23:12,608 INFO [main] d.j.t.s.MalletTopicModeling Serialized Model is saved in src/test/resources/test_topic_model.ser-Eriks-MacBook-Air-2.local-33333@Eriks-MacBook-Air-2.local
+2018-05-07 15:23:12,610 INFO [main] d.j.j.a.TopicIndexer Model with index is written in:src/test/resources/test_topic_model.ser-Eriks-MacBook-Air-2.local-33333@Eriks-MacBook-Air-2.local
+2018-05-07 15:23:13,176 INFO [main] d.j.t.s.MalletTopicModeling Serialized Model is saved in src/test/resources/model_eval_tm_b-Eriks-MacBook-Air-2.local-33333@Eriks-MacBook-Air-2.local
+2018-05-07 15:23:13,177 INFO [main] d.j.j.a.TopicIndexer Model with index is written in:src/test/resources/model_eval_tm_b-Eriks-MacBook-Air-2.local-33333@Eriks-MacBook-Air-2.local
+2018-05-07 15:25:02,639 INFO [main] d.j.t.s.MalletTopicModeling MALLeT instances created
+2018-05-07 15:25:03,295 INFO [main] d.j.t.s.MalletTopicModeling MALLeT instances created
+2018-05-07 15:25:03,459 INFO [main] d.j.t.s.MalletTopicModeling MALLeT instances created
+2018-05-07 15:25:03,672 INFO [main] d.j.t.s.MalletTopicModeling Serialized Model is saved in src/test/resources/test_topic_model.ser-Eriks-MacBook-Air-2.local-33358@Eriks-MacBook-Air-2.local
+2018-05-07 15:25:03,673 INFO [main] d.j.j.a.TopicIndexer Model with index is written in:src/test/resources/test_topic_model.ser-Eriks-MacBook-Air-2.local-33358@Eriks-MacBook-Air-2.local
+2018-05-07 15:25:04,424 INFO [main] d.j.t.s.MalletTopicModeling Serialized Model is saved in src/test/resources/model_eval_tm_b-Eriks-MacBook-Air-2.local-33358@Eriks-MacBook-Air-2.local
+2018-05-07 15:25:04,424 INFO [main] d.j.j.a.TopicIndexer Model with index is written in:src/test/resources/model_eval_tm_b-Eriks-MacBook-Air-2.local-33358@Eriks-MacBook-Air-2.local
