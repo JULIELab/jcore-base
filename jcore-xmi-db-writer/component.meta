@@ -2,7 +2,7 @@
     "categories": [
         "consumer"
     ],
-    "description": "Writes CAS data in XMI format into a relational (Postgre) database. It is possible to write the whole XMI for each document into the database. However, it is also possible to define a list of annotations that should be written into separate tables. The JCoRe XMI Database Reader can then be used to assemble XMI data from a given set of annotations.",
+    "description": "Writes CAS data in XMI format into a relational (PostgreSQL) database. It is possible to write the whole XMI for each document into the database. However, it is also possible to define a list of annotations that should be written into separate tables. The JCoRe XMI Database Reader can then be used to assemble XMI data from a given set of annotations.",
     "descriptors": [
         {
             "category": "consumer",

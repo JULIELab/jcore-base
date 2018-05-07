@@ -1,0 +1,16 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "Labels LDA Topics estimated from project julielab-topic-modeling to infer document topics for PubMed articles",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.topicindexing.desc.jcore-topic-indexing-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": "jcore-topic-indexing-ae",
+    "name": "JCoRe-Topic-Labeling-AE"
+}

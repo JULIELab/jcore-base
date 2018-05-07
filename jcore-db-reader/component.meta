@@ -3,7 +3,12 @@
         "reader"
     ],
     "description": "Abstract database reader for database driven processing",
-    "descriptors": [],
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "de.julielab.jcore.reader.db.desc.jcore-db-multiplier-reader"
+        }
+    ],
     "exposable": false,
     "group": "general",
     "maven-artifact": "jcore-db-reader",

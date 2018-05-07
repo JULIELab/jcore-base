@@ -261,7 +261,7 @@ public class CasToXmiConsumerTest {
 		JCas jcas = cas.getJCas();
 		jcas.setDocumentText(TEST_TEXT);
 		Header header = new Header(jcas);
-		header.setSource(sourceValue);
+		header.setDocId(sourceValue);
 		header.addToIndexes();
 		consumer.process(cas);
 		File expectedXMI = new File(OUTPUT_FOLDER_XMI + "/" + sourceValue + XMI_EXTENSION); 
