@@ -66,7 +66,6 @@ public class Initializer {
     }
 
     public void initialize(UimaContext context) {
-        this.dbc = dbc;
         // If the field is defined with gzip=true in the field configuration,
         // the unzipping happens automatically.
         boolean fieldIsSetToGzip = Boolean
