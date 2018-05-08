@@ -317,14 +317,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         metaTableManager = new MetaTableManager(dbc);
         annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, docTableParamValue, effectiveDocTableName, dbc,
                 schemaDocument, schemaAnnotation, storeAll, storeBaseDocument, updateMode, componentDbName);
-
-//  [de.julielab.jcore.types.Token, de.julielab.jcore.types.Sentence]
-//[public.de_julielab_jcore_types_Token, public.de_julielab_jcore_types_Sentence]
-//[_data.documents, public.de_julielab_jcore_types_Token, public.de_julielab_jcore_types_Sentence]
-//
-//        System.out.println(annotationsToStore);
-//        System.out.println(annotationsToStoreTableNames);
-//        System.out.println(serializedCASes.keySet());
     }
 
     private void checkTableDefinition(String annotationTableName, String schemaAnnotation) throws ResourceInitializationException {
