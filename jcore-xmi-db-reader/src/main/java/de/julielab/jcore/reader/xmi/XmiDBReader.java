@@ -121,9 +121,10 @@ public class XmiDBReader extends DBReader implements Initializable {
             }
 
             String table = (String) getConfigParameterValue(PARAM_TABLE);
+            String dataTable = null;
             try {
                 doGzip = true;
-                String dataTable = dbc.getNextDataTable(table);
+                dataTable = dbc.getNextDataTable(table);
                 log.trace("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
                 try (Connection conn = dbc.getConn()) {
                     ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
@@ -138,7 +139,9 @@ public class XmiDBReader extends DBReader implements Initializable {
                     }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                if (e.getMessage().contains("does not exist"))
+                    log.error("An exception occurred when trying to read the xmi column of the data table \"{}\". It seems the table does not contain XMI data and this is invalid to use with this reader.", dataTable);
+                throw new ResourceInitializationException(e);
             }
 
             FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip);
