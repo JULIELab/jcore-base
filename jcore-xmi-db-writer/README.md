@@ -1,4 +1,4 @@
-# JCoRe XMI Database Reader
+# JCoRe XMI Database Writer
 
 **Descriptor Path**:
 ```
