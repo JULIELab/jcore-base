@@ -23,7 +23,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>StoreMaxXmiId</name>
-                <description>This parameter is required to be set to true, if this reader is contained in a pipeline that also contains a jcore-xmi-db-writer andthe writer will segment the CAS annotation graph and store only parts of it. Then, it is important to keep track of the free XMI element IDs that may be assigned to new annotation elements to avoid ID clashes when assembling an XMI document from separately stored annotation graph segments.</description>
+                <description>This parameter is required to be set to true, if this reader is contained in a pipeline that also contains a jcore-xmi-db-writer andt he writer will segment the CAS annotation graph and store only parts of it. Then, it is important to keep track of the free XMI element IDs that may be assigned to new annotation elements to avoid ID clashes when assembling an XMI document from separately stored annotation graph segments.</description>
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -51,21 +51,21 @@
             </configurationParameter>
             <configurationParameter>
                 <name>FetchIdsProactively</name>
-                <description>If set to true and when reading from a subset table, batches of document IDs will be retrieved in a background thread while the previous batch is already in process. This is meant to minimize waiting time for the database. Deactivate this feature if you encounter issues with databaase connections.</description>
+                <description>If set to true and when reading from a subset table, batches of document IDs will be retrieved in a background thread while the previous batch is already in process. This is meant to minimize waiting time for the database. Deactivate this feature if you encounter issues with database connections.</description>
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>AdditionalTables</name>
-                <description>An array of table names. By default, the table names will be resolved against the active data postgres schema configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains a dot, the active data schema will be ignored. When reading documents from the document data table, the additional tables will be joined onto the data table using the primary keys of the queried documents. Using the table schema for the additional documents defined by the 'AdditionalTableSchema' parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned together with the main document data. This mechanism is most prominently used to retrieve annotation table data together with the original document text in XMI format for the JeDIS system.</description>
+                <description>An array of qualified UIMA type names. The type names will be transformed into valid PostgreSQL table names by replacing dots with underscores. The resulting table names will be resolved against the active data postgres schema configured in the CoStoSys configuration file. The additional tables will be joined to the data table using the primary keys of the queried documents, allowing to retrieve document text data together with the selected annotations.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>BatchSize</name>
-                <description/>
+                <description>Determines the number of documents fetched from the database with each database request. Typical values range between 50 and 500.</description>
                 <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
