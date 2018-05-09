@@ -8,13 +8,6 @@
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
-                <name>DoGzip</name>
-                <description>Whether or not the XMI data in the database is compressed. This parameter is also set by the jcore-xmi-db-writer and determines if the data will be stored compressed or not.</description>
-                <type>Boolean</type>
-                <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
-            </configurationParameter>
-            <configurationParameter>
                 <name>ReadsBaseDocument</name>
                 <description>Indicates if this reader reads segmented annotation data. If set to false, the XMI data is expected to represent complete annotated documents. If it is set to true, a segmented annotation graph is expected and the table given with the 'Table' parameter will contain the document text together with some basic annotations. What exactly is stored in which manner is determined by the jcore-xmi-db-consumer used to write the data into the database.</description>
                 <type>Boolean</type>

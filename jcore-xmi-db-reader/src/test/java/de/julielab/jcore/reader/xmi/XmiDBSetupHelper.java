@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class XmiDBSetupHelper {
-    public static void processAndSplitData(String costosysConfig, String table, PostgreSQLContainer postgres) throws SQLException, UIMAException, IOException {
+    public static void processAndSplitData(String costosysConfig, String table, boolean gzip, PostgreSQLContainer postgres) throws SQLException, UIMAException, IOException {
         CollectionReader pubmedXmlReader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.medline-db.desc.jcore-medline-db-reader",
                 DBMultiplierReader.PARAM_TABLE, table,
                 DBMultiplierReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
@@ -30,7 +30,7 @@ public class XmiDBSetupHelper {
                 XMIDBWriter.PARAM_STORE_ALL, false,
                 XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,
                 XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents",
-                XMIDBWriter.PARAM_DO_GZIP, false,
+                XMIDBWriter.PARAM_DO_GZIP, gzip,
                 XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), Header.class.getCanonicalName()}
                 );
         JCas jCas = getJCasWithRequiredTypes();

@@ -24,8 +24,10 @@ import de.julielab.jcore.reader.db.TableReaderConstants;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.utility.JCoReTools;
+import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.XmiBuilder;
 import de.julielab.xmlData.config.FieldConfig;
+import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang.StringUtils;
@@ -47,10 +49,14 @@ import org.xml.sax.SAXException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
 
 /**
  * @author faessler
@@ -69,8 +75,6 @@ public class XmiDBReader extends DBReader implements Initializable {
     public static final String PARAM_DO_GZIP = "DoGzip";
 
     private final static Logger log = LoggerFactory.getLogger(XmiDBReader.class);
-    @ConfigurationParameter(name = PARAM_DO_GZIP, description = "Whether or not the XMI data in the database is compressed. " +
-            "This parameter is also set by the jcore-xmi-db-writer and determines if the data will be stored compressed or not.")
     private Boolean doGzip;
     @ConfigurationParameter(name = PARAM_READS_BASE_DOCUMENT, description = "Indicates if this reader reads segmented " +
             "annotation data. If set to false, the XMI data is expected to represent complete annotated documents. " +
@@ -109,13 +113,34 @@ public class XmiDBReader extends DBReader implements Initializable {
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
-            doGzip = (Boolean) getConfigParameterValue(PARAM_DO_GZIP);
             costosysConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
             try {
                 dbc = new DataBaseConnector(costosysConfig);
             } catch (FileNotFoundException e) {
                 throw new ResourceInitializationException(e);
             }
+
+            String table = (String) getConfigParameterValue(PARAM_TABLE);
+            try {
+                doGzip = true;
+                String dataTable = dbc.getNextDataTable(table);
+                log.trace("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
+                try (Connection conn = dbc.getConn()) {
+                    ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
+                    while (rs.next()) {
+                        byte[] xmiData = rs.getBytes("xmi");
+                        try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
+                            gzis.read();
+                        } catch (IOException e) {
+                            log.trace("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. ", e);
+                            doGzip = false;
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip);
             dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
             String[] additionalTables = (String[]) getConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLES);
