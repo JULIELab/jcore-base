@@ -125,7 +125,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "browser, whereas compressed data appears as opaque byte sequence. Compression is supposed to " +
             "reduce traffic over the network and save storage space on the database server.")
     private Boolean doGzip;
-    @ConfigurationParameter(name = PARAM_ATTRIBUTE_SIZE, description = "Integer that defines the maximum attribute size for " +
+    @ConfigurationParameter(name = PARAM_ATTRIBUTE_SIZE, mandatory = false, description = "Integer that defines the maximum attribute size for " +
             "the XMIs. Standard (parser wise) is 65536 * 8. It may be necessary to rise this value for larger documents " +
             "since the document text is stored as an attribute of an XMI element.")
     private Integer attributeSize;
@@ -207,7 +207,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "annotation type names by converting dots to underlines and adding a postgres schema qualification " +
             "according to the active data postgres schema defined in the CoStoSys configuration. If an annotation " +
             "table should be stored or looked up in another postgres schema, prepend the type name with the " +
-            "string 'q:' and the schema name, e.g. 'q:myschema.de.julielab.jcore.types.Token.")
+            "string '<schema>:', e.g. 'myschema:de.julielab.jcore.types.Token.")
     private String[] annotations;
 
     /*

@@ -74,9 +74,9 @@ public class AnnotationTableManager {
         // A table cannot be created if the name contains dots. All annotation
         // tables
         // will thus have dots replaced by underline.
-        String effectiveTableName = tableNameParameter.startsWith("q:") ? tableNameParameter.substring(tableNameParameter.indexOf('.')) : tableNameParameter;
+        String effectiveTableName = tableNameParameter.contains(":") ? tableNameParameter.substring(tableNameParameter.indexOf(':')+1) : tableNameParameter;
         effectiveTableName = effectiveTableName.replace(".", "_");
-        String schema = tableNameParameter.startsWith("q:") ? tableNameParameter.substring(0, tableNameParameter.indexOf('.')) : annotationStorageSchema;
+        String schema = tableNameParameter.contains(":") ? tableNameParameter.substring(0, tableNameParameter.indexOf('.')) : annotationStorageSchema;
         return schema + "." + effectiveTableName;
     }
 
