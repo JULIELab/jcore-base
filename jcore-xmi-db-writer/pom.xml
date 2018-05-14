@@ -1,29 +1,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>jcore-base</artifactId>
-		<groupId>de.julielab</groupId>
-		<version>2.3.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>jcore-xmi-db-writer</artifactId>
-	<name>JCoRe XMI Database Writer</name>
-	<description>Writes CAS data in XMI format into a relational (PostgreSQL) database. It is possible to write the whole XMI for each document into the database. However, it is also possible to define a list of annotations that should be written into separate tables. The JCoRe XMI Database Reader can then be used to assemble XMI data from a given set of annotations.</description>
-	<dependencies>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>costosys</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-xmi-splitter</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-types</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-	</dependencies>
-	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-db-writer</url>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jcore-base</artifactId>
+        <groupId>de.julielab</groupId>
+        <version>2.3.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>jcore-xmi-db-writer</artifactId>
+    <name>JCoRe XMI Database Writer</name>
+    <description>Writes CAS data in XMI format into a relational (PostgreSQL) database. It is possible to write the
+        whole XMI for each document into the database. However, it is also possible to define a list of annotations that
+        should be written into separate tables. The JCoRe XMI Database Reader can then be used to assemble XMI data from
+        a given set of annotations.
+    </description>
+    <dependencies>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>costosys</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-xmi-splitter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-db-writer</url>
 </project>

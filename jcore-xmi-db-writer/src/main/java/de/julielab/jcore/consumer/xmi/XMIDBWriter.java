@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
+import de.julielab.jcore.types.Token;
 import de.julielab.xml.util.XMISplitterException;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.uima.UimaContext;
@@ -49,6 +50,8 @@ import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
+import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -87,31 +90,35 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_STORE_ALL = "StoreEntireXmiData";
 
     public static final String PARAM_TABLE_DOCUMENT = "DocumentTable";
-    public static final String PARAM_ADDITIONAL_TABLES = "AnnotationsToStore";
+    public static final String PARAM_ANNOS_TO_STORE = "AnnotationsToStore";
     public static final String PARAM_STORE_RECURSIVELY = "StoreRecursively";
 
     public static final String PARAM_BASE_DOCUMENT_ANNOTATION_TYPES = "BaseDocumentAnnotationTypes";
 
     public static final String PARAM_DELETE_OBSOLETE_ANNOTATIONS = "DeleteObsoleteAnnotations";
     public static final String PARAM_ATTRIBUTE_SIZE = "IncreasedAttributeSize";
-
+    public static final String PARAM_ANNO_STORAGE_PG_SCHEMA = "AnnotationStoragePostgresSchema";
     public static final String PARAM_COMPONENT_DB_NAME = "ComponentDbName";
     public static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     private DataBaseConnector dbc;
-    @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "Is set to false, the attempt to write new data " +
+    @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
             "into an XMI document or annotation table that already has data for the respective document, will result " +
             "in an error. If set to true, there will first occur a check if there already is XMI data for the " +
             "currently written document and, if so, the contents will be updated. It is important to keep in " +
             "mind that the update also includes empty data. That is, if an annotation type is specified in " +
-            "'AdditionalTables' for which the current does not have data, possibly existing data will just be " +
+            "'" + PARAM_ANNOS_TO_STORE + "' for which the current does not have data, possibly existing data will just be " +
             "deleted.")
     private Boolean updateMode;
     @ConfigurationParameter(name = PARAM_DELETE_OBSOLETE_ANNOTATIONS, mandatory = false, defaultValue = "false",
-            description = "Boolean parameter that indicates whether annotations, that have become obsolete by updating " +
-                    "referenced annotations, should be deleted from their table. This can help to avoid errors when there " +
-                    "is a chance that the obsolete annotations could be read later, leading to invalid XMI. However, when " +
-                    "those annotations will just be updated next, the overhead of deleting them would not be necessary. ")
+            description = "Only in effect if '" + PARAM_STORE_BASE_DOCUMENT + "' is set to 'true'. Then, " +
+                    "already existing annotation tables are retrieved from an internal database table the is " +
+                    "specifically maintained to list existing annotation tables. When storing the base document, the " +
+                    "annotations in these tables are removed for the document if this parameter is set to 'true', " +
+                    "except tables specified in '" + PARAM_ANNOS_TO_STORE + "'. " +
+                    "The idea is that " +
+                    "when storing the base document, all existing annotations become obsolete since they refer " +
+                    "to a base document that no longer exists.")
     private Boolean deleteObsolete;
     @ConfigurationParameter(name = PARAM_DO_GZIP, description = "Determines if the XMI data should be stored " +
             "compressed or uncompressed. Without compression, the data will be directly viewable in a database " +
@@ -124,7 +131,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private Integer attributeSize;
     @ConfigurationParameter(name = PARAM_STORE_ALL, description = "Boolean parameter indicating if the whole document " +
             "should be stored as one large XMI data block. " +
-            "In this case there must not be any annotations specified for selection and the 'StoreBaseDocument' " +
+            "In this case there must not be any annotations specified for selection and the '" + PARAM_STORE_BASE_DOCUMENT + "' " +
             "parameter will have no effect.")
     private Boolean storeAll;
     @ConfigurationParameter(name = PARAM_TABLE_DOCUMENT, description = "String parameter indicating the name of the " +
@@ -145,16 +152,19 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     @ConfigurationParameter(name = PARAM_STORE_BASE_DOCUMENT, description = "Boolean parameter indicating if the base " +
             "document should be stored as well when annotations are specified for selection. The base document is " +
             "the part of the XMI file that includes the document text. If you want to store annotations right with " +
-            "the base document, specify those in the 'BaseDocumentAnnotationTypes' parameter.")
+            "the base document, specify those in the '" + PARAM_BASE_DOCUMENT_ANNOTATION_TYPES + "' parameter.")
     private Boolean storeBaseDocument;
     @ConfigurationParameter(name = PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, mandatory = false, description = "Array " +
             "parameter that takes Java annotation type names. These names will be stored with the base document, " +
-            "if the 'StoreBaseDocument' parameter is set to true. The table names are directly derived from the " +
-            "annotation type names by converting dots to underlines and adding a postgres schema qualification " +
-            "according to the active data postgres schema defined in the CoStoSys configuration. If an annotation " +
-            "table should be stored or looked up in another postgres schema, prepend the type name with the " +
-            "string 'q:' and the schema name, e.g. 'q:myschema.de.julielab.jcore.types.Token.")
+            "if the 'StoreBaseDocument' parameter is set to true.")
     private Set<String> baseDocumentAnnotationTypes;
+    @ConfigurationParameter(name = PARAM_ANNO_STORAGE_PG_SCHEMA, mandatory = false, description =
+            "This optional parameter specifies the Postgres schema in which the XMI annotation storage tables are located by default. If " +
+                    "omitted, the active data schema from the CoStoSys configuration is used. The tables derived from " +
+                    "the annotation types specified with the '" + PARAM_ANNOS_TO_STORE + "' " +
+                    "parameter will be stored in this postgres schema. The default can be overwritten for individual " +
+                    "types. See the description of the 'AnnotationsToStore' parameter.")
+    private String annotationStorageSchema;
 
     private XmiSplitter splitter;
     // Must be a linked HashMap so that the document table comes first when
@@ -188,11 +198,16 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "the document ID. Thus, at the moment, primary keys can only consist of a single element when using " +
             "this component. This is a shortcoming of this specific component and must be changed here, if necessary.")
     private String dbcConfigPath;
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = "An array of qualified " +
-            "UIMA type names. Annotations of those types are segmented away from the serialized document annotation " +
-            "graph in XMI format for storage in separate tables. When the 'StoreRecursively' parameter is set to true, " +
+    @ConfigurationParameter(name = PARAM_ANNOS_TO_STORE, mandatory = false, description = "An array of qualified " +
+            "UIMA type names, for instance de.julielab.jcore.types.Sentence. Annotations of those types are segmented " +
+            "away from the serialized document annotation " +
+            "graph in XMI format for storage in separate tables. When the '" + PARAM_STORE_RECURSIVELY + "' parameter is set to true, " +
             "annotations are stored together with referenced annotations, if those are not specified in the list " +
-            "of additional tables themselves.")
+            "of additional tables themselves. The table names are directly derived from the " +
+            "annotation type names by converting dots to underlines and adding a postgres schema qualification " +
+            "according to the active data postgres schema defined in the CoStoSys configuration. If an annotation " +
+            "table should be stored or looked up in another postgres schema, prepend the type name with the " +
+            "string 'q:' and the schema name, e.g. 'q:myschema.de.julielab.jcore.types.Token.")
     private String[] annotations;
 
     /*
@@ -208,6 +223,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         checkParameters(aContext);
 
         dbcConfigPath = (String) aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG);
+        try {
+            dbc = new DataBaseConnector(dbcConfigPath);
+        } catch (FileNotFoundException e1) {
+            throw new ResourceInitializationException(e1);
+        }
         updateMode = aContext.getConfigParameterValue(PARAM_UPDATE_MODE) == null ? false
                 : (Boolean) aContext.getConfigParameterValue(PARAM_UPDATE_MODE);
         deleteObsolete = aContext.getConfigParameterValue(PARAM_DELETE_OBSOLETE_ANNOTATIONS) == null ? false
@@ -224,16 +244,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         .orElse(new String[0]))
                 .collect(Collectors.toSet());
         attributeSize = (Integer) aContext.getConfigParameterValue(PARAM_ATTRIBUTE_SIZE);
-        componentDbName = (String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME);
-
-        if (componentDbName == null)
-            componentDbName = getClass().getSimpleName();
-
-        try {
-            dbc = new DataBaseConnector(dbcConfigPath);
-        } catch (FileNotFoundException e1) {
-            throw new ResourceInitializationException(e1);
-        }
+        componentDbName = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME)).orElse(getClass().getSimpleName());
+        annotationStorageSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
 
         schemaDocument = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
         schemaAnnotation = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
@@ -242,7 +254,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             annotationsToStore.add(docTableParamValue);
             recursively = false;
         } else {
-            annotations = (String[]) aContext.getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
+            annotations = (String[]) aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE);
             if (null != annotations)
                 annotationsToStore = new ArrayList<String>(Arrays.asList(annotations));
             else
@@ -253,7 +265,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
         try {
             annotationTableManager = new AnnotationTableManager(dbc, docTableParamValue, annotationsToStore, schemaDocument,
-                    schemaAnnotation, storeAll, storeBaseDocument);
+                    schemaAnnotation, storeAll, storeBaseDocument, annotationStorageSchema);
         } catch (TableSchemaMismatchException e) {
             throw new ResourceInitializationException(e);
         }
@@ -335,7 +347,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             throw new ResourceInitializationException(new IllegalStateException(
                     "The document table is null. You must provide it to either store the entire xmi data, to store the base document "
                             + " or to update the next possible xmi id."));
-        String[] annotations = (String[]) aContext.getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
+        String[] annotations = (String[]) aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE);
         if ((Boolean) aContext.getConfigParameterValue(PARAM_STORE_ALL) == null && annotations == null
                 && (Boolean) aContext.getConfigParameterValue(PARAM_STORE_BASE_DOCUMENT) == null) {
             throw new ResourceInitializationException(new IllegalStateException(

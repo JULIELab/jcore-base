@@ -33,6 +33,7 @@ public class AnnotationTableManager {
     private Boolean storeAll;
 
     private String dbDocumentTableName;
+    private String annotationStorageSchema;
 
     private Boolean storeBaseDocument;
 
@@ -41,7 +42,7 @@ public class AnnotationTableManager {
     private List<String> annotationsToStore;
 
     public AnnotationTableManager(DataBaseConnector dbc, String rawDocumentTableName, List<String> annotationsToStore,
-                                  String documentTableSchema, String annotationTableSchema, Boolean storeAll, Boolean storeBaseDocument) throws TableSchemaMismatchException {
+                                  String documentTableSchema, String annotationTableSchema, Boolean storeAll, Boolean storeBaseDocument, String annotationStorageSchema) throws TableSchemaMismatchException {
         this.dbc = dbc;
         this.annotationsToStore = annotationsToStore;
         this.documentTableSchema = documentTableSchema;
@@ -49,6 +50,7 @@ public class AnnotationTableManager {
         this.storeAll = storeAll;
         this.storeBaseDocument = storeBaseDocument;
         this.dbDocumentTableName = getEffectiveDocumentTableName(rawDocumentTableName);
+        this.annotationStorageSchema = annotationStorageSchema;
         createTable(rawDocumentTableName, documentTableSchema);
         for (String annotation : annotationsToStore)
             createTable(annotation, annotationTableSchema);
@@ -74,7 +76,7 @@ public class AnnotationTableManager {
         // will thus have dots replaced by underline.
         String effectiveTableName = tableNameParameter.startsWith("q:") ? tableNameParameter.substring(tableNameParameter.indexOf('.')) : tableNameParameter;
         effectiveTableName = effectiveTableName.replace(".", "_");
-        String schema = tableNameParameter.startsWith("q:") ? tableNameParameter.substring(0, tableNameParameter.indexOf('.')) : dbc.getActivePGSchema();;
+        String schema = tableNameParameter.startsWith("q:") ? tableNameParameter.substring(0, tableNameParameter.indexOf('.')) : annotationStorageSchema;
         return schema + "." + effectiveTableName;
     }
 
