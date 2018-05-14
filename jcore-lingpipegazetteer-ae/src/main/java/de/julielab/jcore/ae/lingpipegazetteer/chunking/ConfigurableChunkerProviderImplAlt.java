@@ -23,6 +23,7 @@ import com.aliasi.spell.WeightedEditDistance;
 import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
 import com.aliasi.tokenizer.TokenizerFactory;
 import com.ibm.icu.text.Transliterator;
+import de.julielab.java.utilities.UriUtilities;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -34,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.net.URL;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
@@ -85,16 +86,16 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
 	private final double APPROX_MATCH_THRESHOLD_SCORE = 100;
 	private Set<String> stopWords = new HashSet<String>();
 	private String stopwordFilePath;
-	private URL dictionaryUrl;
+    private URI resourceUri;
 
-	public Chunker getChunker() {
+    public Chunker getChunker() {
 		return dictChunker;
 	}
 
 	public void load(DataResource resource) throws ResourceInitializationException {
 
-		dictionaryUrl = resource.getUrl();
-		LOGGER.info("Creating dictionary chunker with dictionary loaded from " + dictionaryUrl);
+        resourceUri = resource.getUri();
+        LOGGER.info("Creating dictionary chunker with dictionary loaded from " + resourceUri);
 
 		ConfigurationParameterSettings settings = resource.getMetaData().getConfigurationParameterSettings();
 		stopwordFilePath = (String) settings.getParameterValue(PARAM_STOPWORD_FILE);
@@ -125,7 +126,7 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
 
 
 		try {
-			dictFile = resource.getInputStream();
+			dictFile = UriUtilities.getInputStreamFromUri(resource.getUri());
 			stopFile = readStreamFromFileSystemOrClassPath(stopwordFilePath);
 			initStopWords(stopFile);
 			readDictionary(dictFile);
@@ -229,7 +230,7 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
 			dict = new MapDictionary<String>();
 		}
 		// now read from file and add entries
-		LOGGER.info("readDictionary() - adding entries from " + dictionaryUrl.toString() + " to dictionary...");
+		LOGGER.info("readDictionary() - adding entries from " + resourceUri.toString() + " to dictionary...");
 		BufferedReader bf = null;
 		try {
 			bf = new BufferedReader(new InputStreamReader(dictFileStream));

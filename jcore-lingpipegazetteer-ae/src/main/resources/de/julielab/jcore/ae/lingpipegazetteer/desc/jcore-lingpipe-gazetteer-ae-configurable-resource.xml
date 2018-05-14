@@ -73,13 +73,11 @@
             <externalResource>
                 <name>ConfigurableDictionaryChunkerProvider</name>
                 <description>Employs the configurable alternative chunker implementation. This alternative
-                implementation is primarily meant for approximate matching and should used in this intent.
+                implementation is primarily meant for approximate matching and should be used in this intent.
                 It offers text normalization for better dictionary matching and the removal of accents (transliteration).
                 It is configured in the component descriptor and directly references the dictionary URL.</description>
                 <configurableDataResourceSpecifier>
-                    <url>
-
-                    </url>
+                    <url/>
                     <resourceMetaData>
                         <name/>
                         <configurationParameters>
@@ -102,12 +100,6 @@
                                 <mandatory>true</mandatory>
                             </configurationParameter>
                             <configurationParameter>
-                                <name>StopWordFile</name>
-                                <type>String</type>
-                                <multiValued>false</multiValued>
-                                <mandatory>true</mandatory>
-                            </configurationParameter>
-                            <configurationParameter>
                                 <name>NormalizeText</name>
                                 <type>Boolean</type>
                                 <multiValued>false</multiValued>
@@ -116,6 +108,12 @@
                             <configurationParameter>
                                 <name>TransliterateText</name>
                                 <type>Boolean</type>
+                                <multiValued>false</multiValued>
+                                <mandatory>true</mandatory>
+                            </configurationParameter>
+                            <configurationParameter>
+                                <name>StopWordFile</name>
+                                <type>String</type>
                                 <multiValued>false</multiValued>
                                 <mandatory>true</mandatory>
                             </configurationParameter>
