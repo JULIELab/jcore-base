@@ -25,7 +25,7 @@ public class XmiDBSetupHelper {
         AnalysisEngine jsbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae-biomedical-english");
         AnalysisEngine jtbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jtbd.desc.jcore-jtbd-ae-biomedical-english");
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
-                XMIDBWriter.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
                 XMIDBWriter.PARAM_STORE_ALL, false,
                 XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,

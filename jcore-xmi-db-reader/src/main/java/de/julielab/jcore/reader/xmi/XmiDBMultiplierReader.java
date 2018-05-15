@@ -32,7 +32,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         doGzip = Optional.ofNullable((Boolean) context.getConfigParameterValue(PARAM_DO_GZIP)).orElse(false);
-//        String[] additionalTables = (String[]) context.getConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLES);
+//        String[] additionalTables = (String[]) context.getConfigParameterValue(SubsetReaderConstants.PARAM_ANNOS_TO_STORE);
 //        List<Map<String, String>> activeTableSchemaPrimaryKey;
 //        if (additionalTables != null) {
 //            // As a convenience and to avoid mistakes, we want to automatically fill the annotation table schemas into the
