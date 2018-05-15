@@ -31,6 +31,8 @@ public class XmiDBSetupHelper {
                 XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,
                 XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents",
                 XMIDBWriter.PARAM_DO_GZIP, gzip,
+                XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
+                XMIDBWriter.PARAM_UPDATE_MODE, true,
                 XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), Header.class.getCanonicalName()}
                 );
         JCas jCas = getJCasWithRequiredTypes();

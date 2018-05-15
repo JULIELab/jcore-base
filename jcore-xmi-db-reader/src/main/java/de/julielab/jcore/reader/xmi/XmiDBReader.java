@@ -133,7 +133,7 @@ public class XmiDBReader extends DBReader implements Initializable {
                         try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
                             gzis.read();
                         } catch (IOException e) {
-                            log.trace("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. ", e);
+                            log.trace("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
                             doGzip = false;
                         }
                     }
