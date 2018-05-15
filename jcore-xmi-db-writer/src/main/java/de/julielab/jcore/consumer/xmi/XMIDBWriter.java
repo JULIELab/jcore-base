@@ -248,6 +248,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         annotationStorageSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
 
         List<String> annotationsToStoreTableNames = new ArrayList<>();
+        annotationsToStore = Collections.emptyList();
         if (storeAll) {
             schemaDocument = dbc.addXmiDocumentFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
         } else {
@@ -255,7 +256,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             schemaAnnotation = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
             annotations = (String[]) aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE);
             if (null != annotations)
-                annotationsToStore = new ArrayList<String>(Arrays.asList(annotations));
+                annotationsToStore = new ArrayList<>(Arrays.asList(annotations));
             else
                 annotationsToStore = Collections.emptyList();
             recursively = (Boolean) aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY) == null ? false
