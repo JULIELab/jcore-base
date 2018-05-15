@@ -34,7 +34,7 @@
                 <description>Integer that defines the maximum attribute size for the XMIs. Standard (parser wise) is 65536 * 8. It may be necessary to rise this value for larger documents since the document text is stored as an attribute of an XMI element.</description>
                 <type>Integer</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>StoreEntireXmiData</name>

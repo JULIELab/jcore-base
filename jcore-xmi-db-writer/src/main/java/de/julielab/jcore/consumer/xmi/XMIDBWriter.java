@@ -262,6 +262,22 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             recursively = (Boolean) aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY) == null ? false
                     : (Boolean) aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY);
 
+        }
+        try {
+            annotationTableManager = new AnnotationTableManager(dbc, docTableParamValue, annotationsToStore, schemaDocument,
+                    schemaAnnotation, storeAll, storeBaseDocument, annotationStorageSchema);
+        } catch (TableSchemaMismatchException e) {
+            throw new ResourceInitializationException(e);
+        }
+        // Important: The document table must come first because the
+        // annotation tables have foreign keys to the document table.
+        // Thus, we can't add annotations for documents not in the
+        // document table.
+        effectiveDocTableName = annotationTableManager.getEffectiveDocumentTableName(docTableParamValue);
+        if (storeBaseDocument || storeAll) {
+            serializedCASes.put(effectiveDocTableName, new ArrayList<>());
+        }
+        if (!storeAll) {
             for (String annotation : annotationsToStore) {
                 String annotationTableName = annotationTableManager.convertAnnotationTypeToTableName(annotation, storeAll);
                 if (dbc.tableExists(annotationTableName))
@@ -272,24 +288,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             }
         }
 
-        try {
-            annotationTableManager = new AnnotationTableManager(dbc, docTableParamValue, annotationsToStore, schemaDocument,
-                    schemaAnnotation, storeAll, storeBaseDocument, annotationStorageSchema);
-        } catch (TableSchemaMismatchException e) {
-            throw new ResourceInitializationException(e);
-        }
-        effectiveDocTableName = annotationTableManager.getEffectiveDocumentTableName(docTableParamValue);
         // does currently only compare the primary keys...
         if (dbc.tableExists(effectiveDocTableName))
             checkTableDefinition(effectiveDocTableName, schemaDocument);
-        // Important: The document table must come first because the
-        // annotation tables have foreign keys to the document table.
-        // Thus, we can't add annotations for documents not in the
-        // document table.
-        if (storeBaseDocument) {
-            serializedCASes.put(effectiveDocTableName, new ArrayList<>());
-        }
-
 
         if (updateMode) {
             List<String> obsoleteAnnotationTableNames = annotationTableManager.getObsoleteAnnotationTableNames();
@@ -360,8 +361,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 && (Boolean) aContext.getConfigParameterValue(PARAM_STORE_ALL) && annotations != null
                 && annotations.length > 0) {
             throw new ResourceInitializationException(new IllegalStateException(
-                    "The parameter to store the the entire xmi data is checked and there are annotations specified to store."
-                            + " You can only either write the entire CAS data or select annotations, but not both!"));
+                    "The parameter to store the entire xmi data is checked and there are annotations specified to store."
+                            + " You can only either write the entire CAS data or select annotations, but not both."));
         }
     }
 
@@ -420,39 +421,39 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
         byte[] completeXmiData = baos.toByteArray();
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(completeXmiData);
         try {
-            // Split the xmi data.
-            XmiSplitterResult result = splitter.process(bais, aJCas, nextXmiId, baseDocumentSofaIdMap);
-            Map<String, ByteArrayOutputStream> splitXmiData = result.xmiData;
-            // adapt the map keys to table names (currently, the keys are the
-            // Java type names)
-            Map<String, ByteArrayOutputStream> convertedMap = new HashMap<>();
-            for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet()) {
-                if (!e.getKey().equals(docTableParamValue))
-                    convertedMap.put(annotationTableManager.convertAnnotationTypeToTableName(e.getKey(), storeAll),
-                            e.getValue());
-                else
-                    convertedMap.put(effectiveDocTableName, e.getValue());
-            }
-            splitXmiData = convertedMap;
-            Integer newXmiId = result.maxXmiId;
-            Map<String, String> nsAndXmiVersionMap = result.namespaces;
-            Map<Integer, String> currentSofaXmiIdMap = result.currentSofaIdMap;
-            metaTableManager.manageXMINamespaces(nsAndXmiVersionMap);
-
-            if (currentSofaXmiIdMap.isEmpty())
-                throw new IllegalStateException(
-                        "The XmiSplitter returned an empty Sofa XMI ID map. This is a critical errors since it means " +
-                                "that the splitter was not able to resolve the correct Sofa XMI IDs for the annotations " +
-                                "that should be stored now.");
-            log.trace("Updating max xmi id of document {}. New max xmi id: {}", docId, newXmiId);
-            log.trace("Sofa ID map for this document: {}", currentSofaXmiIdMap);
             if (storeAll) {
                 Object storedData = handleDataZipping(completeXmiData, schemaDocument);
                 serializedCASes.get(effectiveDocTableName)
-                        .add(new DocumentXmiData(docId, storedData, newXmiId, currentSofaXmiIdMap));// new
+                        .add(new DocumentXmiData(docId, storedData, 0, null));// new
             } else {
+                ByteArrayInputStream bais = new ByteArrayInputStream(completeXmiData);
+                // Split the xmi data.
+                XmiSplitterResult result = splitter.process(bais, aJCas, nextXmiId, baseDocumentSofaIdMap);
+                Map<String, ByteArrayOutputStream> splitXmiData = result.xmiData;
+                // adapt the map keys to table names (currently, the keys are the
+                // Java type names)
+                Map<String, ByteArrayOutputStream> convertedMap = new HashMap<>();
+                for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet()) {
+                    if (!e.getKey().equals(docTableParamValue))
+                        convertedMap.put(annotationTableManager.convertAnnotationTypeToTableName(e.getKey(), storeAll),
+                                e.getValue());
+                    else
+                        convertedMap.put(effectiveDocTableName, e.getValue());
+                }
+                splitXmiData = convertedMap;
+                Integer newXmiId = result.maxXmiId;
+                Map<String, String> nsAndXmiVersionMap = result.namespaces;
+                Map<Integer, String> currentSofaXmiIdMap = result.currentSofaIdMap;
+                metaTableManager.manageXMINamespaces(nsAndXmiVersionMap);
+
+                if (currentSofaXmiIdMap.isEmpty())
+                    throw new IllegalStateException(
+                            "The XmiSplitter returned an empty Sofa XMI ID map. This is a critical errors since it means " +
+                                    "that the splitter was not able to resolve the correct Sofa XMI IDs for the annotations " +
+                                    "that should be stored now.");
+                log.trace("Updating max xmi id of document {}. New max xmi id: {}", docId, newXmiId);
+                log.trace("Sofa ID map for this document: {}", currentSofaXmiIdMap);
                 for (String tableName : serializedCASes.keySet()) {
                     boolean isDocumentTable = tableName.equals(effectiveDocTableName);
                     ByteArrayOutputStream dataBaos = splitXmiData.get(tableName);
@@ -547,6 +548,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
      * @return
      */
     private Map<String, Integer> getOriginalSofaIdMappings(JCas aJCas, DocumentId docId) {
+        if (storeAll)
+            return Collections.emptyMap();
         XmiMetaData xmiMetaData;
         try {
             xmiMetaData = JCasUtil.selectSingle(aJCas, XmiMetaData.class);
@@ -578,7 +581,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             // If we store the base document and there is no current XmiMetaData
             // object, then we begin from scratch or want to overwrite the max
             // XMI ID on purpose. Don't throw an error then.
-            if (!storeBaseDocument)
+            if (!storeBaseDocument && !storeAll)
                 throw new AnalysisEngineProcessException(new NullPointerException(
                         "Error: Could not find the max XMI ID in the CAS. Explanation: The option to store the base " +
                                 "document (i.e. the document and possible same basic document meta " +

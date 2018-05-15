@@ -34,6 +34,8 @@ public class DocumentXmiData extends XmiData {
 	 * @param map
 	 */
 	public void setSofaXmiIdMap(Map<Integer, String> map) {
+		if (map == null)
+			return;
 		List<String> mappings = new ArrayList<>();
 		for (Entry<Integer, String> e : map.entrySet())
 			mappings.add(String.valueOf(e.getKey()) + "=" + e.getValue());

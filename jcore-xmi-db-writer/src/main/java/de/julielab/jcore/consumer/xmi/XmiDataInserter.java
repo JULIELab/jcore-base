@@ -111,10 +111,11 @@ public class XmiDataInserter {
                     if (log.isTraceEnabled())
                         log.trace("{}={}", fName.apply(pkIndex), row.get(fName.apply(pkIndex)));
                 }
+                // This statement puts the XMI data into the first column after the primary key
                 row.put(fName.apply(i++), results.data);
                 if (log.isTraceEnabled())
                     log.trace("{}={}", fName.apply(i - 1), row.get(fName.apply(i - 1)));
-                if (results.getClass().equals(DocumentXmiData.class)) {
+                if (results.getClass().equals(DocumentXmiData.class) && !storeAll) {
                     if (fieldConfig.getFields().size() - fieldConfig.getPrimaryKey().length < 3)
                         throw new IllegalArgumentException("The XMI data table schema is set to the schema with name " +
                                 "\"" + schemaDocument + "\" that specifies the fields \"" +
@@ -206,7 +207,7 @@ public class XmiDataInserter {
         if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName))
             return;
 
-        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(schemaAnnotation);
+        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(schemaDocument);
         String[] primaryKey = annotationFieldConfig.getPrimaryKey();
         if (primaryKey.length > 1)
             throw new IllegalArgumentException("Currently, only one-element primary keys are supported.");
