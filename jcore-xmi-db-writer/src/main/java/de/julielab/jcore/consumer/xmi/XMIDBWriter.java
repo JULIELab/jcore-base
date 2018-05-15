@@ -247,12 +247,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         componentDbName = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME)).orElse(getClass().getSimpleName());
         annotationStorageSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
 
-
+        List<String> annotationsToStoreTableNames = new ArrayList<>();
         if (storeAll) {
             schemaDocument = dbc.addXmiDocumentFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
-            annotationsToStore = new ArrayList<String>();
-            annotationsToStore.add(docTableParamValue);
-            recursively = false;
         } else {
             schemaDocument = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
             schemaAnnotation = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
@@ -263,6 +260,15 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 annotationsToStore = Collections.emptyList();
             recursively = (Boolean) aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY) == null ? false
                     : (Boolean) aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY);
+
+            for (String annotation : annotationsToStore) {
+                String annotationTableName = annotationTableManager.convertAnnotationTypeToTableName(annotation, storeAll);
+                if (dbc.tableExists(annotationTableName))
+                    checkTableDefinition(annotationTableName, schemaAnnotation);
+                serializedCASes.put(annotationTableName, new ArrayList<>());
+                tablesWithoutData.put(annotationTableName, new ArrayList<>());
+                annotationsToStoreTableNames.add(annotationTableName);
+            }
         }
 
         try {
@@ -282,15 +288,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         if (storeBaseDocument) {
             serializedCASes.put(effectiveDocTableName, new ArrayList<>());
         }
-        List<String> annotationsToStoreTableNames = new ArrayList<>();
-        for (String annotation : annotationsToStore) {
-            String annotationTableName = annotationTableManager.convertAnnotationTypeToTableName(annotation, storeAll);
-            if (dbc.tableExists(annotationTableName))
-                checkTableDefinition(annotationTableName, schemaAnnotation);
-            serializedCASes.put(annotationTableName, new ArrayList<>());
-            tablesWithoutData.put(annotationTableName, new ArrayList<>());
-            annotationsToStoreTableNames.add(annotationTableName);
-        }
+
+
         if (updateMode) {
             List<String> obsoleteAnnotationTableNames = annotationTableManager.getObsoleteAnnotationTableNames();
             if (!obsoleteAnnotationTableNames.isEmpty()) {
