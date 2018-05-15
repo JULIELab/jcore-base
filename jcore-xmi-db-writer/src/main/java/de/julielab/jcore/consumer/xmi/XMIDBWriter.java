@@ -247,13 +247,15 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         componentDbName = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME)).orElse(getClass().getSimpleName());
         annotationStorageSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
 
-        schemaDocument = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
-        schemaAnnotation = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
+
         if (storeAll) {
+            schemaDocument = dbc.addXmiDocumentFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
             annotationsToStore = new ArrayList<String>();
             annotationsToStore.add(docTableParamValue);
             recursively = false;
         } else {
+            schemaDocument = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
+            schemaAnnotation = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
             annotations = (String[]) aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE);
             if (null != annotations)
                 annotationsToStore = new ArrayList<String>(Arrays.asList(annotations));
