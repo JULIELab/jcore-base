@@ -28,7 +28,6 @@ public class XmiDataInserter {
     private String schemaDocument;
     private String schemaAnnotation;
     private Boolean storeAll;
-    private String docTableName;
     private String effectiveDocTableName;
     private DataBaseConnector dbc;
     private List<String> annotationsToStore;
@@ -38,12 +37,11 @@ public class XmiDataInserter {
 
     private List<DocumentId> processedDocumentIds;
 
-    public XmiDataInserter(List<String> annotationsToStore, String docTableName, String effectiveDocTableName,
+    public XmiDataInserter(List<String> annotationsToStore, String effectiveDocTableName,
                            DataBaseConnector dbc, String schemaDocument, String schemaAnnotation, Boolean storeAll,
                            Boolean storeBaseDocument, Boolean updateMode, String componentDbName) {
         super();
         this.annotationsToStore = annotationsToStore;
-        this.docTableName = docTableName;
         this.effectiveDocTableName = effectiveDocTableName;
         this.dbc = dbc;
         this.schemaDocument = schemaDocument;
@@ -325,7 +323,7 @@ public class XmiDataInserter {
         // pk1 = ? AND pk2 = ? AND pk3 = ? ...
         String pkElementCondition = StringUtils.join(pkPsPlaceholder, " AND ");
 
-        String updateString = "UPDATE " + dbc.getActiveDataPGSchema() + "." + docTableName + " SET " + FIELD_MAX_XMI_ID
+        String updateString = "UPDATE " +effectiveDocTableName + " SET " + FIELD_MAX_XMI_ID
                 + " = ? WHERE " + pkElementCondition;
 
         try {

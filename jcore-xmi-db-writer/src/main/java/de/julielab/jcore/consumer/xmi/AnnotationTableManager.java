@@ -68,7 +68,7 @@ public class AnnotationTableManager {
      *                           stored
      * @return The normalized table name
      */
-    String convertAnnotationTypeToTableName(String tableNameParameter, boolean storeAll) {
+   public String convertAnnotationTypeToTableName(String tableNameParameter, boolean storeAll) {
         if (storeAll || tableNameParameter.equals(dbDocumentTableName))
             return getEffectiveDocumentTableName(tableNameParameter);
         // A table cannot be created if the name contains dots. All annotation

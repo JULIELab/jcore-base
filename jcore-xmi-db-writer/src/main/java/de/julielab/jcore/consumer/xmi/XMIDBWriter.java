@@ -136,7 +136,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private Boolean storeAll;
     @ConfigurationParameter(name = PARAM_TABLE_DOCUMENT, description = "String parameter indicating the name of the " +
             "table where the XMI data will be stored (if StoreEntireXmiData is true) or " +
-            "where the base document will be stored (if StoreBaseDocument is true). If the name is schema qualified, " +
+            "where the base document is (to be) stored (if the base document or annotation data is written). If the name is schema qualified, " +
             "i.e. contains a dot, the table name will be used as provided. If no schema is qualified, the active " +
             "data postgres schema as configured in the CoStoSys configuration will be used to find or create the " +
             "table.")
@@ -330,7 +330,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Annotation table schema (only required if annotations are stored separatly): {}", schemaAnnotation);
 
         metaTableManager = new MetaTableManager(dbc);
-        annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, docTableParamValue, effectiveDocTableName, dbc,
+        annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, effectiveDocTableName, dbc,
                 schemaDocument, schemaAnnotation, storeAll, storeBaseDocument, updateMode, componentDbName);
     }
 
