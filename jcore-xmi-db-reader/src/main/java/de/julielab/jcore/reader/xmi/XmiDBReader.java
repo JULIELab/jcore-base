@@ -55,6 +55,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
@@ -111,51 +112,74 @@ public class XmiDBReader extends DBReader implements Initializable {
      */
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
-        if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
-            costosysConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
-            try {
-                dbc = new DataBaseConnector(costosysConfig);
-            } catch (FileNotFoundException e) {
-                throw new ResourceInitializationException(e);
-            }
-
-            String table = (String) getConfigParameterValue(PARAM_TABLE);
-            String dataTable = null;
-            try {
-                doGzip = true;
-                dataTable = dbc.getNextDataTable(table);
-                log.trace("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
-                try (Connection conn = dbc.getConn()) {
-                    ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
-                    while (rs.next()) {
-                        byte[] xmiData = rs.getBytes("xmi");
-                        try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
-                            gzis.read();
-                        } catch (IOException e) {
-                            log.trace("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
-                            doGzip = false;
-                        }
-                    }
-                }
-            } catch (SQLException e) {
-                if (e.getMessage().contains("does not exist"))
-                    log.error("An exception occurred when trying to read the xmi column of the data table \"{}\". It seems the table does not contain XMI data and this is invalid to use with this reader.", dataTable);
-                throw new ResourceInitializationException(e);
-            }
-
-            FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip);
-            dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
-            String[] additionalTables = (String[]) getConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLES);
-            if (additionalTables != null && additionalTables.length > 0) {
-                FieldConfig xmiAnnotationTableSchema = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip);
-                setConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS, new String[]{xmiAnnotationTableSchema.getName()});
-            }
-            XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName());
-        }
+        adaptReaderConfigurationForXmiData();
         super.initialize(context);
         initializer = new Initializer(this, dbc, additionalTableNames, joinTables);
         initializer.initialize(context);
         casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
+    }
+
+    /**
+     * Must be called before super.initialize(context). Sets up table schemas for XMI data so the user doesn't have
+     * to do it.
+     * @throws ResourceInitializationException
+     */
+    private void adaptReaderConfigurationForXmiData() throws ResourceInitializationException {
+        costosysConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
+        try {
+            dbc = new DataBaseConnector(costosysConfig);
+        } catch (FileNotFoundException e) {
+            throw new ResourceInitializationException(e);
+        }
+        List<Map<String, String>> primaryKeyFields = dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList());
+        if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
+
+            String table = (String) getConfigParameterValue(PARAM_TABLE);
+            String dataTable = null;
+            determineDataInGzipFormat(table, dataTable);
+
+            FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
+            dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
+            String[] additionalTables = (String[]) getConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLES);
+            if (additionalTables != null && additionalTables.length > 0) {
+                FieldConfig xmiAnnotationTableSchema = dbc.addXmiAnnotationFieldConfiguration(primaryKeyFields, doGzip);
+                setConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS, new String[]{xmiAnnotationTableSchema.getName()});
+            }
+            XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName());
+        } else {
+            String[] annotationTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
+            if (annotationTableNames == null || annotationTableNames.length == 0) {
+                // Complete XMI reading mode
+                String table = (String) getConfigParameterValue(PARAM_TABLE);
+                determineDataInGzipFormat(table, dataTable);
+                FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
+                dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
+            }
+        }
+    }
+
+    private void determineDataInGzipFormat(String table, String dataTable) throws ResourceInitializationException {
+        try {
+            doGzip = true;
+            dataTable = dbc.getNextDataTable(table);
+            log.trace("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
+            try (Connection conn = dbc.getConn()) {
+                ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
+                while (rs.next()) {
+                    byte[] xmiData = rs.getBytes("xmi");
+                    try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
+                        gzis.read();
+                    } catch (IOException e) {
+                        log.trace("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
+                        doGzip = false;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            if (e.getMessage().contains("does not exist"))
+                log.error("An exception occurred when trying to read the xmi column of the data table \"{}\". It seems the table does not contain XMI data and this is invalid to use with this reader.", dataTable);
+            throw new ResourceInitializationException(e);
+        }
     }
 
     /*
