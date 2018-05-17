@@ -36,6 +36,11 @@ public class TopicModelProvider implements ITopicModelProvider {
     }
 
     @Override
+    public Object[][] getTopWords(int numwords){
+        return model.malletModel.getTopWords(numwords);
+    }
+
+    @Override
     public Model getModel() {
         return model;
     }

@@ -72,7 +72,6 @@ public class XmiDBReader extends DBReader implements Initializable {
     public static final String PARAM_READS_BASE_DOCUMENT = Initializer.PARAM_READS_BASE_DOCUMENT;
     public static final String PARAM_INCREASED_ATTRIBUTE_SIZE = Initializer.PARAM_INCREASED_ATTRIBUTE_SIZE;
     public static final String PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE = Initializer.PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE;
-    public static final String PARAM_DO_GZIP = "DoGzip";
 
     private final static Logger log = LoggerFactory.getLogger(XmiDBReader.class);
     private Boolean doGzip;

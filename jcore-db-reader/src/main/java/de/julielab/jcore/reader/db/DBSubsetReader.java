@@ -195,7 +195,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
      * @throws ResourceInitializationException
      */
     protected void checkAdditionalTableParameters(String[] additionalTableNames, String[] additionalTableSchemas) throws ResourceInitializationException {
-        if (additionalTableNames != null && additionalTableSchemas == null) {
+        if (additionalTableNames != null && additionalTableNames.length != 0 && additionalTableSchemas == null) {
             throw new ResourceInitializationException(new IllegalArgumentException("If multiple tables will be joined"
                     + " the table schema for the additional tables (besides the base document table which should be configured using the database connector configuration) must be specified."));
         }

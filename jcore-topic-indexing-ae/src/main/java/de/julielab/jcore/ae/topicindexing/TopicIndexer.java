@@ -90,7 +90,7 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
             String modelVersion = savedModel.modelVersion;
             String docId = JCoReTools.getDocId(aJCas);
             if (!savedModel.ModelIdpubmedId.containsValue(docId)) {
-                Map<String, List<Topic>> result = tm.inferLabel(aJCas, savedModel, xmlConfig);
+                Map<String, List<Topic>> result = tm.inferLabel(aJCas, savedModel, xmlConfig, topicModelProvider.getTopWords(displayedTopicWords));
                 DoubleArray topicWeights = new DoubleArray(aJCas, result.size());
                 IntegerArray topicIds = new IntegerArray(aJCas, result.size());
                 StringArray topicWords = new StringArray(aJCas, displayedTopicWords);
