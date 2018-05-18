@@ -135,8 +135,7 @@ public class XmiDBReader extends DBReader implements Initializable {
         if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
 
             String table = (String) getConfigParameterValue(PARAM_TABLE);
-            String dataTable = null;
-            determineDataInGzipFormat(table, dataTable);
+            determineDataInGzipFormat(table);
 
             FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
             dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
@@ -151,18 +150,18 @@ public class XmiDBReader extends DBReader implements Initializable {
             if (annotationTableNames == null || annotationTableNames.length == 0) {
                 // Complete XMI reading mode
                 String table = (String) getConfigParameterValue(PARAM_TABLE);
-                determineDataInGzipFormat(table, dataTable);
+                determineDataInGzipFormat(table);
                 FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
             }
         }
     }
 
-    private void determineDataInGzipFormat(String table, String dataTable) throws ResourceInitializationException {
+    private void determineDataInGzipFormat(String table) throws ResourceInitializationException {
         try {
             doGzip = true;
-            dataTable = dbc.getNextDataTable(table);
-            log.trace("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
+            dataTable = dbc.getNextOrThisDataTable(table);
+            log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
             try (Connection conn = dbc.getConn()) {
                 ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
                 while (rs.next()) {
@@ -170,7 +169,7 @@ public class XmiDBReader extends DBReader implements Initializable {
                     try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
                         gzis.read();
                     } catch (IOException e) {
-                        log.trace("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
+                        log.debug("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
                         doGzip = false;
                     }
                 }
