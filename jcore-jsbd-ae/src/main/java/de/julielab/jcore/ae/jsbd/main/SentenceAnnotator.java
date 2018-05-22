@@ -261,7 +261,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                     ++begin;
                 while (end > 0 && Character.isWhitespace(documentText.getCas().getDocumentText().codePointAt(end-1)))
                     --end;
-                if (begin > end) {
+                if (begin < end) {
                     annotation.setBegin(begin);
                     annotation.setEnd(end);
                     annotation.setComponentId(this.getClass().getName());
