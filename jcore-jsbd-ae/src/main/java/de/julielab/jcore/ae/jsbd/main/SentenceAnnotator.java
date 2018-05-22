@@ -265,7 +265,12 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                 annotation.setComponentId(this.getClass().getName());
                 // Only add the sentence if the text actually looks like a sentence!
                 // At the moment this means that at least one letter must be included.
-                letterMatcher.reset(annotation.getCoveredText());
+                try {
+                    letterMatcher.reset(annotation.getCoveredText());
+                } catch (java.lang.StringIndexOutOfBoundsException e) {
+                    LOGGER.error("Invalid sentence offsets: {}-{}. Document text length: {}", begin, end, documentText.getCas().getDocumentText().length());
+                    throw e;
+                }
                 if (letterMatcher.find())
                     annotation.addToIndexes();
                 start = -1;
