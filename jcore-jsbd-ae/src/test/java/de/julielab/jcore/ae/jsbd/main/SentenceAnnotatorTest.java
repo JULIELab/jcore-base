@@ -254,5 +254,24 @@ public class SentenceAnnotatorTest {
         assertFalse(sentence.getCoveredText().startsWith(" "));
     }
 
+	@Test
+	public void testTrailingNewline() throws Exception {
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+
+		// This text is taken from PMC3408706. Note the "paragraph separator" at the end
+		jCas.setDocumentText("In1 the next step, we plan to use higher level QM/MM methods to calculate the energy barrier of the reaction catalyzed by endonuclease APE1, in compliance with the mechanism proposed, and to screen for effective inhibitors with the use of the constructed mechanistic full-atomic model of the enzyme.    \u2029");
+        new InternalReference(jCas, 2, 3).addToIndexes();
+
+		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+				"de/julielab/jcore/ae/jsbd/model/test-model.gz", SentenceAnnotator.PARAM_CUT_AWAY_TYPES, new String[]{InternalReference.class.getCanonicalName()});
+
+		jsbd.process(jCas.getCas());
+
+
+		Sentence sentence = JCasUtil.select(jCas, Sentence.class).iterator().next();
+		assertFalse(sentence.getCoveredText().endsWith("\u2029"));
+	}
+
 }
 

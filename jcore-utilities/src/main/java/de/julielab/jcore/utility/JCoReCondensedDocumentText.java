@@ -110,6 +110,9 @@ public class JCoReCondensedDocumentText {
 			condensedPos2SumCutMap.put(condensedPosition, cutSum);
 			originalPos2SumCutMap.put(lastEnd, cutSum);
 		}
+		// If lastEnd is still -1 one, we just did not find any of the cut away annotations. Thus, we just copy the whole text.
+		if (lastEnd == -1)
+		    lastEnd = 0;
 		if (lastEnd < cas.getDocumentText().length())
 			sb.append(cas.getDocumentText().substring(lastEnd, cas.getDocumentText().length()));
 		condensedText = sb.toString();

@@ -261,19 +261,21 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                     ++begin;
                 while (end > 0 && Character.isWhitespace(documentText.getCas().getDocumentText().codePointAt(end-1)))
                     --end;
-                annotation.setBegin(begin);
-                annotation.setEnd(end);
-                annotation.setComponentId(this.getClass().getName());
-                // Only add the sentence if the text actually looks like a sentence!
-                // At the moment this means that at least one letter must be included.
-                try {
-                    letterMatcher.reset(annotation.getCoveredText());
-                } catch (java.lang.StringIndexOutOfBoundsException e) {
-                    LOGGER.error("Document {}. Invalid sentence offsets: {}-{}. Document text length: {}", JCoReTools.getDocId(documentText.getCas()), begin, end, documentText.getCas().getDocumentText().length());
-                    throw e;
+                if (begin > end) {
+                    annotation.setBegin(begin);
+                    annotation.setEnd(end);
+                    annotation.setComponentId(this.getClass().getName());
+                    // Only add the sentence if the text actually looks like a sentence!
+                    // At the moment this means that at least one letter must be included.
+                    try {
+                        letterMatcher.reset(annotation.getCoveredText());
+                    } catch (java.lang.StringIndexOutOfBoundsException e) {
+                        LOGGER.error("Document {}. Invalid sentence offsets: {}-{}. Document text length: {}.", JCoReTools.getDocId(documentText.getCas()), begin, end, documentText.getCas().getDocumentText().length());
+                        throw e;
+                    }
+                    if (letterMatcher.find())
+                        annotation.addToIndexes();
                 }
-                if (letterMatcher.find())
-                    annotation.addToIndexes();
                 start = -1;
             }
 
