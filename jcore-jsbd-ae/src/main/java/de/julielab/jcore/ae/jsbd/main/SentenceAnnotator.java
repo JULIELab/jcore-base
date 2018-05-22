@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -268,7 +269,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                 try {
                     letterMatcher.reset(annotation.getCoveredText());
                 } catch (java.lang.StringIndexOutOfBoundsException e) {
-                    LOGGER.error("Invalid sentence offsets: {}-{}. Document text length: {}", begin, end, documentText.getCas().getDocumentText().length());
+                    LOGGER.error("Document {}. Invalid sentence offsets: {}-{}. Document text length: {}", JCoReTools.getDocId(documentText.getCas()), begin, end, documentText.getCas().getDocumentText().length());
                     throw e;
                 }
                 if (letterMatcher.find())
