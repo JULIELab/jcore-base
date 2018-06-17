@@ -12,6 +12,10 @@
     ],
     "exposable": true,
     "group": "shared task",
-    "maven-artifact": "jcore-ace-reader",
+    "maven-artifact": {
+        "artifactId": "jcore-ace-reader",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe ACE Reader"
 }

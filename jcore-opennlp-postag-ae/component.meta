@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-opennlp-postag-ae",
+    "maven-artifact": {
+        "artifactId": "jcore-opennlp-postag-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe OpenNLP POS Tagger"
 }

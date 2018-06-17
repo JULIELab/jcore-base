@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-iexml-consumer",
+    "maven-artifact": {
+        "artifactId": "jcore-iexml-consumer",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe IEXML Consumer"
 }

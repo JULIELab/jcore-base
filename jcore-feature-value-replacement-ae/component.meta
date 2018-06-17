@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-feature-value-replacement-ae",
+    "maven-artifact": {
+        "artifactId": "jcore-feature-value-replacement-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe Feature Value Replacement AE"
 }

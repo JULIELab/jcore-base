@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "semantic",
-    "maven-artifact": "jcore-biolemmatizer-ae",
+    "maven-artifact": {
+        "artifactId": "jcore-biolemmatizer-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe BioLemmatizer"
 }

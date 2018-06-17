@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-xml-reader",
+    "maven-artifact": {
+        "artifactId": "jcore-xml-reader",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe XML Reader"
 }

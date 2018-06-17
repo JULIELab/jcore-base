@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-dta-reader",
+    "maven-artifact": {
+        "artifactId": "jcore-dta-reader",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe DTA Reader"
 }

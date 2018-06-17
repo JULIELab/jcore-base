@@ -19,6 +19,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-medxn-ae",
+    "maven-artifact": {
+        "artifactId": "jcore-medxn-ae",
+        "groupId": "de.julielab",
+        "version": "0.1.0-SNAPSHOT"
+    },
     "name": "JCoRe MedXN"
 }

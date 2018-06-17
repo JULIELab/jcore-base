@@ -19,6 +19,10 @@
     ],
     "exposable": true,
     "group": "shared task",
-    "maven-artifact": "jcore-bionlpformat-consumer",
+    "maven-artifact": {
+        "artifactId": "jcore-bionlpformat-consumer",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe BioNLP Format Consumer"
 }

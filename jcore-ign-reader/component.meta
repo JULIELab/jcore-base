@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-ign-reader",
+    "maven-artifact": {
+        "artifactId": "jcore-ign-reader",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe IGN Reader"
 }

@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-txt-consumer",
+    "maven-artifact": {
+        "artifactId": "jcore-txt-consumer",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe TXT Consumer"
 }

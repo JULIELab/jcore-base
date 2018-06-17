@@ -11,6 +11,10 @@
     ],
     "exposable": false,
     "group": "general",
-    "maven-artifact": "jcore-db-reader",
+    "maven-artifact": {
+        "artifactId": "jcore-db-reader",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe Database Reader"
 }

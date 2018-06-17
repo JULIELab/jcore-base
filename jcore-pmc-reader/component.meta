@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-pmc-reader",
+    "maven-artifact": {
+        "artifactId": "jcore-pmc-reader",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe PubMed Central Reader"
 }

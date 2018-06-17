@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "morpho syntactic",
-    "maven-artifact": "jcore-jsbd-ae",
+    "maven-artifact": {
+        "artifactId": "jcore-jsbd-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe Sentence Annotator"
 }

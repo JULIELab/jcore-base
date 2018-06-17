@@ -6,6 +6,10 @@
     "descriptors": [],
     "exposable": false,
     "group": "general",
-    "maven-artifact": "jcore-ecn-code-ae",
+    "maven-artifact": {
+        "artifactId": "jcore-ecn-code-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe Enzyme Commission Number AE"
 }

@@ -11,6 +11,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-xmi-reader",
+    "maven-artifact": {
+        "artifactId": "jcore-xmi-reader",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe XMI Collection Reader"
 }

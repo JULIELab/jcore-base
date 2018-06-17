@@ -23,6 +23,10 @@
     ],
     "exposable": true,
     "group": "general",
-    "maven-artifact": "jcore-coordination-baseline-ae",
+    "maven-artifact": {
+        "artifactId": "jcore-coordination-baseline-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.0-SNAPSHOT"
+    },
     "name": "JCoRe Coordination Tagger Baseline"
 }
