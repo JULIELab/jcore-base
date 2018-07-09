@@ -12,6 +12,13 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
+/**
+ * This class takes multiple UIMA indices, e.g. Token, EntityMention and Part of Speech, and merges
+ * them into a single iterator that then outputs the respective annotations as a sequence. The most
+ * useful functionality is the capability of the annotation merger to sort the annotations efficiently
+ * on the fly by start offsets. Thus, when given a range of UIMA annotation indices, the annotation
+ * merger is able to intertwine the annotations in correct reading order.
+ */
 public class JCoReAnnotationIndexMerger {
 	private JCas aJCas;
 	private LinkedHashSet<Type> annotationTypes;

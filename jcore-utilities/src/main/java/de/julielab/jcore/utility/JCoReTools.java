@@ -47,8 +47,13 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import de.julielab.jcore.types.Header;
 
 /**
- * Tool for creating new UIMA Objects and other UIMA related things
- *
+ * <ul>
+ * <li>The binarySearch methods work specifically on Annotation objects, sorted by given function.</li>
+ * <li>The addToFSArray methods are useful for adding elements to FSArrays which are rather awkward to use and, especially, to extend.</li>
+ * <li>The addToStringArray methods serve a similar purpose.</li>
+ * <li>One of the most used methods from this list is {@link #getDocId(JCas)} which will look for an annotation of type de.julielab.jcore.types.Header and return its docId feature value.</li>
+ * <li>The {@link #deserializeXmi(CAS, InputStream, int)} method is used in UIMA 2.x to fix issues with special Unicode characters. For more information, refer to the JavaDoc of the method.</li>
+ *</ul>
  * @author faessler
  */
 public class JCoReTools {
