@@ -141,7 +141,12 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 				int sentenceBegin = jcoreSentence.getBegin();
 				String sentenceId = jcoreSentence.getId() != null ? jcoreSentence.getId() : docId + ": " + sentCount++;
 				Sentence sentence = new Sentence(sentenceId, docId, jcoreSentence.getCoveredText());
-				sentence = BANNER.process(tagger, tokenizer, postProcessor, sentence);
+				try {
+					sentence = BANNER.process(tagger, tokenizer, postProcessor, sentence);
+				} catch (Exception e) {
+					log.error("Exception while running BANNER on sentence {}", jcoreSentence.getCoveredText(), e);
+					throw e;
+				}
 				for (Mention mention : sentence.getMentions()) {
 					EntityType entityType = mention.getEntityType();
 					String typeName = typeMap.getOrDefault(entityType.getText(),
