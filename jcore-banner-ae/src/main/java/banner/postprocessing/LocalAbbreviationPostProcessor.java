@@ -6,9 +6,12 @@ import banner.postprocessing.ExtractAbbrev.AbbreviationPair;
 import banner.types.Mention;
 import banner.types.EntityType;
 import banner.types.Sentence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LocalAbbreviationPostProcessor implements PostProcessor
 {
+	private final static Logger log = LoggerFactory.getLogger(LocalAbbreviationPostProcessor.class);
 	private ExtractAbbrev extractAbbrev;
 
 	public LocalAbbreviationPostProcessor()
@@ -25,7 +28,17 @@ public class LocalAbbreviationPostProcessor implements PostProcessor
 		int end = sentence.getTokenIndex(charIndex + formNotFound.length(), false);
 		if (start == end)
 			return;
-		Mention newMention = new Mention(sentence, start, end, type, formFound.getMentionType(), formFound.getProbability());
+			Mention newMention;
+		try {
+			newMention = new Mention(sentence, start, end, type, formFound.getMentionType(), formFound.getProbability());
+		} catch (Exception e) {
+		    log.error("Exception occurred while creating a new entity mention for an abbrevation pair." +
+                    " The string to be tagged as another mention is \"{}\", its character offset in the text" +
+                    " sentence was determined as {}, its start token index as {} and its end token index as {}", formNotFound,
+                    charIndex,
+                    start, end);
+			throw e;
+		}
 		boolean overlaps = false;
 		for (Mention mention : sentence.getMentions())
 			overlaps |= mention.overlaps(newMention);
