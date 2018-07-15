@@ -51,9 +51,16 @@
             </configurationParameter>
             <configurationParameter>
                 <name>AdditionalTables</name>
-                <description>An array of qualified UIMA type names. The type names will be transformed into valid PostgreSQL table names by replacing dots with underscores. The resulting table names will be resolved against the active data postgres schema configured in the CoStoSys configuration file. The additional tables will be joined to the data table using the primary keys of the queried documents, allowing to retrieve document text data together with the selected annotations.</description>
+                <description>An array of qualified UIMA type names. The provided names will be converted to database table names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, the default assumed Postgres schema for the annotation tables is the active data table as configured in the CoStoSys configuration file. This can be overwritten by appending '&lt;schema&gt;:' to a table name. The given type names will be converted to valid Postgres table names by replacing dots with underscores. From the resolved tables, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTablesPostgresSchema</name>
+                <description>This optional parameter specifies the Postgres schema in which the additional tables to read are searched by default. If omitted, the active data schema from the CoStoSys configuration is assumed. The default can be overwritten for individual types. For details, see the description of the 'AdditionalTables' parameter.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>

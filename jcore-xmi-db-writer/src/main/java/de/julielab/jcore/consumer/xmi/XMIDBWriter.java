@@ -163,7 +163,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     "omitted, the active data schema from the CoStoSys configuration is used. The tables derived from " +
                     "the annotation types specified with the '" + PARAM_ANNOS_TO_STORE + "' " +
                     "parameter will be stored in this postgres schema. The default can be overwritten for individual " +
-                    "types. See the description of the 'AnnotationsToStore' parameter.")
+                    "types. See the description of the '" + PARAM_ANNOS_TO_STORE + "' parameter.")
     private String annotationStorageSchema;
 
     private XmiSplitter splitter;
