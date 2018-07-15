@@ -32,4 +32,6 @@ public class SubsetReaderConstants {
      * a dataTimestamp newer then the passed value will be processed.
      */
     public static final String PARAM_DATA_TIMESTAMP = "Timestamp";
+
+    public static final String PARAM_ADDITONAL_TABLES_STORAGE_PG_SCHEMA = "AdditionalTablesPostgresSchema";
 }
