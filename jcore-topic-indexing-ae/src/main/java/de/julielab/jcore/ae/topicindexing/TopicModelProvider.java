@@ -25,6 +25,8 @@ public class TopicModelProvider implements ITopicModelProvider {
     private String modelSavePath;
     private boolean saveAllowed;
     private MalletTopicModeling tm;
+    private int numTopicWords;
+    private Object[][] topicWords;
 
     @Override
     public void load(DataResource dataResource) throws ResourceInitializationException {
@@ -36,8 +38,12 @@ public class TopicModelProvider implements ITopicModelProvider {
     }
 
     @Override
-    public Object[][] getTopWords(int numwords){
-        return model.malletModel.getTopWords(numwords);
+    public synchronized Object[][] getTopWords(int numwords){
+        if (numwords > numTopicWords) {
+            topicWords = model.malletModel.getTopWords(numwords);
+            numTopicWords = numwords;
+        }
+        return topicWords;
     }
 
     @Override

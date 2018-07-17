@@ -58,6 +58,7 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
     private boolean toModelIndex;
     @ExternalResource(key = RESOURCE_KEY_MODEL_FILE_NAME, description = "The topic model pretrained by the julielab-topic-modeling software.")
     private ITopicModelProvider topicModelProvider;
+    private Object[][] topWords;
 
     /**
      * Loads model configuration and serialized model and checks whether to populate the
@@ -74,6 +75,9 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
 
             topicModelProvider = (ITopicModelProvider) aContext.getResourceObject(RESOURCE_KEY_MODEL_FILE_NAME);
             savedModel = topicModelProvider.getModel();
+            if (displayedTopicWords > 0) {
+                topWords = topicModelProvider.getTopWords(displayedTopicWords);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,7 +94,7 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
             String modelVersion = savedModel.modelVersion;
             String docId = JCoReTools.getDocId(aJCas);
             if (!savedModel.ModelIdpubmedId.containsValue(docId)) {
-                Map<String, List<Topic>> result = tm.inferLabel(aJCas, savedModel, xmlConfig, topicModelProvider.getTopWords(displayedTopicWords));
+                Map<String, List<Topic>> result = tm.inferLabel(aJCas, savedModel, xmlConfig);
                 DoubleArray topicWeights = new DoubleArray(aJCas, result.size());
                 IntegerArray topicIds = new IntegerArray(aJCas, result.size());
                 StringArray topicWords = new StringArray(aJCas, displayedTopicWords);
@@ -98,7 +102,7 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
                     double topicWeight = result.get(docId).get(i).probability;
                     int topicId = result.get(docId).get(i).id;
                     for (int k = 0; k < displayedTopicWords; k++) {
-                        String topicWord = (String) result.get(docId).get(i).topicWords[k];
+                        String topicWord = (String) topWords[topicId][k];
                         topicWords.set(k, topicWord);
                     }
                     topicWeights.set(i, topicWeight);
@@ -118,13 +122,8 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
                     List<Topic> topics = new ArrayList<>();
                     for (int i = 0; i < topicWeights.size(); i++) {
                         Topic topic = new Topic();
-                        topic.topicWords = new Object[topicWords.size()];
                         topic.probability = topicWeights.get(i);
                         topic.id = topicIds.get(i);
-                        for (int k = 0; k < topicWords.size(); k++) {
-                            String topicWord = topicWords.get(k);
-                            topic.topicWords[i] = topicWord;
-                        }
                         topic.modelId = modelID;
                         topic.modelVersion = modelVersion;
                         topics.add(topic);
@@ -144,6 +143,8 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
                     dt = JCoReTools.addToFSArray(dt, documentTopics);
                     autoDesc.setDocumentTopics(dt);
                 }
+            } else {
+                // TODO get the information from the model and add it to the cas
             }
         } catch (Exception e) {
             e.printStackTrace();
