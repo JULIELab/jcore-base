@@ -260,7 +260,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
                 resultTableName = additionalTablesPGSchema + "." + rawName.replaceAll("\\.", "_");
             }
 
-            if (!dbc.tableExists(resultTableName)) {
+            if (null == resultTableName) {
                 throw new IllegalArgumentException("The table " + additionalTableNames[i] + " does not exist.");
             } else
                 foundTables.add(resultTableName);
