@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.uima.resource.DataResource;
@@ -21,7 +22,7 @@ public class ListProvider implements IListProvider {
 	public void load(DataResource aData) throws ResourceInitializationException {
 		try {
 			list = new ArrayList<>();
-			LineIterator lineIt = IOUtils.lineIterator(new InputStreamReader(aData.getInputStream(), "UTF-8"));
+			LineIterator lineIt = IOUtils.lineIterator(new InputStreamReader(JCoReTools.resolveExternalResourceGzipInputStream(aData), "UTF-8"));
 			while (lineIt.hasNext()) {
 				String line = lineIt.nextLine();
 				if (line.trim().length() == 0 || line.startsWith("#"))
