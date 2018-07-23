@@ -22,6 +22,7 @@ import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import de.julielab.jcore.types.pubmed.Header;
 import junit.framework.TestCase;
+import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -29,6 +30,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -40,11 +42,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.net.URI;
+import java.util.*;
 
+import static org.assertj.core.api.Assertions.*;
 /**
  * Test for class XML Reader
  */
@@ -58,12 +59,6 @@ public class XMLMultiplierReaderTest extends TestCase {
      * Path to the MedlineReader descriptor without inputDir parameter (and no single file attribute)
      */
     private static final String DESC_XML_MULTIPLIER_READER_DIR = "src/test/resources/XMLMultiplierReader";
-
-
-    /**
-     * Test data, format: citationStatus, language, pmid
-     */
-//    private static final String[] EXPECTED_HEADER = { "MEDLINE", "eng", "11119751.xml" };
 
 
     private static final String DIR_CAS_OUTPUT = "src/test/resources/medlineXML/";
@@ -84,6 +79,31 @@ public class XMLMultiplierReaderTest extends TestCase {
         if (DEBUG_MODE) {
             LOGGER.info("XMLMultiplierReader test is in DEBUG_MODE !!!!!!!!!!!!");
         }
+    }
+
+    public void testZipInput() throws UIMAException, IOException {
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(XMLMultiplierReader.class,
+                XMLMultiplierReader.PARAM_INPUT_DIR, "src/test/resources/zipped",
+                XMLMultiplierReader.PARAM_FILE_NAME_REGEX, new String[]{".*\\.txt"},
+                XMLMultiplierReader.PARAM_SEARCH_IN_ZIP, true);
+        Set<String> expectedFileNames = new HashSet<>(Arrays.asList("file.txt", "file1.txt", "file2.txt", "file3.txt", "fileindir1.txt", "fileindir2.txt"));
+        Set<String> foundFileNames = new HashSet<>();
+        while (reader.hasNext()) {
+            reader.getNext(jCas.getCas());
+            JCoReURI jCoReURI = JCasUtil.selectSingle(jCas, JCoReURI.class);
+            boolean found = false;
+            for (Iterator<String> it = expectedFileNames.iterator(); it.hasNext(); ) {
+                String fileName = it.next();
+                if (jCoReURI.getUri().endsWith(fileName)) {
+                    found = true;
+                    assertTrue("File name " + fileName + " was already found", foundFileNames.add(fileName));
+                }
+            }
+            assertTrue("The URI " + jCoReURI.getUri()+ " was not matched by any expected file names", found);
+            jCas.reset();
+        }
+        assertThat(expectedFileNames).isEqualTo(foundFileNames);
     }
 
     /**

@@ -31,6 +31,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.fit.descriptor.OperationalProperties;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.factory.AnnotationFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -45,6 +46,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
 
+@ResourceMetaData(name="XML Multiplier")
 @OperationalProperties(outputsNewCases = true, modifiesCas = false)
 public class XMLMultiplier extends JCasMultiplier_ImplBase {
 
