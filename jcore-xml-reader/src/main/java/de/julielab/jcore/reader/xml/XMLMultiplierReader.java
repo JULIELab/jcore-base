@@ -73,8 +73,8 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
     private String directoryName;
     @ConfigurationParameter(name = PARAM_INPUT_FILE, mandatory = false)
     private String isSingleFileProcessing;
-    @ConfigurationParameter(name = PARAM_FILE_NAME_REGEX, description = "If a directory is given, all inputUris with a name matching" +
-            "one of these regular expressions will be read, others will be discarded. Defaults to {'.*\\.xml', '.*\\.xml.gz'}.", defaultValue = {".xml", ".xml.gz"})
+    @ConfigurationParameter(name = PARAM_FILE_NAME_REGEX, description = "If a directory is given, all inputUris with a name matching " +
+            "one of these regular expressions will be read, others will be discarded. Defaults to {'.*\\.xml', '.*\\.xml.gz'}.", defaultValue = {".*\\.xml", ".*\\xml\\.gz"})
     private String[] fileNameRegex = new String[]{".*\\.xml", ".*\\.xml.gz"};
     @ConfigurationParameter(name = PARAM_SEARCH_IN_ZIP, mandatory = false, description = "If set to true, contents of ZIP files in the " +
             "given input directory will also be searched for files matching the specified file name regular expression. Defaults to false.", defaultValue = "false")
