@@ -87,51 +87,40 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
      */
     @Override
     public void initialize() throws ResourceInitializationException {
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Component configuration:");
-            for (String name : getUimaContext().getConfigParameterNames())
-                LOGGER.info("{}: {}", name, getConfigParameterValue(name));
+        try {
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Component configuration:");
+                for (String name : getUimaContext().getConfigParameterNames())
+                    LOGGER.info("{}: {}", name, getConfigParameterValue(name));
+            }
+            getInputFiles();
+        } catch (Throwable e) {
+            LOGGER.error("Exception or error while initializing reader: ", e);
+            throw e;
         }
-        getInputFiles();
     }
 
     /**
      * @see org.apache.uima.collection.CollectionReader#getNext(CAS)
      */
     public void getNext(CAS cas) throws CollectionException {
+        try {
+            URI uri = inputUris.removeFirst();
 
+            LOGGER.debug("Reading URI " + uri.toString());
 
-        URI uri = inputUris.pop();
-        while (uri.toString().endsWith(".zip")) {
-            try (FileSystem fs = FileSystems.newFileSystem(Paths.get(uri), null)) {
-                Iterable<Path> rootDirectories = fs.getRootDirectories();
-                for (Path rootDir : rootDirectories) {
-                    Stream<Path> walk = Files.walk(rootDir);
-                    walk.filter(Files::isRegularFile).forEach(p -> {
-                                if (matchesFileNameRegex(p.getFileName().toString())) {
-                                    inputUris.push(p.toUri());
-                                }
-                            }
-                    );
-                }
-            } catch (IOException e) {
-                LOGGER.error("Could not read from {}", uri);
+            try {
+                JCoReURI fileType = new JCoReURI(cas.getJCas());
+                fileType.setUri(uri.toString());
+                fileType.addToIndexes();
+            } catch (Exception e) {
+                LOGGER.error("Exception with URI: " + uri.toString(), e);
                 throw new CollectionException(e);
             }
-            uri = inputUris.pop();
-        }
-
-        LOGGER.debug("Reading URI " + uri.toString());
-
-        try {
-            JCoReURI fileType = new JCoReURI(cas.getJCas());
-            fileType.setUri(uri.toString());
-            fileType.addToIndexes();
-        } catch (Exception e) {
-            LOGGER.error("Exception with URI: " + uri.toString(), e);
-            throw new CollectionException(e);
+            currentIndex++;
         } catch (Throwable e) {
-            throw new CollectionException(e);
+            LOGGER.warn("Exception or error while filling CAS: ", e);
+            throw e;
         }
     }
 
@@ -142,7 +131,7 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
      * @throws ResourceInitializationException thrown if there is a problem with a configuration parameter
      */
     private void getInputFiles() throws ResourceInitializationException {
-
+        inputUris = new ArrayDeque<>();
         currentIndex = 0;
         if (isSingleProcessing()) {
             getSingleFile();
@@ -159,12 +148,37 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
         if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
             throw new ResourceInitializationException(ResourceInitializationException.RESOURCE_DATA_NOT_VALID, new Object[]{directoryName, PARAM_INPUT_DIR});
         }
-        inputUris = new ArrayDeque<>();
-        Stream.of(inputDirectory.listFiles((dir, name) -> matchesFileNameRegex(name))).map(File::toURI).forEach(inputUris::push);
+        for (File f : inputDirectory.listFiles((dir, name) -> matchesFileNameRegex(name))) {
+            URI uri = f.toURI();
+            if (uri.toString().toLowerCase().endsWith(".zip")) {
+                LOGGER.debug("Searching ZIP archive {} for eligible documents", uri);
+                try (FileSystem fs = FileSystems.newFileSystem(Paths.get(uri), null)) {
+                    Iterable<Path> rootDirectories = fs.getRootDirectories();
+                    for (Path rootDir : rootDirectories) {
+                        Stream<Path> walk = Files.walk(rootDir);
+                        walk.filter(Files::isRegularFile).forEach(p -> {
+                                    LOGGER.trace("Current ZIP archive entry: {}", p.toString());
+                                    if (matchesFileNameRegex(p.getFileName().toString())) {
+                                        inputUris.push(p.toUri());
+                                    }
+                                }
+                        );
+                    }
+                } catch (IOException e) {
+                    LOGGER.error("Could not read from {}", uri);
+                    throw new ResourceInitializationException(e);
+                }
+            } else {
+                inputUris.push(uri);
+            }
+        }
+
+        LOGGER.debug("Found {} input files.", inputUris.size());
     }
 
     private boolean matchesFileNameRegex(String name) {
-        for (String regex : fileNameRegex) if (name.matches(regex) || (searchZip && name.toLowerCase().endsWith("zip"))) return true;
+        for (String regex : fileNameRegex)
+            if (name.matches(regex) || (searchZip && name.toLowerCase().endsWith("zip"))) return true;
         return false;
     }
 
@@ -176,7 +190,7 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
      */
     private void getSingleFile() throws ResourceInitializationException {
 
-        LOGGER.info("getSingleFile() - MedlineReader is used in SINGLE FILE mode.");
+        LOGGER.info("XML reader is used in SINGLE FILE mode.");
         String singleFile = (String) getConfigParameterValue(PARAM_INPUT_FILE);
 
         if (singleFile == null) {
@@ -187,7 +201,6 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
             throw new ResourceInitializationException(ResourceInitializationException.RESOURCE_DATA_NOT_VALID,
                     new Object[]{"file does not exist or is a directory" + PARAM_INPUT_FILE});
         }
-        inputUris = new ArrayDeque<>();
         inputUris.push(file.toURI());
     }
 
@@ -211,6 +224,9 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
      * @see org.apache.uima.collection.CollectionReader#hasNext()
      */
     public boolean hasNext() {
+        if (inputUris.isEmpty()) {
+            LOGGER.debug("URIs were empty after {} read URIs", currentIndex);
+        }
         return !inputUris.isEmpty();
     }
 
