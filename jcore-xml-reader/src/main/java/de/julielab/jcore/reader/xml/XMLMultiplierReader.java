@@ -19,8 +19,10 @@ package de.julielab.jcore.reader.xml;
 
 import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
+import org.apache.uima.ducc.Workitem;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -33,14 +35,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
-@ResourceMetaData(name = "JCoRe XML Multiplier Reader")
+@ResourceMetaData(name = "JCoRe XML Multiplier Reader", description = "Reads Medline/PubMed XML blobs as downloaded " +
+        "from the NCBI FTP. Each blob is one large XML file containing a PubmedArticleSet. This component is UIMA DUCC " +
+        "compatible and forwards the work item CAS to the CAS consumer in order to indicate the finishing " +
+        "of the current XML blob. It also sets the work item feature 'lastBlock' to true if there are not more " +
+        "work items and, thus, the processing comes to an end.")
 public class XMLMultiplierReader extends CollectionReader_ImplBase {
 
     /**
@@ -117,7 +120,21 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
                 LOGGER.error("Exception with URI: " + uri.toString(), e);
                 throw new CollectionException(e);
             }
+
+            Workitem workitem = new Workitem(cas.getJCas());
+            // Send the work item CAS also to the consumer. Normally, only the CASes emitted by the CAS multiplier
+            // will be routed to the consumer. We do this to let the consumer know that the work item has been
+            // finished.
+            workitem.setSendToLast(true);
+            workitem.getBlockindex();
+            if (!hasNext())
+                workitem.setLastBlock(true);
+            workitem.addToIndexes();
+
             currentIndex++;
+        } catch (CASException e) {
+            LOGGER.error("Could not get the JCAS from the CAS: ", e);
+            throw new CollectionException(e);
         } catch (Throwable e) {
             LOGGER.warn("Exception or error while filling CAS: ", e);
             throw e;
@@ -224,9 +241,6 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
      * @see org.apache.uima.collection.CollectionReader#hasNext()
      */
     public boolean hasNext() {
-        if (inputUris.isEmpty()) {
-            LOGGER.debug("URIs were empty after {} read URIs", currentIndex);
-        }
         return !inputUris.isEmpty();
     }
 

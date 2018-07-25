@@ -82,7 +82,8 @@ public class XMLMultiplierReaderTest extends TestCase {
     }
 
     public void testZipInput() throws UIMAException, IOException {
-        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types");
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types",
+                "org.apache.uima.ducc.FlowControllerTS");
         CollectionReader reader = CollectionReaderFactory.createReader(XMLMultiplierReader.class,
                 XMLMultiplierReader.PARAM_INPUT_DIR, "src/test/resources/zipped",
                 XMLMultiplierReader.PARAM_FILE_NAME_REGEX, new String[]{".*\\.txt"},
@@ -115,7 +116,7 @@ public class XMLMultiplierReaderTest extends TestCase {
         xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR,
                 XMLMultiplierReader.PARAM_INPUT_FILE, "src/test/resources/pubmedXML/pubmedsample18n0001.xml.gz");
 
-        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-types",   "de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types");
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-types",   "de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types",  "org.apache.uima.ducc.FlowControllerTS");
         xmlMultiplierReader.getNext(cas.getCas());
         FSIterator<Annotation> it = cas.getAnnotationIndex(JCoReURI.type).iterator();
         if (it.hasNext()) {
@@ -133,7 +134,8 @@ public class XMLMultiplierReaderTest extends TestCase {
         assertTrue(xmlMultiplierReader.hasNext());
         while (xmlMultiplierReader.hasNext()) {
             JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-types",
-                    "de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types");
+                    "de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types",
+                    "org.apache.uima.ducc.FlowControllerTS");
             xmlMultiplierReader.getNext(cas.getCas());
             FSIterator<Annotation> it = cas.getAnnotationIndex(JCoReURI.type).iterator();
             assertTrue(it.hasNext());

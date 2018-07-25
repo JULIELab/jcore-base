@@ -29,6 +29,7 @@
     <typeSystemDescription>
       <imports>
         <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+        <import name="org.apache.uima.ducc.FlowControllerTS"/>
       </imports>
     </typeSystemDescription>
     <fsIndexCollection/>

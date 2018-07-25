@@ -118,6 +118,7 @@
             <imports>
                 <import name="de.julielab.jcore.types.jcore-xmi-splitter-types"/>
                 <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types"/>
+                <import name="org.apache.uima.ducc.FlowControllerTS"/>
             </imports>
         </typeSystemDescription>
         <fsIndexCollection/>

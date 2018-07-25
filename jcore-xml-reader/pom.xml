@@ -30,6 +30,10 @@
             <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uima-ducc-user</artifactId>
+            <version>${uima-ducc-version}</version>
+        </dependency><dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
         </dependency>

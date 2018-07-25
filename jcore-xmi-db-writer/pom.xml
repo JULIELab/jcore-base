@@ -28,6 +28,11 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uima-ducc-user</artifactId>
+            <version>${uima-ducc-version}</version>
+        </dependency>
+        <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xmi-splitter</artifactId>
             <version>${project.parent.version}</version>

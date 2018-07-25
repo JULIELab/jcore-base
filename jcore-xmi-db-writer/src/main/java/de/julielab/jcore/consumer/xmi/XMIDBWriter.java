@@ -48,6 +48,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.ducc.Workitem;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
@@ -81,7 +82,11 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
         "document XMI data and stored in a separate table. The tables are created automatically according to the " +
         "primary key of the active table schema in the Corpus Storage System (CoStoSys) configuration file that is " +
         "also given as a parameter. The jcore-xmi-db-reader is capable of reading this kind of distributed annotation " +
-        "graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This component is part " +
+        "graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This consumer is " +
+        "UIMA DUCC compatible. It requires the collection reader to forward the work item CAS to the consumer. This is " +
+        "required so the consumer knows that a work item has been finished and that all cached data - in this case the " +
+        "XMI data - should be flushed. This is important! Without the forwarding of the work item CAS, the last batch " +
+        "of cached XMI data will not be written into the database. This component is part " +
         "of the Jena Document Information System, JeDIS.")
 public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_COSTOSYS_CONFIG = "CostosysConfigFile";
@@ -100,6 +105,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_ANNO_STORAGE_PG_SCHEMA = "AnnotationStoragePostgresSchema";
     public static final String PARAM_COMPONENT_DB_NAME = "ComponentDbName";
     public static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
+    public static final String PARAM_WRITE_BATCH_SIZE = "WriteBatchSize";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
@@ -165,6 +171,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     "parameter will be stored in this postgres schema. The default can be overwritten for individual " +
                     "types. See the description of the '" + PARAM_ANNOS_TO_STORE + "' parameter.")
     private String annotationStorageSchema;
+    @ConfigurationParameter(name = PARAM_WRITE_BATCH_SIZE, mandatory = false, defaultValue = "50", description =
+    "The number of processed CASes after which the XMI data should be flushed into the database. Defaults to 50.")
+    private int writeBatchSize;
 
     private XmiSplitter splitter;
     // Must be a linked HashMap so that the document table comes first when
@@ -182,6 +191,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private AnnotationTableManager annotationTableManager;
 
     private int headerlessDocuments = 0;
+    private int currentBatchSize = 0;
 
     private XmiDataInserter annotationInserter;
 
@@ -244,6 +254,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         .orElse(new String[0]))
                 .collect(Collectors.toSet());
         attributeSize = (Integer) aContext.getConfigParameterValue(PARAM_ATTRIBUTE_SIZE);
+        writeBatchSize = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_WRITE_BATCH_SIZE)).orElse(50);
         componentDbName = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME)).orElse(getClass().getSimpleName());
         annotationStorageSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
 
@@ -375,6 +386,19 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
+        // UIMA DUCC compatibility: Check if this is the work item CAS.
+        // If so, this is the signal that the current work item has finished processing.
+        // Send the currently cached data to the database and return.
+        try {
+            Workitem workitem = JCasUtil.selectSingle(aJCas, Workitem.class);
+            if (workitem.getLastBlock())
+                collectionProcessComplete();
+            else
+                batchProcessComplete();
+            return;
+        } catch (IllegalArgumentException e) {
+            // Do nothing; this is not the work item CAS
+        }
         DocumentId docId = getDocumentId(aJCas);
         if (docId == null) return;
         int nextXmiId = determineNextXmiId(aJCas, docId);
@@ -505,6 +529,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             annotationInserter.addProcessedDocumentId(docId);
         } catch (IOException | XMISplitterException e) {
             throw new AnalysisEngineProcessException(e);
+        }
+        if (currentBatchSize % writeBatchSize == 0) {
+            currentBatchSize = 0;
+            batchProcessComplete();
         }
     }
 
