@@ -3,7 +3,7 @@
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.xmi.XmiDBReader</implementationName>
     <processingResourceMetaData>
-        <name>JCoRe Database Reader</name>
+        <name>JCoRe XMI Database Reader</name>
         <description>Reads XMI data from a database using CoStoSys.</description>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
