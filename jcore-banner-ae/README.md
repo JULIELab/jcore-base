@@ -5,6 +5,10 @@
 de.julielab.jcore.ae.banner.desc.jcore-banner-ae
 ```
 
+## WARNING
+This component is currently not thread safe. When using multiple threads, the internally employed Hepple tagger seems to 
+suffer from concurrency issues and produces NPEs that do not occur in single thread mode.
+
 ### Objective
 
 BANNER is the gene tagger software by Leaman, R. & Gonzalez G [1]. This particular version has been copied from https://github.com/oaqa/banner and adapted for JCoRe.

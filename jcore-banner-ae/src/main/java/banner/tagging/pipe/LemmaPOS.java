@@ -61,14 +61,14 @@ public class LemmaPOS extends Pipe
 		// TODO Add prefix ability
 		Sentence sentence = (Sentence) carrier.getSource();
 		List<Token> tokens = sentence.getTokens();
-
 		dragon.nlp.Sentence posSentence = null;
 		if (posTagger != null)
 		{
 			int size = tokens.size();
 			posSentence = new dragon.nlp.Sentence();
-			for (int i = 0; i < size; i++)
+			for (int i = 0; i < size; i++) {
 				posSentence.addWord(new Word(tokens.get(i).getText()));
+			}
 			posTagger.tag(posSentence);
 		}
 
