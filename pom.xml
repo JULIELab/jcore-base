@@ -92,6 +92,8 @@
 		<module>jcore-xml-db-reader</module>
 		<module>jcore-xmi-db-reader</module>
 		<module>jcore-xmi-db-writer</module>
+    <module>jcore-likelihood-detection-ae</module>
+    <module>jcore-likelihood-assignment-ae</module>
   </modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
