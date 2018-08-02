@@ -76,6 +76,7 @@ public class XmiDBWriterTest {
         }
         xmiWriter.collectionProcessComplete();
 
+        dbc = DBTestUtils.getDataBaseConnector(postgres);
         assertThat(dbc.tableExists("_data.documents")).isTrue();
         assertThat(dbc.tableExists("_data.de_julielab_jcore_types_token")).isTrue();
         assertThat(dbc.tableExists("_data.de_julielab_jcore_types_sentence")).isTrue();
@@ -110,6 +111,7 @@ public class XmiDBWriterTest {
         }
         xmiWriter.collectionProcessComplete();
 
+        dbc = DBTestUtils.getDataBaseConnector(postgres);
         assertThat(dbc.tableExists("_data.xmidocs")).isTrue();
         assertThat(dbc.getNumRows("_data.xmidocs")).isEqualTo(177);
     }

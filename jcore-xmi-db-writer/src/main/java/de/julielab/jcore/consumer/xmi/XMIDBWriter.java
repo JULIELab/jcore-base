@@ -708,6 +708,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
         log.info("{} documents without a head occured overall. Those could not be written into the database.",
                 headerlessDocuments);
+        dbc.close();
     }
 
 }
