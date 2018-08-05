@@ -14,6 +14,7 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class TopicModelProvider implements ITopicModelProvider {
@@ -33,6 +34,12 @@ public class TopicModelProvider implements ITopicModelProvider {
         modelFile = new File(dataResource.getUri());
         tm = new MalletTopicModeling();
         model = tm.readModel(modelFile.getAbsolutePath());
+        // Fix for the issue that the model did not save the reverse ID map
+        if (model.pubmedIdModelId == null || model.pubmedIdModelId.isEmpty()) {
+            model.pubmedIdModelId = new HashMap<>();
+            for (Integer malletId : model.ModelIdpubmedId.keySet())
+                model.pubmedIdModelId.put(model.ModelIdpubmedId.get(malletId), malletId);
+        }
         model.index = new HashMap<>();
         saveAllowed = true;
     }
