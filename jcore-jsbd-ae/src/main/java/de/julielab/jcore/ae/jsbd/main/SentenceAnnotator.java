@@ -149,6 +149,10 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
      * @throws AnalysisEngineProcessException
      */
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
+        if (StringUtils.isBlank(aJCas.getDocumentText())) {
+            LOGGER.warn("The document text is empty.");
+            return;
+        }
         JCoReCondensedDocumentText documentText;
         try {
             // If there are no cut-away types, the document text will remain unchanged.
