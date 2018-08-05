@@ -124,7 +124,7 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
                 int topicId = docTopics.get(i).id;
                 // Topics have a varying number of words they are associated with, thus displayTopicWords
                 // might be larger than there are words available for a topic
-                for (int k = 0; k < Math.min(displayedTopicWords, topWords[topicId].length); k++) {
+                for (int k = 0; displayedTopicWords > 0 && k < Math.min(displayedTopicWords, topWords[topicId].length); k++) {
                     String topicWord = (String) topWords[topicId][k];
                     topicWords.set(k, topicWord);
                 }
