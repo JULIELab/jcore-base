@@ -38,6 +38,16 @@
             <version>${uimafit-version}</version>
         </dependency>
     </dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+			</plugin>
+		</plugins>
+	</build>
     
 	<modules>
 		<module>jcore-ace-reader</module>
@@ -93,9 +103,6 @@
 		<module>jcore-xml-db-reader</module>
 		<module>jcore-xmi-db-reader</module>
 		<module>jcore-xmi-db-writer</module>
-    <module>jcore-likelihood-detection-ae</module>
-    <module>jcore-likelihood-assignment-ae</module>
-    <module>jcore-topics-writer</module>
   </modules>
 	<scm>
         <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
