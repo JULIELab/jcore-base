@@ -4,14 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Stack;
+import java.nio.file.*;
+import java.util.*;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.cas.CAS;
@@ -275,6 +273,25 @@ public class PMCReader extends CollectionReader_ImplBase {
                         Stack<File> directoriesInSubDirectory = new Stack<>();
                         Stream.of(directory.listFiles(f -> f.isDirectory())).forEach(directoriesInSubDirectory::push);
                         subDirectoryMap.put(directory, directoriesInSubDirectory);
+                    } else if (searchZip && directory.getName().toLowerCase().endsWith(".zip")) {
+                        log.debug("Identified {} as a ZIP archive, retrieving its inventory", directory);
+                        Stack<URI> filesInZip = new Stack<>();
+                        log.debug("Searching ZIP archive {} for eligible documents", directory);
+                        try (FileSystem fs = FileSystems.newFileSystem(directory.toPath(), null)) {
+                            Iterable<Path> rootDirectories = fs.getRootDirectories();
+                            for (Path rootDir : rootDirectories) {
+                                Stream<Path> walk = Files.walk(rootDir);
+                                walk.filter(Files::isRegularFile).forEach(p -> {
+                                    if (p.getFileName().toString().contains(".nxml")) {
+                                        filesInZip.add(p.toUri());
+                                    }
+                                });
+                            }
+                            filesMap.put(directory, filesInZip);
+                        } catch (IOException e) {
+                            log.error("Could not read from {}", directory);
+                            throw new UncheckedPmcReaderException(e);
+                        }
                     } else {
                         filesMap.put(directory, EMPTY_URI_STACK);
                         subDirectoryMap.put(directory, EMPTY_FILE_STACK);

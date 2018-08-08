@@ -76,6 +76,45 @@ public class PMCReaderTest {
 		}
         assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
 	}
+
+    @Test
+    public void testPmcReaderRecursiveZip() throws Exception {
+        // read a whole directory with subdirectories
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-zip", PMCReader.PARAM_RECURSIVELY, true, PMCReader.PARAM_SEARCH_ZIP, true);
+        assertTrue(reader.hasNext());
+        Set<String> foundDocuments = new HashSet<>();
+        while (reader.hasNext()) {
+            reader.getNext(cas.getCas());
+
+            Header header = (Header) CasUtil.selectSingle(cas.getCas(),
+                    CasUtil.getAnnotationType(cas.getCas(), Header.class));
+            assertNotNull(header);
+            foundDocuments.add(header.getDocId());
+            assertNotNull(header.getPubTypeList());
+            assertTrue(header.getPubTypeList().size() > 0);
+            assertNotNull(((Journal) header.getPubTypeList(0)).getTitle());
+            assertNotNull(((Journal) header.getPubTypeList(0)).getIssue());
+            assertNotNull(((Journal) header.getPubTypeList(0)).getVolume());
+            assertNotNull(((Journal) header.getPubTypeList(0)).getPages());
+            assertTrue(((Journal) header.getPubTypeList(0)).getTitle().length() > 0);
+            assertNotNull(header.getAuthors());
+            assertTrue(header.getAuthors().size() > 0);
+            assertNotNull(header.getAuthors(0));
+
+            Collection<Caption> captions = JCasUtil.select(cas, Caption.class);
+            for (Caption c : captions)
+                assertNotNull(c.getCaptionType());
+            Collection<Title> titles = JCasUtil.select(cas, Title.class);
+            for (Title t : titles)
+                assertNotNull(t.getTitleType());
+
+            cas.reset();
+        }
+        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
+    }
 	
 	@Test
 	public void testTitle() throws Exception {
