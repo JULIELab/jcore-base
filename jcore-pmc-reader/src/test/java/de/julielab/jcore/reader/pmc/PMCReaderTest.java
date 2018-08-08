@@ -15,9 +15,10 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.*;
 import java.util.stream.IntStream;
-
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
 
 public class PMCReaderTest {
@@ -43,16 +44,16 @@ public class PMCReaderTest {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
 				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents-recursive");
+				"src/test/resources/documents-recursive", PMCReader.PARAM_RECURSIVELY, true);
 		assertTrue(reader.hasNext());
-		Set<String> expectedIds = new HashSet<>(Arrays.asList("2847692", "3201365", "4257438", "2758189", "2970367"));
+		Set<String> foundDocuments = new HashSet<>();
 		while (reader.hasNext()) {
 			reader.getNext(cas.getCas());
 
 			Header header = (Header) CasUtil.selectSingle(cas.getCas(),
 					CasUtil.getAnnotationType(cas.getCas(), Header.class));
 			assertNotNull(header);
-			assertTrue(expectedIds.remove(header.getDocId()));
+            foundDocuments.add(header.getDocId());
 			assertNotNull(header.getPubTypeList());
 			assertTrue(header.getPubTypeList().size() > 0);
 			assertNotNull(((Journal) header.getPubTypeList(0)).getTitle());
@@ -73,7 +74,7 @@ public class PMCReaderTest {
 
 			cas.reset();
 		}
-		assertTrue(expectedIds.isEmpty());
+        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
 	}
 	
 	@Test
@@ -224,10 +225,10 @@ public class PMCReaderTest {
 	@Test
 	public void testGetPmcFiles() throws Exception {
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents-recursive");
+				"src/test/resources/documents-recursive", PMCReader.PARAM_RECURSIVELY, true);
 		Method getPmcFilesMethod = reader.getClass().getDeclaredMethod("getPmcFiles", File.class);
 		getPmcFilesMethod.setAccessible(true);
-		Iterator<File> recursiveIt = (Iterator<File>) getPmcFilesMethod.invoke(reader,
+		Iterator<URI> recursiveIt = (Iterator<URI>) getPmcFilesMethod.invoke(reader,
 				new File("src/test/resources/documents-recursive"));
 		assertTrue(recursiveIt.hasNext());
 		// check that multiple calls to hasNext() don't cause trouble
@@ -236,16 +237,16 @@ public class PMCReaderTest {
 		assertTrue(recursiveIt.hasNext());
 		assertTrue(recursiveIt.hasNext());
 		assertTrue(recursiveIt.hasNext());
-		Set<String> expectedFileNames = new HashSet<>(Arrays.asList("PMC2847692.nxml.gz", "PMC2758189.nxml.gz",
-				"PMC2970367.nxml.gz", "PMC3201365.nxml.gz", "PMC4257438.nxml.gz"));
+		Set<String> expectedFiles = new HashSet<>();
 		while (recursiveIt.hasNext()) {
-			File file = recursiveIt.next();
-			assertTrue("The file \"" + file.getName() + "\" was not expected",
-					expectedFileNames.remove(file.getName()));
+			URI uri = recursiveIt.next();
+            String filename = uri.getPath().substring(uri.getPath().lastIndexOf('/')+1);
 			// just to try causing trouble
+            expectedFiles.add(filename);
 			recursiveIt.hasNext();
 		}
-		assertTrue(expectedFileNames.isEmpty());
+        assertThat(expectedFiles).containsExactlyInAnyOrder("PMC2847692.nxml.gz", "PMC2758189.nxml.gz",
+                "PMC2970367.nxml.gz", "PMC3201365.nxml.gz", "PMC4257438.nxml.gz");
 	}
 
 	@Test
