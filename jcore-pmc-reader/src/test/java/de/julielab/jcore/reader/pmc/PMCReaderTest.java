@@ -1,20 +1,7 @@
 package de.julielab.jcore.reader.pmc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.stream.IntStream;
-
-import org.apache.uima.cas.FSIterator;
+import de.julielab.jcore.types.*;
+import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CollectionReader;
@@ -23,21 +10,15 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
-import de.julielab.jcore.types.AbstractSection;
-import de.julielab.jcore.types.Caption;
-import de.julielab.jcore.types.Figure;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.InternalReference;
-import de.julielab.jcore.types.Journal;
-import de.julielab.jcore.types.Paragraph;
-import de.julielab.jcore.types.Section;
-import de.julielab.jcore.types.SectionTitle;
-import de.julielab.jcore.types.Table;
-import de.julielab.jcore.types.Title;
-import de.julielab.jcore.types.pubmed.ManualDescriptor;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.IntStream;
+
+import static org.junit.Assert.*;
 
 public class PMCReaderTest {
 	@Test
@@ -54,7 +35,6 @@ public class PMCReaderTest {
 			++count;
 		}
 		assertEquals(1, count);
-		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("2847692.xmi"));
 	}
 
 	@Test
@@ -96,28 +76,6 @@ public class PMCReaderTest {
 		assertTrue(expectedIds.isEmpty());
 	}
 	
-	@Test
-	public void testPmcReader3() throws Exception {
-		// read a single file, parse it and right it to XMI for manual review
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
-				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
-		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents-misc/PMC4303521.nxml.gz");
-		assertTrue(reader.hasNext());
-		int count = 0;
-		while (reader.hasNext()) {
-			reader.getNext(cas.getCas());
-			++count;
-		}
-		assertEquals(1, count);
-		FSIterator<Annotation> it = cas.getAnnotationIndex(InternalReference.type).iterator();
-		while (it.hasNext()) {
-			Annotation a = it.next();
-			System.out.println(a.getBegin() + "-" + a.getEnd());
-		}
-		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("4303521.xmi"));
-	}
-
 	@Test
 	public void testTitle() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
@@ -304,13 +262,11 @@ public class PMCReaderTest {
 		while (secIt.hasNext()) {
 			Section sec = (Section) secIt.next();
 			if (i == 1) {
-				System.out.println(sec.getSectionHeading().getCoveredText());
 				assertEquals("Materials and methods", sec.getSectionHeading().getCoveredText());
 				assertEquals("2", sec.getLabel());
 			}
 			++i;
 		}
-		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("3098455.xmi"));
 	}
 
 	@Test
@@ -343,6 +299,5 @@ public class PMCReaderTest {
 			assertTrue(i < 4);
 			++i;
 		}
-		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("3098455.xmi"));
 	}
 }
