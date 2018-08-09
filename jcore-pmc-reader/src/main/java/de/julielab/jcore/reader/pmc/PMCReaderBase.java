@@ -56,12 +56,17 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
 
 
     @Override
-    public boolean hasNext() throws IOException, CollectionException {
+    public boolean hasNext() {
         return pmcFiles.hasNext();
     }
 
     @Override
     public Progress[] getProgress() {
         return new Progress[] {new ProgressImpl(completed, -1, "documents")};
+    }
+
+    @Override
+    public void close() {
+        pmcFiles = null;
     }
 }

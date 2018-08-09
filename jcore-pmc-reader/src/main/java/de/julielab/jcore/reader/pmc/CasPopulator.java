@@ -14,18 +14,14 @@ import java.net.URI;
 import java.util.Iterator;
 
 public class CasPopulator {
-private final static Logger log = LoggerFactory.getLogger(CasPopulator.class);
+    private final static Logger log = LoggerFactory.getLogger(CasPopulator.class);
     private NxmlDocumentParser nxmlDocumentParser;
     private Iterator<URI> nxmlIterator;
 
-    public CasPopulator(Iterator<URI> nxmlIterator) throws ResourceInitializationException {
+    public CasPopulator(Iterator<URI> nxmlIterator) throws IOException {
         this.nxmlIterator = nxmlIterator;
         nxmlDocumentParser = new NxmlDocumentParser();
-        try {
-            nxmlDocumentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
-        } catch (IOException e) {
-            throw new ResourceInitializationException(e);
-        }
+        nxmlDocumentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
     }
 
     public void populateCas(URI nxmlUri, JCas cas) throws DocumentParsingException, ElementParsingException {
@@ -48,6 +44,7 @@ private final static Logger log = LoggerFactory.getLogger(CasPopulator.class);
     /**
      * This is the actual method that reads the parsing results, created the CAS document text and adds
      * the annotations from the parsing results.
+     *
      * @param result
      * @param sb
      * @return

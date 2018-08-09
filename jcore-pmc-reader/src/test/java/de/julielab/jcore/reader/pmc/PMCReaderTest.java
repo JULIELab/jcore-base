@@ -2,7 +2,6 @@ package de.julielab.jcore.reader.pmc;
 
 import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
-import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -13,12 +12,13 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import static org.assertj.core.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 public class PMCReaderTest {
@@ -333,4 +333,17 @@ public class PMCReaderTest {
 			++i;
 		}
 	}
+
+	@Test
+    public void testFigureReferencesAnnotated() throws Exception {
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-recursive/PMC2847692.nxml.gz");
+        reader.getNext(cas.getCas());
+        Collection<InternalReference> refs = JCasUtil.select(cas, InternalReference.class);
+        List<InternalReference> figRefs = refs.stream().filter(r -> r.getReftype().equalsIgnoreCase("figure")).collect(Collectors.toList());
+        assertThat(figRefs).hasSize(2);
+        assertThat(figRefs).extracting("refid").containsExactly("Fig1", "Fig2");
+    }
 }

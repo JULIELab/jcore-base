@@ -36,72 +36,34 @@ import de.julielab.jcore.reader.pmc.parser.TextParsingResult;
 
 public class PMCReader extends PMCReaderBase {
 
-    private static final Logger log = LoggerFactory.getLogger(PMCReader.class);
     public static final String PARAM_INPUT = PMCReaderBase.PARAM_INPUT;
     public static final String PARAM_RECURSIVELY = PMCReaderBase.PARAM_RECURSIVELY;
     public static final String PARAM_SEARCH_ZIP = PMCReaderBase.PARAM_SEARCH_ZIP;
-
+    private static final Logger log = LoggerFactory.getLogger(PMCReader.class);
     private CasPopulator casPopulator;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
-        casPopulator = new CasPopulator(pmcFiles);
+        try {
+            casPopulator = new CasPopulator(pmcFiles);
+        } catch (IOException e) {
+            log.error("Exception occurred when trying to initialize NXML parser", e);
+            throw new ResourceInitializationException(e);
+        }
     }
 
     @Override
     public void getNext(JCas cas) throws CollectionException {
+        URI next = null;
         try {
-            URI next = pmcFiles.next();
+            next = pmcFiles.next();
             casPopulator.populateCas(next, cas);
 
         } catch (DocumentParsingException | ElementParsingException e) {
+            log.error("Exception occurred when trying to parse {}", next, e);
             throw new CollectionException(e);
         }
         completed++;
     }
-
-
-    @Override
-    public boolean hasNext() throws IOException, CollectionException {
-        return pmcFiles.hasNext();
-    }
-
-    @Override
-    public Progress[] getProgress() {
-        return new Progress[]{new Progress() {
-
-            /**
-             *
-             */
-            private static final long serialVersionUID = 6058019619024287436L;
-
-            @Override
-            public boolean isApproximate() {
-                return true;
-            }
-
-            @Override
-            public String getUnit() {
-                return "files";
-            }
-
-            @Override
-            public long getTotal() {
-                return -1;
-            }
-
-            @Override
-            public long getCompleted() {
-                return completed;
-            }
-        }};
-    }
-
-    @Override
-    public void close() throws IOException {
-        pmcFiles = null;
-    }
-
-
 }

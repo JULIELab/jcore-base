@@ -39,6 +39,11 @@
       	<artifactId>logback-classic</artifactId>
       	<scope>provided</scope>
       </dependency>
+      <dependency>
+          <groupId>org.apache.uima</groupId>
+          <artifactId>uima-ducc-user</artifactId>
+          <version>${uima-ducc-version}</version>
+      </dependency>
   </dependencies>
   <organization>
   	<name>JULIE Lab Jena, Germany</name>
