@@ -260,15 +260,9 @@ public class PMCReaderTest {
 		assertTrue(expectedKeywords.isEmpty());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetPmcFiles() throws Exception {
-		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents-recursive", PMCReader.PARAM_RECURSIVELY, true);
-		Method getPmcFilesMethod = reader.getClass().getDeclaredMethod("getPmcFiles", File.class);
-		getPmcFilesMethod.setAccessible(true);
-		Iterator<URI> recursiveIt = (Iterator<URI>) getPmcFilesMethod.invoke(reader,
-				new File("src/test/resources/documents-recursive"));
+		Iterator<URI> recursiveIt = new NXMLURIIterator(new File("src/test/resources/documents-recursive"), true, false);
 		assertTrue(recursiveIt.hasNext());
 		// check that multiple calls to hasNext() don't cause trouble
 		assertTrue(recursiveIt.hasNext());
@@ -282,7 +276,6 @@ public class PMCReaderTest {
             String filename = uri.getPath().substring(uri.getPath().lastIndexOf('/')+1);
 			// just to try causing trouble
             expectedFiles.add(filename);
-			recursiveIt.hasNext();
 		}
         assertThat(expectedFiles).containsExactlyInAnyOrder("PMC2847692.nxml.gz", "PMC2758189.nxml.gz",
                 "PMC2970367.nxml.gz", "PMC3201365.nxml.gz", "PMC4257438.nxml.gz");

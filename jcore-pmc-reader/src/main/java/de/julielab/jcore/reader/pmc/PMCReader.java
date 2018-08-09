@@ -74,7 +74,7 @@ public class PMCReader extends CollectionReader_ImplBase {
         try {
             if (alreadyReadFile != null && alreadyReadFile.exists())
                 alreadyReadFilenames = new HashSet<>(FileUtils.readLines(alreadyReadFile, "UTF-8"));
-            pmcFiles = getPmcFiles(input);
+            pmcFiles = new NXMLURIIterator(input, searchRecursively, searchZip);
         } catch (IOException e) {
             throw new ResourceInitializationException(e);
         }
@@ -208,127 +208,5 @@ public class PMCReader extends CollectionReader_ImplBase {
         pmcFiles = null;
     }
 
-    private Iterator<URI> getPmcFiles(final File path) throws FileNotFoundException {
-        if (!path.exists())
-            throw new FileNotFoundException("The path " + path.getAbsolutePath() + " does not exist.");
-        return new Iterator<URI>() {
-
-            private File currentDirectory;
-            private LinkedHashMap<File, Stack<URI>> filesMap = new LinkedHashMap<>();
-            private LinkedHashMap<File, Stack<File>> subDirectoryMap = new LinkedHashMap<>();
-            private Stack<URI> EMPTY_URI_STACK = new Stack<>();
-            private Stack<File> EMPTY_FILE_STACK = new Stack<>();
-
-
-            @Override
-            public boolean hasNext() {
-                // The beginning: The currentDirectory is null and we start at
-                // the given path (which actually might be a single file to
-                // read).
-                if (currentDirectory == null) {
-                    currentDirectory = path;
-                    setFilesAndSubDirectories(currentDirectory);
-                }
-                Stack<URI> filesInCurrentDirectory = filesMap.get(currentDirectory);
-                if (!filesInCurrentDirectory.isEmpty())
-                    return true;
-                else if (currentDirectory.isFile())
-                    // If the path points to a file an no files are left, then
-                    // the one file has already been read. We are finished.
-                    return false;
-                else {
-                    Stack<File> subDirectories = subDirectoryMap.get(currentDirectory);
-                    log.trace("No more files in current directory {}", currentDirectory);
-                    if (!subDirectories.isEmpty()) {
-                        File subDirectory = subDirectories.pop();
-                        log.trace("Moving to subdirectory {}", subDirectory);
-
-                        setFilesAndSubDirectories(subDirectory);
-
-                        // move to the new subdirectory
-                        currentDirectory = subDirectory;
-
-                        // we call hasNext() again because the new current
-                        // directory could be empty
-                        return hasNext();
-                    }
-                    // there is no subdirectory left
-                    // if we are in the root path, we have read everything and
-                    // are finished
-                    if (currentDirectory.equals(path))
-                        return false;
-                    // If we are not in the root path, we are beneath it. Go up
-                    // one directory and check if there is still something to do
-                    currentDirectory = currentDirectory.getParentFile();
-                    return hasNext();
-                }
-            }
-
-            private void setFilesAndSubDirectories(File directory) {
-                log.debug("Reading path {}", directory);
-                if (directory.isDirectory() || isZipFile(directory)) {
-                    if ((searchRecursively || directory.equals(path)) && !isZipFile(directory)) {
-                        log.debug("Identified {} as a directory, reading files and subdirectories", directory);
-                        // set the files in the directory
-                        Stack<URI> filesInSubDirectory = new Stack<>();
-                        Stream.of(directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml") && !isZipFile(f))).map(File::toURI)
-                                .forEach(filesInSubDirectory::push);
-                        filesMap.put(directory, filesInSubDirectory);
-
-                        // set the subdirectories of the directory
-                        Stack<File> directoriesInSubDirectory = new Stack<>();
-                        Stream.of(directory.listFiles(f -> f.isDirectory())).forEach(directoriesInSubDirectory::push);
-                        if (searchZip)
-                            Stream.of(directory.listFiles(f -> f.isFile() && isZipFile(f))).forEach(directoriesInSubDirectory::push);
-                        subDirectoryMap.put(directory, directoriesInSubDirectory);
-                    } else if (searchZip && isZipFile(directory)) {
-                        log.debug("Identified {} as a ZIP archive, retrieving its inventory", directory);
-                        Stack<URI> filesInZip = new Stack<>();
-                        log.debug("Searching ZIP archive {} for eligible documents", directory);
-                        try (FileSystem fs = FileSystems.newFileSystem(directory.toPath(), null)) {
-                            Iterable<Path> rootDirectories = fs.getRootDirectories();
-                            for (Path rootDir : rootDirectories) {
-                                Stream<Path> walk = Files.walk(rootDir);
-                                walk.filter(Files::isRegularFile).forEach(p -> {
-                                    if (p.getFileName().toString().contains(".nxml")) {
-                                        filesInZip.add(p.toUri());
-                                    }
-                                });
-                            }
-                            filesMap.put(directory, filesInZip);
-                        } catch (IOException e) {
-                            log.error("Could not read from {}", directory);
-                            throw new UncheckedPmcReaderException(e);
-                        }
-                    } else {
-                        filesMap.put(directory, EMPTY_URI_STACK);
-                        subDirectoryMap.put(directory, EMPTY_FILE_STACK);
-                        log.debug("Recursive search is deactivated, skipping subdirectory {}", directory);
-                    }
-                } else if (directory.isFile()) {
-                    log.debug("Identified {} as a file, reading single file", directory);
-                    Stack<URI> fileStack = new Stack<>();
-                    fileStack.push(directory.toURI());
-                    log.debug("Adding file to map with key {}", directory);
-                    filesMap.put(directory, fileStack);
-                } else {
-                    throw new IllegalStateException("Path " + directory.getAbsolutePath()
-                            + " was identified neither a path nor a file, cannot continue. This seems to be a bug in this code.");
-                }
-            }
-
-            private boolean isZipFile(File directory) {
-                return directory.getName().toLowerCase().endsWith(".zip");
-            }
-
-            @Override
-            public URI next() {
-                if (!hasNext())
-                    return null;
-                return filesMap.get(currentDirectory).pop();
-            }
-
-        };
-    }
 
 }
