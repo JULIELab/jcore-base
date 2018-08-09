@@ -34,45 +34,18 @@ import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser;
 import de.julielab.jcore.reader.pmc.parser.ParsingResult;
 import de.julielab.jcore.reader.pmc.parser.TextParsingResult;
 
-public class PMCReader extends JCasCollectionReader_ImplBase {
+public class PMCReader extends PMCReaderBase {
 
-    public static final String PARAM_INPUT = "Input";
-    public static final String PARAM_RECURSIVELY = "SearchRecursively";
-    public static final String PARAM_SEARCH_ZIP = "SearchInZipFiles";
     private static final Logger log = LoggerFactory.getLogger(PMCReader.class);
-    @ConfigurationParameter(name = PARAM_INPUT, description = "The path to an NXML file or a directory with NXML files and possibly subdirectories holding more NXML files.")
-    private File input;
+    public static final String PARAM_INPUT = PMCReaderBase.PARAM_INPUT;
+    public static final String PARAM_RECURSIVELY = PMCReaderBase.PARAM_RECURSIVELY;
+    public static final String PARAM_SEARCH_ZIP = PMCReaderBase.PARAM_SEARCH_ZIP;
 
-    @ConfigurationParameter(name = PARAM_RECURSIVELY, defaultValue = "false", mandatory = false, description = "If set to true, subdirectories of the given input directory " + PARAM_INPUT + " are also searched for NXML files. Defaults to false.")
-    private boolean searchRecursively;
-
-    @ConfigurationParameter(name = PARAM_SEARCH_ZIP, defaultValue = "false", mandatory = false, description = "If set to true, ZIP files found among the input are opened and also searched for NXML files. Defaults to false.")
-    private boolean searchZip;
-
-    private Iterator<URI> pmcFiles;
-    private Set<String> alreadyReadFilenames = Collections.emptySet();
-
-    private long completed;
     private CasPopulator casPopulator;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
-        if (log.isInfoEnabled()) {
-            log.info("Component configuration:");
-            for (String configName : context.getConfigParameterNames()) {
-                log.info("    {}: {}", configName, getConfigParameterValue(configName));
-            }
-        }
-        input = new File((String) getConfigParameterValue(PARAM_INPUT));
-        searchRecursively = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_RECURSIVELY)).orElse(false);
-        searchZip = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_SEARCH_ZIP)).orElse(false);
-        log.info("Reading PubmedCentral NXML file(s) from {}", input);
-        try {
-            pmcFiles = new NXMLURIIterator(input, searchRecursively, searchZip);
-        } catch (IOException e) {
-            throw new ResourceInitializationException(e);
-        }
-        completed = 0;
+        super.initialize(context);
         casPopulator = new CasPopulator(pmcFiles);
     }
 
