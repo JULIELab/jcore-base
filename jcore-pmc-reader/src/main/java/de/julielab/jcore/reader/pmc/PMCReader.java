@@ -59,6 +59,12 @@ public class PMCReader extends CollectionReader_ImplBase {
 
     @Override
     public void initialize() throws ResourceInitializationException {
+        if (log.isInfoEnabled()) {
+            log.info("Component configuration:");
+            for (String configName : getUimaContext().getConfigParameterNames()) {
+                log.info("    {}: {}", configName, getConfigParameterValue(configName));
+            }
+        }
         input = new File((String) getConfigParameterValue(PARAM_INPUT));
         alreadyReadFile = Optional.ofNullable((String) getConfigParameterValue(PARAM_ALREADY_READ)).map(File::new)
                 .orElse(null);
@@ -260,20 +266,22 @@ public class PMCReader extends CollectionReader_ImplBase {
 
             private void setFilesAndSubDirectories(File directory) {
                 log.debug("Reading path {}", directory);
-                if (directory.isDirectory()) {
-                    if (searchRecursively || directory.equals(path)) {
+                if (directory.isDirectory() || isZipFile(directory)) {
+                    if ((searchRecursively || directory.equals(path)) && !isZipFile(directory)) {
                         log.debug("Identified {} as a directory, reading files and subdirectories", directory);
                         // set the files in the directory
                         Stack<URI> filesInSubDirectory = new Stack<>();
-                        Stream.of(directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml"))).map(File::toURI)
+                        Stream.of(directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml") && !isZipFile(f))).map(File::toURI)
                                 .forEach(filesInSubDirectory::push);
                         filesMap.put(directory, filesInSubDirectory);
 
                         // set the subdirectories of the directory
                         Stack<File> directoriesInSubDirectory = new Stack<>();
                         Stream.of(directory.listFiles(f -> f.isDirectory())).forEach(directoriesInSubDirectory::push);
+                        if (searchZip)
+                            Stream.of(directory.listFiles(f -> f.isFile() && isZipFile(f))).forEach(directoriesInSubDirectory::push);
                         subDirectoryMap.put(directory, directoriesInSubDirectory);
-                    } else if (searchZip && directory.getName().toLowerCase().endsWith(".zip")) {
+                    } else if (searchZip && isZipFile(directory)) {
                         log.debug("Identified {} as a ZIP archive, retrieving its inventory", directory);
                         Stack<URI> filesInZip = new Stack<>();
                         log.debug("Searching ZIP archive {} for eligible documents", directory);
@@ -307,6 +315,10 @@ public class PMCReader extends CollectionReader_ImplBase {
                     throw new IllegalStateException("Path " + directory.getAbsolutePath()
                             + " was identified neither a path nor a file, cannot continue. This seems to be a bug in this code.");
                 }
+            }
+
+            private boolean isZipFile(File directory) {
+                return directory.getName().toLowerCase().endsWith(".zip");
             }
 
             @Override
