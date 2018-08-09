@@ -52,4 +52,35 @@ public class PMCMultiplierTest {
                 "2970367", "3201365", "4257438");
         assertThat(numBatches).isEqualTo(3);
     }
+
+    @Test
+    public void testMultiplierFromDescriptors() throws UIMAException, IOException {
+        CollectionReader reader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.pmc.desc.jcore-pmc-multiplier-reader",
+                PMCMultiplierReader.PARAM_INPUT, "src/test/resources/documents-zip",
+                PMCMultiplierReader.PARAM_RECURSIVELY, true,
+                PMCMultiplierReader.PARAM_SEARCH_ZIP, true,
+                PMCMultiplierReader.PARAM_BATCH_SIZE, 2);
+        AnalysisEngine multiplier = AnalysisEngineFactory.createEngine("de.julielab.jcore.multiplier.pmc.desc.jcore-pmc-multiplier");
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types",
+                "de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types");
+        assertThat(reader.hasNext());
+        Set<String> receivedDocIds = new HashSet<>();
+        int numBatches = 0;
+        while (reader.hasNext()) {
+            reader.getNext(jCas.getCas());
+            JCasIterator jCasIterator = multiplier.processAndOutputNewCASes(jCas);
+            assertThat(jCasIterator.hasNext());
+            while (jCasIterator.hasNext()) {
+                JCas next = jCasIterator.next();
+                String docId = JCasUtil.selectSingle(next, Header.class).getDocId();
+                receivedDocIds.add(docId);
+                next.release();
+            }
+            ++numBatches;
+        }
+        assertThat(receivedDocIds).containsExactlyInAnyOrder("2847692", "2758189",
+                "2970367", "3201365", "4257438");
+        assertThat(numBatches).isEqualTo(3);
+    }
 }

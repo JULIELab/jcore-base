@@ -19,6 +19,8 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -34,6 +36,8 @@ import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser;
 import de.julielab.jcore.reader.pmc.parser.ParsingResult;
 import de.julielab.jcore.reader.pmc.parser.TextParsingResult;
 
+@ResourceMetaData(name = "JCoRe Pubmed Central Reader", description = "Reads Pubmed Central documents from the NXML format")
+@TypeCapability(outputs = {"de.julielab.jcore.types.TitleType", "de.julielab.jcore.types.Title", "de.julielab.jcore.types.TextObject", "de.julielab.jcore.types.Table", "de.julielab.jcore.types.SectionTitle", "de.julielab.jcore.types.Section", "de.julielab.jcore.types.PubType", "de.julielab.jcore.types.Paragraph", "de.julielab.jcore.types.OtherPub", "de.julielab.jcore.types.pubmed.OtherID", "de.julielab.jcore.types.pubmed.ManualDescriptor", "de.julielab.jcore.types.Keyword", "de.julielab.jcore.types.Journal", "de.julielab.jcore.types.pubmed.Header", "de.julielab.jcore.types.Footnote", "de.julielab.jcore.types.Figure", "uima.tcas.DocumentAnnotation", "de.julielab.jcore.types.Date", "de.julielab.jcore.types.CaptionType", "de.julielab.jcore.types.Caption", "de.julielab.jcore.types.AutoDescriptor", "de.julielab.jcore.types.AuthorInfo", "de.julielab.jcore.types.AbstractText", "de.julielab.jcore.types.AbstractSectionHeading", "de.julielab.jcore.types.AbstractSection"})
 public class PMCReader extends PMCReaderBase {
 
     public static final String PARAM_INPUT = PMCReaderBase.PARAM_INPUT;

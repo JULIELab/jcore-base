@@ -2,7 +2,6 @@ package de.julielab.jcore.reader.pmc;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UimaContext;
-import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -17,8 +16,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
