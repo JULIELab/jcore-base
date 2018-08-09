@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
   <annotatorImplementationName>de.julielab.jcore.ae.jpos.postagger.POSAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>JPOSAnnotator</name>
-    <description/>
-    <version>1.0</version>
+    <description />
+    <version>2.3.0</version>
     <vendor>JULIE Lab</vendor>
    <configurationParameters>
       <configurationParameter>
@@ -38,11 +38,11 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-all-types"/>
+        <import name="de.julielab.jcore.types.jcore-all-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
         <inputs>
@@ -52,7 +52,7 @@
         <outputs>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -61,5 +61,5 @@
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </analysisEngineDescription>

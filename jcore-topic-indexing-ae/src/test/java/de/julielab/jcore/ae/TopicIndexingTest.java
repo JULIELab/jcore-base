@@ -1,17 +1,13 @@
 package de.julielab.jcore.ae;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.util.List;
-
 import de.julielab.jcore.ae.topicindexing.TopicIndexer;
 import de.julielab.jcore.ae.topicindexing.TopicModelProvider;
+import de.julielab.jcore.reader.xmi.XmiCollectionReader;
+import de.julielab.jcore.types.DocumentTopics;
 import de.julielab.jcore.types.Header;
+import de.julielab.topicmodeling.businessobjects.Model;
+import de.julielab.topicmodeling.businessobjects.Topic;
+import de.julielab.topicmodeling.services.MalletTopicModeling;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -25,18 +21,17 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.junit.Test;
 
-import de.julielab.jcore.types.DocumentTopics;
-import de.julielab.jcore.utility.JCoReTools;
-import de.julielab.jcore.reader.xmi.XmiCollectionReader;
-import de.julielab.topicmodeling.businessobjects.Model;
-import de.julielab.topicmodeling.businessobjects.Topic;
-import de.julielab.topicmodeling.services.MalletTopicModeling;
-import org.junit.rules.ExternalResource;
+import java.io.File;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for jcore-topic-labeling-ae.

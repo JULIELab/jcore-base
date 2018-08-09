@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.multiplier.xml.XMLMultiplier</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>PubmedXMLMultiplierDescriptor</name>
-    <description/>
-    <version>1.0</version>
-    <vendor/>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
     <configurationParameters searchStrategy="language_fallback">
       <configurationParameter>
         <name>InputDirectory</name>
@@ -68,13 +68,13 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
-      <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
-        <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-structure-types" />
+      <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+        <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
         <inputs>
@@ -85,7 +85,7 @@
         <type allAnnotatorFeatures="true">de.julielab.jcore.types.MeshHeading</type>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.Title</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
   <operationalProperties>
@@ -94,5 +94,5 @@
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </analysisEngineDescription>

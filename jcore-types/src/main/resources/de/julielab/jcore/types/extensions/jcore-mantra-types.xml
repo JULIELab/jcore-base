@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Mantra Types</name>
   <description>The type system contains types for working with documents in the context of the MANTRA project.</description>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.3.0</version>
   <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
-    <import location="../jcore-document-structure-types.xml"/>
-    <import location="../jcore-basic-types.xml"/>
-    <import location="../jcore-document-meta-types.xml"/>
+    <import location="../jcore-document-structure-types.xml" />
+    <import location="../jcore-basic-types.xml" />
+    <import location="../jcore-document-meta-types.xml" />
   </imports>
   <types>
     <typeDescription>
@@ -94,7 +94,7 @@
         </featureDescription>
         <featureDescription>
           <name>ner</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>de.julielab.jcore.types.mantra.NER</elementType>
           <multipleReferencesAllowed>false</multipleReferencesAllowed>
@@ -108,23 +108,23 @@
       <allowedValues>
         <value>
           <string>EMEA</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>Medline</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>Patent</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>Cochrane</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>Other</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
@@ -136,179 +136,179 @@
       <allowedValues>
         <value>
           <string>no</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>he</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>uk</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>ko</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>ar</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>ro</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>bg</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>el</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>en</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>az</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>vi</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>hu</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>ru</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>fa</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>es</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>hy</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>sk</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>sl</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>in</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>fi</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>zh</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>lt</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>ja</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>sq</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>pl</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>sr</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>is</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>it</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>mk</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>sv</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>fr</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>iw</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>ml</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>sw</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>th</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>ps</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>pt</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>da</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>cs</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>de</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>ka</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>tr</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>af</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>nl</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
@@ -319,47 +319,47 @@
       <allowedValues>
         <value>
           <string>ANY</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>ANAT</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>LIVB</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>OBJC</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>PHEN</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>PHYS</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>GEOG</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>DISO</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>DEVI</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>CHEM</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>PROC</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
@@ -370,12 +370,12 @@
       <features>
         <featureDescription>
           <name>semanticGroup</name>
-          <description/>
+          <description />
           <rangeTypeName>de.julielab.jcore.types.mantra.SemanticGroup</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>probability</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.Double</rangeTypeName>
         </featureDescription>
       </features>
