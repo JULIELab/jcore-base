@@ -1,21 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <primitive>true</primitive>
-  <annotatorImplementationName>TopicsWriter</annotatorImplementationName>
-  <analysisEngineMetaData>
-    <name>JCoRe Topics Writer</name>
-    <description/>
-    <version>2.3.0-SNAPSHOT</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
-    <configurationParameters/>
-    <configurationParameterSettings/>
-    <typeSystemDescription/>
-    <capabilities/>
-    <operationalProperties>
-      <modifiesCas>true</modifiesCas>
-      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
-      <outputsNewCASes>false</outputsNewCASes>
-    </operationalProperties>
-  </analysisEngineMetaData>
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.consumer.topics.TopicsWriter</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Topics Writer</name>
+        <description>Writes the topic weights, given the jcore-topic-indexing-ae running before, into a simple text file. Thus, the output consists of a sequency of double numbers encodes as strings, separated by tab characters. The topic ID is just the 0-based index of each number, from left to right in the written file. The first entry of each file is the document ID.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>OutputDirectory</name>
+                <description>The directory to place the files into that contain topic weight assignments for the documents. For corpora larger than a few hundred documents, or even then, multiple files will be written, each containing a batch of document weights. At the end of processing, all these files can just be concatenated to get one large file with the topic weights of all documents.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.DocumentTopics</type>
+                </inputs>
+                <outputs/>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
 </analysisEngineDescription>
