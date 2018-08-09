@@ -39,6 +39,7 @@ public class PMCReader extends PMCReaderBase {
     public static final String PARAM_INPUT = PMCReaderBase.PARAM_INPUT;
     public static final String PARAM_RECURSIVELY = PMCReaderBase.PARAM_RECURSIVELY;
     public static final String PARAM_SEARCH_ZIP = PMCReaderBase.PARAM_SEARCH_ZIP;
+    public static final String PARAM_WHITELIST = PMCReaderBase.PARAM_WHITELIST;
     private static final Logger log = LoggerFactory.getLogger(PMCReader.class);
     private CasPopulator casPopulator;
 

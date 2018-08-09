@@ -25,7 +25,7 @@ public class PMCMultiplierTest {
     @Test
     public void testMultiplier() throws UIMAException, IOException {
         CollectionReader reader = CollectionReaderFactory.createReader(PMCMultiplierReader.class,
-                PMCMultiplierReader.PARAM_INPUT, "src/test/resources/documents-recursive",
+                PMCMultiplierReader.PARAM_INPUT, "src/test/resources/documents-zip",
                 PMCMultiplierReader.PARAM_RECURSIVELY, true,
                 PMCMultiplierReader.PARAM_SEARCH_ZIP, true,
                 PMCMultiplierReader.PARAM_BATCH_SIZE, 2);

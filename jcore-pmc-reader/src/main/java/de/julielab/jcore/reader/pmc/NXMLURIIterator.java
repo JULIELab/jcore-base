@@ -11,9 +11,8 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Stack;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class NXMLURIIterator implements Iterator<URI> {
@@ -26,8 +25,10 @@ public class NXMLURIIterator implements Iterator<URI> {
     private LinkedHashMap<File, Stack<File>> subDirectoryMap = new LinkedHashMap<>();
     private Stack<URI> EMPTY_URI_STACK = new Stack<>();
     private Stack<File> EMPTY_FILE_STACK = new Stack<>();
+    private Set<String> whitelist;
 
-    public NXMLURIIterator(File basePath, boolean searchRecursively, boolean searchZip) throws FileNotFoundException {
+    public NXMLURIIterator(File basePath, Set<String> whitelist, boolean searchRecursively, boolean searchZip) throws FileNotFoundException {
+        this.whitelist = whitelist != null ? whitelist : new HashSet<>(Collections.singletonList("all"));
         if (!basePath.exists())
             throw new FileNotFoundException("The path " + basePath.getAbsolutePath() + " does not exist.");
         this.basePath = basePath;
@@ -86,7 +87,7 @@ public class NXMLURIIterator implements Iterator<URI> {
                 log.debug("Identified {} as a directory, reading files and subdirectories", directory);
                 // set the files in the directory
                 Stack<URI> filesInSubDirectory = new Stack<>();
-                Stream.of(directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml") && !isZipFile(f))).map(File::toURI)
+                Stream.of(directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml") && !isZipFile(f) && isInWhitelist(f))).map(File::toURI)
                         .forEach(filesInSubDirectory::push);
                 filesMap.put(directory, filesInSubDirectory);
 
@@ -105,7 +106,7 @@ public class NXMLURIIterator implements Iterator<URI> {
                     for (Path rootDir : rootDirectories) {
                         Stream<Path> walk = Files.walk(rootDir);
                         walk.filter(Files::isRegularFile).forEach(p -> {
-                            if (p.getFileName().toString().contains(".nxml")) {
+                            if (p.getFileName().toString().contains(".nxml") && isInWhitelist(p)) {
                                 filesInZip.add(p.toUri());
                             }
                         });
@@ -134,6 +135,21 @@ public class NXMLURIIterator implements Iterator<URI> {
 
     private boolean isZipFile(File directory) {
         return directory.getName().toLowerCase().endsWith(".zip");
+    }
+
+    private boolean isInWhitelist(Path path) {
+        return isInWhitelist(path.toString().substring(path.toString().lastIndexOf('/')+1, path.toString().indexOf('.')));
+    }
+
+    private boolean isInWhitelist(File file) {
+        return isInWhitelist(file.getName().substring(0, file.getName().indexOf('.')));
+    }
+
+    private boolean isInWhitelist(String name) {
+        boolean inWhitelist = whitelist.contains(name) || (whitelist.size() == 1 && whitelist.contains("all"));
+        if (!inWhitelist)
+            log.trace("Skipping document with name/id {} because it is not contained in the white list.", name);
+        return inWhitelist;
     }
 
     @Override

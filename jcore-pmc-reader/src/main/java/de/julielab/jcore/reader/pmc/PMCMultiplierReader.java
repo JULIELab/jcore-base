@@ -14,6 +14,10 @@ import java.net.URI;
 import java.util.Optional;
 
 public class PMCMultiplierReader extends PMCReaderBase {
+    public static final String PARAM_INPUT = PMCReaderBase.PARAM_INPUT;
+    public static final String PARAM_RECURSIVELY = PMCReaderBase.PARAM_RECURSIVELY;
+    public static final String PARAM_SEARCH_ZIP = PMCReaderBase.PARAM_SEARCH_ZIP;
+    public static final String PARAM_WHITELIST = PMCReaderBase.PARAM_WHITELIST;
     public static final String PARAM_SEND_CAS_TO_LAST = "SendCasToLast";
     public static final String PARAM_BATCH_SIZE = "BatchSize";
     private final static Logger log = LoggerFactory.getLogger(PMCMultiplierReader.class);

@@ -115,6 +115,30 @@ public class PMCReaderTest {
         }
         assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
     }
+
+    @Test
+    public void testPmcReaderWhitelist() throws Exception {
+        // read a whole directory with subdirectories
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-zip",
+                PMCReader.PARAM_RECURSIVELY, true,
+                PMCReader.PARAM_SEARCH_ZIP, true,
+                PMCReader.PARAM_WHITELIST, "src/test/resources/whitelist.txt");
+        assertTrue(reader.hasNext());
+        Set<String> foundDocuments = new HashSet<>();
+        while (reader.hasNext()) {
+            reader.getNext(cas.getCas());
+
+            Header header = (Header) CasUtil.selectSingle(cas.getCas(),
+                    CasUtil.getAnnotationType(cas.getCas(), Header.class));
+            assertNotNull(header);
+            foundDocuments.add(header.getDocId());
+            cas.reset();
+        }
+        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "2758189");
+    }
 	
 	@Test
 	public void testTitle() throws Exception {
@@ -258,27 +282,6 @@ public class PMCReaderTest {
 				.forEach(i -> assertTrue("The keyword \"" + md.getKeywordList(i).getName() + "\" was not expected",
 						expectedKeywords.remove(md.getKeywordList(i).getName())));
 		assertTrue(expectedKeywords.isEmpty());
-	}
-
-	@Test
-	public void testGetPmcFiles() throws Exception {
-		Iterator<URI> recursiveIt = new NXMLURIIterator(new File("src/test/resources/documents-recursive"), true, false);
-		assertTrue(recursiveIt.hasNext());
-		// check that multiple calls to hasNext() don't cause trouble
-		assertTrue(recursiveIt.hasNext());
-		assertTrue(recursiveIt.hasNext());
-		assertTrue(recursiveIt.hasNext());
-		assertTrue(recursiveIt.hasNext());
-		assertTrue(recursiveIt.hasNext());
-		Set<String> expectedFiles = new HashSet<>();
-		while (recursiveIt.hasNext()) {
-			URI uri = recursiveIt.next();
-            String filename = uri.getPath().substring(uri.getPath().lastIndexOf('/')+1);
-			// just to try causing trouble
-            expectedFiles.add(filename);
-		}
-        assertThat(expectedFiles).containsExactlyInAnyOrder("PMC2847692.nxml.gz", "PMC2758189.nxml.gz",
-                "PMC2970367.nxml.gz", "PMC3201365.nxml.gz", "PMC4257438.nxml.gz");
 	}
 
 	@Test
