@@ -11,24 +11,14 @@ Analysis Engine to assign likelihood indicators to their corresponding entities 
 
 **1. Parameters**
 
-| Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
-|----------------|----------------|-----------|-------------|-------------|
-| param1 | UIMA-Type | Boolean | Boolean | Description |
-| param2 | UIMA-Type | Boolean | Boolean | Description |
+None.
 
-**2. Predefined Settings**
-
-| Parameter Name | Parameter Syntax | Example |
-|----------------|------------------|---------|
-| param1 | Syntax-Description | `Example` |
-| param2 | Syntax-Description | `Example` |
-
-**3. Capabilities**
+**2. Capabilities**
 
 | Type | Input | Output |
 |------|:-----:|:------:|
-| de.julielab.jcore.types.TYPE |  | `+` |
-| de.julielab.jcore.types.ace.TYPE | `+` |  |
+| de.julielab.jcore.types.LikelihoodIndicator | `+` | |
 
+**3. References**
 
-[1] Some Literature?
+Engelmann, Christine, & Hahn, Udo (2014). An empirically grounded approach to extend the linguistic coverage and lexical diversity of verbal probabilities. In: _CogSci 2014 - Proceedings of the 36th Annual Cognitive Science Conference. Cognitive Science Meets Artificial Intelligence: Human and Artificial Agents in Interactive Contexts._ Québec City, Québec, Canada, July 23-26, 2014., 451-456.

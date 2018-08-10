@@ -13,15 +13,13 @@ Analysis Engine to detect epistemic modal expressions and assign the appropriate
 
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
-| param1 | UIMA-Type | Boolean | Boolean | Description |
-| param2 | UIMA-Type | Boolean | Boolean | Description |
+| LikelihoodDict | String | yes | no | File or classpath location of the dictionary to use. |
 
 **2. Predefined Settings**
 
 | Parameter Name | Parameter Syntax | Example |
 |----------------|------------------|---------|
-| param1 | Syntax-Description | `Example` |
-| param2 | Syntax-Description | `Example` |
+| LikelihoodDict | `de/julielab/jcore/ae/likelihooddetection/resources/likelihood_neg_invest_dict` | Full dictionary with negation and investigation clue words. |
 
 **3. Capabilities**
 
@@ -30,5 +28,6 @@ Analysis Engine to detect epistemic modal expressions and assign the appropriate
 | de.julielab.jcore.types.TYPE |  | `+` |
 | de.julielab.jcore.types.ace.TYPE | `+` |  |
 
+**4. References**
 
-[1] Some Literature?
+Engelmann, Christine, & Hahn, Udo (2014). An empirically grounded approach to extend the linguistic coverage and lexical diversity of verbal probabilities. In: _CogSci 2014 - Proceedings of the 36th Annual Cognitive Science Conference. Cognitive Science Meets Artificial Intelligence: Human and Artificial Agents in Interactive Contexts._ Québec City, Québec, Canada, July 23-26, 2014., 451-456.

@@ -77,6 +77,8 @@
         <module>jcore-jsbd-ae</module>
         <module>jcore-jtbd-ae</module>
         <module>jcore-julielab-entity-evaluator-consumer</module>
+        <module>jcore-likelihood-assignment-ae</module>
+        <module>jcore-likelihood-detection-ae</module>
         <module>jcore-lingpipegazetteer-ae</module>
         <module>jcore-lingpipe-porterstemmer-ae</module>
         <module>jcore-linnaeus-species-ae</module>
