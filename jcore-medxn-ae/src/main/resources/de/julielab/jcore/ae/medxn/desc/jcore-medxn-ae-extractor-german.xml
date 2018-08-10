@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
@@ -6,22 +6,22 @@
   <analysisEngineMetaData>
     <name>de.julielab.jcore.medxn.ae.desc.jcore-medxn-ae-extractor-german</name>
     <description>Associate medication and the corresponding attributes</description>
-    <version>1.0</version>
-    <vendor/>
-    <configurationParameters/>
-    <configurationParameterSettings/>
+    <version>2.3.0</version>
+    <vendor />
+    <configurationParameters />
+    <configurationParameterSettings />
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-all-types"/>
+        <import name="de.julielab.jcore.types.jcore-all-types" />
      </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -33,9 +33,9 @@
   <externalResourceDependencies>
     <externalResourceDependency>
       <key>falseMedDict</key>
-      <description/>
+      <description />
       <optional>true</optional>
     </externalResourceDependency>
   </externalResourceDependencies>
-<resourceManagerConfiguration/>
+<resourceManagerConfiguration />
 </analysisEngineDescription>

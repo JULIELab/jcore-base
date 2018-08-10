@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
@@ -58,6 +59,7 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
     public static final String PARAM_INPUT_FILE = "InputFile";
     public static final String PARAM_FILE_NAME_REGEX = "FileNameRegex";
     public static final String PARAM_SEARCH_IN_ZIP = "SearchInZipFiles";
+    public static final String PARAM_SEND_CAS_TO_LAST = "SendCasToLast";
     /**
      * UIMA Logger for this class
      */
@@ -82,6 +84,8 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
     @ConfigurationParameter(name = PARAM_SEARCH_IN_ZIP, mandatory = false, description = "If set to true, contents of ZIP files in the " +
             "given input directory will also be searched for files matching the specified file name regular expression. Defaults to false.", defaultValue = "false")
     private boolean searchZip;
+    @ConfigurationParameter(name = PARAM_SEND_CAS_TO_LAST, mandatory = false, defaultValue = "false", description = "UIMA DUCC relevant parameter when using a CAS multiplier. When set to true, the worker CAS from the collection reader is forwarded to the last component in the pipeline. This can be used to send information about the progress to the CAS consumer in order to have it perform batch operations. For this purpose, a feature structure of type WorkItem from the DUCC library is added to the worker CAS. This feature structure has information about the current progress.")
+    private boolean sendCasToLast;
 
     /*
      * (non-Javadoc)
@@ -96,6 +100,7 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
                 for (String name : getUimaContext().getConfigParameterNames())
                     LOGGER.info("{}: {}", name, getConfigParameterValue(name));
             }
+            sendCasToLast = (boolean) Optional.ofNullable(getConfigParameterValue(PARAM_SEND_CAS_TO_LAST)).orElse(false);
             getInputFiles();
         } catch (Throwable e) {
             LOGGER.error("Exception or error while initializing reader: ", e);
@@ -121,15 +126,17 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
                 throw new CollectionException(e);
             }
 
-            Workitem workitem = new Workitem(cas.getJCas());
-            // Send the work item CAS also to the consumer. Normally, only the CASes emitted by the CAS multiplier
-            // will be routed to the consumer. We do this to let the consumer know that the work item has been
-            // finished.
-            workitem.setSendToLast(true);
-            workitem.getBlockindex();
-            if (!hasNext())
-                workitem.setLastBlock(true);
-            workitem.addToIndexes();
+            if (sendCasToLast) {
+                Workitem workitem = new Workitem(cas.getJCas());
+                // Send the work item CAS also to the consumer. Normally, only the CASes emitted by the CAS multiplier
+                // will be routed to the consumer. We do this to let the consumer know that the work item has been
+                // finished.
+                workitem.setSendToLast(true);
+                workitem.setBlockindex(currentIndex);
+                if (!hasNext())
+                    workitem.setLastBlock(true);
+                workitem.addToIndexes();
+            }
 
             currentIndex++;
         } catch (CASException e) {
@@ -162,9 +169,10 @@ public class XMLMultiplierReader extends CollectionReader_ImplBase {
             fileNameRegex = (String[]) getConfigParameterValue(PARAM_FILE_NAME_REGEX);
         searchZip = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_SEARCH_IN_ZIP)).orElse(false);
         File inputDirectory = new File(directoryName.trim());
-        if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
-            throw new ResourceInitializationException(ResourceInitializationException.RESOURCE_DATA_NOT_VALID, new Object[]{directoryName, PARAM_INPUT_DIR});
-        }
+        if (!inputDirectory.exists())
+            throw new ResourceInitializationException(new FileNotFoundException("The directory " + inputDirectory.getAbsolutePath() + " does not exist."));
+        else if (!inputDirectory.isDirectory())
+            throw new ResourceInitializationException(new IllegalArgumentException("The file " + inputDirectory.getAbsolutePath() + " is not a directory."));
         for (File f : inputDirectory.listFiles((dir, name) -> matchesFileNameRegex(name))) {
             URI uri = f.toURI();
             if (uri.toString().toLowerCase().endsWith(".zip")) {

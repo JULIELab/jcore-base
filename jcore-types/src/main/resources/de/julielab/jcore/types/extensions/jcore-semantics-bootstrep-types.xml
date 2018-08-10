@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Semantics BOOTStrep Types</name>
   <description>The type system is an extension of the JCoRe core type system for types required in the context of the BOOTStrep project.</description>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.3.0</version>
   <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
-    <import location="../jcore-semantics-biology-types.xml"/>
+    <import location="../jcore-semantics-biology-types.xml" />
   </imports>
   <types>
     <typeDescription>
@@ -33,7 +33,7 @@ specificType: protein_substructure, unspecified</description>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.bootstrep.GeneExpression</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.BioEventMention</supertypeName>
     </typeDescription>
     <typeDescription>
@@ -56,7 +56,7 @@ contains regulation of gene transcription as well</description>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.bootstrep.GeneTranscription</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.BioEventMention</supertypeName>
     </typeDescription>
     <typeDescription>

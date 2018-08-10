@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <name>TestTypeSystem</name>
 <description>including julie morpho-syntax and semantics</description>
-<version>1.0</version>
-<vendor/>
+<version>2.3.0</version>
+<vendor />
 <imports>
-<import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
-<import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
-<import name="de.julielab.jcore.types.jcore-all-types"/>
+<import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+<import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
+<import name="de.julielab.jcore.types.jcore-all-types" />
   </imports>
 </typeSystemDescription>

@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
   <annotatorImplementationName>de.julielab.jcore.consumer.cas2conll.ConllConsumer</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>JCoRe Conll Consumer</name>
-    <description/>
+    <description />
     <version>2.3.0</version>
-    <vendor/>
+    <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>outputDir</name>
@@ -62,17 +62,17 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-basic-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+        <import name="de.julielab.jcore.types.jcore-basic-types" />
+        <import name="de.julielab.jcore.types.jcore-document-meta-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -81,5 +81,5 @@
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
     </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </analysisEngineDescription>

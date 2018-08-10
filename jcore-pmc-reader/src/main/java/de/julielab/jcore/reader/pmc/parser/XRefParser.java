@@ -56,11 +56,11 @@ public class XRefParser extends DefaultElementParser {
 		case "corresp":
 			return "correspondingauthor";
 		case "disp-formula":
-			return "figure";
+			return "displayformula";
 		case "fig":
-			return "footnote";
+			return "figure";
 		case "fn":
-			return "formula";
+			return "footnote";
 		case "kwd":
 			return "keyword";
 		case "list":

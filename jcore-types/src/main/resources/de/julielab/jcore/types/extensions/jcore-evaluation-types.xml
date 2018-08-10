@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Evaluation Types</name>
   <description>This type system is an extension of the JCoRe type system to cover evaluation Annotations like missing or additional annotations for evaluation purposes.</description>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.3.0</version>
   <vendor>JULIE Lab Jena, Germany</vendor>
   <types>
     <typeDescription>
@@ -12,7 +12,7 @@
       <features>
         <featureDescription>
           <name>expected</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.tcas.Annotation</rangeTypeName>
         </featureDescription>
       </features>
@@ -61,17 +61,17 @@
         </featureDescription>
         <featureDescription>
           <name>fscore</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.Double</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>precision</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.Double</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>recall</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.Double</rangeTypeName>
         </featureDescription>
       </features>

@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jcore-base</artifactId>
         <groupId>de.julielab</groupId>
-        <version>2.3.0-SNAPSHOT</version>
+        <version>2.3.0</version>
     </parent>
     <artifactId>jcore-xmi-db-reader</artifactId>
     <name>JCoRe XMI Database Reader</name>
@@ -27,7 +27,8 @@
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xmi-splitter</artifactId>
             <version>${project.parent.version}</version>
-        </dependency><dependency>
+        </dependency>
+        <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
             <version>${project.parent.version}</version>
@@ -58,11 +59,11 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        <scope>provided</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
-            <artifactId>jcore-medline-db-reader</artifactId>
+            <artifactId>jcore-xml-db-reader</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
@@ -71,20 +72,7 @@
             <artifactId>jcore-xmi-db-writer</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.julielab</groupId>
-            <artifactId>jcore-jsbd-ae-biomedical-english</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.julielab</groupId>
-            <artifactId>jcore-jtbd-ae-biomedical-english</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+        </dependency></dependencies>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-db-reader</url>
     <organization>
         <name>JULIE Lab Jena, Germany</name>

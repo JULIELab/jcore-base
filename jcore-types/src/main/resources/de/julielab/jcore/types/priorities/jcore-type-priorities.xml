@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typePriorities xmlns="http://uima.apache.org/resourceSpecifier">
     <name>jcore-type-priorities</name>
-    <description/>
-    <version>1.0</version>
-    <vendor/>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
 	<priorityList>
 	    <type>de.julielab.jcore.types.Title</type>
 	    <type>de.julielab.jcore.types.Sentence</type>

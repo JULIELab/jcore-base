@@ -15,6 +15,8 @@ import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
@@ -28,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
+@ResourceMetaData(name="JCoRe Topic Indexer", description = "This component assigns topics relative to a given topic model to the encoutered documents. The topic model is one trained by the julielab-topic-modeling project.")
+@TypeCapability(inputs = {"de.julielab.jcore.types.Sentence", "de.julielab.jcore.types.Token", "de.julielab.jcore.types.PennBioIEPOSTag", "de.julielab.jcore.types.Lemma"}, outputs = {"de.julielab.jcore.types.ManualDescriptor", "de.julielab.jcore.types.DocumentTopics"})
 public class TopicIndexer extends JCasAnnotator_ImplBase {
 
     /**

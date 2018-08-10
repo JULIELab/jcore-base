@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <name>StemNetSemanticsTypeSystem</name>
-<description></description>
-<version>1.7</version>
+<description />
+<version>2.3.0</version>
 <vendor>http://www.julielab.de</vendor>
 <imports>
-<import location="JulieTypeSystem.xml"/>
+<import location="JulieTypeSystem.xml" />
 </imports>
 <types>
 <typeDescription>
@@ -60,27 +60,27 @@
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.VariationEvent</name>
-<description></description>
+<description />
 <supertypeName>de.julielab.jcore.types.VariationProcess</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.VariationType</name>
-<description></description>
+<description />
 <supertypeName>de.julielab.jcore.types.VariationProcess</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.Organism</name>
-<description></description>
+<description />
 <supertypeName>de.julielab.jcore.types.BioEntity</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.UnspecifiedOrganism</name>
-<description></description>
+<description />
 <supertypeName>de.julielab.jcore.types.Organism</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.Gene</name>
-<description></description>
+<description />
 <supertypeName>de.julielab.jcore.types.BioEntity</supertypeName>
 </typeDescription>
 <typeDescription>
@@ -90,37 +90,37 @@
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.CD_antigens</name>
-<description></description>
+<description />
 <supertypeName>de.julielab.jcore.types.BioEntity</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.MinorHA</name>
-<description></description>
+<description />
 <supertypeName>de.julielab.jcore.types.BioEntity</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.Disease</name>
-<description></description>
+<description />
 <supertypeName>de.julielab.jcore.types.BioEntity</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.HematopoieticProgenitorCell</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.BioEntity</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.LymphoidLeukocyte</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.BioEntity</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.MyeloidLeukocyte</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.BioEntity</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.Erythrocyte</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.BioEntity</supertypeName>
 </typeDescription>
 </types>
