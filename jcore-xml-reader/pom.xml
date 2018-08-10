@@ -27,7 +27,6 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>julielab-java-utilities</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.uima</groupId>
