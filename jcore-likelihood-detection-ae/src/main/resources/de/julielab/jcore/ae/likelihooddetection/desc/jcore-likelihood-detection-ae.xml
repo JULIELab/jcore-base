@@ -1,21 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <primitive>true</primitive>
-  <annotatorImplementationName>LikelihoodDetectionAnnotator</annotatorImplementationName>
-  <analysisEngineMetaData>
-    <name>JCoRe Likelihood Detection AE</name>
-    <description/>
-    <version>2.3.0-SNAPSHOT</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
-    <configurationParameters/>
-    <configurationParameterSettings/>
-    <typeSystemDescription/>
-    <capabilities/>
-    <operationalProperties>
-      <modifiesCas>true</modifiesCas>
-      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
-      <outputsNewCASes>false</outputsNewCASes>
-    </operationalProperties>
-  </analysisEngineMetaData>
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.ae.likelihooddetection.LikelihoodDetectionAnnotator</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Likelihood Detection AE</name>
+        <description>Analysis Engine to detect epistemic modal expressions and assign the appropriate likelihood category.</description>
+        <version>2.3.0</version>
+        <configurationParameters>
+            <configurationParameter>
+                <name>LikelihoodDict</name>
+                <description>String parameter indicating path to likelihood dictionary (One entry per line; Entries consist of tab-separated lemmatized likelihood indicators and assigned likelihood category)</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>LikelihoodDict</name>
+                <value>
+                    <string>de/julielab/jcore/ae/likelihooddetection/resources/likelihood_neg_invest_dict</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.Token</type>
+                    <type>de.julielab.jcore.types.Lemma</type>
+                </inputs>
+                <outputs>
+                    <type>de.julielab.jcore.types.LikelihoodIndicator</type>
+                </outputs>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
 </analysisEngineDescription>
