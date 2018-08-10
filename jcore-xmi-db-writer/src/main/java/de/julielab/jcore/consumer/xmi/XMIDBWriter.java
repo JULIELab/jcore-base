@@ -22,7 +22,6 @@ package de.julielab.jcore.consumer.xmi;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
-import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.*;
 import de.julielab.xml.util.XMISplitterException;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
@@ -521,7 +520,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         } catch (Throwable throwable) {
             String docid = "<unknown>";
             try {
-                docid = JCoReTools.getDocId(aJCas);
+                docid = JCasUtil.selectSingle(aJCas, Header.class).getDocId();
             } catch (Exception e) {
                 // nothing, use default
             }

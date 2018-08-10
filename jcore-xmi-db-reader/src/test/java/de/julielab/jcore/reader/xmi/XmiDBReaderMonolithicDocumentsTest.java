@@ -4,6 +4,7 @@ import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.xmlData.Constants;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
@@ -17,6 +18,8 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,12 +36,14 @@ public class XmiDBReaderMonolithicDocumentsTest {
 
     @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+        XmiDBSetupHelper.createDbcConfig(postgres);
+
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
-        costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
-        String subsetTable = DBTestUtils.setupDatabase(dbc, "src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 177, postgres);
-        XmiDBSetupHelper.processAndStoreCompleteXMIData(costosysConfig, subsetTable, false, postgres);
+        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_complete_cas", 1, postgres);
+        XmiDBSetupHelper.processAndStoreCompleteXMIData(costosysConfig, true);
         assertTrue("The data document table exists", dbc.tableExists("_data.documents"));
         xmisubset = "xmisubset";
+        dbc.setActiveTableSchema("xmi_complete_cas");
         dbc.createSubsetTable(xmisubset, "_data.documents", "Test XMI subset");
         dbc.initSubset(xmisubset, "_data.documents");
         dbc.close();
