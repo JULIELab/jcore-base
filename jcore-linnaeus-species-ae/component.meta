@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-linnaeus-species-ae",
         "groupId": "de.julielab",
-        "version": "2.3.0-SNAPSHOT"
+        "version": "2.3.0"
     },
     "name": "JCoRe Linnaeus Species Tagger"
 }
