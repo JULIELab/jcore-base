@@ -10,6 +10,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -215,16 +216,28 @@ public class XmiDataInserter {
         log.debug("Marking {} documents to having been processed by component \"{}\".", processedDocumentIds.size(), componentDbName);
 
         String sql = String.format("UPDATE %s SET %s='%s' WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, primaryKeyPsString);
+
         try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            for (DocumentId docId : processedDocumentIds) {
-                for (int i = 0; i < docId.getId().length; i++) {
-                    String pkElement = docId.getId()[i];
-                    ps.setString(i + 1, pkElement);
+            boolean tryagain;
+            do {
+                tryagain = false;
+                PreparedStatement ps = conn.prepareStatement(sql);
+                for (DocumentId docId : processedDocumentIds) {
+                    for (int i = 0; i < docId.getId().length; i++) {
+                        String pkElement = docId.getId()[i];
+                        ps.setString(i + 1, pkElement);
+                    }
+                    ps.addBatch();
                 }
-                ps.addBatch();
-            }
-            ps.executeBatch();
+                try {
+                    ps.executeBatch();
+                } catch (BatchUpdateException e) {
+                    if (e.getMessage().contains("deadlock detected")) {
+                        log.debug("Database transaction deadlock detected while trying to set the last component. Trying again.");
+                        tryagain = true;
+                    }
+                }
+            } while (tryagain);
         } catch (SQLException e) {
             e.printStackTrace();
             SQLException nextException = e.getNextException();
@@ -323,7 +336,7 @@ public class XmiDataInserter {
         // pk1 = ? AND pk2 = ? AND pk3 = ? ...
         String pkElementCondition = StringUtils.join(pkPsPlaceholder, " AND ");
 
-        String updateString = "UPDATE " +effectiveDocTableName + " SET " + FIELD_MAX_XMI_ID
+        String updateString = "UPDATE " + effectiveDocTableName + " SET " + FIELD_MAX_XMI_ID
                 + " = ? WHERE " + pkElementCondition;
 
         try {
