@@ -48,6 +48,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Connection;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -258,6 +259,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     : (Boolean) aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY);
 
         }
+        dbc.reserveConnection();
         try {
             annotationTableManager = new AnnotationTableManager(dbc, docTableParamValue, annotationsToStore, schemaDocument,
                     schemaAnnotation, storeAll, storeBaseDocument, annotationStorageSchema);
@@ -282,7 +284,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 annotationsToStoreTableNames.add(annotationTableName);
             }
         }
-
         // does currently only compare the primary keys...
         if (dbc.tableExists(effectiveDocTableName))
             checkTableDefinition(effectiveDocTableName, schemaDocument);
@@ -304,8 +305,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 splitter = new StaxXmiSplitter(docTableParamValue);
             }
         } else {
-                splitter = new VtdXmlXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument, docTableParamValue,
-                        baseDocumentAnnotationTypes);
+            splitter = new VtdXmlXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument, docTableParamValue,
+                    baseDocumentAnnotationTypes);
         }
         log.info(XMIDBWriter.class.getName() + " initialized.");
         log.info("Effective document table name: {}", effectiveDocTableName);
@@ -323,6 +324,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         metaTableManager = new MetaTableManager(dbc);
         annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, effectiveDocTableName, dbc,
                 schemaDocument, schemaAnnotation, storeAll, storeBaseDocument, updateMode, componentDbName);
+        dbc.releaseConnections();
     }
 
     private void checkTableDefinition(String annotationTableName, String schemaAnnotation) throws ResourceInitializationException {

@@ -139,7 +139,7 @@ public class XmiDataInserter {
             }
         }
 
-        Connection conn = dbc.getConn();
+        Connection conn = dbc.reserveConnection();
         try {
 
             conn.setAutoCommit(false);
@@ -156,18 +156,18 @@ public class XmiDataInserter {
                         log.debug("Updating {} XMI CAS data in database table '{}'.",
                                 serializedCASes.get(tableName).size(), tableName);
                         if (storeAll) {
-                            dbc.updateFromRowIterator(iterator, tableName, conn, false, schemaDocument);
+                            dbc.updateFromRowIterator(iterator, tableName, false, schemaDocument);
                         } else {
-                            dbc.updateFromRowIterator(iterator, tableName, conn, false,
+                            dbc.updateFromRowIterator(iterator, tableName, false,
                                     tableName.equals(effectiveDocTableName) ? schemaDocument : schemaAnnotation);
                         }
                     } else {
                         log.debug("Inserting {} XMI CAS data into database table '{}'.",
                                 serializedCASes.get(tableName).size(), tableName);
                         if (storeAll) {
-                            dbc.importFromRowIterator(iterator, tableName, conn, false, schemaDocument);
+                            dbc.importFromRowIterator(iterator, tableName, false, schemaDocument);
                         } else {
-                            dbc.importFromRowIterator(iterator, tableName, conn, false,
+                            dbc.importFromRowIterator(iterator, tableName, false,
                                     tableName.equals(effectiveDocTableName) ? schemaDocument : schemaAnnotation);
                         }
                     }
@@ -188,11 +188,7 @@ public class XmiDataInserter {
             if (null != ne)
                 ne.printStackTrace();
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            dbc.releaseConnection(conn);
         }
     }
 

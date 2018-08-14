@@ -31,8 +31,10 @@ public class XmiDBWriterTest {
     @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
         dbc = DBTestUtils.getDataBaseConnector(postgres);
+        dbc.reserveConnection();
         costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
         xmlSubsetTable = DBTestUtils.setupDatabase(dbc, "src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 177, postgres);
+        dbc.releaseConnections();
     }
 
     @AfterClass
@@ -74,8 +76,10 @@ public class XmiDBWriterTest {
         xmiWriter.collectionProcessComplete();
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
+        dbc.reserveConnection();
         assertThat(dbc.tableExists("_data.documents")).isTrue();
         assertThat(dbc.tableExists("_data.de_julielab_jcore_types_token")).isTrue();
         assertThat(dbc.tableExists("_data.de_julielab_jcore_types_sentence")).isTrue();
+        dbc.releaseConnections();
     }
 }
