@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.reader.pmc.PMCMultiplierReader</implementationName>
+    <processingResourceMetaData>
+        <name>JCoRe Pubmed Central Multiplier Reader</name>
+        <description>Reads a directory of NXML files, possibly assembled into ZIP archives. Requires the Pubmed Central Multiplier to follow in the pipeline. This reader only sends URIs referencing the NXML files to the multiplier that then does the parsing.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>SendCasToLast</name>
+                <description>UIMA DUCC relevant parameter when using a CAS multiplier. When set to true, the worker CAS from the collection reader is forwarded to the last component in the pipeline. This can be used to send information about the progress to the CAS consumer in order to have it perform batch operations. For this purpose, a feature structure of type WorkItem from the DUCC library is added to the worker CAS. This feature structure has information about the current progress.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>BatchSize</name>
+                <description>The number of NXML URI references to send to the CAS multipliers in each work assignment. Defaults to 20.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>Input</name>
+                <description>The path to an NXML file or a directory with NXML files and possibly subdirectories holding more NXML files.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SearchRecursively</name>
+                <description>If set to true, subdirectories of the given input directory Input are also searched for NXML files. Defaults to false.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SearchInZipFiles</name>
+                <description>If set to true, ZIP files found among the input are opened and also searched for NXML files. Defaults to false.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>WhitelistFile</name>
+                <description>A file listing the file names that should be read. All other files will be discarded. The file name must be given without any extensions. For example, the file "PMC2847692.nxml.gz" would be represented as "PMC2847692" in the whitelist file. Each file name must appear on a line of its own. An empty file will cause nothing to be read. A file containing only the keyword "all" will behave as if no file was given at all.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>SendCasToLast</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>BatchSize</name>
+                <value>
+                    <integer>20</integer>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>SearchRecursively</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>SearchInZipFiles</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs/>
+                <outputs>
+                    <type>de.julielab.jcore.types.casmultiplier.JCoReURI</type>
+                    <type>org.apache.uima.ducc.Workitem</type>
+                </outputs>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
+</collectionReaderDescription>

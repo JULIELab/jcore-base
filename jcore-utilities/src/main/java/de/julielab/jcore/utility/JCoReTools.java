@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -36,6 +37,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.resource.DataResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
@@ -53,7 +55,8 @@ import de.julielab.jcore.types.Header;
  * <li>The addToStringArray methods serve a similar purpose.</li>
  * <li>One of the most used methods from this list is {@link #getDocId(JCas)} which will look for an annotation of type de.julielab.jcore.types.Header and return its docId feature value.</li>
  * <li>The {@link #deserializeXmi(CAS, InputStream, int)} method is used in UIMA 2.x to fix issues with special Unicode characters. For more information, refer to the JavaDoc of the method.</li>
- *</ul>
+ * </ul>
+ *
  * @author faessler
  */
 public class JCoReTools {
@@ -290,7 +293,7 @@ public class JCoReTools {
      * Creates a new string array, copies the values of <code>array</code> into it and adds <code>elements</code>.
      * </p>
      *
-     * @param array The array to extend.
+     * @param array    The array to extend.
      * @param elements The elements to add into a new array.
      * @return A new <code>StringArray</code> containing all values of <code>array</code> plus <code>elements</code>.
      */
@@ -433,5 +436,28 @@ public class JCoReTools {
                 return -(lookupIndex + 1) - 1;
             return binarySearch(annotations, comparisonValueFunction, searchValue, lookupIndex + 1, to);
         }
+    }
+
+    /**
+     * <p>
+     * Helper method to transparently handle GZIPPed external resource files.
+     * </p>
+     * <p>When using external resources for analysis engines in UIMA, typically a custom object implementing {@link org.apache.uima.resource.SharedResourceObject}
+     * is created as the resource provider. Since the overhead in handling external resources is mostly done when the resource is rather large, file
+     * resources are commonly compressed using GZIP. This method takes the input stream of the {@link DataResource} object
+     * passed by UIMA to {@link org.apache.uima.resource.SharedResourceObject#load(DataResource)} and checks if its URI
+     * ends with .gzip or .gz. If so, the input stream is wrapped into a {@link GZIPInputStream}. This way a gzipped or
+     * plain resource file can be used without further code adaptions.</p>
+     *
+     * @param resource The {@link DataResource} object passed to {@link org.apache.uima.resource.SharedResourceObject#load(DataResource)}.
+     * @return The original input stream, if the resource URI did not end in .gz or .gzip, a GZIP input stream otherwise.
+     * @throws IOException If reading the resource file fails.
+     */
+    public static InputStream resolveExternalResourceGzipInputStream(DataResource resource) throws IOException {
+        InputStream is = resource.getInputStream();
+        String lcUriString = resource.getUri().toString().toLowerCase();
+        if (lcUriString.endsWith(".gz") || lcUriString.endsWith(".gzip"))
+            is = new GZIPInputStream(is);
+        return is;
     }
 }

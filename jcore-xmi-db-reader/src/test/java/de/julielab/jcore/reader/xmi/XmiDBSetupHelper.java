@@ -2,8 +2,10 @@ package de.julielab.jcore.reader.xmi;
 
 import de.julielab.jcore.consumer.xmi.XMIDBWriter;
 import de.julielab.jcore.reader.db.DBMultiplierReader;
+import de.julielab.jcore.reader.xml.XMLDBReader;
 import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.Header;
+import de.julielab.xmlData.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
@@ -13,17 +15,13 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class XmiDBSetupHelper {
-    public static void processAndSplitData(String costosysConfig, String table, boolean gzip, PostgreSQLContainer postgres) throws SQLException, UIMAException, IOException {
-        CollectionReader pubmedXmlReader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.medline-db.desc.jcore-medline-db-reader",
-                DBMultiplierReader.PARAM_TABLE, table,
-                DBMultiplierReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
-                DBMultiplierReader.PARAM_RESET_TABLE, true);
-        AnalysisEngine jsbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae-biomedical-english");
-        AnalysisEngine jtbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jtbd.desc.jcore-jtbd-ae-biomedical-english");
+    public static void processAndSplitData(String costosysConfig, boolean gzip) throws UIMAException, IOException {
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
                 XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
@@ -34,25 +32,40 @@ public class XmiDBSetupHelper {
                 XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
                 XMIDBWriter.PARAM_UPDATE_MODE, true,
                 XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), Header.class.getCanonicalName()}
-                );
+        );
         JCas jCas = getJCasWithRequiredTypes();
-        while (pubmedXmlReader.hasNext()) {
-            pubmedXmlReader.getNext(jCas.getCas());
-            jsbd.process(jCas);
-            jtbd.process(jCas);
-            xmiWriter.process(jCas);
-            jCas.reset();
-        }
+        jCas.setDocumentText("This is a sentence. This is another one.");
+        Header header = new Header(jCas);
+        header.setDocId("12345");
+        header.addToIndexes();
+        new Sentence(jCas, 0, 19).addToIndexes();
+        new Sentence(jCas, 20, 40).addToIndexes();
+        // Of course, these token offsets are wrong, but it doesn't matter to the test
+        new Token(jCas, 0, 19).addToIndexes();
+        new Token(jCas, 20, 40).addToIndexes();
+
+        xmiWriter.process(jCas);
+        jCas.reset();
         xmiWriter.collectionProcessComplete();
     }
 
-    public static void processAndStoreCompleteXMIData(String costosysConfig, String table, boolean gzip, PostgreSQLContainer postgres) throws SQLException, UIMAException, IOException {
-        CollectionReader pubmedXmlReader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.medline-db.desc.jcore-medline-db-reader",
-                DBMultiplierReader.PARAM_TABLE, table,
-                DBMultiplierReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
-                DBMultiplierReader.PARAM_RESET_TABLE, true);
-        AnalysisEngine jsbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jsbd.desc.jcore-jsbd-ae-biomedical-english");
-        AnalysisEngine jtbd = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.jtbd.desc.jcore-jtbd-ae-biomedical-english");
+    public static void createDbcConfig(PostgreSQLContainer postgres) {
+        String hiddenConfigPath = "src/test/resources/hiddenConfig.txt";
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(hiddenConfigPath))) {
+            w.write(postgres.getDatabaseName());
+            w.newLine();
+            w.write(postgres.getUsername());
+            w.newLine();
+            w.write(postgres.getPassword());
+            w.newLine();
+            w.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.setProperty(Constants.HIDDEN_CONFIG_PATH, hiddenConfigPath);
+    }
+
+    public static void processAndStoreCompleteXMIData(String costosysConfig, boolean gzip) throws UIMAException, IOException {
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
                 XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[0],
                 XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
@@ -64,13 +77,18 @@ public class XmiDBSetupHelper {
                 XMIDBWriter.PARAM_UPDATE_MODE, true
         );
         JCas jCas = getJCasWithRequiredTypes();
-        while (pubmedXmlReader.hasNext()) {
-            pubmedXmlReader.getNext(jCas.getCas());
-            jsbd.process(jCas);
-            jtbd.process(jCas);
-            xmiWriter.process(jCas);
-            jCas.reset();
-        }
+        jCas.setDocumentText("This is a sentence. This is another one.");
+        Header header = new Header(jCas);
+        header.setDocId("12345");
+        header.addToIndexes();
+        new Sentence(jCas, 0, 19).addToIndexes();
+        new Sentence(jCas, 20, 40).addToIndexes();
+        // Of course, these token offsets are wrong, but it doesn't matter to the test
+        new Token(jCas, 0, 19).addToIndexes();
+        new Token(jCas, 20, 40).addToIndexes();
+
+        xmiWriter.process(jCas);
+        jCas.reset();
         xmiWriter.collectionProcessComplete();
     }
 

@@ -36,12 +36,14 @@ public class XmiDBReaderGzippedDataTest {
 
     @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+        XmiDBSetupHelper.createDbcConfig(postgres);
+
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
-        costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
-        String subsetTable = DBTestUtils.setupDatabase(dbc, "src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 177, postgres);
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, subsetTable, true, postgres);
+        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 1, postgres);
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, true);
         assertTrue("The data document table exists", dbc.tableExists("_data.documents"));
         xmisubset = "xmisubset";
+        dbc.setActiveTableSchema("xmi_text");
         dbc.createSubsetTable(xmisubset, "_data.documents", "Test XMI subset");
         dbc.initSubset(xmisubset, "_data.documents");
         dbc.close();

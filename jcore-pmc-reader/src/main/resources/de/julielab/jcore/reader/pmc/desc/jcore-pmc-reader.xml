@@ -1,75 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>de.julielab.jcore.reader.pmc.PMCReader</implementationName>
-  <processingResourceMetaData>
-    <name>jcore-pmc-reader</name>
-    <description/>
-    <version>1.0</version>
-    <vendor/>
-    <configurationParameters>
-      <configurationParameter>
-        <name>Input</name>
-        <description>The NXML file to read or a directory of NXML files to read. The read will also check subdirectories for NXML files. Each file that includes the string 'nxml' is deemed to be a PubMed Central NXML file to be read.</description>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>true</mandatory>
-      </configurationParameter>
-    <configurationParameter>
-        <name>AlreadyRead</name>
-        <description>A file that contains a list list of already read file names. Those will be skipped by the reader. While reading, the reader will append read files to this list. If it is not given, the file will not be maintained.</description>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    </configurationParameters>
-    <configurationParameterSettings/>
-    <typeSystemDescription>
-      <imports>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
-      </imports>
-    </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
-    <capabilities>
-      <capability>
-        <inputs/>
-        <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.TitleType</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Title</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.TextObject</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Table</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.SectionTitle</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Section</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.PubType</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Paragraph</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.OtherPub</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.OtherID</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.ManualDescriptor</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Keyword</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Journal</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Footnote</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Figure</type>
-          <type allAnnotatorFeatures="true">uima.tcas.DocumentAnnotation</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Date</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.CaptionType</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Caption</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AutoDescriptor</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AuthorInfo</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AbstractText</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AbstractSectionHeading</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.AbstractSection</type>
-        </outputs>
-        <languagesSupported/>
-      </capability>
-    </capabilities>
-  <operationalProperties>
-      <modifiesCas>true</modifiesCas>
-      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
-      <outputsNewCASes>true</outputsNewCASes>
-    </operationalProperties>
-  </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.reader.pmc.PMCReader</implementationName>
+    <processingResourceMetaData>
+        <name>JCoRe Pubmed Central Reader</name>
+        <description>Reads Pubmed Central documents from the NXML format</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>Input</name>
+                <description>The path to an NXML file or a directory with NXML files and possibly subdirectories holding
+                    more NXML files.
+                </description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SearchRecursively</name>
+                <description>If set to true, subdirectories of the given input directory Input are also searched for
+                    NXML files. Defaults to false.
+                </description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SearchInZipFiles</name>
+                <description>If set to true, ZIP files found among the input are opened and also searched for NXML
+                    files. Defaults to false.
+                </description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>WhitelistFile</name>
+                <description>A file listing the file names that should be read. All other files will be discarded. The
+                    file name must be given without any extensions. For example, the file "PMC2847692.nxml.gz" would be
+                    represented as "PMC2847692" in the whitelist file. Each file name must appear on a line of its own.
+                    An empty file will cause nothing to be read. A file containing only the keyword "all" will behave as
+                    if no file was given at all.
+                </description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>SearchRecursively</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>SearchInZipFiles</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs/>
+                <outputs>
+                    <type>de.julielab.jcore.types.TitleType</type>
+                    <type>de.julielab.jcore.types.Title</type>
+                    <type>de.julielab.jcore.types.TextObject</type>
+                    <type>de.julielab.jcore.types.Table</type>
+                    <type>de.julielab.jcore.types.SectionTitle</type>
+                    <type>de.julielab.jcore.types.Section</type>
+                    <type>de.julielab.jcore.types.PubType</type>
+                    <type>de.julielab.jcore.types.Paragraph</type>
+                    <type>de.julielab.jcore.types.OtherPub</type>
+                    <type>de.julielab.jcore.types.pubmed.OtherID</type>
+                    <type>de.julielab.jcore.types.pubmed.ManualDescriptor</type>
+                    <type>de.julielab.jcore.types.Keyword</type>
+                    <type>de.julielab.jcore.types.Journal</type>
+                    <type>de.julielab.jcore.types.pubmed.Header</type>
+                    <type>de.julielab.jcore.types.Footnote</type>
+                    <type>de.julielab.jcore.types.Figure</type>
+                    <type>uima.tcas.DocumentAnnotation</type>
+                    <type>de.julielab.jcore.types.Date</type>
+                    <type>de.julielab.jcore.types.CaptionType</type>
+                    <type>de.julielab.jcore.types.Caption</type>
+                    <type>de.julielab.jcore.types.AutoDescriptor</type>
+                    <type>de.julielab.jcore.types.AuthorInfo</type>
+                    <type>de.julielab.jcore.types.AbstractText</type>
+                    <type>de.julielab.jcore.types.AbstractSectionHeading</type>
+                    <type>de.julielab.jcore.types.AbstractSection</type>
+                </outputs>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
 </collectionReaderDescription>

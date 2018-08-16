@@ -16,15 +16,16 @@ public class AddonTermsFilter extends AbstractFilter {
 	public List<String> filter(String input) {
 		newOutput();
 		if (null != input) {
+			output.add(input);
 			String[] hypernymArray = addonTerms.get(input);
 			if (null != hypernymArray) {
 				output = new ArrayList<>(hypernymArray.length + 1);
+				output.add(input);
 				for (int i = 0; i < hypernymArray.length; i++) {
 					String hypernym = hypernymArray[i];
 					output.add(hypernym);
 				}
 			}
-			output.add(input);
 		}
 		return output;
 	}

@@ -19,28 +19,12 @@
  */
 package de.julielab.jcore.consumer.xmi;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.GZIPOutputStream;
-
-import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.XmiMetaData;
+import de.julielab.jcore.types.ext.DBProcessingMetaData;
+import de.julielab.xml.*;
 import de.julielab.xml.util.XMISplitterException;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -48,10 +32,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.ducc.Workitem;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
-import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -61,13 +44,16 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.XmiMetaData;
-import de.julielab.jcore.types.ext.DBProcessingMetaData;
-import de.julielab.xml.JulieXMLConstants;
-import de.julielab.xml.XmiSplitter;
-import de.julielab.xml.XmiSplitter.XmiSplitterResult;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.Connection;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * @author faessler
@@ -81,7 +67,11 @@ import de.julielab.xmlData.dataBase.DataBaseConnector;
         "document XMI data and stored in a separate table. The tables are created automatically according to the " +
         "primary key of the active table schema in the Corpus Storage System (CoStoSys) configuration file that is " +
         "also given as a parameter. The jcore-xmi-db-reader is capable of reading this kind of distributed annotation " +
-        "graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This component is part " +
+        "graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This consumer is " +
+        "UIMA DUCC compatible. It requires the collection reader to forward the work item CAS to the consumer. This is " +
+        "required so the consumer knows that a work item has been finished and that all cached data - in this case the " +
+        "XMI data - should be flushed. This is important! Without the forwarding of the work item CAS, the last batch " +
+        "of cached XMI data will not be written into the database. This component is part " +
         "of the Jena Document Information System, JeDIS.")
 public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_COSTOSYS_CONFIG = "CostosysConfigFile";
@@ -100,6 +90,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_ANNO_STORAGE_PG_SCHEMA = "AnnotationStoragePostgresSchema";
     public static final String PARAM_COMPONENT_DB_NAME = "ComponentDbName";
     public static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
+    public static final String PARAM_WRITE_BATCH_SIZE = "WriteBatchSize";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
@@ -163,8 +154,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     "omitted, the active data schema from the CoStoSys configuration is used. The tables derived from " +
                     "the annotation types specified with the '" + PARAM_ANNOS_TO_STORE + "' " +
                     "parameter will be stored in this postgres schema. The default can be overwritten for individual " +
-                    "types. See the description of the 'AnnotationsToStore' parameter.")
+                    "types. See the description of the '" + PARAM_ANNOS_TO_STORE + "' parameter.")
     private String annotationStorageSchema;
+    @ConfigurationParameter(name = PARAM_WRITE_BATCH_SIZE, mandatory = false, defaultValue = "50", description =
+            "The number of processed CASes after which the XMI data should be flushed into the database. Defaults to 50.")
+    private int writeBatchSize;
 
     private XmiSplitter splitter;
     // Must be a linked HashMap so that the document table comes first when
@@ -182,6 +176,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private AnnotationTableManager annotationTableManager;
 
     private int headerlessDocuments = 0;
+    private int currentBatchSize = 0;
 
     private XmiDataInserter annotationInserter;
 
@@ -244,6 +239,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         .orElse(new String[0]))
                 .collect(Collectors.toSet());
         attributeSize = (Integer) aContext.getConfigParameterValue(PARAM_ATTRIBUTE_SIZE);
+        writeBatchSize = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_WRITE_BATCH_SIZE)).orElse(50);
         componentDbName = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME)).orElse(getClass().getSimpleName());
         annotationStorageSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
 
@@ -263,6 +259,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     : (Boolean) aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY);
 
         }
+        dbc.reserveConnection();
         try {
             annotationTableManager = new AnnotationTableManager(dbc, docTableParamValue, annotationsToStore, schemaDocument,
                     schemaAnnotation, storeAll, storeBaseDocument, annotationStorageSchema);
@@ -287,7 +284,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 annotationsToStoreTableNames.add(annotationTableName);
             }
         }
-
         // does currently only compare the primary keys...
         if (dbc.tableExists(effectiveDocTableName))
             checkTableDefinition(effectiveDocTableName, schemaDocument);
@@ -304,18 +300,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
         if (storeAll) {
             if (null != attributeSize) {
-                splitter = new XmiSplitter(docTableParamValue, attributeSize);
+                splitter = new StaxXmiSplitter(docTableParamValue, attributeSize);
             } else {
-                splitter = new XmiSplitter(docTableParamValue);
+                splitter = new StaxXmiSplitter(docTableParamValue);
             }
         } else {
-            if (null != attributeSize) {
-                splitter = new XmiSplitter(annotationsToStore, recursively, storeBaseDocument, docTableParamValue,
-                        baseDocumentAnnotationTypes, attributeSize);
-            } else {
-                splitter = new XmiSplitter(annotationsToStore, recursively, storeBaseDocument, docTableParamValue,
-                        baseDocumentAnnotationTypes);
-            }
+            splitter = new VtdXmlXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument, docTableParamValue,
+                    baseDocumentAnnotationTypes);
         }
         log.info(XMIDBWriter.class.getName() + " initialized.");
         log.info("Effective document table name: {}", effectiveDocTableName);
@@ -328,10 +319,12 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Update mode: {}", updateMode);
         log.info("Base document table schema: {}", schemaDocument);
         log.info("Annotation table schema (only required if annotations are stored separatly): {}", schemaAnnotation);
+        log.info("Batch size of cached documents sent to database: {}", writeBatchSize);
 
         metaTableManager = new MetaTableManager(dbc);
         annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, effectiveDocTableName, dbc,
                 schemaDocument, schemaAnnotation, storeAll, storeBaseDocument, updateMode, componentDbName);
+        dbc.releaseConnections();
     }
 
     private void checkTableDefinition(String annotationTableName, String schemaAnnotation) throws ResourceInitializationException {
@@ -375,136 +368,166 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-        DocumentId docId = getDocumentId(aJCas);
-        if (docId == null) return;
-        int nextXmiId = determineNextXmiId(aJCas, docId);
-        Map<String, Integer> baseDocumentSofaIdMap = getOriginalSofaIdMappings(aJCas, docId);
-        // and now delete the XMI meta data
-        Collection<XmiMetaData> xmiMetaData = JCasUtil.select(aJCas, XmiMetaData.class);
-        if (xmiMetaData.size() > 1)
-            throw new AnalysisEngineProcessException(new IllegalArgumentException(
-                    "There are multiple XmiMetaData annotations in the cas for document " + docId + "."));
-        xmiMetaData.forEach(XmiMetaData::removeFromIndexes);
-
-        if (subsetTable == null) {
-            Collection<DBProcessingMetaData> metaData = JCasUtil.select(aJCas, DBProcessingMetaData.class);
-            if (!metaData.isEmpty()) {
-                if (metaData.size() > 1)
-                    throw new AnalysisEngineProcessException(new IllegalArgumentException(
-                            "There is more than one type of DBProcessingMetaData in document " + docId));
-                subsetTable = metaData.stream().findAny().get().getSubsetTable();
+        try {
+            // UIMA DUCC compatibility: Check if this is the work item CAS.
+            // If so, this is the signal that the current work item has finished processing.
+            // Send the currently cached data to the database and return.
+            try {
+                Workitem workitem = JCasUtil.selectSingle(aJCas, Workitem.class);
+                log.trace("Work item feature structure found in the current CAS. Sending data to the database and " +
+                        "returning.");
+                if (workitem.getLastBlock())
+                    collectionProcessComplete();
+                else
+                    batchProcessComplete();
+                return;
+            } catch (IllegalArgumentException e) {
+                // Do nothing; this is not the work item CAS
             }
-        }
+            DocumentId docId = getDocumentId(aJCas);
+            if (docId == null) return;
+            int nextXmiId = determineNextXmiId(aJCas, docId);
+            Map<String, Integer> baseDocumentSofaIdMap = getOriginalSofaIdMappings(aJCas, docId);
+            // and now delete the XMI meta data
+            Collection<XmiMetaData> xmiMetaData = JCasUtil.select(aJCas, XmiMetaData.class);
+            if (xmiMetaData.size() > 1)
+                throw new AnalysisEngineProcessException(new IllegalArgumentException(
+                        "There are multiple XmiMetaData annotations in the cas for document " + docId + "."));
+            xmiMetaData.forEach(XmiMetaData::removeFromIndexes);
 
-        ByteArrayOutputStream baos;
-        try {
-            baos = new ByteArrayOutputStream();
-            OutputStream os = baos;
-            XmiCasSerializer.serialize(aJCas.getCas(), baos);
-            os.close();
-        } catch (SAXParseException e) {
-            // we did have the issue that in PMID 23700993 there was an XMI-1.0
-            // illegal character in the affiliation beginning with
-            // "Department of Medical Informatics and Biostatistics, Iuliu
-            // Haieganu University of Medicine and Phar"
-            // Throwing an error does terminate the whole CPE which seems
-            // unnecessary.
-            log.error("Serialization error occurred, skipping this document: ", e);
-            return;
-        } catch (SAXException e) {
-            e.printStackTrace();
-            throw new AnalysisEngineProcessException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new AnalysisEngineProcessException(e);
-        }
-
-        byte[] completeXmiData = baos.toByteArray();
-
-        try {
-            if (storeAll) {
-                Object storedData = handleDataZipping(completeXmiData, schemaDocument);
-                serializedCASes.get(effectiveDocTableName)
-                        .add(new DocumentXmiData(docId, storedData, 0, null));// new
-            } else {
-                ByteArrayInputStream bais = new ByteArrayInputStream(completeXmiData);
-                // Split the xmi data.
-                XmiSplitterResult result = splitter.process(bais, aJCas, nextXmiId, baseDocumentSofaIdMap);
-                Map<String, ByteArrayOutputStream> splitXmiData = result.xmiData;
-                // adapt the map keys to table names (currently, the keys are the
-                // Java type names)
-                Map<String, ByteArrayOutputStream> convertedMap = new HashMap<>();
-                for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet()) {
-                    if (!e.getKey().equals(docTableParamValue))
-                        convertedMap.put(annotationTableManager.convertAnnotationTypeToTableName(e.getKey(), storeAll),
-                                e.getValue());
-                    else
-                        convertedMap.put(effectiveDocTableName, e.getValue());
+            if (subsetTable == null) {
+                Collection<DBProcessingMetaData> metaData = JCasUtil.select(aJCas, DBProcessingMetaData.class);
+                if (!metaData.isEmpty()) {
+                    if (metaData.size() > 1)
+                        throw new AnalysisEngineProcessException(new IllegalArgumentException(
+                                "There is more than one type of DBProcessingMetaData in document " + docId));
+                    subsetTable = metaData.stream().findAny().get().getSubsetTable();
                 }
-                splitXmiData = convertedMap;
-                Integer newXmiId = result.maxXmiId;
-                Map<String, String> nsAndXmiVersionMap = result.namespaces;
-                Map<Integer, String> currentSofaXmiIdMap = result.currentSofaIdMap;
-                metaTableManager.manageXMINamespaces(nsAndXmiVersionMap);
+            }
 
-                if (currentSofaXmiIdMap.isEmpty())
-                    throw new IllegalStateException(
-                            "The XmiSplitter returned an empty Sofa XMI ID map. This is a critical errors since it means " +
-                                    "that the splitter was not able to resolve the correct Sofa XMI IDs for the annotations " +
-                                    "that should be stored now.");
-                log.trace("Updating max xmi id of document {}. New max xmi id: {}", docId, newXmiId);
-                log.trace("Sofa ID map for this document: {}", currentSofaXmiIdMap);
-                for (String tableName : serializedCASes.keySet()) {
-                    boolean isDocumentTable = tableName.equals(effectiveDocTableName);
-                    ByteArrayOutputStream dataBaos = splitXmiData.get(tableName);
-                    if (null != dataBaos) {
-                        byte[] dataBytes = dataBaos.toByteArray();
-                        String tableSchemaName = isDocumentTable ? schemaDocument : schemaAnnotation;
-                        // Get the second field of the appropriate table schema,
-                        // since the convention is that the data
-                        // goes to the second column currently.
-                        Object storedData = handleDataZipping(dataBytes, tableSchemaName);
-                        // tableName = tableName.replace(".", "_");
-                        // tableName = dbc.getActiveDataPGSchema() + "."
-                        // + tableName;
-                        if (storeBaseDocument && isDocumentTable) {
-                            serializedCASes.get(tableName)
-                                    .add(new DocumentXmiData(docId, storedData, newXmiId, currentSofaXmiIdMap));// Object[]
-                            // {
-                            // docId,
-                            // storedData,
-                            // newXmiId
-                            // });
-                        } else {
-                            serializedCASes.get(tableName).add(new XmiData(docId, storedData));// new
-                            // Object[]
-                            // {
-                            // docId,
-                            // storedData
-                            // });
-                            if (!storeBaseDocument)
-                                annotationInserter.putXmiIdMapping(docId, newXmiId);
+            ByteArrayOutputStream baos;
+            try {
+                baos = new ByteArrayOutputStream();
+                OutputStream os = baos;
+                XmiCasSerializer.serialize(aJCas.getCas(), baos);
+                os.close();
+            } catch (SAXParseException e) {
+                // we did have the issue that in PMID 23700993 there was an XMI-1.0
+                // illegal character in the affiliation beginning with
+                // "Department of Medical Informatics and Biostatistics, Iuliu
+                // Haieganu University of Medicine and Phar"
+                // Throwing an error does terminate the whole CPE which seems
+                // unnecessary.
+                log.error("Serialization error occurred, skipping this document: ", e);
+                return;
+            } catch (SAXException e) {
+                e.printStackTrace();
+                throw new AnalysisEngineProcessException(e);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new AnalysisEngineProcessException(e);
+            }
 
+            byte[] completeXmiData = baos.toByteArray();
+
+            try {
+                if (storeAll) {
+                    Object storedData = handleDataZipping(completeXmiData, schemaDocument);
+                    serializedCASes.get(effectiveDocTableName)
+                            .add(new DocumentXmiData(docId, storedData, 0, null));// new
+                } else {
+                    // Split the xmi data.
+                    XmiSplitterResult result = splitter.process(completeXmiData, aJCas, nextXmiId, baseDocumentSofaIdMap);
+                    Map<String, ByteArrayOutputStream> splitXmiData = result.xmiData;
+                    // adapt the map keys to table names (currently, the keys are the
+                    // Java type names)
+                    Map<String, ByteArrayOutputStream> convertedMap = new HashMap<>();
+                    for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet()) {
+                        if (!e.getKey().equals(docTableParamValue))
+                            convertedMap.put(annotationTableManager.convertAnnotationTypeToTableName(e.getKey(), storeAll),
+                                    e.getValue());
+                        else
+                            convertedMap.put(effectiveDocTableName, e.getValue());
+                    }
+                    splitXmiData = convertedMap;
+                    Integer newXmiId = result.maxXmiId;
+                    Map<String, String> nsAndXmiVersionMap = result.namespaces;
+                    Map<Integer, String> currentSofaXmiIdMap = result.currentSofaIdMap;
+                    metaTableManager.manageXMINamespaces(nsAndXmiVersionMap);
+
+                    if (currentSofaXmiIdMap.isEmpty())
+                        throw new IllegalStateException(
+                                "The XmiSplitter returned an empty Sofa XMI ID map. This is a critical errors since it means " +
+                                        "that the splitter was not able to resolve the correct Sofa XMI IDs for the annotations " +
+                                        "that should be stored now.");
+                    log.trace("Updating max xmi id of document {}. New max xmi id: {}", docId, newXmiId);
+                    log.trace("Sofa ID map for this document: {}", currentSofaXmiIdMap);
+                    for (String tableName : serializedCASes.keySet()) {
+                        boolean isDocumentTable = tableName.equals(effectiveDocTableName);
+                        ByteArrayOutputStream dataBaos = splitXmiData.get(tableName);
+                        if (null != dataBaos) {
+                            byte[] dataBytes = dataBaos.toByteArray();
+                            String tableSchemaName = isDocumentTable ? schemaDocument : schemaAnnotation;
+                            // Get the second field of the appropriate table schema,
+                            // since the convention is that the data
+                            // goes to the second column currently.
+                            Object storedData = handleDataZipping(dataBytes, tableSchemaName);
+                            // tableName = tableName.replace(".", "_");
+                            // tableName = dbc.getActiveDataPGSchema() + "."
+                            // + tableName;
+                            if (storeBaseDocument && isDocumentTable) {
+                                serializedCASes.get(tableName)
+                                        .add(new DocumentXmiData(docId, storedData, newXmiId, currentSofaXmiIdMap));// Object[]
+                                // {
+                                // docId,
+                                // storedData,
+                                // newXmiId
+                                // });
+                            } else {
+                                serializedCASes.get(tableName).add(new XmiData(docId, storedData));// new
+                                // Object[]
+                                // {
+                                // docId,
+                                // storedData
+                                // });
+                                if (!storeBaseDocument)
+                                    annotationInserter.putXmiIdMapping(docId, newXmiId);
+
+                            }
+                        } else if (updateMode) {
+                            // There was no data for the annotation table. Since we
+                            // are updating this could mean we once had annotations
+                            // but the new text version doesn't have them. We must
+                            // delete the old annotations to avoid xmi:id clashes.
+                            // Thus add here the document id for the table we have
+                            // to clear the row from (one row per document).
+                            tablesWithoutData.get(tableName).add(docId);
                         }
-                    } else if (updateMode) {
-                        // There was no data for the annotation table. Since we
-                        // are updating this could mean we once had annotations
-                        // but the new text version doesn't have them. We must
-                        // delete the old annotations to avoid xmi:id clashes.
-                        // Thus add here the document id for the table we have
-                        // to clear the row from (one row per document).
-                        tablesWithoutData.get(tableName).add(docId);
+                    }
+                    if (deleteObsolete) {
+                        for (String obsoleteTable : annotationTableManager.getObsoleteAnnotationTableNames())
+                            tablesWithoutData.get(obsoleteTable).add(docId);
                     }
                 }
-                if (deleteObsolete) {
-                    for (String obsoleteTable : annotationTableManager.getObsoleteAnnotationTableNames())
-                        tablesWithoutData.get(obsoleteTable).add(docId);
-                }
+                // as the very last thing, add this document to the processed list
+                annotationInserter.addProcessedDocumentId(docId);
+            } catch (IOException | XMISplitterException e) {
+                throw new AnalysisEngineProcessException(e);
             }
-            // as the very last thing, add this document to the processed list
-            annotationInserter.addProcessedDocumentId(docId);
-        } catch (IOException | XMISplitterException e) {
-            throw new AnalysisEngineProcessException(e);
+            ++currentBatchSize;
+            if (currentBatchSize % writeBatchSize == 0) {
+                log.trace("Document nr {} processed, filling batch nr {} of size {}, sending to database.", currentBatchSize, currentBatchSize / writeBatchSize, writeBatchSize);
+                batchProcessComplete();
+            }
+        } catch (Throwable throwable) {
+            String docid = "<unknown>";
+            try {
+                docid = JCasUtil.selectSingle(aJCas, Header.class).getDocId();
+            } catch (Exception e) {
+                // nothing, use default
+            }
+            log.error("Error occurred at document {}: ", docid, throwable);
+            throw throwable;
         }
     }
 
@@ -635,12 +658,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             gzos.close();
             storedData = gzipBaos.toByteArray();
         } else {
-            if (!xmiFieldType.equalsIgnoreCase("text"))
+            if (!xmiFieldType.equalsIgnoreCase("text") && !xmiFieldType.equalsIgnoreCase("xml"))
                 log.warn("The table schema \"" + tableSchemaName + "\" specifies the data type \"" + xmiFieldType
                         + "\" for the field \"" + field.get(JulieXMLConstants.NAME)
-                        + "\" and the contents to be written should be some text. Please use the field type text for such contents.");
-            if (xmiFieldType.equalsIgnoreCase("text"))
-                storedData = new String(dataBytes);
+                        + "\" and the contents to be written should be XML. Please use the field type xml or text for such contents.");
+            storedData = new String(dataBytes, "UTF-8");
         }
         return storedData;
     }
@@ -687,6 +709,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
         log.info("{} documents without a head occured overall. Those could not be written into the database.",
                 headerlessDocuments);
+        dbc.close();
     }
 
 }

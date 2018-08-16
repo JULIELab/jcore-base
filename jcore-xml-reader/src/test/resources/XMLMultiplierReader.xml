@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.xml.XMLMultiplierReader</implementationName>
   <processingResourceMetaData>
     <name>MedlineReaderDescriptor_missingInputDir</name>
-    <description/>
-    <version>1.0</version>
-    <vendor/>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>InputDirectory</name>
@@ -37,15 +37,16 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+        <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
+        <import name="org.apache.uima.ducc.FlowControllerTS" />
       </imports>
     </typeSystemDescription>
-    <fsIndexCollection/>
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
   <operationalProperties>
@@ -54,5 +55,5 @@
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </collectionReaderDescription>

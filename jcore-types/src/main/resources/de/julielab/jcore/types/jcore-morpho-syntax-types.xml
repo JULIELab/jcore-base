@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Morpho-Syntax Types</name>
   <description>The type system contains types for the annotation of morpho-syntactic and syntactic analysis (constituncy-based and dependecy-based parsing) results.</description>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.3.0</version>
   <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
-    <import location="jcore-basic-types.xml"/>
-  <import location="jcore-document-structure-types.xml"/>
+    <import location="jcore-basic-types.xml" />
+  <import location="jcore-document-structure-types.xml" />
   </imports>
   <types>
     <typeDescription>
@@ -50,12 +50,12 @@
         </featureDescription>
         <featureDescription>
           <name>synonyms</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.StringArray</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>hypernyms</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.StringArray</rangeTypeName>
         </featureDescription>
       </features>
@@ -265,141 +265,141 @@
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Gender</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>masculine</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>feminine</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>neutrum</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Case</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>common</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>genitive</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Number</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>singular</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>plural</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Tense</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>present</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>past</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>future</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Person</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>1</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>2</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>3</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Voice</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>passive</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>active</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Aspect</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>perfective</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>progressive</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>perfective_progressive</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Degree</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>positive</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>comparative</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>superlative</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
@@ -450,11 +450,11 @@
         </value>
         <value>
           <string>apostrophe</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>doublequote</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>number</string>
@@ -489,7 +489,7 @@
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkNP</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
@@ -511,42 +511,42 @@
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkVP</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkPP</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkADJP</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkADVP</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkLST</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkSBAR</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkCONJP</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.ChunkPRT</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
@@ -620,7 +620,7 @@
         </featureDescription>
         <featureDescription>
           <name>nullElement</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
@@ -659,54 +659,54 @@
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Coordination</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>resolved</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>elliptical</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.EEE</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Coordination</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.CoordinationElement</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>cat</name>
-          <description/>
+          <description />
           <rangeTypeName>de.julielab.jcore.types.CoordinationElement_Value</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.CoordinationElement_Value</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>conjunct</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>conjunction</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>antecedent</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
@@ -717,19 +717,19 @@
     <features>
         <featureDescription>
           <name>segment</name>
-          <description/>
+          <description />
           <rangeTypeName>de.julielab.jcore.types.Segment</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
   <typeDescription>
       <name>de.julielab.jcore.types.PrunedDependencyRelation</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.DependencyRelation</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.PrimaryDependencyRelation</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.DependencyRelation</supertypeName>
     </typeDescription>
   <typeDescription>

@@ -4,7 +4,7 @@
     <parent>
         <artifactId>jcore-base</artifactId>
         <groupId>de.julielab</groupId>
-        <version>2.3.0-SNAPSHOT</version>
+        <version>2.3.0</version>
     </parent>
     <artifactId>jcore-xmi-db-writer</artifactId>
     <name>JCoRe XMI Database Writer</name>
@@ -13,10 +13,12 @@
         should be written into separate tables. The JCoRe XMI Database Reader can then be used to assemble XMI data from
         a given set of annotations.
     </description>
+    <version>2.3.1-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>costosys</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
@@ -26,6 +28,11 @@
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
             <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uima-ducc-user</artifactId>
+            <version>${uima-ducc-version}</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
@@ -45,29 +52,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.julielab</groupId>
-            <artifactId>jcore-medline-db-reader</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.julielab</groupId>
-            <artifactId>jcore-jsbd-ae-biomedical-english</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.julielab</groupId>
-            <artifactId>jcore-jtbd-ae-biomedical-english</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.julielab</groupId>
-            <artifactId>jcore-lingpipe-gazetteer-ae</artifactId>
-            <version>2.3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-db-writer</url>

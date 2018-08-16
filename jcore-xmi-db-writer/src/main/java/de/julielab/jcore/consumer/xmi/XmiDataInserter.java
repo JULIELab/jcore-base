@@ -10,6 +10,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -138,7 +139,7 @@ public class XmiDataInserter {
             }
         }
 
-        Connection conn = dbc.getConn();
+        Connection conn = dbc.reserveConnection();
         try {
 
             conn.setAutoCommit(false);
@@ -155,18 +156,18 @@ public class XmiDataInserter {
                         log.debug("Updating {} XMI CAS data in database table '{}'.",
                                 serializedCASes.get(tableName).size(), tableName);
                         if (storeAll) {
-                            dbc.updateFromRowIterator(iterator, tableName, conn, false, schemaDocument);
+                            dbc.updateFromRowIterator(iterator, tableName, false, schemaDocument);
                         } else {
-                            dbc.updateFromRowIterator(iterator, tableName, conn, false,
+                            dbc.updateFromRowIterator(iterator, tableName, false,
                                     tableName.equals(effectiveDocTableName) ? schemaDocument : schemaAnnotation);
                         }
                     } else {
                         log.debug("Inserting {} XMI CAS data into database table '{}'.",
                                 serializedCASes.get(tableName).size(), tableName);
                         if (storeAll) {
-                            dbc.importFromRowIterator(iterator, tableName, conn, false, schemaDocument);
+                            dbc.importFromRowIterator(iterator, tableName, false, schemaDocument);
                         } else {
-                            dbc.importFromRowIterator(iterator, tableName, conn, false,
+                            dbc.importFromRowIterator(iterator, tableName, false,
                                     tableName.equals(effectiveDocTableName) ? schemaDocument : schemaAnnotation);
                         }
                     }
@@ -187,11 +188,7 @@ public class XmiDataInserter {
             if (null != ne)
                 ne.printStackTrace();
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            dbc.releaseConnection(conn);
         }
     }
 
@@ -215,16 +212,28 @@ public class XmiDataInserter {
         log.debug("Marking {} documents to having been processed by component \"{}\".", processedDocumentIds.size(), componentDbName);
 
         String sql = String.format("UPDATE %s SET %s='%s' WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, primaryKeyPsString);
+
         try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            for (DocumentId docId : processedDocumentIds) {
-                for (int i = 0; i < docId.getId().length; i++) {
-                    String pkElement = docId.getId()[i];
-                    ps.setString(i + 1, pkElement);
+            boolean tryagain;
+            do {
+                tryagain = false;
+                PreparedStatement ps = conn.prepareStatement(sql);
+                for (DocumentId docId : processedDocumentIds) {
+                    for (int i = 0; i < docId.getId().length; i++) {
+                        String pkElement = docId.getId()[i];
+                        ps.setString(i + 1, pkElement);
+                    }
+                    ps.addBatch();
                 }
-                ps.addBatch();
-            }
-            ps.executeBatch();
+                try {
+                    ps.executeBatch();
+                } catch (BatchUpdateException e) {
+                    if (e.getMessage().contains("deadlock detected")) {
+                        log.debug("Database transaction deadlock detected while trying to set the last component. Trying again.");
+                        tryagain = true;
+                    }
+                }
+            } while (tryagain);
         } catch (SQLException e) {
             e.printStackTrace();
             SQLException nextException = e.getNextException();
@@ -323,7 +332,7 @@ public class XmiDataInserter {
         // pk1 = ? AND pk2 = ? AND pk3 = ? ...
         String pkElementCondition = StringUtils.join(pkPsPlaceholder, " AND ");
 
-        String updateString = "UPDATE " +effectiveDocTableName + " SET " + FIELD_MAX_XMI_ID
+        String updateString = "UPDATE " + effectiveDocTableName + " SET " + FIELD_MAX_XMI_ID
                 + " = ? WHERE " + pkElementCondition;
 
         try {

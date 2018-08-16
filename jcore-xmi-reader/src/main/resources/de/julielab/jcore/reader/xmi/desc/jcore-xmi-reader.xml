@@ -1,12 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<?xml version='1.0' encoding='UTF-8'?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.xmi.XmiCollectionReader</implementationName>
   <processingResourceMetaData>
     <name>XmiCollectionReader</name>
     <description>A CollectionReader which reads CAS data stored as XMI files from the file system. The reader grounds on IBM's XmiCollectionReader delivered with older versions of UIMA and has been extended by the Julie Lab team at the University of Jena.
 This XMI reader is capable of reading (g)zipped XMI files and is able to recursively search subdirectories of a delivered root directory for XMI files.</description>
-    <version>1.1</version>
-    <vendor/>
+    <version>2.3.0</version>
+    <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>InputDir</name>
@@ -39,16 +40,16 @@ This XMI reader is capable of reading (g)zipped XMI files and is able to recursi
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-all-types"/>
+        <import name="de.julielab.jcore.types.jcore-all-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -57,5 +58,5 @@ This XMI reader is capable of reading (g)zipped XMI files and is able to recursi
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </collectionReaderDescription>

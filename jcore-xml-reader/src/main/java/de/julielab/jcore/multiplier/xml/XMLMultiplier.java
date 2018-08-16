@@ -31,6 +31,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.fit.descriptor.OperationalProperties;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.factory.AnnotationFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -45,6 +46,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
 
+@ResourceMetaData(name="XML Multiplier")
 @OperationalProperties(outputsNewCases = true, modifiesCas = false)
 public class XMLMultiplier extends JCasMultiplier_ImplBase {
 
@@ -134,7 +136,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 		InputStream is = null;
 
 		LOGGER.info("Header type set to {}. A header of this type is only created if no header is created using the XML mapping currentUri.", headerTypeName);
-		LOGGER.info("Mapping currentUri is searched as currentUri or classpath resource at {}", mappingFileStr);
+		LOGGER.info("Mapping file is searched as file or classpath resource at {}", mappingFileStr);
 
 		File mappingFile = new File(mappingFileStr);
 		if (mappingFile.exists()) {
@@ -153,7 +155,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 				throw new IllegalArgumentException(
 						"MappingFile "
 								+ mappingFileStr
-								+ " could not be found as a currentUri or on the classpath (note that the prefixing '/' is added automatically if not already present for classpath lookup)");
+								+ " could not be found as a file or on the classpath (note that the prefixing '/' is added automatically if not already present for classpath lookup)");
 			}
 		}
 
@@ -172,7 +174,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
 		JCoReURI xmlFile = JCasUtil.selectSingle(cas, JCoReURI.class);
 		currentUri = xmlFile.getUri();
         currentIndex = 1;
-		LOGGER.debug("process(JCas) - Reading currentUri " + currentUri);
+		LOGGER.debug("Reading file " + currentUri);
 		String[] fieldPaths = new String [1];
 		fieldPaths[0] = ".";
 		List<Map<String, String>> fields = new ArrayList<>();

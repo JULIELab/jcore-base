@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Semantics StemNet Typs</name>
   <description>The type system contains types of the StemNet project.</description>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.3.0</version>
   <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
-    <import location="../jcore-semantics-biology-types.xml"/>
+    <import location="../jcore-semantics-biology-types.xml" />
   </imports>
   <types>
     <typeDescription>
@@ -60,42 +60,42 @@
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.stemnet.VariationEvent</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.stemnet.VariationProcess</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.stemnet.VariationType</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.stemnet.VariationProcess</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.stemnet.CD_antigens</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.stemnet.MinorHA</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.stemnet.HematopoieticProgenitorCell</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.stemnet.LymphoidLeukocyte</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.stemnet.MyeloidLeukocyte</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.stemnet.Erythrocyte</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.BioEntityMention</supertypeName>
     </typeDescription>
   </types>

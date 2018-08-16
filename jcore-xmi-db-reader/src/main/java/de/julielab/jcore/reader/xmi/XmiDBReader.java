@@ -20,40 +20,21 @@ package de.julielab.jcore.reader.xmi;
 
 import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.reader.db.SubsetReaderConstants;
-import de.julielab.jcore.reader.db.TableReaderConstants;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.XmiMetaData;
-import de.julielab.jcore.utility.JCoReTools;
-import de.julielab.xml.JulieXMLConstants;
-import de.julielab.xml.XmiBuilder;
 import de.julielab.xmlData.config.FieldConfig;
-import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
-import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
-import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UimaContext;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.StringArray;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -100,6 +81,13 @@ public class XmiDBReader extends DBReader implements Initializable {
             "(j)visualvm, the hot spots of work can be identified. If one of those is the XML attribute buffer " +
             "resizing, this parameter should be set to a size that makes buffer resizing unnecessary.")
     private int xercesAttributeBufferSize;
+    /**
+     * This is basically a copy of the same parameter in {@link de.julielab.jcore.reader.db.DBSubsetReader}. It is
+     * not actually used to write any values into it and it shouldn't be. It is here to generate a different
+     * description for the specific use of the parameter in the context of the XMI reader.
+     */
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = "An array of qualified UIMA type names. The provided names will be converted to database table names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, the default assumed Postgres schema for the annotation tables is the active data table as configured in the CoStoSys configuration file. This can be overwritten by appending '<schema>:' to a table name. The given type names will be converted to valid Postgres table names by replacing dots with underscores. From the resolved tables, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.")
+    protected String[] additionalTableNames;
 
     private Initializer initializer;
     private CasPopulator casPopulator;
@@ -162,7 +150,7 @@ public class XmiDBReader extends DBReader implements Initializable {
             doGzip = true;
             dataTable = dbc.getNextOrThisDataTable(table);
             log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
-            try (Connection conn = dbc.getConn()) {
+            try (Connection conn = dbc.reserveConnection()) {
                 ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
                 while (rs.next()) {
                     byte[] xmiData = rs.getBytes("xmi");
@@ -228,7 +216,7 @@ public class XmiDBReader extends DBReader implements Initializable {
      */
     @Override
     public String[] getAdditionalTableNames() {
-        return additionalTableNames;
+        return super.additionalTableNames;
     }
 
     /**

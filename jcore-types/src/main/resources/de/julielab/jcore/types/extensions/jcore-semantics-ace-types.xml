@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <name>JCoRe Semantics ACE Types</name>
 <description>The type system contains ACE types of the ACE taxonomy.</description>
-<version>2.0.0-SNAPSHOT</version>
+<version>2.3.0</version>
 <vendor>JULIE Lab Jena, Germany</vendor>
 <imports>
-<import location="../jcore-semantics-mention-types.xml"/>
+<import location="../jcore-semantics-mention-types.xml" />
 </imports>
 <types>
 <typeDescription>
@@ -15,7 +15,7 @@
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.GPE</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.EntityMention</supertypeName>
 </typeDescription>
 <typeDescription>
@@ -105,67 +105,67 @@
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Life</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Movement</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Transaction</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Business</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Conflict</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Contact</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Personnel</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Justice</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Numeric</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.ValueMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Contact_Info</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.ValueMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Crime</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.ValueMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Job_Title</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.ValueMention</supertypeName>
 </typeDescription>
 <typeDescription>
 <name>de.julielab.jcore.types.ace.Sentence</name>
-<description/>
+<description />
 <supertypeName>de.julielab.jcore.types.ValueMention</supertypeName>
 </typeDescription>
 </types>

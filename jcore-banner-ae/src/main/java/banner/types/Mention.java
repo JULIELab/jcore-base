@@ -34,21 +34,21 @@ public class Mention implements Comparable<Mention>
 	public Mention(Sentence sentence, int start, int end, EntityType entityType, MentionType mentionType, Double probability)
 	{
 		if (sentence == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Sentence is null");
 		this.sentence = sentence;
 		if (start < 0 || start >= sentence.getTokens().size())
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Given mention start is " + start + ", the sentence has " + sentence.getTokens().size() + " tokens. The start offset must be positive or zero and may not equal or exceed the number of tokens of the sentence.");
 		this.start = start;
 		if (end <= 0 || end > sentence.getTokens().size())
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Given mention end is " + end + ", the sentence has " + sentence.getTokens().size() + " tokens. The end offset must be positive and may not exceed the number of tokens of the sentence.");
 		this.end = end;
 		if (length() <= 0)
 			throw new IllegalArgumentException("Illegal length - start: " + start + " end: " + end);
 		if (entityType == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("The passed entityType is null");
 		this.entityType = entityType;
 		if (mentionType == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("The passed mentionType is null");
 		this.mentionType = mentionType;
 		setProbability(probability);
 	}

@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>bannerTS</name>
   <description>basic typesystem started by sid</description>
-  <version>1.0</version>
-  <vendor/>
+  <version>2.3.0</version>
+  <vendor />
   <types>
     <typeDescription>
       <name>banner.types.uima.Gene</name>

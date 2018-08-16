@@ -1,33 +1,18 @@
 package de.julielab.jcore.reader.bionlpformat.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.medical.*;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-
-import de.julielab.jcore.CorefExpression;
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.medical.Dose;
-import de.julielab.jcore.types.medical.Duration;
-import de.julielab.jcore.types.medical.Frequency;
-import de.julielab.jcore.types.medical.Medication;
-import de.julielab.jcore.types.medical.Modus;
-import de.julielab.jcore.types.medical.Reason;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.*;
 
 public class AnnotationFileMapper_Med {
 

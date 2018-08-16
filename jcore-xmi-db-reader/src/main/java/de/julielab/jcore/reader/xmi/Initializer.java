@@ -149,7 +149,7 @@ public class Initializer {
     private Map<String, String> getNamespaceMap() {
         Map<String, String> map = null;
         if (dbc.tableExists(dbc.getActiveDataPGSchema() + "." + XmiSplitConstants.XMI_NS_TABLE)) {
-            try (Connection conn = dbc.getConn()) {
+            try (Connection conn = dbc.reserveConnection()) {
                 map = new HashMap<>();
                 conn.setAutoCommit(true);
                 Statement stmt = conn.createStatement();

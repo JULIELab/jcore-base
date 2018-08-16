@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -19,7 +20,7 @@ public class MapProvider implements IMapProvider {
 		try {
 			InputStreamReader is;
 			try {
-				is = new InputStreamReader(aData.getInputStream());
+				is = new InputStreamReader(JCoReTools.resolveExternalResourceGzipInputStream(aData));
 			} catch (Exception e) {
 				throw new IOException("Resource " + aData.getUri() + " not found");
 			}

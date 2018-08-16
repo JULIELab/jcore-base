@@ -6,34 +6,21 @@
 
 package de.julielab.jcore.reader.bionlpformat.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+ import com.google.common.collect.Lists;
+ import de.julielab.jcore.reader.bionlpformat.main.FormatClashException;
+ import de.julielab.jcore.types.*;
+ import de.julielab.jcore.utility.JCoReTools;
+ import org.apache.uima.jcas.JCas;
+ import org.apache.uima.jcas.cas.FSArray;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
 
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.FSArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
-
-import de.julielab.jcore.CorefExpression;
-import de.julielab.jcore.reader.bionlpformat.main.FormatClashException;
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.CorefRelation;
-import de.julielab.jcore.types.Entity;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.EventTrigger;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.utility.JCoReTools;
+ import java.io.BufferedReader;
+ import java.io.IOException;
+ import java.util.*;
+ import java.util.List;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
 
 /**
  * //TODO describe purpose of class

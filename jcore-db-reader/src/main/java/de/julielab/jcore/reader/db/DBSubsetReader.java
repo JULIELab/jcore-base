@@ -19,16 +19,21 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.julielab.jcore.reader.db.SubsetReaderConstants.*;
+import static de.julielab.jcore.reader.db.SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS;
+import static de.julielab.jcore.reader.db.SubsetReaderConstants.PARAM_FETCH_IDS_PROACTIVELY;
 
 public abstract class DBSubsetReader extends DBReaderBase {
     public final static String PARAM_ADDITIONAL_TABLES = SubsetReaderConstants.PARAM_ADDITIONAL_TABLES;
     public static final String PARAM_RESET_TABLE = SubsetReaderConstants.PARAM_RESET_TABLE;
+    public static final String PARAM_ADDITONAL_TABLES_STORAGE_PG_SCHEMA = "AdditionalTablesPostgresSchema";
 
     static final String DESC_ADDITIONAL_TABLES = "An array of table " +
-            "names. By default, the table names will be resolved against the active data postgres schema " +
+            "names or a string in the form of a qualified Java class, i.e. a dot-separated path. In the latter case, " +
+            "an existing table is searched for by converting the dots to underscores. A specific Postgres schema can be specified " +
+            "by prepending the Java-style path with a schema name followed by a colon, e.g. 'myschema:de.julielab.jcore.types.Token'. " +
+            "By default, the table names will be resolved against the active data postgres schema " +
             "configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains " +
-            "a dot, the active data schema will be ignored. When reading documents from the document data table, " +
+            "a dot or a colon, the active data schema will be ignored for this table. When reading documents from the document data table, " +
             "the additional tables will be joined onto the data table using the primary keys of the queried " +
             "documents. Using the table schema for the additional documents defined by the 'AdditionalTableSchema' " +
             "parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned " +
@@ -59,6 +64,11 @@ public abstract class DBSubsetReader extends DBReaderBase {
     protected Boolean readDataTable = false;
     protected String[] tables;
     protected String[] schemas;
+    @ConfigurationParameter(name = PARAM_ADDITONAL_TABLES_STORAGE_PG_SCHEMA, mandatory = false, description =
+            "This optional parameter specifies the Postgres schema in which the additional tables to read are searched by default. If " +
+                    "omitted, the active data schema from the CoStoSys configuration is assumed. The default can be overwritten for individual " +
+                    "types. For details, see the description of the '" + PARAM_ADDITIONAL_TABLES + "' parameter.")
+    private String additionalTablesPGSchema;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -72,6 +82,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
         this.fetchIdsProactively = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_FETCH_IDS_PROACTIVELY)).orElse(true);
         additionalTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
         additionalTableSchemas = (String[]) context.getConfigParameterValue(PARAM_ADDITIONAL_TABLE_SCHEMAS);
+        additionalTablesPGSchema = Optional.ofNullable((String) getConfigParameterValue(PARAM_ADDITONAL_TABLES_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
         checkAdditionalTableParameters(additionalTableNames, additionalTableSchemas);
         determineDataTable();
         try {
@@ -224,48 +235,31 @@ public abstract class DBSubsetReader extends DBReaderBase {
      * Checks whether the given additional tables exist. If not, it is checked if
      * the table names contain dots which are reserved for schema qualification in
      * Postgres. It is tried again to find the tables with underscores ('_'), then.
-     * The tables are also searched in the data schema. When the names contain dots,
-     * the substring up to the first dot is tried as schema qualification before
-     * prepending the data schema.
+     * In this case, a colon character is interpreted as the separation between a
+     * specified Postgres schema and a Java-style path to be converted to a valid
+     * table name by replacing dots with underscores.
      */
     protected ImmutablePair<Integer, String[]> checkAndAdjustAdditionalTables(DataBaseConnector dbc, String dataTable, String[] additionalTableNames) {
         List<String> foundTables = new ArrayList<>();
         foundTables.add(dataTable);
         for (int i = 0; i < additionalTableNames.length; i++) {
             String resultTableName = null;
-            if (dbc.tableExists(additionalTableNames[i]))
-                resultTableName = additionalTableNames[i];
-            // Try with default data postgres schema prepended.
-            if (null == resultTableName) {
-                String tn = dbc.getActiveDataPGSchema() + "." + additionalTableNames[i];
-                if (dbc.tableExists(tn))
-                    resultTableName = tn;
+            String rawName = additionalTableNames[i];
+
+            if (rawName.contains(":")) {
+                int colonIndex = rawName.indexOf(':');
+                if (colonIndex == rawName.length() - 1)
+                    throw new IllegalArgumentException("The table name \"" + rawName + "\" is invalid. Consult the description of the " + PARAM_ADDITIONAL_TABLES + " parameter for more information.");
+                String schema = rawName.substring(0, colonIndex);
+                String rawTableName = rawName.substring(colonIndex + 1);
+                String tableName = rawTableName.replaceAll("\\.", "_");
+                resultTableName = schema + "." + tableName;
+            } else if (dbc.tableExists(rawName)) {
+                resultTableName = rawName;
+            } else if (dbc.tableExists(additionalTablesPGSchema + "." + rawName.replaceAll("\\.", "_"))) {
+                resultTableName = additionalTablesPGSchema + "." + rawName.replaceAll("\\.", "_");
             }
-            // Try with all dots converted to underscores but the first dot, so
-            // that the substring up to the first dot could be a schema
-            // qualification.
-            if (null == resultTableName) {
-                int dotIndex = additionalTableNames[i].indexOf('.');
-                String prefix = additionalTableNames[i].substring(0, dotIndex);
-                String rest = additionalTableNames[i].substring(dotIndex + 1);
-                String tn = prefix + "." + rest.replaceAll("\\.", "_");
-                if (dbc.tableExists(tn))
-                    resultTableName = tn;
-            }
-            // Try with the original name but all dots converted to underscores.
-            if (null == resultTableName) {
-                String tn = additionalTableNames[i].replaceAll("\\.", "_");
-                if (dbc.tableExists(tn))
-                    resultTableName = tn;
-            }
-            // Try with all all dots converted to underscored and the active
-            // data schema prepended.
-            if (null == resultTableName) {
-                String tn = dbc.getActiveDataPGSchema() + "." + additionalTableNames[i].replaceAll("\\.", "_");
-                if (dbc.tableExists(tn))
-                    resultTableName = tn;
-            }
-            // We have really tried...
+
             if (null == resultTableName) {
                 throw new IllegalArgumentException("The table " + additionalTableNames[i] + " does not exist.");
             } else
@@ -275,7 +269,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
         // -1 because here we also have added the document table which is not an
         // additional table but the main table!
         int numAdditionalTables = tables.length - 1;
-        return new ImmutablePair<Integer, String[]>(numAdditionalTables, tables);
+        return new ImmutablePair<>(numAdditionalTables, tables);
     }
 
 }

@@ -15,6 +15,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import com.google.gson.Gson;
 import de.julielab.jcore.consumer.es.preanalyzed.Document;
 import de.julielab.jcore.utility.JCoReTools;
 
+@ResourceMetaData(name="JCore ElasticSearchConsumer")
 public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
 
     public static final String PARAM_URLS = "urls";

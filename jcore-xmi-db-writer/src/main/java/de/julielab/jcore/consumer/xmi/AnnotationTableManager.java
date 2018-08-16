@@ -68,13 +68,13 @@ public class AnnotationTableManager {
      *                           stored
      * @return The normalized table name
      */
-   public String convertAnnotationTypeToTableName(String tableNameParameter, boolean storeAll) {
+    public String convertAnnotationTypeToTableName(String tableNameParameter, boolean storeAll) {
         if (storeAll || tableNameParameter.equals(dbDocumentTableName))
             return getEffectiveDocumentTableName(tableNameParameter);
         // A table cannot be created if the name contains dots. All annotation
         // tables
         // will thus have dots replaced by underline.
-        String effectiveTableName = tableNameParameter.contains(":") ? tableNameParameter.substring(tableNameParameter.indexOf(':')+1) : tableNameParameter;
+        String effectiveTableName = tableNameParameter.contains(":") ? tableNameParameter.substring(tableNameParameter.indexOf(':') + 1) : tableNameParameter;
         effectiveTableName = effectiveTableName.replace(".", "_");
         String schema = tableNameParameter.contains(":") ? tableNameParameter.substring(0, tableNameParameter.indexOf('.')) : annotationStorageSchema;
         return schema + "." + effectiveTableName;
@@ -121,7 +121,8 @@ public class AnnotationTableManager {
         if (null == obsoleteAnnotationTables) {
             obsoleteAnnotationTables = new ArrayList<>();
             // first get the names of all annotation tables
-            try (Connection conn = dbc.getConn()) {
+            try {
+                Connection conn = dbc.obtainConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT " + TABLE_NAME + " FROM " + dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE);
                 while (rs.next()) {
@@ -192,7 +193,8 @@ public class AnnotationTableManager {
      * @param tablename
      */
     void addAnnotationTableToList(String tablename) {
-        try (Connection conn = dbc.getConn()) {
+        try {
+            Connection conn = dbc.obtainConnection();
             conn.setAutoCommit(true);
             Statement stmt = conn.createStatement();
 
@@ -213,7 +215,8 @@ public class AnnotationTableManager {
 
     private void createAnnotationListTable() {
         if (!dbc.tableExists(dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE)) {
-            try (Connection conn = dbc.getConn()) {
+            try {
+                Connection conn = dbc.obtainConnection();
                 conn.setAutoCommit(true);
                 Statement stmt = conn.createStatement();
                 String sql = String.format("CREATE TABLE %s (%s text PRIMARY KEY)",

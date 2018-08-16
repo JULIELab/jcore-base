@@ -1,37 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <name>JCoRe MUC7 Type System</name>
 <description>This type system contains types covering annotations for the MUC7 data.</description>
-<version>2.0.0-SNAPSHOT</version>
+<version>2.3.0</version>
 <vendor>JULIE Lab Jena, Germany</vendor>
 <imports>
-<import location="../jcore-document-meta-types.xml"/>
-<import location="../jcore-semantics-mention-types.xml"/>
+<import location="../jcore-document-meta-types.xml" />
+<import location="../jcore-semantics-mention-types.xml" />
 </imports>
 <types>
 <typeDescription>
 <name>de.julielab.jcore.types.muc7.Coref</name>
-<description/>
+<description />
 <supertypeName>uima.tcas.Annotation</supertypeName>
 <features>
 <featureDescription>
 <name>id</name>
-<description/>
+<description />
 <rangeTypeName>uima.cas.Integer</rangeTypeName>
 </featureDescription>
 <featureDescription>
 <name>corefType</name>
-<description/>
+<description />
 <rangeTypeName>uima.cas.String</rangeTypeName>
 </featureDescription>
 <featureDescription>
 <name>ref</name>
-<description/>
+<description />
 <rangeTypeName>de.julielab.jcore.types.muc7.Coref</rangeTypeName>
 </featureDescription>
 <featureDescription>
 <name>min</name>
-<description/>
+<description />
 <rangeTypeName>uima.cas.String</rangeTypeName>
 </featureDescription>
 </features>
@@ -82,7 +82,7 @@
 </featureDescription>
 <featureDescription>
           <name>specificType</name>
-          <description/>
+          <description />
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>

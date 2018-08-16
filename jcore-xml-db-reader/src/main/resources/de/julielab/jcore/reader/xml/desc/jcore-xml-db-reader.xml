@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.xml.XMLDBReader</implementationName>
@@ -7,103 +7,103 @@
         <description>A collection reader that receives XML document data from a PostgreSQL database. It employs the
         jcore-xml-mapper to populate UIMA CAS instances with the XML data according to a mapping file. For the same
         functionality without using a database, refer to the jcore-xml-reader.</description>
-        <version>unknown</version>
+        <version>2.3.0</version>
         <vendor>JULIE Lab, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
                 <name>RowMapping</name>
-                <description/>
+                <description />
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>MappingFile</name>
-                <description/>
+                <description />
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>BatchSize</name>
-                <description/>
+                <description />
                 <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>DBDriver</name>
-                <description/>
+                <description />
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>Timestamp</name>
-                <description/>
+                <description />
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>Table</name>
-                <description/>
+                <description />
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>AdditionalTables</name>
-                <description/>
+                <description />
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>AdditionalTableSchema</name>
-                <description/>
+                <description />
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>RandomSelection</name>
-                <description/>
+                <description />
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>FetchIdsProactively</name>
-                <description/>
+                <description />
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>WhereCondition</name>
-                <description/>
+                <description />
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>Limit</name>
-                <description/>
+                <description />
                 <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>CostosysConfigFile</name>
-                <description/>
+                <description />
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>ResetTable</name>
-                <description/>
+                <description />
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -113,19 +113,19 @@
             <nameValuePair>
                 <name>Table</name>
                 <value>
-                    <string/>
+                    <string />
                 </value>
             </nameValuePair>
             <nameValuePair>
                 <name>CostosysConfigFile</name>
                 <value>
-                    <string/>
+                    <string />
                 </value>
             </nameValuePair>
             <nameValuePair>
                 <name>MappingFile</name>
                 <value>
-                    <string/>
+                    <string />
                 </value>
             </nameValuePair>
             <nameValuePair>
@@ -155,12 +155,12 @@
         </configurationParameterSettings>
         <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
       </imports>
     </typeSystemDescription>
-        <fsIndexCollection/>
-        <capabilities/>
+        <fsIndexCollection />
+        <capabilities />
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>

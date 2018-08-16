@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "Analysis Engine to detect epistemic modal expressions and assign the appropriate likelihood category.\n    ",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.likelihooddetection.desc.jcore-likelihood-detection-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-likelihood-detection-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.0"
+    },
+    "name": "JCoRe Likelihood Detection AE"
+}

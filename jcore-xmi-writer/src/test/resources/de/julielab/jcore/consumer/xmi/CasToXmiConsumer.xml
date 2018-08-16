@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
   <annotatorImplementationName>de.julielab.jcore.consumer.xmi.CasToXmiConsumer</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>XMIWriter</name>
-    <description/>
-    <version>Test</version>
-    <vendor/>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>OutputDirectory</name>
@@ -63,17 +63,17 @@ Default is false.</description>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-basic-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+        <import name="de.julielab.jcore.types.jcore-basic-types" />
+        <import name="de.julielab.jcore.types.jcore-document-meta-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -82,5 +82,5 @@ Default is false.</description>
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </analysisEngineDescription>

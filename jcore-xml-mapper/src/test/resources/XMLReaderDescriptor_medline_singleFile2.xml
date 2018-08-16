@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<?xml version='1.0' encoding='UTF-8'?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.xmlmapper.XMLReader</implementationName>
   <processingResourceMetaData>
     <name>XMLReader</name>
-    <description/>
-    <version>1.0</version>
-    <vendor/>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>InputDirectory</name>
@@ -44,19 +45,19 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
-        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
-        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+        <import name="de.julielab.jcore.types.jcore-document-structure-types" />
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -65,5 +66,5 @@
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </collectionReaderDescription>

@@ -1,5 +1,8 @@
 package de.julielab.jcore.ae.topicindexing;
 
+import cc.mallet.types.Instance;
+import cc.mallet.types.LabelSequence;
+import cc.mallet.types.Labeling;
 import de.julielab.jcore.types.AutoDescriptor;
 import de.julielab.jcore.types.DocumentTopics;
 import de.julielab.jcore.utility.JCoReTools;
@@ -12,6 +15,8 @@ import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
@@ -25,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
+@ResourceMetaData(name="JCoRe Topic Indexer", description = "This component assigns topics relative to a given topic model to the encoutered documents. The topic model is one trained by the julielab-topic-modeling project.")
+@TypeCapability(inputs = {"de.julielab.jcore.types.Sentence", "de.julielab.jcore.types.Token", "de.julielab.jcore.types.PennBioIEPOSTag", "de.julielab.jcore.types.Lemma"}, outputs = {"de.julielab.jcore.types.ManualDescriptor", "de.julielab.jcore.types.DocumentTopics"})
 public class TopicIndexer extends JCasAnnotator_ImplBase {
 
     /**
@@ -58,6 +65,7 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
     private boolean toModelIndex;
     @ExternalResource(key = RESOURCE_KEY_MODEL_FILE_NAME, description = "The topic model pretrained by the julielab-topic-modeling software.")
     private ITopicModelProvider topicModelProvider;
+    private Object[][] topWords;
 
     /**
      * Loads model configuration and serialized model and checks whether to populate the
@@ -74,6 +82,9 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
 
             topicModelProvider = (ITopicModelProvider) aContext.getResourceObject(RESOURCE_KEY_MODEL_FILE_NAME);
             savedModel = topicModelProvider.getModel();
+            if (displayedTopicWords > 0) {
+                topWords = topicModelProvider.getTopWords(displayedTopicWords);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,61 +100,75 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
             String modelID = savedModel.modelId;
             String modelVersion = savedModel.modelVersion;
             String docId = JCoReTools.getDocId(aJCas);
-            if (!savedModel.ModelIdpubmedId.containsValue(docId)) {
-                Map<String, List<Topic>> result = tm.inferLabel(aJCas, savedModel, xmlConfig, topicModelProvider.getTopWords(displayedTopicWords));
-                DoubleArray topicWeights = new DoubleArray(aJCas, result.size());
-                IntegerArray topicIds = new IntegerArray(aJCas, result.size());
-                StringArray topicWords = new StringArray(aJCas, displayedTopicWords);
-                for (int i = 0; i < result.size(); i++) {
-                    double topicWeight = result.get(docId).get(i).probability;
-                    int topicId = result.get(docId).get(i).id;
-                    for (int k = 0; k < displayedTopicWords; k++) {
-                        String topicWord = (String) result.get(docId).get(i).topicWords[k];
-                        topicWords.set(k, topicWord);
-                    }
-                    topicWeights.set(i, topicWeight);
-                    topicIds.set(i, topicId);
+            Map<String, List<Topic>> topicMap;
+            if (!savedModel.pubmedIdModelId.containsKey(docId)) {
+                topicMap = tm.inferLabel(aJCas, savedModel, xmlConfig);
+            } else {
+                LabelSequence ts = savedModel.malletModel.data.get(0).topicSequence;
+                double[] prbs = savedModel.malletModel.getTopicProbabilities(ts);
+                List<Topic> topicList = new ArrayList<>(prbs.length);
+                for (int i = 0; i < prbs.length; i++) {
+                    Topic topic = new Topic();
+                    topic.id = i;
+                    topic.probability = prbs[i];
+                    topic.modelId = savedModel.modelId;
+                    topic.modelVersion = savedModel.modelVersion;
+                    topicList.add(topic);
                 }
-                DocumentTopics documentTopics = new DocumentTopics(aJCas);
-                documentTopics.setIDs(topicIds);
-                documentTopics.setWeights(topicWeights);
-                documentTopics.setModelID(modelID);
-                if (modelVersion != "") {
-                    documentTopics.setModelVersion(modelVersion);
-                }
-                documentTopics.setTopicWords(topicWords);
-                aJCas.addFsToIndexes(documentTopics);
-                log.trace("Labeled document " + docId);
-                if (toModelIndex) {
-                    List<Topic> topics = new ArrayList<>();
-                    for (int i = 0; i < topicWeights.size(); i++) {
-                        Topic topic = new Topic();
-                        topic.topicWords = new Object[topicWords.size()];
-                        topic.probability = topicWeights.get(i);
-                        topic.id = topicIds.get(i);
-                        for (int k = 0; k < topicWords.size(); k++) {
-                            String topicWord = topicWords.get(k);
-                            topic.topicWords[i] = topicWord;
-                        }
-                        topic.modelId = modelID;
-                        topic.modelVersion = modelVersion;
-                        topics.add(topic);
-                    }
-                    topicModelProvider.addToIndex(docId, topics);
-                    log.trace("Indexed document: " + docId);
-                    Collection<AutoDescriptor> autoDescs = JCasUtil.select(aJCas, AutoDescriptor.class);
-                    AutoDescriptor autoDesc;
-                    if (!autoDescs.isEmpty())
-                        autoDesc = autoDescs.iterator().next();
-                    else {
-                        autoDesc = new AutoDescriptor(aJCas);
-                        autoDesc.addToIndexes();
-                    }
+                topicMap = Collections.singletonMap(docId, topicList);
+            }
 
-                    FSArray dt = autoDesc.getDocumentTopics();
-                    dt = JCoReTools.addToFSArray(dt, documentTopics);
-                    autoDesc.setDocumentTopics(dt);
+
+            List<Topic> docTopics = topicMap.get(docId);
+            DoubleArray topicWeights = new DoubleArray(aJCas, docTopics.size());
+            IntegerArray topicIds = new IntegerArray(aJCas, docTopics.size());
+            StringArray topicWords = new StringArray(aJCas, displayedTopicWords);
+            for (int i = 0; i < docTopics.size(); i++) {
+                double topicWeight = docTopics.get(i).probability;
+                int topicId = docTopics.get(i).id;
+                // Topics have a varying number of words they are associated with, thus displayTopicWords
+                // might be larger than there are words available for a topic
+                for (int k = 0; displayedTopicWords > 0 && k < Math.min(displayedTopicWords, topWords[topicId].length); k++) {
+                    String topicWord = (String) topWords[topicId][k];
+                    topicWords.set(k, topicWord);
                 }
+                topicWeights.set(i, topicWeight);
+                topicIds.set(i, topicId);
+            }
+            DocumentTopics documentTopics = new DocumentTopics(aJCas);
+            documentTopics.setIDs(topicIds);
+            documentTopics.setWeights(topicWeights);
+            documentTopics.setModelID(modelID);
+            if (modelVersion != "") {
+                documentTopics.setModelVersion(modelVersion);
+            }
+            documentTopics.setTopicWords(topicWords);
+            aJCas.addFsToIndexes(documentTopics);
+            log.trace("Labeled document " + docId);
+            if (toModelIndex) {
+                List<Topic> topics = new ArrayList<>();
+                for (int i = 0; i < topicWeights.size(); i++) {
+                    Topic topic = new Topic();
+                    topic.probability = topicWeights.get(i);
+                    topic.id = topicIds.get(i);
+                    topic.modelId = modelID;
+                    topic.modelVersion = modelVersion;
+                    topics.add(topic);
+                }
+                topicModelProvider.addToIndex(docId, topics);
+                log.trace("Indexed document: " + docId);
+                Collection<AutoDescriptor> autoDescs = JCasUtil.select(aJCas, AutoDescriptor.class);
+                AutoDescriptor autoDesc;
+                if (!autoDescs.isEmpty())
+                    autoDesc = autoDescs.iterator().next();
+                else {
+                    autoDesc = new AutoDescriptor(aJCas);
+                    autoDesc.addToIndexes();
+                }
+
+                FSArray dt = autoDesc.getDocumentTopics();
+                dt = JCoReTools.addToFSArray(dt, documentTopics);
+                autoDesc.setDocumentTopics(dt);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.xml.XMLMultiplierReader</implementationName>
@@ -8,8 +8,8 @@
       This reader is to be used with the JCoRe XML CAS Multiplier. The reader merely distributes the files to
       be read. The actual parsing is done by the multiplier.
     </description>
-    <version>1.0</version>
-    <vendor/>
+    <version>2.3.0</version>
+    <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>InputDirectory</name>
@@ -22,21 +22,22 @@
       <nameValuePair>
         <name>InputDirectory</name>
         <value>
-          <string></string>
+          <string />
         </value>
       </nameValuePair>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+        <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
+        <import name="org.apache.uima.ducc.FlowControllerTS" />
       </imports>
     </typeSystemDescription>
-    <fsIndexCollection/>
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
+        <inputs />
+        <outputs />
+        <languagesSupported />
       </capability>
     </capabilities>
   <operationalProperties>
@@ -45,5 +46,5 @@
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </collectionReaderDescription>

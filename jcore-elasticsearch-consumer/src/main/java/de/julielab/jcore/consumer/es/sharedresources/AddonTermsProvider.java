@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -25,7 +26,7 @@ public class AddonTermsProvider implements IAddonTermsProvider {
 			int addons = 0;
 			InputStream inputStream;
 			try {
-				inputStream = aData.getInputStream();
+				inputStream = JCoReTools.resolveExternalResourceGzipInputStream(aData);
 			} catch (Exception e) {
 				throw new IOException("Could not read from " + aData.getUri() + ": Resource not found.");
 			}
