@@ -123,7 +123,7 @@ public class BioEventReader extends CollectionReader_ImplBase {
                 e.printStackTrace();
             }
             String abstractFilename = abstractFile.getName();
-            String pid = abstractFilename.substring(0, abstractFilename.indexOf("."));
+            String pid = abstractFilename.substring(0, abstractFilename.lastIndexOf("."));
             File proteinFile = new File(directory, pid + ".a1");
             File eventFile = new File(directory, pid + ".a2");
             JCas jcas = null;

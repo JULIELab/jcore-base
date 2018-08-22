@@ -73,7 +73,7 @@ public class MedEventReader  extends CollectionReader_ImplBase {
             e.printStackTrace();
         }
         String textFilename = textFile.getName();
-        String fid = textFilename.substring(0, textFilename.indexOf("."));
+        String fid = textFilename.substring(0, textFilename.lastIndexOf("."));
         File annotationFile = new File(directory, fid + ".ann");
         JCas jcas = null;
         try {
