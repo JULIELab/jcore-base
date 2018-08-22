@@ -8,6 +8,7 @@
 	</parent>
 	<artifactId>jcore-biosem-ae</artifactId>
 	<name>JCoRe BioSem Event Annotator</name>
+	<version>2.3.1</version>
 	<description>A UIMA wrapper around the BioSem Event Extractor from the University of Amsterdam.
 http://www.ncbi.nlm.nih.gov/pubmed/22859502</description>
 	<dependencies>
@@ -30,7 +31,7 @@ http://www.ncbi.nlm.nih.gov/pubmed/22859502</description>
 		<dependency>
 			<groupId>de.julielab</groupId>
 			<artifactId>biosem-event-extractor</artifactId>
-			<version>1.1.6</version>
+			<version>1.1.7</version>
 		</dependency>
 		<dependency>
             <groupId>de.julielab</groupId>
