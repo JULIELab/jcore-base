@@ -26,6 +26,7 @@
 package de.julielab.jcore.reader.db;
 
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
+import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.NoReservedConnectionException;
@@ -289,9 +290,9 @@ public abstract class DBReader extends DBSubsetReader {
             // database have been read, only the rest of documents.
             int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
             try {
-                Pair<Connection, Boolean> connPair = dbc.obtainOrReserveConnection();
-                ids = dbc.retrieveAndMark(tableName, getReaderComponentName(), hostName, pid, limit, selectionOrder);
-                dbc.releaseConnection(connPair);
+                try (CoStoSysConnection conn  = dbc.obtainOrReserveConnection()) {
+                    ids = dbc.retrieveAndMark(tableName, getReaderComponentName(), hostName, pid, limit, selectionOrder);
+                }
                 if (log.isTraceEnabled()) {
                     List<String> idStrings = new ArrayList<>();
                     for (Object[] o : ids) {
