@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
@@ -177,7 +178,7 @@ public class AnnotationTableManager {
 
             if (!effectiveTableName.equals(dbDocumentTableName))
                 addAnnotationTableToList(effectiveTableName);
-        } catch (SQLException e) {
+        } catch (CoStoSysSQLRuntimeException e) {
             log.warn(
                     "SQLException was thrown when creating tables. Possibly it is a concurrency issue and it has been " +
                             "tried to create the tables although they had already been created by another process " +
