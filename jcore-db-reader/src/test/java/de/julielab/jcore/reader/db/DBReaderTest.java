@@ -4,6 +4,7 @@ import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xmlData.Constants;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionException;
@@ -35,7 +36,10 @@ public class DBReaderTest {
 
     @BeforeClass
     public static void setup() throws SQLException {
-       DBTestUtils.setupDatabase("src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 20, postgres);
+        DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
+        dbc.reserveConnection();
+        DBTestUtils.setupDatabase("src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 20, postgres);
+        dbc.close();
     }
 
     @Test

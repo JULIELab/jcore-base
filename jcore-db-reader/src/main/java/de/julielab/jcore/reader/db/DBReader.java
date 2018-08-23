@@ -28,8 +28,10 @@ package de.julielab.jcore.reader.db;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
+import de.julielab.xmlData.dataBase.util.NoReservedConnectionException;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -46,6 +48,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -116,6 +119,31 @@ public abstract class DBReader extends DBSubsetReader {
 
     private DBCIterator<byte[][]> xmlBytes;
 
+    public static String setDBProcessingMetaData(DataBaseConnector dbc, boolean readDataTable, String tableName, byte[][] data, JCas cas) {
+        String pkString = null;
+        // remove previously added dbMetaData
+        JCasUtil.select(cas, DBProcessingMetaData.class).forEach(x -> x.removeFromIndexes());
+
+        DBProcessingMetaData dbMetaData = new DBProcessingMetaData(cas);
+        List<Integer> pkIndices = dbc.getPrimaryKeyIndices();
+        StringArray pkArray = new StringArray(cas, pkIndices.size());
+        for (int i = 0; i < pkIndices.size(); ++i) {
+            Integer index = pkIndices.get(i);
+            String pkElementValue = new String(data[index], Charset.forName("UTF-8"));
+            pkArray.set(i, pkElementValue);
+        }
+        if (log.isDebugEnabled())
+            log.debug("Setting primary key to {}", Arrays.toString(pkArray.toArray()));
+        dbMetaData.setPrimaryKey(pkArray);
+
+        if (!readDataTable)
+            dbMetaData.setSubsetTable(
+                    tableName.contains(".") ? tableName : dbc.getActivePGSchema() + "." + tableName);
+
+        dbMetaData.addToIndexes();
+        return pkString;
+    }
+
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
@@ -134,8 +162,6 @@ public abstract class DBReader extends DBSubsetReader {
     public boolean hasNext() throws IOException, CollectionException {
         return hasNext;
     }
-
-
 
     /**
      * Returns the next byte[][] containing a byte[] for the pmid at [0] and a
@@ -207,8 +233,6 @@ public abstract class DBReader extends DBSubsetReader {
         return next;
     }
 
-
-
     public Progress[] getProgress() {
         return new Progress[]{new ProgressImpl(processedDocuments, totalDocumentCount, Progress.ENTITIES, true)};
     }
@@ -220,161 +244,136 @@ public abstract class DBReader extends DBSubsetReader {
         dbc = null;
     }
 
-
-    public static String setDBProcessingMetaData(DataBaseConnector dbc, boolean readDataTable, String tableName, byte[][] data, JCas cas) {
-        String pkString = null;
-        // remove previously added dbMetaData
-        JCasUtil.select(cas, DBProcessingMetaData.class).forEach(x -> x.removeFromIndexes());
-
-        DBProcessingMetaData dbMetaData = new DBProcessingMetaData(cas);
-        List<Integer> pkIndices = dbc.getPrimaryKeyIndices();
-        StringArray pkArray = new StringArray(cas, pkIndices.size());
-        for (int i = 0; i < pkIndices.size(); ++i) {
-            Integer index = pkIndices.get(i);
-            String pkElementValue = new String(data[index], Charset.forName("UTF-8"));
-            pkArray.set(i, pkElementValue);
-        }
-        if (log.isDebugEnabled())
-            log.debug("Setting primary key to {}", Arrays.toString(pkArray.toArray()));
-        dbMetaData.setPrimaryKey(pkArray);
-
-        if (!readDataTable)
-            dbMetaData.setSubsetTable(
-                    tableName.contains(".") ? tableName : dbc.getActivePGSchema() + "." + tableName);
-
-        dbMetaData.addToIndexes();
-        return pkString;
-}
-
     /**
      * @return The component name of the reader to fill in the subset table's
      * pipeline status field
      */
     protected abstract String getReaderComponentName();
 
-/**
- * <p>
- * This class is charged with retrieving batches of document IDs and documents while previously fetched documents
- * are in process.
- * </p>
- * <p>
- * The class manages the <code>FetchIdsProactively</code> parameter which
- * can be given to the reader. When set to <code>false</code>, no ID batches are
- * fetched in advance but are fetched exactly on demand in
- * {@link DBReader#getNextArtifactData}.
- * </p>
- * <p>
- * This class is only in use when reading from a subset table.
- * </p>
- *
- * @author hellrich/faessler
- */
-protected class RetrievingThread extends Thread {
-    private List<Object[]> ids;
-    private DBCIterator<byte[][]> documents;
+    /**
+     * <p>
+     * This class is charged with retrieving batches of document IDs and documents while previously fetched documents
+     * are in process.
+     * </p>
+     * <p>
+     * The class manages the <code>FetchIdsProactively</code> parameter which
+     * can be given to the reader. When set to <code>false</code>, no ID batches are
+     * fetched in advance but are fetched exactly on demand in
+     * {@link DBReader#getNextArtifactData}.
+     * </p>
+     * <p>
+     * This class is only in use when reading from a subset table.
+     * </p>
+     *
+     * @author hellrich/faessler
+     */
+    protected class RetrievingThread extends Thread {
+        private List<Object[]> ids;
+        private DBCIterator<byte[][]> documents;
 
-    public RetrievingThread() {
-        // Only fetch ID batches in advance when the parameter is set to
-        // true.
-        if (fetchIdsProactively) {
-            log.debug("Fetching new documents in a background thread.");
-            start();
-        }
-    }
-
-    public void run() {
-        // Remember: If the Limit parameter is set, totalDocumentCount is
-        // that limit (or the remaining number of documents, if that's
-        // lower).
-        // Hence, we fetch the next "normal" sized batch of documents or, if
-        // the limit comes to its end or almost all documents in the
-        // database have been read, only the rest of documents.
-        int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
-        try {
-            ids = dbc.retrieveAndMark(tableName, getReaderComponentName(), hostName, pid, limit, selectionOrder);
-            if (log.isTraceEnabled()) {
-                List<String> idStrings = new ArrayList<>();
-                for (Object[] o : ids) {
-                    List<String> pkElements = new ArrayList<>();
-                    for (int i = 0; i < o.length; i++) {
-                        Object object = o[i];
-                        pkElements.add(String.valueOf(object));
-                    }
-                    idStrings.add(StringUtils.join(pkElements, "-"));
-                }
-                log.trace("Reserved the following document IDs for processing: " + idStrings);
+        public RetrievingThread() {
+            // Only fetch ID batches in advance when the parameter is set to
+            // true.
+            if (fetchIdsProactively) {
+                log.debug("Fetching new documents in a background thread.");
+                start();
             }
-        } catch (TableSchemaMismatchException e) {
-            log.error("Table schema mismatch: The active table schema {} specified in the CoStoSys configuration" +
-                            " file {} does not match the columns in the subset table {}: {}", dbc.getActiveTableSchema(),
-                    costosysConfig, tableName, e.getMessage());
-            throw new IllegalArgumentException(e);
         }
-        numberFetchedDocIDs += ids.size();
-        log.debug("Retrieved {} document IDs to fetch from the database.", ids.size());
 
-        if (ids.size() > 0) {
-            log.debug("Fetching {} documents from the database.", ids.size());
-            if (dataTimestamp == null) {
-                if (!joinTables) {
-                    log.trace("Fetching data from the data table {} without additional tables.", dataTable);
-                    documents = dbc.retrieveColumnsByTableSchema(ids, dataTable);
+        public void run() {
+            // Remember: If the Limit parameter is set, totalDocumentCount is
+            // that limit (or the remaining number of documents, if that's
+            // lower).
+            // Hence, we fetch the next "normal" sized batch of documents or, if
+            // the limit comes to its end or almost all documents in the
+            // database have been read, only the rest of documents.
+            int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
+            try {
+                Pair<Connection, Boolean> connPair = dbc.obtainOrReserveConnection();
+                ids = dbc.retrieveAndMark(tableName, getReaderComponentName(), hostName, pid, limit, selectionOrder);
+                dbc.releaseConnection(connPair);
+                if (log.isTraceEnabled()) {
+                    List<String> idStrings = new ArrayList<>();
+                    for (Object[] o : ids) {
+                        List<String> pkElements = new ArrayList<>();
+                        for (int i = 0; i < o.length; i++) {
+                            Object object = o[i];
+                            pkElements.add(String.valueOf(object));
+                        }
+                        idStrings.add(StringUtils.join(pkElements, "-"));
+                    }
+                    log.trace("Reserved the following document IDs for processing: " + idStrings);
+                }
+            } catch (TableSchemaMismatchException e) {
+                log.error("Table schema mismatch: The active table schema {} specified in the CoStoSys configuration" +
+                                " file {} does not match the columns in the subset table {}: {}", dbc.getActiveTableSchema(),
+                        costosysConfig, tableName, e.getMessage());
+                throw new IllegalArgumentException(e);
+            }
+            numberFetchedDocIDs += ids.size();
+            log.debug("Retrieved {} document IDs to fetch from the database.", ids.size());
+
+            if (ids.size() > 0) {
+                log.debug("Fetching {} documents from the database.", ids.size());
+                if (dataTimestamp == null) {
+                    if (!joinTables) {
+                        log.trace("Fetching data from the data table {} without additional tables.", dataTable);
+                        documents = dbc.retrieveColumnsByTableSchema(ids, dataTable);
+                    } else {
+                        log.trace("Fetching data by joining tables {}. The used table schemas are {}.", tables, schemas);
+                        documents = dbc.retrieveColumnsByTableSchema(ids, tables, schemas);
+                    }
                 } else {
-                    log.trace("Fetching data by joining tables {}. The used table schemas are {}.", tables, schemas);
-                    documents = dbc.retrieveColumnsByTableSchema(ids, tables, schemas);
+                    log.trace("Fetching data from data table {} that is newer than timestamp {}", dataTable, dataTimestamp);
+                    documents = dbc.queryWithTime(ids, dataTable, dataTimestamp);
                 }
             } else {
-                log.trace("Fetching data from data table {} that is newer than timestamp {}", dataTable, dataTimestamp);
-                documents = dbc.queryWithTime(ids, dataTable, dataTimestamp);
+                log.debug("No unfetched documents left.");
+                // Return empty iterator to avoid NPE.
+                documents = new DBCIterator<byte[][]>() {
+
+                    @Override
+                    public boolean hasNext() {
+                        return false;
+                    }
+
+                    @Override
+                    public byte[][] next() {
+                        return null;
+                    }
+
+                    @Override
+                    public void remove() {
+                    }
+
+                    @Override
+                    public void close() {
+                    }
+                };
             }
-        } else {
-            log.debug("No unfetched documents left.");
-            // Return empty iterator to avoid NPE.
-            documents = new DBCIterator<byte[][]>() {
-
-                @Override
-                public boolean hasNext() {
-                    return false;
-                }
-
-                @Override
-                public byte[][] next() {
-                    return null;
-                }
-
-                @Override
-                public void remove() {
-                }
-
-                @Override
-                public void close() {
-                }
-            };
         }
+
+
+        public DBCIterator<byte[][]> getDocuments() {
+            // If we don't use this as a background thread, we have to get the
+            // IDs now in a classic sequential manner.
+            if (!fetchIdsProactively) {
+                // Use run as we don't have a use for real threads anyway.
+                log.debug("Fetching new documents (without employing a background thread).");
+                run();
+            }
+            try {
+                // If this is a background thread started with start(): Wait for
+                // the IDs to be retrieved, i.e. that run() ends.
+                log.debug("Waiting for the background thread to finish fetching documents to return them.");
+                join();
+                return documents;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
     }
-
-
-
-    public DBCIterator<byte[][]> getDocuments() {
-        // If we don't use this as a background thread, we have to get the
-        // IDs now in a classic sequential manner.
-        if (!fetchIdsProactively) {
-            // Use run as we don't have a use for real threads anyway.
-            log.debug("Fetching new documents (without employing a background thread).");
-            run();
-        }
-        try {
-            // If this is a background thread started with start(): Wait for
-            // the IDs to be retrieved, i.e. that run() ends.
-            log.debug("Waiting for the background thread to finish fetching documents to return them.");
-            join();
-            return documents;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-}
 
 }

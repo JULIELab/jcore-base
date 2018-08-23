@@ -4,6 +4,7 @@ import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -18,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +47,7 @@ public class DBMultiplierReader extends DBSubsetReader {
     // Internal state fields
     private DBMultiplierReader.RetrievingThread retriever;
     private DBCIterator<Object[]> dataTableDocumentIds;
+    private Connection connection;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -56,7 +60,7 @@ public class DBMultiplierReader extends DBSubsetReader {
             hasNext = dataTableDocumentIds.hasNext();
         } else {
             log.debug("Reading from subset table {}", tableName);
-            hasNext = dbc.hasUnfetchedRows(tableName);
+            hasNext = dbc.withConnectionQueryBoolean(c -> c.hasUnfetchedRows(tableName));
         }
     }
 
@@ -101,8 +105,9 @@ public class DBMultiplierReader extends DBSubsetReader {
      * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
      */
     public boolean hasNext() throws IOException, CollectionException {
+        boolean hasNext = this.hasNext;
         if (retriever != null)
-            return !retriever.getDocumentIds().isEmpty();
+            hasNext = !retriever.getDocumentIds().isEmpty();
         return hasNext;
     }
 
@@ -166,7 +171,7 @@ public class DBMultiplierReader extends DBSubsetReader {
 
     public void close() {
         if (dbc != null)
-        dbc.close();
+            dbc.close();
         dbc = null;
     }
 
@@ -208,7 +213,9 @@ public class DBMultiplierReader extends DBSubsetReader {
             // database have been read, only the rest of documents.
             int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
             try {
+                Pair<Connection, Boolean> connPair = dbc.obtainOrReserveConnection();
                 ids = dbc.retrieveAndMark(tableName, getClass().getSimpleName(), hostName, pid, limit, selectionOrder);
+                dbc.releaseConnection(connPair);
                 if (log.isTraceEnabled()) {
                     List<String> idStrings = new ArrayList<>();
                     for (Object[] o : ids) {

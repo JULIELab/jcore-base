@@ -1,6 +1,7 @@
 package de.julielab.jcore.reader.db;
 
 import de.julielab.xmlData.dataBase.DataBaseConnector;
+import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -94,14 +96,15 @@ public abstract class DBSubsetReader extends DBReaderBase {
                             + " given in the Table parameter.");
                 dbc.checkTableDefinition(tableName);
                 readDataTable = true;
-                Integer tableRows = dbc.countRowsOfDataTable(tableName, whereCondition);
+                Integer tableRows = dbc.withConnectionQueryInteger(c -> c.countRowsOfDataTable(tableName, whereCondition));
                 totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
-                hasNext = !dbc.isEmpty(tableName);
+                hasNext = !dbc.withConnectionQueryBoolean(c -> c.isEmpty(tableName));
                 tables = new String[]{tableName};
                 schemas = new String[]{dbc.getActiveTableSchema()};
             } else {
                 if (batchSize == 0)
                     log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
+                Pair<Connection, Boolean> connPair = dbc.obtainOrReserveConnection();
                 if (resetTable)
                     dbc.resetSubset(tableName);
 
@@ -135,6 +138,8 @@ public abstract class DBSubsetReader extends DBReaderBase {
                     schemas[0] = dbc.getActiveTableSchema();
                 }
                 dbc.checkTableDefinition(dataTable, schemas[0]);
+                if (connPair.getRight())
+                    dbc.releaseConnection(connPair.getLeft());
             }
         } catch (TableSchemaMismatchException e) {
             throw new ResourceInitializationException(e);
@@ -189,12 +194,12 @@ public abstract class DBSubsetReader extends DBReaderBase {
      */
     private void determineDataTable() throws ResourceInitializationException {
         try {
-            readDataTable = dbc.isDataTable(tableName);
-            dataTable = dbc.getNextOrThisDataTable(tableName);
+            readDataTable = dbc.withConnectionQueryBoolean(c -> c.isDataTable(tableName));
+            dataTable = dbc.withConnectionQueryString(c -> c.getNextOrThisDataTable(tableName));
             if (readDataTable)
                 log.info("The table \"{}\" is a data table, documents will not be marked to be in process and no " +
                         "synchronization of multiple DB readers will happen.", tableName);
-        } catch (SQLException e) {
+        } catch (CoStoSysSQLRuntimeException e) {
             throw new ResourceInitializationException(e);
         }
     }

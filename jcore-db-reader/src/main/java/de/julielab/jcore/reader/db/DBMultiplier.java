@@ -86,7 +86,7 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
             dbc = getDataBaseConnector(rowbatch.getCostosysConfiguration());
             String referencedTable;
             try {
-                referencedTable = dbc.getReferencedTable(rowbatch.getTables(0));
+                referencedTable = dbc.withConnectionQueryString(c -> c.getReferencedTable(rowbatch.getTables(0)));
             } catch (UnobtainableConnectionException e) {
                 throw new AnalysisEngineProcessException(new IllegalArgumentException("The maximum database connection " +
                         "pool size is smaller than 2. However, when reading from database tables, one connection is " +

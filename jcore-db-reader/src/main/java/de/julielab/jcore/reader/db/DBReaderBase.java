@@ -99,7 +99,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
 
     private void checkTableExists() throws ResourceInitializationException {
         // Check whether the table we are supposed to read from actually exists.
-        if (!dbc.tableExists(tableName)) {
+        if (!dbc.withConnectionQueryBoolean(c -> c.tableExists(tableName))) {
             throw new ResourceInitializationException(
                     new IllegalArgumentException("The configured table \"" + tableName + "\" does not exist."));
         }

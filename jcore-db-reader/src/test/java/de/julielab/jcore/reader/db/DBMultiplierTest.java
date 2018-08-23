@@ -5,6 +5,7 @@ import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xmlData.Constants;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UIMAException;
@@ -43,7 +44,10 @@ public class DBMultiplierTest {
 
     @BeforeClass
     public static void setup() throws SQLException, IOException {
+        DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
+        dbc.reserveConnection();
         DBTestUtils.setupDatabase("src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 20, postgres);
+        dbc.close();
     }
 
     @Test
@@ -109,7 +113,7 @@ public class DBMultiplierTest {
                 assertNotNull(mJCas.getDocumentText());
                 assertTrue(JCoReTools.getDocId(mJCas) != null);
                 assertTrue(JCoReTools.getDocId(mJCas).length() > 0);
-                log.debug(StringUtils.abbreviate(mJCas.getDocumentText(), 200));
+                //log.debug(StringUtils.abbreviate(mJCas.getDocumentText(), 200));
                 mJCas.release();
                 numReadDocs++;
             }
@@ -117,6 +121,9 @@ public class DBMultiplierTest {
             log.trace("Processed batch of multiplier documents, now getting the next batch from the reader.");
         }
         assertEquals(177, numReadDocs);
+       multiplier.collectionProcessComplete();
+        DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
+        assertEquals(0, dbc.getNumReservedConnections());
     }
 
     public static class TestMultiplier extends DBMultiplier {
@@ -138,6 +145,11 @@ public class DBMultiplierTest {
                 }
             }
             return jCas;
+        }
+
+        @Override
+        public void collectionProcessComplete() {
+            documentDataIterator.close();
         }
     }
 }
