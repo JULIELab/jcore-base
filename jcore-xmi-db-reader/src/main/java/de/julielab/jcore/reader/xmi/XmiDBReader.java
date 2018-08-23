@@ -22,6 +22,7 @@ import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.reader.db.SubsetReaderConstants;
 import de.julielab.xmlData.config.FieldConfig;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -56,6 +57,13 @@ public class XmiDBReader extends DBReader implements Initializable {
     public static final String PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE = Initializer.PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE;
 
     private final static Logger log = LoggerFactory.getLogger(XmiDBReader.class);
+    /**
+     * This is basically a copy of the same parameter in {@link de.julielab.jcore.reader.db.DBSubsetReader}. It is
+     * not actually used to write any values into it and it shouldn't be. It is here to generate a different
+     * description for the specific use of the parameter in the context of the XMI reader.
+     */
+    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = "An array of qualified UIMA type names. The provided names will be converted to database table names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, the default assumed Postgres schema for the annotation tables is the active data table as configured in the CoStoSys configuration file. This can be overwritten by appending '<schema>:' to a table name. The given type names will be converted to valid Postgres table names by replacing dots with underscores. From the resolved tables, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.")
+    protected String[] additionalTableNames;
     private Boolean doGzip;
     @ConfigurationParameter(name = PARAM_READS_BASE_DOCUMENT, description = "Indicates if this reader reads segmented " +
             "annotation data. If set to false, the XMI data is expected to represent complete annotated documents. " +
@@ -81,14 +89,6 @@ public class XmiDBReader extends DBReader implements Initializable {
             "(j)visualvm, the hot spots of work can be identified. If one of those is the XML attribute buffer " +
             "resizing, this parameter should be set to a size that makes buffer resizing unnecessary.")
     private int xercesAttributeBufferSize;
-    /**
-     * This is basically a copy of the same parameter in {@link de.julielab.jcore.reader.db.DBSubsetReader}. It is
-     * not actually used to write any values into it and it shouldn't be. It is here to generate a different
-     * description for the specific use of the parameter in the context of the XMI reader.
-     */
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = "An array of qualified UIMA type names. The provided names will be converted to database table names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, the default assumed Postgres schema for the annotation tables is the active data table as configured in the CoStoSys configuration file. This can be overwritten by appending '<schema>:' to a table name. The given type names will be converted to valid Postgres table names by replacing dots with underscores. From the resolved tables, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.")
-    protected String[] additionalTableNames;
-
     private Initializer initializer;
     private CasPopulator casPopulator;
 
@@ -102,14 +102,17 @@ public class XmiDBReader extends DBReader implements Initializable {
     public void initialize(UimaContext context) throws ResourceInitializationException {
         adaptReaderConfigurationForXmiData();
         super.initialize(context);
+        dbc.reserveConnection();
         initializer = new Initializer(this, dbc, additionalTableNames, joinTables);
         initializer.initialize(context);
         casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
+        dbc.releaseConnections();
     }
 
     /**
      * Must be called before super.initialize(context). Sets up table schemas for XMI data so the user doesn't have
      * to do it.
+     *
      * @throws ResourceInitializationException
      */
     private void adaptReaderConfigurationForXmiData() throws ResourceInitializationException {
@@ -119,47 +122,51 @@ public class XmiDBReader extends DBReader implements Initializable {
         } catch (FileNotFoundException e) {
             throw new ResourceInitializationException(e);
         }
-        List<Map<String, String>> primaryKeyFields = dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList());
-        if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
+        Pair<Connection, Boolean> connPair = dbc.obtainOrReserveConnection();
+        try {
+            List<Map<String, String>> primaryKeyFields = dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList());
+            if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
 
-            String table = (String) getConfigParameterValue(PARAM_TABLE);
-            determineDataInGzipFormat(table);
-
-            FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
-            dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
-            String[] additionalTables = (String[]) getConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLES);
-            if (additionalTables != null && additionalTables.length > 0) {
-                FieldConfig xmiAnnotationTableSchema = dbc.addXmiAnnotationFieldConfiguration(primaryKeyFields, doGzip);
-                setConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS, new String[]{xmiAnnotationTableSchema.getName()});
-            }
-            XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName());
-        } else {
-            String[] annotationTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
-            if (annotationTableNames == null || annotationTableNames.length == 0) {
-                // Complete XMI reading mode
                 String table = (String) getConfigParameterValue(PARAM_TABLE);
                 determineDataInGzipFormat(table);
-                FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
-                dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
+
+                FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
+                dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
+                String[] additionalTables = (String[]) getConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLES);
+                if (additionalTables != null && additionalTables.length > 0) {
+                    FieldConfig xmiAnnotationTableSchema = dbc.addXmiAnnotationFieldConfiguration(primaryKeyFields, doGzip);
+                    setConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS, new String[]{xmiAnnotationTableSchema.getName()});
+                }
+                XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName());
+            } else {
+                String[] annotationTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
+                if (annotationTableNames == null || annotationTableNames.length == 0) {
+                    // Complete XMI reading mode
+                    String table = (String) getConfigParameterValue(PARAM_TABLE);
+                    determineDataInGzipFormat(table);
+                    FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
+                    dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
+                }
             }
+        } finally {
+            dbc.releaseConnection(connPair);
         }
     }
 
     private void determineDataInGzipFormat(String table) throws ResourceInitializationException {
+        doGzip = true;
+        dataTable = dbc.getNextOrThisDataTable(table);
+        log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
         try {
-            doGzip = true;
-            dataTable = dbc.getNextOrThisDataTable(table);
-            log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
-            try (Connection conn = dbc.reserveConnection()) {
-                ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
-                while (rs.next()) {
-                    byte[] xmiData = rs.getBytes("xmi");
-                    try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
-                        gzis.read();
-                    } catch (IOException e) {
-                        log.debug("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
-                        doGzip = false;
-                    }
+            Connection conn = dbc.obtainConnection();
+            ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
+            while (rs.next()) {
+                byte[] xmiData = rs.getBytes("xmi");
+                try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
+                    gzis.read();
+                } catch (IOException e) {
+                    log.debug("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
+                    doGzip = false;
                 }
             }
         } catch (SQLException e) {

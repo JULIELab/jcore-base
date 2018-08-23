@@ -41,6 +41,7 @@ public class XmiDBReaderMonolithicDocumentsTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_complete_cas", 1, postgres);
         XmiDBSetupHelper.processAndStoreCompleteXMIData(costosysConfig, true);
+        dbc.reserveConnection();
         assertTrue("The data document table exists", dbc.tableExists("_data.documents"));
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_complete_cas");

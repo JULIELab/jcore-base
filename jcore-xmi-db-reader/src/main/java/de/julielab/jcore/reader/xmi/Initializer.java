@@ -29,6 +29,8 @@ public class Initializer {
     public static final String PARAM_INCREASED_ATTRIBUTE_SIZE = "IncreasedAttributeSize";
     public static final String PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE = "XercesAttributeBufferSize";
     private final static Logger log = LoggerFactory.getLogger(Initializer.class);
+    private final String[] additionalTableNames;
+    private final boolean joinTables;
     private Boolean storeMaxXmiId;
     private int maxXmlAttributeSize;
     private int xercesAttributeBufferSize;
@@ -36,13 +38,17 @@ public class Initializer {
     private boolean initializationComplete;
     private int numAdditionalTables;
     private int numDataRetrievedDataFields;
-
     private XmiBuilder builder;
     private Boolean logFinalXmi;
     private DataBaseConnector dbc;
-    private final String[] additionalTableNames;
-    private final boolean joinTables;
     private Initializable initializable;
+
+    public Initializer(Initializable initializable, DataBaseConnector dbc, String[] additionalTableNames, boolean joinTables) {
+        this.initializable = initializable;
+        this.dbc = dbc;
+        this.additionalTableNames = additionalTableNames;
+        this.joinTables = joinTables;
+    }
 
     public XmiBuilder getXmiBuilder() {
         return builder;
@@ -55,14 +61,6 @@ public class Initializer {
 
     public boolean isJoinTables() {
         return joinTables;
-    }
-
-
-    public Initializer(Initializable initializable, DataBaseConnector dbc, String[] additionalTableNames, boolean joinTables) {
-        this.initializable = initializable;
-        this.dbc = dbc;
-        this.additionalTableNames = additionalTableNames;
-        this.joinTables = joinTables;
     }
 
     public void initialize(UimaContext context) {
@@ -149,7 +147,8 @@ public class Initializer {
     private Map<String, String> getNamespaceMap() {
         Map<String, String> map = null;
         if (dbc.tableExists(dbc.getActiveDataPGSchema() + "." + XmiSplitConstants.XMI_NS_TABLE)) {
-            try (Connection conn = dbc.reserveConnection()) {
+            try {
+                Connection conn = dbc.obtainConnection();
                 map = new HashMap<>();
                 conn.setAutoCommit(true);
                 Statement stmt = conn.createStatement();

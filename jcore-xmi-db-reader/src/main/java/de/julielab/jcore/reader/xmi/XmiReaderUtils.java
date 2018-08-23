@@ -2,6 +2,7 @@ package de.julielab.jcore.reader.xmi;
 
 import de.julielab.xmlData.config.FieldConfig;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
+import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceCreationSpecifier;
@@ -28,7 +29,7 @@ public class XmiReaderUtils {
         try {
             dataTable = dbc.getNextOrThisDataTable(tableName);
             dbc.checkTableDefinition(dataTable, xmiDocumentTableSchema.getName());
-        } catch (SQLException e) {
+        } catch (CoStoSysSQLRuntimeException e) {
             throw new ResourceInitializationException(e);
         } catch (TableSchemaMismatchException e) {
             try {
@@ -44,7 +45,7 @@ public class XmiReaderUtils {
                             "was used for the XMI DB Consumer or the specified table is not an XMI table.", tableName, componentName, dataTable);
                 log.error(error);
                 throw new ResourceInitializationException(new TableSchemaMismatchException(error, e));
-            } catch (SQLException e1) {
+            } catch (CoStoSysSQLRuntimeException e1) {
                 throw new ResourceInitializationException(e1);
             }
         }
