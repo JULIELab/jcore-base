@@ -21,6 +21,7 @@ package de.julielab.jcore.reader.xmi;
 import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.reader.db.SubsetReaderConstants;
 import de.julielab.xmlData.config.FieldConfig;
+import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
@@ -122,8 +123,7 @@ public class XmiDBReader extends DBReader implements Initializable {
         } catch (FileNotFoundException e) {
             throw new ResourceInitializationException(e);
         }
-        Pair<Connection, Boolean> connPair = dbc.obtainOrReserveConnection();
-        try {
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             List<Map<String, String>> primaryKeyFields = dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList());
             if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
 
@@ -148,8 +148,6 @@ public class XmiDBReader extends DBReader implements Initializable {
                     dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
                 }
             }
-        } finally {
-            dbc.releaseConnection(connPair);
         }
     }
 

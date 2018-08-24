@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>jcore-base</artifactId>
+        <groupId>de.julielab</groupId>
+        <version>2.3.1-SNAPSHOT</version>
+    </parent>
+    <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <version>2.3.1-SNAPSHOT</version>
+    <artifactId>jedis-parent</artifactId>
+    <description>This is an intermediate parent POM between the jcore-base parent and the components belonging to the
+        Jena Document Information (JeDIS) infrastructure. This POM determines the version of CoStoSys to use.
+    </description>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.julielab</groupId>
+                <artifactId>costosys</artifactId>
+                <version>1.2.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <modules>
+        <module>../jcore-db-reader</module>
+        <module>../jcore-xml-db-reader</module>
+        <module>../jcore-xmi-db-reader</module>
+        <module>../jcore-xmi-db-writer</module>
+    </modules>
+
+
+</project>
