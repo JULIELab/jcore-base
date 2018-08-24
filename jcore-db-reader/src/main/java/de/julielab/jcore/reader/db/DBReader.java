@@ -187,15 +187,18 @@ public abstract class DBReader extends DBSubsetReader {
     }
 
     private byte[][] getNextFromDataTable() {
-        byte[][] next = null;
+        byte[][] next;
         // Must be set to true again if the iterator has more elements.
         hasNext = false;
         next = xmlBytes.next();
         // totalDocumentCount could be set to the Limit parameter. Thus we
         // should stop when we reach the limit. and not set hasNext back to
         // true.
-        if (processedDocuments < totalDocumentCount - 1)
+        if (processedDocuments < totalDocumentCount - 1) {
             hasNext = xmlBytes.hasNext();
+            if (!hasNext)
+                close();
+        }
         return next;
     }
 
@@ -226,6 +229,7 @@ public abstract class DBReader extends DBSubsetReader {
             if (!xmlBytes.hasNext()) {
                 log.debug("No more documents, settings 'hasNext' to false.");
                 hasNext = false;
+                close();
             } else if (fetchIdsProactively) {
                 log.trace("Creating background RetrievingThread to immediately fetch the next document batch");
                 retriever = new RetrievingThread();
@@ -239,10 +243,10 @@ public abstract class DBReader extends DBSubsetReader {
     }
 
     public void close() {
+        log.debug("Closing {}", this.getClass().getCanonicalName());
         if (xmlBytes != null)
             xmlBytes.close();
         dbc.close();
-        dbc = null;
     }
 
     /**
@@ -290,7 +294,7 @@ public abstract class DBReader extends DBSubsetReader {
             // database have been read, only the rest of documents.
             int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
             try {
-                try (CoStoSysConnection conn  = dbc.obtainOrReserveConnection()) {
+                try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                     ids = dbc.retrieveAndMark(tableName, getReaderComponentName(), hostName, pid, limit, selectionOrder);
                 }
                 if (log.isTraceEnabled()) {
