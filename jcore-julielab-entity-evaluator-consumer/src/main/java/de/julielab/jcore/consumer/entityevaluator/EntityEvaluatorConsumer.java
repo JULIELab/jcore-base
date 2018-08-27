@@ -245,6 +245,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 			outputFile.delete();
 		}
 		try {
+		    if (outputFile != null && outputFile.getParentFile() != null && !outputFile.getParentFile().exists())
+                outputFile.getParentFile().mkdirs();
 			bw = FileUtilities.getWriterToFile(outputFile);
 		} catch (IOException e) {
 			throw new ResourceInitializationException(e);
