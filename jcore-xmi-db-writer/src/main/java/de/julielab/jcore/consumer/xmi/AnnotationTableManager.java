@@ -155,6 +155,9 @@ public class AnnotationTableManager {
             if (!dbc.tableExists(effectiveTableName)) {
                 log.info("Creating table '{}' with schema '{}' (columns: {}).",
                         effectiveTableName, schema, dbc.getFieldConfiguration(schema).getColumns());
+                String pgSchema = getTableSchema(effectiveTableName);
+                if (!dbc.schemaExists(pgSchema))
+                    dbc.createSchema(pgSchema);
                 if (storeAll) {
                     dbc.createTable(effectiveTableName, schema,
                             "Created by " + XMIDBWriter.class.getName() + " on " + new Date());
@@ -185,6 +188,13 @@ public class AnnotationTableManager {
                             "in the meantime. Error was: {}",
                     e);
         }
+    }
+
+    private String getTableSchema(String effectiveTableName) {
+        int dotIndex = effectiveTableName.indexOf('.');
+        if (dotIndex < 0)
+            return null;
+        return effectiveTableName.substring(0, dotIndex);
     }
 
     /**

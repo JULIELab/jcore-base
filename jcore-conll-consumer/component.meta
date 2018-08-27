@@ -3,7 +3,12 @@
         "consumer"
     ],
     "description": "",
-    "descriptors": [],
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.consumer.conll.desc.jcore-conll-consumer"
+        }
+    ],
     "exposable": false,
     "group": "general",
     "maven-artifact": {
