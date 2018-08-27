@@ -106,22 +106,22 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 		return type;
 	}
 
-	@ConfigurationParameter(name = PARAM_OUTPUT_COLUMNS, mandatory = true)
+	@ConfigurationParameter(name = PARAM_OUTPUT_COLUMNS, description = "A list of column names that are either defined with the parameter " + PARAM_COLUMN_DEFINITIONS + " or one of '"+DOCUMENT_ID_COLUMN+"', '"+SENTENCE_ID_COLUMN+"' or '"+OFFSETS_COLUMN+"'. This list determines the set and the order of columns that are written into the output file in a tab-separated manner.")
 	private String[] outputColumnNamesArray;
-	@ConfigurationParameter(name = PARAM_COLUMN_DEFINITIONS, mandatory = true)
+	@ConfigurationParameter(name = PARAM_COLUMN_DEFINITIONS, description = "Custom definitions of output columns. Predefined columns are   '"+DOCUMENT_ID_COLUMN+"', '"+SENTENCE_ID_COLUMN+"' and '"+OFFSETS_COLUMN+"'. A column definition consists of the name of the column, the type of the annotation from which the values for this column should be derived, and a feature path pointing to the value. A single column definition may refer to multiple, different annotation types with their own feature path. Annotation types that should use the same feature path are separated by a comma. The sets of annotation types where each set shared one feature path are separated by a semicolon. Example: 'entityid:Chemical,Gene=/registryNumber;Disease=/specificType'. In this example, the column named 'entityid' will list the IDs of annotations of types 'Chemical', 'Gene' and 'Disease'. For the first two, the feature 'registryNumber' will be employed, for the latter the feature 'specificType'. The annotation type names will be resolved against the '" + PARAM_TYPE_PREFIX + "' parameter, if specified.")
 	private String[] columnDefinitionDescriptions;
-	@ConfigurationParameter(name = PARAM_ENTITY_TYPES, mandatory = false)
+	@ConfigurationParameter(name = PARAM_ENTITY_TYPES, mandatory = false, description = "Optional. A list of entity types for which an output should be created. If all desired types are already mentioned in the '"+ PARAM_COLUMN_DEFINITIONS + "' parameter, this parameter can be left empty.")
 	private String[] entityTypeStrings;
-	@ConfigurationParameter(name = PARAM_OFFSET_MODE, mandatory = false, description = "Determines the kind of offset printed out by the component for each entity. Supported are CharacterSpan and NonWsCharacters. The first uses the common UIMA character span offsets. The second counts only the non-whitespace characters for the offsets. This last format is used, for example, by the BioCreative 2 Gene Mention task data. Default is CharacterSpan.")
+	@ConfigurationParameter(name = PARAM_OFFSET_MODE, mandatory = false, description = "Optional. Determines the kind of offset printed out by the component for each entity. Supported are CharacterSpan and NonWsCharacters. The first uses the common UIMA character span offsets. The second counts only the non-whitespace characters for the offsets. This last format is used, for example, by the BioCreative 2 Gene Mention task data. Default is CharacterSpan.")
 	private OffsetMode offsetMode;
-	@ConfigurationParameter(name = PARAM_OFFSET_SCOPE, mandatory = false, description = "Document or Sentence.")
+	@ConfigurationParameter(name = PARAM_OFFSET_SCOPE, mandatory = false, description = "Optional. 'Document' or 'Sentence'. Defaults to Document.")
 	private OffsetScope offsetScope;
 
-	@ConfigurationParameter(name = PARAM_TYPE_PREFIX, mandatory = true)
+	@ConfigurationParameter(name = PARAM_TYPE_PREFIX, mandatory = false, description = "Optional. If an annotation type name given in one of the '" + PARAM_COLUMN_DEFINITIONS + "' or '"+ PARAM_ENTITY_TYPES + "' can not be found, it is searched with this prefix. Thus, for JCoRe the prefix 'de.julielab.jcore.types' will cover all annotation types and make the other parameter values briefer.")
 	private String typePrefix;
-	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = false, description = "Only lets those entities pass into the output file that fulfill the given feature value. The syntax is <type>:<feature path>=<value>")
+	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = false, description = "Optional. Only lets those entities contribute to the output file that fulfill the given feature value. The syntax is <type>:<feature path>=<value>")
 	private String[] featureFilterDefinitions;
-	@ConfigurationParameter(name = PARAM_OUTPUT_FILE, mandatory = true, description = "Output file to which all entity information is written in the format\n"
+	@ConfigurationParameter(name = PARAM_OUTPUT_FILE, description = "Output file to which all entity information is written in the format\n"
 			+ "docId EGID begin end confidence\n"
 			+ "Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.")
 	private String outputFilePath;
@@ -267,6 +267,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		try {
 			TypeSystem ts = aJCas.getTypeSystem();
+			// Initialization of the columns, entity types and filters
 			if (columns == null) {
 				columns = new LinkedHashMap<>();
 				for (int i = 0; i < columnDefinitionDescriptions.length; i++) {
