@@ -9,7 +9,7 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>
-        <version>2.3.0</version>
+        <version>2.3.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -69,6 +69,24 @@
             <groupId>de.julielab</groupId>
             <artifactId>julielab-topic-modeling</artifactId>
             <version>1.9.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.julielab</groupId>
+                    <artifactId>jcore-jsbd-ae-biomedical-english</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.julielab</groupId>
+                    <artifactId>jcore-jtbd-ae-biomedical-english</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.julielab</groupId>
+                    <artifactId>jcore-pubmed-reader</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.julielab</groupId>
+                    <artifactId>jcore-opennlp-postag-ae-biomedical-english:jar</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <name>JCoRe-Topic-Labeling-AE</name>
