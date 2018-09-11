@@ -404,7 +404,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     subsetTable = metaData.stream().findAny().get().getSubsetTable();
                 }
             }
-
             ByteArrayOutputStream baos;
             try {
                 baos = new ByteArrayOutputStream();
@@ -429,7 +428,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             }
 
             byte[] completeXmiData = baos.toByteArray();
-
             try {
                 if (storeAll) {
                     Object storedData = handleDataZipping(completeXmiData, schemaDocument);
