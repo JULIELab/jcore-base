@@ -84,7 +84,23 @@
                 </exclusion>
                 <exclusion>
                     <groupId>de.julielab</groupId>
-                    <artifactId>jcore-opennlp-postag-ae-biomedical-english:jar</artifactId>
+                    <artifactId>jcore-opennlp-postag-ae-biomedical-english</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.julielab</groupId>
+                    <artifactId>jcore-biolemmatizer-ae</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.julielab</groupId>
+                    <artifactId>jcore-xmi-db-reader</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.julielab</groupId>
+                    <artifactId>jcore-db-reader</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.julielab</groupId>
+                    <artifactId>costosys</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
