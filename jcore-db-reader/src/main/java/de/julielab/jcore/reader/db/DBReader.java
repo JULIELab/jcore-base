@@ -254,7 +254,6 @@ public abstract class DBReader extends DBSubsetReader {
      * pipeline status field
      */
     protected abstract String getReaderComponentName();
-
     /**
      * <p>
      * This class is charged with retrieving batches of document IDs and documents while previously fetched documents
@@ -276,11 +275,13 @@ public abstract class DBReader extends DBSubsetReader {
         private List<Object[]> ids;
         private DBCIterator<byte[][]> documents;
 
+
         public RetrievingThread() {
             // Only fetch ID batches in advance when the parameter is set to
             // true.
             if (fetchIdsProactively) {
                 log.debug("Fetching new documents in a background thread.");
+                setName("DBReader RetrievingThread");
                 start();
             }
         }
@@ -294,7 +295,7 @@ public abstract class DBReader extends DBSubsetReader {
             // database have been read, only the rest of documents.
             int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
             try {
-                try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+                try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
                     ids = dbc.retrieveAndMark(tableName, getReaderComponentName(), hostName, pid, limit, selectionOrder);
                 }
                 if (log.isTraceEnabled()) {
