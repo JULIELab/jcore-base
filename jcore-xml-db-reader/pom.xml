@@ -6,7 +6,7 @@
     <artifactId>jcore-xml-db-reader</artifactId>
     <packaging>jar</packaging>
     <name>JCoRe XML Database Reader</name>
-    <version>2.3.1</version>
+    <version>2.3.2</version>
     <description>A Collection Reader that converts XML, stored in a database, to CAS objects.
         The conversion is the same employed by the jcore-xml-reader, making use of the jcore-xml-mapper.
         The reader requires a configuration file which determines the database connection, the table schema and the
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-db-reader</artifactId>
-            <version>2.3.1</version>
+            <version>2.3.2</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
