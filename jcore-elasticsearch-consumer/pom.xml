@@ -14,7 +14,7 @@
         perfectly valid ElasticSearch default JSON which does not require the plugin. Then, however, the preanalyzed
         data format cannot be used because this is the format that required the ElasticSearch plugin.
     </description>
-    <version>2.3.1</version>
+    <version>2.3.2-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
