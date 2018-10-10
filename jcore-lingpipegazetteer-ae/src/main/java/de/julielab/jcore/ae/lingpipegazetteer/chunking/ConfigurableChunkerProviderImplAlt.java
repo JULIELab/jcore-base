@@ -130,6 +130,7 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
                 dictFile = UriUtilities.getInputStreamFromUri(resource.getUri());
             } catch (Exception e) {
                 LOGGER.error("Could not load the dictionary from {}, see the following exception for details.", resource.getUri());
+                throw e;
             }
 			stopFile = readStreamFromFileSystemOrClassPath(stopwordFilePath);
 			initStopWords(stopFile);

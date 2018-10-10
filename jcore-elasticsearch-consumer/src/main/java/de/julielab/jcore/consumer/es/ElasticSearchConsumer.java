@@ -109,7 +109,7 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
             List<Document> documents = convertCasToDocuments(aJCas);
             if (documents != null) {
                 for (Document document : documents) {
-                    addIndexAction(document.getIndex(), document.getId(), document.getParentId(), gson);
+                    addIndexAction(document.getIndex() != null ? document.getIndex() : indexName, document.getId(), document.getParentId(), gson);
                     addIndexSource(document);
                 }
             }
