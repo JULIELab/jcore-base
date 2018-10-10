@@ -126,7 +126,11 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
 
 
 		try {
-			dictFile = UriUtilities.getInputStreamFromUri(resource.getUri());
+            try {
+                dictFile = UriUtilities.getInputStreamFromUri(resource.getUri());
+            } catch (Exception e) {
+                LOGGER.error("Could not load the dictionary from {}, see the following exception for details.", resource.getUri());
+            }
 			stopFile = readStreamFromFileSystemOrClassPath(stopwordFilePath);
 			initStopWords(stopFile);
 			readDictionary(dictFile);
@@ -218,7 +222,7 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
 			LOGGER.info("Building the actual chunker from the dictionary took {}ms ({}s).", time, time / 1000);
 
 		} catch (Exception e) {
-			LOGGER.error("Exception while creating chunker instance", e);
+			LOGGER.error("Exception while creating chunker instance from dictionary file {} with stopwords from {}", resource.getUri(), stopwordFilePath, e);
 		}
 	}
 
