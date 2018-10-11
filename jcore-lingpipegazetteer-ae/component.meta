@@ -18,7 +18,7 @@
     "maven-artifact": {
         "artifactId": "jcore-lingpipe-gazetteer-ae",
         "groupId": "de.julielab",
-        "version": "2.3.0"
+        "version": "2.3.1"
     },
     "name": "JCoRe Lingpipe Gazetteer AE"
 }

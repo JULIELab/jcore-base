@@ -141,7 +141,6 @@ public class XmiDataInserter {
 
         Connection conn = dbc.reserveConnection();
         try {
-
             conn.setAutoCommit(false);
             for (String tableName : serializedCASes.keySet()) {
                 if (serializedCASes.get(tableName).size() == 0) {
