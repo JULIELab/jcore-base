@@ -116,6 +116,8 @@ public abstract class AbstractCasToJsonConsumer extends JCasAnnotator_ImplBase {
 	 * @throws AnalysisEngineProcessException
 	 */
 	protected Document convertCasToDocument(JCas aJCas) throws AnalysisEngineProcessException {
+		if (fieldGenerators == null || fieldGenerators.isEmpty())
+			return null;
 		try {
 			Document doc = new Document();
 			for (int i = 0; i < fieldGenerators.size(); ++i) {
