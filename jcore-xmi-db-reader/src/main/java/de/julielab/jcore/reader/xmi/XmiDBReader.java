@@ -189,7 +189,8 @@ public class XmiDBReader extends DBReader implements Initializable {
         log.trace("Retrieving document data from the database.");
         byte[][] data = getNextArtifactData();
         log.trace("Got document data with {} fields.", null != data ? data.length : 0);
-        populateCas(jCas, data);
+        if (data != null)
+            populateCas(jCas, data);
     }
 
     private void populateCas(JCas jCas, byte[][] data) throws CollectionException {
