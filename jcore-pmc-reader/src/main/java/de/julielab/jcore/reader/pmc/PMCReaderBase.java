@@ -37,7 +37,7 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
     @ConfigurationParameter(name = PARAM_SEARCH_ZIP, defaultValue = "false", mandatory = false, description = "If set to true, ZIP files found among the input are opened and also searched for NXML files. Defaults to false.")
     protected boolean searchZip;
 
-    @ConfigurationParameter(name = PARAM_WHITELIST, mandatory = false, description = "A file listing the file names that should be read. All other files will be discarded. The file name must be given without any extensions. For example, the file \"PMC2847692.nxml.gz\" would be represented as \"PMC2847692\" in the whitelist file. Each file name must appear on a line of its own. An empty file will cause nothing to be read. A file containing only the keyword \"all\" will behave as if no file was given at all.")
+    @ConfigurationParameter(name = PARAM_WHITELIST, mandatory = false, description = "A file listing the file names that should be read. All other files will be discarded. The file name must be given without any extensions and subdirectories. For example, the file \"Neural_Regen_Res/PMC2847692.nxml.gz\" would be represented as \"PMC2847692\" in the whitelist file. Each file name must appear on a line of its own. An empty file will cause nothing to be read. A file containing only the keyword \"all\" will behave as if no file was given at all.")
     protected File whitelistFile;
 
     protected Iterator<URI> pmcFiles;

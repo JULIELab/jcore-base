@@ -1,6 +1,7 @@
 package de.julielab.jcore.reader.pmc;
 
 import de.julielab.jcore.types.*;
+import de.julielab.jcore.types.pubmed.InternalReference;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CollectionReader;
@@ -11,8 +12,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import java.io.File;
-import java.net.URI;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;

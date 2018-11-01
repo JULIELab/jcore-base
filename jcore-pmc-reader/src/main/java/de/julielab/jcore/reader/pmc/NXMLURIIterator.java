@@ -12,6 +12,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -20,12 +21,10 @@ public class NXMLURIIterator implements Iterator<URI> {
     private final File basePath;
     private final boolean searchRecursively;
     private final boolean searchZip;
-    private File currentDirectory;
-    private LinkedHashMap<File, Stack<URI>> filesMap = new LinkedHashMap<>();
-    private LinkedHashMap<File, Stack<File>> subDirectoryMap = new LinkedHashMap<>();
-    private Stack<URI> EMPTY_URI_STACK = new Stack<>();
-    private Stack<File> EMPTY_FILE_STACK = new Stack<>();
+    private BlockingQueue<URI> uris = new ArrayBlockingQueue<>(500);
+    private URI currentUri;
     private Set<String> whitelist;
+    private boolean fileSearchRunning = false;
 
     public NXMLURIIterator(File basePath, Set<String> whitelist, boolean searchRecursively, boolean searchZip) throws FileNotFoundException {
         this.whitelist = whitelist != null ? whitelist : new HashSet<>(Collections.singletonList("all"));
@@ -38,68 +37,51 @@ public class NXMLURIIterator implements Iterator<URI> {
 
     @Override
     public boolean hasNext() {
-        // The beginning: The currentDirectory is null and we start at
-        // the given path (which actually might be a single file to
-        // read).
-        if (currentDirectory == null) {
-            currentDirectory = basePath;
-            setFilesAndSubDirectories(currentDirectory);
+        if (!fileSearchRunning) {
+            // The beginning: The currentDirectory is null and we start at
+            // the given path (which actually might be a single file to
+            // read).
+            log.debug("Starting background thread to search for PMC (.nxml) files at {}", basePath);
+            CompletableFuture.runAsync(() -> setFilesAndSubDirectories(basePath, false));
+            fileSearchRunning = true;
         }
-        Stack<URI> filesInCurrentDirectory = filesMap.get(currentDirectory);
-        if (!filesInCurrentDirectory.isEmpty())
-            return true;
-        else if (currentDirectory.isFile())
-            // If the path points to a file an no files are left, then
-            // the one file has already been read. We are finished.
-            return false;
-        else {
-            Stack<File> subDirectories = subDirectoryMap.get(currentDirectory);
-            log.trace("No more files in current directory {}", currentDirectory);
-            if (!subDirectories.isEmpty()) {
-                File subDirectory = subDirectories.pop();
-                log.trace("Moving to subdirectory {}", subDirectory);
-
-                setFilesAndSubDirectories(subDirectory);
-
-                // move to the new subdirectory
-                currentDirectory = subDirectory;
-
-                // we call hasNext() again because the new current
-                // directory could be empty
-                return hasNext();
+        try {
+            if (uris != null && currentUri == null) {
+                log.trace("Waiting for the next URI");
+                currentUri = uris.take();
             }
-            // there is no subdirectory left
-            // if we are in the root path, we have read everything and
-            // are finished
-            if (currentDirectory.equals(basePath))
-                return false;
-            // If we are not in the root path, we are beneath it. Go up
-            // one directory and check if there is still something to do
-            currentDirectory = currentDirectory.getParentFile();
-            return hasNext();
+        } catch (InterruptedException e) {
+            log.error("Interrupted exception while waiting for the next URI from the list.");
+            throw new UncheckedPmcReaderException(e);
         }
+        if (currentUri != null && currentUri.toString().equals("http://nonsense.non")) {
+            currentUri = null;
+            uris = null;
+        }
+        return currentUri != null;
     }
 
-    private void setFilesAndSubDirectories(File directory) {
+    private void setFilesAndSubDirectories(File directory, boolean recursiveCall) {
         log.debug("Reading path {}", directory);
+        Deque<File> pendingSubdirs = new ArrayDeque<>();
         if (directory.isDirectory() || isZipFile(directory)) {
             if ((searchRecursively || directory.equals(basePath)) && !isZipFile(directory)) {
                 log.debug("Identified {} as a directory, reading files and subdirectories", directory);
                 // set the files in the directory
-                Stack<URI> filesInSubDirectory = new Stack<>();
-                Stream.of(directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml") && !isZipFile(f) && isInWhitelist(f))).map(File::toURI)
-                        .forEach(filesInSubDirectory::push);
-                filesMap.put(directory, filesInSubDirectory);
-
-                // set the subdirectories of the directory
-                Stack<File> directoriesInSubDirectory = new Stack<>();
-                Stream.of(directory.listFiles(f -> f.isDirectory())).forEach(directoriesInSubDirectory::push);
+                for (File file : directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml") && !isZipFile(f) && isInWhitelist(f))) {
+                    URI toURI = file.toURI();
+                    try {
+                        uris.put(toURI);
+                    } catch (InterruptedException e) {
+                        log.error("The PMC file reading process was interrupted while trying to put the NXML file URIs of directory {} into the list", directory);
+                        throw new UncheckedPmcReaderException(e);
+                    }
+                }
+                Stream.of(directory.listFiles(f -> f.isDirectory())).forEach(pendingSubdirs::push);
                 if (searchZip)
-                    Stream.of(directory.listFiles(f -> f.isFile() && isZipFile(f))).forEach(directoriesInSubDirectory::push);
-                subDirectoryMap.put(directory, directoriesInSubDirectory);
+                    Stream.of(directory.listFiles(f -> f.isFile() && isZipFile(f))).forEach(pendingSubdirs::push);
             } else if (searchZip && isZipFile(directory)) {
                 log.debug("Identified {} as a ZIP archive, retrieving its inventory", directory);
-                Stack<URI> filesInZip = new Stack<>();
                 log.debug("Searching ZIP archive {} for eligible documents", directory);
                 try (FileSystem fs = FileSystems.newFileSystem(directory.toPath(), null)) {
                     Iterable<Path> rootDirectories = fs.getRootDirectories();
@@ -107,29 +89,45 @@ public class NXMLURIIterator implements Iterator<URI> {
                         Stream<Path> walk = Files.walk(rootDir);
                         walk.filter(Files::isRegularFile).forEach(p -> {
                             if (p.getFileName().toString().contains(".nxml") && isInWhitelist(p)) {
-                                filesInZip.add(p.toUri());
+                                try {
+                                    uris.put(p.toUri());
+                                } catch (InterruptedException e) {
+                                    log.error("The PMC file reading process was interrupted while trying to put the next ZIP NXML URI into the list");
+                                    throw new UncheckedPmcReaderException(e);
+                                }
                             }
                         });
                     }
-                    filesMap.put(directory, filesInZip);
                 } catch (IOException e) {
                     log.error("Could not read from {}", directory);
                     throw new UncheckedPmcReaderException(e);
                 }
             } else {
-                filesMap.put(directory, EMPTY_URI_STACK);
-                subDirectoryMap.put(directory, EMPTY_FILE_STACK);
                 log.debug("Recursive search is deactivated, skipping subdirectory {}", directory);
             }
         } else if (directory.isFile()) {
             log.debug("Identified {} as a file, reading single file", directory);
-            Stack<URI> fileStack = new Stack<>();
-            fileStack.push(directory.toURI());
             log.debug("Adding file to map with key {}", directory);
-            filesMap.put(directory, fileStack);
+            try {
+                uris.put(directory.toURI());
+            } catch (InterruptedException e) {
+                log.error("The PMC file reading process was interrupted while trying to put file URI {} into the list", directory.toURI());
+                throw new UncheckedPmcReaderException(e);
+            }
         } else {
             throw new IllegalStateException("Path " + directory.getAbsolutePath()
                     + " was identified neither a path nor a file, cannot continue. This seems to be a bug in this code.");
+        }
+        while (!pendingSubdirs.isEmpty()) {
+            setFilesAndSubDirectories(pendingSubdirs.pop(), true);
+        }
+        if (!recursiveCall) {
+            try {
+                uris.put(URI.create("http://nonsense.non"));
+            } catch (InterruptedException e) {
+                log.error("The PMC file reading process was interrupted while trying to put the ending signal into the list");
+                throw new UncheckedPmcReaderException(e);
+            }
         }
     }
 
@@ -138,7 +136,7 @@ public class NXMLURIIterator implements Iterator<URI> {
     }
 
     private boolean isInWhitelist(Path path) {
-        return isInWhitelist(path.toString().substring(path.toString().lastIndexOf('/')+1, path.toString().indexOf('.')));
+        return isInWhitelist(path.toString().substring(path.toString().lastIndexOf('/') + 1, path.toString().indexOf('.')));
     }
 
     private boolean isInWhitelist(File file) {
@@ -156,7 +154,9 @@ public class NXMLURIIterator implements Iterator<URI> {
     public URI next() {
         if (!hasNext())
             return null;
-        return filesMap.get(currentDirectory).pop();
+        URI ret = currentUri;
+        currentUri = null;
+        return ret;
     }
 
 }
