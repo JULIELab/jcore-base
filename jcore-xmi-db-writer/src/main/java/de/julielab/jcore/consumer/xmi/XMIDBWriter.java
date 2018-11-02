@@ -300,13 +300,18 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
         if (storeAll) {
             if (null != attributeSize) {
-                splitter = new StaxXmiSplitter(docTableParamValue, attributeSize);
+                splitter = new WholeXmiStaxSplitter(docTableParamValue, attributeSize);
             } else {
-                splitter = new StaxXmiSplitter(docTableParamValue);
+                splitter = new WholeXmiStaxSplitter(docTableParamValue);
             }
         } else {
-            splitter = new VtdXmlXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument, docTableParamValue,
-                    baseDocumentAnnotationTypes);
+            if (null != attributeSize) {
+                splitter = new StaxXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument, docTableParamValue,
+                        baseDocumentAnnotationTypes, attributeSize);
+            } else {
+                splitter = new StaxXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument, docTableParamValue,
+                        baseDocumentAnnotationTypes);
+            }
         }
         log.info(XMIDBWriter.class.getName() + " initialized.");
         log.info("Effective document table name: {}", effectiveDocTableName);
