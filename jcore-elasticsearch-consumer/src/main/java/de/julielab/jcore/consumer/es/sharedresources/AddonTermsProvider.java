@@ -43,7 +43,7 @@ public class AddonTermsProvider implements IAddonTermsProvider {
                 // requirements
                 String term = mapping[0].trim().intern();
                 String[] addonArray;
-                if (mapping[1].startsWith("[\"") && mapping[1].endsWith("\"]")) {
+                if (mapping[1].startsWith("[") && mapping[1].endsWith("]")) {
                     // This looks like a JSON array
                     Gson gson = new Gson();
                     addonArray = gson.fromJson(mapping[1], String[].class);

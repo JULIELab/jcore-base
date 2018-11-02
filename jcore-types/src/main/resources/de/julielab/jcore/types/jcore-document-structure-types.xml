@@ -375,7 +375,7 @@ document: title of the document</description>
         <featureDescription>
           <name>reftype</name>
           <description>The reference type: literature, figure, footnote etc.</description>
-          <rangeTypeName>de.julielab.jcore.types.ReferenceType</rangeTypeName>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>
           <name>refid</name>
@@ -383,93 +383,6 @@ document: title of the document</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>
-    </typeDescription>
-    <typeDescription>
-      <name>de.julielab.jcore.types.ReferenceType</name>
-      <description>The possible types of references in documents. May be used for the source as well as for the target of a reference (e.g. a number in full text may reference an item of the bibliography both of which are of the reference type ‘bibliography’.</description>
-      <supertypeName>uima.cas.String</supertypeName>
-      <allowedValues>
-       <value>
-          <string>affiliation</string>
-          <description>A reference to an affiliation.</description>
-        </value>
-        <value>
-          <string>bibliography</string>
-          <description>Reference to an item of the bibliography.</description>
-        </value>
-        <value>
-          <string>footnote</string>
-          <description>The number of a footnote.</description>
-        </value>
-        <value>
-          <string>table</string>
-          <description>Reference to a table.</description>
-        </value>
-        <value>
-          <string>figure</string>
-          <description>Reference to a figure.</description>
-        </value>
-        <value>
-          <string>appendix</string>
-          <description>Reference to the appendix.</description>
-        </value>
-        <value>
-          <string>authornotes</string>
-          <description>Reference to author notes.</description>
-        </value>
-        <value>
-          <string>textbox</string>
-          <description>Reference to a textbox or sidebar.</description>
-        </value>
-        <value>
-          <string>contributor</string>
-          <description>Reference to a contributor.</description>
-        </value>
-        <value>
-          <string>correspondingauthor</string>
-          <description>Reference to a corresponding author.</description>
-        </value>
-        <value>
-          <string>formula</string>
-          <description>Reference to a formula.</description>
-        </value>
-        <value>
-          <string>keyword</string>
-          <description>Reference to a keyword.</description>
-        </value>
-        <value>
-          <string>list</string>
-          <description>Reference to a list or a list item.</description>
-        </value>
-        <value>
-          <string>other</string>
-          <description>A reference of another type than enumerated in this type.</description>
-        </value>
-        <value>
-          <string>plate</string>
-          <description>Reference to a plate.</description>
-        </value>
-        <value>
-          <string>scheme</string>
-          <description>Reference to a scheme.</description>
-        </value>
-        <value>
-          <string>section</string>
-          <description>Reference to a section.</description>
-        </value>
-        <value>
-          <string>statement</string>
-          <description>Reference to a statement.</description>
-        </value>
-        <value>
-          <string>supplementary</string>
-          <description>Reference to supplementary information.</description>
-        </value>
-        <value>
-          <string>tablefootnote</string>
-          <description>Reference to a table footnote.</description>
-        </value>
-      </allowedValues>
     </typeDescription>
   </types>
 </typeSystemDescription>

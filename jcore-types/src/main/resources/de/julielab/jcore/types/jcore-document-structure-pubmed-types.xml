@@ -1,127 +1,154 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-    <name>JCoRe Document Structure  PubMed Types</name>
-  <description>This type system contains document structure types specific to PubMed or MEDLINE, e.g. detailed descriptions of structured abstracts.</description>
-  <version>2.3.0</version>
-  <vendor>JULIE Lab Jena, Germany</vendor>
-  <imports>
-    <import location="jcore-document-structure-types.xml" />
-  </imports>
-  <types>
-    	<typeDescription>
-			<name>de.julielab.jcore.types.AbstractSectionHeading</name>
-			<description>The heading of a section of a structured abstract as
-				used by MEDLINE and PubMed.
-				The TitleType feature value should always be 'abstractSection'.</description>
-			<supertypeName>de.julielab.jcore.types.Title</supertypeName>
-		<features>
-        <featureDescription>
-          <name>label</name>
-          <description>The author-given label to the abstract section this heading belongs to.</description>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>nlmCategory</name>
-          <description>The NLM category associated with the section label given by the authors (see feature 'label').</description>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-      </features>
-    </typeDescription>
-		<typeDescription>
-      <name>de.julielab.jcore.types.pubmed.InternalReference</name>
-      <description>Internal references with a special feature for PMC related reference types.</description>
-      <supertypeName>de.julielab.jcore.types.InternalReference</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>de.julielab.jcore.types.pubmed.ReferenceType</name>
-      <description>A list of possible reference types specific to the pubmed.InternalReference type. Includes the basic reference types plus some PMC specific ones.</description>
-      <supertypeName>uima.cas.String</supertypeName>
-      <allowedValues>
-       <value>
-          <string>affiliation</string>
-          <description>A reference to an affiliation.</description>
-        </value>
-        <value>
-          <string>chemical</string>
-          <description>A reference to a chemical.</description>
-        </value>
-        <value>
-          <string>bibliography</string>
-          <description>Reference to an item of the bibliography.</description>
-        </value>
-        <value>
-          <string>footnote</string>
-          <description>The number of a footnote.</description>
-        </value>
-        <value>
-          <string>table</string>
-          <description>Reference to a table.</description>
-        </value>
-        <value>
-          <string>figure</string>
-          <description>Reference to a figure.</description>
-        </value>
-        <value>
-          <string>appendix</string>
-          <description>Reference to the appendix.</description>
-        </value>
-        <value>
-          <string>authornotes</string>
-          <description>Reference to author notes.</description>
-        </value>
-        <value>
-          <string>textbox</string>
-          <description>Reference to a textbox or sidebar.</description>
-        </value>
-        <value>
-          <string>contributor</string>
-          <description>Reference to a contributor.</description>
-        </value>
-        <value>
-          <string>correspondingauthor</string>
-          <description>Reference to a corresponding author.</description>
-        </value>
-        <value>
-          <string>formula</string>
-          <description>Reference to a formula.</description>
-        </value>
-        <value>
-          <string>keyword</string>
-          <description>Reference to a keyword.</description>
-        </value>
-        <value>
-          <string>list</string>
-          <description>Reference to a list or a list item.</description>
-        </value>
-        <value>
-          <string>other</string>
-          <description>A reference of another type than enumerated in this type.</description>
-        </value>
-        <value>
-          <string>plate</string>
-          <description>Reference to a plate.</description>
-        </value>
-        <value>
-          <string>scheme</string>
-          <description>Reference to a scheme.</description>
-        </value>
-        <value>
-          <string>section</string>
-          <description>Reference to a section.</description>
-        </value>
-        <value>
-          <string>statement</string>
-          <description>Reference to a statement.</description>
-        </value>
-        <value>
-          <string>supplementary</string>
-          <description>Reference to supplementary information.</description>
-        </value>
-        <value>
-          <string>tablefootnote</string>
-          <description>Reference to a table footnote.</description>
-        </value>
-      </allowedValues>
-    </typeDescription>
-  </types>
-  </typeSystemDescription>
+    <name>JCoRe Document Structure PubMed Types</name>
+    <description>This type system contains document structure types specific to PubMed or MEDLINE, e.g. detailed
+        descriptions of structured abstracts.
+    </description>
+    <version>2.3.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <imports>
+        <import location="jcore-document-structure-types.xml"/>
+    </imports>
+    <types>
+        <typeDescription>
+            <name>de.julielab.jcore.types.AbstractSectionHeading</name>
+            <description>The heading of a section of a structured abstract as
+                used by MEDLINE and PubMed.
+                The TitleType feature value should always be 'abstractSection'.
+            </description>
+            <supertypeName>de.julielab.jcore.types.Title</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>label</name>
+                    <description>The author-given label to the abstract section this heading belongs to.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>nlmCategory</name>
+                    <description>The NLM category associated with the section label given by the authors (see feature
+                        'label').
+                    </description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.pubmed.InternalReference</name>
+            <description>Internal references with a special feature for PMC related reference types. It would be a
+                cleaner class hierarchy if this annotation type would be a subtype of
+                de.julielab.jcore.types.InternalReference. However, this won't work because this general purpose type
+                does not have a restriction on the possible reference types. For PubMed/PMC we want to restrict the
+                reference type to the ones valid for PubMed and PMC. But we cannot overwrite the base feature. Thus we
+                can't extend the base InternalReference type but create a new one.
+            </description>
+            <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>reftype</name>
+                    <description>The reference type: literature, figure, footnote etc.</description>
+                    <rangeTypeName>de.julielab.jcore.types.pubmed.ReferenceType</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>refid</name>
+                    <description>The ID of the referenced object.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.pubmed.ReferenceType</name>
+            <description>A list of possible reference types specific to the PubMed InternalReference type. Includes the
+                basic reference types plus some PMC specific ones.
+            </description>
+            <supertypeName>uima.cas.String</supertypeName>
+            <allowedValues>
+                <value>
+                    <string>affiliation</string>
+                    <description>A reference to an affiliation.</description>
+                </value>
+                <value>
+                    <string>appendix</string>
+                    <description>Reference to the appendix.</description>
+                </value>
+                <value>
+                    <string>authornotes</string>
+                    <description>Reference to author notes.</description>
+                </value>
+                <value>
+                    <string>bibliography</string>
+                    <description>Reference to an item of the bibliography.</description>
+                </value>
+                <value>
+                    <string>chemical</string>
+                    <description>A reference to a chemical.</description>
+                </value>
+                <value>
+                    <string>contributor</string>
+                    <description>Reference to a contributor.</description>
+                </value>
+                <value>
+                    <string>correspondingauthor</string>
+                    <description>Reference to a corresponding author.</description>
+                </value>
+                <value>
+                    <string>displayformula</string>
+                    <description>A formular typeset for display. This mostly means that it is set on a line of its own
+                        with some padding using larger fonts.
+                    </description>
+                </value>
+                <value>
+                    <string>figure</string>
+                    <description>Reference to a figure.</description>
+                </value>
+                <value>
+                    <string>footnote</string>
+                    <description>The number of a footnote.</description>
+                </value>
+                <value>
+                    <string>keyword</string>
+                    <description>Reference to a keyword.</description>
+                </value>
+                <value>
+                    <string>list</string>
+                    <description>Reference to a list or a list item.</description>
+                </value>
+                <value>
+                    <string>other</string>
+                    <description>A reference of another type than enumerated in this type.</description>
+                </value>
+                <value>
+                    <string>plate</string>
+                    <description>Reference to a plate.</description>
+                </value>
+                <value>
+                    <string>scheme</string>
+                    <description>Reference to a scheme.</description>
+                </value>
+                <value>
+                    <string>section</string>
+                    <description>Reference to a section.</description>
+                </value>
+                <value>
+                    <string>statement</string>
+                    <description>Reference to a statement.</description>
+                </value>
+                <value>
+                    <string>supplementary</string>
+                    <description>Reference to supplementary information.</description>
+                </value>
+                <value>
+                    <string>table</string>
+                    <description>Reference to a table.</description>
+                </value>
+                <value>
+                    <string>tablefootnote</string>
+                    <description>Reference to a table footnote.</description>
+                </value>
+                <value>
+                    <string>textbox</string>
+                    <description>Reference to a textbox or sidebar.</description>
+                </value>
+            </allowedValues>
+        </typeDescription>
+    </types>
+</typeSystemDescription>

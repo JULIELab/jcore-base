@@ -61,7 +61,6 @@ public class PMCMultiplier extends JCasMultiplier_ImplBase {
                 return cas;
             } catch (DocumentParsingException | ElementParsingException e) {
                 log.error("Exception occurred why trying to parse {}", next, e);
-                throw new AnalysisEngineProcessException(e);
             }
         }
         return null;
