@@ -12,6 +12,10 @@
     <dependencies>
         <dependency>
             <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
             <version>2.3.1</version>
         </dependency>

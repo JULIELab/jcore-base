@@ -61,7 +61,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
     private final static boolean DEFAULT_PARAM_POS_TAG = false;
     private static final byte[] linesepBytes = System.getProperty("line.separator").getBytes(StandardCharsets.UTF_8);
     int docs = 0;
-    @ConfigurationParameter(name = PARAM_OUTPUT_DIR, mandatory = true)
+    @ConfigurationParameter(name = PARAM_OUTPUT_DIR, description = "The directory where to write the text files to.")
     private File directory;
     @ConfigurationParameter(name = PARAM_DELIMITER, mandatory = false, description = "If this parameter is given, each token will have its part of speech tag appended where the PoS tag is delimited from the token by the string given with this parameter.")
     private String delimiter;
@@ -69,7 +69,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
     private Boolean lowercase;
     @ConfigurationParameter(name = PARAM_MODE, mandatory = false, description = "Possible values: TOKEN and DOCUMENT. The first prints out tokens with one sentence per line, the second just prints out the CAS document text without changing it in any way.")
     private Mode mode;
-    @ConfigurationParameter(name = PARAM_GZIP, mandatory = false, defaultValue = "false")
+    @ConfigurationParameter(name = PARAM_GZIP, mandatory = false, defaultValue = "false", description = "If set to true, the output files are stored in the GZIP format. The .gz extension is automatically appended. Defaults to false.")
     private Boolean gzip;
     @ConfigurationParameter(name = PARAM_ZIP_ARCHIVE, mandatory = false, defaultValue = "false", description = "If set to true, this parameter causes the output files to be stored in ZIP archives. The maximum size in terms of entries of each archive is given by the " + PARAM_ZIP_MAX_SIZE + " parameter and defaults to 10,000. The archive names are built using the prefix specified with the " + PARAM_ZIP_PREFIX + " parameter followed by a serially added number and the host name.")
     private Boolean zip;
