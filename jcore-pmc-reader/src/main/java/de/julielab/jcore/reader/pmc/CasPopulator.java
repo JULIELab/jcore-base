@@ -24,14 +24,14 @@ public class CasPopulator {
         nxmlDocumentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
     }
 
-    public void populateCas(URI nxmlUri, JCas cas) throws DocumentParsingException, ElementParsingException {
+    public void populateCas(URI nxmlUri, JCas cas) throws ElementParsingException {
         ElementParsingResult result = null;
         URI currentUri = nxmlUri;
         while (currentUri != null && result == null) {
             try {
                 nxmlDocumentParser.reset(currentUri, cas);
                 result = nxmlDocumentParser.parse();
-            } catch (DocTypeNotFoundException e) {
+            } catch (DocumentParsingException e) {
                 log.warn("Error occurred: {}. Skipping document.", e.getMessage());
                 if (nxmlIterator.hasNext())
                     currentUri = nxmlIterator.next();

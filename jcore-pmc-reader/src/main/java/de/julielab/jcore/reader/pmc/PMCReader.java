@@ -65,7 +65,7 @@ public class PMCReader extends PMCReaderBase {
             next = pmcFiles.next();
             casPopulator.populateCas(next, cas);
 
-        } catch (DocumentParsingException | ElementParsingException e) {
+        } catch (ElementParsingException e) {
             log.error("Exception occurred when trying to parse {}", next, e);
             throw new CollectionException(e);
         }

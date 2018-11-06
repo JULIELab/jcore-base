@@ -49,12 +49,14 @@ public class NXMLURIIterator implements Iterator<URI> {
             if (uris != null && currentUri == null) {
                 log.trace("Waiting for the next URI");
                 currentUri = uris.take();
+                log.trace("Got URI {} from the file list. {} URIs currently remain in the queue.", currentUri, uris.size());
             }
         } catch (InterruptedException e) {
             log.error("Interrupted exception while waiting for the next URI from the list.");
             throw new UncheckedPmcReaderException(e);
         }
-        if (currentUri != null && currentUri.toString().equals("http://nonsense.non")) {
+        if (currentUri == null || currentUri.toString().equals("http://nonsense.non")) {
+            log.debug("Retrieved URI {}, assuming no more files available.", currentUri);
             currentUri = null;
             uris = null;
         }
@@ -123,6 +125,7 @@ public class NXMLURIIterator implements Iterator<URI> {
         }
         if (!recursiveCall) {
             try {
+                log.info("Reached the end of the eligible files, background thread for file collection is giving the end-of-files signal and terminates.");
                 uris.put(URI.create("http://nonsense.non"));
             } catch (InterruptedException e) {
                 log.error("The PMC file reading process was interrupted while trying to put the ending signal into the list");

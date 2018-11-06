@@ -59,7 +59,7 @@ public class PMCMultiplier extends JCasMultiplier_ImplBase {
                 log.trace("Populating cas with data from {}", next);
                 casPopulator.populateCas(next, cas);
                 return cas;
-            } catch (DocumentParsingException | ElementParsingException e) {
+            } catch (ElementParsingException e) {
                 log.error("Exception occurred why trying to parse {}", next, e);
             }
         }
