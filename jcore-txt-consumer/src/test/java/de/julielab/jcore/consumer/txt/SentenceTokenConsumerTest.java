@@ -1,13 +1,16 @@
 package de.julielab.jcore.consumer.txt;
 
+import static de.julielab.jcore.consumer.txt.SentenceTokenConsumer.*;
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -21,7 +24,7 @@ import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.pubmed.Header;
-
+import static org.assertj.core.api.Assertions.*;
 public class SentenceTokenConsumerTest {
 	/**
 	 * just tests if there is an error with an empty CAS
@@ -32,7 +35,7 @@ public class SentenceTokenConsumerTest {
 	public void testProcessEmptyCAS() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class,
-				SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data");
+				PARAM_OUTPUT_DIR, "src/test/resources/data");
 
 		consumer.process(cas);
 	}
@@ -44,7 +47,7 @@ public class SentenceTokenConsumerTest {
 	public void testProcessWithoutPOSTags() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class,
-				SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data");
+				PARAM_OUTPUT_DIR, "src/test/resources/data");
 
 		cas.setDocumentText("I love food. I like sleeping.");
 
@@ -102,7 +105,7 @@ public class SentenceTokenConsumerTest {
 	public void testProcessWithPOSTags() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class,
-				SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data",
+				PARAM_OUTPUT_DIR, "src/test/resources/data",
 				SentenceTokenConsumer.PARAM_DELIMITER, "$");
 
 		cas.setDocumentText("I love food. I like sleeping.");
@@ -231,7 +234,7 @@ public class SentenceTokenConsumerTest {
 		header.setDocId("documentTest");
 		header.addToIndexes();
 		
-		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class, SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_MODE, "DOCUMENT");
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class, PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_MODE, "DOCUMENT");
 		consumer.process(jcas);
 		
 		File outputFile = new File("src/test/resources/data/documentTest.txt");
@@ -255,7 +258,7 @@ public class SentenceTokenConsumerTest {
 		header.setDocId("documentTest");
 		header.addToIndexes();
 		
-		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer", SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_MODE, "DOCUMENT");
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer", PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_MODE, "DOCUMENT");
 		consumer.process(jcas);
 		
 		File outputFile = new File("src/test/resources/data/documentTest.txt");
@@ -279,7 +282,7 @@ public class SentenceTokenConsumerTest {
 		header.setDocId("tokenTest");
 		header.addToIndexes();
 		
-		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer", SentenceTokenConsumer.PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_MODE, "TOKEN");
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.txt.desc.jcore-txt-consumer", PARAM_OUTPUT_DIR, "src/test/resources/data", SentenceTokenConsumer.PARAM_MODE, "TOKEN");
 		consumer.process(jcas);
 		
 		File outputFile = new File("src/test/resources/data/tokenTest.txt");
@@ -287,6 +290,41 @@ public class SentenceTokenConsumerTest {
 		List<String> lines = readFile(outputFile.getAbsolutePath());
 		assertEquals(1, lines.size());
 		assertEquals("This is", lines.get(0));
+	}
+
+	@Test
+	public void testZip() throws Exception {
+		final AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class, PARAM_OUTPUT_DIR, "src/test/resources/data", PARAM_ZIP_ARCHIVE, true, PARAM_ZIP_MAX_SIZE, 2, PARAM_MODE, "DOCUMENT");
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+		jcas.setDocumentText("Document 1");
+		consumer.process(jcas);
+
+		jcas.reset();
+		jcas.setDocumentText("Document 2");
+		consumer.process(jcas);
+
+		jcas.reset();
+		jcas.setDocumentText("Document 3");
+		consumer.process(jcas);
+
+		consumer.collectionProcessComplete();
+
+		final File[] archives = new File("src/test/resources/data").listFiles((dir, name) -> name.startsWith("TXTConsumerArchive"));
+		assertThat(archives).hasSize(2);
+
+		try (FileSystem zipfs = FileSystems.newFileSystem(archives[0].toPath(), null)) {
+
+            String line = new BufferedReader(new InputStreamReader(zipfs.provider().newInputStream(zipfs.getPath("0.txt")), StandardCharsets.UTF_8)).readLine();
+            assertThat(line).isEqualTo("Document 1");
+            line = new BufferedReader(new InputStreamReader(zipfs.provider().newInputStream(zipfs.getPath("1.txt")), StandardCharsets.UTF_8)).readLine();
+            assertThat(line).isEqualTo("Document 2");
+        }
+        try (FileSystem zipfs = FileSystems.newFileSystem(archives[1].toPath(), null)) {
+            String line = new BufferedReader(new InputStreamReader(zipfs.provider().newInputStream(zipfs.getPath("2.txt")), StandardCharsets.UTF_8)).readLine();
+            assertThat(line).isEqualTo("Document 3");
+        }
+
+
 	}
 
 }
