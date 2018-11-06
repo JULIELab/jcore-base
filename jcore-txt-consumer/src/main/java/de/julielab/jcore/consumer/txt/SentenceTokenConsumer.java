@@ -248,7 +248,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
             }
             // Write the actual data to the stream
             for (String text : sentences) {
-                final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+                final byte[] bytes = lowercase ? text.toLowerCase().getBytes(StandardCharsets.UTF_8) : text.getBytes(StandardCharsets.UTF_8);
                 os.write(bytes, 0, bytes.length);
                 os.write(linesepBytes, 0, linesepBytes.length);
             }

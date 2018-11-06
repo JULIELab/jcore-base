@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.julielab.java.utilities.FileUtilities;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -313,7 +314,6 @@ public class SentenceTokenConsumerTest {
 		assertThat(archives).hasSize(2);
 
 		try (FileSystem zipfs = FileSystems.newFileSystem(archives[0].toPath(), null)) {
-
             String line = new BufferedReader(new InputStreamReader(zipfs.provider().newInputStream(zipfs.getPath("0.txt")), StandardCharsets.UTF_8)).readLine();
             assertThat(line).isEqualTo("Document 1");
             line = new BufferedReader(new InputStreamReader(zipfs.provider().newInputStream(zipfs.getPath("1.txt")), StandardCharsets.UTF_8)).readLine();
@@ -323,8 +323,17 @@ public class SentenceTokenConsumerTest {
             String line = new BufferedReader(new InputStreamReader(zipfs.provider().newInputStream(zipfs.getPath("2.txt")), StandardCharsets.UTF_8)).readLine();
             assertThat(line).isEqualTo("Document 3");
         }
-
-
 	}
+
+    @Test
+    public void testLowercasing() throws Exception {
+        final AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class, PARAM_OUTPUT_DIR, "src/test/resources/data", PARAM_LOWERCASE, true, PARAM_MODE, "DOCUMENT");
+        JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+        jcas.setDocumentText("DoCUmeNt 1");
+        consumer.process(jcas);
+
+        final String line = FileUtilities.getReaderFromFile(new File("src/test/resources/data/0.txt")).readLine();
+        assertThat(line).isEqualTo("document 1");
+    }
 
 }
