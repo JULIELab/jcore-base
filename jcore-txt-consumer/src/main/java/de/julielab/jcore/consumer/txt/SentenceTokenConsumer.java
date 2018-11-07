@@ -23,6 +23,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipOutputStream;
 
 import de.julielab.java.utilities.FileUtilities;
@@ -123,7 +124,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
     }
 
     private OutputStream createNextArchiveStream() throws IOException {
-        currentArchive = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(directory.getCanonicalPath() + File.separator + zipFilePrefix + archiveNumber + "-" + getHostName() + ".zip"))));
+        currentArchive = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(directory.getCanonicalPath() + File.separator + zipFilePrefix + archiveNumber + "-" + getHostName() + "-" + Thread.currentThread().getName() + ".zip"))));
         ++archiveNumber;
         currentArchiveSize = 0;
         return currentArchive;
@@ -167,12 +168,8 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
                 writeSentences2File(fileId, Arrays.asList(jcas.getDocumentText()));
             }
 
-        } catch (CASRuntimeException e) {
-            e.printStackTrace();
-        } catch (CASException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (CASRuntimeException | CASException | IOException e) {
+            throw new AnalysisEngineProcessException(e);
         }
 
     }
@@ -227,7 +224,6 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         if (currentArchive != null) {
             try {
-                ((ZipOutputStream) currentArchive).closeEntry();
                 currentArchive.close();
             } catch (IOException e) {
                 throw new AnalysisEngineProcessException();
@@ -237,6 +233,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
 
     private void writeSentences2File(String fileId, List<String> sentences) throws IOException {
         OutputStream os = null;
+        boolean zipContentWritten = false;
         try {
             File outputFile = new File(directory.getCanonicalPath() + File.separator + fileId + ".txt" + (gzip ? ".gz" : ""));
             os = zip ? currentArchive : FileUtilities.getOutputStreamToFile(outputFile);
@@ -244,23 +241,34 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
                 // Initialize the ZIP output stream if necessary
                 if (os == null)
                     os = createNextArchiveStream();
-                ((ZipOutputStream) os).putNextEntry(new ZipEntry(outputFile.getName()));
+                try {
+                    ((ZipOutputStream) os).putNextEntry(new ZipEntry(outputFile.getName()));
+                    zipContentWritten = true;
+                } catch (ZipException e) {
+                    if (e.getMessage().contains("duplicate")) {
+                        LOGGER.warn("The file {} is already present in the current ZIP archive. Thus, the current file is omitted.", outputFile.getName());
+                    } else {
+                        throw e;
+                    }
+                }
             }
-            // Write the actual data to the stream
-            for (String text : sentences) {
-                final byte[] bytes = lowercase ? text.toLowerCase().getBytes(StandardCharsets.UTF_8) : text.getBytes(StandardCharsets.UTF_8);
-                os.write(bytes, 0, bytes.length);
-                os.write(linesepBytes, 0, linesepBytes.length);
+            if (!zip || zipContentWritten) {
+                // Write the actual data to the stream
+                for (String text : sentences) {
+                    final byte[] bytes = lowercase ? text.toLowerCase().getBytes(StandardCharsets.UTF_8) : text.getBytes(StandardCharsets.UTF_8);
+                    os.write(bytes, 0, bytes.length);
+                    os.write(linesepBytes, 0, linesepBytes.length);
+                }
             }
         } finally {
-            if (zip) {
+            if (zipContentWritten) {
                 ((ZipOutputStream) os).closeEntry();
                 ++currentArchiveSize;
                 if (currentArchiveSize >= zipSize) {
                     os.close();
                     createNextArchiveStream();
                 }
-            } else {
+            } else if (!zip) {
                 os.close();
             }
         }
