@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -15,9 +17,12 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class NXMLURIIterator implements Iterator<URI> {
     private final static Logger log = LoggerFactory.getLogger(NXMLURIIterator.class);
+    private final static Logger logFileSearch = LoggerFactory.getLogger(NXMLURIIterator.class.getCanonicalName() + ".FileSearch");
     private final File basePath;
     private final boolean searchRecursively;
     private final boolean searchZip;
@@ -64,18 +69,19 @@ public class NXMLURIIterator implements Iterator<URI> {
     }
 
     private void setFilesAndSubDirectories(File directory, boolean recursiveCall) {
-        log.debug("Reading path {}", directory);
+        logFileSearch.debug("Reading path {}", directory);
         Deque<File> pendingSubdirs = new ArrayDeque<>();
+        logFileSearch.trace("Checking if {} is eligible for PMC file search", directory);
         if (directory.isDirectory() || isZipFile(directory)) {
             if ((searchRecursively || directory.equals(basePath)) && !isZipFile(directory)) {
-                log.debug("Identified {} as a directory, reading files and subdirectories", directory);
+                logFileSearch.debug("Identified {} as a directory, reading files and subdirectories", directory);
                 // set the files in the directory
                 for (File file : directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml") && !isZipFile(f) && isInWhitelist(f))) {
                     URI toURI = file.toURI();
                     try {
                         uris.put(toURI);
                     } catch (InterruptedException e) {
-                        log.error("The PMC file reading process was interrupted while trying to put the NXML file URIs of directory {} into the list", directory);
+                        logFileSearch.error("The PMC file reading process was interrupted while trying to put the NXML file URIs of directory {} into the list", directory);
                         throw new UncheckedPmcReaderException(e);
                     }
                 }
@@ -83,55 +89,66 @@ public class NXMLURIIterator implements Iterator<URI> {
                 if (searchZip)
                     Stream.of(directory.listFiles(f -> f.isFile() && isZipFile(f))).forEach(pendingSubdirs::push);
             } else if (searchZip && isZipFile(directory)) {
-                log.debug("Identified {} as a ZIP archive, retrieving its inventory", directory);
-                log.debug("Searching ZIP archive {} for eligible documents", directory);
-                try (FileSystem fs = FileSystems.newFileSystem(directory.toPath(), null)) {
-                    Iterable<Path> rootDirectories = fs.getRootDirectories();
-                    for (Path rootDir : rootDirectories) {
-                        Stream<Path> walk = Files.walk(rootDir);
-                        walk.filter(Files::isRegularFile).forEach(p -> {
-                            if (p.getFileName().toString().contains(".nxml") && isInWhitelist(p)) {
-                                try {
-                                    uris.put(p.toUri());
-                                } catch (InterruptedException e) {
-                                    log.error("The PMC file reading process was interrupted while trying to put the next ZIP NXML URI into the list");
-                                    throw new UncheckedPmcReaderException(e);
-                                }
+                logFileSearch.debug("Identified {} as a ZIP archive, retrieving its inventory", directory);
+                logFileSearch.debug("Searching ZIP archive {} for eligible documents", directory);
+                try (ZipFile zf = new ZipFile(directory)) {
+                    final Enumeration<? extends ZipEntry> entries = zf.entries();
+                    while (entries.hasMoreElements()) {
+                        final ZipEntry e = entries.nextElement();
+                        if (!e.isDirectory() && e.getName().contains(".nxml") && isInWhitelist(new File(e.getName()))) {
+                            final String urlStr = "jar:" + directory.toURI().toString() + "!/" + e.getName();
+                            URL url = new URL(urlStr);
+                            try {
+                                final URI uri = url.toURI();
+                                logFileSearch.trace("Waiting to put URI {} into queue", uri);
+                                uris.put(uri);
+                                logFileSearch.trace("Successfully put URI {} into queue", uri);
+                            } catch (InterruptedException e1) {
+                                logFileSearch.error("Putting URI for URL {} into the queue was interrupted", url);
+                                throw new UncheckedPmcReaderException(e1);
+                            } catch (URISyntaxException e1) {
+                                logFileSearch.error("Could not convert URL {} to URI.", url, e);
                             }
-                        });
+                        }
                     }
                 } catch (IOException e) {
-                    log.error("Could not read from {}", directory);
+                    logFileSearch.error("Could not read from {}", directory);
                     throw new UncheckedPmcReaderException(e);
                 }
             } else {
-                log.debug("Recursive search is deactivated, skipping subdirectory {}", directory);
+                logFileSearch.debug("Recursive search is deactivated, skipping subdirectory {}", directory);
             }
         } else if (directory.isFile()) {
-            log.debug("Identified {} as a file, reading single file", directory);
-            log.debug("Adding file to map with key {}", directory);
+            logFileSearch.debug("Identified {} as a file, reading single file", directory);
+            logFileSearch.debug("Adding file to map with key {}", directory);
             try {
                 uris.put(directory.toURI());
             } catch (InterruptedException e) {
-                log.error("The PMC file reading process was interrupted while trying to put file URI {} into the list", directory.toURI());
+                logFileSearch.error("The PMC file reading process was interrupted while trying to put file URI {} into the list", directory.toURI());
                 throw new UncheckedPmcReaderException(e);
             }
         } else {
             throw new IllegalStateException("Path " + directory.getAbsolutePath()
                     + " was identified neither a path nor a file, cannot continue. This seems to be a bug in this code.");
         }
+        logFileSearch.trace("Checking if subdirectories of {} are to processed for PMC file search", directory);
         while (!pendingSubdirs.isEmpty()) {
-            setFilesAndSubDirectories(pendingSubdirs.pop(), true);
+            final File subdir = pendingSubdirs.pop();
+            logFileSearch.trace("Descending into ZIP file or directory {} in search for PMC files.", subdir);
+            setFilesAndSubDirectories(subdir, true);
+            logFileSearch.trace("Subdir or ZIP {} finished for file PMC file search.", subdir);
         }
+        logFileSearch.trace("Checking whether the end signal is to be sent");
         if (!recursiveCall) {
             try {
-                log.info("Reached the end of the eligible files, background thread for file collection is giving the end-of-files signal and terminates.");
+                logFileSearch.info("Reached the end of the eligible files, background thread for file collection is giving the end-of-files signal and terminates.");
                 uris.put(URI.create("http://nonsense.non"));
             } catch (InterruptedException e) {
-                log.error("The PMC file reading process was interrupted while trying to put the ending signal into the list");
+                logFileSearch.error("The PMC file reading process was interrupted while trying to put the ending signal into the list");
                 throw new UncheckedPmcReaderException(e);
             }
         }
+        logFileSearch.trace("A file search method call for {} has finished. This was a {} call.", directory, (recursiveCall ? "recursive" : "non-recursive"));
     }
 
     private boolean isZipFile(File directory) {
