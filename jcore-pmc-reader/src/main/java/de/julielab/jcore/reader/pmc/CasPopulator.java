@@ -1,14 +1,11 @@
 package de.julielab.jcore.reader.pmc;
 
 import de.julielab.jcore.reader.pmc.parser.*;
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Iterator;
