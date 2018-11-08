@@ -1,9 +1,11 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.XmiBuilder;
 import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.XmiSplitUtilities;
+import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.TypeSystem;
@@ -64,10 +66,6 @@ public class Initializer {
     }
 
     public void initialize(UimaContext context) {
-        // If the field is defined with gzip=true in the field configuration,
-        // the unzipping happens automatically.
-        boolean fieldIsSetToGzip = Boolean
-                .parseBoolean(dbc.getFieldConfiguration().getFields().get(1).get(JulieXMLConstants.GZIP));
         storeMaxXmiId = (Boolean) (context.getConfigParameterValue(PARAM_STORE_XMI_ID) == null ? false
                 : context.getConfigParameterValue(PARAM_STORE_XMI_ID));
         logFinalXmi = (Boolean) (context.getConfigParameterValue(PARAM_LOG_FINAL_XMI) == null ? false
@@ -78,6 +76,19 @@ public class Initializer {
                 .ifPresent(v -> maxXmlAttributeSize = v);
         Optional.ofNullable((Integer) context.getConfigParameterValue(PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE))
                 .ifPresent(v -> xercesAttributeBufferSize = v);
+        initAfterParameterReading();
+    }
+
+    public void initialize(RowBatch rowBatch) {
+        storeMaxXmiId = rowBatch.getStoreMaxXmiId();
+        logFinalXmi = false;
+        readsBaseDocument = rowBatch.getReadsBaseXmiDocument();
+        maxXmlAttributeSize = rowBatch.getIncreasedAttributeSize();
+        xercesAttributeBufferSize = rowBatch.getXercesAttributeBufferSize();
+        initAfterParameterReading();
+    }
+
+    private void initAfterParameterReading() {
         initializationComplete = true;
         numAdditionalTables = additionalTableNames == null ? 0 : additionalTableNames.length;
         if (joinTables)
@@ -92,8 +103,11 @@ public class Initializer {
         // If we don't join tables, we assume that the read documents are
         // complete and valid. Thus, ignore the namespace table.
         Map<String, String> nsAndXmiVersion = null;
-        if (joinTables || readsBaseDocument)
-            nsAndXmiVersion = getNamespaceMap();
+        if (joinTables || readsBaseDocument) {
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+                nsAndXmiVersion = getNamespaceMap();
+            }
+        }
         // if the maxXmlAttributeSize is 0, the default is used
         builder = new XmiBuilder(nsAndXmiVersion, additionalTableNames, maxXmlAttributeSize);
 
@@ -106,8 +120,6 @@ public class Initializer {
         log.info("{}: {}", PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE, xercesAttributeBufferSize);
         log.info("Data columns set for retrieval: {}",
                 Arrays.toString(dbc.getFieldConfiguration().getColumnsToRetrieve()));
-
-
     }
 
     public void initializeAnnotationTableNames(JCas jCas) throws ResourceInitializationException {

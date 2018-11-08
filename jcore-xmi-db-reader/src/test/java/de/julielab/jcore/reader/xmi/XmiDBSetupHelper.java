@@ -97,6 +97,7 @@ public class XmiDBSetupHelper {
                 "de.julielab.jcore.types.jcore-document-meta-pubmed-types",
                 "de.julielab.jcore.types.jcore-document-structure-pubmed-types",
                 "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types",
-                "de.julielab.jcore.types.jcore-xmi-splitter-types");
+                "de.julielab.jcore.types.jcore-xmi-splitter-types",
+                "de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types");
     }
 }

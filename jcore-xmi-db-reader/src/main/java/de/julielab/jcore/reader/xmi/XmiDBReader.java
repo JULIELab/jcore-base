@@ -139,14 +139,11 @@ public class XmiDBReader extends DBReader implements Initializable {
                 }
                 XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName());
             } else {
-                String[] annotationTableNames = (String[]) getConfigParameterValue(PARAM_ADDITIONAL_TABLES);
-                if (annotationTableNames == null || annotationTableNames.length == 0) {
-                    // Complete XMI reading mode
-                    String table = (String) getConfigParameterValue(PARAM_TABLE);
-                    determineDataInGzipFormat(table);
-                    FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
-                    dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
-                }
+                // Complete XMI reading mode
+                String table = (String) getConfigParameterValue(PARAM_TABLE);
+                determineDataInGzipFormat(table);
+                FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
+                dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
             }
         }
     }
