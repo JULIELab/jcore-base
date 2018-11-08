@@ -55,8 +55,7 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
     protected String tableName;
     protected boolean readDataTable;
     protected String dataTable;
-    // This is set anew with every call to process()
-    private boolean initialized;
+    protected boolean initialized;
     private StringArray pkArray;
 
     @Override
@@ -81,9 +80,11 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
         RowBatch rowbatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
         tables = rowbatch.getTables().toStringArray();
         schemaNames = rowbatch.getTableSchemas().toStringArray();
-        tableName = rowbatch.getTableName();
+        tableName = tables[0];
         if (!initialized) {
-            dbc = getDataBaseConnector(rowbatch.getCostosysConfiguration());
+            // The DBC could already have been initialized by a subclass
+            if (dbc == null)
+                dbc = getDataBaseConnector(rowbatch.getCostosysConfiguration());
             String referencedTable;
             try {
                 referencedTable = dbc.withConnectionQueryString(c -> c.getReferencedTable(rowbatch.getTables(0)));
@@ -108,18 +109,6 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
         documentDataIterator = dbc.retrieveColumnsByTableSchema(documentIdsForQuery,
                 tables,
                 schemaNames);
-
-        DBProcessingMetaData processingMetaData = new DBProcessingMetaData(aJCas);
-        if (!readDataTable)
-            processingMetaData.setSubsetTable(tableName);
-    }
-
-    public String[] getAdditionalTableNames() {
-        if (tables == null)
-            throw new IllegalStateException("This method may only be called after process() has been called.");
-        String[] additionalTables = new String[tables.length - 1];
-        System.arraycopy(tables, 1, additionalTables, 0, additionalTables.length);
-        return additionalTables;
     }
 
     @Override

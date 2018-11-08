@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.ducc.Workitem;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
@@ -43,12 +44,15 @@ public class DBMultiplierReader extends DBSubsetReader {
     public final static String PARAM_ADDITIONAL_TABLES = SubsetReaderConstants.PARAM_ADDITIONAL_TABLES;
     public final static String PARAM_ADDITIONAL_TABLE_SCHEMAS = SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS;
     public final static String PARAM_FETCH_IDS_PROACTIVELY = SubsetReaderConstants.PARAM_FETCH_IDS_PROACTIVELY;
+    public static final String PARAM_SEND_CAS_TO_LAST = "SendCasToLast";
+
+    @ConfigurationParameter(name = PARAM_SEND_CAS_TO_LAST, mandatory = false, defaultValue = "false", description = "UIMA DUCC relevant parameter when using a CAS multiplier. When set to true, the worker CAS from the collection reader is forwarded to the last component in the pipeline. This can be used to send information about the progress to the CAS consumer in order to have it perform batch operations. For this purpose, a feature structure of type WorkItem from the DUCC library is added to the worker CAS. This feature structure has information about the current progress.")
+    private boolean sendCasToLast;
 
     private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
     // Internal state fields
     private DBMultiplierReader.RetrievingThread retriever;
     private DBCIterator<Object[]> dataTableDocumentIds;
-    private Connection connection;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -84,7 +88,7 @@ public class DBMultiplierReader extends DBSubsetReader {
         }
 
         StringArray tableArray = new StringArray(jCas, tables.length);
-        StringArray schemaArray = new StringArray(jCas, tables.length);
+        StringArray schemaArray = new StringArray(jCas, schemas.length);
         for (int i = 0; i < tables.length; i++) {
             String table = tables[i];
             String schema = schemas[i];
@@ -97,6 +101,22 @@ public class DBMultiplierReader extends DBSubsetReader {
         rowbatch.setTableSchemas(schemaArray);
         rowbatch.setCostosysConfiguration(costosysConfig);
         rowbatch.addToIndexes();
+
+        if (sendCasToLast) {
+            try {
+                Workitem workitem = new Workitem(jCas);
+                // Send the work item CAS also to the consumer. Normally, only the CASes emitted by the CAS multiplier
+                // will be routed to the consumer. We do this to let the consumer know that the work item has been
+                // finished.
+                workitem.setSendToLast(true);
+                workitem.setBlockindex(processedDocuments / batchSize);
+                if (!hasNext())
+                    workitem.setLastBlock(true);
+                workitem.addToIndexes();
+            } catch (IOException e) {
+                throw new CollectionException(e);
+            }
+        }
     }
 
 

@@ -58,14 +58,35 @@ public abstract class DBSubsetReader extends DBReaderBase {
             "for the database. Deactivate this feature if you encounter issues with databaase connections.")
     protected Boolean fetchIdsProactively;
     @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = DESC_ADDITIONAL_TABLES)
+    /**
+     * The names of tables to read data from aside from the primary data table.
+     */
     protected String[] additionalTableNames;
     @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLE_SCHEMAS, mandatory = false, description = DESC_ADDITIONAL_TABLE_SCHEMAS)
+    /**
+     * The table schemas of the tables to read aside from the primary data table, parallel to {@link #additionalTableNames}.
+     */
     protected String[] additionalTableSchemas;
     protected String hostName;
     protected String pid;
+    /**
+     * The name of the primary data table to read data from. This is either the exact parameter value given with
+     * {@link #PARAM_TABLE} or, if this parameter denotes a subset table, the data table referenced by the subset.
+     */
     protected String dataTable;
+    /**
+     * This is true if the table name provided by the {@link #PARAM_TABLE} parameter is a data table.
+     * If this parameter is false it means that we read from a subset table.
+     */
     protected Boolean readDataTable = false;
+    /**
+     * The list of tables to read data from. The first element is always the data table. The following entries
+     * reference the "additional tables".
+     */
     protected String[] tables;
+    /**
+     * The list of table schemas of the tables to read from. This is parallel to {@link #tables}.
+     */
     protected String[] schemas;
     @ConfigurationParameter(name = PARAM_ADDITONAL_TABLES_STORAGE_PG_SCHEMA, mandatory = false, description =
             "This optional parameter specifies the Postgres schema in which the additional tables to read are searched by default. If " +
@@ -96,7 +117,6 @@ public abstract class DBSubsetReader extends DBReaderBase {
                             + " if the data table is referenced by a subset, for which the name has to be"
                             + " given in the Table parameter.");
                 dbc.checkTableDefinition(tableName);
-                readDataTable = true;
                 Integer tableRows = dbc.withConnectionQueryInteger(c -> c.countRowsOfDataTable(tableName, whereCondition));
                 totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
                 hasNext = !dbc.withConnectionQueryBoolean(c -> c.isEmpty(tableName));
@@ -242,7 +262,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
      * Postgres. It is tried again to find the tables with underscores ('_'), then.
      * In this case, a colon character is interpreted as the separation between a
      * specified Postgres schema and a Java-style path to be converted to a valid
-     * table name by replacing dots with underscores.
+     * table name by replacing dots with underscores. Always includes the data table.
      */
     protected ImmutablePair<Integer, String[]> checkAndAdjustAdditionalTables(DataBaseConnector dbc, String dataTable, String[] additionalTableNames) {
         List<String> foundTables = new ArrayList<>();
