@@ -259,6 +259,18 @@ public class JCoReTools {
     }
 
     /**
+     * Creates a new <tt>StringArray</tt> from the given string elements.
+     * @param jCas The jCas to associate the new StringArray with.
+     * @param elements The strings to put into the StringArray.
+     * @return The new, filled StringArray.
+     */
+    public static StringArray newStringArray(JCas jCas, String... elements) {
+        final StringArray strings = new StringArray(jCas, elements.length);
+        strings.copyFromArray(elements, 0, 0, elements.length);
+        return strings;
+    }
+
+    /**
      * <p>
      * Creates a new string array, copies the values of <code>array</code> into it and adds <code>element</code>.
      * </p>
@@ -274,12 +286,8 @@ public class JCoReTools {
     public static StringArray addToStringArray(StringArray array, String element) {
         try {
             StringArray newArray = null;
-            if (array == null) {
-                newArray = new StringArray(array.getCAS().getJCas(), 1);
-            } else {
-                newArray = new StringArray(array.getCAS().getJCas(), array.size() + 1);
-                newArray.copyFromArray(array.toArray(), 0, 0, array.size());
-            }
+            newArray = new StringArray(array.getCAS().getJCas(), array.size() + 1);
+            newArray.copyFromArray(array.toArray(), 0, 0, array.size());
             newArray.set(newArray.size() - 1, element);
             return newArray;
         } catch (CASException e) {
@@ -301,15 +309,9 @@ public class JCoReTools {
         if (null == elements)
             return null;
         try {
-            StringArray newArray = null;
-            if (array == null) {
-                newArray = new StringArray(array.getCAS().getJCas(), elements.length);
-                newArray.copyFromArray(elements, 0, 0, elements.length);
-            } else {
-                newArray = new StringArray(array.getCAS().getJCas(), array.size() + elements.length);
-                newArray.copyFromArray(array.toArray(), 0, 0, array.size());
-                newArray.copyFromArray(elements, 0, array.size(), elements.length);
-            }
+            StringArray newArray = new StringArray(array.getCAS().getJCas(), array.size() + elements.length);
+            newArray.copyFromArray(array.toArray(), 0, 0, array.size());
+            newArray.copyFromArray(elements, 0, array.size(), elements.length);
             return newArray;
         } catch (CASException e) {
             e.printStackTrace();
