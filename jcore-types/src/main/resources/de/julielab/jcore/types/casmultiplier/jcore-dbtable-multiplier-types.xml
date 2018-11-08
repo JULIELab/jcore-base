@@ -29,9 +29,10 @@
                 </featureDescription>
                 <featureDescription>
                     <name>tables</name>
-                    <description>The tables to read the given IDs from. If there is more than one array entry, the
-                        additional tables are joined by primary key to the first table. The first table must always
-                        be the document data table. The additional tables might hold annotations segmented away
+                    <description>The tables to read the given IDs from. The first element is always the primary data table.
+                        If there is more than one array entry, the
+                        additional tables are joined by primary key to the first table.
+                        The additional tables might hold annotations segmented away
                         from the base document, for example.</description>
                     <rangeTypeName>uima.cas.StringArray</rangeTypeName>
                 </featureDescription>
@@ -46,13 +47,29 @@
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
                 <featureDescription>
-                    <name>tableName</name>
-                    <description>The table name that was primarily specified to read from in the multiplier reader.
-                        This may be a data table or a subset table. The data table will also be the first (and possibly only)
-                        entry of the tables feature.
-                        This feature will be null if the multiplier reader did not read from a subset but directly
-                        from a data table.</description>
-                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                    <name>readsBaseXmiDocument</name>
+                    <description>Only for XMI DB readers. Specifies whether the JeDIS annotation module base XMI document is read (feature set to true) or a complete, unmodularized XMI document (set to false).</description>
+                    <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>xmiAnnotationModuleNames</name>
+                    <description>Only for XMI DB readers. Lists the Java names of the annotation types whose annotations should be read.</description>
+                    <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>storeMaxXmiId</name>
+                    <description>Only for XMI DB readers. Specifies whether the documents' max XMI ID should be stored in the multiplier CAS. Necessary for the use with the jcore-xmi-db-consumer.</description>
+                    <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>increasedAttributeSize</name>
+                    <description>For the XMI splitter. Specifies the maximum attribute size the XML parser accepts. Necessary for large texts.</description>
+                    <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>xercesAttributeBufferSize</name>
+                    <description>For the XMI splitter. Allows to increase the internal buffer of the Xerces parser used for attribute values.</description>
+                    <rangeTypeName>uima.cas.Integer</rangeTypeName>
                 </featureDescription>
             </features>
         </typeDescription>

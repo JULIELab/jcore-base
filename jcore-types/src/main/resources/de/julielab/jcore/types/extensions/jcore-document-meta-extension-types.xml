@@ -7,12 +7,12 @@
   <types>
     <typeDescription>
       <name>de.julielab.jcore.types.ext.DBProcessingMetaData</name>
-      <description>This type stores required information for the appropiate handling of consistent XMI deserialization in the XMI reader and serialization in the XMI consumer with respect to the separate storage of annotations.</description>
+      <description>This type stores required information for the appropriate handling of consistent XMI deserialization in the XMI reader and serialization in the XMI consumer with respect to the separate storage of annotations.</description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
         <featureDescription>
           <name>primaryKey</name>
-          <description>The primary key of an artefact, possibly consisting of multiple components.</description>
+          <description>The primary key of an artifact, possibly consisting of multiple components.</description>
           <rangeTypeName>uima.cas.StringArray</rangeTypeName>
         </featureDescription>
         <featureDescription>
