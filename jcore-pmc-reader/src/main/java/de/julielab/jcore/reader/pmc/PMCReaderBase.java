@@ -68,7 +68,7 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
 
     private Set<String> readWhitelist(File whitelistFile) throws IOException {
         Set<String> whitelist = new HashSet<>();
-        if (whitelistFile == null) {
+        if (whitelistFile == null || !whitelistFile.exists()) {
             whitelist.add("all");
         } else {
             try (BufferedReader br = Files.newBufferedReader(whitelistFile.toPath(), StandardCharsets.UTF_8)) {

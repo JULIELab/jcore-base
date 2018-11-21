@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.reader.xmi.XmiDBMultiplierReader</implementationName>
+    <processingResourceMetaData>
+        <name>XMI Database Multiplier Reader</name>
+        <description>This is an extension of the DBMultiplierReader to handle JeDIS XMI annotation module data.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>ReadsBaseDocument</name>
+                <description>Indicates if this reader reads segmented annotation data. If set to false, the XMI data is expected to represent complete annotated documents. If it is set to true, a segmented annotation graph is expected and the table given with the 'Table' parameter will contain the document text together with some basic annotations. What exactly is stored in which manner is determined by the jcore-xmi-db-consumer used to write the data into the database.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>StoreMaxXmiId</name>
+                <description>This parameter is required to be set to true, if this reader is contained in a pipeline that also contains a jcore-xmi-db-writer andthe writer will segment the CAS annotation graph and store only parts of it. Then, it is important to keep track of the free XMI element IDs that may be assigned to new annotation elements to avoid ID clashes when assembling an XMI document from separately stored annotation graph segments.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>IncreasedAttributeSize</name>
+                <description>Maxmimum XML attribute size in bytes. Since the CAS document text is stored as an XMI attribute, it might happen for large documents that there is an error because the maximum attribute size is exceeded. This parameter allows to specify the maxmimum  attribute size in order to avoid such errors. Should only be set if required.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>XercesAttributeBufferSize</name>
+                <description>Initial XML parser buffer size in bytes. For large documents, it can happen that XMI parsing is extremely slow. By employing monitoring tools like the jconsole or (j)visualvm, the hot spots of work can be identified. If one of those is the XML attribute buffer resizing, this parameter should be set to a size that makes buffer resizing unnecessary.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SendCasToLast</name>
+                <description>UIMA DUCC relevant parameter when using a CAS multiplier. When set to true, the worker CAS from the collection reader is forwarded to the last component in the pipeline. This can be used to send information about the progress to the CAS consumer in order to have it perform batch operations. For this purpose, a feature structure of type WorkItem from the DUCC library is added to the worker CAS. This feature structure has information about the current progress.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ResetTable</name>
+                <description>If set to true and the parameter 'Table' is set to a subset table, the subset table will be reset atthe initialization of the reader to be ready for processing of the whole subset. Do not use when multiple readers read the same subset table.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>FetchIdsProactively</name>
+                <description>If set to true and when reading from a subset table, batches of document IDs will be retrieved in a background thread while the previous batch is already in process. This is meant to minimize waiting time for the database. Deactivate this feature if you encounter issues with databaase connections.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTables</name>
+                <description>An array of table names or a string in the form of a qualified Java class, i.e. a dot-separated path. In the latter case, an existing table is searched for by converting the dots to underscores. A specific Postgres schema can be specified by prepending the Java-style path with a schema name followed by a colon, e.g. 'myschema:de.julielab.jcore.types.Token'. By default, the table names will be resolved against the active data postgres schema configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains a dot or a colon, the active data schema will be ignored for this table. When reading documents from the document data table, the additional tables will be joined onto the data table using the primary keys of the queried documents. Using the table schema for the additional documents defined by the 'AdditionalTableSchema' parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned together with the main document data. This mechanism is most prominently used to retrieve annotation table data together with the original document text in XMI format for the JeDIS system.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTableSchemas</name>
+                <description>The table schemas that corresponds to the additional tables given with the 'AdditionalTables' parameter. If only one schema name is given, that schema must apply to all additional tables.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTablesPostgresSchema</name>
+                <description>This optional parameter specifies the Postgres schema in which the additional tables to read are searched by default. If omitted, the active data schema from the CoStoSys configuration is assumed. The default can be overwritten for individual types. For details, see the description of the 'AdditionalTables' parameter.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>BatchSize</name>
+                <description/>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DBDriver</name>
+                <description>Currently unused because the Hikari JDBC library should recognize the correct driver. However, there seem to be cases where this doesn't work (HSQLDB). So we keep the parameter for later. When this issue comes up, the driver would have to be set manually. This isn't done right now.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>Table</name>
+                <description>The data or subset database table to read from. The name will be resolved against the active Postgres schema defined in the CoStoSys configuration file.However, if the name contains a schema qualification (i.e. 'schemaname.tablename), the configuration file will be ignored in this point.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SelectionOrder</name>
+                <description>WARNING: Potential SQL injection vulnerability. Do not let unknown users interact with your database with this component. An SQL ORDER clause specifying in which order the documents in the target database table should be processed. Only the clause itself must be specified, the ORDER keyword is automatically added.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>WhereCondition</name>
+                <description>WARNING: Potential SQL injection vulnerability. Do not let unknown users interact with your database with this component. Only used when reading data tables directly. No effect when the 'tableName' parameter specifies a subset table. The parameter value should be an SQL WHERE clause restricting the documents to be read. Only the clause itself must be specified, the WHERE keyword is added automatically.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>Limit</name>
+                <description/>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>CostosysConfigFile</name>
+                <description>File path or classpath resource location to the CoStoSys XML configuration. This configuration must specify the table schema of the table referred to by the 'Table' parameter as active table schema. The active table schema is always the schema of the data table that is either queried directly for documents or, if 'tableName' points to a subset table, indirectly through the subset table. Make also sure that the active database connection in the configuration points to the correct database.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>SendCasToLast</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>ResetTable</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>FetchIdsProactively</name>
+                <value>
+                    <boolean>true</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>BatchSize</name>
+                <value>
+                    <integer>50</integer>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>SelectionOrder</name>
+                <value>
+                    <string/>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
+</collectionReaderDescription>
