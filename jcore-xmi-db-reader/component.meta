@@ -1,9 +1,18 @@
 {
     "categories": [
+        "multiplier",
         "reader"
     ],
     "description": "Reads CAS XMI data from a relational database (Postgres). Thus, the stored CASes may then be processed\n        further.\n    ",
     "descriptors": [
+        {
+            "category": "multiplier",
+            "location": "de.julielab.jcore.reader.xmi.desc.de.julielab.jcore.reader.xmi.XmiDBMultiplier"
+        },
+        {
+            "category": "reader",
+            "location": "de.julielab.jcore.reader.xmi.desc.jcore-xmi-db-multiplier-reader"
+        },
         {
             "category": "reader",
             "location": "de.julielab.jcore.reader.xmi.desc.jcore-xmi-db-reader"
@@ -14,7 +23,7 @@
     "maven-artifact": {
         "artifactId": "jcore-xmi-db-reader",
         "groupId": "de.julielab",
-        "version": "2.3.4"
+        "version": "2.3.5-SNAPSHOT"
     },
     "name": "JCoRe XMI Database Reader"
 }

@@ -49,9 +49,9 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-        boolean initialized = super.initialized;
+        boolean initDone = super.initialized;
         RowBatch rowBatch = null;
-        if (!initialized) {
+        if (!initDone) {
             try {
                 rowBatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
                 adaptReaderConfigurationForXmiData(rowBatch);
