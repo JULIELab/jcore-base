@@ -1,7 +1,7 @@
 {
     "categories": [
-        "multiplier",
-        "reader"
+        "reader",
+        "multiplier"
     ],
     "description": "A UIMA reader for the Pubmed Central NXML format.",
     "descriptors": [
