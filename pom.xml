@@ -15,7 +15,7 @@
 
     <name>JCoRe Base</name>
     <description>The POM for the JCoRe Base projects.</description>
-    <version>2.3.1</version>
+    <version>2.3.2</version>
     <organization>
         <name>JULIE Lab, Germany</name>
         <url>http://www.julielab.de</url>
@@ -110,4 +110,9 @@
         <developerConnection>scm:git:git://github.com/JULIELab/jcore-base.git</developerConnection>
         <url>scm:git:https://github.com/JULIELab/jcore-base</url>
     </scm>
+    <properties>
+        <jcore-utilities-version>2.3.1</jcore-utilities-version>
+        <jcore-types-version>2.3.2</jcore-types-version>
+        <guava-version>27.0.1-jre</guava-version>
+    </properties>
 </project>

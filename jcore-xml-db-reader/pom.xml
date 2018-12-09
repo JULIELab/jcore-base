@@ -76,7 +76,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>21.0</version>
+            <version>${guava-version}</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
@@ -86,12 +86,12 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-utilities</artifactId>
-            <version>${jcore-version}</version>
+            <version>${jcore-utilities-version}</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
-            <version>${jcore-version}</version>
+            <version>${jcore-types-version}</version>
         </dependency>
     </dependencies>
     <url>https://github.com/JULIELab/jcore-base/jcore-xml-db-reader</url>

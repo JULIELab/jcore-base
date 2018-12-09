@@ -10,9 +10,9 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>
-        <version>2.3.0</version>
+        <version>2.3.2</version>
     </parent>
-    <version>2.3.1-SNAPSHOT</version>
+    <version>2.3.1</version>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
-            <version>2.3.1-SNAPSHOT</version>
+            <version>${jcore-types-version}</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
