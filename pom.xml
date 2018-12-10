@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -105,11 +106,13 @@
         <module>jedis-parent</module>
     </modules>
     <scm>
-        <connection>scm:git:git://github.com/JULIELab/jcore-base.git</connection>
-        <developerConnection>scm:git:git://github.com/JULIELab/jcore-base.git</developerConnection>
+        <connection>scm:git:https://github.com/JULIELab/jcore-base.git
+        </connection>
+        <developerConnection>scm:git:https://github.com/JULIELab/jcore-base.git
+        </developerConnection>
         <url>scm:git:https://github.com/JULIELab/jcore-base</url>
-      <tag>v2.3.3</tag>
-  </scm>
+        <tag>v2.3.3</tag>
+    </scm>
     <properties>
         <jcore-utilities-version>2.3.2</jcore-utilities-version>
         <jcore-types-version>2.3.3</jcore-types-version>
