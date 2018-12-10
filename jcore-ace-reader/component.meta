@@ -15,7 +15,7 @@
     "maven-artifact": {
         "artifactId": "jcore-ace-reader",
         "groupId": "de.julielab",
-        "version": "2.3.0"
+        "version": "2.3.3"
     },
     "name": "JCoRe ACE Reader"
 }

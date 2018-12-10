@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-iexml-reader",
         "groupId": "de.julielab",
-        "version": "2.3.0"
+        "version": "2.3.3"
     },
     "name": "JCoRe IEXML Reader"
 }

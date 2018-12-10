@@ -22,7 +22,7 @@
     "maven-artifact": {
         "artifactId": "jcore-medxn-ae",
         "groupId": "de.julielab",
-        "version": "2.3.0"
+        "version": "2.3.3"
     },
     "name": "JCoRe MedXN"
 }

@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-pubtator-reader",
         "groupId": "de.julielab",
-        "version": "2.3.0"
+        "version": "2.3.3"
     },
     "name": "JCoRe PubTator Reader"
 }

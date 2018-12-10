@@ -22,7 +22,7 @@
     "maven-artifact": {
         "artifactId": "jcore-bionlpformat-reader",
         "groupId": "de.julielab",
-        "version": "2.3.1"
+        "version": "2.3.2"
     },
     "name": "JCoRe BioNLP Format Reader"
 }
