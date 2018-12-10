@@ -4,11 +4,11 @@
   <parent>
     <groupId>de.julielab</groupId>
     <artifactId>jcore-base</artifactId>
-    <version>2.3.0</version>
+    <version>2.3.3-SNAPSHOT</version>
   </parent>
   <artifactId>jcore-msdoc-reader</artifactId>
   <name>JCoRe MSdoc Reader</name>
-  <description>Reads MS doc files; derived from UIMA example &quot;FileSystemCollectionReader&quot; and the JCoRe component File Reader</description>
+  <description>Reads MS doc files; derived from UIMA example "FileSystemCollectionReader" and the JCoRe component File Reader</description>
   <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-msdoc-reader</url>
   <organization>
   	<name>JULIE Lab Jena, Germany</name>

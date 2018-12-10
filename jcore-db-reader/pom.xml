@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>jedis-parent</artifactId>
         <groupId>de.julielab</groupId>
-        <version>2.3.3</version>
+        <version>2.3.4-SNAPSHOT</version>
         <relativePath>../jedis-parent</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jcore-db-reader</artifactId>
     <name>JCoRe Database Reader</name>
     <description>Abstract database reader for database driven processing</description>
-    <version>2.3.4</version>
+    <version>2.3.5-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>de.julielab</groupId>
