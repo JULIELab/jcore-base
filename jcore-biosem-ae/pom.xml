@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
-		<version>2.3.3</version>
+		<version>2.3.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>jcore-biosem-ae</artifactId>
 	<name>JCoRe BioSem Event Annotator</name>
-	<version>2.3.2</version>
+	<version>2.3.3-SNAPSHOT</version>
 	<description>A UIMA wrapper around the BioSem Event Extractor from the University of Amsterdam.
 http://www.ncbi.nlm.nih.gov/pubmed/22859502</description>
 	<dependencies>
