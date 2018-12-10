@@ -7,7 +7,7 @@
 		<version>2.3.3</version>
 	</parent>
 	<artifactId>jcore-ign-reader</artifactId>
-  <version>2.3.4-SNAPSHOT</version>
+  <version>2.3.4</version>
   <name>JCoRe IGN Reader</name>
   <description>Collection Reader for the IGN corpus in BioC format as accessible at https://sites.google.com/site/hongjiedai/projects/the-ign-corpus.</description>
   <dependencies>
@@ -38,5 +38,6 @@
   </organization>
   <scm>
   	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-ign-reader</url>
+    <tag>v2.3.3</tag>
   </scm>
   </project>

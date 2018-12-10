@@ -3,11 +3,11 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>
-        <version>2.3.3-SNAPSHOT</version>
+        <version>2.3.3</version>
     </parent>
     <artifactId>jcore-txt-consumer</artifactId>
     <name>JCoRe TXT Consumer</name>
-    <version>2.3.2-SNAPSHOT</version>
+    <version>2.3.2</version>
     <dependencies>
         <dependency>
             <groupId>de.julielab</groupId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-utilities</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${jcore-utilities-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
