@@ -64,6 +64,8 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
     private String[] typeMappings;
 
     private Map<String, String> typeMap;
+    private InputStream modelIs;
+    private String modelFilename;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -103,9 +105,8 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
             postProcessor = BANNER.getPostProcessor(config);
 
             SubnodeConfiguration subConfig = config.configurationAt("banner.eval");
-            String modelFilename = subConfig.getString("modelFilename");
+            modelFilename = subConfig.getString("modelFilename");
 
-            InputStream modelIs;
             if (new File(modelFilename).exists()) {
                 modelIs = new FileInputStream(modelFilename);
             } else {
@@ -115,7 +116,6 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
             if (null == modelIs)
                 throw new ResourceInitializationException(ResourceInitializationException.COULD_NOT_ACCESS_DATA,
                         new Object[]{modelFilename});
-            tagger = CRFTagger.load(modelIs, lemmatiser, posTagger, dictionary);
             log.info("{}: {}", PARAM_CONFIG_FILE, configFilePath);
             log.info("{}: {}", PARAM_TYPE_MAPPING, Arrays.toString(typeMappings));
             log.info("Model: {}", modelFilename);
@@ -128,6 +128,22 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 
     @Override
     public void process(JCas jcas) throws AnalysisEngineProcessException {
+        if (tagger == null) {
+            try {
+                // CHRISTOPH IST SUPER! :-D
+                // We need to instantiate the tagger in process() because process() is called by the Thread that
+                // executes the actual tagging. The initialize() method, on the other hand, is called by the
+                // main thread. However, the LemmaPOS class of BANNER maintains an internal map that associates
+                // threads with the lemmatiser and the posTagger. This is necessary because even though the
+                // model is deserialized multiple times, the FeatureSet#pipe field seems to be always the
+                // exact same instance, containing a single instance of LemmaPOS (again, despite reading the model
+                // file and deserializing it multiple times). This is why the Thread -> resources map was added.
+                tagger = CRFTagger.load(modelIs, lemmatiser, posTagger, dictionary);
+            } catch (IOException e) {
+                log.error("Could not load the BANNER model at {}", modelFilename, e);
+                throw new AnalysisEngineProcessException(e);
+            }
+        }
         String docId = "<unknown>";
         try {
             docId = JCoReTools.getDocId(jcas);

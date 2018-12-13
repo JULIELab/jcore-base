@@ -42,7 +42,7 @@ public class LemmaPOS extends Pipe {
 
     public void setLemmatiser(Lemmatiser lemmatiser) {
         initResourcesMap();
-       getResources().lemmatiser = lemmatiser;
+        getResources().lemmatiser = lemmatiser;
     }
 
     public void setPosTagger(Tagger posTagger) {
@@ -52,7 +52,7 @@ public class LemmaPOS extends Pipe {
 
     private void initResourcesMap() {
         if (resourcesByThread == null)
-        resourcesByThread = new HashMap<>();
+            resourcesByThread = new HashMap<>();
     }
 
     private Resources getResources() {
