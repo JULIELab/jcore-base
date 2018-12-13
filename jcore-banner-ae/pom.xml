@@ -1,11 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jcore-banner-ae</artifactId>
     <name>JCoRe Banner</name>
     <description>Banner gene tagging tool.
         Bases on version 0.0.12-SNAPSHOT from scm:git:git@github.com:oaqa/banner.git.
     </description>
-
     <build>
 
         <plugins>
@@ -90,16 +90,22 @@
             <groupId>de.julielab</groupId>
             <artifactId>dragontool</artifactId>
             <version>1.3.3</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${jcore-types-version}</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-utilities</artifactId>
-            <version>2.3.3-SNAPSHOT</version>
+            <version>${jcore-utilities-version}</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
@@ -109,7 +115,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>julielab-java-utilities</artifactId>
-            <version>1.0.0</version>
+            <version>${julielab-java-utilities-version}</version>
         </dependency>
     </dependencies>
     <parent>

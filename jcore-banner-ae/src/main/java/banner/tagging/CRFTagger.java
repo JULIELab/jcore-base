@@ -169,7 +169,7 @@ public class CRFTagger implements Tagger {
 		Instance instance = getInstance(sentence);
 		Sequence<Object> tags = model.transduce((Sequence) instance.getData());
 		sentence.addMentions(getTagList(tags), 1.0);
-		FeatureVectorSequence fvs = (FeatureVectorSequence) instance.getData();
+//		FeatureVectorSequence fvs = (FeatureVectorSequence) instance.getData();
 //		for (int i = 0; i < fvs.size(); ++i) {
 //			boolean omitConjunctionOffsets = true;
 //			System.out.print(
