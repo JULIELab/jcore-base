@@ -12,8 +12,13 @@
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-mstparser-ae</url>
     <repositories>
         <repository>
-            <id>filesystem</id>
-            <url>file:repo</url>
+            <id>external-jars</id>
+            <name>External JAR Repo</name>
+            <url>${project.baseUri}../repo</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
     <parent>
