@@ -114,6 +114,7 @@ public class DBMultiplierReader extends DBSubsetReader {
                     workitem.setLastBlock(true);
                 workitem.addToIndexes();
             } catch (IOException e) {
+                log.error("Error occurred while creating Workitem feature structure", e);
                 throw new CollectionException(e);
             }
         }
@@ -273,7 +274,7 @@ public class DBMultiplierReader extends DBSubsetReader {
                 join();
                 return ids;
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("Background ID fetching thread was interrupted", e);
             }
             return null;
         }

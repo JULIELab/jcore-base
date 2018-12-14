@@ -55,7 +55,8 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             try {
                 rowBatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
                 adaptReaderConfigurationForXmiData(rowBatch);
-                xmiModuleAnnotationNames = rowBatch.getXmiAnnotationModuleNames().toStringArray();
+                if (rowBatch.getXmiAnnotationModuleNames() != null)
+                    xmiModuleAnnotationNames = rowBatch.getXmiAnnotationModuleNames().toStringArray();
             } catch (ResourceInitializationException e) {
                 throw new AnalysisEngineProcessException(e);
             }

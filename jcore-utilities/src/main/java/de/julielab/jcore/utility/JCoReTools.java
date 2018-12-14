@@ -265,6 +265,7 @@ public class JCoReTools {
      * @return The new, filled StringArray.
      */
     public static StringArray newStringArray(JCas jCas, String... elements) {
+        int length = elements != null ? elements.length : 0;
         final StringArray strings = new StringArray(jCas, elements.length);
         strings.copyFromArray(elements, 0, 0, elements.length);
         return strings;

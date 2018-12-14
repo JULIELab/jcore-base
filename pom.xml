@@ -112,8 +112,9 @@
       <tag>HEAD</tag>
   </scm>
     <properties>
-        <jcore-utilities-version>2.3.2</jcore-utilities-version>
-        <jcore-types-version>2.3.3</jcore-types-version>
+        <jcore-utilities-version>2.3.3-SNAPSHOT</jcore-utilities-version>
+        <jcore-types-version>2.3.4-SNAPSHOT</jcore-types-version>
         <guava-version>27.0.1-jre</guava-version>
+        <julielab-java-utilities-version>1.0.4</julielab-java-utilities-version>
     </properties>
 </project>

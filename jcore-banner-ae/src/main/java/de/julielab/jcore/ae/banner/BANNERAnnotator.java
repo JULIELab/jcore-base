@@ -130,7 +130,6 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
     public void process(JCas jcas) throws AnalysisEngineProcessException {
         if (tagger == null) {
             try {
-                // CHRISTOPH IST SUPER! :-D
                 // We need to instantiate the tagger in process() because process() is called by the Thread that
                 // executes the actual tagging. The initialize() method, on the other hand, is called by the
                 // main thread. However, the LemmaPOS class of BANNER maintains an internal map that associates

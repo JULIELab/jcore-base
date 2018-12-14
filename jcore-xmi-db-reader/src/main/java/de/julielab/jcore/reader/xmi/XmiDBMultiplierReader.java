@@ -32,11 +32,11 @@ import java.util.zip.GZIPInputStream;
 @ResourceMetaData(name = "XMI Database Multiplier Reader", description = "This is an extension of the " +
         "DBMultiplierReader to handle JeDIS XMI annotation module data.")
 public class XmiDBMultiplierReader extends DBMultiplierReader {
-private final static Logger log = LoggerFactory.getLogger(XmiDBMultiplierReader.class);
     public static final String PARAM_STORE_XMI_ID = Initializer.PARAM_STORE_XMI_ID;
     public static final String PARAM_READS_BASE_DOCUMENT = Initializer.PARAM_READS_BASE_DOCUMENT;
     public static final String PARAM_INCREASED_ATTRIBUTE_SIZE = Initializer.PARAM_INCREASED_ATTRIBUTE_SIZE;
     public static final String PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE = Initializer.PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE;
+    private final static Logger log = LoggerFactory.getLogger(XmiDBMultiplierReader.class);
     @ConfigurationParameter(name = PARAM_READS_BASE_DOCUMENT, description = "Indicates if this reader reads segmented " +
             "annotation data. If set to false, the XMI data is expected to represent complete annotated documents. " +
             "If it is set to true, a segmented annotation graph is expected and the table given with the 'Table' parameter " +
@@ -62,6 +62,7 @@ private final static Logger log = LoggerFactory.getLogger(XmiDBMultiplierReader.
             "resizing, this parameter should be set to a size that makes buffer resizing unnecessary.")
     private int xercesAttributeBufferSize;
     private boolean doGzip;
+
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         adaptReaderConfigurationForXmiData();
@@ -80,13 +81,19 @@ private final static Logger log = LoggerFactory.getLogger(XmiDBMultiplierReader.
 
     @Override
     public void getNext(JCas jCas) throws CollectionException {
-        super.getNext(jCas);
-        final RowBatch rowBatch = JCasUtil.selectSingle(jCas, RowBatch.class);
-        rowBatch.setReadsBaseXmiDocument(readsBaseDocument);
-        rowBatch.setXmiAnnotationModuleNames(JCoReTools.newStringArray(jCas, additionalTableNames));
-        rowBatch.setStoreMaxXmiId(storeMaxXmiId);
-        rowBatch.setIncreasedAttributeSize(maxXmlAttributeSize);
-        rowBatch.setXercesAttributeBufferSize(xercesAttributeBufferSize);
+        try {
+            super.getNext(jCas);
+            final RowBatch rowBatch = JCasUtil.selectSingle(jCas, RowBatch.class);
+            rowBatch.setReadsBaseXmiDocument(readsBaseDocument);
+            if (additionalTableNames != null)
+                rowBatch.setXmiAnnotationModuleNames(JCoReTools.newStringArray(jCas, additionalTableNames));
+            rowBatch.setStoreMaxXmiId(storeMaxXmiId);
+            rowBatch.setIncreasedAttributeSize(maxXmlAttributeSize);
+            rowBatch.setXercesAttributeBufferSize(xercesAttributeBufferSize);
+        } catch (Throwable throwable) {
+            log.error("Exception ocurred while trying to get the next document", throwable);
+            throw throwable;
+        }
     }
 
     /**
