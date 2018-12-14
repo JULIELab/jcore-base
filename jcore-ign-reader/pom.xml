@@ -11,11 +11,11 @@
   <name>JCoRe IGN Reader</name>
   <description>Collection Reader for the IGN corpus in BioC format as accessible at https://sites.google.com/site/hongjiedai/projects/the-ign-corpus.</description>
   <dependencies>
-  	<dependency>
-  		<groupId>gov.nih.nlm.ncbi</groupId>
-  		<artifactId>bioc</artifactId>
-  		<version>1.0</version>
-  	</dependency>
+	  <dependency>
+		  <groupId>com.pengyifan.bioc</groupId>
+		  <artifactId>pengyifan-bioc</artifactId>
+		  <version>1.0.2</version>
+	  </dependency>
   	<dependency>
   		<groupId>de.julielab</groupId>
   		<artifactId>jcore-types</artifactId>
