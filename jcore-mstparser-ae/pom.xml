@@ -14,7 +14,7 @@
         <repository>
             <id>external-jars</id>
             <name>External JAR Repo</name>
-            <url>${project.baseUri}../repo</url>
+            <url>${project.baseUri}/repo</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
