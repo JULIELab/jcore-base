@@ -11,7 +11,11 @@
 		<version>2.3.4-SNAPSHOT</version>
 	</parent>		
 	<dependencies>
-	   <dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
             <version>${jcore-version}</version>
@@ -35,7 +39,7 @@
     		<artifactId>logback-classic</artifactId>
     		<scope>test</scope>
     	</dependency>
-	</dependencies>
+	<dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
 	<name>JCoRe OpenNLP Tokenizer</name>
 	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-opennlp-token-ae</url>
 </project>

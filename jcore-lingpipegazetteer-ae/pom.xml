@@ -53,7 +53,7 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
 		</dependency>
-	</dependencies>
+	<dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
 	<organization>
 		<name>JULIE Lab, Germany</name>
 		<url>http://www.julielab.de</url>

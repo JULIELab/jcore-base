@@ -4,7 +4,6 @@ import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import de.julielab.xmlData.Constants;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
@@ -13,36 +12,35 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
 
 public class XmiDBReaderMonolithicDocumentsTest {
-    @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
     private static String xmisubset;
 
     @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+        postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_complete_cas", 1, postgres);
         XmiDBSetupHelper.processAndStoreCompleteXMIData(costosysConfig, true);
         dbc.reserveConnection();
-        assertTrue("The data document table exists", dbc.tableExists("_data.documents"));
+        assertTrue(dbc.tableExists("_data.documents"), "The data document table exists");
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_complete_cas");
         dbc.createSubsetTable(xmisubset, "_data.documents", "Test XMI subset");
@@ -50,8 +48,14 @@ public class XmiDBReaderMonolithicDocumentsTest {
         dbc.close();
     }
 
+    @AfterClass
+    public static void shutdown() {
+        postgres.close();
+    }
+
     @Test
     public void testXmiDBReader() throws UIMAException, IOException {
+        System.out.println("HIER: " + Thread.currentThread().getId());
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, false,

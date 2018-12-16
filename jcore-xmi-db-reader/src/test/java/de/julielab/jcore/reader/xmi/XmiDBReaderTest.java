@@ -14,11 +14,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.InvalidXMLException;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -30,13 +29,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class XmiDBReaderTest {
-    @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
     private static String xmisubset;
 
     @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+        postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
@@ -51,8 +50,14 @@ public class XmiDBReaderTest {
         dbc.close();
     }
 
+
+    @AfterClass
+    public static void shutdown() {
+        postgres.close();
+    }
     @Test
     public void testXmiDBReader() throws UIMAException, IOException {
+        System.out.println("HIER: " + Thread.currentThread().getId());
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,

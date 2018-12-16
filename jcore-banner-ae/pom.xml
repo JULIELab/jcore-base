@@ -117,7 +117,7 @@
             <artifactId>julielab-java-utilities</artifactId>
             <version>${julielab-java-utilities-version}</version>
         </dependency>
-    </dependencies>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>

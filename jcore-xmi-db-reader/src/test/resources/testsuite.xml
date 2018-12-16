@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="XmiDBReaderTest" parallel="classes" thread-count="4" >
+    <test name="Test-method test">
+        <classes>
+            <class name="de.julielab.jcore.reader.xmi.XmiDBMultiplierTest" />
+            <class name="de.julielab.jcore.reader.xmi.XmiDBReaderGzippedDataTest" />
+            <class name="de.julielab.jcore.reader.xmi.XmiDBReaderMonolithicDocumentsTest" />
+            <class name="de.julielab.jcore.reader.xmi.XmiDBReaderTest" />
+        </classes>
+    </test>
+</suite>

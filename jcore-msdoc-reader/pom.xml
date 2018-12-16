@@ -39,5 +39,5 @@
     	<artifactId>poi-ooxml</artifactId>
     	<version>3.16</version>
     </dependency>
-  </dependencies>
+  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
   </project>

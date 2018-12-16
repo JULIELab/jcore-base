@@ -19,7 +19,7 @@
                 <artifactId>costosys</artifactId>
                 <version>1.2.1</version>
             </dependency>
-        </dependencies>
+        <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
     </dependencyManagement>
     <modules>
         <module>../jcore-db-reader</module>

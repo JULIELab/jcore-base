@@ -92,6 +92,6 @@
             <artifactId>jcore-types</artifactId>
             <version>${jcore-types-version}</version>
         </dependency>
-    </dependencies>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
     <url>https://github.com/JULIELab/jcore-base/jcore-xml-db-reader</url>
 </project>

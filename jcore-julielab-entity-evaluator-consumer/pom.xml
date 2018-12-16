@@ -43,7 +43,7 @@
             <groupId>de.julielab</groupId>
             <artifactId>julielab-java-utilities</artifactId>
         </dependency>
-    </dependencies>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
     <organization>
         <name>JULIE Lab, Germany</name>
         <url>http://www.julielab.de</url>

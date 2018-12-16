@@ -1,16 +1,12 @@
 package de.julielab.jcore.reader.xmi;
 
 import de.julielab.jcore.consumer.xmi.XMIDBWriter;
-import de.julielab.jcore.reader.db.DBMultiplierReader;
-import de.julielab.jcore.reader.xml.XMLDBReader;
 import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.xmlData.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -18,7 +14,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class XmiDBSetupHelper {
     public static void processAndSplitData(String costosysConfig, boolean gzip) throws UIMAException, IOException {

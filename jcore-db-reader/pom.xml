@@ -89,5 +89,5 @@
                 <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-stream</artifactId></exclusion>
             </exclusions>
         </dependency>
-    </dependencies>
+   </dependencies>
 </project>

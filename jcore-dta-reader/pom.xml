@@ -105,7 +105,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-	</dependencies>
+	<dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
 	<description>Reader for DTA files (German digital humanities corpus)</description>
 	<organization>
 		<url>http://www.julielab.de</url>

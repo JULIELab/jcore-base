@@ -20,7 +20,7 @@
   		<artifactId>aliasi-lingpipe</artifactId>
   		<version>4.1.0</version>
   	</dependency>
-  </dependencies>
+  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
   <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-lingpipe-porterstemmer-ae</url>
   <organization>
   	<name>JULIE Lab, Germany</name>

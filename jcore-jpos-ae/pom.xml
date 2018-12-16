@@ -125,7 +125,7 @@
     	<artifactId>jcore-mallet-2.0.9</artifactId>
     	<version>2.1.0</version>
     </dependency>
-  </dependencies>
+  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
 	<organization>
 		<url>http://www.julielab.de</url>
 		<name>JULIE Lab, Germany</name>

@@ -1,16 +1,17 @@
 package de.julielab.jcore.utility.index;
 
-import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
 
 import de.julielab.jcore.types.Entity;
 import de.julielab.jcore.types.Token;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class JCoReTreeMapAnnotationIndexTest {
 	@Test

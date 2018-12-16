@@ -68,7 +68,7 @@
 			<artifactId>jcore-types</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-	</dependencies>
+	<dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
 	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-cpe-db-runner</url>
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>

@@ -9,7 +9,6 @@
         </encoder>
     </appender>
 
-    <logger name="de.julielab.xmlData.dataBase.DataBaseConnector" level="trace"/>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>

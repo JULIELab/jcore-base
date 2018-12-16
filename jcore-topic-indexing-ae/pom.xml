@@ -103,7 +103,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-    </dependencies>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
     <name>JCoRe-Topic-Labeling-AE</name>
     <organization>
         <name>JULIE Lab Jena, Germany</name>

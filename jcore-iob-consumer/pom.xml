@@ -33,7 +33,7 @@
     	<artifactId>julie-segment-eval</artifactId>
     	<version>1.0.6</version>
     </dependency>
-  </dependencies>
+  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
   <name>JCoRe CAS to IOB Consumer</name>
   <organization>
   	<name>JULIE Lab Jena, Germany</name>

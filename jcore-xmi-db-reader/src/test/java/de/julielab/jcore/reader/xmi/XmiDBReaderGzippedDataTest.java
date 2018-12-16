@@ -12,36 +12,36 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.*;
+
 
 /**
  * The exact same test as {@link XmiDBReaderTest} but here, the data is gzipped.
  */
 public class XmiDBReaderGzippedDataTest {
-    @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
     private static String xmisubset;
 
     @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+        postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 1, postgres);
         XmiDBSetupHelper.processAndSplitData(costosysConfig, true);
-        assertTrue("The data document table exists", dbc.withConnectionQueryBoolean( c -> c.tableExists("_data.documents")));
+        assertTrue(dbc.withConnectionQueryBoolean( c -> c.tableExists("_data.documents")), "The data document table exists");
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");
         dbc.reserveConnection();
@@ -50,8 +50,14 @@ public class XmiDBReaderGzippedDataTest {
         dbc.close();
     }
 
+    @AfterClass
+    public static void shutdown() {
+        postgres.close();
+    }
+
     @Test
     public void testXmiDBReader() throws UIMAException, IOException {
+        System.out.println("HIER: " + Thread.currentThread().getId());
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,

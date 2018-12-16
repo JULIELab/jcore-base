@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import de.julielab.java.utilities.FileUtilities;
 import org.apache.uima.UIMAException;
@@ -295,6 +296,7 @@ public class SentenceTokenConsumerTest {
 
 	@Test
 	public void testZip() throws Exception {
+		Stream.of(new File("src/test/resources/data").listFiles((dir, name) -> name.startsWith("TXTConsumerArchive"))).forEach(f -> f.delete());
 		final AnalysisEngine consumer = AnalysisEngineFactory.createEngine(SentenceTokenConsumer.class, PARAM_OUTPUT_DIR, "src/test/resources/data", PARAM_ZIP_ARCHIVE, true, PARAM_ZIP_MAX_SIZE, 2, PARAM_MODE, "DOCUMENT");
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
 		jcas.setDocumentText("Document 1");
