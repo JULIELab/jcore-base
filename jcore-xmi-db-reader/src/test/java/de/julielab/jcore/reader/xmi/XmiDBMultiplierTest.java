@@ -16,6 +16,7 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -30,13 +31,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class XmiDBMultiplierTest {
-    @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
     private static String xmisubset;
 
     @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+        postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
@@ -49,6 +50,11 @@ public class XmiDBMultiplierTest {
         dbc.createSubsetTable(xmisubset, "_data.documents", "Test XMI subset");
         dbc.initSubset(xmisubset, "_data.documents");
         dbc.close();
+    }
+
+    @AfterClass
+    public static void shutdown() {
+        postgres.close();
     }
 
     @Test

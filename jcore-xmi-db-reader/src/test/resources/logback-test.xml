@@ -9,11 +9,7 @@
         </encoder>
     </appender>
 
-    <logger name="de.julielab" level="INFO"/>
-    <logger name="de.julielab.jcore.reader.xmi.XmiDBReader" level="trace"/>
-    <logger name="de.julielab.jcore.reader.db.DBSubsetReader" level="debug"/>
-    <!--<logger name="de.julielab.jcore.consumer.xmi.XmiDataInserter" level="trace"/>-->
-
+    <logger name="de.julielab.xmlData.dataBase.DataBaseConnector" level="trace"/>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
