@@ -8,15 +8,15 @@
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
-		<version>2.2.0</version>
+		<version>2.3.4-SNAPSHOT</version>
 	</parent>
-	
+	<version>2.3.4-SNAPSHOT</version>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>jcasgen-maven-plugin</artifactId>
-				<version>2.9.0</version>  <!-- change this to the latest version -->
+				<version>2.10.2</version>  <!-- change this to the latest version -->
 				<executions>
 					<execution>
 						<goals><goal>generate</goal></goals>  <!-- this is the only goal -->
@@ -30,6 +30,12 @@
 								<typeSystemInclude>
 									src/main/resources/de/julielab/jcore/types/jcore-all-types.xml
 								</typeSystemInclude>
+								<typeSystemInclude>
+									src/main/resources/de/julielab/jcore/types/casmultiplier/jcore-uri-multiplier-types.xml
+								</typeSystemInclude>
+                                <typeSystemInclude>
+                                    src/main/resources/de/julielab/jcore/types/casmultiplier/jcore-dbtable-multiplier-types.xml
+                                </typeSystemInclude>
 							</typeSystemIncludes>
 
 							<!-- OPTIONAL -->

@@ -1,6 +1,17 @@
+/** 
+ * 
+ * Copyright (c) 2017, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the BSD-2-Clause License
+ *
+ * Author: 
+ * 
+ * Description:
+ **/
 package de.julielab.jcore.reader.dta;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -36,20 +47,38 @@ import de.julielab.jcore.types.extensions.dta.PersonInfo;
 import de.julielab.xml.JulieXMLTools;
 
 public class DTAFileReaderTest {
-	private static final String TEST_DIR = "src/test/resources/testfiles/";
-	static final String TEST_FILE = TEST_DIR
-			+ "short-arnim_wunderhorn01_1806.tcf.xml";
 
-	private static VTDNav getNav() throws Exception {
-		return JulieXMLTools.getVTDNav(
-				new FileInputStream(new File(TEST_FILE)), 1024);
+	public enum Version {
+		v2016("2016_format"), v2017("2017_format");
+		private static final String TEST_DIR = "src/test/resources/testfiles_";
+		private static final String TEST_FILE_NAME = "/short-arnim_wunderhorn01_1806.tcf.xml";
+		private final String versionString;
+
+		String getTestDir() {
+			return TEST_DIR + versionString;
+		}
+
+		String getTestFileForVersion() {
+			return TEST_DIR + versionString + TEST_FILE_NAME;
+		}
+
+		Version(String versionString) {
+			this.versionString = versionString;
+		}
 	}
 
-	public static JCas process(final boolean normalize) throws Exception {
+	private static VTDNav getNav(String testFile) throws Exception {
+		return JulieXMLTools.getVTDNav(new FileInputStream(new File(testFile)),
+				1024);
+	}
+
+	public static JCas process(final boolean normalize, Version version)
+			throws Exception {
+		final String testFile = version.getTestFileForVersion();
 		final JCas jcas = JCasFactory.createJCas();
-		final VTDNav nav = getNav();
-		DTAFileReader.readDocument(jcas, nav, TEST_FILE, normalize);
-		DTAFileReader.readHeader(jcas, nav, TEST_FILE);
+		final VTDNav nav = getNav(testFile);
+		DTAFileReader.readDocument(jcas, nav, testFile, normalize);
+		DTAFileReader.readHeader(jcas, nav, testFile, version == Version.v2017);
 		return jcas;
 	}
 
@@ -63,28 +92,18 @@ public class DTAFileReaderTest {
 
 	@Test
 	public void testDoProcessDirectory() throws Exception {
-		final CollectionReader reader = DTAUtils.getReader(TEST_DIR, true);
-		final CAS cas = JCasFactory.createJCas().getCas();
-		int processed = 0;
-		while (reader.hasNext()) {
-			reader.getNext(cas);
-			processed++;
-			cas.reset();
+		
+		for (Version v : Version.values()) {
+			CollectionReader reader = DTAUtils.getReader(v.getTestDir(), true, v == Version.v2017);
+			CAS cas = JCasFactory.createJCas().getCas();
+			int processed = 0;
+			while (reader.hasNext()) {
+				reader.getNext(cas);
+				processed++;
+				cas.reset();
+			}
+			assertEquals(1, processed);
 		}
-		assertEquals(1, processed);
-	}
-
-	@Test
-	public void testDoProcessFile() throws Exception {
-		final CollectionReader reader = DTAUtils.getReader(TEST_DIR, true);
-		final CAS cas = JCasFactory.createJCas().getCas();
-		int processed = 0;
-		while (reader.hasNext()) {
-			reader.getNext(cas);
-			processed++;
-			cas.reset();
-		}
-		assertEquals(1, processed);
 	}
 
 	@Test
@@ -94,12 +113,14 @@ public class DTAFileReaderTest {
 				+ "\nDes Knaben Wunderhorn Alte deutſche Lieder L. Achim v. Arnim."
 				+ "\nClemens Brentano."
 				+ "\nHeidelberg, beÿ Mohr u. Zimmer.bar";
-		try {
-			final JCas jcas = process(false);
-			assertEquals(expected, jcas.getDocumentText());
-		} catch (final Exception e) {
-			e.printStackTrace();
-			fail();
+		for (Version version : Version.values()) {
+			try {
+				final JCas jcas = process(false, version);
+				assertEquals(expected, jcas.getDocumentText());
+			} catch (final Exception e) {
+				e.printStackTrace();
+				fail();
+			}
 		}
 	}
 
@@ -109,63 +130,65 @@ public class DTAFileReaderTest {
 				+ "\nAlte deutsche Lieder gesammelt von L. A. v. Arnim und Clemens Brentano."
 				+ "\nDes Knaben Wunderhorn Alte deutsche Lieder L. Achim v. Arnim."
 				+ "\nClemens Brentano." + "\nHeidelberg, bei Mohr u. Zimmer.";
-		try {
-			final JCas jcas = process(true);
-			assertEquals(expected, jcas.getDocumentText());
-		} catch (final Exception e) {
-			e.printStackTrace();
-			fail();
+		for (Version version : Version.values()) {
+			try {
+				final JCas jcas = process(true, version);
+				assertEquals(expected, jcas.getDocumentText());
+			} catch (final Exception e) {
+				e.printStackTrace();
+				fail();
+			}
 		}
 	}
 
 	@Test
-	public void testGetTexts() throws Exception {
-		final List<String> expected = Arrays.asList(new String[] {
-				"Heidelberg", "Frankfurt" });
-		final List<String> actual = DTAFileReader.getTexts(TEST_FILE, getNav(),
-				DTAFileReader.XPATH_PUBLICATION_STMT + "pubPlace");
-		assertEquals(expected, actual);
-	}
-
-	@Test
 	public void testHeader() throws Exception {
-		final JCas jcas = process(true);
-		final FSIterator<Annotation> i = jcas.getAnnotationIndex(Header.type)
-				.iterator();
-		final Set<Header> header = new HashSet<>();
-		while (i.hasNext())
-			header.add((Header) i.next());
-		assertEquals(1, header.size());
-		final Header h = header.iterator().next();
+		for (Version version : Version.values()) {
+			final JCas jcas = process(true, version);
+			final FSIterator<Annotation> i = jcas
+					.getAnnotationIndex(Header.type).iterator();
+			final Set<Header> header = new HashSet<>();
+			while (i.hasNext())
+				header.add((Header) i.next());
+			assertEquals(1, header.size());
+			final Header h = header.iterator().next();
 
-		// title
-		assertEquals("Des Knaben Wunderhorn", h.getTitle());
-		assertEquals("Alte deutsche Lieder", h.getSubtitle());
-		assertEquals("1", h.getVolume());
+			// title
+			assertEquals("Des Knaben Wunderhorn", h.getTitle());
+			assertEquals("Alte deutsche Lieder", h.getSubtitle());
+			assertEquals("1", h.getVolume());
 
-		// persons
-		assertEquals(2, h.getAuthors().size());
-		assertEquals(6, h.getEditors().size());
-		final PersonInfo arnim = (PersonInfo) h.getAuthors().get(0);
-		assertEquals("Arnim", arnim.getSurename());
-		assertEquals("Achim von", arnim.getForename());
-		assertEquals("http://d-nb.info/gnd/118504177", arnim.getIdno());
+			// persons
+			assertEquals(2, h.getAuthors().size());
+			assertEquals(version == Version.v2017 ? 8 : 6,
+					h.getEditors().size());
+			final PersonInfo arnim = (PersonInfo) h.getAuthors().get(0);
+			assertEquals("Arnim", arnim.getSurename());
+			assertEquals("Achim von", arnim.getForename());
+			assertEquals("http://d-nb.info/gnd/118504177", arnim.getIdno());
 
-		//classification
-		final FSArray classes = h.getClassifications();
-		assertEquals(3, classes.size());
-		assertTrue(containsClassification(classes, DTABelletristik.class));
-		assertTrue(containsClassification(classes, DWDS1Belletristik.class));
-		assertTrue(containsClassification(classes, DWDS2Wissenschaft.class));
-		assertTrue(h.getIsCoreCorpus());
+			//classification
+			final FSArray classes = h.getClassifications();
+			assertEquals(version == Version.v2017 ? 2 : 3, classes.size());
+			assertTrue(containsClassification(classes, DTABelletristik.class));
+			assertTrue(
+					containsClassification(classes, DWDS1Belletristik.class));
+			if (version == Version.v2017)
+				assertFalse(containsClassification(classes,
+						DWDS2Wissenschaft.class));
+			else
+				assertTrue(containsClassification(classes,
+						DWDS2Wissenschaft.class));
+			assertTrue(h.getIsCoreCorpus());
 
-		//year
-		assertEquals("1806", h.getYear());
+			//year
+			assertEquals("1806", h.getYear());
 
-		//publisher
-		assertEquals("Heidelberg", h.getPublicationPlaces(0));
-		assertEquals("Frankfurt", h.getPublicationPlaces(1));
-		assertEquals("Mohr u: Zimmer", h.getPublishers().get(0));
+			//publisher
+			assertEquals("Heidelberg", h.getPublicationPlaces(0));
+			assertEquals("Frankfurt", h.getPublicationPlaces(1));
+			assertEquals("Mohr u: Zimmer", h.getPublishers().get(0));
+		}
 	}
 
 	@Test
@@ -173,17 +196,20 @@ public class DTAFileReaderTest {
 		final String expected = "d Knabe Wunderhorn . alt deutsch Lied sammeln von L. A. v. Arnim und "
 				+ "Clemens Brentano . d Knabe Wunderhorn alt deutsch Lied L. Achim v. Arnim . "
 				+ "clemens brentano . Heidelberg , bei Mohr u. Zimmer .";
-		final StringBuilder actual = new StringBuilder();
-		try {
-			final JCas jcas = process(true);
-			final FSIterator<Annotation> iter = jcas.getAnnotationIndex(
-					Lemma.type).iterator();
-			while (iter.hasNext())
-				actual.append(((Lemma) iter.next()).getValue()).append(" ");
-			assertEquals(expected, actual.substring(0, actual.length() - 1));
-		} catch (final Exception e) {
-			e.printStackTrace();
-			fail();
+		for (Version version : Version.values()) {
+			StringBuilder actual = new StringBuilder();
+			try {
+				final JCas jcas = process(true, version);
+				final FSIterator<Annotation> iter = jcas
+						.getAnnotationIndex(Lemma.type).iterator();
+				while (iter.hasNext())
+					actual.append(((Lemma) iter.next()).getValue()).append(" ");
+				assertEquals(expected,
+						actual.substring(0, actual.length() - 1));
+			} catch (final Exception e) {
+				e.printStackTrace();
+				fail();
+			}
 		}
 	}
 
@@ -191,40 +217,45 @@ public class DTAFileReaderTest {
 	public void testPOS() {
 		final String expected = "ART NN NN $. ADJA ADJA NN VVPP APPR NE NE APPR NE KON NE NE $. "
 				+ "ART NN NN ADJA ADJA NN NE NE APPRART NE $. FM.la FM.la $. NE $, APPR NN APPR NN $.";
-		final StringBuilder actual = new StringBuilder();
-		try {
-			final JCas jcas = process(true);
-			final FSIterator<Annotation> iter = jcas.getAnnotationIndex(
-					STTSPOSTag.type).iterator();
-			while (iter.hasNext())
-				actual.append(((STTSPOSTag) iter.next()).getValue())
-				.append(" ");
-			assertEquals(expected, actual.substring(0, actual.length() - 1));
-		} catch (final Exception e) {
-			e.printStackTrace();
-			fail();
+		for (Version version : Version.values()) {
+			StringBuilder actual = new StringBuilder();
+			try {
+				final JCas jcas = process(true, version);
+				final FSIterator<Annotation> iter = jcas
+						.getAnnotationIndex(STTSPOSTag.type).iterator();
+				while (iter.hasNext())
+					actual.append(((STTSPOSTag) iter.next()).getValue())
+							.append(" ");
+				assertEquals(expected,
+						actual.substring(0, actual.length() - 1));
+			} catch (final Exception e) {
+				e.printStackTrace();
+				System.out.println(version);
+				fail();
+			}
 		}
 	}
 
 	@Test
 	public void testSentences() {
-		final List<String> expected = Arrays
-				.asList(new String[] {
-						"Des Knaben Wunderhorn.",
-						"Alte deutsche Lieder gesammelt von L. A. v. Arnim und Clemens Brentano.",
-						"Des Knaben Wunderhorn Alte deutsche Lieder L. Achim v. Arnim.",
-						"Clemens Brentano.", "Heidelberg, bei Mohr u. Zimmer." });
-		final List<String> actual = new ArrayList<>();
-		try {
-			final JCas jcas = process(true);
-			final FSIterator<Annotation> iter = jcas.getAnnotationIndex(
-					Sentence.type).iterator();
-			while (iter.hasNext())
-				actual.add(iter.next().getCoveredText());
-			assertEquals(expected, actual);
-		} catch (final Exception e) {
-			e.printStackTrace();
-			fail();
+		final List<String> expected = Arrays.asList(new String[] {
+				"Des Knaben Wunderhorn.",
+				"Alte deutsche Lieder gesammelt von L. A. v. Arnim und Clemens Brentano.",
+				"Des Knaben Wunderhorn Alte deutsche Lieder L. Achim v. Arnim.",
+				"Clemens Brentano.", "Heidelberg, bei Mohr u. Zimmer." });
+		for (Version version : Version.values()) {
+			List<String> actual = new ArrayList<>();
+			try {
+				final JCas jcas = process(true, version);
+				final FSIterator<Annotation> iter = jcas
+						.getAnnotationIndex(Sentence.type).iterator();
+				while (iter.hasNext())
+					actual.add(iter.next().getCoveredText());
+				assertEquals(expected, actual);
+			} catch (final Exception e) {
+				e.printStackTrace();
+				fail();
+			}
 		}
 	}
 }

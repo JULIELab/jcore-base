@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: tomanek
  * 
@@ -157,7 +157,9 @@ public class NETagger {
 		if (!max_ent) {
 
 			model = new CRF(data.getPipe(), null);
-			((CRF) model).addStatesForLabelsConnectedAsIn(data);
+			//((CRF) model).addStatesForLabelsConnectedAsIn(data);
+			// using 2nd order brings minor performance improvements
+			((CRF) model).addStatesForBiLabelsConnectedAsIn(data);
 
 			// get trainer
 			final CRFTrainerByLabelLikelihood crfTrainer = new CRFTrainerByLabelLikelihood((CRF) model);

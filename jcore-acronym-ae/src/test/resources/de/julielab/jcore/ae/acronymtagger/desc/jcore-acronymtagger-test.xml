@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
   <annotatorImplementationName>de.julielab.jcore.ae.acronymtagger.main.AcronymAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>JCoRe AcronymAnnotator</name>
-    <description/>
-    <version>2.0.0</version>
+    <description />
+    <version>2.3.0</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
@@ -35,6 +35,12 @@ etc.</description>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>Postprocessing</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -55,14 +61,20 @@ etc.</description>
           <string>src/test/resources/de/julielab/jcore/ae/acronymtagger/testresources/acrolist.txt</string>
         </value>
       </nameValuePair>
+    <nameValuePair>
+        <name>Postprocessing</name>
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </nameValuePair>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
         <inputs>
@@ -71,7 +83,7 @@ etc.</description>
         <outputs>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.Abbreviation</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -80,5 +92,5 @@ etc.</description>
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </analysisEngineDescription>

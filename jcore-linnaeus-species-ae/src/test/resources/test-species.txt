@@ -1,0 +1,8 @@
+species:ncbi:10090\t
+species:ncbi:6239\t
+species:ncbi:9606\t
+species:ncbi:105023\t
+species:ncbi:7955\t
+species:ncbi:9615\t
+species:ncbi:9796\t
+killifish

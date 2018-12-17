@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.julielab</groupId>
+    <artifactId>jcore-parent</artifactId>
+    <version>2.3.3</version>
+  </parent>
+  <artifactId>jcore-conll-consumer</artifactId>
+  <version>2.3.5-SNAPSHOT</version>
+  <name>JCoRe CONLL Consumer</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>de.julielab</groupId>
+  		<artifactId>jcore-types</artifactId>
+  		<version>${jcore-version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.slf4j</groupId>
+  		<artifactId>slf4j-api</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>ch.qos.logback</groupId>
+  		<artifactId>logback-classic</artifactId>
+  	</dependency>
+  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
+</project>

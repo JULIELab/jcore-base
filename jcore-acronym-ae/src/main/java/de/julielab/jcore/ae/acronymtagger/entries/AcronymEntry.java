@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: tusche
  *
@@ -203,7 +203,7 @@ public class AcronymEntry implements Serializable {
 	 * returns a html representation of this entry for
 	 * including it in a table.
 	 * @param shortform the current short form
-	 * @paream includeMeshs decide whether the table contains
+	 * @param includeMeshs decide whether the table contains
 	 * a column listing all meshterms to the short-full-pair
 	 * @return a string containing a formatted html table row
 	 */

@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jcore.consumer.cas2iob.main.ToIOBConsumer</implementationName>
+  <processingResourceMetaData>
+    <name>ToIOBConsumerTest</name>
+    <description />
+    <version>2.3.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>labels</name>
+        <description>The labels NOT to be exported into IOB format. Label does here not refer to an UIMA type but to the specific label aquired by the labelNameMethod.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>labelNameMethods</name>
+        <description>Pairs of UIMA-annotation-types and their corresponding method for extracting the annotation label. Format: &lt;objName&gt;[\s=/\\|]&lt;method Name&gt;. If the name of the annotation class itself is to be being used as label, only the class name is expected: &lt;objName&gt;. You also may specify a mix of pairs and single class names. If you give the name extracting method for a class and have also specified its superclass as a single class name, the given method is used rather than the superclass name.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>iobLabelNames</name>
+        <description>Pairs of label names in UIMA (aquired by the methods given in labelNameMethods) and the name the label is supposed to get in the outcoming IOB file. Format: &lt;UIMA label name&gt;[\s=/\\|]&lt;IOB label name&gt;</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>outFolder</name>
+        <description>Path of IOB-file to be written.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>typePath</name>
+        <description>The path of the UIMA types, e.g. "de.julielab.jcore." (with terminating "."!). It is prepended to the class names in labelNameMethods. This parameter may be null which is equivalent to the empty String "".</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>mode</name>
+        <description>IOB or IO mode. The parameter is not case sensitiv, thus "iob" or "IOB" works both and will result in a sequence of IOBTokens (object of SegmentationEvaluator).</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>labels</name>
+        <value>
+          <array />
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>labelNameMethods</name>
+        <value>
+          <array>
+            <string>Gene</string>
+            </array>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>iobLabelNames</name>
+        <value>
+          <array>
+            <string>de.julielab.jcore.types.Gene=Gene</string>
+          </array>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>outFolder</name>
+        <value>
+          <string>src/test/resources/testxmis/iob</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>typePath</name>
+        <value>
+          <string>de.julielab.jcore.types.</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>mode</name>
+        <value>
+          <string>iob</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+      </imports>
+    </typeSystemDescription>
+    <typePriorities />
+    <fsIndexCollection />
+    <capabilities>
+      <capability>
+        <inputs />
+        <outputs />
+        <languagesSupported />
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>false</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration />
+</casConsumerDescription>

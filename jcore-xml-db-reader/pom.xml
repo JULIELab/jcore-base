@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jcore-xml-db-reader</artifactId>
+    <packaging>jar</packaging>
+    <name>JCoRe XML Database Reader</name>
+    <description>A Collection Reader that converts XML, stored in a database, to CAS objects.
+        The conversion is the same employed by the jcore-xml-reader, making use of the jcore-xml-mapper.
+        The reader requires a configuration file which determines the database connection, the table schema and the
+        PostgreSQL schema (namespace) to use.
+    </description>
+
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jedis-parent</artifactId>
+        <version>2.3.5-SNAPSHOT</version>
+        <relativePath>../jedis-parent</relativePath>
+    </parent>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.4.3</version>
+                <configuration>
+                    <systemProperties>
+                        <property>
+                            <name>dbunit.connectionUrl</name>
+                            <value>jdbc:postgresql://anno0.coling.uni-jena.de:5432/db_reader_test</value>
+                        </property>
+                        <property>
+                            <name>dbunit.driverClass</name>
+                            <value>org.postgresql.Driver</value>
+                        </property>
+                        <property>
+                            <name>dbunit.username</name>
+                            <value>unittest</value>
+                        </property>
+                        <property>
+                            <name>dbunit.password</name>
+                            <value>$4unittests$</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-db-reader</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>costosys</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.5</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-xml-mapper</artifactId>
+            <version>${jcore-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-utilities</artifactId>
+            <version>${jcore-utilities-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-types-version}</version>
+        </dependency>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
+    <url>https://github.com/JULIELab/jcore-base/jcore-xml-db-reader</url>
+</project>

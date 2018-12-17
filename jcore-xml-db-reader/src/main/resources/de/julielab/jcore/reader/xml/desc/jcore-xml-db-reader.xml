@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.reader.xml.XMLDBReader</implementationName>
+    <processingResourceMetaData>
+        <name>JCoRe XML Database Reader</name>
+        <description>A collection reader that receives XML document data from a PostgreSQL database. It employs the
+        jcore-xml-mapper to populate UIMA CAS instances with the XML data according to a mapping file. For the same
+        functionality without using a database, refer to the jcore-xml-reader.</description>
+        <version>2.3.0</version>
+        <vendor>JULIE Lab, Germany</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name>RowMapping</name>
+                <description />
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>MappingFile</name>
+                <description />
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>BatchSize</name>
+                <description />
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DBDriver</name>
+                <description />
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>Timestamp</name>
+                <description />
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>Table</name>
+                <description />
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTables</name>
+                <description />
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTableSchema</name>
+                <description />
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>RandomSelection</name>
+                <description />
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>FetchIdsProactively</name>
+                <description />
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>WhereCondition</name>
+                <description />
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>Limit</name>
+                <description />
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>CostosysConfigFile</name>
+                <description />
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ResetTable</name>
+                <description />
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>Table</name>
+                <value>
+                    <string />
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>CostosysConfigFile</name>
+                <value>
+                    <string />
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>MappingFile</name>
+                <value>
+                    <string />
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>BatchSize</name>
+                <value>
+                    <integer>50</integer>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>RandomSelection</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>FetchIdsProactively</name>
+                <value>
+                    <boolean>true</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>ResetTable</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+      </imports>
+    </typeSystemDescription>
+        <fsIndexCollection />
+        <capabilities />
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
+</collectionReaderDescription>

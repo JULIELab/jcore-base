@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
-		<version>2.2.0</version>
+		<version>2.3.4-SNAPSHOT</version>
 	</parent>
 
 	<build>
@@ -24,7 +24,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>de.julielab.jsbd.SentenceSplitterApplication</mainClass>
+							<mainClass>de.julielab.jcore.ae.jsbd.SentenceSplitterApplication</mainClass>
 						</manifest>
 					</archive>
 
@@ -72,10 +72,15 @@
 	</build>
 
 	<dependencies>
-        <dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.9.1</version>
+		</dependency>
+		<dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
-            <version>${jcore-version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
 		<dependency>
 			<groupId>com.e-movimento.tinytools</groupId>
@@ -97,7 +102,12 @@
 			<artifactId>mallet</artifactId>
 			<version>2.0.8</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>de.julielab</groupId>
+			<artifactId>jcore-utilities</artifactId>
+			<version>2.3.3-SNAPSHOT</version>
+		</dependency>
+	<dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
 	<organization>
 		<name>JULIE Lab Jena, Germany</name>
 		<url>http://www.julielab.de</url>

@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: tusche
  * 
@@ -16,9 +16,10 @@
 package de.julielab.jcore.ae.acronymtagger.main;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
+import java.util.Collection;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
@@ -28,6 +29,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -40,10 +42,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.acronymtagger.main.AcronymAnnotator;
 import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.Acronym;
+import de.julielab.jcore.types.AbbreviationLongform;
 import de.julielab.jcore.types.Sentence;
+import junit.framework.TestCase;
 
 /**
  * The AcronymAnnotatorTest class
@@ -75,8 +77,8 @@ public class AcronymAnnotatorTest extends TestCase {
 
 	public void testProcess() throws ResourceInitializationException, InvalidXMLException, IOException, CASException {
 
-		CAS cas = CasCreationUtils.createCas(UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-				new XMLInputSource(FILE_DESCRIPTOR_AE)));
+		CAS cas = CasCreationUtils.createCas(
+				UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(FILE_DESCRIPTOR_AE)));
 		JCas testCas = null;
 		testCas = cas.getJCas();
 
@@ -180,7 +182,8 @@ public class AcronymAnnotatorTest extends TestCase {
 			ends.add(Integer.valueOf(665));
 			definedHere.add(Boolean.valueOf(false));
 
-			// KT, 27.09.2007, as i have removed normalization in AE, also the test was modified accordingly
+			// KT, 27.09.2007, as i have removed normalization in AE, also the
+			// test was modified accordingly
 			// result.add(al.normalize("Firma Kohl-kopf", true));
 			// result.add(al.normalize("Straßenverkehrsordnung", true));
 			// result.add(al.normalize("Bundesrepublik Deutschland", true));
@@ -203,18 +206,18 @@ public class AcronymAnnotatorTest extends TestCase {
 						&& a.getTextReference().getEnd() == ends.get(i).intValue()
 						&& a.getDefinedHere() == definedHere.get(i).booleanValue()) {
 					LOGGER.info("\n\nCORRECT annotation made:");
-					LOGGER.info("\nabbr = " + a.getCoveredText() + "\nexpansion = " + a.getExpan()
-							+ "\nbeginTextRef = " + a.getTextReference().getBegin() + "\nendTextRef = "
-							+ a.getTextReference().getEnd() + "\ngetTextRefCoveredText = "
-							+ a.getTextReference().getCoveredText() + "\ndefineHere = " + a.getDefinedHere());
+					LOGGER.info("\nabbr = " + a.getCoveredText() + "\nexpansion = " + a.getExpan() + "\nbeginTextRef = "
+							+ a.getTextReference().getBegin() + "\nendTextRef = " + a.getTextReference().getEnd()
+							+ "\ngetTextRefCoveredText = " + a.getTextReference().getCoveredText() + "\ndefineHere = "
+							+ a.getDefinedHere());
 
 				} else {
 					allOK = false;
 					LOGGER.info("\n\nWRONG annotation made: ");
-					LOGGER.info("\nabbr = " + a.getCoveredText() + "\nexpansion = " + a.getExpan()
-							+ "\nbeginTextRef = " + a.getTextReference().getBegin() + "\nendTextRef = "
-							+ a.getTextReference().getEnd() + "\ngetTextRefCoveredText = "
-							+ a.getTextReference().getCoveredText() + "\ndefineHere = " + a.getDefinedHere());
+					LOGGER.info("\nabbr = " + a.getCoveredText() + "\nexpansion = " + a.getExpan() + "\nbeginTextRef = "
+							+ a.getTextReference().getBegin() + "\nendTextRef = " + a.getTextReference().getEnd()
+							+ "\ngetTextRefCoveredText = " + a.getTextReference().getCoveredText() + "\ndefineHere = "
+							+ a.getDefinedHere());
 
 				}
 				i++;
@@ -235,8 +238,8 @@ public class AcronymAnnotatorTest extends TestCase {
 
 	@Test
 	public void testFindFullFormInParentheses() throws Exception {
-		CAS cas = CasCreationUtils.createCas(UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-				new XMLInputSource(FILE_DESCRIPTOR_AE)));
+		CAS cas = CasCreationUtils.createCas(
+				UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(FILE_DESCRIPTOR_AE)));
 		JCas testCas = null;
 		testCas = cas.getJCas();
 
@@ -251,11 +254,11 @@ public class AcronymAnnotatorTest extends TestCase {
 		testCas.setDocumentText(text);
 		Sentence sent = new Sentence(testCas, 0, text.length());
 		sent.addToIndexes();
-		
+
 		abbreAn.process(cas);
-		
+
 		FSIterator<Annotation> abbrIt = testCas.getAnnotationIndex(Abbreviation.type).iterator();
-		
+
 		assertTrue(abbrIt.hasNext());
 		Abbreviation abbreviation = (Abbreviation) abbrIt.next();
 		assertEquals("TRP", abbreviation.getCoveredText());
@@ -270,13 +273,14 @@ public class AcronymAnnotatorTest extends TestCase {
 	 * 
 	 * Token tok = new Token(testCas, pos, pos);
 	 * 
-	 * while ((pos = documentText.indexOf(" ", pos)) >= 0) { tok.setEnd(pos); tok.addToIndexes();
-	 * System.err.println("adding token: [" + tok.getCoveredText() + "]\n" + tok); tok = new Token(testCas, pos+1,
+	 * while ((pos = documentText.indexOf(" ", pos)) >= 0) { tok.setEnd(pos);
+	 * tok.addToIndexes(); System.err.println("adding token: [" +
+	 * tok.getCoveredText() + "]\n" + tok); tok = new Token(testCas, pos+1,
 	 * pos+1); pos++; }
 	 * 
 	 * }
 	 */
-	
+
 	@Test
 	public void testUimaFitAndClassPathResource() throws Exception {
 		// Preparation
@@ -285,16 +289,71 @@ public class AcronymAnnotatorTest extends TestCase {
 		Sentence sentence = new Sentence(jCas, 0, jCas.getDocumentText().length());
 		sentence.addToIndexes();
 		// Read the acronym list file from the classpath
-		AnalysisEngine engine = AnalysisEngineFactory.createEngine(AcronymAnnotator.class, AcronymAnnotator.PARAM_ACROLIST, BASE_PATH+"testresources/acrolist.txt");
-		
+		AnalysisEngine engine = AnalysisEngineFactory.createEngine(AcronymAnnotator.class,
+				AcronymAnnotator.PARAM_ACROLIST, BASE_PATH + "testresources/acrolist.txt");
+
 		// Let the annotator run
 		engine.process(jCas.getCas());
-		
+
 		// We expect one abbreviation
 		FSIterator<Annotation> iterator = jCas.getAnnotationIndex(Abbreviation.type).iterator();
 		assertTrue(iterator.hasNext());
 		iterator.next();
 		assertFalse(iterator.hasNext());
+	}
+
+	@Test
+	public void testPostprocessing() throws Exception {
+		// Preparation
+		JCas jCas = JCasFactory.createJCas(ALL_TYPES_NAME);
+		jCas.setDocumentText("Tumor necrosis factor (TNF) is one thing. The TNF receptor(TNF-R) is another.");
+		new Sentence(jCas, 0, 41).addToIndexes();
+		new Sentence(jCas, 42, jCas.getDocumentText().length()).addToIndexes();
+		
+		AnalysisEngine engine = AnalysisEngineFactory.createEngine(AcronymAnnotator.class,
+				AcronymAnnotator.PARAM_ACROLIST, BASE_PATH + "testresources/acrolist.txt");
+
+		// Let the annotator run
+		engine.process(jCas.getCas());
+		// We expect two abbreviations and two full form annotations
+		Collection<Abbreviation> acronyms = JCasUtil.select(jCas, Abbreviation.class);
+		assertEquals(2, acronyms.size());
+		Collection<AbbreviationLongform> longForms = JCasUtil.select(jCas, AbbreviationLongform.class);
+		assertEquals(2, longForms.size());
+	}
+
+	@Test
+	public void testPostprocessing2() throws Exception {
+		// Preparation
+		JCas jCas = JCasFactory.createJCas(ALL_TYPES_NAME);
+		String docText = new String(
+				Files.readAllBytes(
+						Paths.get("src/test/resources/de/julielab/jcore/ae/acronymtagger/testresources/1698610.txt")),
+				"UTF-8");
+		jCas.setDocumentText(docText);
+		
+		// do simple text splitting at full stops, works for this document
+		int fromIndex = 0;
+		int toIndex;
+		while((toIndex = docText.indexOf('.', fromIndex)) != -1) {
+			if (fromIndex > 0)
+				++fromIndex;
+			new Sentence(jCas, fromIndex, toIndex + 1).addToIndexes();
+			fromIndex = toIndex+1;
+		}
+		// end sentence splitting
+		
+		AnalysisEngine engine = AnalysisEngineFactory.createEngine(AcronymAnnotator.class,
+				AcronymAnnotator.PARAM_ACROLIST, BASE_PATH + "testresources/acrolist.txt");
+		// Let the annotator run
+		engine.process(jCas.getCas());
+		
+		// We expect 16 abbreviations and 4 full form annotations
+		Collection<Abbreviation> acronyms = JCasUtil.select(jCas, Abbreviation.class);
+//		acronyms.stream().map(a -> a.getCoveredText() + " " + a.getBegin() + " " + a.getEnd()).forEach(System.out::println);
+		assertEquals(16, acronyms.size());
+		Collection<AbbreviationLongform> longForms = JCasUtil.select(jCas, AbbreviationLongform.class);
+		assertEquals(4, longForms.size());
 	}
 
 }

@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  * 
  * Author: muehlhausen
  * 
@@ -98,14 +98,14 @@ public class XMLReader extends CollectionReader_ImplBase {
 	 */
 	private XMLMapper xmlMapper;
 
-	@org.apache.uima.fit.descriptor.ConfigurationParameter(name = PARAM_MAPPING_FILE)
+	@ConfigurationParameter(name = PARAM_MAPPING_FILE)
 	private String mappingFileStr;
 
-	@org.apache.uima.fit.descriptor.ConfigurationParameter(name = PARAM_HEADER_TYPE, mandatory = false)
+	@ConfigurationParameter(name = PARAM_HEADER_TYPE, mandatory = false)
 	private String headerTypeName;
 	@ConfigurationParameter(name = PARAM_INPUT_DIR, mandatory = false)
 	private String directoryName;
-	@org.apache.uima.fit.descriptor.ConfigurationParameter(name = PARAM_INPUT_FILE, mandatory = false)
+	@ConfigurationParameter(name = PARAM_INPUT_FILE, mandatory = false)
 	private String isSingleFileProcessing;
 
 	/*

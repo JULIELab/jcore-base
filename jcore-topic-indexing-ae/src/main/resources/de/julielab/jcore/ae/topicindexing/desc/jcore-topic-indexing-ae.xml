@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.ae.topicindexing.TopicIndexer</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Topic Indexer</name>
+        <description>This component assigns topics relative to a given topic model to the encoutered documents. The topic model is one trained by the julielab-topic-modeling project.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>TopicModelConfig</name>
+                <description>The julielab-topic-modeling XML configuration that specifies the 'infer' element.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DisplayedTopicWords</name>
+                <description>The number of words per inferred topic to be written into the CAS. This is not an exhaustive list of topic words but just the selection of the most important words for each topic.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>StoreInModelIndex</name>
+                <description>Whether or not to store the inferred labels back into the model. This will cause copies of the model to be written next to the original model file. For each run pipeline there will be one such copy that contains the inferred topic for all documents that this pipeline has processed. In case of a single pipeline, all documents will end up in one model copy.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-document-meta-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.Sentence</type>
+                    <type>de.julielab.jcore.types.Token</type>
+                    <type>de.julielab.jcore.types.PennBioIEPOSTag</type>
+                    <type>de.julielab.jcore.types.Lemma</type>
+                </inputs>
+                <outputs>
+                    <type>de.julielab.jcore.types.ManualDescriptor</type>
+                    <type>de.julielab.jcore.types.DocumentTopics</type>
+                </outputs>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+    <externalResourceDependencies>
+        <externalResourceDependency>
+            <key>TopicModelFile</key>
+            <description>The topic model pretrained by the julielab-topic-modeling software.</description>
+            <interfaceName>de.julielab.jcore.ae.topicindexing.ITopicModelProvider</interfaceName>
+            <optional>false</optional>
+        </externalResourceDependency>
+    </externalResourceDependencies>
+</analysisEngineDescription>

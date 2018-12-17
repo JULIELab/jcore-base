@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>JCoRe File Multiplier Types</name>
+  <description>This is a type system for usage with a CAS multiplier. It should not be included into the
+  jcore-all-types type system. This particular type system holds a single URI that points to the resource that
+  should be split into CASes by the multiplier.</description>
+  <version>2.3.0</version>
+  <vendor>JULIE Lab Jena, Germany</vendor>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jcore.types.casmultiplier.JCoReURI</name>
+      <description>An URI pointing to a resource that should be split into separate CASes by a CAS multiplier.</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>uri</name>
+          <description>The actual URI to the resource to split by the CAS multiplier</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

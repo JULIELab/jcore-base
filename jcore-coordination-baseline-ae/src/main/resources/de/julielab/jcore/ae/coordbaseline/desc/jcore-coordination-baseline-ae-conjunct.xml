@@ -1,28 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
 <primitive>true</primitive>
 <annotatorImplementationName>de.julielab.jcore.ae.coordbaseline.annotators.ConjunctAnnotator</annotatorImplementationName>
 <analysisEngineMetaData>
 <name>JCoRe ConjunctAnnotator</name>
-<description/>
-<version>2.0.0</version>
+<description />
+<version>2.3.0</version>
 <vendor>JULIE Lab Jena, Germany</vendor>
-<configurationParameters/>
-<configurationParameterSettings/>
+<configurationParameters />
+<configurationParameterSettings />
 <typeSystemDescription>
 <imports>
-<import name="de.julielab.jcore.types.jcore-all-types"/>
+<import name="de.julielab.jcore.types.jcore-all-types" />
 </imports>
 </typeSystemDescription>
-<typePriorities/>
-<fsIndexCollection/>
-<capabilities/>
+<typePriorities />
+<fsIndexCollection />
+<capabilities />
 <operationalProperties>
 <modifiesCas>true</modifiesCas>
 <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
 <outputsNewCASes>false</outputsNewCASes>
 </operationalProperties>
 </analysisEngineMetaData>
-<resourceManagerConfiguration/>
+<resourceManagerConfiguration />
 </analysisEngineDescription>

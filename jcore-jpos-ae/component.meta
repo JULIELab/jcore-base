@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "JPOS MaxEnt POS Tagger and its UIMA wrapper.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.jpos.desc.jcore-jpos"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-jpos-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.3"
+    },
+    "name": "JCoRe JPOS AE"
+}

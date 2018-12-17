@@ -1,3 +1,13 @@
+/** 
+ * 
+ * Copyright (c) 2017, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the BSD-2-Clause License
+ *
+ * Author: 
+ * 
+ * Description:
+ **/
 package de.julielab.jcore.reader.xmlmapper.mapper;
 
 import java.util.ArrayList;
@@ -104,14 +114,23 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
 			}
 
 			// let's insert a line break after each section text
-			if (newlineBetweenSections && rowIterator.hasNext()) {
+			if (newlineBetweenSections && sb.length() > 0 && rowIterator.hasNext()) {
 				sb.append("\n");
 				++sectionOffset;
 			}
 		}
 
 		// only create an abstract annotation if there actually is an abstract
-		if (sectionOffset > offset) {
+		if (!abstractParts.isEmpty() || sectionOffset > offset) {
+			if (sectionOffset == offset) {
+				// there was no abstract but just empty abstract sections; decrement the offsets so we stay with existing document text
+				--offset;
+				--sectionOffset;
+				for (AbstractSection section : abstractParts) {
+					section.setBegin(offset);
+					section.setEnd(offset);
+				}
+			}
 			AbstractText abstractText = new AbstractText(jCas, offset, sectionOffset);
 			if (abstractParts.size() > 0) {
 				FSArray sectionsArray = new FSArray(jCas, abstractParts.size());

@@ -1,9 +1,21 @@
+/** 
+ * 
+ * Copyright (c) 2017, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the BSD-2-Clause License
+ *
+ * Author: 
+ * 
+ * Description:
+ **/
 package de.julielab.jcore.utility;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -502,5 +514,19 @@ public class JCoReFeaturePathTest {
 		String[] array = fp.getValueAsStringArray(h);
 		assertEquals(3, array.length);
 		assertNull(array[1]);
+	}
+	
+	@Test
+	public void testTypeName() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
+		jcas.setDocumentText("Ein text.");
+		Token t = new Token(jcas, 0, 3);
+		t.addToIndexes();
+		
+		JCoReFeaturePath fp = new JCoReFeaturePath();
+		fp.initialize("/:typeName()");
+		
+		String typeName = fp.getValueAsString(t);
+		assertEquals("de.julielab.jcore.types.Token", typeName);
 	}
 }

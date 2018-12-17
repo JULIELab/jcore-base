@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: muehlhausen
  * 
@@ -127,6 +127,8 @@ public class XMLMapper {
 	private void buildTypes(byte[] identifier, JCas jcas, VTDNav vn) throws CollectionException {
 		try {
 			DocumentTextData docText = this.documentTextHandler.parseAndAddToCas(vn, jcas, identifier);
+			// We now iterate through the types given by the top-level <tsType> elements. All nested type definitions
+			// are resolved recursively by the type parser and the type builder.
 			for (TypeTemplate typeTemplate : this.genericTemplates) {
 				ConcreteType concreteType = new ConcreteType(typeTemplate);
 				try {

@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: tomanek
  *
@@ -27,6 +27,7 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,17 +51,19 @@ public class TokenAnnotatorTest extends TestCase {
 	private static final String TEST_SENTENCES = "X-inactivation, T-cells and CD44 are XYZ! CD44-related "
 			+ "stuff is\t(not).";
 
-	private static final String TEST_SENTENCES_OFFSETS = "0-14;14-15;16-23;24-27;28-32;33-36;37-40;40-41;"
+	private static final String TEST_SENTENCES_OFFSETS = "0-1;1-2;2-14;14-15;16-23;24-27;28-32;33-36;37-40;40-41;"
 			+ "42-46;46-47;47-54;55-60;61-63;64-65;65-68;68-69;69-70";
 	private static final String TEST_TERM_OFFSETS = "0-5;6-13;13-14;14-15;15-16";
 
-	private static final String TEST_SENTENCES_TOKEN_NUMBERS = "1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17";
+	private static final String TEST_SENTENCES_TOKEN_NUMBERS = "1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19";
 	private static final String TEST_TERM_TOKEN_NUMBERS = "1;2;3;4;5";
 
 	private String getPredictedOffsets(final Iterator<?> tokIter) {
 		String predictedOffsets = "";
 		while (tokIter.hasNext()) {
 			final Token t = (Token) tokIter.next();
+			System.out.println("getPredictedOffsets() - token: " + t.getCoveredText()
+					+ " " + t.getBegin() + " - " + t.getEnd());
 			LOGGER.debug("getPredictedOffsets() - token: " + t.getCoveredText()
 					+ " " + t.getBegin() + " - " + t.getEnd());
 			predictedOffsets += (predictedOffsets.length() > 0) ? ";" : "";
@@ -74,6 +77,8 @@ public class TokenAnnotatorTest extends TestCase {
 		while (tokIter.hasNext()) {
 			final Token t = (Token) tokIter.next();
 			LOGGER.debug("getTokenNumbers() - token: " + t.getCoveredText()
+					+ " " + t.getId());
+			System.out.println("getTokenNumbers() - token: " + t.getCoveredText()
 					+ " " + t.getId());
 			tokenNumbers += (tokenNumbers.length() > 0) ? ";" : "";
 			tokenNumbers += t.getId();
@@ -111,6 +116,7 @@ public class TokenAnnotatorTest extends TestCase {
 	/**
 	 * Test CAS with sentence annotations.
 	 */
+	@Test
 	public void testProcess() {
 
 		XMLInputSource tokenXML = null;
@@ -148,6 +154,8 @@ public class TokenAnnotatorTest extends TestCase {
 		// compare offsets
 		LOGGER.debug("testProcess() - predicted: " + predictedOffsets);
 		LOGGER.debug("testProcess() -    wanted: " + TEST_SENTENCES_OFFSETS);
+		System.out.println("predicted: " + predictedOffsets);
+		System.out.println("wanted: " + TEST_SENTENCES_OFFSETS);
 		assertEquals(TEST_SENTENCES_OFFSETS, predictedOffsets);
 
 		// get the token numbers of the sentences
@@ -157,12 +165,15 @@ public class TokenAnnotatorTest extends TestCase {
 		LOGGER.debug("testProcess() - predicted: " + tokenNumbers);
 		LOGGER.debug("testProcess() -    wanted: "
 				+ TEST_SENTENCES_TOKEN_NUMBERS);
+		System.out.println("predicted: "+tokenNumbers);
+		System.out.println("wanted: " +TEST_SENTENCES_TOKEN_NUMBERS);
 		assertEquals(TEST_SENTENCES_TOKEN_NUMBERS, tokenNumbers);
 	}
 
 	/**
 	 * Test CAS without sentence annotations.
 	 */
+	@Test
 	public void testProcessUseWholeDocumentText() {
 
 		XMLInputSource tokenXML = null;

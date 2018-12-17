@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>jcore-medical-types</name>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
+  <imports>
+    <import location="../jcore-semantics-mention-types.xml" />
+  </imports>
+  <types>
+    <typeDescription>
+      <name>de.julielab.jcore.types.medical.Medication</name>
+      <description />
+      <supertypeName>de.julielab.jcore.types.EntityMention</supertypeName>
+      <features>
+        <featureDescription>
+          <name>duration</name>
+          <description />
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Duration</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>dose</name>
+          <description />
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Dose</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>frequency</name>
+          <description />
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Frequency</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>modus</name>
+          <description />
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Modus</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>reason</name>
+          <description />
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        <elementType>de.julielab.jcore.types.medical.Reason</elementType>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.medical.Duration</name>
+      <description />
+      <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.medical.Dose</name>
+      <description />
+      <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.medical.Frequency</name>
+      <description />
+      <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.medical.Modus</name>
+      <description />
+      <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.medical.Reason</name>
+      <description />
+      <supertypeName>de.julielab.jcore.types.EventMention</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.medical.GeneralAttributeMention</name>
+      <description />
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>tag</name>
+          <description />
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

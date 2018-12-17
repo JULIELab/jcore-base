@@ -1,0 +1,28 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.medxn.desc.MedNormAE"
+        },
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.medxn.desc.jcore-medxn-ae-attributes-german"
+        },
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.medxn.desc.jcore-medxn-ae-extractor-german"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-medxn-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.3"
+    },
+    "name": "JCoRe MedXN"
+}

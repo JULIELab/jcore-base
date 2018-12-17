@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: tomanek
  * 
@@ -20,11 +20,12 @@ package de.julielab.jcore.ae.jnet.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import de.julielab.java.utilities.FileUtilities;
 
 public class Utils {
 
@@ -50,8 +51,7 @@ public class Utils {
 	public static ArrayList<String> readFile(final File filename) {
 		final ArrayList<String> lines = new ArrayList<String>();
 		try {
-			final BufferedReader br = new BufferedReader(new FileReader(
-					filename));
+			final BufferedReader br = FileUtilities.getReaderFromFile(filename);
 			try {
 				String line = "";
 				while ((line = br.readLine()) != null)
@@ -75,7 +75,7 @@ public class Utils {
 	 */
 	public static void writeFile(final File filename, final ArrayList<String> lines) {
 		try {
-			final FileWriter fw = new FileWriter(filename);
+			final Writer fw = FileUtilities.getWriterToFile(filename);
 			for (int i = 0; i < lines.size(); i++)
 				fw.write(lines.get(i) + "\n");
 			fw.close();
@@ -87,7 +87,7 @@ public class Utils {
 
 	public static void writeFile(final File filename, final String myString) {
 		try {
-			final FileWriter fw = new FileWriter(filename);
+			final Writer fw = FileUtilities.getWriterToFile(filename);
 			fw.write(myString + "\n");
 			fw.close();
 		} catch (final IOException e) {

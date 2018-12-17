@@ -1,3 +1,13 @@
+/** 
+ * 
+ * Copyright (c) 2017, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the BSD-2-Clause License
+ *
+ * Author: 
+ * 
+ * Description:
+ **/
 package de.julielab.jcore.ae.lingpipegazetteer.utils;
 
 import java.util.ArrayList;
@@ -173,6 +183,7 @@ public class AnnotationRetrieval {
 	 * 
 	 * @return the first annotation in the index that has the same span as windowAnnotation
 	 */
+	@Deprecated
 	public static <T extends Annotation> T getMatchingAnnotation(JCas jCas, Annotation windowAnnotation, Class<T> cls) {
 		if (cls.isInstance(windowAnnotation))
 			return cls.cast(windowAnnotation);

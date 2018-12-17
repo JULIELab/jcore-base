@@ -1,0 +1,36 @@
+17317680|t|Delayed expression of apoptotic and cell-cycle control genes in carcinogen-exposed bladders of mice lacking p53.S389 phosphorylation.
+17317680|a|Mice with non-phosphorylated serine 389 in p53 are susceptible for bladder tumors induced by 2-acetylaminofluorene (2-AAF). Since p53 is a transcription factor, this might well be preceded by differences in the regulation of gene expression. Microarray analysis was used to determine early transcriptional changes that might underlie this cancer-prone phenotype. Interestingly, lack of Ser389 phosphorylation led to endogenously different gene expression levels. The number of genes affected was, however, rather small. Conversely, after short-term exposure to 2-AAF, wild-type and p53.S389A bladders demonstrated a significant number of differentially expressed genes. Differences between wild-type and p53.S389A could mainly be attributed to a delayed, rather than complete absence of, transcriptional response of a group of genes, including well-known p53 target genes involved in apoptosis and cell-cycle control like Bax, Perp and P21. An analysis of differentially expressed genes in non-tumorigenic tissue and bladder tumors of p53.S389A after long-term exposure to 2-AAF revealed 319 genes. Comparison of these with those found after short-term exposure resulted in 23 transcripts. These possible marker genes might be useful for the early prediction of bladder tumor development. In conclusion, our data indicate that lack of Ser389 phosphorylation results in aberrant expression of genes needed to execute vital responses to DNA damage. Post-translational modifications, like Ser389 phosphorylation, seem crucial for fine-tuning the transcription of a specific set of genes and do not appear to give rise to major changes in transcription patterns. As such, Ser389 phosphorylation is needed for some, but certainly not all, p53 functions.
+17317680	134	138	Mice	Species	10090
+17317680	1056	1059	Bax	Gene	12028
+17317680	1070	1073	P21	Gene	12575
+17317680	264	267	p53	Gene	22060
+17317680	716	719	p53	Gene	22060
+17317680	838	841	p53	Gene	22060
+17317680	989	992	p53	Gene	22060
+17317680	1169	1172	p53	Gene	22060
+17317680	1868	1871	p53	Gene	22060
+17317680	201	215	bladder tumors	Disease	D001749
+17317680	1151	1165	bladder tumors	Disease	D001749
+17317680	1396	1409	bladder tumor	Disease	D001749
+17317680	250	255	2-AAF	Chemical	D015073
+17317680	695	700	2-AAF	Chemical	D015073
+17317680	1207	1212	2-AAF	Chemical	D015073
+17317680	842	847	S389A	Mutation	p|SUB|S|389|A
+17317680	1173	1178	S389A	Mutation	p|SUB|S|389|A
+17317680	108	111	p53	Gene	22060
+
+16158176|t|Downregulation of apoptosis revealed by laser microdissection and cDNA microarray analysis of related genes in rat liver preneoplastic lesions.
+16158176|a|Regulation of cell proliferation and apoptosis plays a key role in tumor development. To elucidate mechanisms underlying hepatocarcinogenesis, patterns of gene expression, including apoptosis-related genes, were compared between glutathione S-transferase placental form (GST-P)-positive preneoplastic foci and surrounding tissue in the rat. Lesions were induced with a single intraperitoneal injection of diethylnitrosamine (DEN, 200 mg/kg bw) and then 100 ppm 2-acetylaminofluorene (2-AAF)-containing diet combined with two-thirds partial hepatectomy. Frozen sections of the livers were applied for immunohistochemical staining of GST-P, and both positive foci and surrounding negative areas were harvested by laser microdissection. Total RNAs were extracted and amplified with T7 polymerase to allow gene expression analysis by cDNA microarray assays. In the GST-P-positive foci, altered levels were observed for many genes, mostly related to metabolism or catalysis, with increased expression of testosterone-repressive prostate message-2 (TRPM-2), which is reported to act as a protective factor against apoptosis, and decreased expression of thymus-expressed acidic protein (TEAP), which is considered to promote apoptosis. The results indicate that rat liver preneoplastic lesions might be protected against apoptosis and that the approach adopted is useful for clarification of mechanisms underlying hepatocarcinogenesis.
+16158176	373	386	glutathione S	Chemical
+16158176	480	483	rat	Species	10116
+16158176	1399	1402	rat	Species	10116
+16158176	776	781	GST-P	Gene	24426
+16158176	1005	1010	GST-P	Gene	24426
+16158176	1291	1322	thymus-expressed acidic protein	Gene	297822
+16158176	1324	1328	TEAP	Gene	297822
+16158176	1409	1430	preneoplastic lesions	Disease	D011230
+16158176	628	633	2-AAF	Chemical	D015073
+16158176	121	142	preneoplastic lesions	Disease	D011230
+
+
+

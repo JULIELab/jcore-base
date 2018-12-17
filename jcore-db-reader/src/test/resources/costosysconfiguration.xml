@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseConnectorConfiguration
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://julielab.de"
+        xsi:schemaLocation="http://julielab.de https://raw.githubusercontent.com/JULIELab/costosys/v1.0.1/src/main/resources/configuration.xsd">
+    <DBSchemaInformation>
+        <activePostgresSchema>myTestSchema</activePostgresSchema>
+        <activeTableSchema>medline_2016</activeTableSchema>
+    </DBSchemaInformation>
+    <DBConnectionInformation>
+        <maxActiveDBConnections>1</maxActiveDBConnections>
+    </DBConnectionInformation>
+</databaseConnectorConfiguration>

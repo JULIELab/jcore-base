@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "consumer"
+    ],
+    "description": "Writes the topic weights, given the jcore-topic-indexing-ae running before, into a simple text file. Thus, the output consists of a sequency of double numbers encodes as strings, separated by tab characters. The topic ID is just the 0-based index of each number, from left to right in the written file. The first entry of each file is the document ID.",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.consumer.topics.desc.jcore-topics-writer"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-topics-writer",
+        "groupId": "de.julielab",
+        "version": "2.3.3"
+    },
+    "name": "JCoRe Topics Writer"
+}

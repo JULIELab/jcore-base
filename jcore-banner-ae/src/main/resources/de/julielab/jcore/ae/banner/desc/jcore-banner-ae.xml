@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>  <annotatorImplementationName>de.julielab.jcore.ae.banner.BANNERAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>jcore-banner-ae</name>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
+    <configurationParameters>
+      <configurationParameter>
+        <name>ConfigFile</name>
+        <description>An XML configuration file that does all settings for the BANNER AnalysisEngine. May point to a regular file or a classpath resource.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>TypeMapping</name>
+        <description>A list of mappings from entity labels to UIMA types in the form &lt;label&gt;=&lt;fully qualified type name&gt;. If not given, all entities will be realized as EntityMention instances.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings />
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-document-structure-types" />
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+      </imports>
+    </typeSystemDescription>
+    <typePriorities />
+    <fsIndexCollection />
+    <capabilities>
+      <capability>
+        <inputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
+        </inputs>
+        <outputs>
+          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Gene</type>
+        </outputs>
+        <languagesSupported />
+      </capability>
+    </capabilities>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration />
+</analysisEngineDescription>

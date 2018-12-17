@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "consumer"
+    ],
+    "description": "This component allows the output of entity mention data in documents in the format required by the\n        JULIE Lab Entity Evaluator. This way, CAS annotations can be exported for evaluation purposes. The output format\n        is a single tab-separated text file. For the exact format refer to the documentation of the\n        julielab-entity-evaluator in the jcore-dependencies repository on https://github.com/JULIELab/.\n    ",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.consumer.entityevaluator.desc.jcore-julielab-entity-evaluator-consumer"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-julielab-entity-evaluator-consumer",
+        "groupId": "de.julielab",
+        "version": "2.3.2"
+    },
+    "name": "JCoRe JULIE Lab Entity Evaluator Converter"
+}

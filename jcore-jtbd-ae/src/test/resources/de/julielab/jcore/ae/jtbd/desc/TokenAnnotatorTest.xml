@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
   <annotatorImplementationName>de.julielab.jcore.ae.jtbd.main.TokenAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>JCoRe Token Annotator</name>
-    <description/>
-    <version>2.0.0</version>
+    <description />
+    <version>2.3.0</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
@@ -28,7 +28,7 @@
       <nameValuePair>
         <name>ModelFilename</name>
         <value>
-          <string>de/julielab/jcore/ae/jtbd/model/jtbd-2.0-biomed.gz</string>
+          <string>de/julielab/jcore/ae/jtbd/model/test-model.gz</string>
         </value>
       </nameValuePair>
       <nameValuePair>
@@ -40,7 +40,7 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-           <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+           <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
       </imports>
     </typeSystemDescription>
     <capabilities>
@@ -51,7 +51,7 @@
         <outputs>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.Token</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -60,5 +60,5 @@
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </analysisEngineDescription>

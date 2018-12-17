@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jules-trove-1.3</artifactId>
+    <packaging>jar</packaging>
+    <name>JULIE Lab Adapted Trove</name>
+    <description>This bases on an old trove distribution. A few changes were made for use with the MST parser.</description>
+    <organization>
+        <name>JULIE Lab Jena, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
+</project>

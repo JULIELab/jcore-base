@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: tomanek
  * 
@@ -34,10 +34,14 @@ public class FeatureConfiguration {
 	 */
 	public boolean featureActive(final Properties propDef, final String propName) {
 		if ((propDef.getProperty(propName) != null)
-				&& propDef.getProperty(propName).equals("true"))
+				&& propDef.getProperty(propName).equals("true")) {
+			System.out.println(propName + ": true");
 			return true;
-		else
+		}
+		else {
+			System.out.println(propName + ": false");
 			return false;
+		}
 	}
 
 	public int[] getIntArray(final Properties propDef, final String propName) {

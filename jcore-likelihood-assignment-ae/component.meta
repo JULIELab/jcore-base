@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "Analysis Engine to assign likelihood indicators to their corresponding entities and events.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.likelihoodassignment.desc.jcore-likelihood-assignment-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-likelihood-assignment-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.3"
+    },
+    "name": "JCoRe Likelihood Assignment AE"
+}

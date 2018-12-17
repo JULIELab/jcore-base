@@ -1,3 +1,13 @@
+/** 
+ * 
+ * Copyright (c) 2017, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the BSD-2-Clause License
+ *
+ * Author: 
+ * 
+ * Description:
+ **/
 package de.julielab.jcore.utility;
 
 import java.io.BufferedReader;
@@ -42,65 +52,46 @@ import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.ResourceEntry;
 
 /**
- * <<<<<<< HEAD A simple implementation of a feature path, originally adapted to
- * the needs of the EntityEvaluatorConverter. It is currently not supposed to
- * serve as a full UIMA FeaturePath replacement. However, it is thinkable that
- * the implementation will be extended in the future by whomever requires a
- * feature path more capable of what the original UIMA implementation can do.
- * 
- * UIMA discloses the {@link FeatureValuePath} which seems to be able to handle
- * arrays. However, it is marked deprecated and shouldn't be used any more. The
- * new interface to use is the {@link FeaturePath} interface. Problem is, it
- * seemingly can't handle arrays very well.
- * 
- * The current implementation is quite preliminary. It can only be used via
- * {@link #getValueAsString(FeatureStructure)}, i.e. even numeric types are
- * returned as strings. The workflow is as follows: ======= A simple
- * implementation of a feature path, originally adapted to the needs of the
- * EntityEvaluatorConverter. It is currently not supposed to serve as a full
- * UIMA FeaturePath replacement. However, it is thinkable that the
- * implementation will be extended in the future by whomever requires a feature
- * path more capable of what the original UIMA implementation can do.
- * 
- * UIMA discloses the {@link FeatureValuePath} which seems to be able to handle
- * arrays. However, it is marked deprecated and shouldn't be used any more. The
- * new interface to use is the {@link FeaturePath} interface. Problem is, it
- * seemingly can't handle arrays very well.
- * 
- * The current implementation is quite preliminary. It can only be used via
- * {@link #getValueAsString(FeatureStructure)}, i.e. even numeric types are
- * returned as strings. The workflow is as follows: >>>>>>>
- * 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
- * 
- * <pre>
- * JulesFeaturePath fp = new JulesFeaturePath();
- * fp.initialize(&quot;/resourceEntryList[0]/entryId&quot;);
- * String entryId = fp.getValueAsString(gene);
- * </pre>
- * 
- * <<<<<<< HEAD This example retrieves the entry ID of the first
- * {@link ResourceEntry} of a {@link Gene} annotation.
- * 
- * <p>
- * Feature paths can be any sequence of feature base names in the form
- * <code>/feature1/feature2/feature3</code>. The last feature must be
- * primitive-valued. If any of the features is an array, the index must be
- * given, e.g. <code>/feature1/feature2[2]/feature3</code>. Otherwise, an array
- * index out of bounds (-1) exception will be thrown. ======= This example
- * retrieves the entry ID of the first {@link ResourceEntry} of a {@link Gene}
- * annotation.
- * 
- * <p>
- * Feature paths can be any sequence of feature base names in the form
- * <code>/feature1/feature2/feature3</code>. The last feature must be
- * primitive-valued. If any of the features is an array, the index must be
- * given, e.g. <code>/feature1/feature2[2]/feature3</code>. Otherwise, an array
- * index out of bounds (-1) exception will be thrown. >>>>>>>
- * 7ad7536ab9d5d42fc932c6811c7ffbe15d509c29
- * </p>
- * 
- * @author faessler
- * 
+ * This class is an implementation of the UIMA {@link FeaturePath} interface and adds some capabilities to it.
+ * Note that it also is currently missing some capabilities, most importantly it only does not implement
+ * a range of interface methods. However, it is able to query arbitrary feature values through its
+ * {@link #getValue(FeatureStructure, int)} method, even if the methods to retrieve specific types of feature
+ * values (integers, floats, bytes etc) are currently not implemented. The JCoReFeaturePath uses the the
+ * same syntax as traditional UIMA feature paths but is also able to address specific indices in
+ * multi-valued features. Suppose you have a Gene annotation and want to create feature paths to access
+ * various information of the annotation. Then you could specify the following feature paths in the
+ * constructor of a new JCoReFeaturePath:
+ *
+ * <ul>
+ * <li><code>/specificType</code>: Returns the string value of the specificType feature</li>
+ * <li><code>/resourceEntryList</code>: Returns the FSArray holding the ResourceEntry instances of the gene (a resource entry is a pointer into a database which is the 'resource')</li>
+ * <li><code>/resourceEntryList/entryId</code>: Returns the entryId feature values of all ResourceEntry instances as an array</li>
+ * <li><code>/resourceEntryList[0]/entryId</code>: Returns the entryId feature value of the first ResourceEntry instance</li>
+ * <li><code>/resourceEntryList[-1]/entryId</code>: Returns the entryId feature value of the last ResourceEntry instance</li>
+ * </ul>
+ * Additionally, JCoReFeaturePath supports the following built-in functions:
+ *
+ * <ul>
+ * <li><code>coveredText()</code>: Calls Annotation.getCoveredText on the annotation pointed to with the feature path</li>
+ * <li><code>typeName()</code>: Calls Object.getClass().getName() on the annotation pointed to by the feature path.</li>
+ * </ul>
+ * Built-in functions are used by specifying a feature path like illustrated above, appending a colon (:) and then one of the built-in functions of the above. Suppose you have an EventMention with two Argument annotatations and want to get the covered text of the first argument. Then create a JCoReFeaturePath with the following feature path and execute it on the EventMention:
+ *
+ * <ul>
+ * <li><code>/arguments[0]/:coveredText()</code>: Returns the document text covered by the first Argument of the EventMention.</li>
+ * </ul>
+ * It might also be possible that your EventMention instances may have arguments of different types, e.g. Gene and miRNA. To get the name of the actual argument type, use:
+ *
+ * <ul>
+ * <li>/arguments[0]/:typeName(): Returns the name of type - or class - of the first argument</li>
+ * </ul>
+ * Finally, it is also possible to execute built-in functions directly on the annotation the feature path is executed upon:
+ *
+ * <ul>
+ *<li> /:coveredText(): Returns the covered text of the input annotation and thus is equivalent to <code>annotation.getCoveredText()</code> Feature Value Replacement</li>
+ * </ul>
+ *
+ * An entire new capability of JCoReFeaturePath in comparison to the default UIMA feature paths is its capability to replace existing feature values with a new value. For this purpose, the JCoReFeaturePath is given a map of replacements. This map can be read from a two-column file with the = character as the separator. Lines beginning with # will be ignored. Alternatively, the replacement map can be set directly. When replacing values, JCoReFeaturePath will navigate to the feature pointed to by the given feature path and look up the found feature value in the replacement map. If found, the mapped value from the map is placed to the feature instead of the original value. If the feature value is not found in the map, a preconfigured default value can be used or the feature value is left untouched.
  */
 @SuppressWarnings("deprecation")
 public class JCoReFeaturePath implements FeaturePath {
@@ -110,8 +101,8 @@ public class JCoReFeaturePath implements FeaturePath {
 	/**
 	 * The sequence of features given in the feature path. For example, the
 	 * feature path <tt>/argument[0]/resourceEntryList[1]/entryId</tt> would
-	 * contain three features <tt>argument</tt>, <tt>resourceEntryList</tt>
-	 * and </tt>entryId</tt>.
+	 * contain three features <tt>argument</tt>, <tt>resourceEntryList</tt> and
+	 * </tt>entryId</tt>.
 	 */
 	private Feature[] features;
 	/**
@@ -152,6 +143,13 @@ public class JCoReFeaturePath implements FeaturePath {
 	 * (re-)determined on the current type.
 	 */
 	private boolean featurePathChanged;
+	/**
+	 * One of:
+	 * <ul>
+	 * <li>coveredText()</li>
+	 * <li>typeName()</li>
+	 * </ul>
+	 */
 	private String builtInFunction;
 
 	private final static Logger log = LoggerFactory.getLogger(JCoReFeaturePath.class);
@@ -185,8 +183,18 @@ public class JCoReFeaturePath implements FeaturePath {
 		this.featurePath = featurePath.trim().substring(1).split("/");
 		log.debug("Initializing feature path with these path elements: {}", Arrays.toString(this.featurePath));
 		String[] builtInFunctionSplit = this.featurePath[this.featurePath.length - 1].split(":");
+		// We now check if the given feature path is terminated by a built-in
+		// function. If so, we split away the function and store it separately.
+		// The feature path will be the original feature path minus the built-in
+		// function. Thus, when retrieving values, we will traverse to the end
+		// of the feature path, get the respective feature(s) and then apply the
+		// built-in function on it / them.
 		if (builtInFunctionSplit.length > 1) {
 			this.featurePath[this.featurePath.length - 1] = builtInFunctionSplit[0];
+			// if the built-in function should be applied to the root type,
+			// (e.g. /:getCoveredText()), there won't be a feature
+			if (this.featurePath.length == 1 && this.featurePath[0].trim().length() == 0)
+				this.featurePath = new String[0];
 			this.builtInFunction = builtInFunctionSplit[1];
 			log.debug("Found in-built function {} to apply on the feature structure pointed to by the feature path.",
 					builtInFunction);
@@ -482,6 +490,11 @@ public class JCoReFeaturePath implements FeaturePath {
 			} else if (featureValue instanceof FeatureStructure) {
 				featureValue = applyBuiltInFunction(featureValue);
 			}
+		} else if (builtInFunction != null && this.featurePath.length == 0) {
+			// this is the case where we haven't given a feature but want to
+			// apply the built-in function to the original feature structure
+			// (e.g. /:typeName())
+			featureValue = applyBuiltInFunction(fs);
 		}
 		return featureValue;
 	}
@@ -491,6 +504,8 @@ public class JCoReFeaturePath implements FeaturePath {
 		if (value instanceof Annotation) {
 			if (builtInFunction.equals("coveredText()"))
 				functionValue = ((Annotation) value).getCoveredText();
+			else if (builtInFunction.equals("typeName()"))
+				functionValue = value.getClass().getName();
 			else
 				throw new NotImplementedException(
 						"Built-in function " + builtInFunction + " is currently not supported by the JCoReFeaturePath");
@@ -911,7 +926,7 @@ public class JCoReFeaturePath implements FeaturePath {
 	 * <code>originalValue=replacementValue</code> and returns the respective
 	 * map.
 	 * 
-	 * @param replacementsFile
+	 * @param is
 	 * @return
 	 * @throws FileNotFoundException
 	 * @throws IOException

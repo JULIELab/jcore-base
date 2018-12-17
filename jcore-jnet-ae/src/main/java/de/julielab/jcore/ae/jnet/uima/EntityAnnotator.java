@@ -1,18 +1,19 @@
-/**
+/** 
  * EntityAnnotator.java
  * 
- * Copyright (c) 2015, JULIE Lab.
+ * Copyright (c) 2006, JULIE Lab. 
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the Common Public License v1.0 
  *
  * Author: tomanek
  * 
- * Current version: 2.4 Since version: 1.0
+ * Current version: 2.4
+ * Since version:   1.0
  *
- * Creation date: Nov 29, 2006
+ * Creation date: Nov 29, 2006 
  * 
- * This is an UIMA wrapper for the JULIE NETagger. It produces named entity
- * annotations, given sentence and token annotations.
+ * This is an UIMA wrapper for the JULIE NETagger. It produces named entity annotations, 
+ * given sentence and token annotations.
  **/
 
 package de.julielab.jcore.ae.jnet.uima;
@@ -27,10 +28,12 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -48,24 +51,23 @@ import org.slf4j.LoggerFactory;
 
 import cc.mallet.fst.CRF;
 import cc.mallet.types.Alphabet;
-import de.julielab.jnet.tagger.NETagger;
-import de.julielab.jnet.tagger.Unit;
 import de.julielab.jcore.types.Abbreviation;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
+import de.julielab.jcore.utility.index.JCoReCoverIndex;
+import de.julielab.jnet.tagger.NETagger;
+import de.julielab.jnet.tagger.Unit;
 
 public class EntityAnnotator extends JCasAnnotator_ImplBase {
 
-	private static final String COMPONENT_ID = EntityAnnotator.class
-			.getCanonicalName();
+	private static final String COMPONENT_ID = "de.julielab.jules.ae.netagger.EntityAnnotator";
 
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(EntityAnnotator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityAnnotator.class);
 
 	private final static String OUTSIDE_LABEL = "O"; // default outside label
 
@@ -113,8 +115,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * 
 	 * @throws ResourceInitializationException
 	 */
-	public void initialize(UimaContext aContext)
-			throws ResourceInitializationException {
+	public void initialize(UimaContext aContext) throws ResourceInitializationException {
 
 		LOGGER.info("initialize() - initializing JNET...");
 
@@ -136,8 +137,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 			setNegativeList(aContext);
 
 			// compulsory param: ExpandAbbreviations
-			Object tmp = aContext
-					.getConfigParameterValue("ExpandAbbreviations");
+			Object tmp = aContext.getConfigParameterValue("ExpandAbbreviations");
 			if (tmp != null) {
 				expandAbbr = (Boolean) tmp;
 			}
@@ -145,19 +145,16 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 			// consistency preservation
 			tmp = aContext.getConfigParameterValue("ConsistencyPreservation");
 			if (tmp != null) {
-				consistencyPreservation = new ConsistencyPreservation(
-						(String) tmp);
+				consistencyPreservation = new ConsistencyPreservation((String) tmp);
 			}
 
-			tmp = aContext
-					.getConfigParameterValue("ConfidenceThresholdForConsistencyPreservation");
+			tmp = aContext.getConfigParameterValue("ConfidenceThresholdForConsistencyPreservation");
 			if (tmp != null) {
 				confidenceThresholdForConsistencyPreservation = (float) tmp;
 			}
 
 			// ignore non-local/not introduced abbreviations
-			tmp = aContext
-					.getConfigParameterValue("IgnoreNotIntroducedAbbreviations");
+			tmp = aContext.getConfigParameterValue("IgnoreNotIntroducedAbbreviations");
 			if (tmp != null) {
 				if ((Boolean) tmp == true) {
 					abbrevPattern = Pattern.compile(ABBREV_PATTERN);
@@ -182,26 +179,21 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 
 			// show configuration
 			LOGGER.info("initialize() - abbreviation expansion: " + expandAbbr);
-			LOGGER.info("initialize() - negative list: "
-					+ ((negativeList != null) ? true : false));
+			LOGGER.info("initialize() - negative list: " + ((negativeList != null) ? true : false));
 			LOGGER.info("initialize() - show confidence: " + showSegmentConf);
 			LOGGER.info("initialize() - consistency preservation: "
-					+ ((consistencyPreservation != null) ? consistencyPreservation
-							.toString() : "none"));
-			LOGGER.info("initialize() - ignore not introduces abbreviations: "
-					+ (abbrevPattern != null));
+					+ ((consistencyPreservation != null) ? consistencyPreservation.toString() : "none"));
+			LOGGER.info("initialize() - ignore not introduces abbreviations: " + (abbrevPattern != null));
 
 		} catch (AnnotatorContextException e) {
-			e.printStackTrace();
-			throw new ResourceInitializationException();
+			// e.printStackTrace();
+			throw new ResourceInitializationException(e);
 		} catch (AnnotatorConfigurationException e) {
-			e.printStackTrace();
-			throw new ResourceInitializationException();
+			// e.printStackTrace();
+			throw new ResourceInitializationException(e);
 		} catch (AnnotatorInitializationException e) {
-			e.printStackTrace();
-			throw new ResourceInitializationException();
-		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			throw new ResourceInitializationException(e);
 		}
 	}
 
@@ -209,8 +201,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * get initialization of meta information which is used later to get token
 	 * level meta-info
 	 */
-	private void retrieveMetaInformation(JCas aJCas)
-			throws AnalysisEngineProcessException {
+	private void retrieveMetaInformation(JCas aJCas) throws AnalysisEngineProcessException {
 		JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
 		featureConfig = tagger.getFeatureConfig();
 		activatedMetas = new ArrayList<String>();
@@ -221,8 +212,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 		while (keys.hasMoreElements()) {
 			String key = (String) keys.nextElement();
 			String meta = "";
-			if (key.matches("[A-Za-z]+_feat_enabled")
-					&& featureConfig.getProperty(key).matches("true")) {
+			if (key.matches("[A-Za-z]+_feat_enabled") && featureConfig.getProperty(key).matches("true")) {
 				meta = key.substring(0, key.indexOf("_feat_enabled"));
 				activatedMetas.add(meta);
 			}
@@ -236,14 +226,13 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 		for (int i = 0; i < activatedMetas.size(); i++) {
 			Annotation ann = null;
 			try {
-				ann = JCoReAnnotationTools.getAnnotationByClassName(
-						aJCas,
-						featureConfig.getProperty(activatedMetas.get(i)
-								+ "_feat_data"));
+				String typeClassName = featureConfig.getProperty(activatedMetas.get(i) + "_feat_data");
+				// JCoRe compatibility hack
+				typeClassName = typeClassName.replaceAll("jules", "jcore");
+				ann = JCoReAnnotationTools.getAnnotationByClassName(aJCas, typeClassName);
 				// System.out.println("[JNET] using: " +
 				// ann.getClass().getName());
-				annotationIterators.add(indexes.getAnnotationIndex(
-						ann.getTypeIndexID()).iterator());
+				annotationIterators.add(indexes.getAnnotationIndex(ann.getTypeIndexID()).iterator());
 			} catch (Exception e) {
 				throw new AnalysisEngineProcessException(e);
 			}
@@ -254,8 +243,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * sets the entity types to be used for different predicted labels
 	 */
 	private void setEntityTypes(UimaContext aContext)
-			throws ResourceInitializationException, AnnotatorContextException,
-			AnnotatorConfigurationException {
+			throws ResourceInitializationException, AnnotatorContextException, AnnotatorConfigurationException {
 
 		entityMentionTypes = new TreeSet<String>();
 
@@ -309,11 +297,9 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 
 	/**
 	 * set and load the JNET model
-	 * @throws IOException 
 	 */
 	private void setModel(UimaContext aContext)
-			throws AnnotatorConfigurationException, AnnotatorContextException,
-			AnnotatorInitializationException, IOException {
+			throws AnnotatorConfigurationException, AnnotatorContextException, AnnotatorInitializationException {
 
 		// get model filename
 		String modelFilename = "";
@@ -324,27 +310,24 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 			LOGGER.error("setModel() - descriptor incomplete, no model file specified!");
 			throw new AnnotatorConfigurationException();
 		}
-		
+
 		// produce an instance of JNET with this model
 		tagger = new NETagger();
 		try {
-			LOGGER.debug("setModel() -  loading JNET model "+modelFilename);
-			final File modelFile = new File(modelFilename);
-
+			File modelPath = new File(modelFilename);
 			InputStream is;
-			if (!modelFile.exists()) {
-				// perhaps the parameter value does not point to a file but to a classpath resource
-				String resourceLocation = modelFilename.startsWith("/") ? modelFilename
-						: "/" + modelFilename;
-				is = getClass().getResourceAsStream(resourceLocation);
+			if (modelPath.exists()) {
+				LOGGER.info("Loading model from file {}", modelPath);
+				is = new FileInputStream(modelPath);
 			} else {
-				is = new FileInputStream(modelFile);
+				String cpResource = modelFilename.startsWith("/") ? modelFilename : "/" + modelFilename;
+				is = getClass().getResourceAsStream(cpResource);
+				if (is != null)
+					LOGGER.info("Loading model from classpath location {}", cpResource);
 			}
 			tagger.readModel(is);
 		} catch (Exception e) {
-			LOGGER.error(
-					"setModel() - Could not load JNET model: " + e.getMessage(),
-					e);
+			LOGGER.error("setModel() - Could not load JNET model: " + e.getMessage(), e);
 			throw new AnnotatorInitializationException();
 		}
 	}
@@ -359,27 +342,37 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 			// if NegativeList is set, make the respective object
 			File listFile = new File((String) o);
 			try {
-				negativeList = new NegativeList(listFile);
+				InputStream is;
+				if (listFile.exists()) {
+					LOGGER.debug("setNegativeList() - using negative list from file: {}", listFile);
+					is = new FileInputStream(listFile);
+				} else {
+					String cpResource = (String) o;
+					if (!cpResource.startsWith("/"))
+						cpResource = "/" + cpResource;
+					is = getClass().getResourceAsStream(cpResource);
+					if (null != is)
+						LOGGER.info("Read negative list from classpath location {}", cpResource);
+				}
+				negativeList = new NegativeList(is);
 			} catch (IOException e) {
-				LOGGER.error("setNegativeList() - specified negative list file cannot be read: "
-						+ e.getMessage());
-				throw new AnnotatorConfigurationException();
+				LOGGER.error("setNegativeList() - specified negative list file cannot be read: " + e.getMessage());
+				throw new AnnotatorConfigurationException(e);
 			}
-			LOGGER.debug("setNegativeList() - using negative list: " + listFile);
+		} else {
+			LOGGER.info("No negative list file given.");
 		}
 	}
 
 	/**
 	 * set whether confidence should be estimated for entities
 	 */
-	private void setShowSegmentConfidence(UimaContext aContext)
-			throws AnnotatorContextException {
+	private void setShowSegmentConfidence(UimaContext aContext) throws AnnotatorContextException {
 		Object o = aContext.getConfigParameterValue("ShowSegmentConfidence");
 		if (o != null) {
 			showSegmentConf = (Boolean) o;
 		}
-		LOGGER.debug("setShowSegmentConfidence() - show segment confidence: "
-				+ showSegmentConf);
+		LOGGER.debug("setShowSegmentConfidence() - show segment confidence: " + showSegmentConf);
 	}
 
 	/**
@@ -390,24 +383,28 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 */
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 
-		LOGGER.info("process() - processing next document");
+		LOGGER.debug("process() - processing next document");
 
 		JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
 		retrieveMetaInformation(aJCas);
 
 		// get all sentences and tokens
-		Iterator<org.apache.uima.jcas.tcas.Annotation> sentenceIter = indexes
-				.getAnnotationIndex(Sentence.type).iterator();
+		Iterator<org.apache.uima.jcas.tcas.Annotation> sentenceIter = indexes.getAnnotationIndex(Sentence.type)
+				.iterator();
+
+		JCoReCoverIndex<Token> tokenIndex = new JCoReCoverIndex<>(aJCas, Token.type);
+		JCoReCoverIndex<Abbreviation> abbreviationIndex = new JCoReCoverIndex<>(aJCas, Abbreviation.type);
 
 		// do entity recognition over single sentences
 		while (sentenceIter.hasNext()) {
 			Sentence sentence = (Sentence) sentenceIter.next();
 
 			// get tokens, abbreviations, and metas for this sentence
-			@SuppressWarnings("unchecked")
-			ArrayList<Token> tokenList = (ArrayList<Token>) UIMAUtils
-					.getAnnotations(aJCas, sentence,
-							(new Token(aJCas, 0, 0)).getClass());
+			// @SuppressWarnings("unchecked")
+			// ArrayList<Token> tokenList = (ArrayList<Token>)
+			// UIMAUtils.getAnnotations(aJCas, sentence,
+			// (new Token(aJCas, 0, 0)).getClass());
+			List<Token> tokenList = tokenIndex.search(sentence).collect(Collectors.toList());
 			ArrayList<HashMap<String, String>> metaList = getMetaList(tokenList);
 
 			if (tokenList.size() != metaList.size()) {
@@ -415,24 +412,21 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 				throw new AnalysisEngineProcessException();
 			}
 			// make the Sentence object
-			de.julielab.jnet.tagger.Sentence unitSentence = createUnitSentence(
-					tokenList, aJCas, metaList);
+			de.julielab.jnet.tagger.Sentence unitSentence = createUnitSentence(tokenList, aJCas, metaList,
+					abbreviationIndex, tokenIndex);
 
-			LOGGER.debug("process() - original sentence: "
-					+ sentence.getCoveredText());
+			LOGGER.debug("process() - original sentence: " + sentence.getCoveredText());
 			StringBuffer unitS = new StringBuffer();
 			for (Unit unit : unitSentence.getUnits()) {
 				unitS.append(unit.getRep() + " ");
 			}
-			LOGGER.debug("process() - sentence for prediction: "
-					+ unitSentence.toString());
+			LOGGER.debug("process() - sentence for prediction: " + unitSentence.toString());
 
 			// predict with JNET
 			try {
 				tagger.predict(unitSentence, showSegmentConf);
 			} catch (IllegalStateException e) {
-				LOGGER.error("process() - predicting with JNET failed: "
-						+ e.getMessage());
+				LOGGER.error("process() - predicting with JNET failed: " + e.getMessage());
 				throw new AnalysisEngineProcessException();
 			}
 
@@ -441,11 +435,10 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 			if (expandAbbr) {
 				unitSentence = removeDuplicatedTokens(unitSentence);
 			}
-			LOGGER.debug("process() - sentence with labels: "
-					+ unitSentence.toString());
+			LOGGER.debug("process() - sentence with labels: " + unitSentence.toString());
 
 			// write predicted labels to CAS
-			writeToCAS(unitSentence, aJCas);
+			writeToCAS(unitSentence, aJCas, abbreviationIndex);
 
 		}
 
@@ -466,8 +459,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * abbreviation long form differ in their prediction, the outside label is
 	 * assumed for the abbreviation!
 	 */
-	protected de.julielab.jnet.tagger.Sentence removeDuplicatedTokens(
-			de.julielab.jnet.tagger.Sentence unitSentence) {
+	protected de.julielab.jnet.tagger.Sentence removeDuplicatedTokens(de.julielab.jnet.tagger.Sentence unitSentence) {
 		de.julielab.jnet.tagger.Sentence newUnitSentence = new de.julielab.jnet.tagger.Sentence();
 		String lastPos = null;
 		Unit lastUnit = null;
@@ -508,18 +500,18 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * @param metaList
 	 *            a Arraylist of meta-info HashMaps which specify the meta
 	 *            information of the respective token
+	 * @param abbreviationIndex
+	 * @param tokenIndex 
 	 * @return an array of two sequences of units containing all available meta
 	 *         data for the corresponding tokens. In the first sequence,
 	 *         abbreviations are expanded to their fullform. In the second
 	 *         sequence, the tokens are of their original form.
 	 */
-	protected de.julielab.jnet.tagger.Sentence createUnitSentence(
-			ArrayList<Token> tokenList, JCas JCas,
-			ArrayList<HashMap<String, String>> metaList) {
+	protected de.julielab.jnet.tagger.Sentence createUnitSentence(List<Token> tokenList, JCas JCas,
+			ArrayList<HashMap<String, String>> metaList, JCoReCoverIndex<Abbreviation> abbreviationIndex, JCoReCoverIndex<Token> tokenIndex) {
 
 		de.julielab.jnet.tagger.Sentence unitSentence = new de.julielab.jnet.tagger.Sentence();
-		ArrayList<Abbreviation> abbreviationList = getAbbreviationList(
-				tokenList, JCas);
+		ArrayList<Abbreviation> abbreviationList = getAbbreviationList(tokenList, JCas, abbreviationIndex);
 
 		for (int i = 0; i < tokenList.size(); i++) {
 			Token token = tokenList.get(i);
@@ -536,8 +528,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 				} else {
 					// abbreviation only used here: replace token representation
 					// by full form
-					tokenRepresentation = abbreviation.getTextReference()
-							.getCoveredText();
+					tokenRepresentation = abbreviation.getTextReference().getCoveredText();
 				}
 			}
 
@@ -545,40 +536,33 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 			if (tokenRepresentation != null) {
 				if (tokenRepresentation.equals(token.getCoveredText())) {
 					// no abbrevs were expanded here
-					Unit unit = new de.julielab.jnet.tagger.Unit(
-							token.getBegin(), token.getEnd(),
-							tokenRepresentation, "", metas);
+					Unit unit = new de.julielab.jnet.tagger.Unit(token.getBegin(), token.getEnd(), tokenRepresentation,
+							"", metas);
 					unitSentence.add(unit);
 				} else {
 					// abbrev was expanded, so we probably need to make more
 					// than one units
-					@SuppressWarnings("unchecked")
-					ArrayList<Token> abbrevTokens = (ArrayList<Token>) UIMAUtils
-							.getAnnotations(JCas,
-									abbreviation.getTextReference(),
-									(new Token(JCas, 0, 0)).getClass());
-					if (abbreviation.getTextReference().getCoveredText()
-							.length() > 0
-							&& abbrevTokens.size() == 0) {
+//					@SuppressWarnings("unchecked")
+//					ArrayList<Token> abbrevTokens = (ArrayList<Token>) UIMAUtils.getAnnotations(JCas,
+//							abbreviation.getTextReference(), (new Token(JCas, 0, 0)).getClass());
+					List<Token> abbrevTokens = tokenIndex.search(abbreviation.getTextReference()).collect(Collectors.toList());
+					if (abbreviation.getTextReference().getCoveredText().length() > 0 && abbrevTokens.size() == 0) {
 						// white space tokenization when no tokens found on
 						// abbreviation full form,
 						// which
 						// typically is because full form didn't start/end on
 						// token boundaries
-						StringTokenizer st = new StringTokenizer(
-								tokenRepresentation);
+						StringTokenizer st = new StringTokenizer(tokenRepresentation);
 						while (st.hasMoreTokens()) {
 							String fullformToken = st.nextToken();
-							Unit unit = new de.julielab.jnet.tagger.Unit(
-									token.getBegin(), token.getEnd(),
+							Unit unit = new de.julielab.jnet.tagger.Unit(token.getBegin(), token.getEnd(),
 									fullformToken, "", metas);
 							unitSentence.add(unit);
 						}
 					} else {
 						// tokens within full form
 						for (Token abbrevToken : abbrevTokens) {
-							Unit unit = new de.julielab.jnet.tagger.Unit(
-									token.getBegin(), token.getEnd(),
+							Unit unit = new de.julielab.jnet.tagger.Unit(token.getBegin(), token.getEnd(),
 									abbrevToken.getCoveredText(), "", metas);
 							unitSentence.add(unit);
 						}
@@ -602,17 +586,14 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 *            the original unit sentence to be modified
 	 * @return
 	 */
-	private de.julielab.jnet.tagger.Sentence removeConsecutiveBrackets(
-			de.julielab.jnet.tagger.Sentence unitSentence) {
+	private de.julielab.jnet.tagger.Sentence removeConsecutiveBrackets(de.julielab.jnet.tagger.Sentence unitSentence) {
 		de.julielab.jnet.tagger.Sentence finalUnitSentence = new de.julielab.jnet.tagger.Sentence();
 		for (int i = 0; i < unitSentence.getUnits().size(); i++) {
 			Unit currentUnit = unitSentence.getUnits().get(i);
 			if ((i + 1) < unitSentence.getUnits().size()) {
 				Unit nextUnit = unitSentence.getUnits().get(i + 1);
-				if ((currentUnit.getRep().equals("(") && nextUnit.getRep()
-						.equals(")"))
-						|| (currentUnit.getRep().equals("["))
-						&& nextUnit.getRep().equals("]")) {
+				if ((currentUnit.getRep().equals("(") && nextUnit.getRep().equals(")"))
+						|| (currentUnit.getRep().equals("[")) && nextUnit.getRep().equals("]")) {
 					// if this unit is a bracket and next unit too -> ignore
 					// this and next unit
 					i = i + 1;
@@ -630,17 +611,19 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * 
 	 * @param tokenList
 	 * @param JCas
+	 * @param abbreviationIndex
 	 * @return
 	 */
-	private ArrayList<Abbreviation> getAbbreviationList(
-			ArrayList<Token> tokenList, JCas JCas) {
+	private ArrayList<Abbreviation> getAbbreviationList(List<Token> tokenList, JCas JCas,
+			JCoReCoverIndex<Abbreviation> abbreviationIndex) {
 		ArrayList<Abbreviation> abbreviationList = new ArrayList<Abbreviation>();
 
 		for (Token token : tokenList) {
-			@SuppressWarnings("unchecked")
-			ArrayList<Abbreviation> abbreviations = (ArrayList<Abbreviation>) UIMAUtils
-					.getAnnotations(JCas, token,
-							(new Abbreviation(JCas, 0, 0)).getClass());
+			// @SuppressWarnings("unchecked")
+			// ArrayList<Abbreviation> abbreviations = (ArrayList<Abbreviation>)
+			// UIMAUtils.getAnnotations(JCas, token,
+			// (new Abbreviation(JCas, 0, 0)).getClass());
+			List<Abbreviation> abbreviations = abbreviationIndex.search(token).collect(Collectors.toList());
 			if (abbreviations != null && abbreviations.size() > 0) {
 				abbreviationList.add(abbreviations.get(0));
 			} else {
@@ -658,8 +641,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 *            the tokens for which we want meta infos
 	 * @return
 	 */
-	private ArrayList<HashMap<String, String>> getMetaList(
-			ArrayList<Token> tokenList) {
+	private ArrayList<HashMap<String, String>> getMetaList(List<Token> tokenList) {
 		ArrayList<HashMap<String, String>> metaList = new ArrayList<HashMap<String, String>>();
 		Interval[] metaAnnotationValues = new Interval[activatedMetas.size()];
 		for (int i = 0; i < metaAnnotationValues.length; i++) {
@@ -697,8 +679,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	private HashMap<String, String> getMetas(Token token,
-			Interval[] metaAnnotationValues) {
+	private HashMap<String, String> getMetas(Token token, Interval[] metaAnnotationValues) {
 
 		int i = 0;
 		HashMap<String, String> metaInfos = new HashMap<String, String>();
@@ -711,36 +692,24 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 		try {
 			// get next meta data values (e.g. next available pos-tag)
 			for (i = 0; i < annotationIterators.size(); i++) {
-				if (annotationIterators.get(i).hasNext()
-						&& metaAnnotationValues[i] == null) {
-					Annotation ann = (Annotation) annotationIterators.get(i)
-							.next();
+				if (annotationIterators.get(i).hasNext() && metaAnnotationValues[i] == null) {
+					Annotation ann = (Annotation) annotationIterators.get(i).next();
 					String valueMethodName = valueMethods.get(i);
-					Method valueMethod = ann.getClass().getMethod(
-							valueMethodName);
-					metaAnnotationValues[i] = new Interval(ann.getBegin(),
-							ann.getEnd(), ""
-									+ valueMethod.invoke(ann, (Object[]) null));
+					Method valueMethod = ann.getClass().getMethod(valueMethodName);
+					metaAnnotationValues[i] = new Interval(ann.getBegin(), ann.getEnd(),
+							"" + valueMethod.invoke(ann, (Object[]) null));
 				}
 			}
 
 			for (i = 0; i < activatedMetas.size(); i++) {
 				Interval annotationInterval = metaAnnotationValues[i];
-				String metaName = featureConfig.getProperty(activatedMetas
-						.get(i) + "_feat_unit");
-				if (annotationInterval != null
-						&& annotationInterval.isIn(token.getBegin(),
-								token.getEnd())) {
-					if (featureConfig.getProperty(
-							activatedMetas.get(i) + "_begin_flag").equals(
-							"true")
-							&& annotationInterval.getBegin() == token
-									.getBegin()) {
-						metaInfos.put(metaName,
-								"B_" + metaAnnotationValues[i].getAnnotation());
+				String metaName = featureConfig.getProperty(activatedMetas.get(i) + "_feat_unit");
+				if (annotationInterval != null && annotationInterval.isIn(token.getBegin(), token.getEnd())) {
+					if (featureConfig.getProperty(activatedMetas.get(i) + "_begin_flag").equals("true")
+							&& annotationInterval.getBegin() == token.getBegin()) {
+						metaInfos.put(metaName, "B_" + metaAnnotationValues[i].getAnnotation());
 					} else {
-						metaInfos.put(metaName,
-								metaAnnotationValues[i].getAnnotation());
+						metaInfos.put(metaName, metaAnnotationValues[i].getAnnotation());
 					}
 					if (annotationInterval.getEnd() == token.getEnd()) {
 						metaAnnotationValues[i] = null; // this annotation has
@@ -767,9 +736,9 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 *            the current Sentence object
 	 * @param aJCas
 	 *            the cas to write the annotation to
+	 * @param abbreviationIndex 
 	 */
-	public void writeToCAS(de.julielab.jnet.tagger.Sentence unitSentence,
-			JCas aJCas) {
+	public void writeToCAS(de.julielab.jnet.tagger.Sentence unitSentence, JCas aJCas, JCoReCoverIndex<Abbreviation> abbreviationIndex) {
 		String lastLabel = OUTSIDE_LABEL;
 		int lastStart = 0;
 		int lastEnd = 0;
@@ -785,12 +754,10 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 			if (lastLabel.equals(OUTSIDE_LABEL) && !label.equals(OUTSIDE_LABEL)) {
 				// new entity starts
 				lastStart = unit.begin;
-			} else if ((!lastLabel.equals(OUTSIDE_LABEL)
-					&& !label.equals(OUTSIDE_LABEL) && !lastLabel.equals(label))
-					|| (!lastLabel.equals(OUTSIDE_LABEL) && label
-							.equals(OUTSIDE_LABEL))) {
+			} else if ((!lastLabel.equals(OUTSIDE_LABEL) && !label.equals(OUTSIDE_LABEL) && !lastLabel.equals(label))
+					|| (!lastLabel.equals(OUTSIDE_LABEL) && label.equals(OUTSIDE_LABEL))) {
 				// entity is finished, add annotation to CAS
-				addAnnotation(aJCas, lastStart, lastEnd, lastLabel, lastConf);
+				addAnnotation(aJCas, lastStart, lastEnd, lastLabel, lastConf, abbreviationIndex);
 				lastStart = unit.begin;
 			}
 
@@ -802,8 +769,7 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 				// last unit handled separately, add annotation to CAS
 				if (!label.equals(OUTSIDE_LABEL)) {
 					lastEnd = unit.end;
-					addAnnotation(aJCas, lastStart, lastEnd, lastLabel,
-							lastConf);
+					addAnnotation(aJCas, lastStart, lastEnd, lastLabel, lastConf, abbreviationIndex);
 
 				}
 			}
@@ -824,16 +790,16 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 *            label for this entity mention
 	 * @param confidence
 	 *            certainty of JNET on this label
+	 * @param abbreviationIndex 
 	 */
-	private void addAnnotation(JCas aJCas, int start, int end, String label,
-			double confidence) {
+	private void addAnnotation(JCas aJCas, int start, int end, String label, double confidence, JCoReCoverIndex<Abbreviation> abbreviationIndex) {
 
 		String coveredText = aJCas.getDocumentText().substring(start, end);
 
 		// check whether label was predicted on a not introduced abbreviation
 		// and if so, do not add
 		// this annotation
-		if (ignoreLabel(aJCas, start, end)) {
+		if (ignoreLabel(aJCas, start, end, abbreviationIndex)) {
 			return;
 		}
 
@@ -852,26 +818,21 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 			// if the predicted label is in the entityTypes map -> make a new
 			// EntityMention
 			try {
-				entity = (EntityMention) JCoReAnnotationTools
-						.getAnnotationByClassName(aJCas, entityType);
+				entity = (EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, entityType);
 				// add feature values
 				entity.setBegin(start);
 				entity.setEnd(end);
-				entity.setTextualRepresentation(aJCas.getDocumentText()
-						.substring(start, end));
+				entity.setTextualRepresentation(aJCas.getDocumentText().substring(start, end));
 				entity.setSpecificType(label);
 				entity.setComponentId(COMPONENT_ID);
 				if (showSegmentConf)
 					entity.setConfidence(confidence + "");
 				entity.addToIndexes();
 			} catch (Exception e) {
-				LOGGER.error(
-						"addAnnotation() - could not generate new EntityMention",
-						e);
+				LOGGER.error("addAnnotation() - could not generate new EntityMention", e);
 			}
 		} else {
-			LOGGER.debug("addAnnotation() - ommitted entity mention for label: "
-					+ label);
+			LOGGER.debug("addAnnotation() - ommitted entity mention for label: " + label);
 		}
 
 	}
@@ -883,41 +844,35 @@ public class EntityAnnotator extends JCasAnnotator_ImplBase {
 	 * @param aJCas
 	 * @param start
 	 * @param end
+	 * @param abbreviationIndex 
 	 * @param coveredText
 	 * @return
 	 */
-	protected boolean ignoreLabel(JCas aJCas, int start, int end) {
+	protected boolean ignoreLabel(JCas aJCas, int start, int end, JCoReCoverIndex<Abbreviation> abbreviationIndex) {
 		String coveredText = aJCas.getDocumentText().substring(start, end);
-		if (abbrevPattern != null
-				&& abbrevPattern.matcher(coveredText).matches()) {
+		if (abbrevPattern != null && abbrevPattern.matcher(coveredText).matches()) {
 			// check whether this abbreviation was introduced (if so, it has a
 			// TextReference)
-			Annotation windowAnno = new Annotation(aJCas, start, end);
-			windowAnno.addToIndexes();
-			@SuppressWarnings("unchecked")
-			ArrayList<Abbreviation> abbreviations = (ArrayList<Abbreviation>) UIMAUtils
-					.getAnnotations(aJCas, windowAnno, (new Abbreviation(aJCas,
-							0, 0)).getClass());
-			windowAnno.removeFromIndexes();
-			windowAnno = null;
+//			Annotation windowAnno = new Annotation(aJCas, start, end);
+//			windowAnno.addToIndexes();
+//			@SuppressWarnings("unchecked")
+//			ArrayList<Abbreviation> abbreviations = (ArrayList<Abbreviation>) UIMAUtils.getAnnotations(aJCas,
+//					windowAnno, (new Abbreviation(aJCas, 0, 0)).getClass());
+			List<Abbreviation> abbreviations = abbreviationIndex.search(start, end).collect(Collectors.toList());
+//			windowAnno.removeFromIndexes();
+//			windowAnno = null;
 			if (abbreviations != null && abbreviations.size() > 0) {
-				LOGGER.debug("ignoreLabel() - found JACRO-recognized abbreviations under this string: "
-						+ coveredText);
+				LOGGER.debug("ignoreLabel() - found JACRO-recognized abbreviations under this string: " + coveredText);
 				for (Abbreviation abbreviation : abbreviations) {
 					if (abbreviation.getTextReference() != null
-							&& abbreviation.getCoveredText().matches(
-									ABBREV_PATTERN)) {
-						LOGGER.debug("ignoreLabel() - abbreviation: "
-								+ abbreviation.getCoveredText()
-								+ " introduced for: "
-								+ abbreviation.getTextReference()
-										.getCoveredText());
+							&& abbreviation.getCoveredText().matches(ABBREV_PATTERN)) {
+						LOGGER.debug("ignoreLabel() - abbreviation: " + abbreviation.getCoveredText()
+								+ " introduced for: " + abbreviation.getTextReference().getCoveredText());
 						return false; // should not be ignored
 					}
 				}
 			}
-			LOGGER.debug("ignoreLabel() - ignoring annotations " + "on "
-					+ coveredText
+			LOGGER.debug("ignoreLabel() - ignoring annotations " + "on " + coveredText
 					+ " because it is a not introduced abbreviation!");
 			return true; // should be ignored
 		}

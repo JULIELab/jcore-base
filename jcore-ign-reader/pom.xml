@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>de.julielab</groupId>
+		<artifactId>jcore-parent</artifactId>
+		<version>2.3.3</version>
+	</parent>
+	<artifactId>jcore-ign-reader</artifactId>
+  <version>2.3.5-SNAPSHOT</version>
+  <name>JCoRe IGN Reader</name>
+  <description>Collection Reader for the IGN corpus in BioC format as accessible at https://sites.google.com/site/hongjiedai/projects/the-ign-corpus.</description>
+  <dependencies>
+	  <dependency>
+		  <groupId>com.pengyifan.bioc</groupId>
+		  <artifactId>pengyifan-bioc</artifactId>
+		  <version>1.0.2</version>
+	  </dependency>
+  	<dependency>
+  		<groupId>de.julielab</groupId>
+  		<artifactId>jcore-types</artifactId>
+  		<version>${jcore-version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.slf4j</groupId>
+  		<artifactId>slf4j-api</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.slf4j</groupId>
+  		<artifactId>slf4j-simple</artifactId>
+  		<version>${slf4j-version}</version>
+  		<scope>test</scope>
+  	</dependency>
+  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
+  <organization>
+  	<name>JULIE Lab Jena, Germany</name>
+  	<url>http://www.julielab.de</url>
+  </organization>
+  <scm>
+  	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-ign-reader</url>
+    <tag>HEAD</tag>
+  </scm>
+  </project>

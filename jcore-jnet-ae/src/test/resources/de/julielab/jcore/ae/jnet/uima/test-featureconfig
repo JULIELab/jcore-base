@@ -1,0 +1,16 @@
+pos_feat_position = 1
+feat_plural_enabled = true
+pos_feat_valMethod = getValue
+pos_feat_data = de.julielab.jules.types.PennBioIEPOSTag
+feat_wc_enabled = true
+pos_begin_flag = false
+feat_lowercase_enabled = false
+pos_feat_enabled = true
+pos_feat_unit = pos
+offset_conjunctions = (-1) (1) (2)
+feat_bioregexp_enabled = true
+gap_character = @
+feat_bwc_enabled = true
+char_ngrams = 3,4
+prefix_sizes = 2,3
+suffix_sizes = 2,3

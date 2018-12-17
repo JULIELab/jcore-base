@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>JCoRe All Types</name>
+  <description>This is just a convenience file, assembling all JCoRe types</description>
+  <version>2.3.0</version>
+  <vendor>JULIE Lab Jena, Germany</vendor>
+  <imports>
+    <import name="de.julielab.jcore.types.jcore-basic-types" />
+    <import name="de.julielab.jcore.types.jcore-discourse-types" />
+    <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+    <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+    <import name="de.julielab.jcore.types.jcore-document-meta-types" />
+    <import name="de.julielab.jcore.types.jcore-document-structure-types" />
+    <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+    <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+    <import name="de.julielab.jcore.types.jcore-semantics-concept-types" />
+    <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-ace-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-evaluation-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-semantics-bootstrep-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-mantra-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-mmax-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-muc7-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-semantics-ace-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-semantics-stemnet-types" />
+    <import name="de.julielab.jcore.types.extensions.jcore-wikipedia-types" />
+  </imports>
+</typeSystemDescription>

@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
-		<version>2.2.0</version>
+		<version>2.3.4-SNAPSHOT</version>
 	</parent>
 	 
 	 <build>
@@ -37,7 +37,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>de.julielab.jpos.JPOSApplication</mainClass>
+							<mainClass>de.julielab.jcore.ae.jpos.main.JPOSApplication</mainClass>
 						</manifest>
 					</archive>
 					<appendAssemblyId>true</appendAssemblyId>
@@ -125,7 +125,7 @@
     	<artifactId>jcore-mallet-2.0.9</artifactId>
     	<version>2.1.0</version>
     </dependency>
-  </dependencies>
+  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
 	<organization>
 		<url>http://www.julielab.de</url>
 		<name>JULIE Lab, Germany</name>

@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Document Structure Types</name>
   <description>The type system contains the types for the annotation of document sutructure, e.g. titles, abstract text, captions etc.</description>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.3.0</version>
   <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
-    <import location="jcore-basic-types.xml"/>
+    <import location="jcore-basic-types.xml" />
   </imports>
   <types>
     <typeDescription>
@@ -44,6 +44,11 @@
           <name>depth</name>
           <description>depth of the section, e.g. 0 -&gt; section, 1 -&gt; subsection, 2 -&gt; sub-subsection, ...</description>
           <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>label</name>
+          <description>The section label, if given. This might, for example, just be the section number.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
@@ -114,6 +119,11 @@ feature captionType is an Enumeration, stating to what type of entity the captio
           <description>the caption that comes with the object</description>
           <rangeTypeName>de.julielab.jcore.types.Caption</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>objectTitle</name>
+          <description>The title annotation of the text object, if it exists. The title might correspond to the objectLabel (which is of type String and thus no annotation on its own).</description>
+          <rangeTypeName>de.julielab.jcore.types.Title</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
@@ -148,28 +158,28 @@ feature captionType is an Enumeration, stating to what type of entity the captio
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.StyleName</name>
-      <description/>
+      <description />
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
         <value>
           <string>slanted</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>italic</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>bold</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>underscore</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>stricke-though</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
@@ -180,11 +190,11 @@ feature captionType is an Enumeration, stating to what type of entity the captio
       <allowedValues>
         <value>
           <string>UTF-8</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>UTF-16</string>
-          <description/>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
@@ -237,13 +247,6 @@ feature captionType is an Enumeration, stating to what type of entity the captio
       <name>de.julielab.jcore.types.Figure</name>
       <description>Annotation for all elements in the CAS that belong to figures, e.g. figure title, figure caption etc.</description>
       <supertypeName>de.julielab.jcore.types.TextObject</supertypeName>
-    <features>
-        <featureDescription>
-          <name>figureTitle</name>
-          <description>Annotation to mark the title of a caption specific to figure text object in the CAS document text.</description>
-          <rangeTypeName>de.julielab.jcore.types.Title</rangeTypeName>
-        </featureDescription>
-      </features>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.Table</name>
@@ -251,7 +254,7 @@ feature captionType is an Enumeration, stating to what type of entity the captio
       <supertypeName>de.julielab.jcore.types.TextObject</supertypeName>
     <features>
         <featureDescription>
-          <name>tableFootnotes</name>
+          <name>footnotes</name>
           <description>An array collecting all footnotes, appearing in this table</description>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>de.julielab.jcore.types.Footnote</elementType>
@@ -265,14 +268,14 @@ feature captionType is an Enumeration, stating to what type of entity the captio
     <features>
         <featureDescription>
           <name>footnoteTitle</name>
-          <description/>
+          <description />
           <rangeTypeName>de.julielab.jcore.types.Title</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.AbstractSection</name>
-      <description/>
+      <description />
       <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
       <features>
         <featureDescription>
@@ -301,19 +304,19 @@ document: title of the document</description>
       <allowedValues>
       	<value>
           <string>table</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>figure</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>caption</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>footnote</string>
-          <description/>
+          <description />
         </value>
                 <value>
           <string>abstractSection</string>
@@ -322,6 +325,14 @@ document: title of the document</description>
         <value>
           <string>document</string>
           <description>Denotes the document title</description>
+        </value>
+      <value>
+          <string>other</string>
+          <description />
+        </value>
+      <value>
+          <string>section</string>
+          <description />
         </value>
       </allowedValues>
     </typeDescription>
@@ -332,13 +343,46 @@ document: title of the document</description>
             <allowedValues>
       	<value>
           <string>table</string>
-          <description/>
+          <description />
         </value>
         <value>
           <string>figure</string>
-          <description/>
+          <description />
+        </value>
+      <value>
+          <string>other</string>
+          <description />
         </value>
       </allowedValues>
+    </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jcore.types.Segment</name>
+      <description>A segment is comparable to "de.julielab.jcore.types.Section" but for medical document (e.g. discharge summaries) we want a distinction between these types</description>
+      <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+      <features>
+        <featureDescription>
+          <name>value</name>
+          <description>SecTag reference??</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  <typeDescription>
+      <name>de.julielab.jcore.types.InternalReference</name>
+      <description>Used for document-internal references like literature references, footnotes etc.</description>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>reftype</name>
+          <description>The reference type: literature, figure, footnote etc.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>refid</name>
+          <description>The ID of the referenced object.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
     </typeDescription>
   </types>
 </typeSystemDescription>

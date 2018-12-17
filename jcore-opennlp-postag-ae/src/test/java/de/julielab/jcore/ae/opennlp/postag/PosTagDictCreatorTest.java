@@ -1,3 +1,13 @@
+/** 
+ * 
+ * Copyright (c) 2017, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the BSD-2-Clause License
+ *
+ * Author: 
+ * 
+ * Description:
+ **/
 package de.julielab.jcore.ae.opennlp.postag;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -7,15 +17,16 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-
-import opennlp.tools.postag.POSDictionary;
-import opennlp.tools.postag.POSSample;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import de.julielab.jcore.ae.opennlp.postag.POSTagDictCreator;
+import opennlp.tools.postag.POSDictionary;
+import opennlp.tools.postag.POSSample;
 
 public class PosTagDictCreatorTest {
 	@Test
@@ -47,10 +58,10 @@ public class PosTagDictCreatorTest {
 		try (InputStream is = FileUtils.openInputStream(dictFile)) {
 			POSDictionary loadedPOSDictionary = POSDictionary.create(is);
 			assertTrue(loadedPOSDictionary.isCaseSensitive());
-			String[] expectedTagsLower = new String[] { "TEST2", "JJ" };
-			String[] expectedTagsUpper = new String[] { "TEST", "JJ" };
-			assertArrayEquals(expectedTagsLower, loadedPOSDictionary.getTags("small"));
-			assertArrayEquals(expectedTagsUpper, loadedPOSDictionary.getTags("Small"));
+			Set<String> expectedTagsLower = new HashSet<>(Arrays.asList("TEST2", "JJ"));
+			Set<String> expectedTagsUpper = new HashSet<>(Arrays.asList("TEST", "JJ"));
+			assertEquals(expectedTagsLower, new HashSet<String>(Arrays.asList(loadedPOSDictionary.getTags("small"))));
+			assertEquals(expectedTagsUpper, new HashSet<String>(Arrays.asList(loadedPOSDictionary.getTags("Small"))));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -60,18 +71,18 @@ public class PosTagDictCreatorTest {
 	public void testCreatePOSTagDict() {
 		POSDictionary posDictionary =
 				POSTagDictCreator.createPOSTagDict(new File("src/test/resources/posSamples.opennlp"), false);
-		String[] expectedTags = new String[] { "TEST2", "TEST", "JJ" };
-		assertArrayEquals(expectedTags, posDictionary.getTags("Small"));
-		assertArrayEquals(expectedTags, posDictionary.getTags("small"));
+		Set<String> expectedTags = new HashSet<>(Arrays.asList("TEST2", "TEST", "JJ"));
+		assertEquals(expectedTags, new HashSet<String>(Arrays.asList(posDictionary.getTags("Small"))));
+		assertEquals(expectedTags, new HashSet<String>(Arrays.asList(posDictionary.getTags("small"))));
 	}
 
 	@Test
 	public void testCreatePOSTagDictCaseSensitive() {
 		POSDictionary posDictionary =
 				POSTagDictCreator.createPOSTagDict(new File("src/test/resources/posSamples.opennlp"), true);
-		String[] expectedTagsLower = new String[] { "TEST2", "JJ" };
-		String[] expectedTagsUpper = new String[] { "TEST", "JJ" };
-		assertArrayEquals(expectedTagsLower, posDictionary.getTags("small"));
-		assertArrayEquals(expectedTagsUpper, posDictionary.getTags("Small"));
+		Set<String> expectedTagsLower = new HashSet<>(Arrays.asList("TEST2", "JJ"));
+		Set<String> expectedTagsUpper = new HashSet<>(Arrays.asList("TEST", "JJ"));
+		assertEquals(expectedTagsLower, new HashSet<String>(Arrays.asList(posDictionary.getTags("small"))));
+		assertEquals(expectedTagsUpper, new HashSet<String>(Arrays.asList(posDictionary.getTags("Small"))));
 	}
 }

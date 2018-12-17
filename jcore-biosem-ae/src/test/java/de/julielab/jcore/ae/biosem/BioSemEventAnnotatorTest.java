@@ -1,3 +1,13 @@
+/** 
+ * 
+ * Copyright (c) 2017, JULIE Lab.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the BSD-2-Clause License
+ *
+ * Author: 
+ * 
+ * Description:
+ **/
 package de.julielab.jcore.ae.biosem;
 
 import static org.junit.Assert.assertEquals;
@@ -20,29 +30,30 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.julielab.jcore.ae.biosem.BioSemEventAnnotator;
 import de.julielab.jcore.ae.biosem.DBUtilsProviderImpl;
-import de.julielab.jcore.consumer.bionlp09event.main.EventConsumer;
-import de.julielab.jcore.reader.bionlp09event.main.EventReader;
+import de.julielab.jcore.consumer.bionlpformat.main.BioEventConsumer;
+import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
 import de.julielab.jcore.types.EventMention;
 
 public class BioSemEventAnnotatorTest {
 	@Test
 	public void testProcess() throws Exception {
 		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
-		CollectionReader bioNlpSTReader = CollectionReaderFactory.createReader(EventReader.class,
-				EventReader.DIRECTORY_PARAM, "src/test/resources/st09-traindoc/",
-				EventReader.BIOEVENT_SERVICE_MODE_PARAM, false);
+		CollectionReader bioNlpSTReader = CollectionReaderFactory.createReader(BioEventReader.class,
+				BioEventReader.DIRECTORY_PARAM, "src/test/resources/st09-traindoc/",
+				BioEventReader.BIOEVENT_SERVICE_MODE_PARAM, false);
 		ExternalResourceDescription dbResourceDescription = ExternalResourceFactory.createExternalResourceDescription(
 				DBUtilsProviderImpl.class,
 				"file:src/test/resources/de/julielab/jcore/ae/biosemannotator.test.properties");
 		AnalysisEngine engine = AnalysisEngineFactory.createEngine(BioSemEventAnnotator.class,
 				BioSemEventAnnotator.RESOURCE_TRAINED_DB, dbResourceDescription);
-		AnalysisEngine bioNlpSTWriter = AnalysisEngineFactory.createEngine(EventConsumer.class,
-				EventConsumer.DIRECTORY_PARAM, "src/test/resources/test-predict-out",
-				EventConsumer.BIOEVENT_SERVICE_MODE_PARAM, false);
+		AnalysisEngine bioNlpSTWriter = AnalysisEngineFactory.createEngine(BioEventConsumer.class,
+				BioEventConsumer.DIRECTORY_PARAM, "src/test/resources/test-predict-out",
+				BioEventConsumer.BIOEVENT_SERVICE_MODE_PARAM, false);
 
 		// first, delete the possibly already existing old test output file
 		File testOutputFile = new File("src/test/resources/test-predict-out/1313226.a2");

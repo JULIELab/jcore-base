@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: jwermter
  *
@@ -21,7 +21,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 
 import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.AbbreviationLongform;
 
 /**
  * TODO insert description
@@ -55,7 +55,7 @@ public class ConsistencyAnnotator {
 			abbr = (Abbreviation) acronymIter.next();
 			shortformtext = abbr.getCoveredText();
 			fullformtext = abbr.getExpan();
-			Annotation textRef = abbr.getTextReference();
+			AbbreviationLongform textRef = abbr.getTextReference();
 			abbrPos = abbr.getBegin();
 			pos = 0;
 			while ((pos = documenttext.indexOf(shortformtext, pos)) >= 0) {

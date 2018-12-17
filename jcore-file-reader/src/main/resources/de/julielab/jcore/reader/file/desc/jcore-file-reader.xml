@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.file.main.FileReader</implementationName>
   <processingResourceMetaData>
     <name>JCoRe File Reader</name>
-    <description/>
-    <version>1.0</version>
+    <description />
+    <version>2.3.0</version>
     <vendor>JULIELab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
@@ -36,6 +36,44 @@
         <multiValued>true</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+    <configurationParameter>
+        <name>SentencePerLine</name>
+        <description>Whether the files are preprocessed and have only one sentence per line.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>FileNameSplitUnderscore</name>
+        <description>Whether the filenames are splitted on underscore as well as.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ReadSubDirs</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>TokenByToken</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>OriginalFolder</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>OriginalFileExt</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -50,22 +88,53 @@
           <string>data/files</string>
         </value>
       </nameValuePair>
+    <nameValuePair>
+        <name>SentencePerLine</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>FileNameSplitUnderscore</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ReadSubDirs</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>TokenByToken</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>OriginalFileExt</name>
+        <value>
+          <string>txt</string>
+        </value>
+      </nameValuePair>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+      <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
+        <inputs />
         <outputs>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.Date</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -74,5 +143,5 @@
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </collectionReaderDescription>

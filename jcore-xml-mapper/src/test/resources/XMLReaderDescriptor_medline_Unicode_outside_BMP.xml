@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jcore.reader.xmlmapper.XMLReader</implementationName>
+  <processingResourceMetaData>
+    <name>XMLReader</name>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
+    <configurationParameters>
+      <configurationParameter>
+        <name>InputDirectory</name>
+        <description>Directory of xml files to read in</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>InputFile</name>
+        <description>Indicates that this CollectionReader is capable of reading a single file and contains the path to this file. If this parameter is set, the parameter inputDirectory is ignored.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>MappingFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>MappingFile</name>
+        <value>
+          <string>src/test/resources/mappingFileUnicodeOutsideBMP.xml</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>InputFile</name>
+        <value>
+          <string>src/test/resources/medlineTest/23700993.xml</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+        <import name="de.julielab.jcore.types.jcore-document-structure-types" />
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
+      </imports>
+    </typeSystemDescription>
+    <typePriorities />
+    <fsIndexCollection />
+    <capabilities>
+      <capability>
+        <inputs />
+        <outputs />
+        <languagesSupported />
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration />
+</collectionReaderDescription>

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  */
 
 package de.julielab.jcore.ae.jpos.postagger;
@@ -71,7 +71,7 @@ public class POSAnnotatorTest {
 		// postags3.addToIndexes();
 		// t3.setPosTag(postags3);
 	}
-
+	
 	@Test
 	public void testProcess() throws Exception {
 
@@ -79,8 +79,7 @@ public class POSAnnotatorTest {
 		ResourceSpecifier posSpec = null;
 		AnalysisEngine posAnnotator = null;
 
-		posXML = new XMLInputSource(
-				"src/test/resources/POSTagAnnotatorTest.xml");
+		posXML = new XMLInputSource("src/test/resources/POSTagAnnotatorTest.xml");
 		posSpec = UIMAFramework.getXMLParser().parseResourceSpecifier(posXML);
 		posAnnotator = UIMAFramework.produceAnalysisEngine(posSpec);
 
@@ -93,8 +92,7 @@ public class POSAnnotatorTest {
 		// get the offsets of the sentences
 		final JFSIndexRepository indexes = jcas.getJFSIndexRepository();
 
-		FSIterator<Annotation> tokIter = indexes.getAnnotationIndex(Token.type)
-				.iterator();
+		FSIterator<Annotation> tokIter = indexes.getAnnotationIndex(Token.type).iterator();
 
 		String predictedPOSTags = "";
 		while (tokIter.hasNext()) {

@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jcore-pmc-reader</artifactId>
+    <packaging>jar</packaging>
+    <name>JCoRe PubMed Central Reader</name>
+    <description>A UIMA reader for the Pubmed Central NXML format.</description>
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.3.4-SNAPSHOT</version>
+    </parent>
+    <version>2.3.3-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>julie-xml-tools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-types-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.18</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.uima</groupId>
+            <artifactId>uima-ducc-user</artifactId>
+            <version>${uima-ducc-version}</version>
+            <exclusions>
+                <exclusion><groupId>org.apache.uima</groupId><artifactId>uimaj-as-activemq</artifactId></exclusion>
+                <exclusion><groupId>org.apache.activemq</groupId><artifactId>activemq-camel</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-core</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-xstream</artifactId></exclusion>
+                <exclusion><groupId>org.apache.commons</groupId><artifactId>commons-pool2</artifactId></exclusion>
+                <exclusion><groupId>org.eclipse.jetty</groupId><artifactId>jetty-server</artifactId></exclusion>
+                <exclusion><groupId>xpp3</groupId><artifactId>xpp3</artifactId></exclusion>
+                <exclusion><groupId>org.apache.httpcomponents</groupId><artifactId>httpclient</artifactId></exclusion>
+                <exclusion><groupId>xmlpull</groupId><artifactId>xmlpull</artifactId></exclusion>
+                <exclusion><groupId>org.apache.httpcomponents</groupId><artifactId>httpclient-cache</artifactId></exclusion>
+                <exclusion><groupId>org.apache.httpcomponents</groupId><artifactId>httpcore</artifactId></exclusion>
+                <exclusion><groupId>org.slf4j</groupId><artifactId>jcl-over-slf4j</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-context</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-http4</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-http</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-http-common</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-jetty-common</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-mina</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-xmlbeans</artifactId></exclusion>
+                <exclusion><groupId>org.apache.mina</groupId><artifactId>mina-core</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-servlet</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-test-spring</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-test</artifactId></exclusion>
+                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-stream</artifactId></exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
+    <organization>
+        <name>JULIE Lab Jena, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
+</project>

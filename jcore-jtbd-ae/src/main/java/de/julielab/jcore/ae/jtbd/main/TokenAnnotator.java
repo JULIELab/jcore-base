@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: tomanek
  *
@@ -39,11 +39,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.julielab.jcore.ae.jtbd.EOSSymbols;
+import de.julielab.jcore.ae.jtbd.Tokenizer;
+import de.julielab.jcore.ae.jtbd.Unit;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import de.julielab.jtbd.EOSSymbols;
-import de.julielab.jtbd.Tokenizer;
-import de.julielab.jtbd.Unit;
 
 public class TokenAnnotator extends JCasAnnotator_ImplBase {
 

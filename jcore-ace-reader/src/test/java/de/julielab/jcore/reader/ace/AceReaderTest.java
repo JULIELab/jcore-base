@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: Lichtenwald, Buyko
  * 
@@ -29,17 +29,21 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -117,7 +121,7 @@ public class AceReaderTest extends TestCase {
 	/*----------------------------------------------------------------------------------------------*/
 	@Override
 	protected void setUp() throws Exception {
-		aceReader = JCoReTools.getCollectionReader(ACE_READER_DESCRIPTOR);
+		aceReader = getCollectionReader(ACE_READER_DESCRIPTOR);
 		processAllCases();
 		super.setUp();
 
@@ -145,7 +149,7 @@ public class AceReaderTest extends TestCase {
 			aceReaderCas = casArrayList.get(0);
 			aceReaderJCas = aceReaderCas.getJCas();
 
-			testReader = JCoReTools.getCollectionReader(ACE_READER_DESCRIPTOR);
+			testReader = getCollectionReader(ACE_READER_DESCRIPTOR);
 			testReaderCas = CasCreationUtils.createCas((AnalysisEngineMetaData) testReader.getMetaData());
 
 			testReaderJCas = testReaderCas.getJCas();
@@ -2256,5 +2260,20 @@ public class AceReaderTest extends TestCase {
 		XMLSerializer xmlSer = new XMLSerializer(fos, false);
 		ser.serialize(cas, xmlSer.getContentHandler());
 	} // writeCasToXMI
+
+	private static CollectionReader getCollectionReader(String readerDescriptor) {
+		CollectionReaderDescription readerDescription;
+		CollectionReader collectionReader = null;
+		try {
+			readerDescription = (CollectionReaderDescription) UIMAFramework.getXMLParser()
+					.parseCollectionReaderDescription(new XMLInputSource(readerDescriptor));
+			collectionReader = UIMAFramework.produceCollectionReader(readerDescription);
+		} catch (InvalidXMLException | IOException e) {
+			e.printStackTrace();
+		} catch (ResourceInitializationException e) {
+			e.printStackTrace();
+		}
+		return collectionReader;
+	}
 
 } // of public class AceReaderTest

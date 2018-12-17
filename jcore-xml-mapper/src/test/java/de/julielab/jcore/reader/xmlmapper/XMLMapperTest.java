@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2015, JULIE Lab.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Lesser General Public License (LGPL) v3.0
+ * are made available under the terms of the BSD-2-Clause License
  *
  * Author: faessler
  *
@@ -15,9 +15,12 @@
 
 package de.julielab.jcore.reader.xmlmapper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +32,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
@@ -123,9 +125,9 @@ public class XMLMapperTest {
 		assertEquals("document", title.getTitleType());
 
 	}
-	
+
 	@Test
-	public void testStructuredAbstract()throws Exception {
+	public void testStructuredAbstract() throws Exception {
 		Map<String, String> readerConfig = new HashMap<String, String>();
 		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/doc_medline_test_structured_abstract.xml");
 		Map<String, String> readerExtRes = new HashMap<String, String>();
@@ -138,11 +140,11 @@ public class XMLMapperTest {
 
 		xmlReader.getNext(cas);
 		JCas jCas = cas.getJCas();
-		
+
 		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractSection.type).iterator();
 		assertTrue(it.hasNext());
-		int numAbstractSections = 0; 
-		while(it.hasNext()) {
+		int numAbstractSections = 0;
+		while (it.hasNext()) {
 			AbstractSection as = (AbstractSection) it.next();
 			if (numAbstractSections == 0) {
 				assertTrue(as.getCoveredText().startsWith("Topical corticosteroids"));
@@ -172,9 +174,9 @@ public class XMLMapperTest {
 		assertTrue(at.getCoveredText().endsWith("severe baseline disease."));
 		assertEquals(5, at.getStructuredAbstractParts().size());
 	}
-	
+
 	@Test
-	public void testStructuredAbstract2()throws Exception {
+	public void testStructuredAbstract2() throws Exception {
 		Map<String, String> readerConfig = new HashMap<String, String>();
 		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/medlineTest/25556833.xml");
 		Map<String, String> readerExtRes = new HashMap<String, String>();
@@ -187,11 +189,11 @@ public class XMLMapperTest {
 
 		xmlReader.getNext(cas);
 		JCas jCas = cas.getJCas();
-		
+
 		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractSection.type).iterator();
 		assertTrue(it.hasNext());
-		int numAbstractSections = 0; 
-		while(it.hasNext()) {
+		int numAbstractSections = 0;
+		while (it.hasNext()) {
 			AbstractSection as = (AbstractSection) it.next();
 			if (numAbstractSections == 0) {
 				assertTrue(as.getCoveredText().startsWith("Neuronal development requires"));
@@ -220,9 +222,35 @@ public class XMLMapperTest {
 		assertTrue(at.getCoveredText().endsWith("in the neocortex."));
 		assertEquals(2, at.getStructuredAbstractParts().size());
 	}
-	
+
 	@Test
-	public void testStructuredAbstractMappingWithNonStructuredAbstractDocument()throws Exception {
+	public void testStructuredAbstract3() throws Exception {
+		// The document of this text does define empty abstract sections. We
+		// must take care to stick in the document text
+		Map<String, String> readerConfig = new HashMap<String, String>();
+		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/medlineTest/27805344.xml");
+		Map<String, String> readerExtRes = new HashMap<String, String>();
+		readerExtRes.put(EXT_RES_KEY, XMLReader.RESOURCE_MAPPING_FILE);
+		readerExtRes.put(EXT_RES_NAME, "MappingFile");
+		readerExtRes.put(EXT_RES_URL, "file:medlineMappingFileStructuredAbstract.xml");
+		CollectionReader xmlReader = createCollectionReaderWithDescriptor(TEST_DESC_PATH, readerConfig, readerExtRes);
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlReader.getMetaData());
+		assertTrue(xmlReader.hasNext());
+
+		xmlReader.getNext(cas);
+		JCas jCas = cas.getJCas();
+
+		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractSection.type).iterator();
+		assertTrue(it.hasNext());
+		while (it.hasNext()) {
+			Annotation section = it.next();
+			// if this doesn't throw an exception, we're fine
+			System.out.println(section.getCoveredText());
+		}
+	}
+
+	@Test
+	public void testStructuredAbstractMappingWithNonStructuredAbstractDocument() throws Exception {
 		Map<String, String> readerConfig = new HashMap<String, String>();
 		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/medlineTest/x.xml");
 		Map<String, String> readerExtRes = new HashMap<String, String>();
@@ -235,20 +263,20 @@ public class XMLMapperTest {
 
 		xmlReader.getNext(cas);
 		JCas jCas = cas.getJCas();
-		
+
 		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractSection.type).iterator();
 		assertFalse(it.hasNext());
-		
+
 		it = jCas.getAnnotationIndex(AbstractText.type).iterator();
 		assertTrue(it.hasNext());
 		AbstractText at = (AbstractText) it.next();
 		assertTrue(at.getCoveredText().startsWith("In the last few years,"));
 		assertTrue(at.getCoveredText().endsWith("antigen-presenting cells."));
-		
+
 	}
-	
+
 	@Test
-	public void testDocumentWithoutAbstract()throws Exception {
+	public void testDocumentWithoutAbstract() throws Exception {
 		Map<String, String> readerConfig = new HashMap<String, String>();
 		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/medlineTest/19536169.xml");
 		Map<String, String> readerExtRes = new HashMap<String, String>();
@@ -261,10 +289,10 @@ public class XMLMapperTest {
 
 		xmlReader.getNext(cas);
 		JCas jCas = cas.getJCas();
-		
+
 		FSIterator<Annotation> it = jCas.getAnnotationIndex(AbstractSection.type).iterator();
 		assertFalse(it.hasNext());
-		
+
 		it = jCas.getAnnotationIndex(AbstractText.type).iterator();
 		assertFalse(it.hasNext());
 	}
@@ -281,11 +309,13 @@ public class XMLMapperTest {
 	 * @throws UIMAException
 	 * @throws IOException
 	 */
-	private CollectionReader createCollectionReaderWithDescriptor(String descriptorFile, Map<String, String> configurationParameters,
-			Map<String, String> externalResources) throws UIMAException, IOException {
-		CollectionReaderDescription readerDescription = (CollectionReaderDescription) UIMAFramework.getXMLParser().parseCollectionReaderDescription(
-				new XMLInputSource(descriptorFile));
-		ConfigurationParameterSettings settings = readerDescription.getCollectionReaderMetaData().getConfigurationParameterSettings();
+	private CollectionReader createCollectionReaderWithDescriptor(String descriptorFile,
+			Map<String, String> configurationParameters, Map<String, String> externalResources)
+			throws UIMAException, IOException {
+		CollectionReaderDescription readerDescription = (CollectionReaderDescription) UIMAFramework.getXMLParser()
+				.parseCollectionReaderDescription(new XMLInputSource(descriptorFile));
+		ConfigurationParameterSettings settings = readerDescription.getCollectionReaderMetaData()
+				.getConfigurationParameterSettings();
 		if (configurationParameters != null) {
 			for (String parameterName : configurationParameters.keySet())
 				settings.setParameterValue(parameterName, configurationParameters.get(parameterName));
