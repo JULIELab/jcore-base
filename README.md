@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/JULIELab/jcore-base.svg?branch=master)](https://travis-ci.com/JULIELab/jcore-base)
+
 # JCoRe Base
 
 Base modules of JCoRe as described in (please cite this paper if you publish results using JCoRe):
