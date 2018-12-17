@@ -79,13 +79,15 @@ public class TopicsWriterTest {
         assertThat(outputDir).exists();
         File[] files = outputDir.listFiles((f) -> !f.getName().equals(".DS_Store"));
         assertThat(files.length).isEqualTo(2);
-        assertThat(files[0].getName()).contains("mod1").contains("1.0");
+        final File mod1 = outputDir.listFiles((f) -> f.getName().startsWith("mod1"))[0];
+        assertThat(mod1.getName()).contains("mod1").contains("1.0");
         List<String> lines = FileUtilities.getReaderFromFile(files[0]).lines().collect(Collectors.toList());
         assertThat(lines.size()).isEqualTo(2);
         assertThat(lines.get(0)).isEqualTo("doc0	0.1	0.2	0.3");
         assertThat(lines.get(1)).isEqualTo("doc0	0.5	0.6	0.7");
 
-        assertThat(files[1].getName()).contains("mod2").contains("3.2");
+        final File mod2 = outputDir.listFiles((f) -> f.getName().startsWith("mod2"))[0];
+        assertThat(mod2.getName()).contains("mod2").contains("3.2");
         lines = FileUtilities.getReaderFromFile(files[1]).lines().collect(Collectors.toList());
         assertThat(lines.size()).isEqualTo(1);
         assertThat(lines.get(0)).isEqualTo("doc0	0.8	0.9");
