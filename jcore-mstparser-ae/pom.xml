@@ -21,6 +21,38 @@
             </snapshots>
         </repository>
     </repositories>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>de.julielab</groupId>
+                                    <artifactId>jules-trove</artifactId>
+                                    <version>1.3</version>
+                                    <type>jar</type>
+                                    <includes>**/*.class</includes>
+                                    <excludes>repo/**</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>
@@ -46,8 +78,14 @@
             <groupId>de.julielab</groupId>
             <artifactId>jules-trove</artifactId>
             <version>1.3</version>
+            <!-- Since we cannot provide trove as an actual Maven dependency, we use the dependency plugin to include its classes right into the MST parser artifact. Thus, we don't want to propagate the dependency.-->
+            <scope>provided</scope>
         </dependency>
-    <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
     <organization>
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
