@@ -139,7 +139,11 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 
 	private HashMap<String, String> acro2fullForm;
 
-	@ConfigurationParameter(name = PARAM_ACROLIST, mandatory = false)
+	@ConfigurationParameter(name = PARAM_ACROLIST, mandatory = false, description = "A list of acronym-fullForm pairs known not to be recognized by the JACRO algorithm:\n" +
+			"Format of the file\n" +
+			"acronym1 TAB full form1\n" +
+			"acronym2 TAB full form2\n" +
+			"etc.")
 	private String acroList;
 	// private HashMap<String, String> acro2pattern;
 
