@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.bionlpformat.main.BioEventReader</implementationName>
   <processingResourceMetaData>
-    <name>BioNLP 09 Event Reader</name>
-    <description/>
-    <version>2.0.0</version>
+    <name>JCoRe BioNLP Event Reader</name>
+    <description />
+    <version>2.3.0</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
@@ -50,21 +50,21 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-basic-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
-        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
-        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
-        <import name="de.julielab.jcore.types.jcore-semantics-concept-types"/>
-      <import name="de.julielab.jcore.types.jcore-discourse-types"/>
+        <import name="de.julielab.jcore.types.jcore-basic-types" />
+        <import name="de.julielab.jcore.types.jcore-document-meta-types" />
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+        <import name="de.julielab.jcore.types.jcore-document-structure-types" />
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
+        <import name="de.julielab.jcore.types.jcore-semantics-concept-types" />
+      <import name="de.julielab.jcore.types.jcore-discourse-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
+        <inputs />
         <outputs>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.Title</type>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
@@ -79,7 +79,7 @@
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.CorefRelation</type>
         <type allAnnotatorFeatures="true">de.julielab.jcore.CorefExpression</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -88,5 +88,5 @@
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </collectionReaderDescription>

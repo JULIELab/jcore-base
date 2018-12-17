@@ -19,11 +19,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.pengyifan.bioc.*;
+import com.pengyifan.bioc.io.BioCDocumentReader;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -37,13 +36,6 @@ import org.apache.uima.util.Progress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bioc.BioCAnnotation;
-import bioc.BioCDocument;
-import bioc.BioCLocation;
-import bioc.BioCPassage;
-import bioc.BioCSentence;
-import bioc.io.BioCDocumentReader;
-import bioc.io.BioCFactory;
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.GeneResourceEntry;
@@ -123,7 +115,7 @@ public class IGNReader extends CollectionReader_ImplBase {
 		try {
 			pubDates = readIgnPubDates(publicationDatesFile);
 
-			BioCFactory biocFactory = BioCFactory.newFactory(BioCFactory.STANDARD);
+		//	BioCFactory biocFactory = BioCFactory.newFactory(BioCFactory.STANDARD);
 			FileReader reader = null;
 			BioCDocumentReader biocReader = null;
 
@@ -133,7 +125,7 @@ public class IGNReader extends CollectionReader_ImplBase {
 				for (int i = 0; i < arrayAnnoFiles.length; i++) {
 					File annoFile = arrayAnnoFiles[i];
 					reader = new FileReader(annoFile);
-					biocReader = biocFactory.createBioCDocumentReader(reader);
+					biocReader = new BioCDocumentReader(reader);
 					BioCDocument annoDoc = biocReader.readDocument();
 					String pmid = annoDoc.getID();
 					mapAnnoFiles.put(pmid, annoDoc);
@@ -144,7 +136,7 @@ public class IGNReader extends CollectionReader_ImplBase {
 			for (int i = 0; i < arrayTextFiles.length; i++) {
 				File textFile = arrayTextFiles[i];
 				reader = new FileReader(textFile);
-				biocReader = biocFactory.createBioCDocumentReader(reader);
+				biocReader = new BioCDocumentReader(reader);
 				BioCDocument textDoc = biocReader.readDocument();
 				biocDocuments.add(textDoc);
 			}
@@ -174,7 +166,7 @@ public class IGNReader extends CollectionReader_ImplBase {
 		for (BioCPassage passage : passageListText) {
 			List<BioCSentence> sentList = passage.getSentences();
 			for (BioCSentence sent : sentList) {
-				String textPart = sent.getText();
+				String textPart = sent.getText().get();
 				// what follows is an awkward offset matching between text and
 				// annotation
 				text = text + textPart + " ";
@@ -197,12 +189,12 @@ public class IGNReader extends CollectionReader_ImplBase {
 			BioCDocument annoDoc = mapAnnoFiles.get(pmid);
 			List<BioCPassage> passageListAnno = annoDoc.getPassages();
 			for (BioCPassage passage : passageListAnno) {
-				List<BioCAnnotation> annos = passage.getAnnotations();
+				Collection<BioCAnnotation> annos = passage.getAnnotations();
 				for (BioCAnnotation anno : annos) {
 					Map<String, String> infons = anno.getInfons();
 					String egId = infons.get("entrez_id");
 					String taxId = infons.get("taxonomy_id");
-					List<BioCLocation> locs = anno.getLocations();
+					List<BioCLocation> locs = new ArrayList<>(anno.getLocations());
 					if (locs.size() > 1) {
 						LOGGER.warn(
 								"Discontinuous annotation! Will be ignored, as only the first location is considered.");
@@ -284,8 +276,7 @@ public class IGNReader extends CollectionReader_ImplBase {
 	 * publication date for the given article id and adds it to the passed
 	 * header
 	 * 
-	 * @param header
-	 * @param id
+	 * @param publicationDatesFilePath
 	 * @throws FileNotFoundException
 	 */
 	private Map<String, String> readIgnPubDates(String publicationDatesFilePath) throws FileNotFoundException {

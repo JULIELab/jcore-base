@@ -27,7 +27,7 @@ public class DocumentIdColumn extends Column {
 
 	@Override
 	public String getValue(TOP a) {
-		String value = null;
+		String value;
 		try {
 			JCas jCas = a.getCAS().getJCas();
 			Type documentMetaInformationType = getSingleType();

@@ -57,8 +57,9 @@ public class EntityEvaluatorConsumerTest {
 				"de.julielab.jcore.types.jcore-document-meta-types");
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
-				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId", SENTENCE_ID_COLUMN + ": Sentence=/id",
+				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId",
 						"geneid:Gene=/resourceEntryList[0]/entryId", "name:/:coveredText()" },
+				// We here use the default SentenceId column, we did not provide a definition!
 				PARAM_OUTPUT_COLUMNS, new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, "geneid", "name" },
 				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv");
 
@@ -92,9 +93,10 @@ public class EntityEvaluatorConsumerTest {
 				"de.julielab.jcore.types.jcore-document-meta-types");
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
-				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId", SENTENCE_ID_COLUMN + ": Sentence=/id",
+				new String[] {  SENTENCE_ID_COLUMN + ": Sentence=/id",
 						"entityid:Chemical=/registryNumber;Disease=/specificType", "name:/:coveredText()" },
 				PARAM_OUTPUT_COLUMNS,
+                // In this test, we employ the default DocumentId column, we did not define it.
 				new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, OFFSETS_COLUMN, "entityid", "name" },
 				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv",
 				EntityEvaluatorConsumer.PARAM_OFFSET_SCOPE, "Document");

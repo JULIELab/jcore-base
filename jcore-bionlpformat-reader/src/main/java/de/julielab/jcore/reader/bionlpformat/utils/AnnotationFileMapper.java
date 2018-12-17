@@ -6,34 +6,21 @@
 
 package de.julielab.jcore.reader.bionlpformat.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+ import com.google.common.collect.Lists;
+ import de.julielab.jcore.reader.bionlpformat.main.FormatClashException;
+ import de.julielab.jcore.types.*;
+ import de.julielab.jcore.utility.JCoReTools;
+ import org.apache.uima.jcas.JCas;
+ import org.apache.uima.jcas.cas.FSArray;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
 
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.FSArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
-
-import de.julielab.jcore.CorefExpression;
-import de.julielab.jcore.reader.bionlpformat.main.FormatClashException;
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.CorefRelation;
-import de.julielab.jcore.types.Entity;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.EventTrigger;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.utility.JCoReTools;
+ import java.io.BufferedReader;
+ import java.io.IOException;
+ import java.util.*;
+ import java.util.List;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
 
 /**
  * //TODO describe purpose of class
@@ -109,7 +96,7 @@ public class AnnotationFileMapper {
 		// with a variable number of antecedents and a variable number of entity IDs within the antecedents in the
 		// brackets
 		String corefId = corefEntry.split("\\t", 2)[0];
-		Pattern relationPattern = Pattern.compile("Coref Anaphora:(T[0-9]+)( Antecedent[0-9]*:T[0-9]+)+");
+		Pattern relationPattern = Pattern.compile("Coref(?:erence)? (?:Anaphora|Subject):(T[0-9]+)( (?:Antecedent|Object)[0-9]*:T[0-9]+)+");
 		Matcher relationMatcher = relationPattern.matcher(corefEntry);
 
 		Matcher idMatcher = Pattern.compile("T[0-9]+").matcher("");
@@ -122,8 +109,7 @@ public class AnnotationFileMapper {
 				idMatcher.reset(relationString);
 				if (idMatcher.find()) {
 					String anaphoraId = idMatcher.group();
-					anaphora = (CorefExpression) mappedAnnotations.get(anaphoraId);
-					anaphora.setIsAnaphor(true);
+					anaphora = createCorefExpression(anaphora, mappedAnnotations.get(anaphoraId), cas, false);
 				} else {
 					throw new FormatClashException(relationString);
 				}
@@ -131,7 +117,8 @@ public class AnnotationFileMapper {
 				List<CorefExpression> antecedents = new ArrayList<>();
 				while (idMatcher.find()) {
 					String antecedentId = idMatcher.group();
-					CorefExpression antecedentExpression = (CorefExpression) mappedAnnotations.get(antecedentId);
+					CorefExpression antecedent = null;
+					CorefExpression antecedentExpression = createCorefExpression(antecedent, mappedAnnotations.get(antecedentId), cas, true);
 					// We do only create a new Antecedent annotation if it has not been created yet. Remember that the
 					// coreference expressions - anaphoras and antecedents - are first created as plain Annotation
 					// objects because the .a2 file does not specify directly which function a specific expression has
@@ -147,7 +134,6 @@ public class AnnotationFileMapper {
 					// antecedentExpression.addToIndexes();
 					// mappedAnnotations.put(antecedentId, antecedentExpression);
 					// }
-					antecedentExpression.setIsAntecedent(true);
 					antecedents.add(antecedentExpression);
 				}
 				// add all the antecedents to the list for the anaphora
@@ -181,6 +167,20 @@ public class AnnotationFileMapper {
 			throw new IllegalStateException("Line " + corefEntry
 					+ " could not be parsed correctly as coreference relation, check the format and correct the error.");
 		}
+	}
+
+	private CorefExpression createCorefExpression(CorefExpression coref, Annotation trigger, JCas cas, boolean isAntecedent) {
+		coref = new CorefExpression(cas);
+		coref.setBegin(trigger.getBegin());
+		coref.setEnd(trigger.getEnd());
+		coref.setId(trigger.getId());
+		if (!isAntecedent) {
+			coref.setIsAnaphor(true);
+		} else {
+			coref.setIsAntecedent(true);
+		}
+		coref.addToIndexes();
+		return coref;
 	}
 
 	private void mapEquivalents(Map<String, Annotation> mappedAnnotations, Collection<String> equiv, JCas cas) {

@@ -53,7 +53,7 @@ import de.julielab.jcore.types.Gene;
 
 public class AnnotationFileMapperTest {
 
-	private static final String DESCRIPTOR_FILE = "src/test/resources/de/julielab/jcore/reader/bionlp09event/desc/EventReaderTest.xml";
+	private static final String DESCRIPTOR_FILE = "src/test/resources/de/julielab/jcore/reader/bionlpformat/desc/EventReaderTest.xml";
 	private static final String EXAMPLE_1 = "T1	Protein 34 39	STAT6";
 	private static final String EXAMPLE_2 = "T38	Entity 322 330	tyrosine";
 	private static final String EXAMPLE_3 = "T33	Negative_regulation 12 19	inhibit";

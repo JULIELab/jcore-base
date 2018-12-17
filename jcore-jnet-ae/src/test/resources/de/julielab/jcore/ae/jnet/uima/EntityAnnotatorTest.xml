@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
   <annotatorImplementationName>de.julielab.jcore.ae.jnet.uima.EntityAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>EntityTaggerAnnotator</name>
-    <description/>
-    <version>2.4</version>
+    <description />
+    <version>2.3.0</version>
     <vendor>julielab</vendor>
     <configurationParameters>
       <configurationParameter>
@@ -139,13 +140,13 @@ Available modes are:
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
-        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
-        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
       </imports>
     </typeSystemDescription>
-    <typePriorities/>
-    <fsIndexCollection/>
+    <typePriorities />
+    <fsIndexCollection />
     <capabilities>
       <capability>
         <inputs>
@@ -155,7 +156,7 @@ Available modes are:
         <outputs>
           <type allAnnotatorFeatures="true">de.julielab.jcore.types.EntityMention</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>
@@ -164,5 +165,5 @@ Available modes are:
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration />
 </analysisEngineDescription>

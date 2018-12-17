@@ -5,10 +5,14 @@
 de.julielab.jcore.ae.banner.desc.jcore-banner-ae
 ```
 
+## WARNING
+This component is currently not thread safe. When using multiple threads, the internally employed Hepple tagger seems to 
+suffer from concurrency issues and produces NPEs that do not occur in single thread mode.
+
 ### Objective
 
-BANNER is the gene tagger software by Leaman, R. & Gonzalez G [1]. This particular varsion has been copied from https://github.com/oaqa/banner and adapted for JCoRe.
-To run the BANNER application for training and testing models, first perform a Maven build process by installing Maven, navigating to the jcore-banner-ae diretory on the command line and type '$MAVEN_HOME/bin/mvn clean package'.
+BANNER is the gene tagger software by Leaman, R. & Gonzalez G [1]. This particular version has been copied from https://github.com/oaqa/banner and adapted for JCoRe.
+To run the BANNER application for training and testing models, first perform a Maven build process by installing Maven, navigating to the jcore-banner-ae directory on the command line and type '$MAVEN_HOME/bin/mvn clean package'.
 Then type 'java -cp "target/lib/*":target/classes banner.eval.BANNER'.
 
 ### Requirements and Dependencies

@@ -58,6 +58,11 @@ class TokenBoundarySymbols {
 		tbSymbols.add("]");
 		tbSymbols.add("{");
 		tbSymbols.add("}");
+		
+		// lower German quotation mark
+		tbSymbols.add("\u201E");
+		// upper German quotation mark 
+		tbSymbols.add("\u201D");
 	}
 
 	private final static Set<String> tbSymbols = new HashSet<String>();

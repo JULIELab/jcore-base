@@ -38,6 +38,7 @@ import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.GZIPOutputStream;
@@ -83,7 +84,7 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 	private static final String GZIP_EXTENSION = ".gz";
 
 	private final static String DEFAULT_FILE_NAME_TYPE = "de.julielab.jcore.types.Header";
-	private final static String DEFAULT_FILE_NAME_FEATURE = "source";
+	private final static String DEFAULT_FILE_NAME_FEATURE = "docId";
 	private final static boolean DEFAULT_COMPRESS = false;
 	private final static boolean DEFAULT_COMPRESS_SINGLE = false;
 	private final static boolean DEFAULT_CREATE_BATCH_SUBDIRS = false;
@@ -104,7 +105,7 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 	private String fileNameFeatureName;
 	
 	private File currentSubDir;
-	private int doc;
+	private static AtomicInteger doc = new AtomicInteger();
 
 	private ZipOutputStream zipOutStream;
 	private BufferedOutputStream outStream;
@@ -184,7 +185,7 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 				LOGGER.info("writing XMIs to subdir " + currentSubDir.getPath());
 			}
 		}
-		doc = 0; // counter for documents
+		doc.set(0); // counter for documents
 	}
 
 	private String getNewUniqueFileName() throws ResourceProcessException {
@@ -233,14 +234,14 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 	}
 
 	/**
-	 * @param aCAS
+	 * @param jcas
 	 *            a CAS which has been populated by the TAEs
 	 * @throws ResourceProcessException
 	 *             if there is an error in processing the Resource
 	 */
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		doc++;
+		doc.incrementAndGet();
 		CAS aCAS;
 		aCAS = jcas.getCas();
 		StringBuilder outFileName = new StringBuilder();
@@ -335,7 +336,7 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 	 * 
 	 * @param aCas
 	 *            CAS to serialize
-	 * @param name
+	 * @param fileName
 	 *            output file
 	 * @throws SAXException
 	 * @throws ResourceProcessException

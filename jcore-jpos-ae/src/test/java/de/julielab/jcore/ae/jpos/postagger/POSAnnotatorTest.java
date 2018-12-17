@@ -71,7 +71,7 @@ public class POSAnnotatorTest {
 		// postags3.addToIndexes();
 		// t3.setPosTag(postags3);
 	}
-
+	
 	@Test
 	public void testProcess() throws Exception {
 
@@ -79,8 +79,7 @@ public class POSAnnotatorTest {
 		ResourceSpecifier posSpec = null;
 		AnalysisEngine posAnnotator = null;
 
-		posXML = new XMLInputSource(
-				"src/test/resources/POSTagAnnotatorTest.xml");
+		posXML = new XMLInputSource("src/test/resources/POSTagAnnotatorTest.xml");
 		posSpec = UIMAFramework.getXMLParser().parseResourceSpecifier(posXML);
 		posAnnotator = UIMAFramework.produceAnalysisEngine(posSpec);
 
@@ -93,8 +92,7 @@ public class POSAnnotatorTest {
 		// get the offsets of the sentences
 		final JFSIndexRepository indexes = jcas.getJFSIndexRepository();
 
-		FSIterator<Annotation> tokIter = indexes.getAnnotationIndex(Token.type)
-				.iterator();
+		FSIterator<Annotation> tokIter = indexes.getAnnotationIndex(Token.type).iterator();
 
 		String predictedPOSTags = "";
 		while (tokIter.hasNext()) {

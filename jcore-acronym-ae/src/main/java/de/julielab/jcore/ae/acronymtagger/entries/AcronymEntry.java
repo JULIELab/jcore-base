@@ -203,7 +203,7 @@ public class AcronymEntry implements Serializable {
 	 * returns a html representation of this entry for
 	 * including it in a table.
 	 * @param shortform the current short form
-	 * @paream includeMeshs decide whether the table contains
+	 * @param includeMeshs decide whether the table contains
 	 * a column listing all meshterms to the short-full-pair
 	 * @return a string containing a formatted html table row
 	 */

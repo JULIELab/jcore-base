@@ -10,21 +10,9 @@
  **/
 package de.julielab.jcore.reader.pmc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.stream.IntStream;
-
-import org.apache.uima.cas.impl.XmiCasSerializer;
+import de.julielab.jcore.types.*;
+import de.julielab.jcore.types.pubmed.InternalReference;
+import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -34,22 +22,20 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.julielab.jcore.types.AbstractSection;
-import de.julielab.jcore.types.Caption;
-import de.julielab.jcore.types.Figure;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.Journal;
-import de.julielab.jcore.types.Section;
-import de.julielab.jcore.types.SectionTitle;
-import de.julielab.jcore.types.Table;
-import de.julielab.jcore.types.Title;
-import de.julielab.jcore.types.pubmed.ManualDescriptor;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 public class PMCReaderTest {
 	@Test
 	public void testPmcReader1() throws Exception {
 		// read a single file, parse it and right it to XMI for manual review
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
@@ -59,24 +45,24 @@ public class PMCReaderTest {
 			++count;
 		}
 		assertEquals(1, count);
-		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("2847692.xmi"));
 	}
 
 	@Test
 	public void testPmcReader2() throws Exception {
 		// read a whole directory with subdirectories
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents-recursive");
+				"src/test/resources/documents-recursive", PMCReader.PARAM_RECURSIVELY, true);
 		assertTrue(reader.hasNext());
-		Set<String> expectedIds = new HashSet<>(Arrays.asList("2847692", "3201365", "4257438", "2758189", "2970367"));
+		Set<String> foundDocuments = new HashSet<>();
 		while (reader.hasNext()) {
 			reader.getNext(cas.getCas());
 
 			Header header = (Header) CasUtil.selectSingle(cas.getCas(),
 					CasUtil.getAnnotationType(cas.getCas(), Header.class));
 			assertNotNull(header);
-			assertTrue(expectedIds.remove(header.getDocId()));
+            foundDocuments.add(header.getDocId());
 			assertNotNull(header.getPubTypeList());
 			assertTrue(header.getPubTypeList().size() > 0);
 			assertNotNull(((Journal) header.getPubTypeList(0)).getTitle());
@@ -94,15 +80,79 @@ public class PMCReaderTest {
 			Collection<Title> titles = JCasUtil.select(cas, Title.class);
 			for (Title t : titles)
 				assertNotNull(t.getTitleType());
-			
+
 			cas.reset();
 		}
-		assertTrue(expectedIds.isEmpty());
+        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
 	}
+
+    @Test
+    public void testPmcReaderRecursiveZip() throws Exception {
+        // read a whole directory with subdirectories
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-zip", PMCReader.PARAM_RECURSIVELY, true, PMCReader.PARAM_SEARCH_ZIP, true);
+        assertTrue(reader.hasNext());
+        Set<String> foundDocuments = new HashSet<>();
+        while (reader.hasNext()) {
+            reader.getNext(cas.getCas());
+
+            Header header = (Header) CasUtil.selectSingle(cas.getCas(),
+                    CasUtil.getAnnotationType(cas.getCas(), Header.class));
+            assertNotNull(header);
+            foundDocuments.add(header.getDocId());
+            assertNotNull(header.getPubTypeList());
+            assertTrue(header.getPubTypeList().size() > 0);
+            assertNotNull(((Journal) header.getPubTypeList(0)).getTitle());
+            assertNotNull(((Journal) header.getPubTypeList(0)).getIssue());
+            assertNotNull(((Journal) header.getPubTypeList(0)).getVolume());
+            assertNotNull(((Journal) header.getPubTypeList(0)).getPages());
+            assertTrue(((Journal) header.getPubTypeList(0)).getTitle().length() > 0);
+            assertNotNull(header.getAuthors());
+            assertTrue(header.getAuthors().size() > 0);
+            assertNotNull(header.getAuthors(0));
+
+            Collection<Caption> captions = JCasUtil.select(cas, Caption.class);
+            for (Caption c : captions)
+                assertNotNull(c.getCaptionType());
+            Collection<Title> titles = JCasUtil.select(cas, Title.class);
+            for (Title t : titles)
+                assertNotNull(t.getTitleType());
+
+            cas.reset();
+        }
+        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
+    }
+
+    @Test
+    public void testPmcReaderWhitelist() throws Exception {
+        // read a whole directory with subdirectories
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-zip",
+                PMCReader.PARAM_RECURSIVELY, true,
+                PMCReader.PARAM_SEARCH_ZIP, true,
+                PMCReader.PARAM_WHITELIST, "src/test/resources/whitelist.txt");
+        assertTrue(reader.hasNext());
+        Set<String> foundDocuments = new HashSet<>();
+        while (reader.hasNext()) {
+            reader.getNext(cas.getCas());
+
+            Header header = (Header) CasUtil.selectSingle(cas.getCas(),
+                    CasUtil.getAnnotationType(cas.getCas(), Header.class));
+            assertNotNull(header);
+            foundDocuments.add(header.getDocId());
+            cas.reset();
+        }
+        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "2758189");
+    }
 	
 	@Test
 	public void testTitle() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
@@ -117,7 +167,8 @@ public class PMCReaderTest {
 
 	@Test
 	public void testHeader() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
@@ -162,7 +213,8 @@ public class PMCReaderTest {
 
 	@Test
 	public void testTables() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
@@ -220,7 +272,8 @@ public class PMCReaderTest {
 
 	@Test
 	public void testKeywords() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-recursive/PMC2847692.nxml.gz");
 		assertTrue(reader.hasNext());
@@ -240,37 +293,10 @@ public class PMCReaderTest {
 		assertTrue(expectedKeywords.isEmpty());
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testGetPmcFiles() throws Exception {
-		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-				"src/test/resources/documents-recursive");
-		Method getPmcFilesMethod = reader.getClass().getDeclaredMethod("getPmcFiles", File.class);
-		getPmcFilesMethod.setAccessible(true);
-		Iterator<File> recursiveIt = (Iterator<File>) getPmcFilesMethod.invoke(reader,
-				new File("src/test/resources/documents-recursive"));
-		assertTrue(recursiveIt.hasNext());
-		// check that multiple calls to hasNext() don't cause trouble
-		assertTrue(recursiveIt.hasNext());
-		assertTrue(recursiveIt.hasNext());
-		assertTrue(recursiveIt.hasNext());
-		assertTrue(recursiveIt.hasNext());
-		assertTrue(recursiveIt.hasNext());
-		Set<String> expectedFileNames = new HashSet<>(Arrays.asList("PMC2847692.nxml.gz", "PMC2758189.nxml.gz",
-				"PMC2970367.nxml.gz", "PMC3201365.nxml.gz", "PMC4257438.nxml.gz"));
-		while (recursiveIt.hasNext()) {
-			File file = recursiveIt.next();
-			assertTrue("The file \"" + file.getName() + "\" was not expected",
-					expectedFileNames.remove(file.getName()));
-			// just to try causing trouble
-			recursiveIt.hasNext();
-		}
-		assertTrue(expectedFileNames.isEmpty());
-	}
-
 	@Test
 	public void testSectionTitlesWithLabels() throws Exception {
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-misc/PMC3098455.nxml.gz");
 		reader.getNext(cas.getCas());
@@ -281,13 +307,11 @@ public class PMCReaderTest {
 		while (secIt.hasNext()) {
 			Section sec = (Section) secIt.next();
 			if (i == 1) {
-				System.out.println(sec.getSectionHeading().getCoveredText());
 				assertEquals("Materials and methods", sec.getSectionHeading().getCoveredText());
 				assertEquals("2", sec.getLabel());
 			}
 			++i;
 		}
-		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("3098455.xmi"));
 	}
 
 	@Test
@@ -297,7 +321,8 @@ public class PMCReaderTest {
 		// because it would mess up easy access to abstract sections.
 		// Thus we test each abstract section we come across and check that it
 		// is the one we expect, i.e. not the wrapper with no title.
-		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
 				"src/test/resources/documents-misc/PMC2836310.nxml.gz");
 		reader.getNext(cas.getCas());
@@ -319,6 +344,40 @@ public class PMCReaderTest {
 			assertTrue(i < 4);
 			++i;
 		}
-		XmiCasSerializer.serialize(cas.getCas(), new FileOutputStream("3098455.xmi"));
 	}
+
+	@Test
+    public void testFigureReferencesAnnotated() throws Exception {
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-recursive/PMC2847692.nxml.gz");
+        reader.getNext(cas.getCas());
+        Collection<InternalReference> refs = JCasUtil.select(cas, InternalReference.class);
+        List<InternalReference> figRefs = refs.stream().filter(r -> r.getReftype().equalsIgnoreCase("figure")).collect(Collectors.toList());
+        assertThat(figRefs).hasSize(2);
+        assertThat(figRefs).extracting("refid").containsExactly("Fig1", "Fig2");
+    }
+
+    @Test
+    public void testPmcReaderDescriptor() throws Exception {
+        // read a whole directory with subdirectories
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.pmc.desc.jcore-pmc-reader", PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-zip", PMCReader.PARAM_RECURSIVELY, true, PMCReader.PARAM_SEARCH_ZIP, true);
+        assertTrue(reader.hasNext());
+        Set<String> foundDocuments = new HashSet<>();
+        while (reader.hasNext()) {
+            reader.getNext(cas.getCas());
+
+            Header header = (Header) CasUtil.selectSingle(cas.getCas(),
+                    CasUtil.getAnnotationType(cas.getCas(), Header.class));
+            assertNotNull(header);
+            foundDocuments.add(header.getDocId());
+
+            cas.reset();
+        }
+        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
+    }
 }

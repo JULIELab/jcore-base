@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseConnectorConfiguration>
+    <DBSchemaInformation>
+        <activePostgresSchema>bernd</activePostgresSchema>
+        <activeTableSchema>medline_2016</activeTableSchema>
+        <tableSchemas>
+            <tableSchema name="xmi_anno_view" forEach=".">
+                <field name="pmid" type="text" xpath="PMID" primaryKey="true"
+                       retrieve="true"></field>
+                <field name="xmi" type="bytea" xpath="." returnXMLFragment="true"
+                       retrieve="true" gzip="true"></field>
+            </tableSchema>
+            <tableSchema name="xmi_pmc_annotation_gzip_retrieve" forEach=".">
+                <field name="pmcid" type="text" xpath="PMID" primaryKey="true"
+                       retrieve="true"></field>
+                <field name="xmi" type="bytea" xpath="." returnXMLFragment="true"
+                       retrieve="true" gzip="true"></field>
+            </tableSchema>
+        </tableSchemas>
+    </DBSchemaInformation>
+    <DBConnectionInformation>
+        <activeDBConnection>trec_2004</activeDBConnection>
+        <maxActiveDBConnections>4</maxActiveDBConnections>
+        <DBConnections>
+            <DBConnection name="trec_2004" url="jdbc:postgresql://localhost:5432/trec2004" />
+        </DBConnections>
+    </DBConnectionInformation>
+</databaseConnectorConfiguration>

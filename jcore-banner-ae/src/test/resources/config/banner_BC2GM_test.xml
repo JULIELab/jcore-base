@@ -27,6 +27,7 @@
       <mentionTypes>Required</mentionTypes>
       <sameTypeOverlapOption>Exception</sameTypeOverlapOption>
       <differentTypeOverlapOption>Exception</differentTypeOverlapOption>
+      <dictionaryTagger>banner.tagging.dictionary.DictionaryTagger</dictionaryTagger>
     </eval>
     <tagging>
       <dictionary>
@@ -37,7 +38,7 @@
           <canonize>false</canonize>
           <generate2PartVariations>true</generate2PartVariations>
           <dropEndParentheticals>false</dropEndParentheticals>
-          <dictionaryFile>dict/single.txt</dictionaryFile>
+          <dictionaryFile>/dict/single.txt</dictionaryFile>
           <dictionaryType>GENE</dictionaryType>
         </DictionaryTagger>
       </dictionary>

@@ -56,8 +56,4 @@ floats-group:
     omit-element: true
 array:
     omit-element: true
-xref:
-    attributes:
-        - name: ref-type
-          value: fn
-          omit-element: true
+

@@ -166,7 +166,7 @@ public class MSTParserAnnotator extends JCasAnnotator_ImplBase {
      */
     public void process(JCas jcas) throws AnalysisEngineProcessException {
         if (parameters_valid) {
-            LOGGER.info("MST Parser Annotator is processing ... ");
+            LOGGER.trace("MST Parser Annotator is processing ... ");
             AnnotationIndex<Annotation> sentenceIndex = jcas.getJFSIndexRepository().getAnnotationIndex(Sentence.type);
             AnnotationIndex<Annotation> tokenIndex = jcas.getJFSIndexRepository().getAnnotationIndex(Token.type);
             FSIterator<Annotation> sentenceIterator = sentenceIndex.iterator();
@@ -263,7 +263,7 @@ public class MSTParserAnnotator extends JCasAnnotator_ImplBase {
                 }
             } // of while
         } else {
-            LOGGER.info("Cannot continue parsing. Please check the parameters!");
+            LOGGER.warn("Cannot continue parsing. Please check the parameters!");
         } // of if
     } // of process
 

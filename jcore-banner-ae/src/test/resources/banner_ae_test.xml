@@ -37,7 +37,7 @@
           <canonize>false</canonize>
           <generate2PartVariations>true</generate2PartVariations>
           <dropEndParentheticals>false</dropEndParentheticals>
-          <dictionaryFile>dict/single.txt</dictionaryFile>
+          <dictionaryFile>/dict/single.txt</dictionaryFile>
           <dictionaryType>GENE</dictionaryType>
         </DictionaryTagger>
       </dictionary>

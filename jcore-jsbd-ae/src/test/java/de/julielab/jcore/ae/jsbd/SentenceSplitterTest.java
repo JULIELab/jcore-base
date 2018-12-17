@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -32,8 +33,6 @@ import org.slf4j.LoggerFactory;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
-import de.julielab.jcore.ae.jsbd.SentenceSplitter;
-import de.julielab.jcore.ae.jsbd.Unit;
 
 /**
  * Test for the class {@link SentenceSplitter}
@@ -71,7 +70,7 @@ public class SentenceSplitterTest {
 
 		File[] trainFiles = getTrainFiles();
 		SentenceSplitter sentenceSplitter = new SentenceSplitter();
-		InstanceList trainData = sentenceSplitter.makeTrainingData(trainFiles, false);
+		InstanceList trainData = sentenceSplitter.makeTrainingData(trainFiles, false, false);
 		Pipe trainPipe = trainData.getPipe();
 		sentenceSplitter.train(trainData, trainPipe);
 		sentenceSplitter.writeModel(FILENAME_TRAIN_MODEL_OUTPUT);
@@ -98,7 +97,7 @@ public class SentenceSplitterTest {
 
 		Pipe myPipe = sentenceSplitter.model.getInputPipe();
 		Instance instance = sentenceSplitter.makePredictionData(lines, myPipe);
-		ArrayList<Unit> unitList = sentenceSplitter.predict(instance, "biomed");
+		List<Unit> unitList = sentenceSplitter.predict(instance, "biomed");
 
 		assertNotNull(unitList);
 		for (Unit unit : unitList) {

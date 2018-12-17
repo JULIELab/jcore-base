@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.ae.lingpipegazetteer.uima.GazetteerAnnotator</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>GazetteerAnnotator, Template Descriptor</name>
+        <description>
+            This is a minimal template for the use with the JCoRe component using the Lingpipe Gazetteer Chunker.
+            It must be set which exact annotation type should be created for recognized dictionary entries and
+            a chunker configuration must be provided as an
+            external resource and bound to the 'DictionaryChunkerProvider' resource dependency.
+            The external resource expects a Java properties file contains a reference to the dictionary to load
+            and some parameter settings for dictionary processing and tagging. Refer to
+            https://github.com/JULIELab/jcore-base/tree/master/jcore-lingpipegazetteer-ae for more information.
+        </description>
+        <version>2.3.0</version>
+        <vendor>julielab</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name>CheckAcronyms</name>
+                <description>Checks whether an acronym match in dictionary has a respective full form with the same label (=specificType). If a matched text passage is an acronym but the long form is not a ConceptMention (or a sub type) with the same specificType value, the original match will be rejected.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OutputType</name>
+                <description>The UIMA annotation type that should be generated for text passages matching a dictionary entry. The given type must be a sub type of de.julielab.jules.types.ConceptMention. The label given for the dictionary entry will be used for the annotation's 'specific type' feature.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>CheckAcronyms</name>
+                <value>
+                    <boolean>true</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+        </typeSystemDescription>
+        <typePriorities />
+        <fsIndexCollection />
+        <capabilities />
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+    <externalResourceDependencies>
+        <externalResourceDependency>
+            <key>DictionaryChunkerProvider</key>
+            <description>An implementation providing the actual Lingpipe Chunker class for dictionary tagging.</description>
+            <interfaceName>de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProvider</interfaceName>
+        </externalResourceDependency>
+    </externalResourceDependencies>
+    <resourceManagerConfiguration />
+</analysisEngineDescription>

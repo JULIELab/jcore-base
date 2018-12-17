@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
 <primitive>true</primitive>
@@ -6,8 +6,8 @@
 <analysisEngineMetaData>
 <name>jcore-opennlp-sentence-ae</name>
 <description>sentence splitter based on opennlp</description>
-<version>2.1</version>
-<vendor/>
+<version>2.3.0</version>
+<vendor />
 <configurationParameters>
 <configurationParameter>
 <name>modelFile</name>
@@ -26,18 +26,18 @@
 </configurationParameterSettings>
 <typeSystemDescription>
 <imports>
-<import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+<import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
 </imports>
 </typeSystemDescription>
-<typePriorities/>
-    <fsIndexCollection/>
+<typePriorities />
+    <fsIndexCollection />
 <capabilities>
 <capability>
-<inputs/>
+<inputs />
 <outputs>
 <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
 </outputs>
-<languagesSupported/>
+<languagesSupported />
 </capability>
 </capabilities>
 <operationalProperties>
@@ -46,5 +46,5 @@
 <outputsNewCASes>false</outputsNewCASes>
 </operationalProperties>
 </analysisEngineMetaData>
-<resourceManagerConfiguration/>
+<resourceManagerConfiguration />
 </analysisEngineDescription>

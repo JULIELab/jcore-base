@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "This component applies the Porter stemming algorithm to all tokens in the CAS.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.lingpipe.porterstemmer.desc.jcore-lingpipe-porterstemmer-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-lingpipe-porterstemmer-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.3"
+    },
+    "name": "JCoRe Lingpipe Porter Stemmer AE"
+}

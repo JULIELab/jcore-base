@@ -3,7 +3,7 @@ A CollectionReader which reads CAS data stored as XMI files from the file system
 
 **Descriptor Path**:
 ```
-de.julielab.jcore.reader.xmi.jcore-xmi-reader
+de.julielab.jcore.reader.xmi.desc.jcore-xmi-reader
 ```
 ### Objective
 The JULIE Lab XMI Reader is a UIMA Collection Reader (CR) for reading XMI files, providing them to UIMA for further processing. The reader grounds on IBM's XmiCollectionReader delivered with older versions of UIMA and has been extended by the Julie Lab team at the University of Jena.

@@ -18,6 +18,7 @@
 package de.julielab.jcore.ae.jsbd.main;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import de.julielab.jcore.types.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Range;
 import org.apache.uima.UIMAException;
@@ -49,10 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.ae.jsbd.types.TestScope;
-import de.julielab.jcore.types.Caption;
-import de.julielab.jcore.types.Paragraph;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Title;
 
 public class SentenceAnnotatorTest {
 
@@ -236,6 +234,43 @@ public class SentenceAnnotatorTest {
 			assertTrue("Range " + sentenceRange + " was not expected", expectedSpans.remove(sentenceRange));
 		}
 		assertTrue(expectedSpans.isEmpty());
+	}
+
+	@Test
+	public void testSentenceWhitespaces() throws Exception {
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+
+		// This text is taken from pmid 23092121
+		jCas.setDocumentText("  : We present a theoretical study of the electronic subband structure and collective electronic excitation associated with plasmon and surface plasmon modes in metal-based hollow nanosphere. The dependence of the electronic subband energy on the sample parameters of the hollow nanosphere is examined.");
+
+		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+				"de/julielab/jcore/ae/jsbd/model/test-model.gz");
+
+		jsbd.process(jCas.getCas());
+
+
+        Sentence sentence = JCasUtil.select(jCas, Sentence.class).iterator().next();
+        assertFalse(sentence.getCoveredText().startsWith(" "));
+    }
+
+	@Test
+	public void testTrailingNewline() throws Exception {
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+
+		// This text is taken from PMC3408706. Note the "paragraph separator" at the end
+		jCas.setDocumentText("In1 the next step, we plan to use higher level QM/MM methods to calculate the energy barrier of the reaction catalyzed by endonuclease APE1, in compliance with the mechanism proposed, and to screen for effective inhibitors with the use of the constructed mechanistic full-atomic model of the enzyme.    \u2029");
+        new InternalReference(jCas, 2, 3).addToIndexes();
+
+		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+				"de/julielab/jcore/ae/jsbd/model/test-model.gz", SentenceAnnotator.PARAM_CUT_AWAY_TYPES, new String[]{InternalReference.class.getCanonicalName()});
+
+		jsbd.process(jCas.getCas());
+
+
+		Sentence sentence = JCasUtil.select(jCas, Sentence.class).iterator().next();
+		assertFalse(sentence.getCoveredText().endsWith("\u2029"));
 	}
 
 }

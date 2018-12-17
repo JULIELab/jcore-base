@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jcore.reader.xml.XMLMultiplierReader</implementationName>
+  <processingResourceMetaData>
+    <name>MedlineReaderDescriptor_missingInputDir</name>
+    <description />
+    <version>2.3.0</version>
+    <vendor />
+    <configurationParameters>
+      <configurationParameter>
+        <name>InputDirectory</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>MappingFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>InputDirectory</name>
+        <value>
+          <string>$$notExistent$$</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>MappingFile</name>
+        <value>
+          <string>src/test/resources/medlineMappingFile.xml</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
+        <import name="org.apache.uima.ducc.FlowControllerTS" />
+      </imports>
+    </typeSystemDescription>
+    <fsIndexCollection />
+    <capabilities>
+      <capability>
+        <inputs />
+        <outputs />
+        <languagesSupported />
+      </capability>
+    </capabilities>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration />
+</collectionReaderDescription>

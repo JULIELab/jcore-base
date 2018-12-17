@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "consumer"
+    ],
+    "description": "Writes CAS data in XMI format into a relational (PostgreSQL) database. It is possible to write the\n        whole XMI for each document into the database. However, it is also possible to define a list of annotations that\n        should be written into separate tables. The JCoRe XMI Database Reader can then be used to assemble XMI data from\n        a given set of annotations.\n    ",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-xmi-db-writer",
+        "groupId": "de.julielab",
+        "version": "2.3.5"
+    },
+    "name": "JCoRe XMI Database Writer"
+}

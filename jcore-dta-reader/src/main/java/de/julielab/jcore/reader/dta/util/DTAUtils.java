@@ -30,11 +30,12 @@ import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 
 public class DTAUtils {
 	public static CollectionReader getReader(final String inputFile,
-			final boolean normalize) throws InvalidXMLException, IOException,
+			final boolean normalize, final boolean format2017) throws InvalidXMLException, IOException,
 			ResourceInitializationException {
 		return CollectionReaderFactory.createReader(DTAFileReader.class,
 				DTAFileReader.PARAM_INPUTFILE, inputFile,
-				DTAFileReader.PARAM_NORMALIZE, normalize);
+				DTAFileReader.PARAM_NORMALIZE, normalize,
+				DTAFileReader.PARAM_FORMAT_2017, format2017);
 	}
 
 	public static boolean hasAnyClassification(final JCas jcas,

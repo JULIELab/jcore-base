@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.ae.jsbd.main.SentenceAnnotator</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Sentence Annotator</name>
+        <description>This is the UIMA Wrapper for the JULIE Sentence Boundary Detector.</description>
+        <version>2.3.0</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name>ModelFilename</name>
+                <description>Filename for the trained JSBD model</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>Postprocessing</name>
+                <description>Indicates whether postprocessing (and which filter) should be run. Default: no
+                    postprocessing
+                </description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SentenceDelimiterTypes</name>
+                <description>Qualified names of types that should never begin or end within a sentence. With other
+                    words, sentences should not begin within such a type but end after it or begin before it and end
+                    within or after it.
+                </description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>CutAwayTypes</name>
+                <description>An array of fully qualified type names. Document text covered by annotations of these types
+                    will be ignored from sentence splitting. This means that sentence splitting happens as if the
+                    covered text of these annotations would not exist in the text. This helps for references, for
+                    example, which otherwise might confuse the sentence splitting. A post-processing step tries to
+                    extend sentences include such annotations if they appear directly after the sentence (e.g.
+                    references: '...as Smith et al. have shown.1 Further text follows...').
+                </description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>ModelFilename</name>
+                <value>
+                    <string>de/julielab/jcore/ae/jsbd/model/jsbd-2.0.gz</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+            </imports>
+        </typeSystemDescription>
+        <typePriorities />
+        <fsIndexCollection />
+        <capabilities>
+            <capability>
+                <inputs />
+                <outputs>
+                    <type allAnnotatorFeatures="true">de.julielab.jcore.types.Sentence</type>
+                </outputs>
+                <languagesSupported />
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+    <resourceManagerConfiguration />
+</analysisEngineDescription>

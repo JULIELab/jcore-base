@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "Slightly modified version of the MST parser to fit into the UIMA framework.\nThis dependency parser determines all syntactic dependencies between words within a sentence. Certain level of adaptation of the original source code was necessary to neatly integrate the parser in UIMA.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.mstparser.desc.jcore-mstparser"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-mstparser-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.3"
+    },
+    "name": "JCoRe MST Parser AE"
+}

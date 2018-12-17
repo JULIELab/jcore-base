@@ -17,6 +17,7 @@ package de.julielab.jcore.reader.xmlmapper.typeBuilder;
 import static org.fest.reflect.core.Reflection.constructor;
 import static org.fest.reflect.core.Reflection.method;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -115,8 +116,7 @@ public class StandardTypeBuilder implements TypeBuilder {
 		try {
 			typeClass = Class.forName(concreteType.getFullClassName());
 		} catch (ClassNotFoundException e) {
-			// FIXME auto generatet catch block
-			e.printStackTrace();
+            throw new CollectionException(e);
 		}
 		// Has this type any features at all?
 		if (concreteType.getConcreteFeatures() != null) {

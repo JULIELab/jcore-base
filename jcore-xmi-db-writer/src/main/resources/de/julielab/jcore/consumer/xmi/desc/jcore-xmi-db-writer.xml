@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.consumer.xmi.XMIDBWriter</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe XMI Database Writer</name>
+        <description>This component is capable of storing the standard UIMA serialization of documents in one or even multiple database tables. The UIMA serialization format is XMI, an XML format that expressed an annotation graph. This component either stores the whole annotation graph in XMI format in a database row, together with the document ID. Alternatively, it makes use of the jcore-xmi-splitter to segment the annotation graph with respect to a user specified list of annotation types. Then, the XMI data of each annotation type is extracted from the document XMI data and stored in a separate table. The tables are created automatically according to the primary key of the active table schema in the Corpus Storage System (CoStoSys) configuration file that is also given as a parameter. The jcore-xmi-db-reader is capable of reading this kind of distributed annotation graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This component is part of the Jena Document Information System, JeDIS.</description>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name>UpdateMode</name>
+                <description>If set to false, the attempt to write new data into an XMI document or annotation table that already has data for the respective document, will result in an error. If set to true, there will first occur a check if there already is XMI data for the currently written document and, if so, the contents will be updated. It is important to keep in mind that the update also includes empty data. That is, if an annotation type is specified in 'AnnotationsToStore' for which the current does not have data, possibly existing data will just be deleted.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DeleteObsoleteAnnotations</name>
+                <description>Only in effect if 'StoreBaseDocument' is set to 'true'. Then, already existing annotation tables are retrieved from an internal database table the is specifically maintained to list existing annotation tables. When storing the base document, the annotations in these tables are removed for the document if this parameter is set to 'true', except tables specified in 'AnnotationsToStore'. The idea is that when storing the base document, all existing annotations become obsolete since they refer to a base document that no longer exists.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>PerformGZIP</name>
+                <description>Determines if the XMI data should be stored compressed or uncompressed. Without compression, the data will be directly viewable in a database browser, whereas compressed data appears as opaque byte sequence. Compression is supposed to reduce traffic over the network and save storage space on the database server.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>IncreasedAttributeSize</name>
+                <description>Integer that defines the maximum attribute size for the XMIs. Standard (parser wise) is 65536 * 8. It may be necessary to rise this value for larger documents since the document text is stored as an attribute of an XMI element.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>StoreEntireXmiData</name>
+                <description>Boolean parameter indicating if the whole document should be stored as one large XMI data block. In this case there must not be any annotations specified for selection and the 'StoreBaseDocument' parameter will have no effect.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DocumentTable</name>
+                <description>String parameter indicating the name of the table where the XMI data will be stored (if StoreEntireXmiData is true) or where the base document will be stored (if StoreBaseDocument is true). If the name is schema qualified, i.e. contains a dot, the table name will be used as provided. If no schema is qualified, the active data postgres schema as configured in the CoStoSys configuration will be used to find or create the table.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>StoreRecursively</name>
+                <description>Only in effect when storing annotations separately from the base document. If set to true, annotations that are referenced by other annotations, i.e. are (direct or indirect) features of other annotations, they will be stored in the same table as the referencing annotation. For example, POS tags may be store together with tokens this way. If, however, a referenced annotation type is itself to be stored, it will be segmented away and stored in its own table.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>StoreBaseDocument</name>
+                <description>Boolean parameter indicating if the base document should be stored as well when annotations are specified for selection. The base document is the part of the XMI file that includes the document text. If you want to store annotations right with the base document, specify those in the 'BaseDocumentAnnotationTypes' parameter.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>BaseDocumentAnnotationTypes</name>
+                <description>Array parameter that takes Java annotation type names. These names will be stored with the base document, if the 'StoreBaseDocument' parameter is set to true.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AnnotationStoragePostgresSchema</name>
+                <description>This optional parameter specifies the Postgres schema in which the XMI annotation storage tables are located by default. If omitted, the active data schema from the CoStoSys configuration is used. The tables derived from the annotation types specified with the 'AnnotationsToStore' parameter will be stored in this postgres schema. The default can be overwritten for individual types. See the description of the 'AnnotationsToStore' parameter.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ComponentDbName</name>
+                <description> Subset tables store the name of the last component that has sent data for a document. This parameter allows to specify a custom name for each CAS DB Consumer. Defaults to the implementation class name.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>CostosysConfigFile</name>
+                <description>File path or classpath resource location of a Corpus Storage System (CoStoSys) configuration file. This file specifies the database to write the XMI data into and the data table schema. This schema must at least define the primary key columns that the storage tables should have for each document. The primary key is currently just the document ID. Thus, at the moment, primary keys can only consist of a single element when using this component. This is a shortcoming of this specific component and must be changed here, if necessary.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AnnotationsToStore</name>
+                <description>An array of qualified UIMA type names, for instance de.julielab.jcore.types.Sentence. Annotations of those types are segmented away from the serialized document annotation graph in XMI format for storage in separate tables. When the 'StoreRecursively' parameter is set to true, annotations are stored together with referenced annotations, if those are not specified in the list of additional tables themselves. The table names are directly derived from the annotation type names by converting dots to underlines and adding a postgres schema qualification according to the active data postgres schema defined in the CoStoSys configuration. If an annotation table should be stored or looked up in another postgres schema, prepend the type name with the string 'q:' and the schema name, e.g. 'q:myschema.de.julielab.jcore.types.Token.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>DeleteObsoleteAnnotations</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>ComponentDbName</name>
+                <value>
+                    <string>XMIDBWriter</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-xmi-splitter-types" />
+                <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types" />
+                <import name="org.apache.uima.ducc.FlowControllerTS" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection />
+        <capabilities />
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    <version>2.3.0</version></analysisEngineMetaData>
+</analysisEngineDescription>

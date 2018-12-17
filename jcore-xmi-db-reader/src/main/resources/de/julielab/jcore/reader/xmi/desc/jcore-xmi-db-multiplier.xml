@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.reader.xmi.XmiDBMultiplier</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Abstract Database Multiplier</name>
+        <description>A multiplier that receives document IDs to read from a database table from the DBMultiplierReader. The reader also delivers the path to the corpus storage system (CoStoSys) configuration and additional tables for joining with the main data table. This multiplier class is abstract and cannot be used directly.Extending classes must implement the next() method to actually read documents from the database and populate CASes with them. This component is a part of the Jena Document Information System, JeDIS.</description>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <copyright>JULIE Lab Jena, Germany</copyright>
+        <configurationParameters/>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types"/>
+                <import name="de.julielab.jcore.types.jcore-all-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

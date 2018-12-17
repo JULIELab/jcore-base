@@ -83,7 +83,7 @@ public class MedEventReader  extends CollectionReader_ImplBase {
             e.printStackTrace();
         }
         String textFilename = textFile.getName();
-        String fid = textFilename.substring(0, textFilename.indexOf("."));
+        String fid = textFilename.substring(0, textFilename.lastIndexOf("."));
         File annotationFile = new File(directory, fid + ".ann");
         JCas jcas = null;
         try {
@@ -105,7 +105,7 @@ public class MedEventReader  extends CollectionReader_ImplBase {
 
     @Override
     public Progress[] getProgress() {
-        return new Progress[] { new ProgressImpl(i, files.length, "docs") };
+        return new Progress[] { new ProgressImpl(i, files.length, files[i].getName().substring(0, files[i].getName().indexOf("."))) };
     }
 
     @Override

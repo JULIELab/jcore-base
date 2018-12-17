@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "Lemmatization tool for morphological analysis of biomedical literature downloaded from SourceForge",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.biolemmatizer.desc.jcore-biolemmatizer-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "semantic",
+    "maven-artifact": {
+        "artifactId": "jcore-biolemmatizer-ae",
+        "groupId": "de.julielab",
+        "version": "2.3.3"
+    },
+    "name": "JCoRe BioLemmatizer"
+}

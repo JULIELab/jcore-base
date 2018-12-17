@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>JCoRe File Multiplier Types</name>
+    <description>This is a type system for usage with a CAS multiplier. It should not be included into the
+        jcore-all-types type system. This particular type system holds a array containing strings that represent the IDs
+        of documents to read from database tables. Using an array is used to read batches of document which make
+        database access more efficient, for example. Since the primary keys of database tables may have multiple
+        elements, a document ID is represented as a StringArray. Multiple tables may be specified in which case
+        the tables should be joined on the given document primary keys. This mechanism may be used to read a
+        base document and annotations that have been previously created and stored in separate tables. This is
+        part of the Jena Document Information System, JeDIS.
+    </description>
+    <version>2.3.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <types>
+        <typeDescription>
+            <name>de.julielab.jcore.types.casmultiplier.RowBatch</name>
+            <description>A batch of rows of a database table. An array of identifier strings denotes a documents.
+                The name of the table to retrieve the IDs from is another feature of this type. The CAS multiplier
+                receiving instances of this type must have access to the correct database.
+            </description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>identifiers</name>
+                    <description>The document IDs to be read by the CAS multiplier.</description>
+                    <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+                    <elementType>uima.cas.StringArray</elementType>
+                </featureDescription>
+                <featureDescription>
+                    <name>tables</name>
+                    <description>The tables to read the given IDs from. The first element is always the primary data table.
+                        If there is more than one array entry, the
+                        additional tables are joined by primary key to the first table.
+                        The additional tables might hold annotations segmented away
+                        from the base document, for example.</description>
+                    <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>tableSchemas</name>
+                    <description>The CoStoSys table schemas of the tables to read.</description>
+                    <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>costosysConfiguration</name>
+                    <description>The CoStoSys configuration file path or classpath location.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>readsBaseXmiDocument</name>
+                    <description>Only for XMI DB readers. Specifies whether the JeDIS annotation module base XMI document is read (feature set to true) or a complete, unmodularized XMI document (set to false).</description>
+                    <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>xmiAnnotationModuleNames</name>
+                    <description>Only for XMI DB readers. Lists the Java names of the annotation types whose annotations should be read.</description>
+                    <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>storeMaxXmiId</name>
+                    <description>Only for XMI DB readers. Specifies whether the documents' max XMI ID should be stored in the multiplier CAS. Necessary for the use with the jcore-xmi-db-consumer.</description>
+                    <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>increasedAttributeSize</name>
+                    <description>For the XMI splitter. Specifies the maximum attribute size the XML parser accepts. Necessary for large texts.</description>
+                    <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>xercesAttributeBufferSize</name>
+                    <description>For the XMI splitter. Allows to increase the internal buffer of the Xerces parser used for attribute values.</description>
+                    <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+    </types>
+</typeSystemDescription>
