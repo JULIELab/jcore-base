@@ -315,13 +315,15 @@ public class SentenceTokenConsumerTest {
 		final File[] archives = new File("src/test/resources/data").listFiles((dir, name) -> name.startsWith("TXTConsumerArchive"));
 		assertThat(archives).hasSize(2);
 
-		try (FileSystem zipfs = FileSystems.newFileSystem(archives[0].toPath(), null)) {
+		File archive1 = new File("src/test/resources/data").listFiles((dir, name) -> name.startsWith("TXTConsumerArchive1"))[0];
+		try (FileSystem zipfs = FileSystems.newFileSystem(archive1.toPath(), null)) {
             String line = new BufferedReader(new InputStreamReader(zipfs.provider().newInputStream(zipfs.getPath("0.txt")), StandardCharsets.UTF_8)).readLine();
             assertThat(line).isEqualTo("Document 1");
             line = new BufferedReader(new InputStreamReader(zipfs.provider().newInputStream(zipfs.getPath("1.txt")), StandardCharsets.UTF_8)).readLine();
             assertThat(line).isEqualTo("Document 2");
         }
-        try (FileSystem zipfs = FileSystems.newFileSystem(archives[1].toPath(), null)) {
+		File archive2= new File("src/test/resources/data").listFiles((dir, name) -> name.startsWith("TXTConsumerArchive2"))[0];
+        try (FileSystem zipfs = FileSystems.newFileSystem(archive2.toPath(), null)) {
             String line = new BufferedReader(new InputStreamReader(zipfs.provider().newInputStream(zipfs.getPath("2.txt")), StandardCharsets.UTF_8)).readLine();
             assertThat(line).isEqualTo("Document 3");
         }
