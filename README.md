@@ -1,6 +1,6 @@
 # JCoRe Base
 
-Base modules of JCoRe as described in:
+Base modules of JCoRe as described in (please cite this paper if you publish results using JCoRe):
 
 ```Udo Hahn, Franz Matthies, Erik Faessler and Johannes Hellrich: UIMA-Based JCoRe 2.0 Goes GitHub and Maven Central ― State-of-the-Art Software Resource Engineering and Distribution of NLP Pipelines. In: Nicoletta Calzolari (Conference Chair), Khalid Choukri, Thierry Declerck, Marko Grobelnik, Bente Maegaard, Joseph Mariani, Asuncion Moreno, Jan Odijk, Stelios Piperidis (Eds.): Proceedings of the Tenth International Conference on Language Resources and Evaluation (LREC 2016), 2016. Portorož, Slovenia.``` [[Full Text](http://www.lrec-conf.org/proceedings/lrec2016/pdf/774_Paper.pdf)]
 
@@ -65,6 +65,6 @@ Please refer to the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-pro
 
 ### Prebuilt pipelines
 For illustration purposes we provide some pipelines that utilize our components and can be used as a template if you want to build your own either with a UIMA CPE or as a Java project. As of now, these pipelines exist:
-* [BioSEM Relation Extraction Pipeline; BioNLP ST11 model](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline) *(Java and CPE pipeine)*
-* [Biomedical Named Entity Tagger Pipeline](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-named-entity-pipeline) *(CPE pipeline)*
-* [Medical POS Pipeline (German)](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-medical-pos-pipeline) *(Java Pipeline)*
+* [BioSEM Relation Extraction Pipeline; BioNLP ST11 model, English](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline) *(Java and CPE pipeine)*
+* [Biomedical Named Entity Tagger Pipeline; English](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-named-entity-pipeline) *(CPE pipeline)*
+* [Medical POS Pipeline; German](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-medical-pos-pipeline)
