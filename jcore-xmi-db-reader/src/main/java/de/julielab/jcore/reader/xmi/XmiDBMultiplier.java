@@ -122,7 +122,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
         } catch (FileNotFoundException e) {
             throw new ResourceInitializationException(e);
         }
-        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+        try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
             List<Map<String, String>> primaryKeyFields = dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList());
             if (rowBatch.getReadsBaseXmiDocument()) {
 
@@ -152,8 +152,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
         doGzip = true;
         dataTable = dbc.getNextOrThisDataTable(table);
         log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
-        try {
-            Connection conn = dbc.obtainConnection();
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
             ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
             while (rs.next()) {
                 byte[] xmiData = rs.getBytes("xmi");

@@ -3,6 +3,7 @@ package de.julielab.jcore.consumer.xmi;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xmlData.Constants;
 import de.julielab.xmlData.config.FieldConfig;
+import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -139,8 +140,8 @@ public class XmiDataInserter {
             }
         }
 
-        Connection conn = dbc.reserveConnection();
-        try {
+
+        try  (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
             conn.setAutoCommit(false);
             for (String tableName : serializedCASes.keySet()) {
                 if (serializedCASes.get(tableName).size() == 0) {
@@ -186,8 +187,6 @@ public class XmiDataInserter {
             SQLException ne = e.getNextException();
             if (null != ne)
                 ne.printStackTrace();
-        } finally {
-            dbc.releaseConnection(conn);
         }
     }
 
@@ -197,7 +196,7 @@ public class XmiDataInserter {
      * @param conn
      * @throws XmiDataInsertionException
      */
-    private void setLastComponent(Connection conn, String subsetTableName) throws XmiDataInsertionException {
+    private void setLastComponent(CoStoSysConnection conn, String subsetTableName) throws XmiDataInsertionException {
         if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName))
             return;
 
@@ -262,7 +261,7 @@ public class XmiDataInserter {
      * @throws AnalysisEngineProcessException
      */
 
-    private void deleteRowsFromTablesWithoutData(Map<String, List<DocumentId>> tablesWithoutData, Connection conn,
+    private void deleteRowsFromTablesWithoutData(Map<String, List<DocumentId>> tablesWithoutData, CoStoSysConnection conn,
                                                  DataBaseConnector dbc, List<String> annotationsToStore) throws XmiDataInsertionException {
         if (!updateMode || storeAll || annotationsToStore.isEmpty())
             return;
@@ -315,7 +314,7 @@ public class XmiDataInserter {
      * @throws XmiDataInsertionException
      * @throws AnalysisEngineProcessException
      */
-    public void updateMaxXmiId(Connection conn) throws XmiDataInsertionException {
+    public void updateMaxXmiId(CoStoSysConnection conn) throws XmiDataInsertionException {
         if (storeAll || storeBaseDocument)
             return;
 

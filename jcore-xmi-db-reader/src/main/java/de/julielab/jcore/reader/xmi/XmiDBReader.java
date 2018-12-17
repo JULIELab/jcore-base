@@ -152,8 +152,7 @@ public class XmiDBReader extends DBReader implements Initializable {
         doGzip = true;
         dataTable = dbc.getNextOrThisDataTable(table);
         log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
-        try {
-            Connection conn = dbc.obtainConnection();
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
             ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
             while (rs.next()) {
                 byte[] xmiData = rs.getBytes("xmi");

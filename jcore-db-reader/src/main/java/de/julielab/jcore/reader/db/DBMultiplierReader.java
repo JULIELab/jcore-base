@@ -130,6 +130,8 @@ public class DBMultiplierReader extends DBSubsetReader {
         boolean hasNext = this.hasNext;
         if (retriever != null)
             hasNext = !retriever.getDocumentIds().isEmpty();
+        if (!hasNext)
+            close();
         return hasNext;
     }
 
@@ -191,6 +193,7 @@ public class DBMultiplierReader extends DBSubsetReader {
         return new Progress[]{new ProgressImpl(processedDocuments, totalDocumentCount, Progress.ENTITIES, true)};
     }
 
+    @Override
     public void close() {
         if (dbc != null)
             dbc.close();
@@ -222,6 +225,7 @@ public class DBMultiplierReader extends DBSubsetReader {
             // true.
             if (fetchIdsProactively) {
                 log.debug("Fetching ID batches in a background thread.");
+                setName(DBMultiplierReader.class.getSimpleName() + " RetrievingThread (" + getName() + ")");
                 start();
             }
         }
@@ -235,7 +239,8 @@ public class DBMultiplierReader extends DBSubsetReader {
             // database have been read, only the rest of documents.
             int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
             try {
-                try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+                try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
+                    log.trace("Using connection {} to retrieveAndMark", ignored.getConnection());
                     ids = dbc.retrieveAndMark(tableName, getClass().getSimpleName(), hostName, pid, limit, selectionOrder);
                 }
                 if (log.isTraceEnabled()) {

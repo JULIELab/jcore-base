@@ -17,6 +17,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class XmiDBReaderGzippedDataTest {
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 1, postgres);
+        new File(costosysConfig).deleteOnExit();
         XmiDBSetupHelper.processAndSplitData(costosysConfig, true);
         assertTrue(dbc.withConnectionQueryBoolean( c -> c.tableExists("_data.documents")), "The data document table exists");
         xmisubset = "xmisubset";
@@ -57,7 +59,6 @@ public class XmiDBReaderGzippedDataTest {
 
     @Test
     public void testXmiDBReader() throws UIMAException, IOException {
-        System.out.println("HIER: " + Thread.currentThread().getId());
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class MetaTableManager {
 		String prefix = null;
 		String uri = null;
 		if (notFound.size() > 0) {
-			try (Connection conn = dbc.reserveConnection()) {
+			try (CoStoSysConnection conn = dbc.reserveConnection()) {
 				conn.setAutoCommit(true);
 				Statement stmt = conn.createStatement();
 				String sql = String.format("SELECT %s FROM %s", PREFIX, dbc.getActiveDataPGSchema() + "." + XMI_NS_TABLE);
@@ -79,8 +80,7 @@ public class MetaTableManager {
 
 	private void createNamespaceTable(DataBaseConnector dbc) {
 		if (!dbc.tableExists(dbc.getActiveDataPGSchema() + "." + XMI_NS_TABLE)) {
-			try {
-				Connection conn = dbc.obtainConnection();
+			 try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
 				conn.setAutoCommit(true);
 				Statement stmt = conn.createStatement();
 				String sql = String.format("CREATE TABLE %s (%s text PRIMARY KEY, %s text)", dbc.getActiveDataPGSchema() + "." + XMI_NS_TABLE, PREFIX, NS_URI);

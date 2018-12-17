@@ -21,6 +21,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,23 +33,20 @@ import static org.testng.Assert.*;
 public class XmiDBMultiplierTest {
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
-    private static String xmisubset;
+    private static int subsetCounter;
 
     @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
         postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
-
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
-        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 1, postgres);
+        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 10, postgres);
+        new File(costosysConfig).deleteOnExit();
         XmiDBSetupHelper.processAndSplitData(costosysConfig, false);
         assertTrue(dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")), "The data document table exists");
-        xmisubset = "xmisubset";
-        dbc.setActiveTableSchema("xmi_text");
-        dbc.reserveConnection();
-        dbc.createSubsetTable(xmisubset, "_data.documents", "Test XMI subset");
-        dbc.initSubset(xmisubset, "_data.documents");
         dbc.close();
+
+        subsetCounter = 0;
     }
 
     @AfterClass
@@ -56,9 +54,17 @@ public class XmiDBMultiplierTest {
         postgres.close();
     }
 
-    @Test
-    public void testXmiDBReader() throws UIMAException, IOException {
-        System.out.println("HIER: " + Thread.currentThread().getId());
+    @Test(threadPoolSize = 3, invocationCount = 10, timeOut = 500000)
+    public void testXmiDBReader() throws Exception {
+        DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
+        String xmisubset = "xmisubset" + subsetCounter++;
+        dbc.setActiveTableSchema("xmi_text");
+        dbc.reserveConnection();
+        dbc.createSubsetTable(xmisubset, "_data.documents", "Test XMI subset");
+        dbc.initSubset(xmisubset, "_data.documents");
+        dbc.close();
+
+
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBMultiplierReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,

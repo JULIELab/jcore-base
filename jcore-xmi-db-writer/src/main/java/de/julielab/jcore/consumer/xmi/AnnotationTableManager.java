@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.postgresql.util.PSQLException;
@@ -122,8 +123,7 @@ public class AnnotationTableManager {
         if (null == obsoleteAnnotationTables) {
             obsoleteAnnotationTables = new ArrayList<>();
             // first get the names of all annotation tables
-            try {
-                Connection conn = dbc.obtainConnection();
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT " + TABLE_NAME + " FROM " + dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE);
                 while (rs.next()) {
@@ -204,8 +204,7 @@ public class AnnotationTableManager {
      * @param tablename
      */
     void addAnnotationTableToList(String tablename) {
-        try {
-            Connection conn = dbc.obtainConnection();
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
             conn.setAutoCommit(true);
             Statement stmt = conn.createStatement();
 
@@ -226,8 +225,7 @@ public class AnnotationTableManager {
 
     private void createAnnotationListTable() {
         if (!dbc.tableExists(dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE)) {
-            try {
-                Connection conn = dbc.obtainConnection();
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
                 conn.setAutoCommit(true);
                 Statement stmt = conn.createStatement();
                 String sql = String.format("CREATE TABLE %s (%s text PRIMARY KEY)",

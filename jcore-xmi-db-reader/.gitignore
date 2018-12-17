@@ -1,2 +1,2 @@
 src/test/resources/hiddenConfig.txt
-src/test/resources/testconfig.xml
+src/test/resources/testconfig*.xml

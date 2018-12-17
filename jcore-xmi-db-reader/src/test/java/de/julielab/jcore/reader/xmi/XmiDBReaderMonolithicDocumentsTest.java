@@ -17,6 +17,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class XmiDBReaderMonolithicDocumentsTest {
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_complete_cas", 1, postgres);
+        new File(costosysConfig).deleteOnExit();
         XmiDBSetupHelper.processAndStoreCompleteXMIData(costosysConfig, true);
         dbc.reserveConnection();
         assertTrue(dbc.tableExists("_data.documents"), "The data document table exists");
