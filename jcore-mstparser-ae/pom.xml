@@ -41,7 +41,6 @@
                                     <version>1.3</version>
                                     <type>jar</type>
                                     <includes>**/*.class</includes>
-                                    <excludes>repo/**</excludes>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.outputDirectory}</outputDirectory>

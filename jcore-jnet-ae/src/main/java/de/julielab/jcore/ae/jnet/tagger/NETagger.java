@@ -140,7 +140,7 @@ public class NETagger {
 	 *            a text format
 	 */
 	public void train(final ArrayList<Sentence> sentences) {
-		System.out.println("   * training model... on " + sentences.size() + " sentences");
+		LOGGER.info("   * training model... on " + sentences.size() + " sentences");
 
 		final FeatureGenerator featureGenerator = new FeatureGenerator();
 		// create features ones for CRF or ME
