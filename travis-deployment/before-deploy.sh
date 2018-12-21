@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
-	openssl aes-256-cbc -K $encrypted_a53075a80cca_key -iv $encrypted_a53075a80cca_iv -in travis-deployment/codesigning.asc.enc -out travis-deployment/codesigning.asc -d
+    openssl aes-256-cbc -K $encrypted_2a2291398afc_key -iv $encrypted_2a2291398afc_iv -in codesigning.asc.enc -out travis-deployment/codesigning.asc -d
+    if [ ! "$?" -eq "0" ]; then
+        echo "Could not decrypt gpg key";
+        exit 1;
+    fi
 	gpg --fast-import travis-deployment/codesigning.asc
+	if [ ! "$?" -eq "0" ]; then
+            echo "Could not import GPG signing key";
+            exit 2;
+        fi
 	gpg -k
 	gpg -K
 else
