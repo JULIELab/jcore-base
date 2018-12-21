@@ -20,7 +20,7 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 	    if [ ! -f $artifactFile ]; then
 	        echo "Could not find the expected artifact file $artifactFile. Has the project successfully been built?"
 	    else
-	        checksum=`md5 -r $artifactFile | grep -io '^[0-9a-z]*'`
+	        checksum=`md5sum $artifactFile | grep -io '^[0-9a-z]*'`
 	        echo "Trying to find MD5 checksum $checksum of artifact $groupId:$artifactId:$packaging:$version"
 	        java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.FindRemoteChecksum $groupId:$artifactId:$packaging:$version $checksum
 	        csFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.FindRemoteChecksum $groupId:$artifactId:$packaging:$version $checksum | grep 'CHECKSUM FOUND' | sed 's/CHECKSUM FOUND: //'`
