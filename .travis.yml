@@ -21,6 +21,8 @@ before_deploy: ./travis-deployment/before-deploy.sh
 deploy:
   provider: script
   script: ./travis-deployment/deploy.sh
+  # We need the built artifacts to create their checksums and check if they are already deployed
+  skip_cleanup: true
   on:
     all_branches: true
     condition: $TRAVIS_BRANCH =~ ^2.3.0-SNAPSHOT|master$

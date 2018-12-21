@@ -24,12 +24,7 @@
 		<dependency>
 			<groupId>de.julielab</groupId>
 			<artifactId>jcore-types</artifactId>
-			<version>${jcore-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-types</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${jcore-types-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>edu.ucdenver.ccp</groupId>
