@@ -28,7 +28,7 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
                 echo "Found the checksum, not deploying again."
             else
                 echo "Checksum was not found, deploying the artifact."
-                mvn deploy -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true
+                mvn deploy -f $i/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true
             fi
 	    fi
     done
