@@ -21,3 +21,6 @@ before_deploy: ./travis-deployment/before-deploy.sh
 deploy:
   provider: script
   script: ./travis-deployment/deploy.sh
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^2.3.0-SNAPSHOT|master$
