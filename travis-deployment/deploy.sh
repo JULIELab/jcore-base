@@ -16,7 +16,7 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 	    version=`grep 'VERSION:' coords.txt | sed 's/^VERSION: //'`
 	    packaging=`grep 'PACKAGING:' coords.txt | sed 's/^PACKAGING: //'`
 	    artifactFile=$i/target/$artifactId-$version.$packaging
-        echo "Checking if of $groupId:$artifactId:$packaging:$version exists"
+        echo "Checking if $groupId:$artifactId:$packaging:$version exists"
         csNotFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version | grep '<checkums not found>'`
 	    if [[ $version =~ .*SNAPSHOT.* ]] || [ "$csNotFound" == "<checkums not found>" ]; then
             echo "This is a SNAPSHOT or a release that has not yet been deployed. Deploying."

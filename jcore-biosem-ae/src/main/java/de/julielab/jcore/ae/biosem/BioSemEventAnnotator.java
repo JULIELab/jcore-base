@@ -177,7 +177,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 					Header h = (Header) it.next();
 					docId = h.getDocId();
 				}
-				log.debug("Exception occured in document " + docId
+				log.debug("Exception occurred in document " + docId
 						+ ". The respective event will be skipped. Error was: ", e);
 			}
 		}
