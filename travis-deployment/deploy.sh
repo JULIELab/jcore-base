@@ -22,7 +22,8 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 	    else
 	        checksum=`md5sum $artifactFile | grep -io '^[0-9a-z]*'`
 	        echo "Trying to find MD5 checksum $checksum of artifact $groupId:$artifactId:$packaging:$version"
-	        java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.FindRemoteChecksum $groupId:$artifactId:$packaging:$version $checksum
+	        //java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.FindRemoteChecksum $groupId:$artifactId:$packaging:$version $checksum
+	        java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version
 	        csFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.FindRemoteChecksum $groupId:$artifactId:$packaging:$version $checksum | grep 'CHECKSUM FOUND' | sed 's/CHECKSUM FOUND: //'`
             if [ "$csFound" == "true" ]; then
                 echo "Found the checksum, not deploying again."
