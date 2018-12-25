@@ -32,7 +32,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
-            <version>${jcore-version}</version>
+            <version>${jcore-types-version}</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
@@ -52,17 +52,13 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-utilities</artifactId>
-            <version>${jcore-version}</version>
+            <version>${jcore-utilities-version}</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xmi-reader</artifactId>
             <version>${jcore-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.julielab</groupId>
-            <artifactId>jcore-xmi-splitter</artifactId>
-            <version>${jcore-version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>

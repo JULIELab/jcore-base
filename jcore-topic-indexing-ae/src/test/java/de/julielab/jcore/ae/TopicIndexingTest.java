@@ -60,7 +60,6 @@ public class TopicIndexingTest {
         AnalysisEngine topicIndexer = AnalysisEngineFactory.createEngine(desc);
         // TODO remove xmi-splitter-types and document-meta-extension-types
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
-                "de.julielab.jcore.types.jcore-xmi-splitter-types",
                 "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types",
                 "de.julielab.jcore.types.jcore-document-structure-pubmed-types",
                 "de.julielab.jcore.types.jcore-morpho-syntax-types");
@@ -98,7 +97,6 @@ public class TopicIndexingTest {
         AnalysisEngine topicIndexer = AnalysisEngineFactory.createEngine(desc);
         // TODO remove xmi-splitter-types and document-meta-extension-types
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
-                "de.julielab.jcore.types.jcore-xmi-splitter-types",
                 "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types",
                 "de.julielab.jcore.types.jcore-document-structure-pubmed-types",
                 "de.julielab.jcore.types.jcore-morpho-syntax-types");
@@ -131,7 +129,6 @@ public class TopicIndexingTest {
         );
         // TODO remove xmi-splitter-types and document-meta-extension-types
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
-                "de.julielab.jcore.types.jcore-xmi-splitter-types",
                 "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types",
                 "de.julielab.jcore.types.jcore-document-structure-pubmed-types",
                 "de.julielab.jcore.types.jcore-morpho-syntax-types");
@@ -173,7 +170,6 @@ public class TopicIndexingTest {
         );
         // TODO remove xmi-splitter-types and document-meta-extension-types
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
-                "de.julielab.jcore.types.jcore-xmi-splitter-types",
                 "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types",
                 "de.julielab.jcore.types.jcore-document-structure-pubmed-types",
                 "de.julielab.jcore.types.jcore-morpho-syntax-types");
