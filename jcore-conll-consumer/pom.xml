@@ -3,10 +3,10 @@
   <parent>
     <groupId>de.julielab</groupId>
     <artifactId>jcore-parent</artifactId>
-    <version>2.3.3</version>
+    <version>2.3.4</version>
   </parent>
   <artifactId>jcore-conll-consumer</artifactId>
-  <version>2.3.5-SNAPSHOT</version>
+  <version>2.3.5</version>
   <name>JCoRe CONLL Consumer</name>
   <dependencies>
   	<dependency>
@@ -23,4 +23,8 @@
   		<artifactId>logback-classic</artifactId>
   	</dependency>
   <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
+
+  <scm>
+    <tag>v2.3.4</tag>
+  </scm>
 </project>

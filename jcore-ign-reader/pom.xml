@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-parent</artifactId>
-		<version>2.3.3</version>
+		<version>2.3.4</version>
 	</parent>
 	<artifactId>jcore-ign-reader</artifactId>
-  <version>2.3.5-SNAPSHOT</version>
+  <version>2.3.5</version>
   <name>JCoRe IGN Reader</name>
   <description>Collection Reader for the IGN corpus in BioC format as accessible at https://sites.google.com/site/hongjiedai/projects/the-ign-corpus.</description>
   <dependencies>
@@ -38,6 +38,6 @@
   </organization>
   <scm>
   	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-ign-reader</url>
-    <tag>HEAD</tag>
+    <tag>v2.3.4</tag>
   </scm>
   </project>
