@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "Arconym Tagger\nbased on the SCHWARTZ & HEARST Algorithm:\nAriel S. Schwartz and Marti A. Hearst: A Simple Algorithm For Identifying Abbreviation Definitions in Biomedical Text. In: Pacific Symposium on Biocomputing, 2003.",
+    "description": "Arconym Tagger\n        based on the SCHWARTZ & HEARST Algorithm:\n        Ariel S. Schwartz and Marti A. Hearst: A Simple Algorithm For Identifying Abbreviation Definitions in Biomedical\n        Text. In: Pacific Symposium on Biocomputing, 2003.\n    ",
     "descriptors": [
         {
             "category": "ae",
@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-acronym-ae",
         "groupId": "de.julielab",
-        "version": "2.3.3"
+        "version": "2.3.8-SNAPSHOT"
     },
     "name": "JCoRe Acronym Tagger"
 }

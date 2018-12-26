@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-jnet-ae",
         "groupId": "de.julielab",
-        "version": "2.3.3"
+        "version": "2.3.8-SNAPSHOT"
     },
     "name": "JCoRe JNET AE"
 }

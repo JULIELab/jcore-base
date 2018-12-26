@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "The UIMA ae on at the heart of the Jena Emotion Analysis System JEmAS.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.jemas.desc.jcore-jemas-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-jemas-ae",
+        "groupId": "de.julielab",
+        "version": "2.2.0"
+    },
+    "name": "JCoRe Emotion Analyzer"
+}

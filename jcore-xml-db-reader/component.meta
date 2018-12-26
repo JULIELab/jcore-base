@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-xml-db-reader",
         "groupId": "de.julielab",
-        "version": "2.3.4"
+        "version": "2.3.5"
     },
     "name": "JCoRe XML Database Reader"
 }
