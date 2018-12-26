@@ -9,4 +9,5 @@
 target
 *.iml
 **/*.iml
+/julie-xml-tools.jar
 

@@ -6,7 +6,7 @@
     <version>2.3.4</version>
   </parent>
   <artifactId>jcore-conll-consumer</artifactId>
-  <version>2.3.5</version>
+  
   <name>JCoRe CONLL Consumer</name>
   <dependencies>
   	<dependency>

@@ -11,7 +11,7 @@ Is able to read (g)zipped files and can recursively search subdirectories for XM
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
-		<version>2.3.4</version>
+		<version>2.3.8-SNAPSHOT</version>
 	</parent>
 
 

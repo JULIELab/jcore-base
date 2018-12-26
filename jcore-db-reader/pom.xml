@@ -10,7 +10,7 @@
     <artifactId>jcore-db-reader</artifactId>
     <name>JCoRe Database Reader</name>
     <description>Abstract database reader for database driven processing</description>
-    <version>2.3.6</version>
+    
     <dependencies>
         <dependency>
             <groupId>de.julielab</groupId>
