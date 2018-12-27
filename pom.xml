@@ -109,12 +109,5 @@
 </connection>
         <developerConnection>scm:git:https://github.com/JULIELab/jcore-base</developerConnection>
         <url>scm:git:https://github.com/JULIELab/jcore-base</url>
-      <tag>v2.3.4</tag>
   </scm>
-    <properties>
-        <jcore-utilities-version>2.3.3</jcore-utilities-version>
-        <jcore-types-version>2.3.4</jcore-types-version>
-        <guava-version>27.0.1-jre</guava-version>
-        <julielab-java-utilities-version>1.0.4</julielab-java-utilities-version>
-    </properties>
 </project>

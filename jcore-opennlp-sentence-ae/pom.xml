@@ -15,7 +15,7 @@
 	   <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
-            <version>${jcore-version}</version>
+            <version>${jcore-types-version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.apache.opennlp</groupId>

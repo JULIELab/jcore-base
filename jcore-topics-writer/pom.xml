@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>de.julielab</groupId>
 			<artifactId>jcore-types</artifactId>
-			<version>${jcore-version}</version>
+			<version>${jcore-types-version}</version>
 		</dependency>
 	<dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
 	<name>JCoRe Topics Writer</name>

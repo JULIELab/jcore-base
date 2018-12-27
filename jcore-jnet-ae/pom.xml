@@ -75,12 +75,12 @@
 	   <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${jcore-types-version}</version>
         </dependency>
 		<dependency>
 			<groupId>de.julielab</groupId>
 			<artifactId>jcore-utilities</artifactId>
-			<version>2.3.3</version>
+			<version>${jcore-utilities-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
