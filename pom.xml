@@ -60,7 +60,6 @@
         <module>jcore-biosem-ae</module>
         <module>jcore-conll-consumer</module>
         <module>jcore-coordination-baseline-ae</module>
-        <module>jcore-db-reader</module>
         <module>jcore-dta-reader</module>
         <module>jcore-ec-code-ae</module>
         <module>jcore-elasticsearch-consumer</module>
@@ -101,7 +100,6 @@
         <module>jcore-utilities</module>
         <module>jcore-xml-mapper</module>
         <module>jcore-xml-reader</module>
-        <module>jcore-xml-db-reader</module>
         <module>jcore-xmi-reader</module>
         <module>jcore-xmi-writer</module>
         <module>jedis-parent</module>
