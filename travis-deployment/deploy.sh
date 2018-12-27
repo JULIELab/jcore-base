@@ -5,7 +5,7 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 	    wget https://search.maven.org/remotecontent?filepath=de/julielab/julie-xml-tools/0.4.2/julie-xml-tools-0.4.2-xml-tools-assembly.jar --output-document julie-xml-tools.jar
 	fi
 	if [ ! -f julielab-maven-aether-utilities.jar ]; then
-    	    wget https://oss.sonatype.org/content/repositories/snapshots/de/julielab/julielab-maven-aether-utilities/1.0.0-SNAPSHOT/julielab-maven-aether-utilities-1.0.0-20181221.093634-2-cli-assembly.jar --output-document julielab-maven-aether-utilities.jar
+    	    wget https://oss.sonatype.org/content/repositories/releases/de/julielab/julielab-maven-aether-utilities/1.0.0/julielab-maven-aether-utilities-1.0.0-cli-assembly.jar --output-document julielab-maven-aether-utilities.jar
     fi
 
 
