@@ -26,7 +26,7 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 
     echo "Now deploying JeDIS components"
     for i in . `java -jar julie-xml-tools.jar jedis-parent/pom.xml //module`; do
-            path=`echo $i | sed 's|../||'
+            path=`echo $i | sed 's|../||'`
     	    java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetCoordinatesFromRawPom $path/pom.xml > coords.txt;
     	    groupId=`grep 'GROUPID:' coords.txt | sed 's/^GROUPID: //'`
     	    artifactId=`grep 'ARTIFACTID:' coords.txt | sed 's/^ARTIFACTID: //'`
