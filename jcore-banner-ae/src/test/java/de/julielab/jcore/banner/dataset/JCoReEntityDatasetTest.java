@@ -33,6 +33,5 @@ public class JCoReEntityDatasetTest {
 		assertTrue(mentionStrings.contains("lysophospholipase"));
 		assertTrue(mentionStrings.contains("lysophospholipid-specific lysophospholipase"));
 		assertTrue(mentionStrings.contains("hLysoPLA"));
-		ds.getSentences().stream().flatMap(s -> s.getMentions().stream()).forEach(m -> System.out.println(m.getStart() + " - " + m.getEnd()));
 	}
 }

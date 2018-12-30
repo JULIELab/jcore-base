@@ -96,8 +96,8 @@ public class BANNERAnnotatorTest {
 			try {
 				tagalot();
 			} catch (Exception e) {
-				System.out.println("ERROOOORRR");
-				e.printStackTrace();
+				throw new RuntimeException();
+
 			}
 		}
 	}
