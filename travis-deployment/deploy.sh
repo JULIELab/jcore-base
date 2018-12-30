@@ -11,6 +11,7 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
     modulestodeploy=
 
 
+    echo "Collecting direct child modules of jcore-base and jcore-base itself for deployment"
 	for i in . `java -jar julie-xml-tools.jar pom.xml //module`; do
 	    java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetCoordinatesFromRawPom $i/pom.xml > coords.txt;
 	    if [ ! "$?" -eq "0" ]; then
@@ -30,7 +31,7 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 	    fi
     done
 
-    echo "Now deploying JeDIS components"
+    echo "Now collecting JeDIS components for deployment"
     for i in . `java -jar julie-xml-tools.jar jedis-parent/pom.xml //module`; do
             path=`echo $i | sed 's|../||'`
     	    java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetCoordinatesFromRawPom $path/pom.xml > coords.txt;
@@ -51,7 +52,12 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
     	    fi
     done
     echo "Deploying $modulestodeploy"
-    mvn deploy -T 1C -B -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -pl $modulestodeploy
+    if [ ! -z "$modulestodeploy" ]; then
+        echo "Deploying the following projects: $modulestodeploy"
+        mvn deploy -T 1C -B -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -pl $modulestodeploy
+    else
+        echo "All modules up to date, skipping deployment."
+    fi
 else
 	echo "Deploy not executed"
 fi
