@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-feature-value-replacement-ae",
         "groupId": "de.julielab",
-        "version": "2.3.8-SNAPSHOT"
+        "version": "2.3.8"
     },
     "name": "JCoRe Feature Value Replacement AE"
 }

@@ -22,7 +22,7 @@
     "maven-artifact": {
         "artifactId": "jcore-bionlpformat-consumer",
         "groupId": "de.julielab",
-        "version": "2.3.8-SNAPSHOT"
+        "version": "2.3.8"
     },
     "name": "JCoRe BioNLP Format Consumer"
 }

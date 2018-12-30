@@ -9,7 +9,7 @@
     "maven-artifact": {
         "artifactId": "jcore-opennlp-sentence-ae",
         "groupId": "de.julielab",
-        "version": "2.3.8-SNAPSHOT"
+        "version": "2.3.8"
     },
     "name": "JCoRe OpenNLP Sentence Splitter"
 }

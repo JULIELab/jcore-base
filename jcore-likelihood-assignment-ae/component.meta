@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-likelihood-assignment-ae",
         "groupId": "de.julielab",
-        "version": "2.3.8-SNAPSHOT"
+        "version": "2.3.8"
     },
     "name": "JCoRe Likelihood Assignment AE"
 }
