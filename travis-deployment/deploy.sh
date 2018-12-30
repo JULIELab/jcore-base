@@ -47,11 +47,11 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
     	    if [[ $version =~ .*SNAPSHOT.* ]] || [ "$csNotFound" == "<checkums not found>" ]; then
                 echo "This is a SNAPSHOT or a release that has not yet been deployed. Deploying."
                 #mvn deploy -T 1C -B -f $path/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -N
-                modulestodeploy=$modulestodeploy,$i
+                modulestodeploy=$modulestodeploy,$path
     	    fi
     done
     echo "Deploying $modulestodeploy"
-    mvn deploy -T 1C -B -f $path/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -pl $modulestodeploy
+    mvn deploy -T 1C -B -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -pl $modulestodeploy
 else
 	echo "Deploy not executed"
 fi
