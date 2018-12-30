@@ -50,6 +50,7 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
                 modulestodeploy=$modulestodeploy,$i
     	    fi
     done
+    echo "Deploying $modulestodeploy"
     mvn deploy -T 1C -B -f $path/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -pl $modulestodeploy
 else
 	echo "Deploy not executed"
