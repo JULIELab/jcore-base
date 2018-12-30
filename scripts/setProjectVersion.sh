@@ -11,7 +11,7 @@
 
 
 if [ ! -f jcore-version-normalizer.jar ]; then
-	wget https://oss.sonatype.org/content/repositories/releases/de/julielab/jcore-version-normalizer/1.0.0/jcore-version-normalizer-1.0.0-jar-with-dependencies.jar -O jcore-version-normalizer.jar
+	wget https://oss.sonatype.org/content/repositories/releases/de/julielab/jcore-version-normalizer/1.1.0/jcore-version-normalizer-1.1.0-jar-with-dependencies.jar -O jcore-version-normalizer.jar
 fi
 
-java -jar jcore-version-normalizer.jar pom.xml $1
+java -jar jcore-version-normalizer.jar pom.xml $1 true
