@@ -35,11 +35,6 @@
             <version>${jcore-types-version}</version>
         </dependency>
         <dependency>
-            <groupId>de.julielab</groupId>
-            <artifactId>jcore-mallet-2.0.9</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
             <version>2.2</version>
