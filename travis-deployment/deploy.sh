@@ -7,6 +7,8 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 	if [ ! -f julielab-maven-aether-utilities.jar ]; then
     	    wget https://oss.sonatype.org/content/repositories/releases/de/julielab/julielab-maven-aether-utilities/1.0.0/julielab-maven-aether-utilities-1.0.0-cli-assembly.jar --output-document julielab-maven-aether-utilities.jar
     fi
+    
+    modulestodeploy=
 
 
 	for i in . `java -jar julie-xml-tools.jar pom.xml //module`; do
@@ -23,7 +25,8 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
         csNotFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version | grep '<checkums not found>'`
 	    if [[ $version =~ .*SNAPSHOT.* ]] || [ "$csNotFound" == "<checkums not found>" ]; then
             echo "This is a SNAPSHOT or a release that has not yet been deployed. Deploying."
-            mvn deploy -T 1C -B -f $i/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -N
+            #mvn deploy -T 1C -B -f $i/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -N
+            modulestodeploy=$modulestodeploy,$i
 	    fi
     done
 
@@ -43,9 +46,11 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
             csNotFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version | grep '<checkums not found>'`
     	    if [[ $version =~ .*SNAPSHOT.* ]] || [ "$csNotFound" == "<checkums not found>" ]; then
                 echo "This is a SNAPSHOT or a release that has not yet been deployed. Deploying."
-                mvn deploy -T 1C -B -f $path/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -N
+                #mvn deploy -T 1C -B -f $path/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -N
+                modulestodeploy=$modulestodeploy,$i
     	    fi
-        done
+    done
+    mvn deploy -T 1C -B -f $path/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -pl $modulestodeploy
 else
 	echo "Deploy not executed"
 fi
