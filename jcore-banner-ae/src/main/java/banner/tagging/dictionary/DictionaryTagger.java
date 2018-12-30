@@ -275,10 +275,6 @@ public class DictionaryTagger implements Tagger {
 			for (Mention mention : mentions)
 				sentence.addMention(mention);
 		}
-
-		// System.out.println(sentence.getText());
-		// for (Mention mention : sentence.getMentions())
-		// System.out.println("\t" + mention.getText());
 	}
 
 	public void suppress(String text) {

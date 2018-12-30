@@ -60,7 +60,6 @@ public class Pretagger extends Pipe
 			{
 				String featureName = prefix + mention.getEntityType().getText();
 				token.setFeatureValue(featureName, 1);
-//				System.out.println("HIER: " + preSentence.getTokens().get(i) + ": " + featureName);
 			}
 		}
 		

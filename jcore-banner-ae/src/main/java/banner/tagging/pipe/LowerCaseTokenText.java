@@ -51,7 +51,6 @@ public class LowerCaseTokenText extends Pipe
 				else
 					featureName = prefix + text;
 				t.setFeatureValue(featureName, 1.0);
-//				System.out.println(featureName);
 			}
 		}
 		return carrier;

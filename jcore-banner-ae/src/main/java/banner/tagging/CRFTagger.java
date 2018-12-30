@@ -115,14 +115,6 @@ public class CRFTagger implements Tagger {
 			instances.addThruPipe(instance);
 			FeatureVectorSequence fvs = (FeatureVectorSequence) instance.getData();
 			LabelSequence ls = (LabelSequence) instance.getTarget();
-//			for (int i = 0; i < fvs.size(); ++i) {
-//				System.out.print("Word: " + sentence.getTokens().get(i).getText() + "\tgold label: "
-//						+ ls.getLabelAtPosition(i).toString() + "\t");
-//				FeatureVector fv = fvs.get(i);
-//				System.out.println(Stream.of(fv.toString(true).split(" "))
-//						.filter(x -> omitConjunctionOffsets ? !x.contains("@") : true)
-//						.collect(Collectors.joining(" ")));
-//			}
 		}
 		CRF model = new CRF(featureSet.getPipe(), null);
 		if (order == 1)
@@ -169,16 +161,6 @@ public class CRFTagger implements Tagger {
 		Instance instance = getInstance(sentence);
 		Sequence<Object> tags = model.transduce((Sequence) instance.getData());
 		sentence.addMentions(getTagList(tags), 1.0);
-//		FeatureVectorSequence fvs = (FeatureVectorSequence) instance.getData();
-//		for (int i = 0; i < fvs.size(); ++i) {
-//			boolean omitConjunctionOffsets = true;
-//			System.out.print(
-//					"Word: " + sentence.getTokens().get(i).getText() + "\tpredicted label: " + tags.get(i) + "\t");
-//			FeatureVector fv = fvs.get(i);
-//			System.out.println(Stream.of(fv.toString(true).split(" "))
-//					.filter(x -> omitConjunctionOffsets ? !x.contains("@") : true)
-//					.collect(Collectors.joining(" ")));
-//		}
 	}
 
 	protected Instance getInstance(Sentence sentence) {
