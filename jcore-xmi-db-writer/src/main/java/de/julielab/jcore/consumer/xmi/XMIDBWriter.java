@@ -480,19 +480,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             // + tableName;
                             if (storeBaseDocument && isDocumentTable) {
                                 serializedCASes.get(tableName)
-                                        .add(new DocumentXmiData(docId, storedData, newXmiId, currentSofaXmiIdMap));// Object[]
-                                // {
-                                // docId,
-                                // storedData,
-                                // newXmiId
-                                // });
+                                        .add(new DocumentXmiData(docId, storedData, newXmiId, currentSofaXmiIdMap));
                             } else {
-                                serializedCASes.get(tableName).add(new XmiData(docId, storedData));// new
-                                // Object[]
-                                // {
-                                // docId,
-                                // storedData
-                                // });
+                                serializedCASes.get(tableName).add(new XmiData(docId, storedData));
                                 if (!storeBaseDocument)
                                     annotationInserter.putXmiIdMapping(docId, newXmiId);
 

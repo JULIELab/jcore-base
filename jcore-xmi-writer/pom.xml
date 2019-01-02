@@ -12,7 +12,6 @@
 		<artifactId>jcore-base</artifactId>
 		<version>2.3.8</version>
 	</parent>
-	<version>2.3.9-SNAPSHOT</version>
 	<dependencies>
 	   <dependency>
             <groupId>de.julielab</groupId>
