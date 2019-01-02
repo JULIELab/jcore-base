@@ -590,7 +590,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         // it the other way round.
         Map<String, Integer> map = Stream.of(xmiMetaData.getSofaIdMappings().toArray()).map(line -> line.split("="))
                 .collect(Collectors.toMap(split -> split[1], split -> Integer.parseInt(split[0])));
-        log.trace("Got Sofa XMI map from the CAS: {}", map);
+        log.trace("Got Sofa XMI map from the CAS: {} for document {}", map, docId);
         return map;
     }
 
