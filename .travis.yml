@@ -13,9 +13,9 @@ env:
 install: mvn -T 1C install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: mvn -T 1C test -B
 
-cache:
-  directories:
-    - $HOME/.m2/repository
+#cache:
+#  directories:
+#    - $HOME/.m2/repository
 
 before_deploy: ./travis-deployment/before-deploy.sh
 deploy:
