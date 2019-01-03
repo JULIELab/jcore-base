@@ -2,14 +2,14 @@
     "categories": [
         "ae"
     ],
-    "description": "UIMA wrapper for the OpenNLP Sentence Segmentation. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe components.",
+    "description": "UIMA wrapper for the OpenNLP Sentence Segmentation. The difference to the official OpenNLP UIMA wrapper\n        is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other\n        JCoRe components.\n    ",
     "descriptors": [],
     "exposable": false,
     "group": "general",
     "maven-artifact": {
         "artifactId": "jcore-opennlp-sentence-ae",
         "groupId": "de.julielab",
-        "version": "2.3.8"
+        "version": "2.3.10"
     },
     "name": "JCoRe OpenNLP Sentence Splitter"
 }

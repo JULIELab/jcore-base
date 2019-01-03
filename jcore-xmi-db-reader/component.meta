@@ -23,7 +23,7 @@
     "maven-artifact": {
         "artifactId": "jcore-xmi-db-reader",
         "groupId": "de.julielab",
-        "version": "2.3.9"
+        "version": "2.3.10"
     },
     "name": "JCoRe XMI Database Reader"
 }

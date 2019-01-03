@@ -2,7 +2,7 @@
     "categories": [
         "reader"
     ],
-    "description": "A collection reader to read the PubTator (https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/PubTator/) format.",
+    "description": "A collection reader to read the PubTator (https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/PubTator/)\n        format.\n    ",
     "descriptors": [
         {
             "category": "reader",
@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-pubtator-reader",
         "groupId": "de.julielab",
-        "version": "2.3.8"
+        "version": "2.3.10"
     },
     "name": "JCoRe PubTator Reader"
 }

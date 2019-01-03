@@ -23,7 +23,7 @@
     "maven-artifact": {
         "artifactId": "jcore-pmc-reader",
         "groupId": "de.julielab",
-        "version": "2.3.8"
+        "version": "2.3.10"
     },
     "name": "JCoRe PubMed Central Reader"
 }

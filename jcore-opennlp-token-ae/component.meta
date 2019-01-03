@@ -2,14 +2,14 @@
     "categories": [
         "ae"
     ],
-    "description": "UIMA wrapper for OpenNLP Tokenizer. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe components.",
+    "description": "UIMA wrapper for OpenNLP Tokenizer. The difference to the official OpenNLP UIMA wrapper is basically\n        the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe\n        components.\n    ",
     "descriptors": [],
     "exposable": false,
     "group": "general",
     "maven-artifact": {
         "artifactId": "jcore-opennlp-token-ae",
         "groupId": "de.julielab",
-        "version": "2.3.8"
+        "version": "2.3.10"
     },
     "name": "JCoRe OpenNLP Tokenizer"
 }
