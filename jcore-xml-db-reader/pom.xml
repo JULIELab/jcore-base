@@ -14,7 +14,7 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jedis-parent</artifactId>
-        <version>2.3.9-SNAPSHOT</version>
+        <version>2.3.9</version>
         <relativePath>../jedis-parent</relativePath>
     </parent>
     <build>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-db-reader</artifactId>
-            <version>2.3.9-SNAPSHOT</version>
+            <version>2.3.9</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
