@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>jcore-mantra-xml-types</artifactId>
-  <parent>
-  	<groupId>de.julielab</groupId>
-  	<artifactId>jcore-base</artifactId>
-  	<version>2.3.10-SNAPSHOT</version>
-  </parent>
-  <name>JCoRe Mantra XML Types</name>
-  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-mantra-xml-types</url>
-  <description>Additional types for the Mantra Challenge (see iexml-{reader,cosnumer}).</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jcore-mantra-xml-types</artifactId>
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.3.10-SNAPSHOT</version>
+    </parent>
+    <name>JCoRe Mantra XML Types</name>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-mantra-xml-types</url>
+    <description>Additional types for the Mantra Challenge (see iexml-{reader,cosnumer}).</description>
 </project>
