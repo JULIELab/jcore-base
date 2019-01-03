@@ -1,50 +1,53 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>jcore-pubtator-reader</artifactId>
-  <packaging>jar</packaging>
-  <name>JCoRe PubTator Reader</name>
-  <description>A collection reader to read the PubTator (https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/PubTator/) format.</description>
-   <parent>
-	<groupId>de.julielab</groupId>
-	<artifactId>jcore-base</artifactId>
-	<version>2.3.10-SNAPSHOT</version>
-	<relativePath>..</relativePath>
-   </parent>		 
-  <dependencies>
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-      </dependency>
-      <dependency>
-      	<groupId>org.slf4j</groupId>
-      	<artifactId>slf4j-api</artifactId>
-      </dependency>
-      <dependency>
-      	<groupId>de.julielab</groupId>
-      	<artifactId>jcore-types</artifactId>
-      	<version>${jcore-types-version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>de.julielab</groupId>
-      	<artifactId>julielab-java-utilities</artifactId>
-      </dependency>
-      <dependency>
-      	<groupId>org.apache.commons</groupId>
-      	<artifactId>commons-lang3</artifactId>
-      	<version>3.4</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.slf4j</groupId>
-      	<artifactId>slf4j-simple</artifactId>
-      	<version>1.7.24</version>
-      	<scope>test</scope>
-      </dependency>
-  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
-  <organization>
-  	<name>JULIE Lab Jena, Germany</name>
-  	<url>http://www.julielab.de</url>
-  </organization>
-  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-pubtator-reader</url>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jcore-pubtator-reader</artifactId>
+    <packaging>jar</packaging>
+    <name>JCoRe PubTator Reader</name>
+    <description>A collection reader to read the PubTator (https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/PubTator/)
+        format.
+    </description>
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.3.10-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-types-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>julielab-java-utilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.24</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+    <organization>
+        <name>JULIE Lab Jena, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-pubtator-reader</url>
 </project>

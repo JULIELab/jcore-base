@@ -19,16 +19,16 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="lang">
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}NMTOKEN">
- *     &lt;enumeration value="en"/>
- *     &lt;enumeration value="es"/>
- *     &lt;enumeration value="fr"/>
- *     &lt;enumeration value="pt"/>
- *     &lt;enumeration value="de"/>
- *     &lt;enumeration value="nl"/>
- *   &lt;/restriction>
- * &lt;/simpleType>
+ * &lt;simpleType name="lang"&gt;
+ *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}NMTOKEN"&gt;
+ *     &lt;enumeration value="en"/&gt;
+ *     &lt;enumeration value="es"/&gt;
+ *     &lt;enumeration value="fr"/&gt;
+ *     &lt;enumeration value="pt"/&gt;
+ *     &lt;enumeration value="de"/&gt;
+ *     &lt;enumeration value="nl"/&gt;
+ *   &lt;/restriction&gt;
+ * &lt;/simpleType&gt;
  * </pre>
  * 
  */

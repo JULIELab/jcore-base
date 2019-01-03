@@ -18,20 +18,20 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="group">
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}NMTOKEN">
- *     &lt;enumeration value="ANAT"/>
- *     &lt;enumeration value="CHEM"/>
- *     &lt;enumeration value="DEVI"/>
- *     &lt;enumeration value="DISO"/>
- *     &lt;enumeration value="GEOG"/>
- *     &lt;enumeration value="LIVB"/>
- *     &lt;enumeration value="OBJC"/>
- *     &lt;enumeration value="PHEN"/>
- *     &lt;enumeration value="PHYS"/>
- *     &lt;enumeration value="ANY"/>
- *   &lt;/restriction>
- * &lt;/simpleType>
+ * &lt;simpleType name="group"&gt;
+ *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}NMTOKEN"&gt;
+ *     &lt;enumeration value="ANAT"/&gt;
+ *     &lt;enumeration value="CHEM"/&gt;
+ *     &lt;enumeration value="DEVI"/&gt;
+ *     &lt;enumeration value="DISO"/&gt;
+ *     &lt;enumeration value="GEOG"/&gt;
+ *     &lt;enumeration value="LIVB"/&gt;
+ *     &lt;enumeration value="OBJC"/&gt;
+ *     &lt;enumeration value="PHEN"/&gt;
+ *     &lt;enumeration value="PHYS"/&gt;
+ *     &lt;enumeration value="ANY"/&gt;
+ *   &lt;/restriction&gt;
+ * &lt;/simpleType&gt;
  * </pre>
  * 
  */

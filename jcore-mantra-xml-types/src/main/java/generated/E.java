@@ -30,22 +30,22 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType>
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="NER" type="{}NER" maxOccurs="unbounded"/>
- *       &lt;/sequence>
- *       &lt;attribute name="id" use="required" type="{}eidType" />
- *       &lt;attribute name="src" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="cui" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="type" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="grp" use="required" type="{}group" />
- *       &lt;attribute name="offset" type="{http://www.w3.org/2001/XMLSchema}integer" />
- *       &lt;attribute name="len" type="{http://www.w3.org/2001/XMLSchema}integer" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="NER" type="{}NER" maxOccurs="unbounded"/&gt;
+ *       &lt;/sequence&gt;
+ *       &lt;attribute name="id" use="required" type="{}eidType" /&gt;
+ *       &lt;attribute name="src" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;attribute name="cui" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;attribute name="type" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;attribute name="grp" use="required" type="{}group" /&gt;
+ *       &lt;attribute name="offset" type="{http://www.w3.org/2001/XMLSchema}integer" /&gt;
+ *       &lt;attribute name="len" type="{http://www.w3.org/2001/XMLSchema}integer" /&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

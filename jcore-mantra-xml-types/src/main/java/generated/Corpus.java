@@ -28,23 +28,23 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType>
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element ref="{}document" maxOccurs="unbounded"/>
- *       &lt;/sequence>
- *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="docType" use="required" type="{}docType" />
- *       &lt;attribute name="lang" use="required" type="{}lang" />
- *       &lt;attribute name="creationDate" use="required" type="{http://www.w3.org/2001/XMLSchema}date" />
- *       &lt;attribute name="annotationType" type="{}annoType" />
- *       &lt;attribute name="annotationDate" type="{http://www.w3.org/2001/XMLSchema}date" />
- *       &lt;attribute name="author" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="description" type="{http://www.w3.org/2001/XMLSchema}string" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element ref="{}document" maxOccurs="unbounded"/&gt;
+ *       &lt;/sequence&gt;
+ *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;attribute name="docType" use="required" type="{}docType" /&gt;
+ *       &lt;attribute name="lang" use="required" type="{}lang" /&gt;
+ *       &lt;attribute name="creationDate" use="required" type="{http://www.w3.org/2001/XMLSchema}date" /&gt;
+ *       &lt;attribute name="annotationType" type="{}annoType" /&gt;
+ *       &lt;attribute name="annotationDate" type="{http://www.w3.org/2001/XMLSchema}date" /&gt;
+ *       &lt;attribute name="author" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;attribute name="description" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
