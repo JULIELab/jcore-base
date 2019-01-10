@@ -9,7 +9,7 @@
     "maven-artifact": {
         "artifactId": "jcore-opennlp-chunk-ae",
         "groupId": "de.julielab",
-        "version": "2.3.10"
+        "version": "2.4.0-SNAPSHOT"
     },
     "name": "JCoRe Open NLP Chunker"
 }
