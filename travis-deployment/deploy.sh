@@ -23,10 +23,12 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 	    packaging=`grep 'PACKAGING:' coords.txt | sed 's/^PACKAGING: //'`
 	    artifactFile=$i/target/$artifactId-$version.$packaging
         echo "Checking if $groupId:$artifactId:$packaging:$version exists"
-        csNotFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version | grep '<checkums not found>'`
+        # SNAPSHOTS are deployed always anyway
+        if [[ ! $version =~ .*SNAPSHOT.* ]]; then
+            csNotFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version | grep '<checkums not found>'`
+        fi
 	    if [[ $version =~ .*SNAPSHOT.* ]] || [ "$csNotFound" == "<checkums not found>" ]; then
             echo "This is a SNAPSHOT or a release that has not yet been deployed. Deploying."
-            #mvn deploy -T 1C -B -f $i/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -N
             modulestodeploy=$modulestodeploy,$i
 	    fi
     done
@@ -44,10 +46,12 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
     	    packaging=`grep 'PACKAGING:' coords.txt | sed 's/^PACKAGING: //'`
     	    artifactFile=$path/target/$artifactId-$version.$packaging
             echo "Checking if $groupId:$artifactId:$packaging:$version exists"
-            csNotFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version | grep '<checkums not found>'`
+            # SNAPSHOTS are deployed always anyway
+            if [[ ! $version =~ .*SNAPSHOT.* ]]; then
+                csNotFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version | grep '<checkums not found>'`
+            fi
     	    if [[ $version =~ .*SNAPSHOT.* ]] || [ "$csNotFound" == "<checkums not found>" ]; then
                 echo "This is a SNAPSHOT or a release that has not yet been deployed. Deploying."
-                #mvn deploy -T 1C -B -f $path/pom.xml -P sonatype-nexus-deployment --settings travis-deployment/mvnsettings.xml -DskipTests=true -N
                 modulestodeploy=$modulestodeploy,$path
     	    fi
     done
