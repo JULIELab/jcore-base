@@ -47,6 +47,7 @@ public class MutationAnnotator extends JCasAnnotator_ImplBase {
                 final Set<int[]> locations = mutations.get(mutation);
                 locations.forEach(location -> {
                     final de.julielab.jcore.types.PointMutation pmAnnotation = new de.julielab.jcore.types.PointMutation(jCas, location[0], location[1]);
+                    pmAnnotation.setSpecificType(mutation.toString());
                     pmAnnotation.setComponentId(MutationAnnotator.class.getCanonicalName());
                     pmAnnotation.addToIndexes();
                 });

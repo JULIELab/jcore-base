@@ -6,7 +6,6 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,5 +23,6 @@ public class MutationAnnotatorTest {
         final Collection<PointMutation> mutations = JCasUtil.select(jCas, PointMutation.class);
         Assert.assertThat(mutations.size(), CoreMatchers.is(1));
         Assert.assertThat(mutations.stream().findAny().get().getCoveredText(), CoreMatchers.equalTo("Thr-89-Val"));
+        Assert.assertThat(mutations.stream().findAny().get().getSpecificType(), CoreMatchers.equalTo("T89V"));
     }
 }
