@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "An analysis engine to recognize mentions of gene point mutations in document text. This is a wrapper\n        around the original MutationFinder (http://mutationfinder.sourceforge.net/), published in the following paper:\n        MutationFinder: A high-performance system for extracting point mutation mentions from text\n        J. Gregory Caporaso, William A. Baumgartner Jr., David A. Randolph, K. Bretonnel Cohen, and Lawrence Hunter;\n        Bioinformatics, 2007 23(14):1862-1865; doi:10.1093/bioinformatics/btm235;\n    ",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.mutationfinder.desc.de.julielab.jcore.ae.mutationfinder.MutationAnnotator"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-mutationfinder-ae",
+        "groupId": "de.julielab",
+        "version": "2.4.0-SNAPSHOT"
+    },
+    "name": "JCoRe Mutation Finder Analysis Engine"
+}
