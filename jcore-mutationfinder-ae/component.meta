@@ -6,7 +6,7 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "de.julielab.jcore.ae.mutationfinder.desc.de.julielab.jcore.ae.mutationfinder.MutationAnnotator"
+            "location": "de.julielab.jcore.ae.mutationfinder.desc.jcore-mutationfinder-ae"
         }
     ],
     "exposable": true,
@@ -16,5 +16,5 @@
         "groupId": "de.julielab",
         "version": "2.4.0-SNAPSHOT"
     },
-    "name": "JCoRe Mutation Finder Analysis Engine"
+    "name": "JCoRe Mutation Finder AE"
 }

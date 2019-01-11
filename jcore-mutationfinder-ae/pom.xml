@@ -8,7 +8,7 @@
         <version>2.4.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>JCoRe Mutation Finder Analysis Engine</name>
+    <name>JCoRe Mutation Finder AE</name>
     <description>An analysis engine to recognize mentions of gene point mutations in document text. This is a wrapper
         around the original MutationFinder (http://mutationfinder.sourceforge.net/), published in the following paper:
         MutationFinder: A high-performance system for extracting point mutation mentions from text
