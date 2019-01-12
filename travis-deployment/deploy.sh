@@ -22,9 +22,9 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 	    version=`grep 'VERSION:' coords.txt | sed 's/^VERSION: //'`
 	    packaging=`grep 'PACKAGING:' coords.txt | sed 's/^PACKAGING: //'`
 	    artifactFile=$i/target/$artifactId-$version.$packaging
-        echo "Checking if $groupId:$artifactId:$packaging:$version exists"
         # SNAPSHOTS are deployed always anyway
         if [[ ! $version =~ .*SNAPSHOT.* ]]; then
+            echo "Checking if $groupId:$artifactId:$packaging:$version exists"
             csNotFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version | grep '<checkums not found>'`
         fi
 	    if [[ $version =~ .*SNAPSHOT.* ]] || [ "$csNotFound" == "<checkums not found>" ]; then
@@ -45,9 +45,9 @@ if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
     	    version=`grep 'VERSION:' coords.txt | sed 's/^VERSION: //'`
     	    packaging=`grep 'PACKAGING:' coords.txt | sed 's/^PACKAGING: //'`
     	    artifactFile=$path/target/$artifactId-$version.$packaging
-            echo "Checking if $groupId:$artifactId:$packaging:$version exists"
             # SNAPSHOTS are deployed always anyway
             if [[ ! $version =~ .*SNAPSHOT.* ]]; then
+                echo "Checking if $groupId:$artifactId:$packaging:$version exists"
                 csNotFound=`java -cp julielab-maven-aether-utilities.jar de.julielab.utilities.aether.apps.GetRemoteChecksums $groupId:$artifactId:$packaging:$version | grep '<checkums not found>'`
             fi
     	    if [[ $version =~ .*SNAPSHOT.* ]] || [ "$csNotFound" == "<checkums not found>" ]; then
