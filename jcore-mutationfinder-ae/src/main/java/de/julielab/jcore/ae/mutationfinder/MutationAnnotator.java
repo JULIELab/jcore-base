@@ -40,6 +40,7 @@ private final static Logger log = LoggerFactory.getLogger(MutationAnnotator.clas
         try {
             mf = new MutationFinder(MutationAnnotator.class.getResourceAsStream("/regex.txt"));
         } catch (IOException e) {
+            log.error("Could not create MutationFinder instance", e);
             throw new ResourceInitializationException(e);
         }
     }

@@ -1,12 +1,20 @@
 package lingscope.algorithms;
 
+import de.julielab.java.utilities.FileUtilities;
+import de.julielab.java.utilities.IOStreamUtilities;
 import generalutils.FileOperations;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * The baseline annotator
@@ -35,11 +43,11 @@ public abstract class BaselineAnnotator extends Annotator {
         }
     }
 
+
     @Override
-    public void loadAnnotator(String modelFile) {
-        try {
-            phrases = new HashSet<String>();
-            phrases.addAll(FileOperations.readFile(modelFile));
+    public void loadAnnotator(InputStream is) {
+        try (BufferedReader br = IOStreamUtilities.getReaderFromInputStream(is)){
+            phrases = br.lines().collect(Collectors.toSet());
         } catch (Exception ex) {
             Logger.getLogger(BaselineAnnotator.class.getName()).log(Level.SEVERE, null, ex);
         }

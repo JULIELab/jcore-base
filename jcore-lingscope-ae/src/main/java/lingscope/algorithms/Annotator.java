@@ -1,5 +1,9 @@
 package lingscope.algorithms;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import lingscope.structures.AnnotatedSentence;
 
@@ -23,7 +27,15 @@ public abstract class Annotator {
 
     public abstract AnnotatedSentence annotateSentence(String sentence, boolean isTokenized);
 
-    public abstract void loadAnnotator(String modelFile);
+    public void loadAnnotator(String modelFile) {
+        try (FileInputStream fis = new FileInputStream(modelFile)) {
+            loadAnnotator(fis);
+        }  catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public abstract void loadAnnotator(InputStream is);
 
     /**
      * Checks if the given target phrase is negated in the given sentence. Only

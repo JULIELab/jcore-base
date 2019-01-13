@@ -74,6 +74,53 @@ public class LingscopePosAnnotatorTest {
 
     }
 
+    @Test
+    public void testResourcesOnClasspath() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-mention-types");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(LingscopePosAnnotator.class, LingscopePosAnnotator.PARAM_CUE_MODEL, "hedge_models/baseline_cue_all_both.model", LingscopePosAnnotator.PARAM_SCOPE_MODEL, "hedge_models/crf_scope_words_crf_all_both.model", LingscopePosAnnotator.PARAM_LIKELIHOOD_DICT_PATH, "src/main/resources/de/julielab/jcore/ae/lingscope/resources/likelihood_neg_invest_dict");
+        jCas.setDocumentText("It might be true.");
+        new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
+        addToken(jCas, 0, 2, "PRP", "It");
+        addToken(jCas, 3, 8, "MD", "may");
+        addToken(jCas, 9, 11, "VB", "be");
+        addToken(jCas, 12, 16, "JJ", "true");
+        addToken(jCas, 16, 17, ".", ".");
+
+        engine.process(jCas);
+
+        final LikelihoodIndicator indicator = JCasUtil.selectSingle(jCas, LikelihoodIndicator.class);
+        assertThat(indicator.getBegin()).isEqualTo(3);
+        assertThat(indicator.getEnd()).isEqualTo(8);
+        assertThat(indicator.getLikelihood()).isEqualTo("moderate");
+
+        final Scope scope = JCasUtil.selectSingle(jCas, Scope.class);
+        assertThat(scope.getCue() == indicator);
+        assertThat(scope.getBegin()).isEqualTo(3);
+        // That the scope is this long is actually an error of the CRF
+        assertThat(scope.getEnd()).isEqualTo(16);
+
+    }
+
+    @Test
+    public void testNegationOnly() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-mention-types");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(LingscopePosAnnotator.class, LingscopePosAnnotator.PARAM_CUE_MODEL, "hedge_models/baseline_cue_all_both.model", LingscopePosAnnotator.PARAM_SCOPE_MODEL, "hedge_models/crf_scope_words_crf_all_both.model", LingscopePosAnnotator.PARAM_LIKELIHOOD_DICT_PATH, "src/main/resources/de/julielab/jcore/ae/lingscope/resources/likelihood_neg_invest_dict", LingscopePosAnnotator.PARAM_IS_NEGATION_ANNOTATOR, true);
+        jCas.setDocumentText("It might be true.");
+        new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
+        addToken(jCas, 0, 2, "PRP", "It");
+        addToken(jCas, 3, 8, "MD", "may");
+        addToken(jCas, 9, 11, "VB", "be");
+        addToken(jCas, 12, 16, "JJ", "true");
+        addToken(jCas, 16, 17, ".", ".");
+
+        engine.process(jCas);
+
+        final LikelihoodIndicator indicator = JCasUtil.selectSingle(jCas, LikelihoodIndicator.class);
+        // This is actually a hedge, but we set the annotator to be in negation mode, so it should mark everyting as a negation (not something one would want to do in production, unless really certain that it makes sense)
+        assertThat(indicator.getLikelihood()).isEqualTo("negation");
+
+    }
+
     private void addToken(JCas jCas, int begin, int end, String posTag, String lemma) {
         final Token token = new Token(jCas, begin, end);
         final PennBioIEPOSTag p1 = new PennBioIEPOSTag(jCas, begin, end);

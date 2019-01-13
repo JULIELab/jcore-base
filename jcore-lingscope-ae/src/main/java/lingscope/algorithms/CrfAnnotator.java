@@ -3,6 +3,8 @@ package lingscope.algorithms;
 import abner.Tagger;
 import abner.Trainer;
 import java.io.File;
+import java.io.InputStream;
+
 import lingscope.structures.AnnotatedSentence;
 
 /**
@@ -38,8 +40,9 @@ public class CrfAnnotator extends Annotator {
     }
 
     @Override
-    public void loadAnnotator(String modelFile) {
-        tagger = new Tagger(new File(modelFile));
+    public void loadAnnotator(InputStream is) {
+        tagger = new Tagger(is);
         tagger.setTokenization(false);
+
     }
 }

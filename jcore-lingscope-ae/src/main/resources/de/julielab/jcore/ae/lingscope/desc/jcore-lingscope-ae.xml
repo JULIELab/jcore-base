@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.ae.lingscope.LingscopePosAnnotator</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Lingscope AE</name>
+        <description>This component uses the Lingscope negation/hedge detection algorithm and models to annotate negation/hedge cues and the scope to which the cues apply.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>CueModel</name>
+                <description>The model that is used to recognize the negation or hedge cue words in text. There are different models for negation and hedge detection in Lingscope, indicated by the directory names 'negation_models' and 'hedge_models' in the respective downloads from the Lingscope SourceForge page. The cue detection models are always those where the string 'cue' follows the 'baseline' or 'crf' string in the filename. Thus, all 'baseline_cue_*' and 'crf_cue_*' files are cue identification models. The 'crf_scope_cue_*' models, in contrast, are scope detection models that replace the cue words by the string CUE.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ScopeModel</name>
+                <description>The model that is used to detect the scope of a previously found negation or hedge cue word. There are different models for negation and hedge detection in Lingscope, indicated by the directory names 'negation_models' and 'hedge_models' in the respective downloads from the Lingscope SourceForge page. The cue detection models are always those where the string 'cue' follows the 'baseline' or 'crf' string in the filename. Thus, all 'baseline_cue_*' and 'crf_cue_*' files are cue identification models. The 'crf_scope_cue_*' models, in contrast, are scope detection models that replace the cue words by the string CUE.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>LikelihoodDict</name>
+                <description>String parameter indicating path to likelihood dictionary (One entry per line; Entries consist of tab-separated lemmatized likelihood indicators and assigned likelihood category). The dictionary passed here is only used to assign likelihood scores (low, medium, high) to negation and hedge cues. It is not used to detect the cues in the first place.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.Token</type>
+                    <type>de.julielab.jcore.types.PennBioIEPOSTag</type>
+                </inputs>
+                <outputs>
+                    <type>de.julielab.jcore.types.LikelihoodIndicator</type>
+                    <type>de.julielab.jcore.types.Scope</type>
+                </outputs>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

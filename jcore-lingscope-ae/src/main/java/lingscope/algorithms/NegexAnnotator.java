@@ -7,16 +7,19 @@ package lingscope.algorithms;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import lingscope.algorithms.negex.GenNegEx;
 import lingscope.structures.AnnotatedSentence;
 
 /**
  * Annotates negation using Negex
+ *
  * @author shashank
  */
 public abstract class NegexAnnotator extends Annotator {
@@ -35,19 +38,13 @@ public abstract class NegexAnnotator extends Annotator {
     }
 
     @Override
-    public void loadAnnotator(String modelFile) {
-        try {
-            negex = new GenNegEx();
-            File ruleFile = new File(modelFile);
-            Scanner sc = new Scanner(ruleFile);
-            rules = new ArrayList();
-            while (sc.hasNextLine()) {
-                rules.add(sc.nextLine());
-            }
-            System.out.println(rules);
-            sc.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(NegexAnnotator.class.getName()).log(Level.SEVERE, null, ex);
+    public void loadAnnotator(InputStream is) {
+        negex = new GenNegEx();
+        Scanner sc = new Scanner(is);
+        rules = new ArrayList();
+        while (sc.hasNextLine()) {
+            rules.add(sc.nextLine());
         }
+        sc.close();
     }
 }
