@@ -550,6 +550,18 @@
       <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
     </typeDescription>
     <typeDescription>
+      <name>de.julielab.jcore.types.Scope</name>
+      <description>This type represents the span that some cue word like negation or hedging applies to.</description>
+      <supertypeName>de.julielab.jcore.types.Chunk</supertypeName>
+      <features>
+      <featureDescription>
+        <name>cue</name>
+        <description>The cue word or phrase the induces this scope.</description>
+        <rangeTypeName>de.julielab.jcore.types.Annotation</rangeTypeName>
+      </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
       <name>de.julielab.jcore.types.DependencyRelation</name>
       <description>Syntactic dependency relation annotation, see subtypes</description>
       <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>

@@ -21,7 +21,7 @@ public class PosTagger {
      * @param grammarFile
      */
     public PosTagger(String grammarFile) {
-        throw new IllegalArgumentException("This class is not implemented because it required a specific version of the stanford-postagger that could neither be found on the stanford postagger web page nor in stanford core nlp.");
+        throw new IllegalArgumentException("This class is not implemented because it required a specific version of the stanford-postagger that could neither be found on the stanford postagger web page nor in stanford core nlp. There is no version number known. The library comes with the download package of Lingscope.");
 //        try {
 //            posTagger = new MaxentTagger(grammarFile);
 //        } catch (Exception ex) {
@@ -37,7 +37,7 @@ public class PosTagger {
      * @return
      */
     public List<String> replaceWordsWithPos(String sentence, boolean isTokenized) {
-        throw new IllegalArgumentException("This class is not implemented because it required a specific version of the stanford-postagger that could neither be found on the stanford postagger web page nor in stanford core nlp.");
+        throw new IllegalArgumentException("This class is not implemented because it required a specific version of the stanford-postagger that could neither be found on the stanford postagger web page nor in stanford core nlp. There is no version number known. The library comes with the download package of Lingscope.");
 //        if (!isTokenized) {
 //            sentence = AbnerTokenizer.splitTermsByPunctuation(sentence);
 //        }
