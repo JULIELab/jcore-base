@@ -77,7 +77,7 @@ public class LingscopePosAnnotatorTest {
     @Test
     public void testResourcesOnClasspath() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-mention-types");
-        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(LingscopePosAnnotator.class, LingscopePosAnnotator.PARAM_CUE_MODEL, "hedge_models/baseline_cue_all_both.model", LingscopePosAnnotator.PARAM_SCOPE_MODEL, "hedge_models/crf_scope_words_crf_all_both.model", LingscopePosAnnotator.PARAM_LIKELIHOOD_DICT_PATH, "src/main/resources/de/julielab/jcore/ae/lingscope/resources/likelihood_neg_invest_dict");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(LingscopePosAnnotator.class, LingscopePosAnnotator.PARAM_CUE_MODEL, "hedge_models/baseline_cue_all_both.model", LingscopePosAnnotator.PARAM_SCOPE_MODEL, "hedge_models/crf_scope_words_crf_all_both.model", LingscopePosAnnotator.PARAM_LIKELIHOOD_DICT_PATH, "de/julielab/jcore/ae/lingscope/resources/likelihood_neg_invest_dict");
         jCas.setDocumentText("It might be true.");
         new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
         addToken(jCas, 0, 2, "PRP", "It");
