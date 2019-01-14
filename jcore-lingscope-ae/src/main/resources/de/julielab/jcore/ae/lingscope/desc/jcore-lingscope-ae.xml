@@ -28,8 +28,22 @@
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>IsNegationAnnotator</name>
+                <description>If set to true, the recognized cue words will all be assigned the 'negation' likelihood, even if the model used is a hedge model.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings/>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>IsNegationAnnotator</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
