@@ -57,7 +57,6 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>julielab-java-utilities</artifactId>
-            <version>${julielab-java-utilities-version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
