@@ -84,7 +84,8 @@ public class JsonWriterTest {
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-writer",
 				JsonWriter.PARAM_FIELD_GENERATORS, new String[] {TestFieldGeneratorBlackBeauty.class.getCanonicalName()},
 				JsonWriter.PARAM_OUTPUT_DEST, "src/test/resources/json-output",
-				JsonWriter.PARAM_FILE_OUTPUT, false);
+				JsonWriter.PARAM_FILE_OUTPUT, false,
+                JsonWriter.PARAM_GZIP, true);
 		consumer.process(cas.getCas());
 		consumer.collectionProcessComplete();
 		
