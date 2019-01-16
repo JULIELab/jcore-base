@@ -81,7 +81,7 @@ public class JsonWriterTest {
 		header.setTestAuthors(authorArray);
 		header.addToIndexes();
 
-		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-consumer",
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-writer",
 				JsonWriter.PARAM_FIELD_GENERATORS, new String[] {TestFieldGeneratorBlackBeauty.class.getCanonicalName()},
 				JsonWriter.PARAM_OUTPUT_DEST, "src/test/resources/json-output",
 				JsonWriter.PARAM_FILE_OUTPUT, false);
@@ -108,7 +108,7 @@ public class JsonWriterTest {
         header.addToIndexes();
 
         final File outputfile = new File("src/test/resources/onefile-output/thefile.txt");
-        AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-consumer",
+        AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-writer",
                 JsonWriter.PARAM_FIELD_GENERATORS, new String[] {DocumentTextFieldGenerator.class.getCanonicalName()},
                 JsonWriter.PARAM_OUTPUT_DEST, outputfile.getAbsolutePath(),
                 JsonWriter.PARAM_FILE_OUTPUT, true,
