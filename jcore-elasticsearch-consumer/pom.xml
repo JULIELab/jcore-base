@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.julielab</groupId>
@@ -13,7 +14,7 @@
         perfectly valid ElasticSearch default JSON which does not require the plugin. Then, however, the preanalyzed
         data format cannot be used because this is the format that required the ElasticSearch plugin.
     </description>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -59,7 +60,11 @@
             <artifactId>icu4j</artifactId>
             <version>55.1</version>
         </dependency>
-    <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+    </dependencies>
     <organization>
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>

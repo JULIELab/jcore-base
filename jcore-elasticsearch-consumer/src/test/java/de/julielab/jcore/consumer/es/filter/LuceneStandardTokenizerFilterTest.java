@@ -1,10 +1,10 @@
 package de.julielab.jcore.consumer.es.filter;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 public class LuceneStandardTokenizerFilterTest {
     @Test
     public void testTokenizer() {

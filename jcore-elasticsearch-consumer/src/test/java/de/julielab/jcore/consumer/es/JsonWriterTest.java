@@ -1,10 +1,6 @@
 package de.julielab.jcore.consumer.es;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.FileInputStream;
-import java.util.zip.GZIPInputStream;
-
+import de.julielab.jcore.es.test.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -12,17 +8,27 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
-import org.junit.Test;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
-import de.julielab.jcore.consumer.es.JsonWriter;
-import de.julielab.jcore.es.test.AddressTestType;
-import de.julielab.jcore.es.test.AuthorTestType;
-import de.julielab.jcore.es.test.ESConsumerTestType;
-import de.julielab.jcore.es.test.EntityTestType;
-import de.julielab.jcore.es.test.HeaderTestType;
-import de.julielab.jcore.es.test.TokenTestType;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 public class JsonWriterTest {
+
+    @BeforeTest
+    public static void setup() {
+        final File outputfile = new File("src/test/resources/onefile-output/thefile.txt");
+        if (outputfile.exists())
+            outputfile.delete();
+    }
 	@Test
 	public void testAddIndexSource() throws Exception {
 		JCas cas = JCasFactory.createJCas("de.julielab.jcore.consumer.es.testTypes");
@@ -75,8 +81,10 @@ public class JsonWriterTest {
 		header.setTestAuthors(authorArray);
 		header.addToIndexes();
 
-		System.setProperty("ES_CONSUMER_TEST_MODE", "true");
-		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-consumer", JsonWriter.PARAM_FIELD_GENERATORS, new String[] {TestFieldGeneratorBlackBeauty.class.getCanonicalName()}, JsonWriter.PARAM_OUTPUT_DIR, "src/test/resources/json-output");
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-consumer",
+				JsonWriter.PARAM_FIELD_GENERATORS, new String[] {TestFieldGeneratorBlackBeauty.class.getCanonicalName()},
+				JsonWriter.PARAM_OUTPUT_DEST, "src/test/resources/json-output",
+				JsonWriter.PARAM_FILE_OUTPUT, false);
 		consumer.process(cas.getCas());
 		consumer.collectionProcessComplete();
 		
@@ -90,4 +98,29 @@ public class JsonWriterTest {
 				"{\"structuredAuthor\":[{\"firstname\":\"Anna\",\"address\":{\"number\":47,\"city\":\"London\",\"street\":\"42nd Street\"},\"lastname\":\"Sewell\"},{\"firstname\":\"No\",\"address\":{\"number\":0,\"city\":\"Cambridge\"},\"lastname\":\"One\"}],\"text\":\"{\\\"v\\\":\\\"1\\\",\\\"str\\\":\\\"Black Beauty ran past the bloody barn.\\\",\\\"tokens\\\":[{\\\"t\\\":\\\"Black\\\",\\\"s\\\":0,\\\"e\\\":5,\\\"i\\\":1},{\\\"t\\\":\\\"hero\\\",\\\"s\\\":0,\\\"e\\\":12,\\\"i\\\":0},{\\\"t\\\":\\\"Beauty\\\",\\\"s\\\":6,\\\"e\\\":12,\\\"i\\\":1},{\\\"t\\\":\\\"ran\\\",\\\"s\\\":13,\\\"e\\\":16,\\\"i\\\":1},{\\\"t\\\":\\\"past\\\",\\\"s\\\":17,\\\"e\\\":21,\\\"i\\\":1},{\\\"t\\\":\\\"the\\\",\\\"s\\\":22,\\\"e\\\":25,\\\"i\\\":1},{\\\"t\\\":\\\"bloody\\\",\\\"s\\\":26,\\\"e\\\":32,\\\"i\\\":1},{\\\"t\\\":\\\"NP\\\",\\\"s\\\":26,\\\"e\\\":37,\\\"i\\\":0},{\\\"t\\\":\\\"NNP\\\",\\\"s\\\":26,\\\"e\\\":37,\\\"i\\\":0},{\\\"t\\\":\\\"barn\\\",\\\"s\\\":33,\\\"e\\\":37,\\\"i\\\":1},{\\\"t\\\":\\\".\\\",\\\"s\\\":37,\\\"e\\\":38,\\\"i\\\":1}]}\",\"authors\":[\"Sewell, Anna\",\"One, No\"]}",
 				indexSource);
 	}
+
+    @Test(threadPoolSize = 3, invocationCount = 10)
+    public void testSingleFile() throws Exception {
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.consumer.es.testTypes");
+        cas.setDocumentText("This is one line that should not be interrupted.");
+        HeaderTestType header = new HeaderTestType(cas);
+        header.setDocId("testdoc");
+        header.addToIndexes();
+
+        final File outputfile = new File("src/test/resources/onefile-output/thefile.txt");
+        AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-consumer",
+                JsonWriter.PARAM_FIELD_GENERATORS, new String[] {DocumentTextFieldGenerator.class.getCanonicalName()},
+                JsonWriter.PARAM_OUTPUT_DEST, outputfile.getAbsolutePath(),
+                JsonWriter.PARAM_FILE_OUTPUT, true,
+                JsonWriter.PARAM_GZIP, true);
+
+        consumer.process(cas.getCas());
+        consumer.collectionProcessComplete();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(outputfile))) {
+            final Set<String> collect = br.lines().collect(Collectors.toSet());
+            // All lines should be equal
+            assertEquals(1, collect.size());
+        }
+    }
 }

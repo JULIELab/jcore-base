@@ -1,12 +1,10 @@
 package de.julielab.jcore.consumer.es;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import de.julielab.jcore.consumer.es.preanalyzed.*;
+import de.julielab.jcore.es.test.ESConsumerTestType;
+import de.julielab.jcore.es.test.EntityTestType;
+import de.julielab.jcore.es.test.ParagraphTestType;
+import de.julielab.jcore.es.test.SentenceTestType;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -17,21 +15,14 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
-import de.julielab.jcore.consumer.es.AbstractFieldGenerator;
-import de.julielab.jcore.consumer.es.ArrayFieldValue;
-import de.julielab.jcore.consumer.es.FeaturePathSet;
-import de.julielab.jcore.consumer.es.FeaturePathSets;
-import de.julielab.jcore.consumer.es.preanalyzed.IFieldValue;
-import de.julielab.jcore.consumer.es.preanalyzed.IToken;
-import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedFieldValue;
-import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedToken;
-import de.julielab.jcore.consumer.es.preanalyzed.RawToken;
-import de.julielab.jcore.es.test.ESConsumerTestType;
-import de.julielab.jcore.es.test.EntityTestType;
-import de.julielab.jcore.es.test.ParagraphTestType;
-import de.julielab.jcore.es.test.SentenceTestType;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.testng.Assert.assertNull;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class AbstractFieldGeneratorTest extends AbstractFieldGenerator {
 
