@@ -13,6 +13,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import de.julielab.jcore.consumer.es.preanalyzed.Document;
 
+@ResourceMetaData(name = "JCoRe JSON Writer")
 public class JsonWriter extends AbstractCasToJsonConsumer {
 
     public static final String PARAM_OUTPUT_DEST = "OutputDestination";

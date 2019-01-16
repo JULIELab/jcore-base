@@ -26,7 +26,7 @@ import com.google.gson.Gson;
 import de.julielab.jcore.consumer.es.preanalyzed.Document;
 import de.julielab.jcore.utility.JCoReTools;
 
-@ResourceMetaData(name="JCore ElasticSearchConsumer")
+@ResourceMetaData(name="JCore ElasticSearch Consumer")
 public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
 
     public static final String PARAM_URLS = "urls";

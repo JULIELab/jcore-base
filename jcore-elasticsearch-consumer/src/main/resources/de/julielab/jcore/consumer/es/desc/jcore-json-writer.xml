@@ -2,37 +2,30 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
-    <annotatorImplementationName>de.julielab.jcore.consumer.es.ElasticSearchConsumer</annotatorImplementationName>
+    <annotatorImplementationName>de.julielab.jcore.consumer.es.JsonWriter</annotatorImplementationName>
     <analysisEngineMetaData>
-        <name>JCore ElasticSearch Consumer</name>
+        <name>JCoRe JSON Writer</name>
         <configurationParameters>
             <configurationParameter>
-                <name>urls</name>
-                <description>A list of URLs pointing to different nodes of the ElasticSearch cluster, e.g. http://localhost:9300/. Documents will be sent bulk-wise to the nodes in a round-robin fashion.</description>
-                <type>String</type>
-                <multiValued>true</multiValued>
-                <mandatory>true</mandatory>
-            </configurationParameter>
-            <configurationParameter>
-                <name>indexName</name>
-                <description>The ElasticSearch index name to send the created documents to.</description>
+                <name>OutputDestination</name>
+                <description>The path to which the JSON data will be stored. This parameter can denote a file or a directory. See the FileOutput parameter which specifies whether the output should be written into one large file - one document per line - or into a directory - one document per file. The file or directory will be created if it does not exist, including all parent directories. In the directory case, the files in the directory will be overwritten. In the single file case, new documents will be appended, requiring the file to be deleted manually if desired.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
-                <name>type</name>
-                <description>The index type the generated documents should have. The types are removed from ElasticSearch with version 7 so this parameter is set to have the same value for all documents.</description>
-                <type>String</type>
-                <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
-            </configurationParameter>
-            <configurationParameter>
-                <name>batchSize</name>
-                <description>The number of documents to be sent to ElasticSearch in a single batch. Defaults to 50.</description>
-                <type>Integer</type>
+                <name>GZIP</name>
+                <description/>
+                <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>FileOutput</name>
+                <description>This boolean parameter determines whether a single file (parameter set to 'true') or a directory of files (parameter set to 'false') will be output to the location given with OutputDestination. File output supports multithreading on the same machine through  </description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>FieldGenerators</name>
