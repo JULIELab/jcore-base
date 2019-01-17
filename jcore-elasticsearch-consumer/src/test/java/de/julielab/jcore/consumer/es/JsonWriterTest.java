@@ -26,8 +26,9 @@ public class JsonWriterTest {
     @BeforeTest
     public static void setup() {
         final File outputfile = new File("src/test/resources/onefile-output/thefile.txt");
-        if (outputfile.exists())
-            outputfile.delete();
+        final File[] files = outputfile.getParentFile().listFiles(f -> f.getName().startsWith("thefile"));
+        if (files.length > 0)
+            files[0].delete();
     }
 	@Test
 	public void testAddIndexSource() throws Exception {
@@ -100,7 +101,7 @@ public class JsonWriterTest {
 				indexSource);
 	}
 
-    @Test(threadPoolSize = 3, invocationCount = 10)
+    @Test
     public void testSingleFile() throws Exception {
         JCas cas = JCasFactory.createJCas("de.julielab.jcore.consumer.es.testTypes");
         cas.setDocumentText("This is one line that should not be interrupted.");
@@ -108,7 +109,7 @@ public class JsonWriterTest {
         header.setDocId("testdoc");
         header.addToIndexes();
 
-        final File outputfile = new File("src/test/resources/onefile-output/thefile.txt");
+        final File outputfile = new File("src/test/resources/onefile-output/thefile");
         AnalysisEngine consumer = AnalysisEngineFactory.createEngine("src/main/resources/de/julielab/jcore/consumer/es/desc/jcore-json-writer",
                 JsonWriter.PARAM_FIELD_GENERATORS, new String[] {DocumentTextFieldGenerator.class.getCanonicalName()},
                 JsonWriter.PARAM_OUTPUT_DEST, outputfile.getAbsolutePath(),
@@ -116,9 +117,12 @@ public class JsonWriterTest {
                 JsonWriter.PARAM_GZIP, true);
 
         consumer.process(cas.getCas());
+		consumer.process(cas.getCas());
+		consumer.process(cas.getCas());
         consumer.collectionProcessComplete();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(outputfile))) {
+        final File thefile = outputfile.getParentFile().listFiles(f -> f.getName().startsWith("thefile"))[0];
+        try (BufferedReader br = new BufferedReader(new FileReader(thefile))) {
             final Set<String> collect = br.lines().collect(Collectors.toSet());
             // All lines should be equal
             assertEquals(1, collect.size());

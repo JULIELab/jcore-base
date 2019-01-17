@@ -35,7 +35,7 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
     private static final Logger log = LoggerFactory.getLogger(AbstractCasToJsonConsumer.class);
     //@ConfigurationParameter(name = PARAM_MAX_FILE_SIZE, mandatory = false, description = "Only in effect when " + PARAM_FILE_OUTPUT + "is set to 'true'. Then, when the resulting file surpasses the given size, the current file is closed and a new one is opened. The files receive a number suffix. This can be helpful for large document collections to be written into GZIP format because in file mode only the complete file can be GZIPPed. Defaults to 0 which deactivates this function.", defaultValue = "0")
     //private Long maxFileSize;
-    private static Integer writerNumber;
+    private static int writerNumber;
     private List<Document> documentBatch = new ArrayList<>();
     @ConfigurationParameter(name = PARAM_OUTPUT_DEST, description = "The path to which the JSON data will be stored. This parameter can denote a file name (without extension) or a directory. See the " + PARAM_FILE_OUTPUT + " parameter which specifies whether the output should be written into large files - one document per line, one file per thread - or into a directory - one document per file. The files or directory will be created if they does not exist, including all parent directories. All files will be overwritten.")
     private File outputDest;
@@ -64,15 +64,15 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
         }
         if (fileMode) {
             synchronized (JsonWriter.class) {
-                outputDest = new File(outputDest.getAbsolutePath() + File.separator + getHostName() + "-" + ++writerNumber + ".json");
+                final String hostName = getHostName();
+                final String pathname = outputDest.getAbsolutePath() +"-" + hostName + "-" + ++writerNumber + ".json";
+                outputDest = new File(pathname);
             }
             try {
-                bw = Files.newBufferedWriter(outputDest.toPath(), StandardOpenOption.WRITE);
-            } catch (FileNotFoundException e) {
+                bw = Files.newBufferedWriter(outputDest.toPath(), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+            } catch (IOException e) {
                 log.error("Could not access output destination {} for writing", outputDest, e);
                 throw new ResourceInitializationException(e);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
         log.info("{}: {}", PARAM_OUTPUT_DEST, outputDest.getAbsolutePath());
@@ -128,7 +128,6 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
             }
         } else {
             // Add the documents to the single file, one per line
-            ByteBuffer newlineBuf = ByteBuffer.wrap(System.getProperty("line.separator").getBytes());
             try {
                 for (Document document : documentBatch) {
                     String json = gson.toJson(document);
