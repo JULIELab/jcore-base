@@ -10,7 +10,7 @@
         },
         {
             "category": "consumer",
-            "location": "de.julielab.jcore.consumer.es.desc.jcore-json-consumer"
+            "location": "de.julielab.jcore.consumer.es.desc.jcore-json-writer"
         }
     ],
     "exposable": true,
