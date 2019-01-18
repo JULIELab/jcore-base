@@ -114,7 +114,7 @@ public class JsonWriterTest {
                 JsonWriter.PARAM_FIELD_GENERATORS, new String[] {DocumentTextFieldGenerator.class.getCanonicalName()},
                 JsonWriter.PARAM_OUTPUT_DEST, outputfile.getAbsolutePath(),
                 JsonWriter.PARAM_FILE_OUTPUT, true,
-                JsonWriter.PARAM_GZIP, true);
+                JsonWriter.PARAM_GZIP, false);
 
         consumer.process(cas.getCas());
 		consumer.process(cas.getCas());

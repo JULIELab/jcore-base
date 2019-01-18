@@ -41,6 +41,7 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
     @ConfigurationParameter(name = PARAM_FILE_OUTPUT, description = "This boolean parameter determines whether a single file (parameter set to 'true') or a directory of files (parameter set to 'false') will be output to the location given with " + PARAM_OUTPUT_DEST + ". File output supports multithreading on the same machine through  ")
     private Boolean fileMode;
     private BufferedWriter bw;
+    private String pathname;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -61,7 +62,9 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
         if (fileMode) {
             synchronized (JsonWriter.class) {
                 final String hostName = getHostName();
-                final String pathname = outputDest.getAbsolutePath() +"-" + hostName + "-" + ++writerNumber + ".json";
+                pathname = outputDest.getAbsolutePath() + "-" + hostName + "-" + ++writerNumber + ".json";
+                if (gzip)
+                    pathname += ".gz";
                 outputDest = new File(pathname);
             }
             try {
@@ -93,14 +96,19 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
 
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-        Document singleDocument = convertCasToDocument(aJCas);
-        if (singleDocument != null && !singleDocument.isEmpty())
-            documentBatch.add(singleDocument);
+        try {
+            Document singleDocument = convertCasToDocument(aJCas);
+            if (singleDocument != null && !singleDocument.isEmpty())
+                documentBatch.add(singleDocument);
 
-        List<Document> documents = convertCasToDocuments(aJCas);
-        if (documents != null) {
-            for (Document document : documents)
-                documentBatch.add(document);
+            List<Document> documents = convertCasToDocuments(aJCas);
+            if (documents != null) {
+                for (Document document : documents)
+                    documentBatch.add(document);
+            }
+        } catch (Throwable t) {
+            log.error("Error occurred", t);
+            throw t;
         }
     }
 
@@ -122,6 +130,7 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
                     }
                 }
             } catch (IOException e) {
+                log.error("Error while writing to {}", outputDest, e);
                 throw new AnalysisEngineProcessException(e);
             }
         } else {
@@ -132,7 +141,9 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
                     bw.write(json);
                     bw.newLine();
                 }
+                bw.flush();
             } catch (IOException e) {
+                log.error("Error while writing to {}", pathname, e);
                 throw new AnalysisEngineProcessException(e);
             }
         }
@@ -141,22 +152,32 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
 
     @Override
     public void batchProcessComplete() throws AnalysisEngineProcessException {
-        writeDocumentBatch();
-        super.batchProcessComplete();
+        try {
+            writeDocumentBatch();
+            super.batchProcessComplete();
+        } catch (Throwable throwable) {
+            log.error("Error occurred", throwable);
+            throw throwable;
+        }
     }
 
     @Override
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
-        writeDocumentBatch();
-        if (bw != null) {
-            try {
-                bw.close();
-            } catch (IOException e) {
-                log.error("Could not close writer to the current output file", e);
-                throw new AnalysisEngineProcessException(e);
+        try {
+            writeDocumentBatch();
+            if (bw != null) {
+                try {
+                    bw.close();
+                } catch (IOException e) {
+                    log.error("Could not close writer to the current output file", e);
+                    throw new AnalysisEngineProcessException(e);
+                }
             }
+            super.collectionProcessComplete();
+        } catch (Throwable t) {
+            log.error("Error occurred", t);
+            throw t;
         }
-        super.collectionProcessComplete();
     }
 
 }
