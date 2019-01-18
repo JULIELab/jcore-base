@@ -27,7 +27,7 @@ public class JsonWriterTest {
     public static void setup() {
         final File outputfile = new File("src/test/resources/onefile-output/thefile.txt");
         final File[] files = outputfile.getParentFile().listFiles(f -> f.getName().startsWith("thefile"));
-        if (files.length > 0)
+        if (files != null && files.length > 0)
             files[0].delete();
     }
 	@Test

@@ -85,6 +85,7 @@ public class TopicIndexer extends JCasAnnotator_ImplBase {
             if (displayedTopicWords > 0) {
                 topWords = topicModelProvider.getTopWords(displayedTopicWords);
             }
+            System.out.println(savedModel.pubmedIdModelId);
         } catch (Exception e) {
             e.printStackTrace();
         }
