@@ -1,6 +1,8 @@
 package de.julielab.jcore.consumer.es.preanalyzed;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import de.julielab.jcore.consumer.es.ArrayFieldValue;
 
@@ -65,7 +67,11 @@ public class Document extends HashMap<String, IFieldValue> implements
 		if (IFieldValue.class.isAssignableFrom(value.getClass())) {
 			addField(fieldname, (IFieldValue) value);
 			return;
-		}
+		} else if (value.getClass().isArray()) {
+			addField(fieldname, new ArrayFieldValue((Object[]) value));
+        } else if (value instanceof List) {
+            addField(fieldname, new ArrayFieldValue(((List<?>) value).toArray()));
+        }
 		put(fieldname, new RawToken(value));
 	}
 
