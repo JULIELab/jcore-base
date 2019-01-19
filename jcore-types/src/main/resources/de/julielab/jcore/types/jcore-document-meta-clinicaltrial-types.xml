@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>jcore-document-meta-pubmed-types</name>
+    <description>The type system contains types for the annotation of
+        document meta information (bibliographical and content information),
+        especially for PubMed abstracts.
+    </description>
+    <version>2.3.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <imports>
+        <import location="jcore-document-meta-pubmed-types.xml"/>
+    </imports>
+    <types>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.Header</name>
+            <description>The special Header for PubMed (http://www.pubmed.org)
+                documents
+            </description>
+            <supertypeName>de.julielab.jcore.types.pubmed.Header</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>studyType</name>
+                    <description/>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>studyDesignInfo</name>
+                    <description/>
+                    <rangeTypeName>de.julielab.jcore.types.ct.StudyDesignInfo</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>minimumAge</name>
+                    <description/>
+                    <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>maximumAge</name>
+                    <description/>
+                    <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>gender</name>
+                    <description/>
+                    <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.StudyDesignInfo</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.DocumentAnnotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>interventionModel</name>
+                    <description/>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>primaryPurpose</name>
+                    <description/>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>masking</name>
+                    <description/>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+
+    </types>
+</typeSystemDescription>

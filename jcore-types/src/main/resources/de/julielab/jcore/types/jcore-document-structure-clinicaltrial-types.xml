@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>JCoRe Document Structure Clinical Trials Types</name>
+    <description>This type system contains document structure types specific to the clinical trails XML format as
+        retrieved from https://clinicaltrials.gov/.
+    </description>
+    <version>2.3.0</version>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <imports>
+        <import location="jcore-document-structure-types.xml"/>
+    </imports>
+    <types>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.BriefTitle</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Title</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.OfficialTitle</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Title</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.Summary</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.Description</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.OutcomeMeasure</name>
+            <description>This should actually be a list where each list item consists of the elements 'measure', 'time frame' and 'description'. But at time of creation of type, these information were not parsed in the required granularity.</description>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.OutcomeDescription</name>
+            <description>This should actually be a paired with the respective OutcomeMeasure.</description>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.Condition</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.InterventionType</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.InterventionName</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.ArmGroupDescription</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.Inclusion</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.ct.Exclusion</name>
+            <description/>
+            <supertypeName>de.julielab.jcore.types.Zone</supertypeName>
+        </typeDescription>
+    </types>
+</typeSystemDescription>
