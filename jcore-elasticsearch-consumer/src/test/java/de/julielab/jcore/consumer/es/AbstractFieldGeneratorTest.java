@@ -1,5 +1,7 @@
 package de.julielab.jcore.consumer.es;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.julielab.jcore.consumer.es.preanalyzed.*;
 import de.julielab.jcore.es.test.ESConsumerTestType;
 import de.julielab.jcore.es.test.EntityTestType;
@@ -352,5 +354,19 @@ public class AbstractFieldGeneratorTest extends AbstractFieldGenerator {
 		assertEquals(1, tokens.size());
 		assertEquals(0, tokens.get(0).start);
 		assertEquals(22, tokens.get(0).end);
+	}
+
+	@Test
+	public void testAddArray() {
+		final Document d = new Document();
+		final String[] strings = {"eins", "zwei"};
+		d.addField("field", strings);
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(RawToken.class, new RawToken.RawTokenGsonAdapter());
+        builder.registerTypeAdapter(PreanalyzedFieldValue.class,
+                new PreanalyzedFieldValue.PreanalyzedFieldValueGsonAdapter());
+        Gson gson = builder.create();
+        assertEquals("{\"field\":[\"eins\",\"zwei\"]}", gson.toJson(d));
 	}
 }

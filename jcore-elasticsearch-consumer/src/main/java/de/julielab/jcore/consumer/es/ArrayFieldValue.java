@@ -21,11 +21,14 @@ public class ArrayFieldValue extends ArrayList<IFieldValue> implements
     }
 
     public ArrayFieldValue(Object[] values) {
-        for (Object v : values)
-            if (v instanceof IFieldValue)
+        for (Object v : values) {
+            if (v instanceof IFieldValue) {
                 add((IFieldValue) v);
-            else
+            }
+            else {
                 add(new RawToken(v));
+            }
+        }
     }
 
     public ArrayFieldValue() {

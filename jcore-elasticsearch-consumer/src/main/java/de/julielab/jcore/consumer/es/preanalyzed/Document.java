@@ -69,8 +69,10 @@ public class Document extends HashMap<String, IFieldValue> implements
 			return;
 		} else if (value.getClass().isArray()) {
 			addField(fieldname, new ArrayFieldValue((Object[]) value));
+			return;
         } else if (value instanceof List) {
             addField(fieldname, new ArrayFieldValue(((List<?>) value).toArray()));
+            return;
         }
 		put(fieldname, new RawToken(value));
 	}
