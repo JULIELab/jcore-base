@@ -3,11 +3,6 @@ package de.julielab.jcore.consumer.es;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +29,7 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
     private static final Logger log = LoggerFactory.getLogger(AbstractCasToJsonConsumer.class);
     private static int writerNumber;
     private List<Document> documentBatch = new ArrayList<>();
-    @ConfigurationParameter(name = PARAM_OUTPUT_DEST, description = "The path to which the JSON data will be stored. This parameter can denote a file name (without extension) or a directory. See the " + PARAM_FILE_OUTPUT + " parameter which specifies whether the output should be written into large files - one document per line, one file per thread - or into a directory - one document per file. The files or directory will be created if they does not exist, including all parent directories. All files will be overwritten.")
+    @ConfigurationParameter(name = PARAM_OUTPUT_DEST, description = "The path to which the JSON data will be stored. This parameter can denote a file name (without extension) or a directory. See the " + PARAM_FILE_OUTPUT + " parameter which specifies whether the output should be currentBatchSize into large files - one document per line, one file per thread - or into a directory - one document per file. The files or directory will be created if they does not exist, including all parent directories. All files will be overwritten.")
     private File outputDest;
     @ConfigurationParameter(name = PARAM_GZIP, mandatory = false)
     private Boolean gzip;
@@ -42,6 +37,8 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
     private Boolean fileMode;
     private BufferedWriter bw;
     private String pathname;
+    private int currentBatchSize;
+    private int batchNum;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -60,27 +57,36 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
             }
         }
         if (fileMode) {
-            synchronized (JsonWriter.class) {
-                final String hostName = getHostName();
-                pathname = outputDest.getAbsolutePath() + "-" + hostName + "-" + ++writerNumber + ".json";
-                if (gzip)
-                    pathname += ".gz";
-                outputDest = new File(pathname);
-            }
             try {
-                OutputStream os = new FileOutputStream(outputDest);
-                if (gzip)
-                    os = new GZIPOutputStream(os);
-                bw = new BufferedWriter(new OutputStreamWriter(os));
+                createFileOutputStream();
             } catch (IOException e) {
-                log.error("Could not access output destination {} for writing", outputDest, e);
                 throw new ResourceInitializationException(e);
             }
         }
+        currentBatchSize = 0;
+        batchNum = 1;
         log.info("{}: {}", PARAM_OUTPUT_DEST, outputDest.getAbsolutePath());
         log.info("{}: {}", PARAM_GZIP, gzip);
         log.info("{}: {}", PARAM_FILE_OUTPUT, fileMode);
     }
+
+    private void createFileOutputStream() throws IOException {
+        synchronized (JsonWriter.class) {
+            pathname = outputDest.getAbsolutePath() + "-" + getHostName() + "-" + ++writerNumber + "-" + batchNum + ".json";
+            if (gzip)
+                pathname += ".gz";
+        }
+        try {
+            OutputStream os = new FileOutputStream(pathname);
+            if (gzip)
+                os = new GZIPOutputStream(os);
+            bw = new BufferedWriter(new OutputStreamWriter(os));
+        } catch (IOException e) {
+            log.error("Could not access output destination {} for writing", pathname, e);
+            throw e;
+        }
+    }
+
 
     private String getHostName() {
         InetAddress address;
@@ -136,6 +142,12 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
         } else {
             // Add the documents to the single file, one per line
             try {
+                // We write multiple batches of files so that they don't grow too large
+                if (currentBatchSize > 1000000) {
+                    bw.close();
+                    ++batchNum;
+                    createFileOutputStream();
+                }
                 for (Document document : documentBatch) {
                     String json = gson.toJson(document);
                     bw.write(json);
@@ -146,6 +158,7 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
                 log.error("Error while writing to {}", pathname, e);
                 throw new AnalysisEngineProcessException(e);
             }
+            currentBatchSize += documentBatch.size();
         }
         documentBatch.clear();
     }
