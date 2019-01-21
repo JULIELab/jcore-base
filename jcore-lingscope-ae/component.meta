@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "This component marks spans of biomedical text to lie in the scope of a negation or hedge. The Lingscope\n        (https://sourceforge.net/projects/lingscope/) algorithm is used to do this.\n    ",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.lingscope.desc.jcore-lingscope-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-lingscope-ae",
+        "groupId": "de.julielab",
+        "version": "2.4.0-SNAPSHOT"
+    },
+    "name": "JCoRe Lingscope AE"
+}
