@@ -26,8 +26,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-@ResourceMetaData(name="JCoRe Lingscope AE", description = "This component uses the Lingscope negation/hedge detection algorithm and models to annotate negation/hedge cues and the scope to which the cues apply.")
+@ResourceMetaData(name = "JCoRe Lingscope AE", description = "This component uses the Lingscope negation/hedge detection algorithm and models to annotate negation/hedge cues and the scope to which the cues apply.")
 @TypeCapability(inputs = {"de.julielab.jcore.types.Token", "de.julielab.jcore.types.PennBioIEPOSTag"}, outputs = {"de.julielab.jcore.types.LikelihoodIndicator", "de.julielab.jcore.types.Scope"})
 public class LingscopePosAnnotator extends JCasAnnotator_ImplBase {
     public static final String PARAM_CUE_MODEL = "CueModel";
@@ -55,7 +56,7 @@ public class LingscopePosAnnotator extends JCasAnnotator_ImplBase {
     @ConfigurationParameter(name = PARAM_LIKELIHOOD_DICT_PATH, mandatory = false, description = "String parameter indicating path to likelihood dictionary (One entry per line; Entries consist of tab-separated lemmatized likelihood indicators and assigned likelihood category). The dictionary passed here is only used to assign likelihood scores (low, medium, high) to negation and hedge cues. It is not used to detect the cues in the first place.")
     private String likelihoodDictFile;
 
-    @ConfigurationParameter(name=PARAM_IS_NEGATION_ANNOTATOR, mandatory = false, defaultValue = "false", description = "If set to true, the recognized cue words will all be assigned the 'negation' likelihood, even if the model used is a hedge model.")
+    @ConfigurationParameter(name = PARAM_IS_NEGATION_ANNOTATOR, mandatory = false, defaultValue = "false", description = "If set to true, the recognized cue words will all be assigned the 'negation' likelihood, even if the model used is a hedge model.")
     private boolean isNegationAnnotator;
 
     private boolean replaceCue;
@@ -69,7 +70,7 @@ public class LingscopePosAnnotator extends JCasAnnotator_ImplBase {
         cueModelLocation = (String) aContext.getConfigParameterValue(PARAM_CUE_MODEL);
         scopeModelLocation = (String) aContext.getConfigParameterValue(PARAM_SCOPE_MODEL);
         Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_LIKELIHOOD_DICT_PATH)).ifPresent(path -> LikelihoodUtils.loadLikelihoodDict(path, likelihoodDict));
-        Optional.ofNullable((Boolean)aContext.getConfigParameterValue(PARAM_IS_NEGATION_ANNOTATOR)).ifPresent(b -> isNegationAnnotator = b);
+        Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_IS_NEGATION_ANNOTATOR)).ifPresent(b -> isNegationAnnotator = b);
 
         String cueModelType;
         // We do not expect this to be an actual file (while it could be!). We just want to retrieve the name of the resource without the path
@@ -125,24 +126,40 @@ public class LingscopePosAnnotator extends JCasAnnotator_ImplBase {
                 sb.deleteCharAt(sb.length() - 1);
 
                 String posSentence = sb.toString();
-                AnnotatedSentence cueTaggedSentence = cueAnnotator.annotateSentence(sent.getCoveredText(), false);
-                AnnotatedSentence posCueMerged = CueAndPosFilesMerger.merge(cueTaggedSentence, posSentence, replaceCue);
-                AnnotatedSentence scopeMarkedSentence = scopeAnnotator.annotateSentence(posCueMerged.getSentenceText(), true);
+                AnnotatedSentence cueTaggedSentence = null;
+                AnnotatedSentence posCueMerged = null;
+                AnnotatedSentence scopeMarkedSentence = null;
+                try {
+                    // Important step here: replace pipes through slashes. Pipes are a reserved character for the internal tag representation format.
+                    cueTaggedSentence = cueAnnotator.annotateSentence(tokens.stream().map(Annotation::getCoveredText).collect(Collectors.joining(" ")).replace("|", "/"), true);
+                    posCueMerged = CueAndPosFilesMerger.merge(cueTaggedSentence, posSentence, replaceCue);
+                    scopeMarkedSentence = scopeAnnotator.annotateSentence(posCueMerged.getSentenceText(), true);
 
-                final List<LikelihoodIndicator> likelihoodIndicators = addAnnotationToCas(tokens, cueTaggedSentence, () -> new LikelihoodIndicator(aJCas));
-                final List<Scope> scopes = addAnnotationToCas(tokens, scopeMarkedSentence, () -> new Scope(aJCas));
+                    final List<LikelihoodIndicator> likelihoodIndicators = addAnnotationToCas(tokens, cueTaggedSentence, () -> new LikelihoodIndicator(aJCas));
+                    final List<Scope> scopes = addAnnotationToCas(tokens, scopeMarkedSentence, () -> new Scope(aJCas));
 
-                if (likelihoodIndicators.size() == scopes.size()) {
-                    for (int i = 0; i < scopes.size(); i++) {
-                        LikelihoodIndicator indicator = likelihoodIndicators.get(i);
-                        Scope scope = scopes.get(i);
-                        scope.setCue(indicator);
+                    if (likelihoodIndicators.size() == scopes.size()) {
+                        for (int i = 0; i < scopes.size(); i++) {
+                            LikelihoodIndicator indicator = likelihoodIndicators.get(i);
+                            Scope scope = scopes.get(i);
+                            scope.setCue(indicator);
+                        }
+                    } else {
+                        log.debug("Not assigning negation or hedge cues to their scopes because the number of cues and scopes differs.");
+                        log.trace("The respective sentence is: '{}'. Cue tags: '{}', Scope tags: '{}'", sent.getCoveredText(), cueTaggedSentence.getTags(), scopeMarkedSentence.getTags());
                     }
-                } else {
-                    log.debug("Not assigning negation or hedge cues to their scopes because the number of cues and scopes differs.");
-                    log.trace("The respective sentence is: '{}'. Cue tags: '{}', Scope tags: '{}'", sent.getCoveredText(), cueTaggedSentence.getTags(), scopeMarkedSentence.getTags());
+                } catch (Throwable t) {
+                    log.error("Lingscope error in sentence '{}'", sent.getCoveredText(), t);
+                    log.error("PosCueMerged Sent Text: {}", posCueMerged != null ? posCueMerged.getSentenceText() : "<null>");
+                    log.error("Tokens: {}", tokens.stream().map(Annotation::getCoveredText).collect(Collectors.joining(" ")));
+                    log.error("Lemmas: {}", tokens.stream().map(Token::getLemma).map(Lemma::getValue).collect(Collectors.joining(" ")));
+                    log.error("PoS: {}", posSentence);
+                    log.error("Cue tags: {}", cueTaggedSentence != null ? cueTaggedSentence.getTags() : "<null>");
+                    log.error("POS Cue merged: {}", posCueMerged != null ? posCueMerged.getTags() : "<null>");
+                    log.error("Scope tags: {}", scopeMarkedSentence != null ? scopeMarkedSentence.getTags() : "<null>");
+                    log.error("StackTrace:", t);
+                    throw t;
                 }
-
             }
         }
     }

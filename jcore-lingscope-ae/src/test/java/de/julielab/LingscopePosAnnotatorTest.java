@@ -10,6 +10,8 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.*;
 
 public class LingscopePosAnnotatorTest {
@@ -120,6 +122,60 @@ public class LingscopePosAnnotatorTest {
         assertThat(indicator.getLikelihood()).isEqualTo("negation");
 
     }
+
+    @Test
+    public void testHardCase() throws Exception {
+        // The sentence contains pipes which caused errors before it was handeled in the Annotator.
+        String sentence = "The CO2 isosteric heat of adsorption (|Q(st)|) and CO2/N2 selectivity (S), obtained from pure gas adsorption isotherms and Ideal Adsorbed Solution Theory (IAST) calculations, are also maximised relative to the neutral framework at this concentration of the alkali metal counter-ion.";
+        String tokens = "The CO2 isosteric heat of adsorption ( |Q ( st ) | ) and CO2 / N2 selectivity ( S ) , obtained from pure gas adsorption isotherms and Ideal Adsorbed Solution Theory ( IAST ) calculations , are also maximised relative to the neutral framework at this concentration of the alkali metal counter - ion .";
+        String lemmas = "the CO2 isosteric heat of adsorption ( |Q ( st ) | ) and CO2 / N2 selectivity ( s ) , obtain from pure gas adsorption isotherm and ideal adsorbed solution theory ( IAST ) calculation , be also maximize relative to the neutral framework at this concentration of the alkali metal counter - ion .";
+        String posTags = "DT NN JJ NN IN NN -LRB- NN -LRB- NN -RRB- NN -RRB- CC NN SYM NN NN -LRB- NN -RRB- , VBN IN JJ NN NN NNS CC JJ JJ NN NNS -LRB- NN -RRB- NNS , VBP RB VBN JJ TO DT JJ NN IN DT NN IN DT NNS JJ NN HYPH NN .";
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-mention-types");
+        jCas.setDocumentText(sentence);
+        new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
+
+        fillCasFromStrings(jCas, sentence, tokens, lemmas, posTags);
+        assertThat(JCasUtil.select(jCas, Token.class).stream().map(Token::getCoveredText).collect(Collectors.joining(" "))).isEqualTo(tokens);
+
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(LingscopePosAnnotator.class, LingscopePosAnnotator.PARAM_CUE_MODEL, "hedge_models/baseline_cue_all_both.model", LingscopePosAnnotator.PARAM_SCOPE_MODEL, "hedge_models/crf_scope_words_crf_all_both.model", LingscopePosAnnotator.PARAM_LIKELIHOOD_DICT_PATH, "src/main/resources/de/julielab/jcore/ae/lingscope/resources/likelihood_neg_invest_dict", LingscopePosAnnotator.PARAM_IS_NEGATION_ANNOTATOR, true);
+        assertThatCode(() -> engine.process(jCas)).doesNotThrowAnyException();
+    }
+
+    @Test
+    public void testHardCase2() throws Exception {
+        // This test fails when we tell the Lingscope annotator that our input would not be tokenized. This quickly causes issues when the external tokenization differs from the one that Lingscope produces.
+        String sentence = "Adolescents were divided into 4 groups according to suicide risk severity (grade 1 = depressed without suicidal ideation and without suicide attempts, grade 2 = depressed with suicidal ideations and grade 3 = depressed with suicide attempts; grade 0 = control group).";
+        String tokens = "Adolescents were divided into 4 groups according to suicide risk severity ( grade 1  =  depressed without suicidal ideation and without suicide attempts , grade 2  =  depressed with suicidal ideations and grade 3  =  depressed with suicide attempts ; grade 0  =  control group ) .";
+        String lemmas = "adolescent be divide into 4 group accord to suicide risk severity ( grade 1  =  depressed without suicidal ideation and without suicide attempt , grade 2  =  depress with suicidal ideation and grade 3  =  depress with suicide attempt ; grade 0  =  control group ) .";
+        String posTags = "NNS VBD VBN IN CD NNS VBG TO NN NN NN -LRB- NN NN SYM CC IN JJ NN CC IN NN NNS , NN NN SYM VBN IN JJ NNS CC NN NN SYM VBN IN NN NNS : NN NN SYM NN NN -RRB- .";
+
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-mention-types");
+        jCas.setDocumentText(sentence);
+        new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
+
+        fillCasFromStrings(jCas, sentence, tokens, lemmas, posTags);
+        assertThat(JCasUtil.select(jCas, Token.class).stream().map(Token::getCoveredText).collect(Collectors.joining(" "))).isEqualTo(tokens);
+
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(LingscopePosAnnotator.class, LingscopePosAnnotator.PARAM_CUE_MODEL, "hedge_models/baseline_cue_all_both.model", LingscopePosAnnotator.PARAM_SCOPE_MODEL, "hedge_models/crf_scope_words_crf_all_both.model", LingscopePosAnnotator.PARAM_LIKELIHOOD_DICT_PATH, "src/main/resources/de/julielab/jcore/ae/lingscope/resources/likelihood_neg_invest_dict", LingscopePosAnnotator.PARAM_IS_NEGATION_ANNOTATOR, true);
+        assertThatCode(() -> engine.process(jCas)).doesNotThrowAnyException();
+    }
+
+    private void fillCasFromStrings(JCas jCas, String sentence, String tokens, String lemmas, String posTags) {
+        final String[] tokSplit = tokens.split("\\s");
+        final String[] lemSplit = lemmas.split("\\s");
+        final String[] posSplit = posTags.split("\\s");
+        int pos = 0;
+        for (int i = 0; i < lemSplit.length; i++) {
+            String token = tokSplit[i];
+            String lemma = lemSplit[i];
+            String posTag = posSplit[i];
+            final int begin = sentence.indexOf(token, pos);
+            final int end = begin + token.length();
+            pos = end;
+            addToken(jCas, begin, end, posTag, lemma);
+        }
+    }
+
 
     private void addToken(JCas jCas, int begin, int end, String posTag, String lemma) {
         final Token token = new Token(jCas, begin, end);
