@@ -4,6 +4,6 @@ import java.util.Map;
 
 import org.apache.uima.resource.SharedResourceObject;
 
-public interface IMapProvider extends SharedResourceObject {
-	Map<String, String> getMap();
+public interface IMapProvider<K,V> extends SharedResourceObject {
+	Map<K, V> getMap();
 }
