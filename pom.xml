@@ -96,6 +96,7 @@
         <module>jcore-xmi-reader</module>
         <module>jcore-xmi-writer</module>
         <module>jedis-parent</module>
+        <module>jcore-db-checkpoint-ae</module>
 
     </modules>
     <scm>

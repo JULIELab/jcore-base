@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "This is a JeDIS component. It can be used to set the 'last component' column in a subset table. This\n        help to keep track of the pipeline status.\n    ",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.checkpoint.desc.de.julielab.jcore.ae.checkpoint.DBCheckpointAE"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-db-checkpoint-ae",
+        "groupId": "de.julielab",
+        "version": "2.4.0-SNAPSHOT"
+    },
+    "name": "JCoRe Database Checkpoint AE"
+}
