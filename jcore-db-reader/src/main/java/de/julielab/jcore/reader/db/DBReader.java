@@ -140,6 +140,8 @@ public abstract class DBReader extends DBSubsetReader {
         if (!readDataTable)
             dbMetaData.setSubsetTable(
                     tableName.contains(".") ? tableName : dbc.getActivePGSchema() + "." + tableName);
+        dbMetaData.setTableSchema(dbc.getActiveTableSchema());
+
 
         dbMetaData.addToIndexes();
         return pkString;

@@ -31,14 +31,10 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_CHECKPOINT_NAME = "CheckpointName";
     public static final String PARAM_INDICATE_FINISHED = "IndicateFinished";
-    public static final String PARAM_TABLE_SCHEMA = "TableSchema";
     public static final String PARAM_COSTOSYS_CONFIG = "CostosysConfigFile";
     public static final String PARAM_WRITE_BATCH_SIZE = "WriteBatchSize";
     private final static Logger log = LoggerFactory.getLogger(DBCheckpointAE.class);
     private DataBaseConnector dbc;
-
-    @ConfigurationParameter(name = PARAM_TABLE_SCHEMA)
-    private String schemaDocument;
 
     @ConfigurationParameter(name = PARAM_CHECKPOINT_NAME)
     private String componentDbName;
@@ -59,6 +55,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     private int writeBatchSize;
 
     private String subsetTable;
+    private String tableSchema;
 
     private List<DocumentId> docIds;
 
@@ -68,7 +65,6 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      */
     @Override
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
-        schemaDocument = (String) aContext.getConfigParameterValue(PARAM_TABLE_SCHEMA);
         componentDbName = (String) aContext.getConfigParameterValue(PARAM_CHECKPOINT_NAME);
         dbcConfigPath = (String) aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG);
         indicateFinished = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_INDICATE_FINISHED)).orElse(false);
@@ -111,6 +107,8 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             documentId = new DocumentId(dbProcessingMetaData);
             if (subsetTable == null)
                 subsetTable = dbProcessingMetaData.getSubsetTable();
+            if (tableSchema == null)
+                tableSchema = dbProcessingMetaData.getTableSchema();
             docIds.add(documentId);
         } catch (IllegalArgumentException e) {
             docId = JCoReTools.getDocId(aJCas);
@@ -129,7 +127,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName))
             return;
 
-        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(schemaDocument);
+        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(tableSchema);
         String[] primaryKey = annotationFieldConfig.getPrimaryKey();
         if (primaryKey.length > 1)
             throw new IllegalArgumentException("Currently, only one-element primary keys are supported.");
