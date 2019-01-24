@@ -1,12 +1,17 @@
 {
     "categories": [
+        "consumer",
         "ae"
     ],
     "description": "This is a JeDIS component. It can be used to set the 'last component' column in a subset table. This\n        help to keep track of the pipeline status.\n    ",
     "descriptors": [
         {
             "category": "ae",
-            "location": "de.julielab.jcore.ae.checkpoint.desc.de.julielab.jcore.ae.checkpoint.DBCheckpointAE"
+            "location": "de.julielab.jcore.ae.checkpoint.desc.jcore-db-checkpoint-ae"
+        },
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.ae.checkpoint.desc.jcore-db-checkpoint-consumer"
         }
     ],
     "exposable": true,
