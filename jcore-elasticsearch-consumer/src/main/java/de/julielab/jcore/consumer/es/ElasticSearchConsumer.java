@@ -73,6 +73,7 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
                 if (null != url && !url.endsWith("/_bulk"))
                     url = url + "/_bulk";
                 indexPosts[i] = new HttpPost(url);
+                indexPosts[i].addHeader("Content-Type", "application/x-ndjson");
             }
         }
 
