@@ -76,6 +76,10 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             throw new ResourceInitializationException(e);
         }
         docIds = new ArrayList<>();
+        log.info("{}: {}", PARAM_CHECKPOINT_NAME, componentDbName);
+        log.info("{}: {}", PARAM_INDICATE_FINISHED, indicateFinished);
+        log.info("{}: {}", PARAM_CHECKPOINT_NAME, componentDbName);
+        log.info("{}: {}", PARAM_WRITE_BATCH_SIZE, writeBatchSize);
     }
 
     @Override
@@ -124,8 +128,10 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      * @throws AnalysisEngineProcessException
      */
     private void setLastComponent(CoStoSysConnection conn, String subsetTableName, List<DocumentId> processedDocumentIds) throws AnalysisEngineProcessException {
-        if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName))
+        if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName)) {
+            log.debug("Not setting the last component because the processed document IDs list is empty (size: {}) or the subset table name wasn't found (is: {})", processedDocumentIds.size(), subsetTableName);
             return;
+        }
 
         FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(tableSchema);
         String[] primaryKey = annotationFieldConfig.getPrimaryKey();
