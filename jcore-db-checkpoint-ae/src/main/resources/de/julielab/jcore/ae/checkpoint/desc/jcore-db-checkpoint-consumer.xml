@@ -4,7 +4,7 @@
     <primitive>true</primitive>
     <annotatorImplementationName>de.julielab.jcore.ae.checkpoint.DBCheckpointAE</annotatorImplementationName>
     <analysisEngineMetaData>
-        <name>JCoRe Database Checkpoint AE</name>
+        <name>JCoRe Database Checkpoint Consumer</name>
         <description>This component can be used when using a JCoRe database reader that reads from a CoStoSys/JeDIS subset. Enters the configured component name in the 'last component' column. Can also mark documents as being completely processed.</description>
         <configurationParameters>
             <configurationParameter>
