@@ -114,6 +114,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             if (tableSchema == null)
                 tableSchema = dbProcessingMetaData.getTableSchema();
             docIds.add(documentId);
+            log.trace("Adding document ID {} for subset table {} with table schema {} for checkpoint marking", documentId, subsetTable, tableSchema);
         } catch (IllegalArgumentException e) {
             docId = JCoReTools.getDocId(aJCas);
             log.error("The document with document ID {} does not have an annotation of type {}. This annotation ought to contain the name of the subset table. It should be set by the DB reader. Cannot write the checkpoint to the datbase since the target subset table is unknown..", docId, DBProcessingMetaData.class.getCanonicalName());
