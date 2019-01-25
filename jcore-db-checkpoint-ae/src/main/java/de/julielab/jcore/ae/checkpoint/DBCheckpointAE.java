@@ -85,6 +85,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     @Override
     public void batchProcessComplete() throws AnalysisEngineProcessException {
         super.batchProcessComplete();
+        log.debug("BatchProcessComplete called, writing checkpoints {} to database", docIds.size());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, docIds);
         }
@@ -93,6 +94,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     @Override
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
+        log.debug("CollectionProcessComplete called, writing {} checkpoints to database", docIds.size());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, docIds);
         }
@@ -111,6 +113,8 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             documentId = new DocumentId(dbProcessingMetaData);
             if (subsetTable == null)
                 subsetTable = dbProcessingMetaData.getSubsetTable();
+            if (subsetTable == null)
+                throw new IllegalArgumentException();
             if (tableSchema == null)
                 tableSchema = dbProcessingMetaData.getTableSchema();
             docIds.add(documentId);
