@@ -123,7 +123,7 @@ public class XmiDBReader extends DBReader implements Initializable {
         } catch (FileNotFoundException e) {
             throw new ResourceInitializationException(e);
         }
-        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+        try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
             List<Map<String, String>> primaryKeyFields = dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList());
             if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
 

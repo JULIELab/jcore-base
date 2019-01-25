@@ -55,7 +55,6 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     private int writeBatchSize;
 
     private String subsetTable;
-    private String tableSchema;
 
     private List<DocumentId> docIds;
 
@@ -87,7 +86,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         super.batchProcessComplete();
         log.debug("BatchProcessComplete called, writing checkpoints {} to database", docIds.size());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds);
+            setLastComponent(conn, subsetTable, docIds, dbc.getActiveTableFieldConfiguration());
         }
     }
 
@@ -96,7 +95,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         super.collectionProcessComplete();
         log.debug("CollectionProcessComplete called, writing {} checkpoints to database", docIds.size());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds);
+            setLastComponent(conn, subsetTable, docIds, dbc.getActiveTableFieldConfiguration());
         }
     }
 
@@ -113,15 +112,18 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             documentId = new DocumentId(dbProcessingMetaData);
             if (subsetTable == null)
                 subsetTable = dbProcessingMetaData.getSubsetTable();
-            if (subsetTable == null)
-                throw new IllegalArgumentException();
-            if (tableSchema == null)
-                tableSchema = dbProcessingMetaData.getTableSchema();
+            if (subsetTable == null) {
+                if (dbProcessingMetaData.getSubsetTable() == null) {
+                    log.error("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name.");
+                    throw new AnalysisEngineProcessException(new IllegalStateException("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name."));
+                }
+                subsetTable = dbProcessingMetaData.getSubsetTable();
+            }
             docIds.add(documentId);
-            log.trace("Adding document ID {} for subset table {} with table schema {} for checkpoint marking", documentId, subsetTable, tableSchema);
+            log.trace("Adding document ID {} for subset table {} for checkpoint marking", documentId, subsetTable);
         } catch (IllegalArgumentException e) {
             docId = JCoReTools.getDocId(aJCas);
-            log.error("The document with document ID {} does not have an annotation of type {}. This annotation ought to contain the name of the subset table. It should be set by the DB reader. Cannot write the checkpoint to the datbase since the target subset table is unknown..", docId, DBProcessingMetaData.class.getCanonicalName());
+            log.error("The document with document ID {} does not have an annotation of type {}. This annotation ought to contain the name of the subset table. It should be set by the DB reader. Cannot write the checkpoint to the datbase since the target subset table or its schema is unknown.", docId, DBProcessingMetaData.class.getCanonicalName());
             throw new AnalysisEngineProcessException(e);
         }
     }
@@ -132,13 +134,13 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      * @param conn
      * @throws AnalysisEngineProcessException
      */
-    private void setLastComponent(CoStoSysConnection conn, String subsetTableName, List<DocumentId> processedDocumentIds) throws AnalysisEngineProcessException {
+    private void setLastComponent(CoStoSysConnection conn, String
+            subsetTableName, List<DocumentId> processedDocumentIds, FieldConfig annotationFieldConfig) throws AnalysisEngineProcessException {
         if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName)) {
             log.debug("Not setting the last component because the processed document IDs list is empty (size: {}) or the subset table name wasn't found (is: {})", processedDocumentIds.size(), subsetTableName);
             return;
         }
 
-        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(tableSchema);
         String[] primaryKey = annotationFieldConfig.getPrimaryKey();
         if (primaryKey.length > 1)
             throw new IllegalArgumentException("Currently, only one-element primary keys are supported.");
