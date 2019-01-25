@@ -20,11 +20,6 @@
           <description>The subset table that is used to specify the set of documents to processes and to store processing status information. May be empty in the case the documents are directly read from a data table.</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
-        <featureDescription>
-          <name>tableSchema</name>
-          <description>The active table schema of the reader. This can be used to retrieve this table schema from the DataBaseConnector in another component and read the primary key column names, for example.</description>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
       </features>
     </typeDescription>
   </types>

@@ -134,15 +134,15 @@ public abstract class DBReader extends DBSubsetReader {
             pkArray.set(i, pkElementValue);
         }
         if (log.isDebugEnabled())
-            log.debug("Setting primary key to {}", Arrays.toString(pkArray.toArray()));
+            log.trace("Setting primary key for DBProcessingMetaData to {}", Arrays.toString(pkArray.toArray()));
         dbMetaData.setPrimaryKey(pkArray);
 
-        if (!readDataTable)
+        if (!readDataTable) {
+            final String name = tableName.contains(".") ? tableName : dbc.getActivePGSchema() + "." + tableName;
+            log.trace("Setting subset table name for DBProcessingMetaData to {}", name);
             dbMetaData.setSubsetTable(
-                    tableName.contains(".") ? tableName : dbc.getActivePGSchema() + "." + tableName);
-
-        log.trace("Setting table schema {} to the DBProcessingMetaData", dbc.getActiveTableSchema());
-        dbMetaData.setTableSchema(dbc.getActiveTableSchema());
+                    name);
+        }
 
 
         dbMetaData.addToIndexes();
