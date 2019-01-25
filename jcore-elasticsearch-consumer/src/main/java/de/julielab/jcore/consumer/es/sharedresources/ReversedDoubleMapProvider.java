@@ -13,6 +13,6 @@ public class ReversedDoubleMapProvider extends AbstractMapProvider<String, Doubl
 
     @Override
     protected String getKey(String keyString) {
-        return keyString.trim();
+        return keyString.trim().intern();
     }
 }
