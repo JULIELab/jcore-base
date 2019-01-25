@@ -142,6 +142,8 @@ public abstract class DBReader extends DBSubsetReader {
             log.trace("Setting subset table name for DBProcessingMetaData to {}", name);
             dbMetaData.setSubsetTable(
                     name);
+        } else {
+            log.trace("Not setting the subset because reading the data table is set to {}", readDataTable);
         }
 
 
