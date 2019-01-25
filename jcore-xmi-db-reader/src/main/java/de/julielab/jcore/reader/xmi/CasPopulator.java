@@ -172,6 +172,7 @@ public class CasPopulator {
             }
             log.trace("Setting max XMI ID to the CAS.");
             storeMaxXmiIdAndSofaMappings(jCas, data);
+            log.trace("Setting meta data to: Reads data table: {}, table name: {}", readsDataTable, tableName);
             DBReader.setDBProcessingMetaData(dbc, readsDataTable, tableName, data, jCas);
         } catch (Exception e) {
             // in case of an exception we at least would like to know which

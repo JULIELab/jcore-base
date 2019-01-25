@@ -8,9 +8,10 @@
             </pattern>
         </encoder>
     </appender>
-    <logger name="de.julielab.xmlData.dataBase.DataBaseConnector" level="debug"/>
+    <logger name="de.julielab.xmlData.dataBase.DataBaseConnector" level="INFO"/>
     <!--<logger name="de.julielab.xmlData.dataBase.CoStoSysConnection" level="trace"/>
     <logger name="de.julielab.jcore.reader.db.DBMultiplierReader" level="trace"/>-->
+    <logger name="de.julielab.jcore.reader.db.DBReader" level="INFO" />
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>

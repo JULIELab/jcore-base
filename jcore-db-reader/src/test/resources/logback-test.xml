@@ -9,6 +9,7 @@
         </encoder>
     </appender>
 
+    <logger name="de.julielab.jcore.reader.db.DBReader" level="INFO" />
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
