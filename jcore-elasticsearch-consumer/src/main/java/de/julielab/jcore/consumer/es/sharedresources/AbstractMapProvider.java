@@ -45,12 +45,15 @@ public abstract class AbstractMapProvider<K, V> implements IMapProvider<K, V> {
                             + "' has " + split.length + " columns.");
                 if (reverse)
                     map.put(getKey(split[1]), getValue(split[0]));
-                    // map.put(split[1].trim().intern(), split[0].trim().intern());
                 else
                     map.put(getKey(split[0]), getValue(split[1]));
-                //map.put(split[0].trim().intern(), split[1].trim().intern());
             }
             log.info("Finished reading resource {}", aData.getUri());
+            log.info("Copying {} values into a fresh HashMap of the exactly correct size", map.size());
+            HashMap<K, V> tmp = new HashMap<>(map.size(), 1f);
+            tmp.putAll(map);
+            map = tmp;
+            log.info("Done.");
         } catch (IOException e) {
             throw new ResourceInitializationException(e);
         } finally {
