@@ -98,6 +98,7 @@ public class DBMultiplierReader extends DBSubsetReader {
 
         rowbatch.setIdentifiers(ids);
         rowbatch.setTables(tableArray);
+        rowbatch.setTableName(tableName);
         rowbatch.setTableSchemas(schemaArray);
         rowbatch.setCostosysConfiguration(costosysConfig);
         rowbatch.addToIndexes();

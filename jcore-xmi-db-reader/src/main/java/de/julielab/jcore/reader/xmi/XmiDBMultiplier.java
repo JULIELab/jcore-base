@@ -126,8 +126,9 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             List<Map<String, String>> primaryKeyFields = dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList());
             if (rowBatch.getReadsBaseXmiDocument()) {
 
-                tableName = rowBatch.getTables(0);
-                determineDataInGzipFormat(tableName);
+                tableName = rowBatch.getTableName();
+                dataTable = rowBatch.getTables(0);
+                determineDataInGzipFormat(dataTable);
 
                 FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
@@ -137,7 +138,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
                     FieldConfig xmiAnnotationTableSchema = dbc.addXmiAnnotationFieldConfiguration(primaryKeyFields, doGzip);
                     rowBatch.setTableSchemas(1, xmiAnnotationTableSchema.getName());
                 }
-                XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getClass().getSimpleName());
+                XmiReaderUtils.checkXmiTableSchema(dbc, dataTable, xmiDocumentTableSchema, getClass().getSimpleName());
             } else {
                 // Complete XMI reading mode
                 String table = rowBatch.getTables(0);

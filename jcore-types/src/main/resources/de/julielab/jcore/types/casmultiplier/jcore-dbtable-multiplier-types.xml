@@ -28,6 +28,11 @@
                     <elementType>uima.cas.StringArray</elementType>
                 </featureDescription>
                 <featureDescription>
+                    <name>tableName</name>
+                    <description>The name of the table that was specified in the reader's descriptor.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
                     <name>tables</name>
                     <description>The tables to read the given IDs from. The first element is always the primary data table.
                         If there is more than one array entry, the
