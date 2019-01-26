@@ -93,9 +93,15 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     @Override
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
-        log.debug("CollectionProcessComplete called, writing {} checkpoints to database", docIds.size());
+        log.info("CollectionProcessComplete called, writing {} checkpoints to database", docIds.size());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, docIds,indicateFinished, dbc.getActiveTableFieldConfiguration());
+        }
+    }
+
+    private void customBatchProcessingComplete() throws AnalysisEngineProcessException {
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+            setLastComponent(conn, subsetTable, docIds, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
     }
 
@@ -121,6 +127,10 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             }
             docIds.add(documentId);
             log.trace("Adding document ID {} for subset table {} for checkpoint marking", documentId, subsetTable);
+            if (docIds.size() >= writeBatchSize) {
+                log.debug("Cached documents have reached the configured batch size of {}, sending to database.", writeBatchSize);
+                customBatchProcessingComplete();
+            }
         } catch (IllegalArgumentException e) {
             docId = JCoReTools.getDocId(aJCas);
             log.error("The document with document ID {} does not have an annotation of type {}. This annotation ought to contain the name of the subset table. It should be set by the DB reader. Cannot write the checkpoint to the datbase since the target subset table or its schema is unknown.", docId, DBProcessingMetaData.class.getCanonicalName());

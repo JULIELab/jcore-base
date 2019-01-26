@@ -158,7 +158,7 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
     // and even then only when the component is not included into an AAE.
     public void customBatchProcessComplete() throws AnalysisEngineProcessException {
         super.batchProcessComplete();
-        log.info("Batch of {} documents is sent to ElasticSearch.", docNum);
+        log.debug("Batch of {} documents is sent to ElasticSearch.", docNum);
         docNum = 0;
         postBulkIndexAction();
     }
@@ -184,7 +184,7 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
                 if (subList.isEmpty())
                     continue;
                 lastIndex += subList.size();
-                log.info("Sending {} documents to index {}.", subList.size() / 2, indexName);
+                log.debug("Sending {} documents to index {}.", subList.size() / 2, indexName);
                 long time = System.currentTimeMillis();
                 // The bulk format requires us to have a newline also after the
                 // last
@@ -203,7 +203,7 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
                 }
                 EntityUtils.consume(responseEntity);
                 time = System.currentTimeMillis() - time;
-                log.info("Sending took {}ms ({}s) and returned status code {}", time, time / 1000, statusCode);
+                log.debug("Sending took {}ms ({}s) and returned status code {}", time, time / 1000, statusCode);
             } while (null != subList && !subList.isEmpty());
         } catch (IOException e) {
             log.error("Error when sending data to ElasticSearch:", e);
