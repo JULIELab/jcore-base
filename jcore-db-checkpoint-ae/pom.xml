@@ -41,6 +41,28 @@
             <groupId>de.julielab</groupId>
             <artifactId>jcore-descriptor-creator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-xmi-db-reader</artifactId>
+            <version>${jcore-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-db-test-utilities</artifactId>
+            <version>2.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-xmi-db-writer</artifactId>
+            <version>${jcore-version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <name>JCoRe Database Checkpoint AE</name>
     <organization>

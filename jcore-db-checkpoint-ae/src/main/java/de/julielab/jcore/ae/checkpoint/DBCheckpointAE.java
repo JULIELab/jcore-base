@@ -86,7 +86,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         super.batchProcessComplete();
         log.debug("BatchProcessComplete called, writing checkpoints {} to database", docIds.size());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds, dbc.getActiveTableFieldConfiguration());
+            setLastComponent(conn, subsetTable, docIds, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
     }
 
@@ -95,7 +95,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         super.collectionProcessComplete();
         log.debug("CollectionProcessComplete called, writing {} checkpoints to database", docIds.size());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds, dbc.getActiveTableFieldConfiguration());
+            setLastComponent(conn, subsetTable, docIds,indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
     }
 
@@ -135,7 +135,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      * @throws AnalysisEngineProcessException
      */
     private void setLastComponent(CoStoSysConnection conn, String
-            subsetTableName, List<DocumentId> processedDocumentIds, FieldConfig annotationFieldConfig) throws AnalysisEngineProcessException {
+            subsetTableName, List<DocumentId> processedDocumentIds, boolean markIsProcessed, FieldConfig annotationFieldConfig) throws AnalysisEngineProcessException {
         if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName)) {
             log.debug("Not setting the last component because the processed document IDs list is empty (size: {}) or the subset table name wasn't found (is: {})", processedDocumentIds.size(), subsetTableName);
             return;
@@ -150,6 +150,8 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         log.debug("Marking {} documents to having been processed by component \"{}\".", processedDocumentIds.size(), componentDbName);
 
         String sql = String.format("UPDATE %s SET %s='%s' WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, primaryKeyPsString);
+        if (markIsProcessed)
+            sql = String.format("UPDATE %s SET %s='%s', %s=TRUE WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, Constants.IS_PROCESSED, primaryKeyPsString);
 
         try {
             boolean tryagain;

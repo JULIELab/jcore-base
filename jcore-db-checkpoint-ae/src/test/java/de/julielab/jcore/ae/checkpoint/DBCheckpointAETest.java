@@ -1,19 +1,22 @@
-package de.julielab.jcore.reader.xmi;
+package de.julielab.jcore.ae.checkpoint;
 
 import de.julielab.jcore.db.test.DBTestUtils;
+import de.julielab.jcore.reader.xmi.XmiDBReader;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.xmlData.cli.TableNotFoundException;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
+import de.julielab.xmlData.dataBase.SubsetStatus;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.InvalidXMLException;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -22,13 +25,14 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
 
-public class XmiDBReaderTest {
+public class DBCheckpointAETest {
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
     private static String xmisubset;
@@ -56,7 +60,7 @@ public class XmiDBReaderTest {
         postgres.close();
     }
     @Test
-    public void testXmiDBReader() throws UIMAException, IOException {
+    public void testXmiDBReader() throws UIMAException, IOException, TableNotFoundException {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
@@ -64,19 +68,19 @@ public class XmiDBReaderTest {
                 XmiDBReader.PARAM_TABLE, xmisubset,
                 XmiDBReader.PARAM_RESET_TABLE, true
         );
+        final AnalysisEngine checkpointae = AnalysisEngineFactory.createEngine(DBCheckpointAE.class, DBCheckpointAE.PARAM_CHECKPOINT_NAME, "testCP", DBCheckpointAE.PARAM_COSTOSYS_CONFIG, costosysConfig, DBCheckpointAE.PARAM_INDICATE_FINISHED, true);
         JCas jCas = XmiDBSetupHelper.getJCasWithRequiredTypes();
-        List<String> tokenText = new ArrayList<>();
-        List<String> sentenceText = new ArrayList<>();
         assertTrue(xmiReader.hasNext());
         while (xmiReader.hasNext()) {
             xmiReader.getNext(jCas.getCas());
-            // throws an exception if there is no such element
-            JCasUtil.selectSingle(jCas, Header.class);
-            JCasUtil.select(jCas, Token.class).stream().map(Annotation::getCoveredText).forEach(tokenText::add);
-            JCasUtil.select(jCas, Sentence.class).stream().map(Annotation::getCoveredText).forEach(sentenceText::add);
+            checkpointae.process(jCas);
             jCas.reset();
         }
-        assertFalse(tokenText.isEmpty());
-        assertFalse(sentenceText.isEmpty());
+        checkpointae.collectionProcessComplete();
+
+        DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
+        final SubsetStatus status = dbc.status(xmisubset, EnumSet.allOf(DataBaseConnector.StatusElement.class));
+        System.out.println(status);
+        assertEquals(1L, (long)status.isProcessed);
     }
 }
