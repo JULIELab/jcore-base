@@ -63,7 +63,7 @@ public class DBCheckpointAETest {
     }
 
     @Test
-    public void testXmiDBReader() throws Exception {
+    public void testCheckpoint() throws Exception {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         String xmisubset = "xmisubset" + subsetCounter++;
         dbc.setActiveTableSchema("xmi_text");
@@ -99,7 +99,7 @@ public class DBCheckpointAETest {
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
         final SubsetStatus status = dbc.status(xmisubset, EnumSet.allOf(DataBaseConnector.StatusElement.class));
-        System.out.println(status);
         assertEquals(1L, (long) status.isProcessed);
+        assertEquals(0L, (long) status.inProcess);
     }
 }

@@ -161,7 +161,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
 
         String sql = String.format("UPDATE %s SET %s='%s' WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, primaryKeyPsString);
         if (markIsProcessed)
-            sql = String.format("UPDATE %s SET %s='%s', %s=TRUE WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, Constants.IS_PROCESSED, primaryKeyPsString);
+            sql = String.format("UPDATE %s SET %s='%s', %s=TRUE, %s=FALSE WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, Constants.IS_PROCESSED, Constants.IN_PROCESS, primaryKeyPsString);
 
         try {
             boolean tryagain;
