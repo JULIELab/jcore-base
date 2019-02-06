@@ -60,7 +60,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(SentenceTokenConsumer.class);
     private final static String DEFAULT_DELIMITER = "";
     private final static boolean DEFAULT_PARAM_POS_TAG = false;
-    private static final byte[] linesepBytes = System.getProperty("line.separator").getBytes(StandardCharsets.UTF_8);
+    private final byte[] linesepBytes = System.getProperty("line.separator").getBytes(StandardCharsets.UTF_8);
     int docs = 0;
     @ConfigurationParameter(name = PARAM_OUTPUT_DIR, description = "The directory where to write the text files to.")
     private File directory;
@@ -84,7 +84,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
     private int currentArchiveSize = 0;
 
     @Override
-    public void initialize(UimaContext aContext) throws ResourceInitializationException {
+    public void initialize(UimaContext aContext) {
         LOGGER.info("INITIALIZING TXT Consumer ...");
         String dirName = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_DIR);
         directory = new File(dirName);
@@ -124,7 +124,10 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
     }
 
     private OutputStream createNextArchiveStream() throws IOException {
-        currentArchive = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(directory.getCanonicalPath() + File.separator + zipFilePrefix + archiveNumber + "-" + getHostName() + "-" + Thread.currentThread().getName() + ".zip"))));
+        final File outputfile = new File(directory.getCanonicalPath() + File.separator + zipFilePrefix + archiveNumber + "-" + getHostName() + "-" + Thread.currentThread().getName() + ".zip");
+        if (outputfile.exists())
+            throw new IllegalStateException("The next file to write for the current thread '"+Thread.currentThread().getName()+"' should be "+outputfile.getAbsolutePath()+", but this file does already exist.");
+        currentArchive = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(outputfile)));
         ++archiveNumber;
         currentArchiveSize = 0;
         return currentArchive;
@@ -169,6 +172,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
             }
 
         } catch (CASRuntimeException | CASException | IOException e) {
+            LOGGER.error("Error while writing: ", e);
             throw new AnalysisEngineProcessException(e);
         }
 
