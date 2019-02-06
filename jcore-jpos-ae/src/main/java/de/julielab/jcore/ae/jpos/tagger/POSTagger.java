@@ -316,7 +316,7 @@ public class POSTagger implements Serializable {
 	 * load a previously trained FeatureSubsetModel (CRF4+Properties) which was
 	 * stored as serialized object to disk.
 	 *
-	 * @param filename
+	 * @param modelFile
 	 *            where to find the serialized featureSubsetModel (full path!)
 	 */
 	public static POSTagger readModel(final File modelFile) throws IOException,
