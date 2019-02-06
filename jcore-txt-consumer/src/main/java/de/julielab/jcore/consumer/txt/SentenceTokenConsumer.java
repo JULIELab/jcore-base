@@ -124,9 +124,9 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
     }
 
     private OutputStream createNextArchiveStream() throws IOException {
-        final File outputfile = new File(directory.getCanonicalPath() + File.separator + zipFilePrefix + archiveNumber + "-" + getHostName() + "-" + Thread.currentThread().getName() + ".zip");
+        final File outputfile = new File(directory.getCanonicalPath() + File.separator + zipFilePrefix + archiveNumber + "-" + getHostName() + "-" + getPid() + "-" + Thread.currentThread().getName() + ".zip");
         if (outputfile.exists())
-            throw new IllegalStateException("The next file to write for the current thread '"+Thread.currentThread().getName()+"' should be "+outputfile.getAbsolutePath()+", but this file does already exist.");
+            throw new IllegalStateException("The next file to write for the current thread '" + Thread.currentThread().getName() + "' should be " + outputfile.getAbsolutePath() + ", but this file does already exist.");
         currentArchive = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(outputfile)));
         ++archiveNumber;
         currentArchiveSize = 0;
@@ -277,6 +277,10 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
             }
         }
 
+    }
+
+    private long getPid() {
+        return ProcessHandle.current().pid();
     }
 
     private String getHostName() {
