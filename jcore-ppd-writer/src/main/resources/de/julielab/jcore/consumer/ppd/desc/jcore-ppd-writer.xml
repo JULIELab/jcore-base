@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.consumer.ppd.PPDWriter</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe PPD Writer</name>
+        <description>This component writes CAS annotation data to the pipe-separated format. For example, writing tokens with their PoS would result in text like 'The|DET tree|NN is|VBZ green|ADJ'. The component can be configured for an arbitrary number of annotations to be added to each token.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>TypeToLabelMappings</name>
+                <description>A parameter to define one or multiple mappings from a UIMA type to token labels/classes. A token that is completely overlapped by one of the UIMA types defined in the mapping will be given the mapped label in the PPD output. The format is [qualified type]=[label string / feature path]. I.e. you may map a type to a simple label string or you can read the actual label value from within the type. Examples: "de.julielab.jcore.types.Gene=GENE". This would give all tokens that are complete covered by a Gene annotation the label "GENE" in the PPD output. The mapping "de.julielab.jcore.types.Gene=/specificType" would use the value of the "specificType" feature of a Gene annotation as the label for the covered tokens in the PPD output.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>MetaDataTypesMapping</name>
+                <description>A parameter to define one or multiple mappings from a UIMA type to token meta data in the PPD output. The minimal form of the PPD output is "token|label", e.g. "il-2|Gene". Additionally, you may deliver as much information as desired, e.g. the part of speech tag: "il-2|NN|Gene". This is done by defining meta data mappings with this parameter. The mapping has the form "[qualified type]=[feature path]", for example "de.julielab.jcore.types.PennBioIEPOSTag=/value". This will use the feature "value" to fill in the respective meta data slot in the PPD output. The order in which multiple meta data information is written into the PPD is the order you specify in this mapping array.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OutsideLabel</name>
+                <description>The label for all tokens that do not belong to a class of interest. All tokens not covered by at least one UIMA type defined in the TypeToLabelMappings parameter will get this outside label in the PPD output. The default value is "O".</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OutputFile</name>
+                <description>The path where the output PPD file should be written to.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>OutsideLabel</name>
+                <value>
+                    <string>O</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.Token</type>
+                    <type>de.julielab.jcore.types.Sentence</type>
+                </inputs>
+                <outputs/>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>
