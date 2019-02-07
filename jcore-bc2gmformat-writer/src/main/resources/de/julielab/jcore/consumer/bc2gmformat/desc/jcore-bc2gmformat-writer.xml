@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.consumer.bc2gmformat.BC2GMFormatWriter</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe BioCreative II Gene Mention Format writer</name>
+        <description>This component writes gene annotations in the CAS to the format employed by the BioCreative II Gene Mention challenge.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>OutputDirectory</name>
+                <description>The directory to store the sentence and gene annotation files.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SentencesFileName</name>
+                <description>The name of the file that will contain the sentences, one per line.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>GenesFileName</name>
+                <description>The name of the file that will contain the gene mention offsets for each sentence.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.Sentence</type>
+                    <type>de.julielab.jcore.types.Gene</type>
+                </inputs>
+                <outputs/>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>
