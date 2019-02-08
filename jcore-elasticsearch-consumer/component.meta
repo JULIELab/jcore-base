@@ -2,7 +2,7 @@
     "categories": [
         "consumer"
     ],
-    "description": "This component converts CAS annotations into a JSON format that originates from Solr's preanalyzed\n        field type. At the JulieLab, there is an ElasticSearch plugin making this format accessible also by\n        ElasticSearch. Configuration happens right in Java code. Note that the component is also able to generate\n        perfectly valid ElasticSearch default JSON which does not require the plugin. Then, however, the preanalyzed\n        data format cannot be used because this is the format that required the ElasticSearch plugin.\n    ",
+    "description": "This component converts CAS annotations into a JSON format that originates from Solr's preanalyzed field type. At the JulieLab, there is an ElasticSearch plugin making this format accessible also by ElasticSearch. Configuration happens right in Java code. Note that the component is also able to generate perfectly valid ElasticSearch default JSON which does not require the plugin. Then, however, the preanalyzed data format cannot be used because this is the format that required the ElasticSearch plugin.",
     "descriptors": [
         {
             "category": "consumer",

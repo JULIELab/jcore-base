@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "UIMA wrapper for OpenNLP Tokenizer. The difference to the official OpenNLP UIMA wrapper is basically\n        the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe\n        components.\n    ",
+    "description": "UIMA wrapper for OpenNLP Tokenizer. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe components.",
     "descriptors": [],
     "exposable": false,
     "group": "general",

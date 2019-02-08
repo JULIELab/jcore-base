@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "consumer"
+    ],
+    "description": "This component allows to write CAS entity annotations into the format used for the BioCreative II Gene Mention challenge.",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.consumer.bc2gmformat.desc.jcore-bc2gmformat-writer"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-bc2gmformat-writer",
+        "groupId": "de.julielab",
+        "version": "2.4.0-SNAPSHOT"
+    },
+    "name": "JCoRe BioCreative II Gene Mention Format Writer"
+}

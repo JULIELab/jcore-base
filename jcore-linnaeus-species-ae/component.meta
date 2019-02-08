@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "Uses the Linnaeus software (http://linnaeus.sourceforge.net/) to detect species mentions and map them to NCBI taxonomy IDs.\nThis project contains the UIMA wrapper around the original Linnaeus software but does not include any dictionaries. Since Linnaeus works with different dictionaries (e.g. concrete species name mention recognition, species proxy/clue recognition, ...) each of the different resource has been stored in a project of its own in jcore-projects. The default mention dictionary is stored in the jcore-linneaus-species-dict project, for example.",
+    "description": "Uses the Linnaeus software (http://linnaeus.sourceforge.net/) to detect species mentions and map them to NCBI taxonomy IDs. This project contains the UIMA wrapper around the original Linnaeus software but does not include any dictionaries. Since Linnaeus works with different dictionaries (e.g. concrete species name mention recognition, species proxy/clue recognition, ...) each of the different resource has been stored in a project of its own in jcore-projects. The default mention dictionary is stored in the jcore-linneaus-species-dict project, for example.",
     "descriptors": [
         {
             "category": "ae",

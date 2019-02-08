@@ -14,6 +14,7 @@ Parameters:
 """
 import os
 import sys
+import re
 from os.path import expanduser
 import json
 import fnmatch
@@ -188,6 +189,9 @@ if (__name__ == "__main__"):
 				descriptors = getDescriptors(pPath)
 				descriptorCategories = [d["category"] for d in descriptors]
 				if category != None or len(descriptors) > 0:
+					if description != None:
+						description = description.strip().replace("\n", " ")
+						description = re.sub("\s+", " ", description)
 					description = {
 					 "name":name,
 					 "maven-artifact":artifact,

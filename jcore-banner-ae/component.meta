@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "Banner gene tagging tool.\n        Bases on version 0.0.12-SNAPSHOT from scm:git:git@github.com:oaqa/banner.git.\n    ",
+    "description": "Banner gene tagging tool. Bases on version 0.0.12-SNAPSHOT from scm:git:git@github.com:oaqa/banner.git.",
     "descriptors": [
         {
             "category": "ae",

@@ -2,7 +2,7 @@
     "categories": [
         "consumer"
     ],
-    "description": "Writes the topic weights, given the jcore-topic-indexing-ae running before, into a simple text file.\n        Thus, the output consists of a sequency of double numbers encodes as strings, separated by tab characters. The\n        topic ID is just the 0-based index of each number, from left to right in the written file. The first entry of\n        each file is the document ID.\n    ",
+    "description": "Writes the topic weights, given the jcore-topic-indexing-ae running before, into a simple text file. Thus, the output consists of a sequency of double numbers encodes as strings, separated by tab characters. The topic ID is just the 0-based index of each number, from left to right in the written file. The first entry of each file is the document ID.",
     "descriptors": [
         {
             "category": "consumer",

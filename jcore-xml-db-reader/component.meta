@@ -2,7 +2,7 @@
     "categories": [
         "reader"
     ],
-    "description": "A Collection Reader that converts XML, stored in a database, to CAS objects.\n        The conversion is the same employed by the jcore-xml-reader, making use of the jcore-xml-mapper.\n        The reader requires a configuration file which determines the database connection, the table schema and the\n        PostgreSQL schema (namespace) to use.\n    ",
+    "description": "A Collection Reader that converts XML, stored in a database, to CAS objects. The conversion is the same employed by the jcore-xml-reader, making use of the jcore-xml-mapper. The reader requires a configuration file which determines the database connection, the table schema and the PostgreSQL schema (namespace) to use.",
     "descriptors": [
         {
             "category": "reader",

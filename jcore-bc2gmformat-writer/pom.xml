@@ -48,6 +48,5 @@
     </organization>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bc2gmformat-writer</url>
     <description>This component allows to write CAS entity annotations into the format used for the BioCreative II Gene
-        Mention challenge.
-    </description>
+        Mention challenge.</description>
 </project>

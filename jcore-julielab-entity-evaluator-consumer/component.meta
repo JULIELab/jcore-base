@@ -2,7 +2,7 @@
     "categories": [
         "consumer"
     ],
-    "description": "This component allows the output of entity mention data in documents in the format required by the\n        JULIE Lab Entity Evaluator. This way, CAS annotations can be exported for evaluation purposes. The output format\n        is a single tab-separated text file. For the exact format refer to the documentation of the\n        julielab-entity-evaluator in the jcore-dependencies repository on https://github.com/JULIELab/.\n    ",
+    "description": "This component allows the output of entity mention data in documents in the format required by the JULIE Lab Entity Evaluator. This way, CAS annotations can be exported for evaluation purposes. The output format is a single tab-separated text file. For the exact format refer to the documentation of the julielab-entity-evaluator in the jcore-dependencies repository on https://github.com/JULIELab/.",
     "descriptors": [
         {
             "category": "consumer",

@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "This component marks spans of biomedical text to lie in the scope of a negation or hedge. The Lingscope\n        (https://sourceforge.net/projects/lingscope/) algorithm is used to do this.\n    ",
+    "description": "This component marks spans of biomedical text to lie in the scope of a negation or hedge. The Lingscope (https://sourceforge.net/projects/lingscope/) algorithm is used to do this.",
     "descriptors": [
         {
             "category": "ae",

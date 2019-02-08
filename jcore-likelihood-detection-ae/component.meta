@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "Analysis Engine to detect epistemic modal expressions and assign the appropriate likelihood category.\n    ",
+    "description": "Analysis Engine to detect epistemic modal expressions and assign the appropriate likelihood category.",
     "descriptors": [
         {
             "category": "ae",

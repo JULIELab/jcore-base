@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "UIMA wrapper for the OpenNLP Sentence Segmentation. The difference to the official OpenNLP UIMA wrapper\n        is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other\n        JCoRe components.\n    ",
+    "description": "UIMA wrapper for the OpenNLP Sentence Segmentation. The difference to the official OpenNLP UIMA wrapper is basically the type system. In this project the JCoRe type system is employed and is thus compatible to other JCoRe components.",
     "descriptors": [],
     "exposable": false,
     "group": "general",

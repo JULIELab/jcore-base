@@ -2,7 +2,7 @@
     "categories": [
         "reader"
     ],
-    "description": "Reads in XMI representions of CAS objects from files and converts them to CAS objects.\n        Is able to read (g)zipped files and can recursively search subdirectories for XMI files to read.\n    ",
+    "description": "Reads in XMI representions of CAS objects from files and converts them to CAS objects. Is able to read (g)zipped files and can recursively search subdirectories for XMI files to read.",
     "descriptors": [
         {
             "category": "reader",

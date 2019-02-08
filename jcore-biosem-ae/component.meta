@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "A UIMA wrapper around the BioSem Event Extractor from the University of Amsterdam.\nhttp://www.ncbi.nlm.nih.gov/pubmed/22859502",
+    "description": "A UIMA wrapper around the BioSem Event Extractor from the University of Amsterdam. http://www.ncbi.nlm.nih.gov/pubmed/22859502",
     "descriptors": [],
     "exposable": false,
     "group": "semantic",

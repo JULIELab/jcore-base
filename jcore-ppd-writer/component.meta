@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "consumer"
+    ],
+    "description": "This component writes CAS data to the piped text annotation format.",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.consumer.ppd.desc.jcore-ppd-writer"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-ppd-writer",
+        "groupId": "de.julielab",
+        "version": "2.4.0-SNAPSHOT"
+    },
+    "name": "JCoRe Piped Format Writer"
+}

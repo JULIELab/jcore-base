@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "Labels LDA Topics estimated from project julielab-topic-modeling to infer document topics for PubMed\n        articles\n    ",
+    "description": "Labels LDA Topics estimated from project julielab-topic-modeling to infer document topics for PubMed articles",
     "descriptors": [
         {
             "category": "ae",

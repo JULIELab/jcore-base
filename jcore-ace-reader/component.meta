@@ -3,7 +3,7 @@
         "ae",
         "reader"
     ],
-    "description": "JCoRe ACE Reader.\nA Collection Reader that converts ACE-XML files to CAS objects.",
+    "description": "JCoRe ACE Reader. A Collection Reader that converts ACE-XML files to CAS objects.",
     "descriptors": [
         {
             "category": "ae",

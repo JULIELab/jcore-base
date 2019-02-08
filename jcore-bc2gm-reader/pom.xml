@@ -47,6 +47,5 @@
         <url>http://www.julielab.de</url>
     </organization>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bc2gm-reader</url>
-    <description>This component allows to read gene annotations provided in the BioCreative II Gene Mention format.
-    </description>
+    <description>This component allows to read gene annotations provided in the BioCreative II Gene Mention format.</description>
 </project>

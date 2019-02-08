@@ -2,7 +2,7 @@
     "categories": [
         "reader"
     ],
-    "description": "This component allows to read gene annotations provided in the BioCreative II Gene Mention format.\n    ",
+    "description": "This component allows to read gene annotations provided in the BioCreative II Gene Mention format.",
     "descriptors": [
         {
             "category": "reader",
