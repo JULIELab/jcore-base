@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.reader.bc2gm.BC2GMReader</implementationName>
+    <processingResourceMetaData>
+        <name>JCoRe BioCreative II Gene Mention reader</name>
+        <description>This component reads gene annotated sentences in the BioCreative II Gene Mention challenge format. Each CAS will contain one annotated sentence.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>SentencesFile</name>
+                <description>The BC2GM data is comprised of one file holding one sentence per line and another file holding the annotations. This parameter should be set to the file containing the sentences.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>GenesFile</name>
+                <description>The BC2GM data is comprised of one file holding one sentence per line and another file holding the annotations. This parameter should be set to the file holding the gene annotations.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs/>
+                <outputs>
+                    <type>de.julielab.jcore.types.Gene</type>
+                </outputs>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
+</collectionReaderDescription>
