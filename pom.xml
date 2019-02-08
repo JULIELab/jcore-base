@@ -99,7 +99,6 @@
         <module>jcore-db-checkpoint-ae</module>
         <module>jcore-ppd-writer</module>
         <module>jcore-bc2gmformat-writer</module>
-        <module>jcore-bc2gmformat-writer</module>
         <module>jcore-bc2gm-reader</module>
 
     </modules>
