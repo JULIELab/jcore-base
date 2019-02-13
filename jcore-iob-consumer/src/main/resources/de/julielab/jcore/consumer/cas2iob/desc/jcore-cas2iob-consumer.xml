@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>de.julielab.jcore.consumer.cas2iob.main.ToIOBConsumer</implementationName>
-  <processingResourceMetaData>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.julielab.jcore.consumer.cas2iob.main.ToIOBConsumer</annotatorImplementationName>
+  <analysisEngineMetaData>
     <name>JCoRe CAS to IOB Consumer</name>
     <description />
     <version>2.3.0</version>
@@ -114,6 +115,6 @@
       <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
-  </processingResourceMetaData>
+  </analysisEngineMetaData>
   <resourceManagerConfiguration />
-</casConsumerDescription>
+</analysisEngineDescription>
