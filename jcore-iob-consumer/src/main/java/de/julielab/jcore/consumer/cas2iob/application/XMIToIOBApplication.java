@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.collection.CasConsumer;
@@ -71,7 +72,7 @@ public class XMIToIOBApplication {
 		LOGGER.info("Reading XMI file...");
 
 		ResourceSpecifier spec;
-		CasConsumer toIOBConsumer;
+		AnalysisEngine toIOBConsumer;
 
 		// getting xmis in directory
 		File[] xmis = xmiDir.listFiles(new ExtensionFileFilter("xmi"));
@@ -94,7 +95,7 @@ public class XMIToIOBApplication {
 		// creating ToIOBConsumer
 		spec = UIMAFramework.getXMLParser().parseResourceSpecifier(
 				new XMLInputSource(consumerDescriptorName));
-		toIOBConsumer = UIMAFramework.produceCasConsumer(spec);
+		toIOBConsumer = UIMAFramework.produceAnalysisEngine(spec);
 
 		// now process all xmis
 		for (int i = 0; i < xmis.length; i++) {
