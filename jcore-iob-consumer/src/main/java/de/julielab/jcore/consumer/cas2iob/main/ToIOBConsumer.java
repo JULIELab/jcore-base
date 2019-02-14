@@ -24,7 +24,7 @@ import de.julielab.jcore.consumer.cas2iob.utils.UIMAUtils;
 import de.julielab.jcore.types.Paragraph;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.pubmed.Header;
+import de.julielab.jcore.types.Header;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.segmentationEvaluator.IOBToken;
 import de.julielab.segmentationEvaluator.IOToken;
@@ -32,6 +32,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.cas.*;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -57,6 +58,12 @@ import java.util.*;
 public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ToIOBConsumer.class);
+    public static final String PARAM_LABELS = "labels";
+    public static final String PARAM_OUTFOLDER = "outFolder";
+    public static final String PARAM_LABEL_METHODS = "labelNameMethods";
+    public static final String PARAM_IOB_LABEL_NAMES = "iobLabelNames";
+    public static final String PARAM_TYPE_PATH = "typePath";
+    public static final String PARAM_MODE = "mode";
 
     private final String SENTENCE_END_MARK = "SENTENCE_END_MARKER"; // there will be an empty line for each sentence marker
     private final String PARAGRAPH_END_MARK = "PARAGRAPH_END_MARKER"; // there will be 2 empty lines for each sentence marker
@@ -78,20 +85,20 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 
         final String regexp = "[\\s=/\\|]";
 
-        labels = (String[]) aContext.getConfigParameterValue("labels");
+        labels = (String[]) aContext.getConfigParameterValue(PARAM_LABELS);
 
-        outFolder = (String) aContext.getConfigParameterValue("outFolder");
+        outFolder = (String) aContext.getConfigParameterValue(PARAM_OUTFOLDER);
 
-        final String[] labelNameMethods = (String[]) aContext.getConfigParameterValue("labelNameMethods");
+        final String[] labelNameMethods = (String[]) aContext.getConfigParameterValue(PARAM_LABEL_METHODS);
 
-        final String[] iobLabelNames = (String[]) aContext.getConfigParameterValue("iobLabelNames");
+        final String[] iobLabelNames = (String[]) aContext.getConfigParameterValue(PARAM_IOB_LABEL_NAMES);
 
-        typePath = (String) aContext.getConfigParameterValue("typePath");
+        typePath = (String) aContext.getConfigParameterValue(PARAM_TYPE_PATH);
         if (typePath == null) {
             typePath = "";
         }
 
-        mode = (String) aContext.getConfigParameterValue("mode");
+        mode = (String) aContext.getConfigParameterValue(PARAM_MODE);
         if (mode.equals("IOB") || mode.equals("iob")) {
             mode = "IOB";
         } else if (mode.equals("IO") || mode.equals("io")) {
@@ -138,7 +145,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         LOGGER.info("Writing IO(B) file...");
 
         BufferedWriter bw;
-        String outPathName = Paths.get(outFolder, getDocumentId(cas)).toString() + ".iob";
+        String outPathName = Paths.get(outFolder, getDocumentId(jCas)).toString() + ".iob";
         if (Files.notExists(Paths.get(outFolder))) {
             (new File(outFolder)).mkdirs();
         }
@@ -203,8 +210,6 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         // label all tokens that are in range of an annotation
         tokenLabeling(ioTokenMap, annotationIters, jcas);
 
-        System.out.println("map: " + ioTokenMap);
-
         // add the rest of the tokens, i.e. tokens not in range of an annotation type mentioned in
         // the descriptor
 
@@ -231,16 +236,6 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 
             paragraphs.add(dParagraph);
         }
-//		Iterator<Sentence> sentIter =
-//		
-//		while (paragraphIter.hasNext()) {
-//			Paragraph paragraph = paragraphIter.next();
-//			//System.out.println(paragraph.getCoveredText());
-//			ArrayList<Sentence> paragraphSentences = (ArrayList<Sentence>) UIMAUtils.getAnnotations(jcas, paragraph,
-//							(new Sentence(jcas, 0, 0).getClass()));
-//			//System.out.println("sentences: " + paragraphSentences.size());
-//
-//			// }
 
         Paragraph lastPara = null;
 
@@ -433,16 +428,6 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
             } else {
                 getLabelMethod = annClass.getMethod(methodName);
                 ret = (String) getLabelMethod.invoke(ann, (Object[]) null);
-
-                // TODO remove before checkin
-                // if labels are contatenated with "|" use only first part
-                // this is only needed for MUC export
-                // int pos = 0;
-                // if ((pos = ret.indexOf("|")) > -1) {
-                // ret = ret.substring(0, pos);
-                // }
-                // end remove
-
             }
         } catch (NoSuchMethodException e) {
             LOGGER.error("The class \"" + annClass.getName() + "\" does not have a method \"" + methodName + "\".");
@@ -469,25 +454,16 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         return ret;
     }
 
-    private String getDocumentId(CAS cas) {
+    private String getDocumentId(JCas cas) {
         Header header = null;
-        Type headerType = cas.getTypeSystem().getType(Header.class.getCanonicalName());
-        Iterator<org.apache.uima.jcas.tcas.Annotation> iterator;
         try {
-            iterator = cas.getJCas().getAnnotationIndex(Header.type).iterator();
-
-            if (iterator.hasNext()) {
-                header = (Header) iterator.next();
-            }
-        } catch (CASRuntimeException e) {
-            e.printStackTrace();
-        } catch (CASException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            header = JCasUtil.selectSingle(cas, Header.class);
+        } catch (IllegalArgumentException e) {
+            LOGGER.trace("No annotation of type {} found in current CAS", Header.class.getCanonicalName());
         }
         if (header != null) {
             return header.getDocId();
         }
-        return new Integer(id++).toString();
+        return String.valueOf(id++);
     }
 }
