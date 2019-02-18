@@ -68,8 +68,6 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(ToIOBConsumer.class);
     private final String SENTENCE_END_MARK = "SENTENCE_END_MARKER"; // there will be an empty line for each sentence marker
     private final String PARAGRAPH_END_MARK = "PARAGRAPH_END_MARKER"; // there will be 2 empty lines for each sentence marker
-    String mode = null;
-
     @ConfigurationParameter(name = PARAM_OUTFOLDER, description = "Path to folder where IOB-files should be written to.")
     String outFolder = null;
     @ConfigurationParameter(name = PARAM_TYPE_PATH, mandatory = false, description = "The path of the UIMA types, e.g. \"de.julielab.jcore.\" (with terminating \".\"!). It is prepended to the class names in labelNameMethods. This parameter may be null which is equivalent to the empty String \"\".")
@@ -77,15 +75,17 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
     @ConfigurationParameter(name = PARAM_LABELS, mandatory = false, description = "The labels NOT to be exported into IOB format. Label does here not refer to an UIMA type but to the specific label aquired by the labelNameMethod.")
     String[] labels = null;
     HashMap<String, String> objNameMethMap = null;
-    HashMap<String, String> labelIOBMap = null;
+    Map<String, String> labelIOBMap = null;
     int id = 1;
+    @ConfigurationParameter(name = PARAM_MODE, mandatory = false, description = "This parameter determines whether the IOB or IO annotation schema should be used. The parameter defaults to IOB, the value is not case sensitive.", defaultValue = "IOB")
+    private String mode = null;
     @ConfigurationParameter(name = PARAM_LABEL_METHODS, description = "This is the primary parameter to define from which types IOB labels should be derived. The parameter expects pairs of UIMA-annotation-type-names and their corresponding method for extracting the annotation label. Format: &lt;annotationNAme&gt;[\\s=/\\\\|]&lt;method Name&gt;. The annotation name is fully qualified name of the UIMA type. For abbreviation purposes, the \"" + PARAM_TYPE_PATH + "\" parameter can be used to define a type prefix that will then be prepended to all UIMA type names given in this parameter. So, for example, the prefix \"de.julielab.jcore.types.\" will allow to use the \"specificType\" feature of the \"de.julielab.jcore.types.Gene\" type by providing \"Gene=getSpecificType\".  If the name of the annotation class itself is to be being used as label, only the class name is expected: &lt;annotationName&gt; (here, again, applies the use of the \"" + PARAM_TYPE_PATH + "\" parameter). You also may specify a mix of pairs and single class names. If you give the name extracting method for a class and have also specified its superclass as a single class name, the given method is used rather than the superclass name.")
     private String[] labelNameMethods;
     @ConfigurationParameter(name = PARAM_IOB_LABEL_NAMES, mandatory = false, description = "Pairs of label names in UIMA (aquired by the methods given in labelNameMethods) and the name the label is supposed to get in the outcoming IOB file. Format: &lt;UIMA label name&gt;[\\s=/\\\\|]&lt;IOB label name&gt;")
     private String[] iobLabelNames;
     @ConfigurationParameter(name = PARAM_ADD_POS, mandatory = false, description = "If set to true and if annotations of (sub-)type de.julielab.jcore.types.POSTag are present in the CAS, the PoS tags will be added to the output file as the second column. Defaults to false.")
     private Boolean addPos;
-    @ConfigurationParameter(name = PARAM_COLUMN_SEPARATOR, mandatory = false, description = "The string given with this parameter will be used to separate the columns in the output file. Defaults to a single tab character.", defaultValue = "\t")
+    @ConfigurationParameter(name = PARAM_COLUMN_SEPARATOR, mandatory = false, description = "The string given with this parameter will be used to separate the columns in the output file. Defaults to a single tab character.", defaultValue = "\\t")
     private String separator;
     @ConfigurationParameter(name = PARAM_IOB_MARK_SEPARATOR, mandatory = false, description = "This string will be used to separate the IO(B) mark - i. e. I or B - from the entity or chunk label in the output file. Defaults to an underscore character.")
     private String iobMarkSeparator;
@@ -96,7 +96,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 
         final String regexp = "[\\s=/\\|]";
 
-        labels = (String[]) aContext.getConfigParameterValue(PARAM_LABELS);
+        labels = Optional.ofNullable((String[]) aContext.getConfigParameterValue(PARAM_LABELS)).orElse(new String[0]);
 
         outFolder = (String) aContext.getConfigParameterValue(PARAM_OUTFOLDER);
 
@@ -112,6 +112,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         addPos = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_ADD_POS)).orElse(false);
 
         separator = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COLUMN_SEPARATOR)).orElse("\t");
+        separator = separator.replaceAll("\\\\t", 	"\t");
 
         iobMarkSeparator = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_IOB_MARK_SEPARATOR)).orElse("_");
 
@@ -148,6 +149,8 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                 labelIOBMap.put(parts[0], parts[1]);
             }
 
+        } else {
+            labelIOBMap = Collections.emptyMap();
         }
 
     }

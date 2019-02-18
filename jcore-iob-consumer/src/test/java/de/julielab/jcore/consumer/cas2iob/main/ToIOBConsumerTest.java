@@ -58,10 +58,10 @@ public class ToIOBConsumerTest {
         new Token(jCas, 22, 23).addToIndexes();
 
         final String outputDir = "src/test/resources/iob-output";
-        final AnalysisEngine iobwriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.cas2iob.desc.jcore-cas2iob-consumer",
+        final AnalysisEngine iobwriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.cas2iob.desc.jcore-iob-consumer",
                 ToIOBConsumer.PARAM_OUTFOLDER, outputDir,
                 ToIOBConsumer.PARAM_LABEL_METHODS, new String[]{"Gene"},
-                ToIOBConsumer.PARAM_LABEL_METHODS, new String[]{"Gene"},
+                ToIOBConsumer.PARAM_IOB_LABEL_NAMES, new String[]{"de.julielab.jcore.types.Gene=Gene"},
                 ToIOBConsumer.PARAM_TYPE_PATH, "de.julielab.jcore.types.");
         iobwriter.process(jCas);
         final File file = Path.of(outputDir, "1.iob").toFile();
@@ -104,10 +104,10 @@ public class ToIOBConsumerTest {
         t4.setPosTag(JCoReTools.addToFSArray(null, tag));
 
         final String outputDir = "src/test/resources/iob-output";
-        final AnalysisEngine iobwriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.cas2iob.desc.jcore-cas2iob-consumer",
+        final AnalysisEngine iobwriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.cas2iob.desc.jcore-iob-consumer",
                 ToIOBConsumer.PARAM_OUTFOLDER, outputDir,
                 ToIOBConsumer.PARAM_LABEL_METHODS, new String[]{"Gene"},
-                ToIOBConsumer.PARAM_LABEL_METHODS, new String[]{"Gene"},
+                ToIOBConsumer.PARAM_IOB_LABEL_NAMES, new String[]{"de.julielab.jcore.types.Gene=Gene"},
                 ToIOBConsumer.PARAM_TYPE_PATH, "de.julielab.jcore.types.",
                 ToIOBConsumer.PARAM_ADD_POS, true,
                 ToIOBConsumer.PARAM_IOB_MARK_SEPARATOR, "-");
