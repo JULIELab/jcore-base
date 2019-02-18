@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.Sentence;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -31,7 +32,7 @@ import java.util.TreeMap;
 @ResourceMetaData(name = "JCoRe BioCreative II Gene Mention reader", description = "This component reads gene annotated sentences in the BioCreative II Gene Mention challenge format. Each CAS will contain one annotated sentence.")
 @TypeCapability(outputs = "de.julielab.jcore.types.Gene")
 public class BC2GMReader extends JCasCollectionReader_ImplBase {
-
+private final static Logger log = LoggerFactory.getLogger(BC2GMReader.class);
     public static final String PARAM_SENTENCES = "SentencesFile";
     public static final String PARAM_GENES = "GenesFile";
     @ConfigurationParameter(name = PARAM_SENTENCES, description = "The BC2GM data is comprised of one file holding one sentence per line and another file holding the annotations. This parameter should be set to the file containing the sentences.")
@@ -73,17 +74,22 @@ public class BC2GMReader extends JCasCollectionReader_ImplBase {
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
+        super.initialize(context);
         sentenceFile = (String) context.getConfigParameterValue(PARAM_SENTENCES);
         genesFile = (String) context.getConfigParameterValue(PARAM_GENES);
         if (null == sentenceFile)
             throw new ResourceInitializationException(
                     new IllegalArgumentException("Sentences file parameter is null."));
+        log.info("Reading sentences from {}", sentenceFile);
         if (null != genesFile) {
             try {
+                log.info("Reading gene annotations from {}", genesFile);
                 geneAnnotations = readGeneAnnotations(genesFile);
             } catch (IOException e) {
                 throw new ResourceInitializationException(e);
             }
+        } else {
+            log.info("No gene annotation file specified.");
         }
         try {
             sentencesIterator = Files.readAllLines(new File(sentenceFile).toPath(), Charset.forName("UTF-8"))
@@ -91,7 +97,6 @@ public class BC2GMReader extends JCasCollectionReader_ImplBase {
         } catch (IOException e) {
             throw new ResourceInitializationException(e);
         }
-        super.initialize();
     }
 
     /**
@@ -122,6 +127,8 @@ public class BC2GMReader extends JCasCollectionReader_ImplBase {
                 annotations.put(geneAnnotation.sentenceId, geneAnnotation);
             }
         }
+        if (log.isInfoEnabled())
+            log.info("Got {} gene annotations in {} sentences", annotations.size(), annotations.keySet().size());
         return annotations;
     }
 
@@ -139,6 +146,9 @@ public class BC2GMReader extends JCasCollectionReader_ImplBase {
         Header header = new Header(cas);
         header.setDocId(id);
         header.addToIndexes();
+
+        // Add a single Sentence annotation to this sentence.
+        new Sentence(cas, 0, sentence.length()).addToIndexes();
 
         TreeMap<Integer, Integer> wsMap = createNumWsMap(sentence);
 

@@ -21,23 +21,19 @@
 package de.julielab.jcore.consumer.cas2iob.main;
 
 import de.julielab.jcore.consumer.cas2iob.utils.UIMAUtils;
-import de.julielab.jcore.types.Paragraph;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.*;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.segmentationEvaluator.IOBToken;
 import de.julielab.segmentationEvaluator.IOToken;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
-import org.apache.uima.cas.*;
-import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.cas.Type;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,34 +46,49 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author weigel, faessler
- *
  */
+@ResourceMetaData(name = "JCoRe IOB Writer", description = "This component help to write CAS entity or chunk annotations into " +
+        "a text file in IOB format.")
 public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ToIOBConsumer.class);
     public static final String PARAM_LABELS = "labels";
     public static final String PARAM_OUTFOLDER = "outFolder";
     public static final String PARAM_LABEL_METHODS = "labelNameMethods";
     public static final String PARAM_IOB_LABEL_NAMES = "iobLabelNames";
     public static final String PARAM_TYPE_PATH = "typePath";
     public static final String PARAM_MODE = "mode";
-
+    public static final String PARAM_ADD_POS = "addPos";
+    public static final String PARAM_COLUMN_SEPARATOR = "columnSeparator";
+    public static final String PARAM_IOB_MARK_SEPARATOR = "iobMarkSeparator";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ToIOBConsumer.class);
     private final String SENTENCE_END_MARK = "SENTENCE_END_MARKER"; // there will be an empty line for each sentence marker
     private final String PARAGRAPH_END_MARK = "PARAGRAPH_END_MARKER"; // there will be 2 empty lines for each sentence marker
     String mode = null;
 
+    @ConfigurationParameter(name = PARAM_OUTFOLDER, description = "Path to folder where IOB-files should be written to.")
     String outFolder = null;
+    @ConfigurationParameter(name = PARAM_TYPE_PATH, mandatory = false, description = "The path of the UIMA types, e.g. \"de.julielab.jcore.\" (with terminating \".\"!). It is prepended to the class names in labelNameMethods. This parameter may be null which is equivalent to the empty String \"\".")
     String typePath = null;
+    @ConfigurationParameter(name = PARAM_LABELS, mandatory = false, description = "The labels NOT to be exported into IOB format. Label does here not refer to an UIMA type but to the specific label aquired by the labelNameMethod.")
     String[] labels = null;
-
     HashMap<String, String> objNameMethMap = null;
-
     HashMap<String, String> labelIOBMap = null;
-
     int id = 1;
+    @ConfigurationParameter(name = PARAM_LABEL_METHODS, description = "This is the primary parameter to define from which types IOB labels should be derived. The parameter expects pairs of UIMA-annotation-type-names and their corresponding method for extracting the annotation label. Format: &lt;annotationNAme&gt;[\\s=/\\\\|]&lt;method Name&gt;. The annotation name is fully qualified name of the UIMA type. For abbreviation purposes, the \"" + PARAM_TYPE_PATH + "\" parameter can be used to define a type prefix that will then be prepended to all UIMA type names given in this parameter. So, for example, the prefix \"de.julielab.jcore.types.\" will allow to use the \"specificType\" feature of the \"de.julielab.jcore.types.Gene\" type by providing \"Gene=getSpecificType\".  If the name of the annotation class itself is to be being used as label, only the class name is expected: &lt;annotationName&gt; (here, again, applies the use of the \"" + PARAM_TYPE_PATH + "\" parameter). You also may specify a mix of pairs and single class names. If you give the name extracting method for a class and have also specified its superclass as a single class name, the given method is used rather than the superclass name.")
+    private String[] labelNameMethods;
+    @ConfigurationParameter(name = PARAM_IOB_LABEL_NAMES, mandatory = false, description = "Pairs of label names in UIMA (aquired by the methods given in labelNameMethods) and the name the label is supposed to get in the outcoming IOB file. Format: &lt;UIMA label name&gt;[\\s=/\\\\|]&lt;IOB label name&gt;")
+    private String[] iobLabelNames;
+    @ConfigurationParameter(name = PARAM_ADD_POS, mandatory = false, description = "If set to true and if annotations of (sub-)type de.julielab.jcore.types.POSTag are present in the CAS, the PoS tags will be added to the output file as the second column. Defaults to false.")
+    private Boolean addPos;
+    @ConfigurationParameter(name = PARAM_COLUMN_SEPARATOR, mandatory = false, description = "The string given with this parameter will be used to separate the columns in the output file. Defaults to a single tab character.", defaultValue = "\t")
+    private String separator;
+    @ConfigurationParameter(name = PARAM_IOB_MARK_SEPARATOR, mandatory = false, description = "This string will be used to separate the IO(B) mark - i. e. I or B - from the entity or chunk label in the output file. Defaults to an underscore character.")
+    private String iobMarkSeparator;
 
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         super.initialize(aContext);
@@ -89,14 +100,20 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 
         outFolder = (String) aContext.getConfigParameterValue(PARAM_OUTFOLDER);
 
-        final String[] labelNameMethods = (String[]) aContext.getConfigParameterValue(PARAM_LABEL_METHODS);
+        labelNameMethods = (String[]) aContext.getConfigParameterValue(PARAM_LABEL_METHODS);
 
-        final String[] iobLabelNames = (String[]) aContext.getConfigParameterValue(PARAM_IOB_LABEL_NAMES);
+        iobLabelNames = (String[]) aContext.getConfigParameterValue(PARAM_IOB_LABEL_NAMES);
 
         typePath = (String) aContext.getConfigParameterValue(PARAM_TYPE_PATH);
         if (typePath == null) {
             typePath = "";
         }
+
+        addPos = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_ADD_POS)).orElse(false);
+
+        separator = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COLUMN_SEPARATOR)).orElse("\t");
+
+        iobMarkSeparator = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_IOB_MARK_SEPARATOR)).orElse("_");
 
         mode = (String) aContext.getConfigParameterValue(PARAM_MODE);
         if (mode.equals("IOB") || mode.equals("iob")) {
@@ -137,12 +154,11 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 
     public void process(JCas jCas) {
 
-        CAS cas = jCas.getCas();
-        LOGGER.info("Converting CAS to IO(B)Tokens...");
+        LOGGER.trace("Converting CAS to IO(B)Tokens...");
 
-        IOToken[] ioTokens = convertToIOB(cas);
+        IOToken[] ioTokens = convertToIOB(jCas);
 
-        LOGGER.info("Writing IO(B) file...");
+        LOGGER.trace("Writing IO(B) file...");
 
         BufferedWriter bw;
         String outPathName = Paths.get(outFolder, getDocumentId(jCas)).toString() + ".iob";
@@ -154,11 +170,18 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
             for (IOToken token : ioTokens) {
                 if (token.getText().equals("") || token.getText().equals(SENTENCE_END_MARK)) {
                     // empty line for sentence break
-                    bw.write("\n");
+                    bw.newLine();
                 } else if (token.getText().equals("") || token.getText().equals(PARAGRAPH_END_MARK)) {
-                    bw.write("\n\n");
+                    bw.newLine();
+                    bw.newLine();
                 } else {
-                    bw.write(token + "\n");
+                    final Stream.Builder<String> sb = Stream.builder();
+                    sb.accept(token.getText());
+                    sb.accept(token.getPos());
+                    sb.accept(token.getIobMark().equals("O") ? token.getIobMark() : token.getIobMark() + iobMarkSeparator + token.getLabel());
+                    String line = sb.build().filter(Objects::nonNull).collect(Collectors.joining(separator));
+                    bw.write(line);
+                    bw.newLine();
                 }
             }
 
@@ -168,25 +191,16 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        LOGGER.info("The IO(B) file was written to " + outPathName);
+        LOGGER.trace("The IO(B) file was written to " + outPathName);
     }
 
     /**
-     * @param cas
+     * @param jcas
      */
-    public IOToken[] convertToIOB(CAS cas) {
+    public IOToken[] convertToIOB(JCas jcas) {
 
         Boolean no_paragraphs = true;
         ArrayList<IOToken> ioTokens = new ArrayList<IOToken>();
-
-        JCas jcas = null;
-        try {
-            jcas = cas.getJCas();
-        } catch (CASException e) {
-            e.printStackTrace();
-        }
-
-        JFSIndexRepository indexes = jcas.getJFSIndexRepository();
 
         Iterator[] annotationIters = new Iterator[objNameMethMap.size()];
 
@@ -194,14 +208,9 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         for (int i = 0; it.hasNext(); i++) {
 
             String objName = (String) it.next();
+            final Type type = jcas.getTypeSystem().getType(objName);
 
-            Annotation ann = null;
-            try {
-                ann = JCoReAnnotationTools.getAnnotationByClassName(jcas, objName);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            annotationIters[i] = indexes.getAnnotationIndex(ann.getTypeIndexID()).iterator();
+            annotationIters[i] = jcas.getAnnotationIndex(type).iterator();
 
         }
 
@@ -214,7 +223,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         // the descriptor
 
         // get a list with all paragraphs
-        Iterator<Annotation> paragraphIter = indexes.getAnnotationIndex(Paragraph.type).iterator();
+        Iterator<Annotation> paragraphIter = jcas.getAnnotationIndex(Paragraph.type).iterator();
         ArrayList<Paragraph> paragraphs = new ArrayList<Paragraph>();
         while (paragraphIter.hasNext()) {
             paragraphs.add((Paragraph) paragraphIter.next());
@@ -242,7 +251,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 //		int paraCount = 0;
         int overallSentCount = 0;
 
-        Iterator<Annotation> sentIter = indexes.getAnnotationIndex(Sentence.type).iterator();
+        Iterator<Annotation> sentIter = jcas.getAnnotationIndex(Sentence.type).iterator();
 
         while (sentIter.hasNext()) {
             Sentence sentence = (Sentence) sentIter.next();
@@ -283,7 +292,8 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                     }
 
                     if (!ioTokenMap.containsKey(token.getBegin())) {
-                        IOToken ioToken = new IOBToken(token.getCoveredText(), "O");
+                        String pos = addPos && token.getPosTag().size() > 0 ? token.getPosTag(0).getValue() : null;
+                        IOToken ioToken = new IOBToken(token.getCoveredText(), "O", pos);
                         ioTokenMap.put(token.getBegin(), ioToken);
                     }
                 }
@@ -327,36 +337,42 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
      */
     private void tokenLabeling(TreeMap<Integer, IOToken> ioTokenMap, Iterator[] annotationIters, JCas jcas) {
 
-        AnnotationIndex tokenIndex = (AnnotationIndex) jcas.getJFSIndexRepository().getAnnotationIndex(Token.type);
-
         for (int i = 0; i < annotationIters.length; i++) {
             Iterator annoIter = annotationIters[i];
+            Map<? extends Annotation, Collection<Token>> tokenByAnnotation = null;
 
             while (annoIter.hasNext()) {
                 // get all annotations of this annotation iterator
                 Annotation ann = (Annotation) annoIter.next();
                 String label = getAnnotationLabel(ann);
-                FSIterator subtokenIterator = tokenIndex.subiterator(ann);
 
+                // Index the tokens of the current annotation type only once
+                if (tokenByAnnotation == null)
+                    tokenByAnnotation = JCasUtil.indexCovered(jcas, ann.getClass(), Token.class);
+
+                final Iterator<Token> subtokenIterator = tokenByAnnotation.get(ann).iterator();
                 try {
-                    Token token = (Token) subtokenIterator.next();
+                    Token token = subtokenIterator.next();
+                    if (addPos && token.getPosTag() == null)
+                        throw new IllegalStateException("The IOB consumer is configured to add the part of speech tag to each token but the token \"" + token.getCoveredText() + "\", " + token + " doesn't have any (the PoS list is null).");
+                    String pos = addPos && token.getPosTag().size() > 0 ? token.getPosTag(0).getValue() : null;
                     Integer begin = token.getBegin();
 
                     if (!ioTokenMap.containsKey(begin)) {
-                        IOToken ioToken = new IOBToken(token.getCoveredText(), "B_" + label);
+                        IOToken ioToken = new IOBToken(token.getCoveredText(), "B_" + label, pos);
                         ioTokenMap.put(begin, ioToken);
                         while (subtokenIterator.hasNext()) {
-                            token = (Token) subtokenIterator.next();
+                            token = subtokenIterator.next();
                             begin = token.getBegin();
-                            ioToken = new IOBToken(token.getCoveredText(), "I_" + label);
+                            ioToken = new IOBToken(token.getCoveredText(), "I_" + label, pos);
                             ioTokenMap.put(begin, ioToken);
                         }
                     } else {
-                        handleCompetingAnnotations(ioTokenMap, label, subtokenIterator, token, begin);
+                        handleCompetingAnnotations(ioTokenMap, label, subtokenIterator, token, begin, pos);
                     }
 
                 } catch (NoSuchElementException e) {
-                    LOGGER.warn("no token in anno: " + ann.getCoveredText());
+                    LOGGER.warn("no token annotation in label annotation: " + ann.getCoveredText() + ", " + ann);
                     // e.printStackTrace();
                 }
 
@@ -371,9 +387,10 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
      * @param subtokenIterator
      * @param token
      * @param begin
+     * @param pos
      */
     private void handleCompetingAnnotations(TreeMap<Integer, IOToken> ioTokenMap, String label,
-                                            FSIterator subtokenIterator, Token token, Integer begin) {
+                                            Iterator subtokenIterator, Token token, Integer begin, String pos) {
         // computing length of existing annotation
         int oldLength = 0;
         Set keySet = ioTokenMap.keySet();
@@ -391,13 +408,13 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 
         // getting new annotation and it's length by ArrayList.size()
         HashMap<IOToken, Integer> newTokenSeq = new HashMap<IOToken, Integer>();
-        IOToken ioToken = new IOBToken(token.getCoveredText(), "B_" + label);
+        IOToken ioToken = new IOBToken(token.getCoveredText(), "B_" + label, pos);
         newTokenSeq.put(ioToken, begin);
 
         while (subtokenIterator.hasNext()) {
             token = (Token) subtokenIterator.next();
             begin = token.getBegin();
-            ioToken = new IOBToken(token.getCoveredText(), "I_" + label);
+            ioToken = new IOBToken(token.getCoveredText(), "I_" + label, pos);
             newTokenSeq.put(ioToken, begin);
         }
 
@@ -457,8 +474,8 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
     private String getDocumentId(JCas cas) {
         Header header = null;
         try {
-            header = JCasUtil.selectSingle(cas, Header.class);
-        } catch (IllegalArgumentException e) {
+            header = (Header) cas.getAnnotationIndex(Header.type).iterator().next();
+        } catch (NoSuchElementException e) {
             LOGGER.trace("No annotation of type {} found in current CAS", Header.class.getCanonicalName());
         }
         if (header != null) {

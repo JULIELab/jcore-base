@@ -25,6 +25,7 @@
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
             </imports>
         </typeSystemDescription>
         <fsIndexCollection/>

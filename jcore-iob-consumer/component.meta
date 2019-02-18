@@ -6,7 +6,7 @@
     "descriptors": [
         {
             "category": "consumer",
-            "location": "de.julielab.jcore.consumer.cas2iob.desc.jcore-cas2iob-consumer"
+            "location": "de.julielab.jcore.consumer.cas2iob.desc.jcore-iob-consumer"
         }
     ],
     "exposable": true,
