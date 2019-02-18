@@ -70,7 +70,6 @@ public class ToIOBConsumerTest {
                 "influences	O",
                 "cancer	O",
                 ".	O");
-
     }
 
     @Test
