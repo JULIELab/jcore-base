@@ -23,6 +23,9 @@ package de.julielab.jcore.consumer.cas2iob.main;
 import de.julielab.jcore.consumer.cas2iob.utils.UIMAUtils;
 import de.julielab.jcore.types.*;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
+import de.julielab.jcore.utility.index.Comparators;
+import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
+import de.julielab.jcore.utility.index.TermGenerators;
 import de.julielab.segmentationEvaluator.IOBToken;
 import de.julielab.segmentationEvaluator.IOToken;
 import org.apache.uima.UimaContext;
@@ -342,18 +345,14 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
 
         for (int i = 0; i < annotationIters.length; i++) {
             Iterator annoIter = annotationIters[i];
-            Map<? extends Annotation, Collection<Token>> tokenByAnnotation = null;
+            final JCoReTreeMapAnnotationIndex<Long, Token> tokenByAnnotation = new JCoReTreeMapAnnotationIndex<>(Comparators.longOverlapComparator(), TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), jcas, Token.type);
 
             while (annoIter.hasNext()) {
                 // get all annotations of this annotation iterator
                 Annotation ann = (Annotation) annoIter.next();
                 String label = getAnnotationLabel(ann);
 
-                // Index the tokens of the current annotation type only once
-                if (tokenByAnnotation == null)
-                    tokenByAnnotation = JCasUtil.indexCovered(jcas, ann.getClass(), Token.class);
-
-                final Iterator<Token> subtokenIterator = tokenByAnnotation.get(ann).iterator();
+                final Iterator<Token> subtokenIterator = tokenByAnnotation.searchFuzzy(ann).iterator();
                 try {
                     Token token = subtokenIterator.next();
                     if (addPos && token.getPosTag() == null)
