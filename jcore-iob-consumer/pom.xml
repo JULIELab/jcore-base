@@ -43,5 +43,5 @@
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
     </organization>
-    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-cas2iob-consumer</url>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-iob-consumer</url>
 </project>

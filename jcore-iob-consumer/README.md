@@ -3,7 +3,7 @@ Consumer that generates IOB formatted files for specified annotations.
 
 **Descriptor Path**:
 ```
-de.julielab.jcore.consumer.cas2iob.desc.jcore-cas2iob-consumer
+de.julielab.jcore.consumer.cas2iob.desc.jcore-iob-consumer
 ```
 
 ### Objective
