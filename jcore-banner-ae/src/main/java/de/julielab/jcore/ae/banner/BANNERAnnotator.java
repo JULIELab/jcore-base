@@ -58,7 +58,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
     private CRFTagger tagger;
     private PostProcessor postProcessor;
 
-    @ConfigurationParameter(name = PARAM_CONFIG_FILE, mandatory = true, description = "The XML configuration file for BANNER.")
+    @ConfigurationParameter(name = PARAM_CONFIG_FILE, description = "The XML configuration file for BANNER.")
     private String configFilePath;
     @ConfigurationParameter(name = PARAM_TYPE_MAPPING, mandatory = false, description = "A list of mappings from entity labels to UIMA types in the form <label>=<fully qualified type name>. If not given, all entities will be realized as EntityMention instances.")
     private String[] typeMappings;

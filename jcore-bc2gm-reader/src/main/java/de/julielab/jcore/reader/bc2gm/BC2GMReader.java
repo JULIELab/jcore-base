@@ -37,7 +37,7 @@ private final static Logger log = LoggerFactory.getLogger(BC2GMReader.class);
     public static final String PARAM_GENES = "GenesFile";
     @ConfigurationParameter(name = PARAM_SENTENCES, description = "The BC2GM data is comprised of one file holding one sentence per line and another file holding the annotations. This parameter should be set to the file containing the sentences.")
     private String sentenceFile;
-    @ConfigurationParameter(name = PARAM_GENES, description = "The BC2GM data is comprised of one file holding one sentence per line and another file holding the annotations. This parameter should be set to the file holding the gene annotations.")
+    @ConfigurationParameter(name = PARAM_GENES, mandatory = false, description = "The BC2GM data is comprised of one file holding one sentence per line and another file holding the annotations. This parameter should be set to the file holding the gene annotations.")
     private String genesFile;
     private Multimap<String, GeneAnnotation> geneAnnotations;
     private Iterator<String> sentencesIterator;
