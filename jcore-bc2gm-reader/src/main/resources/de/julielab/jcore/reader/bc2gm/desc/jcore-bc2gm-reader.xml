@@ -18,7 +18,7 @@
                 <description>The BC2GM data is comprised of one file holding one sentence per line and another file holding the annotations. This parameter should be set to the file holding the gene annotations.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings/>
