@@ -57,16 +57,22 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	@Override
 	public void process(final JCas aJCas) throws AnalysisEngineProcessException {
         final String docId = JCoReTools.getDocId(aJCas);
+        if (docId == null)
+            log.error("The current document does not have a header. Cannot add external annotations.");
         final AnnotationData annotations = annotationProvider.getAnnotations(docId);
         final AnnotationAdderHelper helper = new AnnotationAdderHelper();
-        boolean success = false;
-        int adderNum = 0;
-        // We are now iterating through the available annotation adders for the one that handles the obtained annotation data
-        while (adderNum < annotationAdders.size() && !(success = annotationAdders.get(adderNum).addAnnotations(annotations, helper, adderConfiguration, aJCas))) {
-            ++adderNum;
+        if (annotations != null) {
+            boolean success = false;
+            int adderNum = 0;
+            // We are now iterating through the available annotation adders for the one that handles the obtained annotation data
+            while (adderNum < annotationAdders.size() && !(success = annotationAdders.get(adderNum).addAnnotations(annotations, helper, adderConfiguration, aJCas))) {
+                ++adderNum;
+            }
+            if (!success)
+                throw new IllegalArgumentException("There was no annotation adder to handle the annotation data of class " + annotations.getClass().getCanonicalName());
+        } else {
+            log.debug("No external annotations were delivered for document ID {}", docId);
         }
-        if (!success)
-            throw new IllegalArgumentException("There was no annotation adder to handle the annotation data of class " + annotations.getClass().getCanonicalName());
     }
 
 }

@@ -18,5 +18,6 @@ public class InMemoryFileEntityProvider implements SharedResourceObject, Annotat
     public void load(DataResource dataResource) throws ResourceInitializationException {
         // This logic could be made configurable if required so in the future.
         annotationSource = new FileEntityAnnotationSource(new SimpleTSVEntityAnnotationFormat());
+        annotationSource.initialize(dataResource);
     }
 }
