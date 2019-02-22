@@ -29,7 +29,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	public static final String PARAM_OFFSET_MODE = "OffsetMode";
 	@ExternalResource(key = KEY_ANNOTATION_SOURCE, description = "A provider of annotations to add to the CAS. Must implement the de.julielab.jcore.ae.annotationadder.annotationsources.AnnotationProvider interface.")
     private AnnotationProvider<? extends AnnotationData> annotationProvider;
-	@ConfigurationParameter(name=PARAM_OFFSET_MODE, mandatory = false, description = "Determines the interpretation of annotation offsets. Possible values: \"CHARACTER\" and \"TOKEN\". For the TOKEN offset mode, the correct tokenization must be given in the CAS. Defaults to CHARACTER.", defaultValue = "CHARACTER")
+	@ConfigurationParameter(name=PARAM_OFFSET_MODE, mandatory = false, description = "Determines the interpretation of annotation offsets. Possible values: \"CHARACTER\" and \"TOKEN\". For the TOKEN offset mode, the correct tokenization must be given in the CAS. TOKEN offsets start with 1, CHARACTER offsets are 0-based. Defaults to CHARACTER.", defaultValue = "CHARACTER")
     private OffsetMode offsetMode;
 
     private List<AnnotationAdder> annotationAdders = Arrays.asList(new AnnotationListAdder());

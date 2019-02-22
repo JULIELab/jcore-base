@@ -8,6 +8,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,15 +32,15 @@ public class AnnotationAdderHelper {
                 createTokenList(jCas);
             int startTokenNum = a.getStart();
             int endTokenNum = a.getEnd();
-            if (startTokenNum < 0 || startTokenNum >= tokenList.size())
-                throw new IllegalArgumentException("The current annotation to add to the CAS starts at token " + startTokenNum + " which does not fit to the range of tokens in the document which is 0 - " + (tokenList.size() - 1));
-            if (endTokenNum < 0 || endTokenNum >= tokenList.size())
-                throw new IllegalArgumentException("The current annotation to add to the CAS ends at token " + endTokenNum + " which does not fit to the range of tokens in the document which is 0 - " + (tokenList.size() - 1));
+            if (startTokenNum < 1 || startTokenNum > tokenList.size())
+                throw new IllegalArgumentException("The current annotation to add to the CAS starts at token " + startTokenNum + " which does not fit to the range of tokens in the document which is 1 - " + tokenList.size());
+            if (endTokenNum < 1 || endTokenNum > tokenList.size())
+                throw new IllegalArgumentException("The current annotation to add to the CAS ends at token " + endTokenNum + " which does not fit to the range of tokens in the document which is 1 - " + tokenList.size());
             if (endTokenNum < startTokenNum)
                 throw new IllegalArgumentException("The current annotation to add has a lower end offset than start offset. Start: " + startTokenNum + ", end: " + endTokenNum);
 
-            int begin = tokenList.get(startTokenNum).getBegin();
-            int end = tokenList.get(endTokenNum).getEnd();
+            int begin = tokenList.get(startTokenNum-1).getBegin();
+            int end = tokenList.get(endTokenNum-1).getEnd();
 
             annotation.setBegin(begin);
             annotation.setEnd(end);
@@ -47,6 +48,7 @@ public class AnnotationAdderHelper {
     }
 
     private void createTokenList(JCas jCas) {
+        tokenList = new ArrayList<>();
         final FSIterator<Annotation> tokenIt = jCas.getAnnotationIndex(Token.type).iterator(false);
         while (tokenIt.hasNext()) {
             Token token = (Token) tokenIt.next();
