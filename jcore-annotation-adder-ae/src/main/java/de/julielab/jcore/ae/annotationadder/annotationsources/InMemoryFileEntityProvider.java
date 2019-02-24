@@ -2,11 +2,12 @@ package de.julielab.jcore.ae.annotationadder.annotationsources;
 
 import de.julielab.jcore.ae.annotationadder.annotationformat.SimpleTSVEntityAnnotationFormat;
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.AnnotationList;
+import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.SharedResourceObject;
 
-public class InMemoryFileEntityProvider implements SharedResourceObject, AnnotationProvider<AnnotationList> {
+public class InMemoryFileEntityProvider implements AnnotationProvider<AnnotationList> {
     private AnnotationSource<AnnotationList> annotationSource;
 
     @Override
@@ -20,4 +21,7 @@ public class InMemoryFileEntityProvider implements SharedResourceObject, Annotat
         annotationSource = new FileEntityAnnotationSource(new SimpleTSVEntityAnnotationFormat());
         annotationSource.initialize(dataResource);
     }
+
+
+
 }

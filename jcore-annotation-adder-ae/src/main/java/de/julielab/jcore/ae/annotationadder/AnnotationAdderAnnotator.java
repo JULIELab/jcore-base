@@ -9,6 +9,7 @@ import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@ResourceMetaData(name="JCoRe Annotation Adder", description = "This component helps to import annotations made on the exact CAS document text by an external process back into the CAS. To this end, the component is prepared to read several data formats. Currently, simple offset-based annotations are supported with configurable UIMA types. The component supports character and token based offsets.")
 public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 
 	private final static Logger log = LoggerFactory.getLogger(AnnotationAdderAnnotator.class);

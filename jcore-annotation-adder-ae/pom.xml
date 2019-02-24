@@ -44,6 +44,10 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
     </dependencies>
     <name>JCoRe Annotation Adder</name>
     <organization>
