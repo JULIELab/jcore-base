@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "Adds annotations from external sources, e.g. files, into the CAS.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.annotationadder.desc.jcore-annotation-adder-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-annotation-adder-ae",
+        "groupId": "de.julielab",
+        "version": "2.4.0-SNAPSHOT"
+    },
+    "name": "JCoRe Annotation Adder"
+}
