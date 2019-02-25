@@ -33,7 +33,7 @@ public class ClinicalTrialsReader extends JCasCollectionReader_ImplBase {
     public static final String PARAM_INPUT_DIR = "InputDirectory";
     public static final String PARAM_FILES = "FileNames";
     private final static Logger log = LoggerFactory.getLogger(ClinicalTrialsReader.class);
-    @ConfigurationParameter(name = PARAM_INPUT_DIR)
+    @ConfigurationParameter(name = PARAM_INPUT_DIR, description = "The root directory that contains the clinical trials. The reader supports a subdirectory structure where the actual XML documents are located on deeper levels.")
     private File inputDirectory;
     @ConfigurationParameter(name = PARAM_FILES, mandatory = false, description = "For debugging: Restrict the documents read to the given document file names.")
     private String[] fileNames;

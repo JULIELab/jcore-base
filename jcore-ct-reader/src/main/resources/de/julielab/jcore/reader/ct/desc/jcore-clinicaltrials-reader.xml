@@ -8,7 +8,7 @@
         <configurationParameters>
             <configurationParameter>
                 <name>InputDirectory</name>
-                <description/>
+                <description>The root directory that contains the clinical trials. The reader supports a subdirectory structure where the actual XML documents are located on deeper levels.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
