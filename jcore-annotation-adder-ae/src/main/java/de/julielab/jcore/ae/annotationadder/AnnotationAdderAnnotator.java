@@ -29,10 +29,13 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
     public enum OffsetMode {CHARACTER, TOKEN}
 	public static final String KEY_ANNOTATION_SOURCE = "AnnotationSource";
 	public static final String PARAM_OFFSET_MODE = "OffsetMode";
+	public static final String PARAM_DEFAULT_UIMA_TYPE = "DefaultUimaType";
 	@ExternalResource(key = KEY_ANNOTATION_SOURCE, description = "A provider of annotations to add to the CAS. Must implement the de.julielab.jcore.ae.annotationadder.annotationsources.AnnotationProvider interface.")
     private AnnotationProvider<? extends AnnotationData> annotationProvider;
 	@ConfigurationParameter(name=PARAM_OFFSET_MODE, mandatory = false, description = "Determines the interpretation of annotation offsets. Possible values: \"CHARACTER\" and \"TOKEN\". For the TOKEN offset mode, the correct tokenization must be given in the CAS. TOKEN offsets start with 1, CHARACTER offsets are 0-based. Defaults to CHARACTER.", defaultValue = "CHARACTER")
     private OffsetMode offsetMode;
+	@ConfigurationParameter(name=PARAM_DEFAULT_UIMA_TYPE, mandatory = false, description = "Most external annotation formats require that the qualified name a UIMA type is provided which reflects the annotation to be created for the respective annotation. With this parameter, a default type can be provided which will be forwarded to the format parser. If the parser supports it, the type can then be omitted from the external annotation source.")
+	private String defaultUimaType;
 
     private List<AnnotationAdder> annotationAdders = Arrays.asList(new AnnotationListAdder());
 
@@ -43,6 +46,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	@Override
 	public void initialize(final UimaContext aContext) throws ResourceInitializationException {
         offsetMode = OffsetMode.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_OFFSET_MODE)).orElse(OffsetMode.CHARACTER.name()));
+        defaultUimaType = (String) aContext.getConfigParameterValue(PARAM_DEFAULT_UIMA_TYPE);
         try {
             annotationProvider = (AnnotationProvider<? extends AnnotationData>) aContext.getResourceObject(KEY_ANNOTATION_SOURCE);
         } catch (ResourceAccessException e) {
@@ -50,6 +54,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
         }
         adderConfiguration = new AnnotationAdderConfiguration();
         adderConfiguration.setOffsetMode(offsetMode);
+        adderConfiguration.setDefaultUimaType(defaultUimaType);
     }
 
 	/**

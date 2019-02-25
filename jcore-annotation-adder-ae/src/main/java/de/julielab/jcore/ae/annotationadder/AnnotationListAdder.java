@@ -25,10 +25,13 @@ public class AnnotationListAdder implements AnnotationAdder {
             return false;
         }
         for (ExternalAnnotation a : annotationList) {
-            if (jCas.getTypeSystem().getType(a.getUimaType()) == null)
+            String uimaType = a.getUimaType() == null ? configuration.getDefaultUimaType() : a.getUimaType();
+            if (uimaType == null)
+                throw new IllegalArgumentException("Missing annotation type: Neither the annotation of document " + a.getDocumentId() + " with offsets " + a.getStart() + "-" + a.getEnd() + " provides a type nor is the default type set.");
+            if (jCas.getTypeSystem().getType(uimaType) == null)
                 throw new IllegalArgumentException("The entity annotation type " + a.getUimaType() + " does not exist in the type system.");
             try {
-                final Annotation annotation = JCoReAnnotationTools.getAnnotationByClassName(jCas, a.getUimaType());
+                final Annotation annotation = JCoReAnnotationTools.getAnnotationByClassName(jCas, uimaType);
                 helper.setAnnotationOffsets(annotation, a, configuration);
                 annotation.addToIndexes();
             } catch (ClassNotFoundException | NoSuchMethodException |InstantiationException | IllegalAccessException | InvocationTargetException | CASException e) {
