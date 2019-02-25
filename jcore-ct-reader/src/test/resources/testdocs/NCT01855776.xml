@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<clinical_study rank="95944">
+    <!-- This xml conforms to an XML Schema at:
+      https://clinicaltrials.gov/ct2/html/images/info/public.xsd -->
+    <required_header>
+        <download_date>ClinicalTrials.gov processed this data on April 10, 2017</download_date>
+        <link_text>Link to the current ClinicalTrials.gov record.</link_text>
+        <url>https://clinicaltrials.gov/show/NCT01855776</url>
+    </required_header>
+    <id_info>
+        <org_study_id>HSRG10NOV002</org_study_id>
+        <nct_id>NCT01855776</nct_id>
+    </id_info>
+    <brief_title>A Randomized Trial of Economic Incentives to Promote Walking Among Full Time Employees</brief_title>
+    <official_title>A Randomized Trial of Economic Incentives to Promote Walking Among Full Time Employees</official_title>
+    <sponsors>
+        <lead_sponsor>
+            <agency>Duke-NUS Graduate Medical School</agency>
+            <agency_class>Other</agency_class>
+        </lead_sponsor>
+        <collaborator>
+            <agency>Health Promotion Board, Singapore</agency>
+            <agency_class>Other</agency_class>
+        </collaborator>
+    </sponsors>
+    <source>Duke-NUS Graduate Medical School</source>
+    <oversight_info>
+        <has_dmc>No</has_dmc>
+    </oversight_info>
+    <brief_summary>
+        <textblock>
+            This study aims to assess the uptake, effectiveness, and cost-effectiveness of a scalable
+            walking programme for full-time employees both with and without incentives.
+        </textblock>
+    </brief_summary>
+    <detailed_description>
+        <textblock>
+            The first part of this study comprises an in-home face-to-face survey with 950 full-time
+            employees in Singapore. The survey aims to identify what an optimal programme might look
+            like and to quantify the potential uptake of the programme, if offered. Stated preference
+            conjoint analysis, which assesses individual preferences for attributes of specific
+            programmes, will be used.
+
+            The second part of this study is a Randomised Controlled Trial (RCT) of a 12-month walking
+            programme. Up to 800 full-time employees will be recruited and allocated to one of four
+            research arms: Control Group, Programme Only Group, Cash Incentive Group and Charitable
+            Incentive Group. Participants in the intervention arms will be asked to track their physical
+            activities using Fitbit Zip, a wireless pedometer, which automatically uploads the data to a
+            custom website. Those in the incentive arms will earn money or raise money for charities if
+            they meet weekly exercise targets. Those in the control and Programme Only groups with
+            receive a weekly payment for participation. Incentives and participation payment will be
+            provided from months 1 - 6, after which they will be withdrawn.
+
+            The key outcome variable of the RCT is defined as bouts (in minutes) of moderate to vigorous
+            physical activity (&quot;MVPA bouts&quot;) as measured via accelerometry. Data will be collected at
+            baseline and month 6 and 12 assessments.
+
+            Findings from the RCT will also be used to determine the cost to employers of implementing
+            each programme and the incremental cost-effectiveness of the incentive programmes compared
+            to the basic programme without incentives. The primary hypotheses are that the basic
+            programme will have lower costs per person than the cash or charity programmes, but that the
+            incentive programmes will be more cost-effective relative to the less expensive and less
+            effective basic programme.
+        </textblock>
+    </detailed_description>
+    <overall_status>Completed</overall_status>
+    <start_date>May 2013</start_date>
+    <completion_date type="Actual">August 2015</completion_date>
+    <primary_completion_date type="Actual">August 2015</primary_completion_date>
+    <phase>N/A</phase>
+    <study_type>Interventional</study_type>
+    <has_expanded_access>No</has_expanded_access>
+    <study_design_info>
+        <allocation>Randomized</allocation>
+        <intervention_model>Factorial Assignment</intervention_model>
+        <masking>Open Label</masking>
+    </study_design_info>
+    <primary_outcome>
+        <measure>Changes in MVPA (Moderate-to-Vigorous Physical Activity) bouts of participants from baseline to months 6 and 12</measure>
+        <time_frame>Baseline, 6 and 12 months</time_frame>
+        <description>MVPA bouts are defined as the total number of minutes during each 1-week assessment period in which moderate or vigorous activity of at least 8 of 10 consecutive minutes are reached. This will be assessed via the Actigraph GT3XE-Plus Triaxial Activity Monitor.
+            We will measure &quot;MVPA bouts&quot; at baseline, 6, and 12 months. We hypothesize that participants in the Programme Only, and Incentive groups record more &quot;MVPA bouts&quot; at 6 months compared to baseline. Furthermore, participants in the Incentive groups will record more &quot;MVPA bouts&quot; at 6 months compared to the Control and Programme only groups.
+            We also measure &quot;MVPA bouts&quot; for all participants at 12 months. We do so to test if the &quot;MVPA bouts&quot; measured at month 6, can be sustained at month 12 when incentives are no longer being provided.</description>
+    </primary_outcome>
+    <secondary_outcome>
+        <measure>Change in VO2Max of participants from baseline to months 6, and 12.</measure>
+        <time_frame>Baseline, 6 and 12 months</time_frame>
+        <description>VO2Max is one of the major parameters to evaluate health and fitness of the cardiovascular system and is widely used for health promotion purposes. VO2Max will also be assessed via the Non Exercise Fitness Test (NEFT); NEFT predicts VO2max based on age, gender, BMI, resting heart rate and self-reported physical activities.</description>
+    </secondary_outcome>
+    <number_of_arms>4</number_of_arms>
+    <enrollment type="Actual">800</enrollment>
+    <condition>Physical Activity</condition>
+    <arm_group>
+        <arm_group_label>Control Group</arm_group_label>
+        <arm_group_type>Other</arm_group_type>
+        <description>The control group will receive a &quot;usual care&quot; educational programme at baseline created by the Singapore Health Promotion Board. This guide describes the importance of physical activity and illustrates one possible physical activity programme. It also discusses strategies for adopting a healthy lifestyle. They will not receive the Fitbit Zip wireless pedometer from the study team. However, they will receive $4 per week, regardless of physical activity levels.</description>
+    </arm_group>
+    <arm_group>
+        <arm_group_label>Programme Only Group</arm_group_label>
+        <arm_group_type>Experimental</arm_group_type>
+        <description>This group receives the Fitbit Zip, and access to the Fitbit website. Fitbit Zip counts the number of steps walked, calories burned, and distance travelled. Participants can set goals for their physical activity levels, and will have access to personalised feedback from Fitbit. This group will also receive $4 per week, regardless of physical activity levels.</description>
+    </arm_group>
+    <arm_group>
+        <arm_group_label>Cash Incentive Group</arm_group_label>
+        <arm_group_type>Experimental</arm_group_type>
+        <description>This group receives the Fitbit Zip and the opportunity to earn money each week based on the number of steps logged on the pedometer during that week. We will offer the following incentive schedule:
+            $0 SGD for less than 50,000 steps during the week
+            $15 SGD for 50,000 - 69,999 steps during the week (max of 20,000 steps per day)
+            $30 SGD for 70,000 or more steps during the week (max of 20,000 steps per day) Participants will receive monthly payments in cash after their physical activity is confirmed. The incentive will be calculated separately for each week of the 6-month incentive programme.</description>
+    </arm_group>
+    <arm_group>
+        <arm_group_label>Charitable Incentive Group</arm_group_label>
+        <arm_group_type>Experimental</arm_group_type>
+        <description>This group is identical to the cash incentive group except that incentive payments will be donated directly to a tax-exempt nonprofit charity of the participant's choice. The charity will be selected at the start of the programme but will be limited to the most common tax-exempt nonprofit charities operating in Singapore. As a motivational feedback component of the programme, participants will receive a thank-you email or letter from the charity.</description>
+    </arm_group>
+    <intervention>
+        <intervention_type>Device</intervention_type>
+        <intervention_name>Fitbit</intervention_name>
+        <description>Fitbit Zip is a wireless pedometer that tracks steps of participants, and will be offered in conjunction with a tailored website with customized information for participants, employers, and/or charities.</description>
+        <arm_group_label>Programme Only Group</arm_group_label>
+        <arm_group_label>Cash Incentive Group</arm_group_label>
+        <arm_group_label>Charitable Incentive Group</arm_group_label>
+        <other_name>Fitbit Zip; Wireless pedometer; Physical activity tracker;</other_name>
+    </intervention>
+    <intervention>
+        <intervention_type>Behavioral</intervention_type>
+        <intervention_name>Cash Incentives</intervention_name>
+        <description>Incentives will be awarded to participants for meeting specified weekly step goals as measured by a pedometer.</description>
+        <arm_group_label>Cash Incentive Group</arm_group_label>
+        <other_name>Money, Cash, Financial Incentives</other_name>
+    </intervention>
+    <intervention>
+        <intervention_type>Behavioral</intervention_type>
+        <intervention_name>Charitable Incentives</intervention_name>
+        <description>Incentives will be awarded to charities selected by participants should the latter meet specified weekly step goals measured by a pedometer.</description>
+        <arm_group_label>Charitable Incentive Group</arm_group_label>
+        <other_name>Donations, Charity</other_name>
+    </intervention>
+    <intervention>
+        <intervention_type>Other</intervention_type>
+        <intervention_name>Usual Care</intervention_name>
+        <description>The &quot;usual care&quot; programme consists of educational materials designed by the Singapore Health Promotion Board. It includes material on how to stay active, walking programmes, and healthy eating.</description>
+        <arm_group_label>Control Group</arm_group_label>
+        <arm_group_label>Programme Only Group</arm_group_label>
+        <arm_group_label>Cash Incentive Group</arm_group_label>
+        <arm_group_label>Charitable Incentive Group</arm_group_label>
+        <other_name>Educational Programme; Health Promotion Board</other_name>
+    </intervention>
+    <eligibility>
+        <criteria>
+            <textblock>
+                Inclusion Criteria:
+
+                -  Full-time employees living in Singapore
+
+                -  Aged between 21-65
+
+                Exclusion Criteria:
+
+                -  report difficulty doing 10 minutes of aerobic activities without stopping
+
+                -  report difficulty walking up 10 stairs without stopping
+
+                -  report difficulty performing basic activities of daily living
+
+                -  have any medical conditions that limit their ability to walk as a means of physical
+                activity
+
+                -  self-identify medical conditions that limit ability to walk AND do not have medical
+                consent
+
+                -  answer 'YES' to any PAR-Q questions
+            </textblock>
+        </criteria>
+        <gender>All</gender>
+        <minimum_age>21 Years</minimum_age>
+        <maximum_age>65 Years</maximum_age>
+        <healthy_volunteers>Accepts Healthy Volunteers</healthy_volunteers>
+    </eligibility>
+    <overall_official>
+        <last_name>Eric Finkelstein, Ph.D., M.H.A.</last_name>
+        <role>Principal Investigator</role>
+        <affiliation>Duke-NUS Graduate Medical School</affiliation>
+    </overall_official>
+    <location>
+        <facility>
+            <name>Duke-NUS Graduate Medical School</name>
+            <address>
+                <city>Singapore</city>
+                <country>Singapore</country>
+            </address>
+        </facility>
+    </location>
+    <location_countries>
+        <country>Singapore</country>
+    </location_countries>
+    <verification_date>January 2016</verification_date>
+    <lastchanged_date>January 3, 2016</lastchanged_date>
+    <firstreceived_date>August 8, 2012</firstreceived_date>
+    <responsible_party>
+        <responsible_party_type>Principal Investigator</responsible_party_type>
+        <investigator_affiliation>Duke-NUS Graduate Medical School</investigator_affiliation>
+        <investigator_full_name>Eric A. Finkelstein</investigator_full_name>
+        <investigator_title>Deputy Director, Associate Professor</investigator_title>
+    </responsible_party>
+    <keyword>Physical Activity/Walking</keyword>
+    <keyword>Full-time employees</keyword>
+    <keyword>RCT</keyword>
+    <keyword>Incentives</keyword>
+    <keyword>Wireless pedometer</keyword>
+    <!-- Results have not yet been posted for this study                                -->
+</clinical_study>

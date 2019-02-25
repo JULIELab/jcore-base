@@ -143,6 +143,8 @@ public class AnnotationAdderAnnotatorTest{
     public void testDescriptorCharacterOffsets() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
         final AnalysisEngineDescription desc = AnalysisEngineFactory.createEngineDescriptionFromPath("src/main/resources/de/julielab/jcore/ae/annotationadder/desc/jcore-annotation-adder-ae.xml");
+        // The descriptor has a preconfigured external resource which we need to remove because it does specify an empty URL which would lead to errors, if left in place.
+        desc.getResourceManagerConfiguration().setExternalResources(null);
         ExternalResourceFactory.bindResource(desc, AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, InMemoryFileEntityProvider.class, new File("src/test/resources/geneannotations_character_offsets.tsv").toURI().toString());
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(desc);
         // Test doc1 (two gene annotations)

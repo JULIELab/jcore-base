@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.reader.ct.ClinicalTrialsReader</implementationName>
+    <processingResourceMetaData>
+        <name>JCoRe Clinical Trials Reader</name>
+        <description>This component reads the XML format provided by ClinicalTrials.gov. To this end, the JCoRe type system contains a number of types specifically created for this kind of document. Note that the CAS text created by this reader might be confusing without checking the corresponding annotations. This is due to the fact that the CT XML contains multiple enumerations which are not very well reflected in plain text. Also, enumerations with subitems, such as the outcomes, are not displayed in the expected groups of items. Instead, each item type is displayed separately. This could be changed, if necessary. Since all items are correctly annotated by their category, this might not even be an issue, depending on the downstream tasks.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>InputDirectory</name>
+                <description/>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>FileNames</name>
+                <description>For debugging: Restrict the documents read to the given document file names.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-document-structure-clinicaltrial-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-clinicaltrial-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
+</collectionReaderDescription>

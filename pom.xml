@@ -51,6 +51,7 @@
         <module>jcore-biosem-ae</module>
         <module>jcore-conll-consumer</module>
         <module>jcore-coordination-baseline-ae</module>
+        <module>jcore-ct-reader</module>
         <module>jcore-dta-reader</module>
         <module>jcore-ec-code-ae</module>
         <module>jcore-elasticsearch-consumer</module>
