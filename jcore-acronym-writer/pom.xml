@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jcore-acronym-writer</artifactId>
+    <packaging>jar</packaging>
+    <groupId>de.julielab.jcore.consumer.acronyms</groupId>
+
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.4.0-SNAPSHOT</version>
+    </parent>
+
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-utilities</artifactId>
+            <version>${jcore-utilities-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>julielab-java-utilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+    <name>JCoRe Acronym Writer</name>
+    <organization>
+        <name>JULIE Lab Jena, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-acronym-writer</url>
+    <description>Writes acronyms annotations from the CAS to a text file format.</description>
+</project>

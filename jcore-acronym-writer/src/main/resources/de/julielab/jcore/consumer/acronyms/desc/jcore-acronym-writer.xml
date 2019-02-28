@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.consumer.acronyms.AcronymWriter</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Acronym Writer</name>
+        <description>Writes acronym annotation to a text file.</description>
+        <configurationParameters>
+            <configurationParameter>
+                <name>OutputFile</name>
+                <description/>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>
