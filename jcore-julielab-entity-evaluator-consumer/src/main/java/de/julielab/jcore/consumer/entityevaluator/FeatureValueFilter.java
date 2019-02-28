@@ -1,11 +1,10 @@
-/** 
- * 
+/**
  * Copyright (c) 2017, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the BSD-2-Clause License
- *
- * Author: 
- * 
+ * <p>
+ * Author:
+ * <p>
  * Description:
  **/
 package de.julielab.jcore.consumer.entityevaluator;
@@ -25,66 +24,66 @@ import org.apache.uima.jcas.cas.TOP;
 import de.julielab.jcore.utility.JCoReFeaturePath;
 
 public class FeatureValueFilter {
-	private static final Pattern fullFilterDefinitionFormat = Pattern.compile("(.+:)?\\/(([^=]+=.[^=;]*;?)+)");
+    private static final Pattern fullFilterDefinitionFormat = Pattern.compile("(.+:)?\\/(([^=]+=.[^=;]*;?)+)");
+    protected PathValuePair globalFeaturePath;
+    protected Set<Type> types;
+    protected PathValuePair pathValuePair;
+    private Matcher mfull;
 
-	private Matcher mfull;
+    public FeatureValueFilter(String columnDefinition, String typePrefix, TypeSystem ts) {
+        this();
+        parseAndAddDefinition(columnDefinition, typePrefix, ts);
+    }
 
-	protected PathValuePair globalFeaturePath;
-	protected Set<Type> types;
-	protected PathValuePair pathValuePair;
+    public FeatureValueFilter() {
+        mfull = fullFilterDefinitionFormat.matcher("");
+    }
 
-	public FeatureValueFilter(String columnDefinition, String typePrefix, TypeSystem ts)  {
-		this();
-		parseAndAddDefinition(columnDefinition, typePrefix, ts);
-	}
+    public void parseAndAddDefinition(String filterDefinition, String typePrefix, TypeSystem ts) {
+        if (!mfull.reset(filterDefinition).matches()) {
+            throw new IllegalArgumentException(
+                    "The line does not obey the column definition syntax: " + filterDefinition);
+        }
+        if (filterDefinition.contains(":")) {
+            String[] colonSplit = filterDefinition.split(":");
+            types = Stream.of(colonSplit[0].split("\\s*,\\s*"))
+                    .map(typeName -> EntityEvaluatorConsumer.findType(typeName, typePrefix, ts))
+                    .collect(Collectors.toSet());
+            pathValuePair = new PathValuePair(colonSplit[1].split("="));
+        } else {
+            types = Collections.emptySet();
+            pathValuePair = new PathValuePair(filterDefinition.split("="));
+        }
+    }
 
-	public FeatureValueFilter() {
-		mfull = fullFilterDefinitionFormat.matcher("");
-	}
+    public boolean contradictsFeatureFilter(TOP a) {
+        Type type = a.getType();
+        if (!types.contains(type) && !types.isEmpty())
+            return false;
+        String fpValue = pathValuePair.fp.getValueAsString(a);
+        if (fpValue != null)
+            return pathValuePair.targetValue == null || !fpValue.equals(pathValuePair.targetValue);
+        // I guess this is not really possible
+        return pathValuePair.targetValue == null;
+    }
 
-	public void parseAndAddDefinition(String filterDefinition, String typePrefix, TypeSystem ts) {
-		if (!mfull.reset(filterDefinition).matches()) {
-			throw new IllegalArgumentException(
-					"The line does not obey the column definition syntax: " + filterDefinition);
-		}
-		if (filterDefinition.contains(":")) {
-			String[] colonSplit = filterDefinition.split(":");
-			types = Stream.of(colonSplit[0].split("\\s*,\\s*"))
-					.map(typeName -> EntityEvaluatorConsumer.findType(typeName, typePrefix, ts))
-					.collect(Collectors.toSet());
-			pathValuePair = new PathValuePair(colonSplit[1].split("="));
-		} else {
-			types = Collections.emptySet();
-			pathValuePair = new PathValuePair(filterDefinition.split("="));
-		}
-	}
-
-	public boolean contradictsFeatureFilter(TOP a) {
-		Type type = a.getType();
-		if (!types.contains(type) && !types.isEmpty())
-			return false;
-		String fpValue = pathValuePair.fp.getValueAsString(a);
-		return !fpValue.equals(pathValuePair.targetValue);
-	}
-	
-	/**
-	 * A pair of a feature path and the value it should have.
-	 * 
-	 * @author faessler
-	 *
-	 */
-	public static class PathValuePair {
-		public PathValuePair(String[] split) {
-			try {
-				fp = new JCoReFeaturePath();
-				fp.initialize(split[0]);
-				targetValue = split[1];
-			} catch (CASException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		public JCoReFeaturePath fp;
-		public String targetValue;
-	}
+    /**
+     * A pair of a feature path and the value it should have.
+     *
+     * @author faessler
+     *
+     */
+    public static class PathValuePair {
+        public JCoReFeaturePath fp;
+        public String targetValue;
+        public PathValuePair(String[] split) {
+            try {
+                fp = new JCoReFeaturePath();
+                fp.initialize(split[0]);
+                targetValue = split[1];
+            } catch (CASException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
