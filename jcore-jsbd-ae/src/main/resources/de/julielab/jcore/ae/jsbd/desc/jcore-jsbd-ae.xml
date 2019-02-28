@@ -60,6 +60,7 @@
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
             </imports>
         </typeSystemDescription>
         <typePriorities />

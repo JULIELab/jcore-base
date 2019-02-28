@@ -307,6 +307,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
 				if (entityTypeStrings != null)
 					Stream.of(entityTypeStrings).map(name -> findType(name, typePrefix, ts)).forEach(entityTypes::add);
+				if (entityTypes == null || entityTypes.isEmpty())
+					throw new IllegalArgumentException("No entity names are given, neither by the " + PARAM_ENTITY_TYPES + " parameter nor in the " + PARAM_COLUMN_DEFINITIONS + " parameter.");
 				removeSubsumedTypes(entityTypes, ts);
 
 				featureFilters = Stream.of(featureFilterDefinitions).map(d -> new FeatureValueFilter(d, typePrefix, ts))

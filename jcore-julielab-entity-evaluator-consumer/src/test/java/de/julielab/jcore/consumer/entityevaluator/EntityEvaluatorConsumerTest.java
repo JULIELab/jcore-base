@@ -46,10 +46,6 @@ import de.julielab.jcore.types.Sentence;
 
 public class EntityEvaluatorConsumerTest {
 
-	public static final File DOC_DIR_FILE = new File("src/test/resources/documents");
-	public static final File DOC_FILE_ENTITIES_WO_ID = new File("src/test/resources/entitiesWithoutId/7520377.xmi");
-	public static final File OUTPUT_FILE = new File("src/test/resources/entityRecord.tsv");
-
 	@Test
 	public void testEntityEvaluatorConsumerSingleEntity() throws Exception {
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
