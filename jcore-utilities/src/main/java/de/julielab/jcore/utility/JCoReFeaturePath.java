@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -95,6 +98,8 @@ import de.julielab.jcore.types.ResourceEntry;
  */
 @SuppressWarnings("deprecation")
 public class JCoReFeaturePath implements FeaturePath {
+
+    private String originalFeaturePath;
 
 	private String[] featurePath;
 	private String[] featureBaseNames;
@@ -176,6 +181,7 @@ public class JCoReFeaturePath implements FeaturePath {
 	@Override
 	public void initialize(String featurePath) throws CASException {
 		log.debug("Initializing with feature path \"{}\".", featurePath);
+        this.originalFeaturePath = featurePath;
 		this.featurePathChanged = null == featurePathString || !featurePathString.equals(featurePath);
 		this.featurePathString = featurePath;
 		if (!featurePathString.startsWith("/"))
@@ -832,8 +838,7 @@ public class JCoReFeaturePath implements FeaturePath {
 
 	@Override
 	public String getFeaturePath() {
-		// TODO Auto-generated method stub
-		return null;
+        return originalFeaturePath;
 	}
 
 	@Override
