@@ -55,6 +55,8 @@ public class IGNReader extends CollectionReader_ImplBase {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(IGNReader.class);
 
+	private static String componentId = IGNReader.class.getCanonicalName();
+
 	/**
 	 * String parameter indicating path to the directory containing files in
 	 * BioC-format that comprise the actual text.
@@ -174,6 +176,7 @@ public class IGNReader extends CollectionReader_ImplBase {
 		}
 		Header header = new Header(aJCas);
 		header.setDocId(pmid);
+		header.setComponentId(componentId);
 
 		// A. Rubruck
 		// added the optional function to find and set the publication date
@@ -219,12 +222,15 @@ public class IGNReader extends CollectionReader_ImplBase {
 					resEntry.setEntryId(egId);
 					resEntry.setSource("NCBI Gene");
 					resEntry.setTaxonomyId(taxId);
+					resEntry.setComponentId(componentId);
 					FSArray resList = new FSArray(aJCas, 1);
 					resList.set(0, resEntry);
 					Gene gene = new Gene(aJCas);
 					gene.setBegin(begin);
 					gene.setEnd(end);
 					gene.setResourceEntryList(resList);
+					gene.setSpecificType("Gene");
+					gene.setComponentId(componentId);
 					// gene.setSpecies(taxId);
 					// has been changed from string to stringArray
 					StringArray s1 = new StringArray(aJCas, 1);
@@ -248,6 +254,7 @@ public class IGNReader extends CollectionReader_ImplBase {
 		if (pubDates.isEmpty())
 			return;
 		Journal pubType = new Journal(jCas);
+        pubType.setComponentId(componentId);
 		FSArray pubTypeList = new FSArray(jCas, 1);
 		pubTypeList.set(0, pubType);
 		header.setPubTypeList(pubTypeList);
