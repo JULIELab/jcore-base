@@ -65,6 +65,10 @@ public class FeatureValueFilter {
         return pathValuePair.targetValue != null;
     }
 
+    public PathValuePair getPathValuePair() {
+        return pathValuePair;
+    }
+
     /**
      * A pair of a feature path and the value it should have.
      *
