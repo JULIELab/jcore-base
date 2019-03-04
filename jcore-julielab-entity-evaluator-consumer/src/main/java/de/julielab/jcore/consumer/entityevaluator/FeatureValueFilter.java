@@ -25,7 +25,6 @@ import de.julielab.jcore.utility.JCoReFeaturePath;
 
 public class FeatureValueFilter {
     private static final Pattern fullFilterDefinitionFormat = Pattern.compile("(.+:)?\\/(([^=]+=.[^=;]*;?)+)");
-    protected PathValuePair globalFeaturePath;
     protected Set<Type> types;
     protected PathValuePair pathValuePair;
     private Matcher mfull;
@@ -63,8 +62,7 @@ public class FeatureValueFilter {
         String fpValue = pathValuePair.fp.getValueAsString(a);
         if (fpValue != null)
             return pathValuePair.targetValue == null || !fpValue.equals(pathValuePair.targetValue);
-        // I guess this is not really possible
-        return pathValuePair.targetValue == null;
+        return pathValuePair.targetValue != null;
     }
 
     /**
