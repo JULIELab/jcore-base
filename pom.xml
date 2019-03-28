@@ -86,7 +86,7 @@
         <module>jcore-opennlp-token-ae</module>
         <module>jcore-pmc-reader</module>
         <module>jcore-pubtator-reader</module>
-        <module>jcore-stanford-lemmatizer</module>
+        <module>jcore-stanford-lemmatizer-ae</module>
         <module>jcore-topic-indexing-ae</module>
         <module>jcore-topics-writer</module>
         <module>jcore-txt-consumer</module>

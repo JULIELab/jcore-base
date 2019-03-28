@@ -54,7 +54,7 @@ public class BioEventConsumer extends JCasAnnotator_ImplBase {
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         super.initialize(aContext);
 
-        if ((Boolean) aContext.getConfigParameterValue(BIOEVENT_SERVICE_MODE_PARAM) != null) {
+        if (aContext.getConfigParameterValue(BIOEVENT_SERVICE_MODE_PARAM) != null) {
             bioEventServiceMode = (Boolean) aContext.getConfigParameterValue(BIOEVENT_SERVICE_MODE_PARAM);
         }
 
@@ -62,7 +62,7 @@ public class BioEventConsumer extends JCasAnnotator_ImplBase {
             String directoryName = (String) aContext.getConfigParameterValue(DIRECTORY_PARAM);
             directory = new File(directoryName);
             if (!directory.exists()) {
-                directory.mkdir();
+                directory.mkdirs();
             }
         } else {
 
