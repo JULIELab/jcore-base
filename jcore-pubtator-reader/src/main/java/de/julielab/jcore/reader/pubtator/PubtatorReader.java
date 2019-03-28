@@ -114,7 +114,6 @@ public class PubtatorReader extends CollectionReader_ImplBase {
 							GeneResourceEntry geneResourceEntry = new GeneResourceEntry(jcas, e.getBegin(), e.getEnd());
 							geneResourceEntry.setEntryId(e.getEntityId());
 							geneResourceEntry.setSource("NCBI Gene");
-							geneResourceEntry.setComponentId(COMPONENT_NAME);
 							FSArray geneEntryList = new FSArray(jcas, 1);
 							geneEntryList.set(0, geneResourceEntry);
 							g.setResourceEntryList(geneEntryList);
@@ -125,7 +124,6 @@ public class PubtatorReader extends CollectionReader_ImplBase {
 							ResourceEntry organismResourceEntry = new GeneResourceEntry(jcas, e.getBegin(), e.getEnd());
 							organismResourceEntry.setEntryId(e.getEntityId());
 							organismResourceEntry.setSource("NCBI Taxonomy");
-							organismResourceEntry.setComponentId(COMPONENT_NAME);
 							FSArray organismEntryList = new FSArray(jcas, 1);
 							organismEntryList.set(0, organismResourceEntry);
 							o.setResourceEntryList(organismEntryList);

@@ -163,15 +163,18 @@ public class IGNReader extends CollectionReader_ImplBase {
 		LOGGER.info("getNext(CAS) - Reading text for PMID " + pmid);
 
 		// set pmid and text
-		String text = "";
+		StringBuilder text = new StringBuilder();
 		List<BioCPassage> passageListText = textDoc.getPassages();
 		for (BioCPassage passage : passageListText) {
+			// Separate passages - title and abstract - with a newline.
+			if (text.length() > 0)
+				text.replace(text.length() - 1, text.length(), "\n");
 			List<BioCSentence> sentList = passage.getSentences();
 			for (BioCSentence sent : sentList) {
 				String textPart = sent.getText().get();
 				// what follows is an awkward offset matching between text and
 				// annotation
-				text = text + textPart + " ";
+				text.append(textPart).append(" ");
 			}
 		}
 		Header header = new Header(aJCas);
@@ -184,7 +187,7 @@ public class IGNReader extends CollectionReader_ImplBase {
 		addDateForID(header, aJCas, pmid);
 
 		header.addToIndexes();
-		aJCas.setDocumentText(text);
+		aJCas.setDocumentText(text.toString());
 
 		// read and set (in our case Gene) annotations
 		if (null != mapAnnoFiles && !mapAnnoFiles.isEmpty()) {
