@@ -10,24 +10,8 @@
  **/
 package de.julielab.jcore.consumer.entityevaluator;
 
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.DOCUMENT_ID_COLUMN;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.OFFSETS_COLUMN;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_COLUMN_DEFINITIONS;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_ENTITY_TYPES;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_FEATURE_FILTERS;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OFFSET_MODE;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_COLUMNS;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_FILE;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_TYPE_PREFIX;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.SENTENCE_ID_COLUMN;
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.lang.reflect.Method;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.TreeMap;
-
+import com.google.common.io.Files;
+import de.julielab.jcore.types.*;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -35,14 +19,14 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.junit.Test;
 
-import com.google.common.io.Files;
+import java.io.File;
+import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.TreeMap;
 
-import de.julielab.jcore.types.Chemical;
-import de.julielab.jcore.types.Disease;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.GeneResourceEntry;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.Sentence;
+import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.*;
+import static org.junit.Assert.assertEquals;
 
 public class EntityEvaluatorConsumerTest {
 

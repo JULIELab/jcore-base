@@ -10,8 +10,8 @@
  **/
 package de.julielab.jcore.ae.ec;
 
-import static org.junit.Assert.*;
-
+import de.julielab.jcore.ae.ecn.ECNumberAnnotator;
+import de.julielab.jcore.types.Enzyme;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -20,8 +20,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.julielab.jcore.ae.ecn.ECNumberAnnotator;
-import de.julielab.jcore.types.Enzyme;
+import static org.junit.Assert.assertEquals;
 
 public class ECNumberAnnotatorTest {
 	@Test

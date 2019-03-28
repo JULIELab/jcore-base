@@ -1,12 +1,11 @@
 package de.julielab.jcore.consumer.es.preanalyzed;
 
-import java.io.IOException;
-
-import org.apache.commons.lang.NotImplementedException;
-
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import org.apache.commons.lang.NotImplementedException;
+
+import java.io.IOException;
 
 /**
  * This class corresponds to 'any other token' than a preanalyzed token. This is directly the reason why this class also

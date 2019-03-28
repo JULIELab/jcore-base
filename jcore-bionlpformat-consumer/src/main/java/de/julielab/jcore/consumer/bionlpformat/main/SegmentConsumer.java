@@ -10,23 +10,14 @@
  **/
 package de.julielab.jcore.consumer.bionlpformat.main;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.Iterator;
-
+import de.julielab.jcore.consumer.bionlpformat.utils.DocumentWriter;
+import de.julielab.jcore.consumer.bionlpformat.utils.SegmentWriter;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Type;
+import org.apache.uima.cas.*;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
@@ -34,10 +25,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.consumer.bionlpformat.utils.DocumentWriter;
-import de.julielab.jcore.consumer.bionlpformat.utils.SegmentWriter;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.pubmed.Header;
+import java.io.*;
+import java.util.Iterator;
 
 public class SegmentConsumer extends JCasAnnotator_ImplBase {
 	

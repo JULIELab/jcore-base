@@ -17,23 +17,9 @@
 
 package de.julielab.jcore.ae.lingpipegazetteer.chunking;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
+import com.aliasi.chunk.Chunker;
+import com.aliasi.dict.*;
+import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.resource.DataResource;
@@ -42,14 +28,13 @@ import org.apache.uima.resource.SharedResourceObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aliasi.chunk.Chunker;
-import com.aliasi.dict.AbstractDictionary;
-import com.aliasi.dict.ApproxDictionaryChunker;
-import com.aliasi.dict.DictionaryEntry;
-import com.aliasi.dict.ExactDictionaryChunker;
-import com.aliasi.dict.MapDictionary;
-import com.aliasi.dict.TrieDictionary;
-import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
+import java.io.*;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class ChunkerProviderImpl implements ChunkerProvider,
 		SharedResourceObject {

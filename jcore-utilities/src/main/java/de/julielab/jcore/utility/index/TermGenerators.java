@@ -10,11 +10,11 @@
  **/
 package de.julielab.jcore.utility.index;
 
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.tcas.Annotation;
+
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * This class offers a range of predefined term generators (to be used as a

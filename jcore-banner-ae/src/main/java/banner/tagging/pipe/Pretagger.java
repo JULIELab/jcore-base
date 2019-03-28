@@ -6,10 +6,6 @@
 
 package banner.tagging.pipe;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Set;
-
 import banner.tagging.Tagger;
 import banner.types.Mention;
 import banner.types.Mention.MentionType;
@@ -18,6 +14,9 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * This class is used by the CRFTagger as the base for the feature set.

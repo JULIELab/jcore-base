@@ -6,18 +6,15 @@
 
 package de.julielab.jcore.ae.lingpipegazetteer.uima;
 
-import static org.junit.Assert.assertEquals;
+import com.aliasi.chunk.Chunk;
+import com.aliasi.chunk.ChunkFactory;
+import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.aliasi.chunk.Chunk;
-import com.aliasi.chunk.ChunkFactory;
-
-import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
-import de.julielab.jcore.ae.lingpipegazetteer.uima.GazetteerAnnotator;
+import static org.junit.Assert.assertEquals;
 
 public class OverlappingChunkTest {
 	@Test

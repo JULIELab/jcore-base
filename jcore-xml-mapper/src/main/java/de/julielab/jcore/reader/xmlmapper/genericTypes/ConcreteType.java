@@ -14,11 +14,11 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.genericTypes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a Type form the (user-extended) UIMA TypeSystem that has features with concrete values (ConcreteFeatures).

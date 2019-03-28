@@ -1,10 +1,9 @@
 package de.julielab.jcore.ae.eventflattener;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.ext.FlattenedRelation;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIterator;
@@ -15,10 +14,10 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.ext.FlattenedRelation;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Creates {@link FlattenedRelation} instances according to {@link EventMention}

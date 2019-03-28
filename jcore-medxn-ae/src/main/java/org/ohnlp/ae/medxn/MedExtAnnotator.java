@@ -23,18 +23,9 @@
  *******************************************************************************/
 package org.ohnlp.ae.medxn;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.medical.*;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -44,17 +35,15 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.medical.Dose;
-import de.julielab.jcore.types.medical.Duration;
-import de.julielab.jcore.types.medical.Frequency;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.*;
+
 //import de.julielab.jcore.types.ohnlp.ConceptMention;
 //import de.julielab.jcore.types.ohnlp.Drug;
 //import de.julielab.jcore.types.ohnlp.LookupWindow;
-import de.julielab.jcore.types.medical.GeneralAttributeMention;
-import de.julielab.jcore.types.medical.Medication;
-import de.julielab.jcore.types.medical.Modus;
-import de.julielab.jcore.utility.JCoReAnnotationTools;
 
 
 

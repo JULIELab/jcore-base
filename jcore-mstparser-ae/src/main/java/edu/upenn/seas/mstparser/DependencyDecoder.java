@@ -6,10 +6,10 @@
 
 package edu.upenn.seas.mstparser;
 
+import de.julielab.gnu.trove.TIntIntHashMap;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import de.julielab.gnu.trove.TIntIntHashMap;
 
 public class DependencyDecoder {
 

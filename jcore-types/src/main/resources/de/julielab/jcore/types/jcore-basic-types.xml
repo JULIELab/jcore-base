@@ -2,7 +2,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Basic Types</name>
   <description>The type system contains the basic annotation types.</description>
-  <version>2.3.0</version>
+  <version>2.4.0</version>
   <vendor>JULIE Lab Jena, Germany</vendor>
   <types>
     <typeDescription>

@@ -6,19 +6,6 @@
 
 package banner.tagging.dictionary;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-
 import banner.tagging.Tagger;
 import banner.tokenization.Tokenizer;
 import banner.types.EntityType;
@@ -27,6 +14,11 @@ import banner.types.Mention.MentionType;
 import banner.types.Sentence;
 import banner.types.Token;
 import banner.util.Trie;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * This class represents a very simple dictionary-based tagger. All text

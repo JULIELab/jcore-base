@@ -1,8 +1,8 @@
 package de.julielab.jcore.consumer.es.filter;
 
-import java.util.List;
-
 import org.tartarus.snowball.SnowballProgram;
+
+import java.util.List;
 
 public class SnowballFilter extends AbstractFilter {
 

@@ -10,14 +10,15 @@
  **/
 package de.julielab.jcore.ae.lingpipegazetteer.utils;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //import edu.colorado.cleartk.types.SplitAnnotation;
 

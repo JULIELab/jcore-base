@@ -10,17 +10,15 @@
  **/
 package de.julielab.jcore.reader.xmi;
 
-import static org.junit.Assert.assertTrue;
-
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.Gene;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.julielab.jcore.reader.xmi.XmiCollectionReader;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.Gene;
+import static org.junit.Assert.assertTrue;
 
 public class XmiCollectionReaderTest {
 	@Test

@@ -10,9 +10,9 @@
  **/
 package de.julielab.jcore.utility.index;
 
-import java.util.Comparator;
-
 import org.apache.uima.jcas.tcas.Annotation;
+
+import java.util.Comparator;
 
 /**
  * This class offers some commonly used comparators on annotations.

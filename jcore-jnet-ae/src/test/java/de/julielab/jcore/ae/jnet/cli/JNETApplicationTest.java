@@ -6,14 +6,12 @@
 
 package de.julielab.jcore.ae.jnet.cli;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-
 import org.junit.After;
 import org.junit.Test;
 
-import de.julielab.jcore.ae.jnet.cli.JNETApplication;
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
 
 public class JNETApplicationTest {
 	private static final String PREFIX = "src/test/resources/de/julielab/jcore/ae/jnet/cli/";

@@ -17,9 +17,9 @@
 
 package de.julielab.jcore.ae.lingpipegazetteer.chunking;
 
-import java.util.Set;
-
 import com.aliasi.chunk.Chunker;
+
+import java.util.Set;
 
 public interface ChunkerProvider {
 	public Chunker getChunker();

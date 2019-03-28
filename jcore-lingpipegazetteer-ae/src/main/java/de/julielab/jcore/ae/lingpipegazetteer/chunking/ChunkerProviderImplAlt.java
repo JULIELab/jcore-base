@@ -17,18 +17,13 @@
 
 package de.julielab.jcore.ae.lingpipegazetteer.chunking;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-import java.util.zip.GZIPInputStream;
-
+import com.aliasi.chunk.Chunker;
+import com.aliasi.dict.*;
+import com.aliasi.spell.WeightedEditDistance;
+import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
+import com.aliasi.tokenizer.TokenizerFactory;
+import com.ibm.icu.text.Transliterator;
+import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.resource.DataResource;
@@ -37,19 +32,11 @@ import org.apache.uima.resource.SharedResourceObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aliasi.chunk.Chunker;
-import com.aliasi.dict.AbstractDictionary;
-import com.aliasi.dict.ApproxDictionaryChunker;
-import com.aliasi.dict.DictionaryEntry;
-import com.aliasi.dict.ExactDictionaryChunker;
-import com.aliasi.dict.MapDictionary;
-import com.aliasi.dict.TrieDictionary;
-import com.aliasi.spell.WeightedEditDistance;
-import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
-import com.aliasi.tokenizer.TokenizerFactory;
-import com.ibm.icu.text.Transliterator;
-
-import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
+import java.io.*;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+import java.util.zip.GZIPInputStream;
 
 /**
  * An alternative implementation because the original seemed a bit too complicated and inefficient.

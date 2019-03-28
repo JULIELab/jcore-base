@@ -12,11 +12,11 @@
 
 package edu.upenn.seas.mstparser;
 
-import java.util.ListIterator;
-
 import de.julielab.gnu.trove.TIntArrayList;
 import de.julielab.gnu.trove.TIntDoubleHashMap;
 import de.julielab.gnu.trove.TLinkedList;
+
+import java.util.ListIterator;
 
 /**
  * A <tt>FeatureVector</tt> that can hold up to two <tt>FeatureVector</tt> instances inside it, which allows for a very

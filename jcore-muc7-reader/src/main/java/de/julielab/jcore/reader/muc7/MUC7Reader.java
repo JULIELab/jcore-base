@@ -16,18 +16,9 @@
  **/
 package de.julielab.jcore.reader.muc7;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import de.julielab.jcore.types.Paragraph;
+import de.julielab.jcore.types.Section;
+import de.julielab.jcore.types.muc7.*;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
@@ -44,13 +35,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.julielab.jcore.types.Paragraph;
-import de.julielab.jcore.types.Section;
-import de.julielab.jcore.types.muc7.Coref;
-import de.julielab.jcore.types.muc7.ENAMEX;
-import de.julielab.jcore.types.muc7.MUC7Header;
-import de.julielab.jcore.types.muc7.NUMEX;
-import de.julielab.jcore.types.muc7.TIMEX;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class MUC7Reader extends CollectionReader_ImplBase {
 

@@ -6,26 +6,19 @@
 
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
+import de.julielab.jcore.types.*;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.FSArray;
-import org.junit.Before;
-import org.junit.Test;
-import org.apache.uima.fit.factory.JCasFactory;
-
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.EventTrigger;
-import de.julielab.jcore.types.Gene;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.*;
 
 
 public class EventWriterTest {

@@ -1,15 +1,10 @@
 package edu.uchsc.ccp.nlp.ei.mutation;
 
+import junit.framework.TestCase;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import junit.framework.TestCase;
+import java.util.*;
 
 /*
  * Copyright (c) 2007 Regents of the University of Colorado

@@ -11,12 +11,7 @@
 package de.julielab.jcore.reader.dta.mapping;
 
 import com.google.common.collect.ImmutableMap;
-
-import de.julielab.jcore.types.extensions.dta.DTABelletristik;
-import de.julielab.jcore.types.extensions.dta.DTAFachtext;
-import de.julielab.jcore.types.extensions.dta.DTAGebrauchsliteratur;
-import de.julielab.jcore.types.extensions.dta.DTAOther;
-import de.julielab.jcore.types.extensions.dta.DocumentClassification;
+import de.julielab.jcore.types.extensions.dta.*;
 
 public class DTAMapper extends AbstractMapper {
 

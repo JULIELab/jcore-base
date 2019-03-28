@@ -18,21 +18,15 @@
 
 package de.julielab.jcore.ae.jtbd;
 
+import cc.mallet.pipe.Pipe;
+import cc.mallet.types.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cc.mallet.pipe.Pipe;
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.Instance;
-import cc.mallet.types.LabelAlphabet;
-import cc.mallet.types.LabelSequence;
-import cc.mallet.types.Token;
-import cc.mallet.types.TokenSequence;
 
 class Sentence2TokenPipe extends Pipe {
 

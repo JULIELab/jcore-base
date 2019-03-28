@@ -1,8 +1,8 @@
 package de.julielab.jcore.consumer.es.filter;
 
-import java.util.List;
-
 import com.ibm.icu.text.Transliterator;
+
+import java.util.List;
 
 public class LatinTransliterationFilter extends AbstractFilter {
 

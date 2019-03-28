@@ -10,18 +10,17 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-
+import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
+import de.julielab.jcore.types.Journal;
+import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
-import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
-import de.julielab.jcore.types.Journal;
-import de.julielab.jcore.types.pubmed.Header;
+import java.io.File;
+
+import static org.junit.Assert.*;
 
 public class FrontParserTest {
 	@Test

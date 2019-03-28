@@ -10,21 +10,18 @@
  **/
 package de.julielab.jcore.ae.jsbd;
 
-import static org.junit.Assert.assertTrue;
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.assertj.core.data.Offset;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
+import org.assertj.core.data.Offset;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class Abstract2UnitPipeTest {
 

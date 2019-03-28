@@ -10,12 +10,8 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.zip.GZIPInputStream;
-
+import com.ximpleware.AutoPilot;
+import com.ximpleware.VTDNav;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
@@ -23,8 +19,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.VTDNav;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.zip.GZIPInputStream;
+
+import static org.junit.Assert.assertNotNull;
 
 public class SectionParserTest {
 

@@ -6,13 +6,9 @@
 
 package de.julielab.jcore.reader.bionlpformat.main;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.Map;
-
+import de.julielab.jcore.reader.bionlpformat.utils.AnnotationFileMapper;
+import de.julielab.jcore.reader.bionlpformat.utils.TextFileMapper;
+import de.julielab.jcore.types.Annotation;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -25,9 +21,8 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.reader.bionlpformat.utils.TextFileMapper;
-import de.julielab.jcore.reader.bionlpformat.utils.AnnotationFileMapper;
-import de.julielab.jcore.types.Annotation;
+import java.io.*;
+import java.util.Map;
 
 public class BioEventReader extends CollectionReader_ImplBase {
 

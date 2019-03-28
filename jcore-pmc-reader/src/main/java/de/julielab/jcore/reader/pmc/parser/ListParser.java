@@ -10,12 +10,11 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
-import java.util.stream.IntStream;
-
-import org.apache.uima.jcas.cas.FSArray;
-
 import de.julielab.jcore.types.List;
 import de.julielab.jcore.types.ListItem;
+import org.apache.uima.jcas.cas.FSArray;
+
+import java.util.stream.IntStream;
 
 public class ListParser extends DefaultElementParser {
 

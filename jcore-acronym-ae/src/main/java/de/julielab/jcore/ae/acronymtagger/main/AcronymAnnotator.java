@@ -28,22 +28,11 @@
 
 package de.julielab.jcore.ae.acronymtagger.main;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.julielab.jcore.ae.acronymtagger.entries.AcronymEntry;
+import de.julielab.jcore.ae.acronymtagger.entries.FullformEntry;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.AbbreviationLongform;
+import de.julielab.jcore.types.Sentence;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.annotator.AnnotatorConfigurationException;
@@ -57,12 +46,14 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.acronymtagger.entries.AcronymEntry;
-import de.julielab.jcore.ae.acronymtagger.entries.FullformEntry;
-import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.AbbreviationLongform;
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.Sentence;
+import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Finds fullforms for acronyms using the Schwartz/Hearst algorithm if no fullform was found, then the acronym can be

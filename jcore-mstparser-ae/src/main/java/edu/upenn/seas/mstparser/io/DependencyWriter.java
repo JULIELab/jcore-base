@@ -12,9 +12,12 @@
 
 package edu.upenn.seas.mstparser.io;
 
-import java.io.*;
+import edu.upenn.seas.mstparser.DependencyInstance;
 
-import edu.upenn.seas.mstparser.*;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 /**
  * A class that defines common behavior and abstract methods for

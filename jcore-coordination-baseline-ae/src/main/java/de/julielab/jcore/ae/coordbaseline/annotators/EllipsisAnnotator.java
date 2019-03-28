@@ -21,24 +21,23 @@
 
 package de.julielab.jcore.ae.coordbaseline.annotators;
 
-import java.util.ArrayList;
-
 import de.julielab.jcore.ae.coordbaseline.main.Baseline;
 import de.julielab.jcore.ae.coordbaseline.types.CoordinationToken;
+import de.julielab.jcore.types.Coordination;
+import de.julielab.jcore.types.EEE;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.EEE;
-import de.julielab.jcore.types.Coordination;
-
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.UimaContext;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.text.AnnotationIndex;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 
 public class EllipsisAnnotator extends JCasAnnotator_ImplBase 
 {

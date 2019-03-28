@@ -14,22 +14,20 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.typeParser;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.uima.jcas.JCas;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.ximpleware.AutoPilot;
 import com.ximpleware.VTDNav;
-
 import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteFeature;
 import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
 import de.julielab.jcore.reader.xmlmapper.genericTypes.FeatureTemplate;
 import de.julielab.jcore.reader.xmlmapper.mapper.DocumentTextData;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.StringArrayBuilder;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.TypeBuilder;
+import org.apache.uima.jcas.JCas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Handels to parse a StringArray Type from a TypeTemplate to a ConcreteType

@@ -10,26 +10,18 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.mapper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.FSArray;
-
 import com.ximpleware.VTDException;
 import com.ximpleware.VTDNav;
-
 import de.julielab.jcore.types.AbstractSection;
 import de.julielab.jcore.types.AbstractSectionHeading;
 import de.julielab.jcore.types.AbstractText;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
+
+import java.util.*;
 
 /**
  * This class expects a MEDLINE structured abstract pointed to by the

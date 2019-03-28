@@ -21,11 +21,11 @@
 
 package de.julielab.jcore.ae.jpos.pipes;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import cc.mallet.types.Instance;
 import de.julielab.jcore.ae.jpos.tagger.Sentence;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SentencePipeIterator implements Iterator<Instance> {
 

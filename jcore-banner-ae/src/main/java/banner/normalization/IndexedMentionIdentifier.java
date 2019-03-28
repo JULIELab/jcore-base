@@ -1,10 +1,6 @@
 package banner.normalization;
 
-import banner.types.Entity;
-import banner.types.EntityIdentification;
-import banner.types.EntityName;
-import banner.types.Mention;
-import banner.types.Sentence;
+import banner.types.*;
 import banner.util.IndexedMetricSetSimilarity;
 import banner.util.RankedList;
 import banner.util.SetSimilarityMetric;

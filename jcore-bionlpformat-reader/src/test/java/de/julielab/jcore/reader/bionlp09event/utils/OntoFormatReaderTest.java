@@ -10,12 +10,11 @@
  **/
 package de.julielab.jcore.reader.bionlp09event.utils;
 
-import java.io.File;
-import java.io.IOException;
-
+import de.julielab.jcore.reader.bionlpformat.utils.OntoFormatReader;
 import org.junit.Test;
 
-import de.julielab.jcore.reader.bionlpformat.utils.OntoFormatReader;
+import java.io.File;
+import java.io.IOException;
 
 public class OntoFormatReaderTest {
 

@@ -16,18 +16,12 @@
 
 package de.julielab.jcore.ae.lingpipegazetteer.uima;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.aliasi.chunk.Chunk;
+import com.aliasi.chunk.ChunkFactory;
+import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProviderImplAlt;
+import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
+import de.julielab.jcore.types.*;
 import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -50,17 +44,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.aliasi.chunk.Chunk;
-import com.aliasi.chunk.ChunkFactory;
-
-import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProviderImplAlt;
-import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
-import de.julielab.jcore.ae.lingpipegazetteer.uima.GazetteerAnnotator;
-import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.AbbreviationLongform;
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.OntClassMention;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class GazetteerAnnotatorTest extends TestCase {
 

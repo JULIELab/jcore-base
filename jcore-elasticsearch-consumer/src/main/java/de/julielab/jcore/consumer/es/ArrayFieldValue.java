@@ -1,11 +1,11 @@
 package de.julielab.jcore.consumer.es;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.julielab.jcore.consumer.es.preanalyzed.IFieldValue;
 import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedFieldValue;
 import de.julielab.jcore.consumer.es.preanalyzed.RawToken;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArrayFieldValue extends ArrayList<IFieldValue> implements
         IFieldValue {

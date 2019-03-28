@@ -10,16 +10,13 @@
  **/
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.medical.Medication;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.uima.cas.Feature;
-import org.apache.uima.jcas.cas.FSArray;
-
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.medical.Medication;
 
 public class MedEventWriter {
 	private static final String MEDICATION_TYPE = "DRUG";

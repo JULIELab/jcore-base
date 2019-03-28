@@ -6,17 +6,8 @@
 
 package de.julielab.jcore.consumer.bionlpformat.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import de.julielab.jcore.types.*;
+import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -26,14 +17,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.julielab.jcore.types.AbstractText;
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.EventTrigger;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Title;
-import de.julielab.jcore.types.pubmed.Header;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EventConsumerTest {
 	private static final String EVENT_E8 = "E8	Phosphorylation:T14 Theme:T17 Site:T13";

@@ -12,7 +12,8 @@ import org.junit.Test;
 
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class LingscopePosAnnotatorTest {
     // NOTE: To write tests here, http://nactem7.mib.man.ac.uk/geniatagger/ can be extremely helpful (automatic POS tagging)

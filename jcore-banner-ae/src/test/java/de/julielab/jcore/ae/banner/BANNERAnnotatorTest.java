@@ -10,11 +10,8 @@
  **/
 package de.julielab.jcore.ae.banner;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Sentence;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -22,11 +19,13 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
-
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Sentence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class BANNERAnnotatorTest {
 	private final static Logger log = LoggerFactory.getLogger(BANNERAnnotatorTest.class);

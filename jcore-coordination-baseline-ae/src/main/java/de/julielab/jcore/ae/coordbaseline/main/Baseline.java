@@ -6,9 +6,9 @@
 
 package de.julielab.jcore.ae.coordbaseline.main;
 
-import java.util.ArrayList;
-
 import de.julielab.jcore.ae.coordbaseline.types.CoordinationToken;
+
+import java.util.ArrayList;
 
 /**
  * @author lichtenwald

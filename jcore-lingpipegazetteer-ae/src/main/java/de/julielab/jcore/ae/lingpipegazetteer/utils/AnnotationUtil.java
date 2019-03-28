@@ -10,9 +10,10 @@
  **/
 package de.julielab.jcore.ae.lingpipegazetteer.utils;
 
-import org.apache.uima.jcas.tcas.Annotation;
-//import opennlp.tools.util.Span;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.tcas.Annotation;
+
+//import opennlp.tools.util.Span;
 
 //import edu.colorado.cleartk.types.ContiguousAnnotation;
 //import edu.colorado.cleartk.types.SplitAnnotation;

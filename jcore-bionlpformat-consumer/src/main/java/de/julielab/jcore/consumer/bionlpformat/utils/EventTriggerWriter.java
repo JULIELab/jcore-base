@@ -6,12 +6,12 @@
 
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashSet;
-import java.util.Set;
+ import de.julielab.jcore.types.EventTrigger;
 
-import de.julielab.jcore.types.EventTrigger;
+ import java.io.IOException;
+ import java.io.Writer;
+ import java.util.HashSet;
+ import java.util.Set;
 
 public class EventTriggerWriter {
 	private Writer writer;

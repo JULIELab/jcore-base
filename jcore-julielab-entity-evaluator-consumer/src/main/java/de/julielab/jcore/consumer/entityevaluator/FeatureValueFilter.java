@@ -9,19 +9,18 @@
  **/
 package de.julielab.jcore.consumer.entityevaluator;
 
+import de.julielab.jcore.utility.JCoReFeaturePath;
+import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.jcas.cas.TOP;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.jcas.cas.TOP;
-
-import de.julielab.jcore.utility.JCoReFeaturePath;
 
 public class FeatureValueFilter {
     private static final Pattern fullFilterDefinitionFormat = Pattern.compile("(.+:)?\\/(([^=]+=.[^=;]*;?)+)");

@@ -20,17 +20,11 @@
 
 package de.julielab.jcore.ae.opennlp.postag;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.ArrayList;
-
+import de.julielab.jcore.types.POSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
-
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.cas.CASRuntimeException;
@@ -44,9 +38,12 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.POSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 public class PosTagAnnotator extends JCasAnnotator_ImplBase {
 

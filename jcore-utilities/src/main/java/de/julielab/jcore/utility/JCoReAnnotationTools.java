@@ -18,6 +18,12 @@
  **/
 package de.julielab.jcore.utility;
 
+import org.apache.commons.lang3.Range;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JFSIndexRepository;
+import org.apache.uima.jcas.tcas.Annotation;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -25,12 +31,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang3.Range;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JFSIndexRepository;
 // import de.julielab.jcore.types.Annotation;
-import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Most of this functionality is found in UIMAfit nowadays and should be used from there.

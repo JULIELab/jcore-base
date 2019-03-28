@@ -10,21 +10,14 @@
  **/
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
-
+import de.julielab.jcore.types.EventMention;
+import de.julielab.jcore.types.medical.Medication;
 import org.apache.uima.jcas.cas.FSArray;
 
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.medical.Dose;
-import de.julielab.jcore.types.medical.Duration;
-import de.julielab.jcore.types.medical.Frequency;
-import de.julielab.jcore.types.medical.Medication;
-import de.julielab.jcore.types.medical.Modus;
-import de.julielab.jcore.types.medical.Reason;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EventMentionWriter {
 	private Writer writer;

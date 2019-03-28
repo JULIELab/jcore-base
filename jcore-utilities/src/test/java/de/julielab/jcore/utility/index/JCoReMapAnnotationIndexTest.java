@@ -10,7 +10,11 @@
  **/
 package de.julielab.jcore.utility.index;
 
-import static org.junit.Assert.assertEquals;
+import de.julielab.jcore.types.Entity;
+import de.julielab.jcore.types.Token;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.jcas.JCas;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -18,12 +22,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.uima.fit.factory.JCasFactory;
-import org.apache.uima.jcas.JCas;
-import org.junit.Test;
-
-import de.julielab.jcore.types.Entity;
-import de.julielab.jcore.types.Token;
+import static org.junit.Assert.assertEquals;
 
 public class JCoReMapAnnotationIndexTest {
 	@Test

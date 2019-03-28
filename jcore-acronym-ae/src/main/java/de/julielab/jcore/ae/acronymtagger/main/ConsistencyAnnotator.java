@@ -14,14 +14,13 @@
  **/
 package de.julielab.jcore.ae.acronymtagger.main;
 
-import java.util.Stack;
-
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.AbbreviationLongform;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 
-import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.AbbreviationLongform;
+import java.util.Stack;
 
 /**
  * TODO insert description

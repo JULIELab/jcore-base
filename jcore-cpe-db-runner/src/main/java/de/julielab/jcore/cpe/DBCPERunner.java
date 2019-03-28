@@ -17,17 +17,9 @@
 
 package de.julielab.jcore.cpe;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import de.julielab.jcore.reader.db.DBReader;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
+import org.apache.commons.cli.*;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.metadata.CpeDescription;
@@ -39,8 +31,10 @@ import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.reader.db.DBReader;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class DBCPERunner {
 

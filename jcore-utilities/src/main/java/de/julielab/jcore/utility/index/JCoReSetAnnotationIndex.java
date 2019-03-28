@@ -10,16 +10,16 @@
  **/
 package de.julielab.jcore.utility.index;
 
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.stream.Stream;
-
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Type;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * <p>

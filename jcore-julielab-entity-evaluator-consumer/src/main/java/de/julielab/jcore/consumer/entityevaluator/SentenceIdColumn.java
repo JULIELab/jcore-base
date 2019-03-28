@@ -10,16 +10,15 @@
  **/
 package de.julielab.jcore.consumer.entityevaluator;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SentenceIdColumn extends Column {
 	private static final Logger log = LoggerFactory.getLogger(SentenceIdColumn.class);

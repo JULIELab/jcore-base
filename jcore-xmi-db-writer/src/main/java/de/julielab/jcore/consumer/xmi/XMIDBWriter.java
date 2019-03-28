@@ -24,6 +24,7 @@ import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xml.*;
 import de.julielab.xml.util.XMISplitterException;
+import de.julielab.xmlData.cli.TableNotFoundException;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.uima.UimaContext;
@@ -48,7 +49,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Connection;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -335,7 +335,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private void checkTableDefinition(String annotationTableName, String schemaAnnotation) throws ResourceInitializationException {
         try {
             dbc.checkTableDefinition(annotationTableName, schemaAnnotation);
-        } catch (TableSchemaMismatchException e) {
+        } catch (TableSchemaMismatchException | TableNotFoundException e) {
             throw new ResourceInitializationException(e);
         }
     }

@@ -1,10 +1,12 @@
 package de.julielab.jcore.consumer.es;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import de.julielab.jcore.consumer.es.preanalyzed.Document;
+import de.julielab.jcore.consumer.es.preanalyzed.IFieldValue;
+import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedFieldValue;
+import de.julielab.jcore.consumer.es.preanalyzed.RawToken;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -14,14 +16,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import de.julielab.jcore.consumer.es.preanalyzed.Document;
-import de.julielab.jcore.consumer.es.preanalyzed.IFieldValue;
-import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedFieldValue;
-import de.julielab.jcore.consumer.es.preanalyzed.RawToken;
-import de.julielab.jcore.utility.JCoReTools;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractCasToJsonConsumer extends JCasAnnotator_ImplBase {
 	private static final Logger log = LoggerFactory.getLogger(AbstractCasToJsonConsumer.class);

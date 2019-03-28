@@ -17,13 +17,10 @@
 
 package de.julielab.jcore.consumer.cas2conll;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import de.julielab.jcore.types.DependencyRelation;
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -38,10 +35,12 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.DependencyRelation;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ConllConsumer extends JCasAnnotator_ImplBase {
 

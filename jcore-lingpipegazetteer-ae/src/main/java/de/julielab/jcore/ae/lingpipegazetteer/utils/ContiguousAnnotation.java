@@ -7,7 +7,7 @@
 /* First created by JCasGen Tue Sep 04 09:17:47 MDT 2007 */
 package de.julielab.jcore.ae.lingpipegazetteer.utils;
 
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 

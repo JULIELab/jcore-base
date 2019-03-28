@@ -1,8 +1,6 @@
 package de.julielab.jcore.ae.topicindexing;
 
-import cc.mallet.types.Instance;
 import cc.mallet.types.LabelSequence;
-import cc.mallet.types.Labeling;
 import de.julielab.jcore.types.AutoDescriptor;
 import de.julielab.jcore.types.DocumentTopics;
 import de.julielab.jcore.utility.JCoReTools;

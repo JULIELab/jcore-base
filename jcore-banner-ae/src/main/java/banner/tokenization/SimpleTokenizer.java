@@ -6,11 +6,11 @@
 
 package banner.tokenization;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import banner.types.Sentence;
 import banner.types.Token;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tokens ouput by this tokenizer consist of a contiguous block of alphanumeric characters or a single punctuation mark.

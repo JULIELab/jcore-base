@@ -10,15 +10,14 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-
+import de.julielab.jcore.types.AuthorInfo;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.julielab.jcore.types.AuthorInfo;
+import java.io.File;
+
+import static org.junit.Assert.*;
 
 public class ContribParserTest {
 	@Test

@@ -1,15 +1,13 @@
 package de.julielab.jcore.ae.jnet.tagger;
 
-import java.io.IOException;
+import cc.mallet.types.Instance;
+import cc.mallet.types.InstanceList;
+import org.junit.Test;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
-
-import org.junit.Test;
-
-import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
 
 public class NETaggerTest {
 	@Test

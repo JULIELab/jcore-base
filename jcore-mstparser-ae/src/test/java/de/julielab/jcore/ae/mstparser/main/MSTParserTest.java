@@ -16,11 +16,10 @@
  **/
 package de.julielab.jcore.ae.mstparser.main;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
+import de.julielab.jcore.types.DependencyRelation;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -42,10 +41,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import de.julielab.jcore.types.DependencyRelation;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import junit.framework.TestCase;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * This is the JUnit test for the MST Parser Annotator.

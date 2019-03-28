@@ -10,14 +10,13 @@
  **/
 package de.julielab.jcore.consumer.entityevaluator;
 
+import de.julielab.jcore.utility.JCoReFeaturePath;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
-
-import de.julielab.jcore.utility.JCoReFeaturePath;
 
 public class DocumentIdColumn extends Column {
 

@@ -1,11 +1,10 @@
 package de.julielab.jcore.consumer.es;
 
-import java.util.List;
-
+import de.julielab.jcore.consumer.es.preanalyzed.Document;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
 
-import de.julielab.jcore.consumer.es.preanalyzed.Document;
+import java.util.List;
 
 /**
  * Creates a list of Documents from a single {@link JCas} instance.

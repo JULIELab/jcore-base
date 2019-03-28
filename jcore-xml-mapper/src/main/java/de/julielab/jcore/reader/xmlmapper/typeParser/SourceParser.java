@@ -15,15 +15,13 @@
 
 package de.julielab.jcore.reader.xmlmapper.typeParser;
 
-import org.apache.uima.jcas.JCas;
-
 import com.ximpleware.VTDNav;
-
 import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteFeature;
 import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
 import de.julielab.jcore.reader.xmlmapper.mapper.DocumentTextData;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.StandardTypeBuilder;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.TypeBuilder;
+import org.apache.uima.jcas.JCas;
 
 /**
  * Handels to parse a Source Feature from a TypeTemplate to a ConcreteType

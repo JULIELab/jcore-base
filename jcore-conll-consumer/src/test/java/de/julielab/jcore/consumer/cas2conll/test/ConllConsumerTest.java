@@ -10,7 +10,18 @@
  **/
 package de.julielab.jcore.consumer.cas2conll.test;
 
-import static org.junit.Assert.assertTrue;
+import de.julielab.jcore.consumer.cas2conll.ConllConsumer;
+import de.julielab.jcore.types.DependencyRelation;
+import de.julielab.jcore.types.PennBioIEPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.pubmed.Header;
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,19 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.JCasFactory;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.FSArray;
-import org.junit.Test;
-
-import de.julielab.jcore.consumer.cas2conll.ConllConsumer;
-import de.julielab.jcore.types.DependencyRelation;
-import de.julielab.jcore.types.PennBioIEPOSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.pubmed.Header;
+import static org.junit.Assert.assertTrue;
 
 public class ConllConsumerTest {
 

@@ -3,7 +3,7 @@
 /* First created by JCasGen Mon Feb 05 09:56:21 CET 2018 */
 package de.julielab.jcore.types;
 
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 

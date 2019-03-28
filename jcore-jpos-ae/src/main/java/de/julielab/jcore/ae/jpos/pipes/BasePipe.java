@@ -21,29 +21,22 @@
 
 package de.julielab.jcore.ae.jpos.pipes;
 
+import cc.mallet.pipe.Pipe;
+import cc.mallet.types.*;
+import com.uea.stemmer.UEALite;
+import de.julielab.jcore.ae.jpos.tagger.FeatureConfiguration;
+import de.julielab.jcore.ae.jpos.tagger.Sentence;
+import de.julielab.jcore.ae.jpos.tagger.Unit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.tartarus.snowball.SnowballProgram;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.tartarus.snowball.SnowballProgram;
-
-import com.uea.stemmer.UEALite;
-
-import cc.mallet.pipe.Pipe;
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.Instance;
-import cc.mallet.types.LabelAlphabet;
-import cc.mallet.types.LabelSequence;
-import cc.mallet.types.Token;
-import cc.mallet.types.TokenSequence;
-import de.julielab.jcore.ae.jpos.tagger.FeatureConfiguration;
-import de.julielab.jcore.ae.jpos.tagger.Sentence;
-import de.julielab.jcore.ae.jpos.tagger.Unit;
 
 class BasePipe extends Pipe {
 

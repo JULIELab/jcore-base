@@ -10,19 +10,13 @@
  **/
 package de.julielab.jcore.reader.ign;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.util.*;
-
 import com.pengyifan.bioc.*;
 import com.pengyifan.bioc.io.BioCDocumentReader;
+import de.julielab.jcore.types.Date;
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.GeneResourceEntry;
+import de.julielab.jcore.types.Journal;
+import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -36,11 +30,9 @@ import org.apache.uima.util.Progress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Date;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.GeneResourceEntry;
-import de.julielab.jcore.types.Journal;
-import de.julielab.jcore.types.pubmed.Header;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.*;
 
 /**
  * The IGNReader reads corpus files in BioC-format.<br>

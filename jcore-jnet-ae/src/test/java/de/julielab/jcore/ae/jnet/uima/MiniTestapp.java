@@ -21,14 +21,8 @@
  */
 package de.julielab.jcore.ae.jnet.uima;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
-
+import com.google.common.io.Files;
+import de.julielab.jcore.types.Sentence;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -47,9 +41,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.google.common.io.Files;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
-import de.julielab.jcore.types.Sentence;
+import static org.junit.Assert.assertEquals;
 
 public class MiniTestapp {
 

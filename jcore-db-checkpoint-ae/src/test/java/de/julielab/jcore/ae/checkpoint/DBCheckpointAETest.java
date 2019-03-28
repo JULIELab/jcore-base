@@ -4,11 +4,8 @@ import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.reader.xmi.XmiDBMultiplier;
 import de.julielab.jcore.reader.xmi.XmiDBMultiplierReader;
 import de.julielab.jcore.reader.xmi.XmiDBReader;
-import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.ext.DBProcessingMetaData;
-import de.julielab.xmlData.cli.TableNotFoundException;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.SubsetStatus;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -18,9 +15,7 @@ import org.apache.uima.analysis_engine.JCasIterator;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -30,12 +25,8 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class DBCheckpointAETest {

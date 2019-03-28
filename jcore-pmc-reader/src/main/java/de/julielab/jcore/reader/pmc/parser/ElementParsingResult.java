@@ -10,12 +10,12 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
+import org.apache.uima.jcas.tcas.Annotation;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.apache.uima.jcas.tcas.Annotation;
 
 public class ElementParsingResult extends ParsingResult {
 

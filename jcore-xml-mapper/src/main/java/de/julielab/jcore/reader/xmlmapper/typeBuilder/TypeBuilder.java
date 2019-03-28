@@ -15,11 +15,10 @@
 
 package de.julielab.jcore.reader.xmlmapper.typeBuilder;
 
+import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
-
-import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
 
 
 /**

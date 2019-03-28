@@ -10,16 +10,15 @@
  **/
 package de.julielab.jcore.reader.dta.mapping;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-
+import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 
-import de.julielab.jcore.types.extensions.dta.DocumentClassification;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
 public abstract class MappingService {
 	static final String CLASIFICATION = "http://www.deutschestextarchiv.de/doku/klassifikation#";

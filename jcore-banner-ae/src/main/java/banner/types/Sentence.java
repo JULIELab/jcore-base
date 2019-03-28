@@ -6,20 +6,13 @@
 
 package banner.types;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import banner.tagging.TagFormat;
 import banner.tagging.TagPosition;
 import banner.tagging.Tagger;
 import banner.tokenization.Tokenizer;
 import banner.types.Mention.MentionType;
+
+import java.util.*;
 
 /**
  * This class represents a single sentence, and provides for the text to be tokenized and for mentions.

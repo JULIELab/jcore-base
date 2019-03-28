@@ -16,11 +16,11 @@
 
 package de.julielab.jcore.ae.jnet.tagger;
 
+import cc.mallet.types.LabelAlphabet;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-
-import cc.mallet.types.LabelAlphabet;
 
 public class Tags {
 

@@ -6,24 +6,9 @@
 
 package de.julielab.jcore.consumer.iexml;
 
+import de.julielab.jcore.types.mantra.*;
 import generated.AnnoType;
 import generated.Lang;
-
-import java.io.File;
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
@@ -36,11 +21,19 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.mantra.Corpus;
-import de.julielab.jcore.types.mantra.Document;
-import de.julielab.jcore.types.mantra.Entity;
-import de.julielab.jcore.types.mantra.NER;
-import de.julielab.jcore.types.mantra.Unit;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.File;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class IEXMLConsumer extends CasConsumer_ImplBase {
 

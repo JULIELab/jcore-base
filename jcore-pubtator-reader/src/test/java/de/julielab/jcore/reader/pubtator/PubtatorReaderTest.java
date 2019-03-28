@@ -10,16 +10,7 @@
  **/
 package de.julielab.jcore.reader.pubtator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
+import de.julielab.jcore.types.*;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -27,13 +18,12 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.julielab.jcore.types.AbstractText;
-import de.julielab.jcore.types.Chemical;
-import de.julielab.jcore.types.Disease;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.Title;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 public class PubtatorReaderTest {
 	@Test

@@ -1,5 +1,7 @@
 package de.julielab.jcore.ae.jemas;
 
+import de.julielab.jcore.types.LexicalDocumentEmotion;
+import de.julielab.jcore.types.Token;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -8,9 +10,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.LexicalDocumentEmotion;
 
 public class EmotionAnalyzer extends JCasAnnotator_ImplBase {
 

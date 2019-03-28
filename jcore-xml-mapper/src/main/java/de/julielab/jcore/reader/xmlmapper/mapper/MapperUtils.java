@@ -17,7 +17,6 @@ package de.julielab.jcore.reader.xmlmapper.mapper;
 
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
-
 import de.julielab.xml.JulieXMLTools;
 
 /**

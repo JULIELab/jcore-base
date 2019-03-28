@@ -10,23 +10,21 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
+import com.ximpleware.NavException;
+import com.ximpleware.VTDNav;
+import de.julielab.jcore.reader.pmc.ElementProperties;
+import de.julielab.jcore.reader.pmc.PMCReader;
+import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import org.apache.uima.cas.Feature;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
-
-import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
-
-import de.julielab.jcore.reader.pmc.ElementProperties;
-import de.julielab.jcore.reader.pmc.PMCReader;
-import de.julielab.jcore.reader.pmc.parser.ParsingResult.ResultType;
 
 /**
  * <p>

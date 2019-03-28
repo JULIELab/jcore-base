@@ -10,14 +10,8 @@
  **/
 package de.julielab.jcore.ae.biosem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
+import corpora.DataLoader;
+import de.julielab.jcore.types.*;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -30,18 +24,15 @@ import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import corpora.DataLoader;
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.EventTrigger;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Header;
 import relations.EventExtraction;
 import relations.PData;
 import relations.Word;
 import utils.BioSemException;
 import utils.DBUtils;
+
+import java.util.*;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 

@@ -1,15 +1,11 @@
 package de.julielab.jcore.ae.topicindexing;
 
-import cc.mallet.types.IDSorter;
 import de.julielab.topicmodeling.businessobjects.Model;
 import de.julielab.topicmodeling.businessobjects.Topic;
 import org.apache.uima.resource.SharedResourceObject;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 public interface ITopicModelProvider extends SharedResourceObject {
 

@@ -9,17 +9,19 @@
 
 package de.julielab.jcore.reader.dta;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
+import com.ximpleware.ParseException;
+import com.ximpleware.VTDNav;
+import de.julielab.jcore.reader.dta.mapping.MappingService;
+import de.julielab.jcore.types.Lemma;
+import de.julielab.jcore.types.STTSPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.extensions.dta.Header;
+import de.julielab.jcore.types.extensions.dta.PersonInfo;
+import de.julielab.xml.JulieXMLConstants;
+import de.julielab.xml.JulieXMLTools;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
@@ -32,20 +34,11 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableMap;
-import com.ximpleware.ParseException;
-import com.ximpleware.VTDNav;
-
-import de.julielab.jcore.reader.dta.mapping.MappingService;
-import de.julielab.jcore.types.Lemma;
-import de.julielab.jcore.types.STTSPOSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.extensions.dta.Header;
-import de.julielab.jcore.types.extensions.dta.PersonInfo;
-import de.julielab.xml.JulieXMLConstants;
-import de.julielab.xml.JulieXMLTools;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public class DTAFileReader extends CollectionReader_ImplBase {
 	static final String COMPONENT_ID = DTAFileReader.class.getCanonicalName();

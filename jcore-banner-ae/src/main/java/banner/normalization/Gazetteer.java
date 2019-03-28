@@ -1,23 +1,12 @@
 package banner.normalization;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import banner.tokenization.Tokenizer;
 import banner.types.Entity;
 import banner.types.EntityName;
 import banner.types.EntityType;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * A Gazetteer allows read in a list of {@link Entity}s and their associated {@link EntityName}s from a file. These can

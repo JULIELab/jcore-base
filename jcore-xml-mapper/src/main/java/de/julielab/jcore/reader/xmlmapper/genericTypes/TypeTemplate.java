@@ -14,23 +14,17 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.genericTypes;
 
-import static org.fest.reflect.core.Reflection.constructor;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.apache.uima.collection.CollectionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.julielab.jcore.reader.xmlmapper.typeParser.FSArrayParser;
 import de.julielab.jcore.reader.xmlmapper.typeParser.StandardTypeParser;
 import de.julielab.jcore.reader.xmlmapper.typeParser.StringArrayParser;
 import de.julielab.jcore.reader.xmlmapper.typeParser.TypeParser;
+import org.apache.uima.collection.CollectionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+
+import static org.fest.reflect.core.Reflection.constructor;
 
 /**
  * Represents a Template for a type which Contains a List of Feature Templates

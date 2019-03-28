@@ -17,13 +17,9 @@
 
 package de.julielab.jcore.cpe;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.ext.DBProcessingMetaData;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -37,9 +33,12 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.ext.DBProcessingMetaData;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class DBStatusCallbackListener implements StatusCallbackListener {
 

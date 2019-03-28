@@ -10,21 +10,11 @@
  **/
 package de.julielab.jcore.consumer.txt;
 
-import static de.julielab.jcore.consumer.txt.SentenceTokenConsumer.*;
-import static org.junit.Assert.*;
-
-import java.io.*;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
 import de.julielab.java.utilities.FileUtilities;
-import org.apache.uima.UIMAException;
+import de.julielab.jcore.types.PennBioIEPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -32,11 +22,17 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.junit.Test;
 
-import de.julielab.jcore.types.PennBioIEPOSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.pubmed.Header;
-import static org.assertj.core.api.Assertions.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static de.julielab.jcore.consumer.txt.SentenceTokenConsumer.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 public class SentenceTokenConsumerTest {
 	/**
 	 * just tests if there is an error with an empty CAS

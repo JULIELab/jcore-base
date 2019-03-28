@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.pmc.PMCMultiplierReader</implementationName>
@@ -77,18 +77,18 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
+        <fsIndexCollection />
         <capabilities>
             <capability>
-                <inputs/>
+                <inputs />
                 <outputs>
                     <type>de.julielab.jcore.types.casmultiplier.JCoReURI</type>
                     <type>org.apache.uima.ducc.Workitem</type>
                 </outputs>
-                <languagesSupported/>
+                <languagesSupported />
             </capability>
         </capabilities>
         <operationalProperties>
@@ -96,5 +96,5 @@
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    </processingResourceMetaData>
+    <version>2.4.0</version></processingResourceMetaData>
 </collectionReaderDescription>

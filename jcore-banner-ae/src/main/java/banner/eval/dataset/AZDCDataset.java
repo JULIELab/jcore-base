@@ -1,26 +1,16 @@
 package banner.eval.dataset;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-
 import banner.tokenization.Tokenizer;
 import banner.types.EntityType;
 import banner.types.Mention;
-import banner.types.Sentence;
 import banner.types.Mention.MentionType;
+import banner.types.Sentence;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 public class AZDCDataset extends Dataset
 {

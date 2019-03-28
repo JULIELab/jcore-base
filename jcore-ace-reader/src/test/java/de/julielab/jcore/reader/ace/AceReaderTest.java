@@ -17,18 +17,11 @@
 
 package de.julielab.jcore.reader.ace;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.ace.*;
 import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
@@ -48,25 +41,14 @@ import org.apache.uima.util.XMLSerializer;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.ace.GPE;
-import de.julielab.jcore.types.ace.LOC;
-import de.julielab.jcore.types.ace.PART_WHOLE;
-import de.julielab.jcore.types.ace.PART_WHOLE_Inverse;
-import de.julielab.jcore.types.ace.Transaction;
-import de.julielab.jcore.types.ace.Document;
-import de.julielab.jcore.types.ace.Entity;
-import de.julielab.jcore.types.ace.EntityAttribute;
-import de.julielab.jcore.types.ace.Event;
-import de.julielab.jcore.types.ace.EventMention;
-import de.julielab.jcore.types.ace.Relation;
-import de.julielab.jcore.types.ace.RelationMention;
-import de.julielab.jcore.types.ace.SourceFile;
-import de.julielab.jcore.types.ace.Timex2;
-import de.julielab.jcore.types.ace.Value;
-import de.julielab.jcore.utility.JCoReTools;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class AceReaderTest extends TestCase {
 	/**

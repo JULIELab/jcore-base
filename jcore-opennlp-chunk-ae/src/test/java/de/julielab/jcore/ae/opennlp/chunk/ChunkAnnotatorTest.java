@@ -17,11 +17,11 @@
 
 package de.julielab.jcore.ae.opennlp.chunk;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-
+import de.julielab.jcore.types.Chunk;
+import de.julielab.jcore.types.PennBioIEPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -36,11 +36,10 @@ import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Chunk;
-import de.julielab.jcore.types.PennBioIEPOSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import junit.framework.TestCase;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 public class ChunkAnnotatorTest extends TestCase {
 

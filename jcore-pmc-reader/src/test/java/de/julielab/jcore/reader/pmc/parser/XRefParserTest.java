@@ -1,19 +1,17 @@
 package de.julielab.jcore.reader.pmc.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-
+import com.ximpleware.AutoPilot;
+import com.ximpleware.VTDNav;
+import de.julielab.jcore.types.pubmed.InternalReference;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.VTDNav;
+import java.io.File;
 
-import de.julielab.jcore.types.pubmed.InternalReference;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class XRefParserTest {
 	@Test

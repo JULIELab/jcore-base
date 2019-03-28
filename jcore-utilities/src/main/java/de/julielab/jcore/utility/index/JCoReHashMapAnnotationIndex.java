@@ -10,11 +10,11 @@
  **/
 package de.julielab.jcore.utility.index;
 
-import java.util.HashMap;
-
 import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+
+import java.util.HashMap;
 
 /**
  * <p>

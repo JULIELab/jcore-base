@@ -18,28 +18,19 @@
 
 package de.julielab.jcore.ae.jpos.pipes;
 
+import cc.mallet.pipe.Pipe;
+import cc.mallet.pipe.SerialPipes;
+import cc.mallet.pipe.TokenSequence2FeatureVectorSequence;
+import cc.mallet.pipe.tsf.*;
+import cc.mallet.types.*;
+import de.julielab.jcore.ae.jpos.tagger.FeatureConfiguration;
+import de.julielab.jcore.ae.jpos.tagger.Sentence;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.regex.Pattern;
-
-import cc.mallet.pipe.Pipe;
-import cc.mallet.pipe.SerialPipes;
-import cc.mallet.pipe.TokenSequence2FeatureVectorSequence;
-import cc.mallet.pipe.tsf.LexiconMembership;
-import cc.mallet.pipe.tsf.OffsetConjunctions;
-import cc.mallet.pipe.tsf.RegexMatches;
-import cc.mallet.pipe.tsf.TokenTextCharNGrams;
-import cc.mallet.pipe.tsf.TokenTextCharPrefix;
-import cc.mallet.pipe.tsf.TokenTextCharSuffix;
-import cc.mallet.types.FeatureVectorSequence;
-import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
-import cc.mallet.types.LabelAlphabet;
-import cc.mallet.types.LabelSequence;
-import de.julielab.jcore.ae.jpos.tagger.FeatureConfiguration;
-import de.julielab.jcore.ae.jpos.tagger.Sentence;
 
 public class FeatureGenerator {
 

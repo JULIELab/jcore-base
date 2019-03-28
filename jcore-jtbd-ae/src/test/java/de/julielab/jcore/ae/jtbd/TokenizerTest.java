@@ -14,16 +14,11 @@
 
 package de.julielab.jcore.ae.jtbd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import cc.mallet.pipe.Pipe;
+import cc.mallet.types.Instance;
+import cc.mallet.types.InstanceList;
+import de.julielab.jcore.ae.jtbd.main.TokenAnnotator;
+import de.julielab.jcore.types.Token;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -34,13 +29,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cc.mallet.pipe.Pipe;
-import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
-import de.julielab.jcore.ae.jtbd.Tokenizer;
-import de.julielab.jcore.ae.jtbd.Unit;
-import de.julielab.jcore.ae.jtbd.main.TokenAnnotator;
-import de.julielab.jcore.types.Token;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Test for the class {@link Tokenizer}

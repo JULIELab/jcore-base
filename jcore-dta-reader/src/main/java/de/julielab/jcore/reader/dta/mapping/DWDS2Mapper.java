@@ -11,14 +11,7 @@
 package de.julielab.jcore.reader.dta.mapping;
 
 import com.google.common.collect.ImmutableMap;
-
-import de.julielab.jcore.types.extensions.dta.DWDS2Belletristik;
-import de.julielab.jcore.types.extensions.dta.DWDS2Gebrauchsliteratur;
-import de.julielab.jcore.types.extensions.dta.DWDS2Roman;
-import de.julielab.jcore.types.extensions.dta.DWDS2Traktat;
-import de.julielab.jcore.types.extensions.dta.DWDS2Wissenschaft;
-import de.julielab.jcore.types.extensions.dta.DWDS2Zeitung;
-import de.julielab.jcore.types.extensions.dta.DocumentClassification;
+import de.julielab.jcore.types.extensions.dta.*;
 
 public class DWDS2Mapper extends AbstractMapper {
 

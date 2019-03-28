@@ -10,19 +10,13 @@
  **/
 package de.julielab.jcore.reader.dta;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.ximpleware.VTDNav;
+import de.julielab.jcore.reader.dta.util.DTAUtils;
+import de.julielab.jcore.types.Lemma;
+import de.julielab.jcore.types.STTSPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.extensions.dta.*;
+import de.julielab.xml.JulieXMLTools;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.collection.CollectionReader;
@@ -32,19 +26,11 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
-import com.ximpleware.VTDNav;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.*;
 
-import de.julielab.jcore.reader.dta.util.DTAUtils;
-import de.julielab.jcore.types.Lemma;
-import de.julielab.jcore.types.STTSPOSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.extensions.dta.DTABelletristik;
-import de.julielab.jcore.types.extensions.dta.DWDS1Belletristik;
-import de.julielab.jcore.types.extensions.dta.DWDS2Wissenschaft;
-import de.julielab.jcore.types.extensions.dta.DocumentClassification;
-import de.julielab.jcore.types.extensions.dta.Header;
-import de.julielab.jcore.types.extensions.dta.PersonInfo;
-import de.julielab.xml.JulieXMLTools;
+import static org.junit.Assert.*;
 
 public class DTAFileReaderTest {
 

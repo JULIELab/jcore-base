@@ -1,15 +1,14 @@
 package de.julielab.jcore.utility;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.HashSet;
-
+import de.julielab.jcore.types.InternalReference;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.julielab.jcore.types.InternalReference;
+import java.util.Arrays;
+import java.util.HashSet;
+
+import static org.junit.Assert.assertEquals;
 
 public class JCoReCondensedDocumentTextTest {
 	@Test

@@ -16,15 +16,12 @@
  **/
 package de.julielab.jcore.ae.opennlpparser.main;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-
+import de.julielab.jcore.ae.opennlpparser.utils.OffsetMapping;
+import de.julielab.jcore.types.Constituent;
+import de.julielab.jcore.types.*;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
+import opennlp.tools.parser.*;
+import opennlp.tools.util.Span;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -38,20 +35,14 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.opennlpparser.utils.OffsetMapping;
-import de.julielab.jcore.types.Constituent;
-import de.julielab.jcore.types.GENIAConstituent;
-import de.julielab.jcore.types.PTBConstituent;
-import de.julielab.jcore.types.PennBioIEConstituent;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.utility.JCoReAnnotationTools;
-import opennlp.tools.parser.AbstractBottomUpParser;
-import opennlp.tools.parser.Parse;
-import opennlp.tools.parser.Parser;
-import opennlp.tools.parser.ParserFactory;
-import opennlp.tools.parser.ParserModel;
-import opennlp.tools.util.Span;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 public class ParseAnnotator extends JCasAnnotator_ImplBase {
 

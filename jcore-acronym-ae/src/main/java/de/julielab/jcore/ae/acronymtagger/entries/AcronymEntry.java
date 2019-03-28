@@ -21,11 +21,7 @@
 package de.julielab.jcore.ae.acronymtagger.entries;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.Map.Entry;
 
 

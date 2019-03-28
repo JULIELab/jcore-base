@@ -1,13 +1,8 @@
 package de.julielab.jcore.consumer.es;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-
+import de.julielab.jcore.consumer.es.filter.Filter;
+import de.julielab.jcore.consumer.es.preanalyzed.*;
+import de.julielab.jcore.utility.JCoReFeaturePath;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FeatureStructure;
@@ -18,13 +13,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.consumer.es.filter.Filter;
-import de.julielab.jcore.consumer.es.preanalyzed.IFieldValue;
-import de.julielab.jcore.consumer.es.preanalyzed.IToken;
-import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedFieldValue;
-import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedToken;
-import de.julielab.jcore.consumer.es.preanalyzed.RawToken;
-import de.julielab.jcore.utility.JCoReFeaturePath;
+import java.util.*;
 
 /**
  * <p>

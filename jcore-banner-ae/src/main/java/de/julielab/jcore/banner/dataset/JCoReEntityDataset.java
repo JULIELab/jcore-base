@@ -10,20 +10,6 @@
  **/
 package de.julielab.jcore.banner.dataset;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import banner.eval.dataset.Dataset;
 import banner.tokenization.Tokenizer;
 import banner.types.EntityType;
@@ -32,6 +18,15 @@ import banner.types.Mention.MentionType;
 import banner.types.Sentence;
 import banner.types.Token;
 import de.julielab.java.utilities.FileUtilities;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class JCoReEntityDataset extends Dataset {
 

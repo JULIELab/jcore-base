@@ -6,26 +6,19 @@
 
 package de.julielab.jcore.ae.coordbaseline.main;
 
+import de.julielab.jcore.types.*;
+import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
-import org.apache.uima.cas.text.AnnotationIndex;
-import org.apache.uima.cas.FSIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.julielab.jcore.types.POSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Coordination;
-import de.julielab.jcore.types.CoordinationElement;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.Entity;
-import de.julielab.jcore.types.EEE;
-import junit.framework.TestCase;
 
 import java.util.ArrayList;
 

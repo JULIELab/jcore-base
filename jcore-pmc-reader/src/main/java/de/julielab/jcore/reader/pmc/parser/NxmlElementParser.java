@@ -10,24 +10,14 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
+import com.ximpleware.*;
+import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser.Tagset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
-
-import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser.Tagset;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * <p>

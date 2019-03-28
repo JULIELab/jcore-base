@@ -18,17 +18,9 @@
  **/
 package de.julielab.jcore.ae.opennlp.chunk;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import de.julielab.jcore.types.*;
+import opennlp.tools.chunker.ChunkerME;
+import opennlp.tools.chunker.ChunkerModel;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -43,21 +35,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Chunk;
-import de.julielab.jcore.types.ChunkADJP;
-import de.julielab.jcore.types.ChunkADVP;
-import de.julielab.jcore.types.ChunkCONJP;
-import de.julielab.jcore.types.ChunkLST;
-import de.julielab.jcore.types.ChunkNP;
-import de.julielab.jcore.types.ChunkPP;
-import de.julielab.jcore.types.ChunkPRT;
-import de.julielab.jcore.types.ChunkSBAR;
-import de.julielab.jcore.types.ChunkVP;
-import de.julielab.jcore.types.POSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import opennlp.tools.chunker.ChunkerME;
-import opennlp.tools.chunker.ChunkerModel;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChunkAnnotator extends JCasAnnotator_ImplBase {
 

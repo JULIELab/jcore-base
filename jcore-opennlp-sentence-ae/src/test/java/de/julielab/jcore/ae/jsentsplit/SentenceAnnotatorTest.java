@@ -17,10 +17,8 @@
 
 package de.julielab.jcore.ae.jsentsplit;
 
-import java.util.Iterator;
-
+import de.julielab.jcore.types.Sentence;
 import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
@@ -31,7 +29,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Sentence;
+import java.util.Iterator;
 
 public class SentenceAnnotatorTest extends TestCase {
 

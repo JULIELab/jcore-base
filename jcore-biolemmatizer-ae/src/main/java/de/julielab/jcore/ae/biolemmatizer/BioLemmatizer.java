@@ -1,7 +1,9 @@
 package de.julielab.jcore.ae.biolemmatizer;
 
-import java.util.Collection;
-
+import de.julielab.jcore.types.Lemma;
+import de.julielab.jcore.types.POSTag;
+import de.julielab.jcore.types.Token;
+import edu.ucdenver.ccp.nlp.biolemmatizer.LemmataEntry;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -10,15 +12,13 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-
-import de.julielab.jcore.types.POSTag;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.Lemma;
-import edu.ucdenver.ccp.nlp.biolemmatizer.LemmataEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 public class BioLemmatizer extends JCasAnnotator_ImplBase {
     private final static Logger log = LoggerFactory.getLogger(BioLemmatizer.class);

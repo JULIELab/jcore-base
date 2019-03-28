@@ -1,11 +1,9 @@
 package de.julielab.jules.ae;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.FileInputStream;
-import java.util.Set;
-
+import com.google.common.collect.Sets;
+import de.julielab.jcore.ae.eventflattener.EventFlattener;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.ext.FlattenedRelation;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
@@ -19,11 +17,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Sets;
+import java.io.FileInputStream;
+import java.util.Set;
 
-import de.julielab.jcore.ae.eventflattener.EventFlattener;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.ext.FlattenedRelation;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EventFlattenerTest {
 

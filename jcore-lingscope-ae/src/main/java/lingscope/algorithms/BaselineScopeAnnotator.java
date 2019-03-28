@@ -1,10 +1,11 @@
 package lingscope.algorithms;
 
+import lingscope.structures.AnnotatedSentence;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lingscope.structures.AnnotatedSentence;
 
 /**
  *

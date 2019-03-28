@@ -10,29 +10,21 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
+import com.ximpleware.NavException;
+import com.ximpleware.XPathEvalException;
+import com.ximpleware.XPathParseException;
+import de.julielab.jcore.reader.pmc.PMCReader;
+import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser.Tagset;
+import de.julielab.jcore.types.*;
+import de.julielab.jcore.types.pubmed.Header;
+import de.julielab.jcore.types.pubmed.ManualDescriptor;
+import de.julielab.jcore.types.pubmed.OtherID;
+import org.apache.uima.jcas.cas.FSArray;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import org.apache.uima.jcas.cas.FSArray;
-
-import com.ximpleware.NavException;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
-
-import de.julielab.jcore.reader.pmc.PMCReader;
-import de.julielab.jcore.reader.pmc.parser.NxmlDocumentParser.Tagset;
-import de.julielab.jcore.types.AbstractSection;
-import de.julielab.jcore.types.AbstractText;
-import de.julielab.jcore.types.AuthorInfo;
-import de.julielab.jcore.types.Date;
-import de.julielab.jcore.types.Journal;
-import de.julielab.jcore.types.Keyword;
-import de.julielab.jcore.types.Title;
-import de.julielab.jcore.types.pubmed.Header;
-import de.julielab.jcore.types.pubmed.ManualDescriptor;
-import de.julielab.jcore.types.pubmed.OtherID;
 
 public class FrontParser extends NxmlElementParser {
 

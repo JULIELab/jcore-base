@@ -9,16 +9,13 @@
  **/
 package de.julielab.jcore.consumer.entityevaluator;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
+import de.julielab.jcore.utility.index.Comparators;
+import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
+import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -33,11 +30,12 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.java.utilities.FileUtilities;
-import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
-import de.julielab.jcore.utility.index.Comparators;
-import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
-import de.julielab.jcore.utility.index.TermGenerators;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 

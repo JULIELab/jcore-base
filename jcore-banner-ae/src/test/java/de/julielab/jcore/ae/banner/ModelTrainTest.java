@@ -10,14 +10,13 @@
  **/
 package de.julielab.jcore.ae.banner;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
+import banner.eval.BANNER;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.junit.Test;
 
-import banner.eval.BANNER;
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
 
 public class ModelTrainTest {
 	@Test

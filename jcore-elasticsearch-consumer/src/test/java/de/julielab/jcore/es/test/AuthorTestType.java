@@ -3,11 +3,10 @@
 /* First created by JCasGen Mon Feb 05 09:56:12 CET 2018 */
 package de.julielab.jcore.es.test;
 
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
-
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.cas.TOP_Type;
 
 
 /** 

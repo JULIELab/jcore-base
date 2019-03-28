@@ -21,10 +21,10 @@
 
 package de.julielab.jcore.ae.jnet.tagger;
 
+import cc.mallet.types.Instance;
+
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import cc.mallet.types.Instance;
 
 public class SentencePipeIterator implements Iterator<Instance> {
 

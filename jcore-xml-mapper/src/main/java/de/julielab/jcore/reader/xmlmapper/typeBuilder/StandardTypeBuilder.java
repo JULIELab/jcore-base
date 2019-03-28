@@ -14,12 +14,8 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.typeBuilder;
 
-import static org.fest.reflect.core.Reflection.constructor;
-import static org.fest.reflect.core.Reflection.method;
-
-import java.util.Collection;
-import java.util.HashMap;
-
+import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteFeature;
+import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionException;
@@ -29,8 +25,10 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteFeature;
-import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
+import java.util.HashMap;
+
+import static org.fest.reflect.core.Reflection.constructor;
+import static org.fest.reflect.core.Reflection.method;
 
 /**
  * In this class, the actual UIMA types are built from the templates which have

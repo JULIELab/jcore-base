@@ -1,16 +1,16 @@
 package de.julielab.jcore.consumer.es.sharedresources;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-
 import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public abstract class AbstractMapProvider<K, V> implements IMapProvider<K, V> {

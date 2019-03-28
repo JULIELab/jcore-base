@@ -18,17 +18,6 @@
 
 package de.julielab.jcore.ae.jnet.cli;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
-
 import cc.mallet.fst.CRF;
 import cc.mallet.types.Alphabet;
 import de.julielab.jcore.ae.jnet.utils.FormatConverter;
@@ -39,6 +28,12 @@ import de.julielab.jnet.tagger.NETagger;
 import de.julielab.jnet.tagger.Sentence;
 import de.julielab.jnet.tagger.Tags;
 import de.julielab.jnet.tagger.Unit;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.*;
 
 /**
  * Command line application

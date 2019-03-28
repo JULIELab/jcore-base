@@ -6,14 +6,13 @@
 
 package de.julielab.jcore.reader.bionlpformat.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
-import org.apache.uima.jcas.JCas;
-
 import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.Title;
 import de.julielab.jcore.types.pubmed.Header;
+import org.apache.uima.jcas.JCas;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class TextFileMapper {
 

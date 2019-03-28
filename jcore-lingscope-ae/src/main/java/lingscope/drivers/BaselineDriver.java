@@ -1,10 +1,11 @@
 package lingscope.drivers;
 
-import java.util.List;
 import lingscope.algorithms.Annotator;
 import lingscope.algorithms.BaselineScopeAnnotator;
 import lingscope.io.AnnotatedSentencesIO;
 import lingscope.structures.AnnotatedSentence;
+
+import java.util.List;
 
 /**
  *

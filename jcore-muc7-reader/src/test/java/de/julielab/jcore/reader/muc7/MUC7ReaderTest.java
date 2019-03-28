@@ -6,14 +6,12 @@
 
 package de.julielab.jcore.reader.muc7;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import javax.xml.parsers.ParserConfigurationException;
-
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.muc7.Coref;
+import de.julielab.jcore.types.muc7.ENAMEX;
+import de.julielab.jcore.types.muc7.NUMEX;
+import de.julielab.jcore.types.muc7.TIMEX;
 import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
@@ -28,11 +26,10 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.xml.sax.SAXException;
 
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.muc7.Coref;
-import de.julielab.jcore.types.muc7.ENAMEX;
-import de.julielab.jcore.types.muc7.NUMEX;
-import de.julielab.jcore.types.muc7.TIMEX;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MUC7ReaderTest extends TestCase {
 	/**

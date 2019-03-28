@@ -32,10 +32,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import static de.julielab.jcore.reader.db.TableReaderConstants.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.assertj.core.api.Assertions.*;
+import static org.junit.Assert.*;
 
 public class DBMultiplierTest {
     private final static Logger log = LoggerFactory.getLogger(DBMultiplierTest.class);

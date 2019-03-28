@@ -14,7 +14,6 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class TopicModelProvider implements ITopicModelProvider {

@@ -6,13 +6,7 @@
 
 package banner.types;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Instances of this class represent the type of a {@link Mention}. Instances of this class are kept in a static cache

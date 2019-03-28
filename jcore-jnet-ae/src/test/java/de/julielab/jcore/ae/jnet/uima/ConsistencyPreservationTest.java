@@ -17,10 +17,8 @@
 
 package de.julielab.jcore.ae.jnet.uima;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.TreeSet;
-
+import de.julielab.jcore.types.*;
+import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -33,16 +31,9 @@ import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.AbbreviationLongform;
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.Disease;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Organism;
-import de.julielab.jcore.types.ResourceEntry;
-import de.julielab.jcore.types.Token;
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 /**
  * Please note that in the original test there were "GoodEntityMentions" and

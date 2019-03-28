@@ -3,7 +3,6 @@ package de.julielab.jcore.consumer.topics;
 import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.types.DocumentTopics;
 import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.ace.Document;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;

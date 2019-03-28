@@ -10,13 +10,12 @@
  **/
 package de.julielab.jcore.reader.dta.mapping;
 
+import de.julielab.jcore.types.extensions.dta.DocumentClassification;
+import org.apache.uima.jcas.JCas;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-
-import org.apache.uima.jcas.JCas;
-
-import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 
 public abstract class AbstractMapper {
 	final String mainClassification;

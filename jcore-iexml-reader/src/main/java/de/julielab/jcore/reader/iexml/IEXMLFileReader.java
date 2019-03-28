@@ -10,23 +10,9 @@
 
 package de.julielab.jcore.reader.iexml;
 
-import generated.Unit.Text;
 import de.julielab.jcore.types.Date;
-import de.julielab.jcore.types.mantra.Document;
-import de.julielab.jcore.types.mantra.Entity;
-import de.julielab.jcore.types.mantra.NER;
-import de.julielab.jcore.types.mantra.Unit;
-import de.julielab.jcore.types.mantra.Corpus;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXB;
-import javax.xml.datatype.XMLGregorianCalendar;
-
+import de.julielab.jcore.types.mantra.*;
+import generated.Unit.Text;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -38,6 +24,14 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXB;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IEXMLFileReader extends CollectionReader_ImplBase {
 

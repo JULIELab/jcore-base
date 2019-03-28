@@ -10,15 +10,14 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
-import java.util.List;
-
 import com.ximpleware.NavException;
-
 import de.julielab.jcore.reader.pmc.PMCReader;
 import de.julielab.jcore.types.AbstractSection;
 import de.julielab.jcore.types.AbstractSectionHeading;
 import de.julielab.jcore.types.Section;
 import de.julielab.jcore.types.SectionTitle;
+
+import java.util.List;
 
 public class SectionParser extends DefaultElementParser {
 

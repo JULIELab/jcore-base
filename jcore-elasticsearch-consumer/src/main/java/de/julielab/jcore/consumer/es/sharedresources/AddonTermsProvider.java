@@ -1,19 +1,18 @@
 package de.julielab.jcore.consumer.es.sharedresources;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AddonTermsProvider implements IAddonTermsProvider {
     Logger log = LoggerFactory.getLogger(AddonTermsProvider.class);

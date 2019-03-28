@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.bc2gm.BC2GMReader</implementationName>
@@ -21,21 +21,21 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings/>
+        <configurationParameterSettings />
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
-                <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+                <import name="de.julielab.jcore.types.jcore-document-meta-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
+        <fsIndexCollection />
         <capabilities>
             <capability>
-                <inputs/>
+                <inputs />
                 <outputs>
                     <type>de.julielab.jcore.types.Gene</type>
                 </outputs>
-                <languagesSupported/>
+                <languagesSupported />
             </capability>
         </capabilities>
         <operationalProperties>
@@ -43,5 +43,5 @@
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    </processingResourceMetaData>
+    <version>2.4.0</version></processingResourceMetaData>
 </collectionReaderDescription>

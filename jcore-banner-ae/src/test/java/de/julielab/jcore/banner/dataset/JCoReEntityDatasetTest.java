@@ -10,16 +10,15 @@
  **/
 package de.julielab.jcore.banner.dataset;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import banner.tokenization.SimpleTokenizer;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
-
-import banner.tokenization.SimpleTokenizer;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class JCoReEntityDatasetTest {
 	@Test

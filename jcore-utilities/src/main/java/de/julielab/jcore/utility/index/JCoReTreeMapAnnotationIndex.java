@@ -10,16 +10,12 @@
  **/
 package de.julielab.jcore.utility.index;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.TreeMap;
-import java.util.stream.Stream;
-
 import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * <p>

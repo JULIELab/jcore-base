@@ -3,26 +3,20 @@
  */
 package banner.eval.dataset;
 
+import banner.tokenization.Tokenizer;
+import banner.types.EntityType;
+import banner.types.Mention;
+import banner.types.Mention.MentionType;
+import banner.types.Sentence;
+import banner.types.Token;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-
-import banner.tokenization.Tokenizer;
-import banner.types.Mention;
-import banner.types.EntityType;
-import banner.types.Sentence;
-import banner.types.Token;
-import banner.types.Mention.MentionType;
 
 /**
  * @author bob

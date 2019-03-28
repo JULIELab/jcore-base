@@ -18,12 +18,12 @@
 
 package de.julielab.jcore.ae.jpos.pipes;
 
-import java.util.ArrayList;
-
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
+
+import java.util.ArrayList;
 
 public class TokenNGramPipe extends Pipe {
 

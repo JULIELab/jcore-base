@@ -10,39 +10,9 @@
  **/
 package de.julielab.jcore.utility;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.CommonArrayFS;
-import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeaturePath;
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.FeatureValuePath;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeClass;
-import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.*;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.cas.FSArray;
@@ -51,8 +21,12 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.ResourceEntry;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class is an implementation of the UIMA {@link FeaturePath} interface and adds some capabilities to it.

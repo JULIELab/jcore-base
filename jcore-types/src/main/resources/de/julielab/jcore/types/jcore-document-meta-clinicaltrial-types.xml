@@ -5,10 +5,10 @@
         document meta information (bibliographical and content information),
         especially for PubMed abstracts.
     </description>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
     <imports>
-        <import location="jcore-document-meta-pubmed-types.xml"/>
+        <import location="jcore-document-meta-pubmed-types.xml" />
     </imports>
     <types>
         <typeDescription>
@@ -20,49 +20,49 @@
             <features>
                 <featureDescription>
                     <name>studyType</name>
-                    <description/>
+                    <description />
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
                 <featureDescription>
                     <name>studyDesignInfo</name>
-                    <description/>
+                    <description />
                     <rangeTypeName>de.julielab.jcore.types.ct.StudyDesignInfo</rangeTypeName>
                 </featureDescription>
                 <featureDescription>
                     <name>minimumAge</name>
-                    <description/>
+                    <description />
                     <rangeTypeName>uima.cas.Integer</rangeTypeName>
                 </featureDescription>
                 <featureDescription>
                     <name>maximumAge</name>
-                    <description/>
+                    <description />
                     <rangeTypeName>uima.cas.Integer</rangeTypeName>
                 </featureDescription>
                 <featureDescription>
                     <name>gender</name>
-                    <description/>
+                    <description />
                     <rangeTypeName>uima.cas.StringArray</rangeTypeName>
                 </featureDescription>
             </features>
         </typeDescription>
         <typeDescription>
             <name>de.julielab.jcore.types.ct.StudyDesignInfo</name>
-            <description/>
+            <description />
             <supertypeName>de.julielab.jcore.types.DocumentAnnotation</supertypeName>
             <features>
                 <featureDescription>
                     <name>interventionModel</name>
-                    <description/>
+                    <description />
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
                 <featureDescription>
                     <name>primaryPurpose</name>
-                    <description/>
+                    <description />
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
                 <featureDescription>
                     <name>masking</name>
-                    <description/>
+                    <description />
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
             </features>

@@ -1,15 +1,14 @@
 package de.julielab.jcore.consumer.es.preanalyzed;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.apache.commons.lang.NotImplementedException;
-
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import org.apache.commons.lang.NotImplementedException;
+
+import java.io.IOException;
+import java.util.List;
 
 public class PreanalyzedFieldValue implements IFieldValue {
 	@SerializedName("v")

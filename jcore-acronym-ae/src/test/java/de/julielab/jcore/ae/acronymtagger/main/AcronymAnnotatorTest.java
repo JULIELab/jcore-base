@@ -15,13 +15,10 @@
 
 package de.julielab.jcore.ae.acronymtagger.main;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.apache.uima.UIMAException;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.AbbreviationLongform;
+import de.julielab.jcore.types.Sentence;
+import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -42,10 +39,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.AbbreviationLongform;
-import de.julielab.jcore.types.Sentence;
-import junit.framework.TestCase;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * The AcronymAnnotatorTest class

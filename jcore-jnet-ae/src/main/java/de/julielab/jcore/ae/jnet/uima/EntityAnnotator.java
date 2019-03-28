@@ -18,23 +18,16 @@
 
 package de.julielab.jcore.ae.jnet.uima;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
+import cc.mallet.fst.CRF;
+import cc.mallet.types.Alphabet;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
+import de.julielab.jcore.utility.index.JCoReCoverIndex;
+import de.julielab.jnet.tagger.NETagger;
+import de.julielab.jnet.tagger.Unit;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -49,16 +42,15 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cc.mallet.fst.CRF;
-import cc.mallet.types.Alphabet;
-import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.utility.JCoReAnnotationTools;
-import de.julielab.jcore.utility.index.JCoReCoverIndex;
-import de.julielab.jnet.tagger.NETagger;
-import de.julielab.jnet.tagger.Unit;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class EntityAnnotator extends JCasAnnotator_ImplBase {
 

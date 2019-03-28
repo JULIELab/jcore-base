@@ -13,10 +13,10 @@
 package edu.upenn.seas.mstparser.io;
 
 
-import java.io.*;
-
 import edu.upenn.seas.mstparser.DependencyInstance;
 import edu.upenn.seas.mstparser.Util;
+
+import java.io.IOException;
 
 /**
  * A writer to create files in MST format.

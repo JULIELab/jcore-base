@@ -2,7 +2,7 @@
 <typePriorities xmlns="http://uima.apache.org/resourceSpecifier">
     <name>jcore-type-priorities</name>
     <description />
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <vendor />
 	<priorityList>
 	    <type>de.julielab.jcore.types.Title</type>

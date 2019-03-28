@@ -1,8 +1,8 @@
 package de.julielab.jcore.consumer.es;
 
-import java.util.List;
-
 import de.julielab.jcore.consumer.es.filter.Filter;
+
+import java.util.List;
 
 /**
  * This class is a declaration of the all the values that should be derived from

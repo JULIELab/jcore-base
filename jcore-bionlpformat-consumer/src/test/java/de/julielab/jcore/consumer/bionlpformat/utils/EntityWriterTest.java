@@ -6,21 +6,18 @@
 
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.julielab.jcore.types.EntityMention;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.jcas.JCas;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.uima.jcas.JCas;
-import org.junit.Before;
-import org.junit.Test;
-import org.apache.uima.fit.factory.JCasFactory;
-
-import de.julielab.jcore.types.EntityMention;
+import static org.easymock.classextension.EasyMock.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class EntityWriterTest {
 	private static final String ENTITY_T13 = "T13	Entity 322 330	tyrosine\n";

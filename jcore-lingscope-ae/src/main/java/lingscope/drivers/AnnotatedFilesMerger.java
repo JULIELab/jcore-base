@@ -1,9 +1,10 @@
 package lingscope.drivers;
 
-import java.util.ArrayList;
-import java.util.List;
 import lingscope.io.AnnotatedSentencesIO;
 import lingscope.structures.AnnotatedSentence;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Merges two annotated files. Useful to merge a words scope file with a POS cue

@@ -1,7 +1,12 @@
 package banner.postprocessing;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * This class was adapted from the BioText ExtractAbbrev.java software by Ariel S. Schwartz. See

@@ -6,8 +6,9 @@
 
 package de.julielab.jcore.ae.jpos.postagger;
 
-import static org.junit.Assert.assertEquals;
-
+import de.julielab.jcore.types.STTSMedPOSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.FSIterator;
@@ -18,9 +19,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Test;
 
-import de.julielab.jcore.types.STTSMedPOSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import static org.junit.Assert.assertEquals;
 
 public class POSAnnotatorTest {
 

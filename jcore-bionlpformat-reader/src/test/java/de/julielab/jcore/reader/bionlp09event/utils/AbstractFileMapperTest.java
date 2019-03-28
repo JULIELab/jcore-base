@@ -6,12 +6,10 @@
 
 package de.julielab.jcore.reader.bionlp09event.utils;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.*;
-import static org.junit.Assert.*;
-
-import java.io.BufferedReader;
-
+import de.julielab.jcore.reader.bionlpformat.utils.TextFileMapper;
+import de.julielab.jcore.types.AbstractText;
+import de.julielab.jcore.types.Title;
+import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
@@ -23,10 +21,12 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.julielab.jcore.reader.bionlpformat.utils.TextFileMapper;
-import de.julielab.jcore.types.AbstractText;
-import de.julielab.jcore.types.Title;
-import de.julielab.jcore.types.pubmed.Header;
+import java.io.BufferedReader;
+
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class AbstractFileMapperTest {
 

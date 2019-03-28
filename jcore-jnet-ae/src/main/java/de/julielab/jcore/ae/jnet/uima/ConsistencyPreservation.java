@@ -15,19 +15,14 @@
 
 package de.julielab.jcore.ae.jnet.uima;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import de.julielab.jcore.types.Abbreviation;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
+import de.julielab.jcore.utility.index.Comparators;
+import de.julielab.jcore.utility.index.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.Type;
@@ -38,18 +33,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.utility.JCoReAnnotationTools;
-import de.julielab.jcore.utility.index.Comparators;
-import de.julielab.jcore.utility.index.JCoReHashMapAnnotationIndex;
-import de.julielab.jcore.utility.index.JCoReMapAnnotationIndex;
-import de.julielab.jcore.utility.index.JCoReSetAnnotationIndex;
-import de.julielab.jcore.utility.index.TermGenerators;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ConsistencyPreservation {
 

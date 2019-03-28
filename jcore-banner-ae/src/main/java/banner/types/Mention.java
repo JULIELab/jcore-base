@@ -6,9 +6,9 @@
 
 package banner.types;
 
-import java.util.List;
-
 import banner.tagging.Tagger;
+
+import java.util.List;
 
 /**
  * Instances of this class represent the mention of an entity within a {@link Sentence}. Mentions are defined in terms of full tokens, and therefore

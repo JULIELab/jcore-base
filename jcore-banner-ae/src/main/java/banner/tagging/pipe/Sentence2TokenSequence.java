@@ -6,20 +6,19 @@
 
 package banner.tagging.pipe;
 
-import java.util.List;
-import java.util.Set;
-
 import banner.tagging.TagFormat;
-import banner.types.Sentence;
-import banner.types.Token;
 import banner.types.Mention.MentionType;
+import banner.types.Sentence;
 import banner.types.Sentence.OverlapOption;
-
+import banner.types.Token;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.types.TokenSequence;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class is used by the CRFTagger as the base for the feature set.

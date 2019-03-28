@@ -1,15 +1,9 @@
 
 package de.julielab.jcore.ae.likelihoodassignment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-
 import de.julielab.jcore.types.ConceptMention;
 import de.julielab.jcore.types.LikelihoodIndicator;
 import de.julielab.jcore.types.Sentence;
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
@@ -24,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
+
+import static org.junit.Assert.assertEquals;
 
 
 /**

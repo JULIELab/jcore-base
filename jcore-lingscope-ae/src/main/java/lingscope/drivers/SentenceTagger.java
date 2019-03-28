@@ -1,18 +1,14 @@
 package lingscope.drivers;
 
 import generalutils.FileOperations;
+import lingscope.algorithms.*;
+import lingscope.io.AnnotatedSentencesIO;
+import lingscope.structures.AnnotatedSentence;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lingscope.algorithms.Annotator;
-import lingscope.algorithms.BaselineCueAnnotator;
-import lingscope.algorithms.BaselineScopeAnnotator;
-import lingscope.algorithms.CrfAnnotator;
-import lingscope.algorithms.NegexCueAnnotator;
-import lingscope.algorithms.NegexScopeAnnotator;
-import lingscope.io.AnnotatedSentencesIO;
-import lingscope.structures.AnnotatedSentence;
 
 /**
  * Tags scope or cue in a single sentence

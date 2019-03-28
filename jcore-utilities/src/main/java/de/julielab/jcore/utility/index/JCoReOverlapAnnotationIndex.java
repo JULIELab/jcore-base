@@ -10,17 +10,16 @@
  **/
 package de.julielab.jcore.utility.index;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
-
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import de.julielab.jcore.utility.JCoReTools;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * <p>

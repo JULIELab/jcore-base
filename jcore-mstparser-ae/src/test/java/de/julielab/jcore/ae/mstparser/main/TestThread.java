@@ -6,8 +6,6 @@
 
 package de.julielab.jcore.ae.mstparser.main;
 
-import java.io.FileInputStream;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -15,6 +13,8 @@ import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+
+import java.io.FileInputStream;
 
 public class TestThread extends Thread {
 

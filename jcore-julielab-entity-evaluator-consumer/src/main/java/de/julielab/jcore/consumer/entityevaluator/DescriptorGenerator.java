@@ -10,22 +10,14 @@
  **/
 package de.julielab.jcore.consumer.entityevaluator;
 
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.DOCUMENT_ID_COLUMN;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_COLUMN_DEFINITIONS;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_COLUMNS;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_OUTPUT_FILE;
-import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.PARAM_TYPE_PREFIX;
-
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.xml.sax.SAXException;
+
+import java.io.*;
+
+import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.*;
 
 public class DescriptorGenerator {
 	public static void main(String[] args)

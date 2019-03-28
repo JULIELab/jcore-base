@@ -6,11 +6,9 @@
 
 package de.julielab.jcore.reader.bionlp09event.main;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Set;
-
+import com.google.common.collect.Sets;
+import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
+import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
@@ -23,10 +21,10 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.google.common.collect.Sets;
+import java.util.Set;
 
-import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
-import de.julielab.jcore.types.pubmed.Header;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 // This test's EventReaderTest.xml descriptor points to local directories of Ekaterina Buyko and as such, the test doesn't work this way. However it might, if the data is made available as proper test data.
 @Ignore

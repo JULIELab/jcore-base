@@ -7,7 +7,7 @@
     <description>The IGNReader reads IGN corpus files in BioC-format.
 
 There are XML files comprising the actual text (as well as passage and sentence annotations) and there are separate XML files comprising the annotations.</description>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>

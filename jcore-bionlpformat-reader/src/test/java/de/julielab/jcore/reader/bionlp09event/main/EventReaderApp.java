@@ -14,9 +14,8 @@
  **/
 package de.julielab.jcore.reader.bionlp09event.main;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-
+import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
+import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -30,8 +29,8 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
-import de.julielab.jcore.types.pubmed.Header;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * TODO insert description

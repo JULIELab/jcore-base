@@ -1,9 +1,10 @@
 package lingscope.drivers;
 
 import generalutils.FileOperations;
-import java.util.List;
 import lingscope.algorithms.Annotator;
 import lingscope.structures.AnnotatedSentence;
+
+import java.util.List;
 
 /**
  * Use this sentence tagger when using a model that tags POS

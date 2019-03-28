@@ -1,11 +1,12 @@
 package lingscope.drivers;
 
 import generalutils.FileOperations;
+import lingscope.algorithms.PosTagger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lingscope.algorithms.PosTagger;
 
 /**
  * Driver for the Part of Speech tagger. Use this to tag all sentences in a

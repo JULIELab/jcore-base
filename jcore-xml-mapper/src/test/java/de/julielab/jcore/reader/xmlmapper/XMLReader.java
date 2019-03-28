@@ -14,14 +14,8 @@
  **/
 package de.julielab.jcore.reader.xmlmapper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
+import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
+import de.julielab.xml.JulieXMLTools;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -35,8 +29,9 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
-import de.julielab.xml.JulieXMLTools;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Generic XML {@link CollectionReader}. Uses a mapping file to map elements of the XML document to

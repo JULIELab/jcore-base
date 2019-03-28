@@ -13,12 +13,12 @@
 package edu.upenn.seas.mstparser.io;
 
 
+import edu.upenn.seas.mstparser.DependencyInstance;
+import edu.upenn.seas.mstparser.RelationalFeature;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import edu.upenn.seas.mstparser.DependencyInstance;
-import edu.upenn.seas.mstparser.RelationalFeature;
 
 /**
  * A reader for files in CoNLL format.

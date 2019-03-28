@@ -2,7 +2,6 @@ package de.julielab.jcore.consumer.xmi;
 
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import org.apache.commons.lang.StringUtils;
-import org.apache.uima.jcas.cas.StringArray;
 
 import java.util.Arrays;
 

@@ -1,12 +1,12 @@
 package banner.postprocessing;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import banner.types.EntityType;
 import banner.types.Mention;
-import banner.types.Sentence;
 import banner.types.Mention.MentionType;
+import banner.types.Sentence;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class FlattenPostProcessor implements PostProcessor
 {

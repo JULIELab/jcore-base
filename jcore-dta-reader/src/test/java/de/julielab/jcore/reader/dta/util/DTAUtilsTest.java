@@ -10,19 +10,18 @@
  **/
 package de.julielab.jcore.reader.dta.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.julielab.jcore.reader.dta.DTAFileReaderTest;
+import de.julielab.jcore.reader.dta.DTAFileReaderTest.Version;
+import de.julielab.jcore.types.extensions.dta.DTABelletristik;
+import org.apache.uima.jcas.JCas;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.uima.jcas.JCas;
-import org.junit.Test;
-
-import de.julielab.jcore.reader.dta.DTAFileReaderTest;
-import de.julielab.jcore.reader.dta.DTAFileReaderTest.Version;
-import de.julielab.jcore.types.extensions.dta.DTABelletristik;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DTAUtilsTest {
 

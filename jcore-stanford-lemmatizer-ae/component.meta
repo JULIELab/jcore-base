@@ -12,9 +12,9 @@
     "exposable": true,
     "group": "general",
     "maven-artifact": {
-        "artifactId": "jcore-stanford-lemmatizer",
+        "artifactId": "jcore-stanford-lemmatizer-ae",
         "groupId": "de.julielab",
-        "version": "2.4.0-SNAPSHOT"
+        "version": "2.4.0"
     },
     "name": "JCoRe Stanford Lemmatizer"
 }

@@ -17,21 +17,9 @@
 
 package de.julielab.jcore.reader.ace;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import de.julielab.jcore.types.ArgumentMention;
+import de.julielab.jcore.types.ace.*;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -50,17 +38,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.ace.EntityMention;
-import de.julielab.jcore.types.ace.EventMention;
-import de.julielab.jcore.types.ace.EventMentionArgument;
-import de.julielab.jcore.types.ace.RelationMention;
-import de.julielab.jcore.types.ace.RelationMentionArgument;
-import de.julielab.jcore.types.ace.Timex2;
-import de.julielab.jcore.types.ace.Timex2Mention;
-import de.julielab.jcore.types.ace.Value;
-import de.julielab.jcore.types.ace.ValueMention;
-import de.julielab.jcore.utility.JCoReAnnotationTools;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 // TODO add query if the data elements (e.g. ArrayLists) are null. Only if it is
 // not so, read those elements to prevent exceptions

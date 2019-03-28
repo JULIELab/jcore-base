@@ -10,6 +10,13 @@
  **/
 package de.julielab.jcore.ae.opennlp.postag;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import opennlp.tools.postag.POSDictionary;
+import opennlp.tools.postag.POSSample;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,15 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import opennlp.tools.postag.POSDictionary;
-import opennlp.tools.postag.POSSample;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 public class POSTagDictCreator {
 

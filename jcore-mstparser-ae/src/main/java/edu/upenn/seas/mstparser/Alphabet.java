@@ -11,12 +11,12 @@
 
 package edu.upenn.seas.mstparser;
 
+import de.julielab.gnu.trove.TObjectIntHashMap;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
-import de.julielab.gnu.trove.TObjectIntHashMap;
 
 public class Alphabet implements Serializable {
     de.julielab.gnu.trove.TObjectIntHashMap map;

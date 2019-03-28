@@ -10,16 +10,15 @@
  **/
 package de.julielab.jcore.ae.ecn;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.julielab.jcore.types.Enzyme;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Enzyme;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ECNumberAnnotator extends JCasAnnotator_ImplBase {
 

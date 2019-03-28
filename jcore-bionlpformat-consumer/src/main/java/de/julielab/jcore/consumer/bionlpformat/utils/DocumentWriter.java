@@ -5,14 +5,10 @@
   */
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
-import java.io.IOException;
-import java.io.Writer;
+ import org.apache.uima.jcas.JCas;
 
-import org.apache.uima.cas.Type;
-import org.apache.uima.jcas.JCas;
-
-import de.julielab.jcore.types.AbstractText;
-import de.julielab.jcore.types.Title;
+ import java.io.IOException;
+ import java.io.Writer;
 
 public class DocumentWriter {
 

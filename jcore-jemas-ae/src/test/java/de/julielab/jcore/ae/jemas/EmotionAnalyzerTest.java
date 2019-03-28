@@ -1,29 +1,18 @@
 package de.julielab.jcore.ae.jemas;
 
-import java.util.Iterator;
-
+import de.julielab.jcore.types.*;
 import junit.framework.TestCase;
-
 import org.apache.uima.UIMAException;
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.DocumentEmotion;
-import de.julielab.jcore.types.Lemma;
-import de.julielab.jcore.types.LexicalDocumentEmotion;
-import de.julielab.jcore.types.PennBioIEPOSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import java.util.Iterator;
 
 public class EmotionAnalyzerTest extends TestCase {
 

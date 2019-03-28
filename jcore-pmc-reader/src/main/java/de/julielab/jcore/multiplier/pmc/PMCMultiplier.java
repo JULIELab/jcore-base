@@ -1,7 +1,6 @@
 package de.julielab.jcore.multiplier.pmc;
 
 import de.julielab.jcore.reader.pmc.CasPopulator;
-import de.julielab.jcore.reader.pmc.parser.DocumentParsingException;
 import de.julielab.jcore.reader.pmc.parser.ElementParsingException;
 import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;

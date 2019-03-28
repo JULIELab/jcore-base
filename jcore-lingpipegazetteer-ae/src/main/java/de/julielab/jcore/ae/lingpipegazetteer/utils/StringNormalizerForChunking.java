@@ -6,17 +6,11 @@
 
 package de.julielab.jcore.ae.lingpipegazetteer.utils;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.aliasi.tokenizer.Tokenizer;
 import com.aliasi.tokenizer.TokenizerFactory;
 import com.ibm.icu.text.Transliterator;
+
+import java.util.*;
 
 public class StringNormalizerForChunking {
 

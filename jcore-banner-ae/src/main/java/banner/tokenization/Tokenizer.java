@@ -6,9 +6,9 @@
 
 package banner.tokenization;
 
-import java.util.List;
-
 import banner.types.Sentence;
+
+import java.util.List;
 
 /**
  * Tokenizers take the text of a sentence and turn it into a Sentence object. They do not fill in the Mentions in the

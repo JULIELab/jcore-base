@@ -6,20 +6,16 @@
 
 package de.julielab.jcore.ae.lingpipegazetteer.chunking;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
 import com.aliasi.tokenizer.PorterStemmerTokenizerFactory;
 import com.aliasi.tokenizer.TokenizerFactory;
 import com.ibm.icu.text.Transliterator;
-
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking.NormalizedString;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class StringNormalizerForChunkingTest {
 	@Test

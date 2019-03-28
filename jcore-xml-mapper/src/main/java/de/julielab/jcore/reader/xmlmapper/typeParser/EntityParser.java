@@ -20,32 +20,24 @@ package de.julielab.jcore.reader.xmlmapper.typeParser;
  *
  * Creation date: 22.03.2010
  **/
-import static de.julielab.xml.JulieXMLConstants.FOR_EACH;
-import static de.julielab.xml.JulieXMLConstants.NAME;
-import static de.julielab.xml.JulieXMLConstants.RETURN_ARRAY;
-import static de.julielab.xml.JulieXMLConstants.XPATH;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.uima.jcas.JCas;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.ximpleware.AutoPilot;
 import com.ximpleware.VTDNav;
-
 import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
 import de.julielab.jcore.reader.xmlmapper.mapper.DocumentTextData;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.MedlineTextSentenceBuilder;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.TypeBuilder;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.xml.JulieXMLTools;
+import org.apache.uima.jcas.JCas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static de.julielab.xml.JulieXMLConstants.*;
 
 /**
  * A special XML mapper parser capable of parsing the IeXML in-line XML

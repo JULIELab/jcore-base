@@ -10,12 +10,9 @@
  **/
 package de.julielab.jcore.reader.ign;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.GeneResourceEntry;
+import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -24,9 +21,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.junit.Test;
 
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.GeneResourceEntry;
-import de.julielab.jcore.types.pubmed.Header;
+import java.util.Collection;
+
+import static org.junit.Assert.*;
 
 public class IGNReaderTest {
 	private static final String READER_DESCRIPTOR = "de.julielab.jcore.reader.ign.desc.jcore-ign-reader";

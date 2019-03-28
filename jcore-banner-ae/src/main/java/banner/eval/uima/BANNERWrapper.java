@@ -1,22 +1,5 @@
 package banner.eval.uima;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-
-
 import banner.eval.BANNER;
 import banner.postprocessing.PostProcessor;
 import banner.tagging.CRFTagger;
@@ -26,6 +9,17 @@ import banner.types.Mention;
 import banner.types.Sentence;
 import dragon.nlp.tool.Tagger;
 import dragon.nlp.tool.lemmatiser.EngLemmatiser;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 
 public class BANNERWrapper {

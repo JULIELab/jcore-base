@@ -6,20 +6,17 @@
 
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
+import de.julielab.jcore.types.AbstractText;
+import de.julielab.jcore.types.Title;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.jcas.JCas;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.uima.jcas.JCas;
-import org.junit.Before;
-import org.junit.Test;
-import org.apache.uima.fit.factory.JCasFactory;
-
-import de.julielab.jcore.types.AbstractText;
-import de.julielab.jcore.types.Title;
+import static org.easymock.classextension.EasyMock.*;
 
 public class DocumentWriterTest {
 

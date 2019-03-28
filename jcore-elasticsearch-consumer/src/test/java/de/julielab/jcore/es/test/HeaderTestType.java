@@ -3,12 +3,11 @@
 /* First created by JCasGen Mon Feb 05 09:56:20 CET 2018 */
 package de.julielab.jcore.es.test;
 
-import org.apache.uima.jcas.JCas; 
-import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
-
-import org.apache.uima.jcas.cas.FSArray;
 import de.julielab.jcore.types.Header;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.TOP_Type;
 
 
 /** 

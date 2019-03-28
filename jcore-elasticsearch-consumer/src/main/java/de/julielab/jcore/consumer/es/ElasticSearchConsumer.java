@@ -1,8 +1,8 @@
 package de.julielab.jcore.consumer.es;
 
-import java.io.IOException;
-import java.util.*;
-
+import com.google.gson.Gson;
+import de.julielab.jcore.consumer.es.preanalyzed.Document;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.http.HttpEntity;
@@ -21,10 +21,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-
-import de.julielab.jcore.consumer.es.preanalyzed.Document;
-import de.julielab.jcore.utility.JCoReTools;
+import java.io.IOException;
+import java.util.*;
 
 @ResourceMetaData(name="JCore ElasticSearch Consumer")
 public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {

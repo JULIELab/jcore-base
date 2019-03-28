@@ -1,20 +1,15 @@
 package de.julielab.jcore.consumer.es;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.julielab.jcore.consumer.es.filter.Filter;
 import de.julielab.jcore.consumer.es.preanalyzed.IToken;
 import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DistributedField<T extends IToken> {
 

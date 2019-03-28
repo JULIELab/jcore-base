@@ -1,9 +1,9 @@
 package banner.postprocessing;
 
+import banner.types.Sentence;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import banner.types.Sentence;
 
 public class SequentialPostProcessor implements PostProcessor
 {

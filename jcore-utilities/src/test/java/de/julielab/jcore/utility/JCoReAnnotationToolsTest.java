@@ -17,18 +17,13 @@
 
 package de.julielab.jcore.utility;
 
-import java.io.FileInputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
+import de.julielab.jcore.types.*;
 import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-// import de.julielab.jcore.types.Annotation;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
@@ -37,13 +32,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.utility.JCoReAnnotationTools;
-import de.julielab.jcore.types.Abbreviation;
-import de.julielab.jcore.types.ConceptMention;
-import de.julielab.jcore.types.DocumentAnnotation;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Token;
+import java.io.FileInputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+// import de.julielab.jcore.types.Annotation;
 
 public class JCoReAnnotationToolsTest extends TestCase {
 

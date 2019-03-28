@@ -10,16 +10,15 @@
  **/
 package de.julielab.jcore.reader.bionlpformat.utils;
 
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.ace.Sentence;
+import org.apache.uima.jcas.JCas;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.uima.jcas.JCas;
-
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.ace.Sentence;
 
 public class AnnotationFileMapper_Seg {
 

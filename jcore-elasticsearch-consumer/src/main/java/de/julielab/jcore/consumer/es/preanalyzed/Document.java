@@ -1,10 +1,9 @@
 package de.julielab.jcore.consumer.es.preanalyzed;
 
-import java.util.Arrays;
+import de.julielab.jcore.consumer.es.ArrayFieldValue;
+
 import java.util.HashMap;
 import java.util.List;
-
-import de.julielab.jcore.consumer.es.ArrayFieldValue;
 
 public class Document extends HashMap<String, IFieldValue> implements
 		IFieldValue {

@@ -1,9 +1,8 @@
 package de.julielab.jcore.ae.fvr;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.OntClassMention;
+import de.julielab.jcore.types.ResourceEntry;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
@@ -13,11 +12,9 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.junit.Test;
 
-import de.julielab.jcore.ae.fvr.FeatureValueReplacementAnnotator;
-import de.julielab.jcore.ae.fvr.FeatureValueReplacementsProvider;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.OntClassMention;
-import de.julielab.jcore.types.ResourceEntry;
+import java.io.File;
+
+import static org.junit.Assert.assertEquals;
 
 public class FeatureValueReplacementAnnotatorTest {
 	@Test

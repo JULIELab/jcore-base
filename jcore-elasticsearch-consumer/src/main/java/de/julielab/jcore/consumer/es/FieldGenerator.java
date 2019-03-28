@@ -1,9 +1,8 @@
 package de.julielab.jcore.consumer.es;
 
+import de.julielab.jcore.consumer.es.preanalyzed.Document;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
-
-import de.julielab.jcore.consumer.es.preanalyzed.Document;
 
 /**
  * Extend this class to create custom fields generators. Field generators are

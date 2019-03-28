@@ -14,16 +14,7 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.typeParser;
 
-import org.apache.uima.jcas.JCas;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
-
+import com.ximpleware.*;
 import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteFeature;
 import de.julielab.jcore.reader.xmlmapper.genericTypes.ConcreteType;
 import de.julielab.jcore.reader.xmlmapper.genericTypes.FeatureTemplate;
@@ -32,6 +23,9 @@ import de.julielab.jcore.reader.xmlmapper.mapper.MapperUtils;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.StandardTypeBuilder;
 import de.julielab.jcore.reader.xmlmapper.typeBuilder.TypeBuilder;
 import de.julielab.xml.JulieXMLTools;
+import org.apache.uima.jcas.JCas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses all standard Types, which does not need a special handling in parsing

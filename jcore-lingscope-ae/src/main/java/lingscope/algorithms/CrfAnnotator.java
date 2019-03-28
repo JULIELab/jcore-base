@@ -2,10 +2,9 @@ package lingscope.algorithms;
 
 import abner.Tagger;
 import abner.Trainer;
-import java.io.File;
-import java.io.InputStream;
-
 import lingscope.structures.AnnotatedSentence;
+
+import java.io.InputStream;
 
 /**
  * A CRF based annotator

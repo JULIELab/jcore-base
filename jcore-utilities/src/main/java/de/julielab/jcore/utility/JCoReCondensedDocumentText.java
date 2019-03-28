@@ -1,11 +1,11 @@
 package de.julielab.jcore.utility;
 
+import org.apache.uima.jcas.JCas;
+
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
-
-import org.apache.uima.jcas.JCas;
 
 /**
  * This class is helpful when some parts of the CAS document text should be cut

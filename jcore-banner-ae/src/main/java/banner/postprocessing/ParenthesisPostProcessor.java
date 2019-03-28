@@ -6,13 +6,13 @@
 
 package banner.postprocessing;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import banner.types.Mention;
 import banner.types.Sentence;
 import banner.types.Token;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class removes {@link Mention}s which contain a mismatched parenthesis ("(" or ")"), square bracket ("[" or "]")

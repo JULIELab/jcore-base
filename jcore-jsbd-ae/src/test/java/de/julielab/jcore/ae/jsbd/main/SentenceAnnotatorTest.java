@@ -17,19 +17,7 @@
 
 package de.julielab.jcore.ae.jsbd.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import de.julielab.jcore.ae.jsbd.types.TestScope;
 import de.julielab.jcore.types.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Range;
@@ -50,7 +38,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.jsbd.types.TestScope;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class SentenceAnnotatorTest {
 

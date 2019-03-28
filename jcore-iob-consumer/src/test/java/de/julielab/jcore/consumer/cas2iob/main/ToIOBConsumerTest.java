@@ -25,8 +25,6 @@ import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReTools;
-import junit.framework.TestCase;
-import de.julielab.jcore.consumer.cas2iob.application.XMIToIOBApplication;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -37,7 +35,8 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
-import static org.assertj.core.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author faessler
  */

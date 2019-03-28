@@ -1,15 +1,18 @@
 package de.julielab.jcore.ae.banner;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import banner.eval.BANNER;
+import banner.postprocessing.PostProcessor;
+import banner.tagging.CRFTagger;
+import banner.tagging.dictionary.DictionaryTagger;
+import banner.tokenization.Tokenizer;
+import banner.types.EntityType;
+import banner.types.Mention;
+import banner.types.Sentence;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
+import de.julielab.jcore.utility.JCoReTools;
+import dragon.nlp.tool.Tagger;
+import dragon.nlp.tool.lemmatiser.EngLemmatiser;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
@@ -26,19 +29,15 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import banner.eval.BANNER;
-import banner.postprocessing.PostProcessor;
-import banner.tagging.CRFTagger;
-import banner.tagging.dictionary.DictionaryTagger;
-import banner.tokenization.Tokenizer;
-import banner.types.EntityType;
-import banner.types.Mention;
-import banner.types.Sentence;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.utility.JCoReAnnotationTools;
-import de.julielab.jcore.utility.JCoReTools;
-import dragon.nlp.tool.Tagger;
-import dragon.nlp.tool.lemmatiser.EngLemmatiser;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author siddhartha, faessler

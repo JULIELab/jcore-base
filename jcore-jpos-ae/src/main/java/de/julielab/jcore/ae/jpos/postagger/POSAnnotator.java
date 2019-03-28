@@ -27,14 +27,12 @@ package de.julielab.jcore.ae.jpos.postagger;
  * Based on Katrin Tomanek's JNET
  **/
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Properties;
-
+import de.julielab.jcore.ae.jpos.tagger.POSTagger;
+import de.julielab.jcore.ae.jpos.tagger.Unit;
+import de.julielab.jcore.types.POSTag;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -48,12 +46,13 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.jpos.tagger.POSTagger;
-import de.julielab.jcore.ae.jpos.tagger.Unit;
-import de.julielab.jcore.types.POSTag;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.utility.JCoReTools;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Properties;
 
 public class POSAnnotator extends JCasAnnotator_ImplBase {
 

@@ -1,20 +1,13 @@
 package banner.eval.dataset;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-
 import banner.tokenization.Tokenizer;
-import banner.types.Mention;
 import banner.types.EntityType;
+import banner.types.Mention;
 import banner.types.Sentence;
 import banner.types.Token;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+
+import java.util.*;
 
 public abstract class Dataset
 {

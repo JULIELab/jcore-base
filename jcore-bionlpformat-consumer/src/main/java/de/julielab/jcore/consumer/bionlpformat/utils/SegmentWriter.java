@@ -10,20 +10,18 @@
  **/
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.jcas.JCas;
 
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SegmentWriter {
 	

@@ -10,16 +10,15 @@
  **/
 package de.julielab.jcore.ae.opennlp.chunk.convert;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * * Copyright (c) 2015, JULIE Lab. All rights reserved. This program and the

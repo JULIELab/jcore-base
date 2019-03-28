@@ -1,36 +1,9 @@
 package banner.eval;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-
 import banner.eval.dataset.Dataset;
 import banner.eval.uima.Util;
-import banner.postprocessing.FlattenPostProcessor;
+import banner.postprocessing.*;
 import banner.postprocessing.FlattenPostProcessor.FlattenType;
-import banner.postprocessing.LocalAbbreviationPostProcessor;
-import banner.postprocessing.ParenthesisPostProcessor;
-import banner.postprocessing.PostProcessor;
-import banner.postprocessing.SequentialPostProcessor;
 import banner.tagging.CRFTagger;
 import banner.tagging.FeatureSet;
 import banner.tagging.TagFormat;
@@ -48,6 +21,12 @@ import dragon.nlp.tool.HeppleTagger;
 import dragon.nlp.tool.MedPostTagger;
 import dragon.nlp.tool.Tagger;
 import dragon.nlp.tool.lemmatiser.EngLemmatiser;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+
+import java.io.*;
+import java.util.*;
 
 public class BANNER {
 

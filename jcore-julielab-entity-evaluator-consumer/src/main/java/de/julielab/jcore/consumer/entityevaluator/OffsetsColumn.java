@@ -10,16 +10,15 @@
  **/
 package de.julielab.jcore.consumer.entityevaluator;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NavigableMap;
-
-import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.tcas.Annotation;
-
 import de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.OffsetMode;
 import de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.OffsetScope;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NavigableMap;
 
 public class OffsetsColumn extends Column {
 

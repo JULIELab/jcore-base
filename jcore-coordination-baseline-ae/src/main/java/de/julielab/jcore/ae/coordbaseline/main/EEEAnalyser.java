@@ -6,11 +6,12 @@
 
 package de.julielab.jcore.ae.coordbaseline.main;
 
-import java.util.ArrayList;
-
-import de.julielab.jcore.ae.coordbaseline.tools.*;
+import de.julielab.jcore.ae.coordbaseline.tools.DataTypeHandling;
+import de.julielab.jcore.ae.coordbaseline.tools.DataTypes;
 import de.julielab.jcore.ae.coordbaseline.types.CoordinationToken;
 import de.julielab.jcore.ae.coordbaseline.types.Element;
+
+import java.util.ArrayList;
 
 /**
  * 

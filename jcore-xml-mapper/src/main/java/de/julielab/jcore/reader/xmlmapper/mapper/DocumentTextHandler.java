@@ -14,24 +14,18 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.mapper;
 
-import static org.fest.reflect.core.Reflection.constructor;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import com.ximpleware.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
-import com.ximpleware.VTDException;
-import com.ximpleware.VTDNav;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.fest.reflect.core.Reflection.constructor;
 
 /**
  * Handels to parse the DocumentText

@@ -17,15 +17,11 @@
 
 package de.julielab.jcore.ae.jtbd;
 
-import java.util.ArrayList;
-
 import junit.framework.TestCase;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.jtbd.Sentence2TokenPipe;
-import de.julielab.jcore.ae.jtbd.Unit;
+import java.util.ArrayList;
 
 public class Sentence2TokenPipeTest extends TestCase {
 

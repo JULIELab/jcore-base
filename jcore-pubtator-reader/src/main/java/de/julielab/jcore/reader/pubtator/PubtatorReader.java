@@ -10,13 +10,8 @@
  **/
 package de.julielab.jcore.reader.pubtator;
 
-import static de.julielab.jcore.reader.pubtator.PubtatorDocument.EMPTY_DOCUMENT;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-
+import de.julielab.java.utilities.FileUtilities;
+import de.julielab.jcore.types.*;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -27,18 +22,12 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 
-import de.julielab.java.utilities.FileUtilities;
-import de.julielab.jcore.types.AbstractText;
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.Chemical;
-import de.julielab.jcore.types.Disease;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.GeneResourceEntry;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.Organism;
-import de.julielab.jcore.types.ResourceEntry;
-import de.julielab.jcore.types.Title;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+
+import static de.julielab.jcore.reader.pubtator.PubtatorDocument.EMPTY_DOCUMENT;
 
 public class PubtatorReader extends CollectionReader_ImplBase {
 

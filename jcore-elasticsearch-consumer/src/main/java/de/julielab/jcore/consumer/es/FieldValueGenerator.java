@@ -1,11 +1,10 @@
 package de.julielab.jcore.consumer.es;
 
+import de.julielab.jcore.consumer.es.preanalyzed.Document;
+import de.julielab.jcore.consumer.es.preanalyzed.IFieldValue;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.JCas;
-
-import de.julielab.jcore.consumer.es.preanalyzed.Document;
-import de.julielab.jcore.consumer.es.preanalyzed.IFieldValue;
 
 /**
  * A class that creates a {@link IFieldValue} instance corresponding to a

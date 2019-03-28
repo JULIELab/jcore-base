@@ -15,26 +15,17 @@
 
 package de.julielab.jcore.ae.jsbd;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.TreeSet;
-import java.util.zip.GZIPInputStream;
-
 import cc.mallet.fst.CRF;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 import de.julielab.jcore.ae.jsbd.postprocessingfilters.PostprocessingFilter;
+
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.zip.GZIPInputStream;
 
 /**
  * * The user interface (command line version) for the JULIE Sentence Boundary Detector. Includes

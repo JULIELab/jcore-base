@@ -23,16 +23,14 @@
  *******************************************************************************/
 package org.ohnlp.ae.medxn;
 
-import java.util.Iterator;
-
+import de.julielab.jcore.types.medical.Medication;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.jcas.tcas.Annotation;
 
-import de.julielab.jcore.types.medical.Medication;
+import java.util.Iterator;
 
 //import de.julielab.jcore.types.ohnlp.ConceptMention;
 //import de.julielab.jcore.types.ohnlp.Drug;

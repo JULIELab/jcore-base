@@ -18,33 +18,11 @@
 
 package de.julielab.jcore.ae.jnet.tagger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.MaxEnt;
 import cc.mallet.classify.MaxEntTrainer;
-import cc.mallet.fst.CRF;
-import cc.mallet.fst.CRFTrainerByLabelLikelihood;
-import cc.mallet.fst.Segment;
-import cc.mallet.fst.SumLatticeConstrained;
-import cc.mallet.fst.SumLatticeDefault;
-import cc.mallet.fst.Transducer;
+import cc.mallet.fst.*;
 import cc.mallet.fst.confidence.ConstrainedForwardBackwardConfidenceEstimator;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
@@ -52,6 +30,15 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Sequence;
 import de.julielab.jcore.ae.jnet.utils.IOEvaluation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * 

@@ -21,7 +21,10 @@
 package de.julielab.jcore.consumer.cas2iob.main;
 
 import de.julielab.jcore.consumer.cas2iob.utils.UIMAUtils;
-import de.julielab.jcore.types.*;
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.Paragraph;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.index.Comparators;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
@@ -33,7 +36,6 @@ import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.cas.Type;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;

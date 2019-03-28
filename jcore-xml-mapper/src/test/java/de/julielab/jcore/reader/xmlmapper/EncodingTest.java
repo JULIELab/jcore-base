@@ -10,15 +10,12 @@
  **/
 package de.julielab.jcore.reader.xmlmapper;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-
-import org.junit.Test;
-
 import com.ximpleware.AutoPilot;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class EncodingTest {
 	@Test

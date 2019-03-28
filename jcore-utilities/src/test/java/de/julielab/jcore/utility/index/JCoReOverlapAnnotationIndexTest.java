@@ -10,17 +10,16 @@
  **/
 package de.julielab.jcore.utility.index;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
+import de.julielab.jcore.types.Token;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
-import de.julielab.jcore.types.Token;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class JCoReOverlapAnnotationIndexTest {
 	@Test

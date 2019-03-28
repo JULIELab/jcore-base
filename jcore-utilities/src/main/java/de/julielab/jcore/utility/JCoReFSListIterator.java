@@ -10,13 +10,13 @@
  **/
 package de.julielab.jcore.utility;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * An iterator that takes a list of FeatureStructures and returns or navigates

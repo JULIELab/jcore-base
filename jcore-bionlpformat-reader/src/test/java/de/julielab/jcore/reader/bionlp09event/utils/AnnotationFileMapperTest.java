@@ -17,15 +17,8 @@
 
 package de.julielab.jcore.reader.bionlp09event.utils;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
-
-import java.io.BufferedReader;
-import java.util.HashMap;
-import java.util.Map;
-
+import de.julielab.jcore.reader.bionlpformat.utils.AnnotationFileMapper;
+import de.julielab.jcore.types.*;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
@@ -38,16 +31,14 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.io.BufferedReader;
+import java.util.HashMap;
+import java.util.Map;
 
-import de.julielab.jcore.reader.bionlpformat.utils.AnnotationFileMapper;
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.Entity;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.EventTrigger;
-import de.julielab.jcore.types.Gene;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 

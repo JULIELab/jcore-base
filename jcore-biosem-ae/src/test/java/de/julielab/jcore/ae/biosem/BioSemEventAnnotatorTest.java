@@ -10,17 +10,10 @@
  **/
 package de.julielab.jcore.ae.biosem;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Collections;
-import java.util.List;
-
+import de.julielab.jcore.consumer.bionlpformat.main.BioEventConsumer;
+import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -28,16 +21,16 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import de.julielab.jcore.ae.biosem.BioSemEventAnnotator;
-import de.julielab.jcore.ae.biosem.DBUtilsProviderImpl;
-import de.julielab.jcore.consumer.bionlpformat.main.BioEventConsumer;
-import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
-import de.julielab.jcore.types.EventMention;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BioSemEventAnnotatorTest {
 	@Test

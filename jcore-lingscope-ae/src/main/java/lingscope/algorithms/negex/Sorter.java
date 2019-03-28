@@ -1,6 +1,6 @@
 package lingscope.algorithms.negex;
 
-import java.util.*;
+import java.util.List;
 
 // Utility class to sort the negation rules by length in descending order.
 // Rules need to be matched by longest first because there is overlap between the

@@ -1,31 +1,23 @@
 package de.julielab.jcore.reader.ct;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-
 import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.Keyword;
 import de.julielab.jcore.types.MeshHeading;
-import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import de.julielab.jcore.types.ct.*;
+import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for jcore-ct-reader.

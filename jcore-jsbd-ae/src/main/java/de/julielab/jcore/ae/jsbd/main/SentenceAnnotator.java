@@ -19,26 +19,11 @@
 
 package de.julielab.jcore.ae.jsbd.main;
 
-import static java.util.stream.Collectors.toSet;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.NavigableMap;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import de.julielab.jcore.ae.jsbd.SentenceSplitter;
+import de.julielab.jcore.ae.jsbd.Unit;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
+import de.julielab.jcore.utility.JCoReCondensedDocumentText;
 import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
@@ -51,11 +36,17 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.jsbd.SentenceSplitter;
-import de.julielab.jcore.ae.jsbd.Unit;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
-import de.julielab.jcore.utility.JCoReCondensedDocumentText;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toSet;
 
 public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 

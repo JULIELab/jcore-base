@@ -36,9 +36,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Optional;
 import java.util.stream.Stream;
-import java.util.zip.ZipFile;
 
 @ResourceMetaData(name = "JCoRe XML Multiplier Reader", description = "Reads Medline/PubMed XML blobs as downloaded " +
         "from the NCBI FTP. Each blob is one large XML file containing a PubmedArticleSet. This component is UIMA DUCC " +

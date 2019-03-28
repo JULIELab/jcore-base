@@ -10,16 +10,7 @@
  **/
 package de.julielab.jcore.utility;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import de.julielab.jcore.types.*;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
@@ -30,17 +21,12 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.junit.Test;
 
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.AuthorInfo;
-import de.julielab.jcore.types.ConceptMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.EventTrigger;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.Lemma;
-import de.julielab.jcore.types.OntClassMention;
-import de.julielab.jcore.types.ResourceEntry;
-import de.julielab.jcore.types.Token;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 public class JCoReFeaturePathTest {
 	@Test

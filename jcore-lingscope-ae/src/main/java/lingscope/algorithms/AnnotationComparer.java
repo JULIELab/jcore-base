@@ -1,9 +1,11 @@
 package lingscope.algorithms;
 
 //import generalutils.Statistics;
-import java.util.List;
+
 import lingscope.io.AnnotatedSentencesIO;
 import lingscope.structures.AnnotatedSentence;
+
+import java.util.List;
 
 /**
  * Compares two annotations or two annotation files

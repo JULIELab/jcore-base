@@ -15,3 +15,5 @@ if [ ! -f jcore-version-normalizer.jar ]; then
 fi
 
 java -jar jcore-version-normalizer.jar pom.xml $1 $2
+python scripts/updateUIMAVersions.py $1 .
+scripts/updateMetaDescriptors.sh

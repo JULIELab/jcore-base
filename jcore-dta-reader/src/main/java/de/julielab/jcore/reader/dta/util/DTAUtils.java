@@ -10,10 +10,10 @@
  **/
 package de.julielab.jcore.reader.dta.util;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import de.julielab.jcore.reader.dta.DTAFileReader;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.extensions.dta.DocumentClassification;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -23,10 +23,9 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.InvalidXMLException;
 
-import de.julielab.jcore.reader.dta.DTAFileReader;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import de.julielab.jcore.types.extensions.dta.DocumentClassification;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DTAUtils {
 	public static CollectionReader getReader(final String inputFile,

@@ -17,8 +17,8 @@
 
 package de.julielab.jcore.ae.opennlpparser.main;
 
-import java.util.Iterator;
-
+import de.julielab.jcore.types.*;
+import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
@@ -29,13 +29,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Constituent;
-import de.julielab.jcore.types.GENIAConstituent;
-import de.julielab.jcore.types.PTBConstituent;
-import de.julielab.jcore.types.PennBioIEConstituent;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
-import junit.framework.TestCase;
+import java.util.Iterator;
 
 public class ParseAnnotatorTest extends TestCase {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParseAnnotatorTest.class);

@@ -10,11 +10,7 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
+import com.ximpleware.*;
 
 /**
  * This is the top NXML parser class that offers very limited access to parsing

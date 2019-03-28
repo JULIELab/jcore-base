@@ -1,13 +1,5 @@
 package de.julielab.jcore.consumer.es.sharedresources;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
@@ -15,6 +7,14 @@ import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ListProvider implements IListProvider {
     private final static Logger log = LoggerFactory.getLogger(ListProvider.class);

@@ -1,12 +1,12 @@
 package banner.normalization;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import banner.types.EntityIdentification;
 import banner.types.EntityName;
 import banner.types.Mention;
 import banner.types.Sentence;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BestMatchDisambiguator implements MentionDisambiguator
 {

@@ -18,14 +18,14 @@
 
 package de.julielab.jcore.ae.jnet.utils;
 
+import de.julielab.java.utilities.FileUtilities;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import de.julielab.java.utilities.FileUtilities;
 
 public class Utils {
 

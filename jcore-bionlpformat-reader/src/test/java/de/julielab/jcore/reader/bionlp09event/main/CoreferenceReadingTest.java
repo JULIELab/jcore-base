@@ -6,10 +6,8 @@
 
 package de.julielab.jcore.reader.bionlp09event.main;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
+import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
+import de.julielab.jcore.types.Header;
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasSerializer;
@@ -22,8 +20,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import de.julielab.jcore.reader.bionlpformat.main.BioEventReader;
-import de.julielab.jcore.types.Header;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 // Ignore because the data path does generally not exist; a fix should only contain some test data, not the whole dataset
 @Ignore

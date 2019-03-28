@@ -1,13 +1,6 @@
 package de.julielab.jcore.consumer.es;
 
-import java.io.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.zip.GZIPOutputStream;
-
+import de.julielab.jcore.consumer.es.preanalyzed.Document;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -18,7 +11,13 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.consumer.es.preanalyzed.Document;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.zip.GZIPOutputStream;
 
 @ResourceMetaData(name = "JCoRe JSON Writer")
 public class JsonWriter extends AbstractCasToJsonConsumer {

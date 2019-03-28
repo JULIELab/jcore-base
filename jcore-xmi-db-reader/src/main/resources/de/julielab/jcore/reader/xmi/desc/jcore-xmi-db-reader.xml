@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.xmi.XmiDBReader</implementationName>
@@ -79,7 +79,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>BatchSize</name>
-                <description/>
+                <description />
                 <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -114,7 +114,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>Limit</name>
-                <description/>
+                <description />
                 <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -149,7 +149,7 @@
             <nameValuePair>
                 <name>SelectionOrder</name>
                 <value>
-                    <string/>
+                    <string />
                 </value>
             </nameValuePair>
         </configurationParameterSettings>
@@ -159,12 +159,12 @@
                 <import name="de.julielab.jcore.types.jcore-all-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
-        <capabilities/>
+        <fsIndexCollection />
+        <capabilities />
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    </processingResourceMetaData>
+    <version>2.4.0</version></processingResourceMetaData>
 </collectionReaderDescription>

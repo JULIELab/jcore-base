@@ -2,23 +2,22 @@ package de.julielab.jcore.reader.ct;
 
 import de.julielab.jcore.reader.ct.ctmodel.ClinicalTrial;
 import de.julielab.jcore.types.Keyword;
-import de.julielab.jcore.types.pubmed.ManualDescriptor;
-import de.julielab.jcore.types.ct.Header;
 import de.julielab.jcore.types.MeshHeading;
 import de.julielab.jcore.types.ct.*;
+import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import de.julielab.jcore.utility.JCoReTools;
+import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.UimaContext;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;

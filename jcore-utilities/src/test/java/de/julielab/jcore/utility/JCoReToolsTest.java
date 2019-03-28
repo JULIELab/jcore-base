@@ -10,23 +10,19 @@
  **/
 package de.julielab.jcore.utility;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import de.julielab.jcore.types.Token;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
-import de.julielab.jcore.types.Token;
+import static org.junit.Assert.*;
 
 public class JCoReToolsTest {
 	@Test

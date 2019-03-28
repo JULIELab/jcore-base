@@ -17,12 +17,12 @@
 
 package de.julielab.jcore.ae.jnet.utils;
 
+import de.julielab.jnet.tagger.NETagger;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-
-import de.julielab.jnet.tagger.NETagger;
 
 public class FeatureConfigExchanger {
 

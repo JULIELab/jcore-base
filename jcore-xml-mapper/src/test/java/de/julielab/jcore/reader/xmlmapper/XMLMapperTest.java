@@ -15,16 +15,7 @@
 
 package de.julielab.jcore.reader.xmlmapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import de.julielab.jcore.types.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAException;
@@ -44,11 +35,11 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.Test;
 
-import de.julielab.jcore.types.AbstractSection;
-import de.julielab.jcore.types.AbstractSectionHeading;
-import de.julielab.jcore.types.AbstractText;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Title;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * TODO insert description

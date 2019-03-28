@@ -1,7 +1,6 @@
 package de.julielab.jcore.ae.lingscope;
 
 import de.julielab.java.utilities.FileUtilities;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,8 +8,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LikelihoodUtils {

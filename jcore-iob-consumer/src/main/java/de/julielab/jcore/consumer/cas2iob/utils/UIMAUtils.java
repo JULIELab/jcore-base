@@ -8,12 +8,12 @@
 
 package de.julielab.jcore.consumer.cas2iob.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO this tools should be added to JULES Utils

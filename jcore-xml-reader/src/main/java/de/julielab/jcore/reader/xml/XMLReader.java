@@ -17,13 +17,8 @@
 
 package de.julielab.jcore.reader.xml;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-
+import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
+import de.julielab.jcore.types.Header;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
@@ -40,8 +35,7 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
-import de.julielab.jcore.types.Header;
+import java.io.*;
 
 /**
  * CollectionReader for MEDLINE (www.pubmed.gov) Abstracts in XML that

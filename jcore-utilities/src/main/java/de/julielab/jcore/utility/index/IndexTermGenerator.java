@@ -10,9 +10,9 @@
  **/
 package de.julielab.jcore.utility.index;
 
-import java.util.stream.Stream;
-
 import org.apache.uima.jcas.tcas.Annotation;
+
+import java.util.stream.Stream;
 
 /**
  * <p>

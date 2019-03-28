@@ -1,13 +1,13 @@
 package banner.postprocessing;
 
-import java.util.Set;
-
 import banner.postprocessing.ExtractAbbrev.AbbreviationPair;
-import banner.types.Mention;
 import banner.types.EntityType;
+import banner.types.Mention;
 import banner.types.Sentence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Set;
 
 public class LocalAbbreviationPostProcessor implements PostProcessor {
     private final static Logger log = LoggerFactory.getLogger(LocalAbbreviationPostProcessor.class);

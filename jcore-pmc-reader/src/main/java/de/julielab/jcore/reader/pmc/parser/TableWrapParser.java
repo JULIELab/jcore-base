@@ -10,16 +10,15 @@
  **/
 package de.julielab.jcore.reader.pmc.parser;
 
-import java.util.Optional;
-
 import com.ximpleware.NavException;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
-
 import de.julielab.jcore.reader.pmc.PMCReader;
 import de.julielab.jcore.types.Caption;
 import de.julielab.jcore.types.Table;
 import de.julielab.jcore.types.Title;
+
+import java.util.Optional;
 
 public class TableWrapParser extends NxmlElementParser {
 

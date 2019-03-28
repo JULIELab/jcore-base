@@ -1,7 +1,6 @@
 package de.julielab.jcore.ae.fvr;
 
-import java.util.Map;
-
+import de.julielab.jcore.utility.JCoReFeaturePath;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -17,7 +16,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.utility.JCoReFeaturePath;
+import java.util.Map;
 
 public class FeatureValueReplacementAnnotator extends JCasAnnotator_ImplBase {
 

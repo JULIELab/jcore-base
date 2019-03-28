@@ -16,21 +16,10 @@
  **/
 package de.julielab.jcore.ae.mstparser.main;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.util.Properties;
-import java.util.Random;
-import java.util.zip.GZIPInputStream;
-
-import org.apache.commons.io.input.ReaderInputStream;
+import edu.upenn.seas.mstparser.Alphabet;
+import edu.upenn.seas.mstparser.DependencyParser;
+import edu.upenn.seas.mstparser.DependencyPipe;
+import edu.upenn.seas.mstparser.ParserOptions;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -38,10 +27,10 @@ import org.apache.uima.resource.SharedResourceObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.upenn.seas.mstparser.Alphabet;
-import edu.upenn.seas.mstparser.DependencyParser;
-import edu.upenn.seas.mstparser.DependencyPipe;
-import edu.upenn.seas.mstparser.ParserOptions;
+import java.io.*;
+import java.util.Properties;
+import java.util.Random;
+import java.util.zip.GZIPInputStream;
 
 /**
  * This is the wrapper for the MST parser.

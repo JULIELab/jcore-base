@@ -1,13 +1,13 @@
 package de.julielab.jcore.consumer.es.filter;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
-
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.util.AttributeFactory;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
 
 public class LuceneStandardTokenizerFilter extends AbstractFilter {
 

@@ -6,6 +6,7 @@
 package lingscope.algorithms;
 
 import abner.Scanner;
+
 import java.io.StringReader;
 
 /**

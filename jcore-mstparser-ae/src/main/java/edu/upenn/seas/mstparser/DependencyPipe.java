@@ -6,16 +6,12 @@
 
 package edu.upenn.seas.mstparser;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Random;
-
 import de.julielab.gnu.trove.TIntArrayList;
 import edu.upenn.seas.mstparser.io.DependencyReader;
 import edu.upenn.seas.mstparser.io.DependencyWriter;
+
+import java.io.*;
+import java.util.Random;
 
 public class DependencyPipe {
 

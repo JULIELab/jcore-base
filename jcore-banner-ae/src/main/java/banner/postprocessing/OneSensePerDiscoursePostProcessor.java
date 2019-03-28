@@ -1,10 +1,10 @@
 package banner.postprocessing;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import banner.types.Mention;
 import banner.types.Sentence;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class OneSensePerDiscoursePostProcessor implements PostProcessor
 {

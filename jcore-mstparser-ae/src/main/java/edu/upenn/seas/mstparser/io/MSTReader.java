@@ -12,10 +12,11 @@
 
 package edu.upenn.seas.mstparser.io;
 
-import java.io.*;
-
 import edu.upenn.seas.mstparser.DependencyInstance;
 import edu.upenn.seas.mstparser.Util;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  * A reader for files in MST format.

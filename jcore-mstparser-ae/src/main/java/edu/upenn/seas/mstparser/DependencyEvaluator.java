@@ -6,9 +6,9 @@
 
 package edu.upenn.seas.mstparser;
 
-import java.io.*;
+import edu.upenn.seas.mstparser.io.DependencyReader;
 
-import edu.upenn.seas.mstparser.io.*;
+import java.io.IOException;
 
 public class DependencyEvaluator {
 	

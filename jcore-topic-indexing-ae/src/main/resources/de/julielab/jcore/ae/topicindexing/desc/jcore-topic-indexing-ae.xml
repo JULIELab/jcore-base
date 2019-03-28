@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -29,13 +29,13 @@
                 <mandatory>true</mandatory>
             </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings/>
+        <configurationParameterSettings />
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.jcore-document-meta-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
+        <fsIndexCollection />
         <capabilities>
             <capability>
                 <inputs>
@@ -48,7 +48,7 @@
                     <type>de.julielab.jcore.types.ManualDescriptor</type>
                     <type>de.julielab.jcore.types.DocumentTopics</type>
                 </outputs>
-                <languagesSupported/>
+                <languagesSupported />
             </capability>
         </capabilities>
         <operationalProperties>
@@ -56,7 +56,7 @@
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    </analysisEngineMetaData>
+    <version>2.4.0</version></analysisEngineMetaData>
     <externalResourceDependencies>
         <externalResourceDependency>
             <key>TopicModelFile</key>

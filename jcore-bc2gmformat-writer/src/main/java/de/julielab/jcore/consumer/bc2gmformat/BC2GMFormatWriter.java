@@ -1,14 +1,9 @@
 package de.julielab.jcore.consumer.bc2gmformat;
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -23,9 +18,13 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.utility.JCoReTools;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @ResourceMetaData(name = "JCoRe BioCreative II Gene Mention Format writer", description = "This component writes gene annotations in the CAS to the format employed by the BioCreative II Gene Mention challenge.")
 @TypeCapability(inputs = {"de.julielab.jcore.types.Sentence", "de.julielab.jcore.types.Gene"})

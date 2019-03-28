@@ -14,11 +14,10 @@
  **/
 package de.julielab.jcore.reader.xmlmapper.genericTypes;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import de.julielab.jcore.reader.xmlmapper.mapper.DocumentTextHandler;
+import org.apache.uima.collection.CollectionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -26,12 +25,11 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-
-import org.apache.uima.collection.CollectionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.julielab.jcore.reader.xmlmapper.mapper.DocumentTextHandler;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Parses the Mapping File to a List of Feature- and Type Templates

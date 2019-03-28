@@ -1,14 +1,14 @@
 package de.julielab.jcore.consumer.es;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.uima.UimaContext;
+import org.apache.uima.resource.ResourceAccessException;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.uima.UimaContext;
-import org.apache.uima.resource.ResourceAccessException;
 
 /**
  * Per-thread object holding per-thread filter instances to avoid concurrency

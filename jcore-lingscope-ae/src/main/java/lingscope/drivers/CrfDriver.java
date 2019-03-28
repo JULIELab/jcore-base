@@ -1,9 +1,10 @@
 package lingscope.drivers;
 
-import java.util.List;
 import lingscope.algorithms.Annotator;
 import lingscope.io.AnnotatedSentencesIO;
 import lingscope.structures.AnnotatedSentence;
+
+import java.util.List;
 
 /**
  * Driver to mark scope or cue in a file

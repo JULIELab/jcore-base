@@ -7,13 +7,13 @@
 
 package de.julielab.jcore.ae.jpos.postagger;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO this tools should be added to JULES Utils

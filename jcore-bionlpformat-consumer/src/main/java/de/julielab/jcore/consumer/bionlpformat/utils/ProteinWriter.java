@@ -6,12 +6,12 @@
 
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
+import de.julielab.jcore.types.Gene;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
-
-import de.julielab.jcore.types.Gene;
 
 public class ProteinWriter {
 

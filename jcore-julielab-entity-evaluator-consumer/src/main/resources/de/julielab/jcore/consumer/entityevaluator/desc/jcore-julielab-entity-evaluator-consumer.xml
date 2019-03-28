@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -67,14 +67,14 @@ Where the fields are separated by tab stops. If the file name ends with .gz, the
                 <mandatory>true</mandatory>
             </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings/>
-        <typeSystemDescription/>
-        <fsIndexCollection/>
-        <capabilities/>
+        <configurationParameterSettings />
+        <typeSystemDescription />
+        <fsIndexCollection />
+        <capabilities />
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    </analysisEngineMetaData>
+    <version>2.4.0</version></analysisEngineMetaData>
 </analysisEngineDescription>

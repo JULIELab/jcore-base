@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -8,19 +8,19 @@
         <description>This multiplier expect to receive URIs to NXML documents in the form of JCoReURI feature
             structures. All JCoReURI FS in the annotation indexes are read and output as new CASes.
         </description>
-        <configurationParameters/>
-        <configurationParameterSettings/>
+        <configurationParameters />
+        <configurationParameterSettings />
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
-                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
-                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
+        <fsIndexCollection />
         <capabilities>
             <capability>
-                <inputs/>
+                <inputs />
                 <outputs>
                     <type>de.julielab.jcore.types.TitleType</type>
                     <type>de.julielab.jcore.types.Title</type>
@@ -48,7 +48,7 @@
                     <type>de.julielab.jcore.types.AbstractSectionHeading</type>
                     <type>de.julielab.jcore.types.AbstractSection</type>
                 </outputs>
-                <languagesSupported/>
+                <languagesSupported />
             </capability>
         </capabilities>
         <operationalProperties>
@@ -56,5 +56,5 @@
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    </analysisEngineMetaData>
+    <version>2.4.0</version></analysisEngineMetaData>
 </analysisEngineDescription>

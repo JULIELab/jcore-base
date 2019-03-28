@@ -21,13 +21,11 @@
 
 package de.julielab.jcore.ae.jtbd.main;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import de.julielab.jcore.ae.jtbd.EOSSymbols;
+import de.julielab.jcore.ae.jtbd.Tokenizer;
+import de.julielab.jcore.ae.jtbd.Unit;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -39,11 +37,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.jcore.ae.jtbd.EOSSymbols;
-import de.julielab.jcore.ae.jtbd.Tokenizer;
-import de.julielab.jcore.ae.jtbd.Unit;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TokenAnnotator extends JCasAnnotator_ImplBase {
 

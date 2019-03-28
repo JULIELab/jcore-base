@@ -2,12 +2,12 @@
 /* First created by JCasGen Mon Feb 05 09:56:22 CET 2018 */
 package de.julielab.jcore.types;
 
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 
 /** An abstract type which should be used to store information on the publication. See subtypes Journal and an accumulative type (OtherPub)
  * Updated by JCasGen Mon Feb 05 09:56:22 CET 2018

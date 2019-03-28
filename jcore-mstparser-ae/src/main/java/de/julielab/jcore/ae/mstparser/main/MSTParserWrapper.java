@@ -6,9 +6,9 @@
 
 package de.julielab.jcore.ae.mstparser.main;
 
-import java.io.IOException;
-
 import edu.upenn.seas.mstparser.DependencyParser;
+
+import java.io.IOException;
 
 public interface MSTParserWrapper {
 	public DependencyParser loadModel();

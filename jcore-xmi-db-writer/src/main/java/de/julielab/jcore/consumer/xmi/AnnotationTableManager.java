@@ -1,25 +1,18 @@
 package de.julielab.jcore.consumer.xmi;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
+import de.julielab.xmlData.cli.TableNotFoundException;
 import de.julielab.xmlData.dataBase.CoStoSysConnection;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
 import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.julielab.xmlData.dataBase.DataBaseConnector;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 
 public class AnnotationTableManager {
 
@@ -187,7 +180,10 @@ public class AnnotationTableManager {
                             "tried to create the tables although they had already been created by another process " +
                             "in the meantime. Error was: {}",
                     e);
+        } catch (TableNotFoundException e) {
+            log.error("Table not found", e);
         }
+
     }
 
     private String getTableSchema(String effectiveTableName) {

@@ -6,20 +6,13 @@
 
 package de.julielab.jcore.consumer.bionlpformat.utils;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashSet;
-import java.util.Set;
+ import de.julielab.jcore.types.*;
+ import org.apache.uima.jcas.cas.FSArray;
 
-import org.apache.uima.jcas.cas.FSArray;
-
-import de.julielab.jcore.types.Annotation;
-import de.julielab.jcore.types.ArgumentMention;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.EventMention;
-import de.julielab.jcore.types.EventTrigger;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Protein;
+ import java.io.IOException;
+ import java.io.Writer;
+ import java.util.HashSet;
+ import java.util.Set;
 
 public class BioEventWriter {
 

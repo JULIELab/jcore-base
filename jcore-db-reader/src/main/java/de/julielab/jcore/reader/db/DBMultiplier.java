@@ -1,9 +1,6 @@
 package de.julielab.jcore.reader.db;
 
-import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
-import de.julielab.jcore.types.ext.DBProcessingMetaData;
-import de.julielab.xmlData.config.FieldConfig;
 import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.UnobtainableConnectionException;
@@ -17,14 +14,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLTransientConnectionException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**

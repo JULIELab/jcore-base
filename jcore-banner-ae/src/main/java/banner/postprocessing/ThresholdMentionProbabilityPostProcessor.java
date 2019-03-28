@@ -1,9 +1,9 @@
 package banner.postprocessing;
 
-import java.util.ArrayList;
-
 import banner.types.Mention;
 import banner.types.Sentence;
+
+import java.util.ArrayList;
 
 public class ThresholdMentionProbabilityPostProcessor implements PostProcessor
 {

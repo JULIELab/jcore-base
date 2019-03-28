@@ -1,5 +1,14 @@
 package banner.tagging;
 
+import banner.types.Sentence;
+import cc.mallet.fst.CRF;
+import cc.mallet.fst.MaxLatticeDefault;
+import cc.mallet.fst.SumLatticeDefault;
+import cc.mallet.types.Instance;
+import cc.mallet.types.Sequence;
+import cc.mallet.types.SequencePairAlignment;
+import dragon.nlp.tool.Lemmatiser;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,15 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
-
-import banner.types.Sentence;
-import cc.mallet.fst.CRF;
-import cc.mallet.fst.MaxLatticeDefault;
-import cc.mallet.fst.SumLatticeDefault;
-import cc.mallet.types.Instance;
-import cc.mallet.types.Sequence;
-import cc.mallet.types.SequencePairAlignment;
-import dragon.nlp.tool.Lemmatiser;
 
 public class NBestCRFTagger extends CRFTagger
 {

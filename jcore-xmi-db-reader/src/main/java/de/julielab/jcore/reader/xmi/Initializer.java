@@ -1,7 +1,6 @@
 package de.julielab.jcore.reader.xmi;
 
 import de.julielab.jcore.types.casmultiplier.RowBatch;
-import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.XmiBuilder;
 import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.XmiSplitUtilities;
@@ -14,8 +13,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;

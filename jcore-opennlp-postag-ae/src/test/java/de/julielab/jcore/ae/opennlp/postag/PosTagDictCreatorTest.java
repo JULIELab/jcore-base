@@ -10,9 +10,10 @@
  **/
 package de.julielab.jcore.ae.opennlp.postag;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import opennlp.tools.postag.POSDictionary;
+import opennlp.tools.postag.POSSample;
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-
-import opennlp.tools.postag.POSDictionary;
-import opennlp.tools.postag.POSSample;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PosTagDictCreatorTest {
 	@Test

@@ -1,7 +1,7 @@
 package de.julielab.jcore.reader.xml;
 
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
-import org.apache.uima.collection.CollectionException;
+import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 public class CasPopulator {
 private final static Logger LOGGER = LoggerFactory.getLogger(CasPopulator.class);
     protected static final byte[] comma = ",".getBytes();

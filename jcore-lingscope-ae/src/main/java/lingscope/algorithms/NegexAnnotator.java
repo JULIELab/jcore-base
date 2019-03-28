@@ -5,17 +5,11 @@
 
 package lingscope.algorithms;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import lingscope.algorithms.negex.GenNegEx;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import lingscope.algorithms.negex.GenNegEx;
-import lingscope.structures.AnnotatedSentence;
 
 /**
  * Annotates negation using Negex

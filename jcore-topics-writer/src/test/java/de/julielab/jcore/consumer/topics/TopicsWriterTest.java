@@ -1,10 +1,5 @@
 package de.julielab.jcore.consumer.topics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-
 import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.types.DocumentTopics;
 import org.apache.commons.io.FileUtils;
@@ -17,17 +12,14 @@ import org.apache.uima.jcas.cas.DoubleArray;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 /**
  * Unit tests for jcore-topics-writer.

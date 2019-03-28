@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -34,19 +34,19 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
-                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
-                <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-types" />
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
-        <capabilities/>
+        <fsIndexCollection />
+        <capabilities />
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    </analysisEngineMetaData>
+    <version>2.4.0</version></analysisEngineMetaData>
     <externalResourceDependencies>
         <externalResourceDependency>
             <key>AnnotationSource</key>
@@ -61,15 +61,15 @@
         <externalResources>
             <externalResource>
                 <name>InMemoryFileEntityProvider</name>
-                <description/>
+                <description />
                 <configurableDataResourceSpecifier>
                     <url>
 
                     </url>
                     <resourceMetaData>
-                        <name/>
-                        <configurationParameters/>
-                        <configurationParameterSettings/>
+                        <name />
+                        <configurationParameters />
+                        <configurationParameterSettings />
                     </resourceMetaData>
                 </configurableDataResourceSpecifier>
                 <implementationName>de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileEntityProvider

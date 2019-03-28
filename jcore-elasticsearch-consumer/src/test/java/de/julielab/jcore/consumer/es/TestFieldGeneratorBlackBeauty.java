@@ -1,30 +1,13 @@
 package de.julielab.jcore.consumer.es;
 
-import java.util.Arrays;
-import java.util.List;
-
+import de.julielab.jcore.consumer.es.preanalyzed.*;
+import de.julielab.jcore.es.test.*;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.JCas;
 
-import de.julielab.jcore.consumer.es.ArrayFieldValue;
-import de.julielab.jcore.consumer.es.FeaturePathSet;
-import de.julielab.jcore.consumer.es.FeaturePathSets;
-import de.julielab.jcore.consumer.es.FieldGenerationException;
-import de.julielab.jcore.consumer.es.FieldGenerator;
-import de.julielab.jcore.consumer.es.FieldValueGenerator;
-import de.julielab.jcore.consumer.es.FilterRegistry;
-import de.julielab.jcore.consumer.es.preanalyzed.Document;
-import de.julielab.jcore.consumer.es.preanalyzed.IFieldValue;
-import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedFieldValue;
-import de.julielab.jcore.consumer.es.preanalyzed.PreanalyzedToken;
-import de.julielab.jcore.consumer.es.preanalyzed.RawToken;
-import de.julielab.jcore.es.test.AddressTestType;
-import de.julielab.jcore.es.test.AuthorTestType;
-import de.julielab.jcore.es.test.ESConsumerTestType;
-import de.julielab.jcore.es.test.EntityTestType;
-import de.julielab.jcore.es.test.HeaderTestType;
-import de.julielab.jcore.es.test.TokenTestType;
+import java.util.Arrays;
+import java.util.List;
 
 public class TestFieldGeneratorBlackBeauty extends FieldGenerator {
 

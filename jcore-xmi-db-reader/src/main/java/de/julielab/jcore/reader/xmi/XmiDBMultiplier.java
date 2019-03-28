@@ -1,10 +1,7 @@
 package de.julielab.jcore.reader.xmi;
 
 import de.julielab.jcore.reader.db.DBMultiplier;
-import de.julielab.jcore.reader.db.SubsetReaderConstants;
-import de.julielab.jcore.reader.db.TableReaderConstants;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
-import de.julielab.xml.XmiBuilder;
 import de.julielab.xmlData.config.FieldConfig;
 import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
@@ -13,8 +10,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -30,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
-
-import static de.julielab.jcore.reader.xmi.XmiDBReader.PARAM_READS_BASE_DOCUMENT;
 
 public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 

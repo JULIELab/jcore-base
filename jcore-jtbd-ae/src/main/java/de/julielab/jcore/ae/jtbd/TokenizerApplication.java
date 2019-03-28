@@ -21,27 +21,20 @@
 
 package de.julielab.jcore.ae.jtbd;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import cc.mallet.fst.CRF;
+import cc.mallet.pipe.Pipe;
+import cc.mallet.types.Instance;
+import cc.mallet.types.InstanceList;
+import cc.mallet.types.LabelSequence;
+import org.apache.commons.io.FileUtils;
+
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
-
-import org.apache.commons.io.FileUtils;
-
-import cc.mallet.fst.CRF;
-import cc.mallet.pipe.Pipe;
-import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
-import cc.mallet.types.LabelSequence;
 
 public class TokenizerApplication {
 

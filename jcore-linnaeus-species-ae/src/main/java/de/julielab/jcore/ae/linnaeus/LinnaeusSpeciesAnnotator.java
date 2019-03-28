@@ -10,11 +10,10 @@
  **/
 package de.julielab.jcore.ae.linnaeus;
 
-import java.util.List;
-import java.util.logging.Logger;
-
+import de.julielab.jcore.types.Organism;
+import de.julielab.jcore.types.ResourceEntry;
+import de.julielab.jcore.utility.JCoReTools;
 import martin.common.ArgParser;
-
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -22,13 +21,12 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
-
 import uk.ac.man.entitytagger.EntityTagger;
 import uk.ac.man.entitytagger.Mention;
 import uk.ac.man.entitytagger.matching.Matcher;
-import de.julielab.jcore.types.Organism;
-import de.julielab.jcore.types.ResourceEntry;
-import de.julielab.jcore.utility.JCoReTools;
+
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Uses the Linnaeus software (http://linnaeus.sourceforge.net/) to detect

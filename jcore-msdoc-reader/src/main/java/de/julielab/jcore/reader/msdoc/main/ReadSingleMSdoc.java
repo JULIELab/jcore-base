@@ -35,13 +35,13 @@
 
 package de.julielab.jcore.reader.msdoc.main;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.Paragraph;
 import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class ReadSingleMSdoc {
 

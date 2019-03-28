@@ -1,12 +1,13 @@
 package lingscope.drivers;
 
 import generalutils.FileOperations;
+import lingscope.io.AnnotatedSentencesIO;
+import lingscope.structures.AnnotatedSentence;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lingscope.io.AnnotatedSentencesIO;
-import lingscope.structures.AnnotatedSentence;
 
 /**
  * Merges two files, one containing pos tags and the other containing
