@@ -1,5 +1,6 @@
 package de.julielab.jcore.reader.db;
 
+import de.julielab.xmlData.cli.TableNotFoundException;
 import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
@@ -132,6 +133,8 @@ public abstract class DBSubsetReader extends DBReaderBase {
                     Integer unprocessedDocs = dbc.countUnprocessed(tableName);
                     totalDocumentCount = limitParameter != null ? Math.min(unprocessedDocs, limitParameter) : unprocessedDocs;
                     dataTable = dbc.getReferencedTable(tableName);
+                    if (dataTable == null)
+                        throw new ResourceInitializationException(new IllegalStateException("The subset table " + tableName + " does not have a data table. This is an inconsistent state, each subset table must have a referenced data table. The data table has probably been deleted."));
                     hasNext = dbc.hasUnfetchedRows(tableName);
                     log.debug("Checking if the subset table \"{}\" has unfetched rows. Result: {}", tableName, hasNext);
 
@@ -161,7 +164,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
                     dbc.checkTableDefinition(dataTable, schemas[0]);
                 }
             }
-        } catch (TableSchemaMismatchException e) {
+        } catch (TableSchemaMismatchException | TableNotFoundException e) {
             throw new ResourceInitializationException(e);
         }
         logConfigurationState();

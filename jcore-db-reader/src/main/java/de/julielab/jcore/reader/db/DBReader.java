@@ -26,6 +26,7 @@
 package de.julielab.jcore.reader.db;
 
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
+import de.julielab.xmlData.cli.TableNotFoundException;
 import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.DBCIterator;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
@@ -320,6 +321,9 @@ public abstract class DBReader extends DBSubsetReader {
                 log.error("Table schema mismatch: The active table schema {} specified in the CoStoSys configuration" +
                                 " file {} does not match the columns in the subset table {}: {}", dbc.getActiveTableSchema(),
                         costosysConfig, tableName, e.getMessage());
+                throw new IllegalArgumentException(e);
+            } catch (TableNotFoundException e) {
+                log.error("The subset table {} could not be found in the database", tableName, e);
                 throw new IllegalArgumentException(e);
             }
             numberFetchedDocIDs += ids.size();
