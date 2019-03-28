@@ -72,7 +72,7 @@ public class AceReaderTest extends TestCase {
 	/**
 	 * Path to the MedlineReader descriptor
 	 */
-	private static final String ACE_READER_DESCRIPTOR = "src/test/resources/de/julielab/jcore/reader/ace/desc/jcore-ace-reader.xml";
+	private static final String ACE_READER_DESCRIPTOR = "src/main/resources/de/julielab/jcore/reader/ace/desc/jcore-ace-reader.xml";
 
 	/**
 	 * Path to SGM file
@@ -2267,6 +2267,7 @@ public class AceReaderTest extends TestCase {
 		try {
 			readerDescription = (CollectionReaderDescription) UIMAFramework.getXMLParser()
 					.parseCollectionReaderDescription(new XMLInputSource(readerDescriptor));
+			readerDescription.getMetaData().getConfigurationParameterSettings().setParameterValue(AceReader.PARAM_INPUTDIR, "src/test/resources/de/julielab/jcore/reader/ace/data");
 			collectionReader = UIMAFramework.produceCollectionReader(readerDescription);
 		} catch (InvalidXMLException | IOException e) {
 			e.printStackTrace();

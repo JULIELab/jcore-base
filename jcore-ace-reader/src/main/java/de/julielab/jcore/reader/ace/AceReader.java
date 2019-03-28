@@ -39,6 +39,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.util.Progress;
@@ -65,6 +66,7 @@ import de.julielab.jcore.utility.JCoReAnnotationTools;
 // not so, read those elements to prevent exceptions
 
 public class AceReader extends CollectionReader_ImplBase {
+	public static final String GENERATE_JCORE_TYPES = "generateJcoreTypes";
 
 	/*----------------------------------------------------------------------------------------------*/
 	/**
@@ -79,10 +81,12 @@ public class AceReader extends CollectionReader_ImplBase {
 
 	private int invalidDocumentCounter = 0;
 
+
 	/**
 	 * Jules Types (see ACESemantics.xml) have to be generated if true
 	 */
-	private boolean generateJulesTypes = true;
+	@ConfigurationParameter(name=GENERATE_JCORE_TYPES, description = "Specifies if JULIE Lab Types (jcore-semantics-ace-types.xml) should be generated in addition to types from jcore-ace-types.xml. Defaults to true.", defaultValue = "true")
+	private boolean generateJcoreTypes = true;
 
 	/**
 	 * mappings between ACE relations and Jules Types Relations in ACESemantics.xml
@@ -393,8 +397,10 @@ public class AceReader extends CollectionReader_ImplBase {
 	 * XML item of content LEXICALCONDITION
 	 */
 	public static final String ITEM_LEXICALCONDITION = "LEXICALCONDITION";
+	@ConfigurationParameter(name=PARAM_INPUTDIR, description = "The input directory.")
+    private File directory;
 
-	/*----------------------------------------------------------------------------------------------*/
+    /*----------------------------------------------------------------------------------------------*/
 	/**
 	 * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
 	 * 
@@ -436,7 +442,7 @@ public class AceReader extends CollectionReader_ImplBase {
 			Document apfXmlDomDocument = builder.parse(apfXmlFile);
 			addSourceFileInformation(apfXmlDomDocument, jcas);
 
-			if (generateJulesTypes) {
+			if (generateJcoreTypes) {
 				generateJulesTypes(jcas);
 			} // of if
 		} // of try
@@ -516,7 +522,7 @@ public class AceReader extends CollectionReader_ImplBase {
 		generateRelation(jcas);
 		logger.info("Generating Jules Events");
 		generateEvents(jcas);
-	} // of generateJulesTypes
+	} // of generateJcoreTypes
 
 	/*----------------------------------------------------------------------------------------------*/
 	/**
@@ -2229,6 +2235,9 @@ public class AceReader extends CollectionReader_ImplBase {
 		return documentFSArray;
 	} // of getDocumentFSArray
 
+
+
+
 	/*----------------------------------------------------------------------------------------------*/
 	/**
 	 * This method is used to initialize attributes which are needed for the processing of the XML files
@@ -2237,8 +2246,8 @@ public class AceReader extends CollectionReader_ImplBase {
 
 		UimaContext aContext = this.getUimaContext();
 
-		if ((Boolean) aContext.getConfigParameterValue("generateJulesTypes") != null) {
-			generateJulesTypes = (Boolean) aContext.getConfigParameterValue("generateJulesTypes");
+		if ((Boolean) aContext.getConfigParameterValue(GENERATE_JCORE_TYPES) != null) {
+			generateJcoreTypes = (Boolean) aContext.getConfigParameterValue(GENERATE_JCORE_TYPES);
 		} // of if
 		generateMappings();
 
@@ -2301,7 +2310,7 @@ public class AceReader extends CollectionReader_ImplBase {
 	private List<File> getFilesFromInputDirectory() {
 
 		List<File> documentFiles = new ArrayList<File>();
-		File directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
+        directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
 
 		if (!directory.exists() || !directory.isDirectory()) {
 			logger.info("getFilesFromInputDirectory(): "

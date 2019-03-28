@@ -20,7 +20,7 @@ In UIMA, each component is configured by a descriptor in XML. Such a preconfigur
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |
 |----------------|----------------|-----------|-------------|-------------|
 | inputDirectory | String | yes | no | Path to ACE files |
-| generateJcoreTypes| Boolean | no | no | Determines if JULIE Lab Types (jcore-semantics-ace-types.xml) should be generated in addition to types from jcore-ace- types.xml |
+| generateJcoreTypes| Boolean | no | no | Specifies if JULIE Lab Types (jcore-semantics-ace-types.xml) should be generated in addition to types from jcore-ace-types.xml |
 
 **2. Predefined Settings**
 
