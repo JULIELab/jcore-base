@@ -4,19 +4,19 @@
     <primitive>true</primitive>
     <annotatorImplementationName>de.julielab.jcore.ae.checkpoint.DBCheckpointAE</annotatorImplementationName>
     <analysisEngineMetaData>
-        <name>JCoRe Database Checkpoint Consumer</name>
+        <name>JCoRe Database Checkpoint AE</name>
         <description>This component can be used when using a JCoRe database reader that reads from a CoStoSys/JeDIS subset. Enters the configured component name in the 'last component' column. Can also mark documents as being completely processed.</description>
         <configurationParameters>
             <configurationParameter>
                 <name>CheckpointName</name>
-                <description/>
+                <description>String parameter. A name that identifies this checkpoint in the database.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>IndicateFinished</name>
-                <description/>
+                <description>Whether or not the checkpoint should mark the end of processing of the pipeline. If set to true, this component will not only set its name as checkpoint in the subset table but also set the 'is processed' flag to true and the 'is in process' flag to false.</description>
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -46,7 +46,31 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-wikipedia-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
                 <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+                <import name="de.julielab.jcore.types.jcore-basic-types"/>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-semantics-stemnet-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-mmax-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-evaluation-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-dta-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-mantra-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+                <import name="de.julielab.jcore.types.jcore-discourse-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-concept-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-medical-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-ace-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-muc7-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-semantics-bootstrep-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-semantics-ace-types"/>
             </imports>
         </typeSystemDescription>
         <fsIndexCollection/>

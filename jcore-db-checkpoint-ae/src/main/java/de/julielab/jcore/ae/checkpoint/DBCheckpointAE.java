@@ -36,10 +36,10 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     private final static Logger log = LoggerFactory.getLogger(DBCheckpointAE.class);
     private DataBaseConnector dbc;
 
-    @ConfigurationParameter(name = PARAM_CHECKPOINT_NAME)
+    @ConfigurationParameter(name = PARAM_CHECKPOINT_NAME, description = "String parameter. A name that identifies this checkpoint in the database.")
     private String componentDbName;
 
-    @ConfigurationParameter(name = PARAM_INDICATE_FINISHED, mandatory = false)
+    @ConfigurationParameter(name = PARAM_INDICATE_FINISHED, mandatory = false, description = "Whether or not the checkpoint should mark the end of processing of the pipeline. If set to true, this component will not only set its name as checkpoint in the subset table but also set the 'is processed' flag to true and the 'is in process' flag to false.")
     private boolean indicateFinished;
 
     @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG, description = "File path or classpath resource location " +
