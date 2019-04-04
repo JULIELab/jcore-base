@@ -232,7 +232,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
         outputColumnNames = new LinkedHashSet<>(Stream.of(outputColumnNamesArray).collect(Collectors.toList()));
 
-        multiValueMode = MultiValueMode.valueOf(Optional.ofNullable(((String) aContext.getConfigParameterValue(PARAM_MULTI_VALUE_MODE)).toUpperCase()).orElse(MultiValueMode.CARTESIAN.name()));
+        multiValueMode = MultiValueMode.valueOf(Optional.ofNullable(((String) aContext.getConfigParameterValue(PARAM_MULTI_VALUE_MODE))).orElse(MultiValueMode.CARTESIAN.name()).toUpperCase());
 
         offsetMode = null == offsetModeStr ? OffsetMode.CharacterSpan : OffsetMode.valueOf(offsetModeStr);
         if (null == offsetScopeStr) {
