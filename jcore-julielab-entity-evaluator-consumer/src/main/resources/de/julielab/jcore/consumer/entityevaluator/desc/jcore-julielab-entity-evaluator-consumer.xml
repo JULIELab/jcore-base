@@ -1,12 +1,12 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
     <annotatorImplementationName>de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer</annotatorImplementationName>
     <analysisEngineMetaData>
-        <name>JCoRe JULIE Lab Entity Evaluator Writer</name>
-        <description>This component allows to output annotations from the CAS into a tab separated </description>
-        <vendor>de.julielab.jcore.consumer.entityevaluator</vendor>
+        <name>JCoRe Entity Evaluator / TSV Consumer</name>
+        <description>This component was originally created to output the tab separated format used the JULIE Entity Evaluator. However, this component can be used to create a TSV file from any annotation or annotation set. The component allows to define columns by specifying the annotation type to draw feature values from and a feature path that specifies the location of the desired feature. All feature paths will be applied to each configured annotation, returning null values if an annotation does not exhibit a value for a column's feature path.</description>
+        <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
                 <name>OutputColumns</name>
@@ -17,7 +17,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>ColumnDefinitions</name>
-                <description>Custom definitions of output columns. Predefined columns are 'DocumentId', 'SentenceId' and 'Offsets'. A column definition consists of the name of the column, the type of the annotation from which the values for this column should be derived, and a feature path pointing to the value. A single column definition may refer to multiple, different annotation types with their own feature path. Annotation types that should use the same feature path are separated by a comma. The sets of annotation types where each set shared one feature path are separated by a semicolon. Example: 'entityid:Chemical,Gene=/registryNumber;Disease=/specificType'. In this example, the column named 'entityid' will list the IDs of annotations of types 'Chemical', 'Gene' and 'Disease'. For the first two, the feature 'registryNumber' will be employed, for the latter the feature 'specificType'. The annotation type names will be resolved against the 'TypePrefix' parameter, if specified. The built-in feature path functions 'coveredText()' and 'typeName()' are available. For example, 'type:Gene=/:typeName()' (note the colon preceding the built-in function) will output the fully qualified name of the Gene type.</description>
+                <description>Custom definitions of output columns. Predefined columns are 'DocumentId', 'SentenceId' and 'Offsets'. The first two may be overwritten by a custom definition using their exact name. A column definition consists of the name of the column, the type of the annotation from which the values for this column should be derived, and a feature path pointing to the value. A single column definition may refer to multiple, different annotation types with their own feature path. Annotation types that should use the same feature path are separated by a comma. The sets of annotation types where each set shared one feature path are separated by a semicolon. Example: 'entityid:Chemical,Gene=/registryNumber;Disease=/specificType'. In this example, the column named 'entityid' will list the IDs of annotations of types 'Chemical', 'Gene' and 'Disease'. For the first two, the feature 'registryNumber' will be employed, for the latter the feature 'specificType'. The annotation type names will be resolved against the 'TypePrefix' parameter, if specified. The built-in feature path functions 'coveredText()' and 'typeName()' are available. For example, 'type:Gene=/:typeName()' (note the colon preceding the built-in function) will output the fully qualified name of the Gene type.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>true</mandatory>
@@ -52,7 +52,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>FeatureFilters</name>
-                <description>Optional. Only lets those entities contribute to the output file that fulfill the given feature value. The syntax is &lt;type&gt;:&lt;feature path&gt;=&lt;value&gt;</description>
+                <description>Optional. Only lets those entities contribute to the output file that fulfill the given feature value(s). The syntax is &lt;type&gt;:&lt;feature path&gt;=&lt;value&gt;. The '&lt;type&gt;:' prefix is optional. If omitted, the filters will be applied to all entities given in the EntityTypes parameter. An arbitrary number of filter expressions may be specified. In such cases, it is important to understand the boolean structure after which the expressions are evaluated in order to omit an annotation or take it into account for the output. The filter expressions are first grouped by feature path. Within such a group, the filter values form a disjunction. Thus, if any filter in a group is satisfied, the whole group is satisfied. The different groups form a conjunction. Thus, if any group is not satisfied, the whole conjunction is unsatisfied and the respective annotation will be omitted from output.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
@@ -60,21 +60,35 @@
             <configurationParameter>
                 <name>OutputFile</name>
                 <description>Output file to which all entity information is written in the format
-docId EGID begin end confidence
-Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.</description>
+                    docId EGID begin end confidence
+                    Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>MultiValueMode</name>
+                <description>This parameter comes to effect if multiple columns define a feature path that points to a multi-valued feature (array features). Possible values are 'parallel' and 'cartesian'. The first mode assumes all multi-valued arrays values to be index-wise associated to one another and outputs the pairs with the same array index. If one array has more elements then the others, the missing values are null. The cartesian mode outputs the cartesian product of the array values. Defaults to 'cartesian'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings />
-        <typeSystemDescription />
-        <fsIndexCollection />
-        <capabilities />
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>MultiValueMode</name>
+                <value>
+                    <string>CARTESIAN</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription/>
+        <fsIndexCollection/>
+        <capabilities/>
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    <version>2.4.0</version></analysisEngineMetaData>
+    </analysisEngineMetaData>
 </analysisEngineDescription>

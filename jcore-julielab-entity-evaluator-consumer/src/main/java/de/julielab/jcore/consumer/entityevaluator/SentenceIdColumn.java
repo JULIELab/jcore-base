@@ -16,6 +16,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +40,7 @@ public class SentenceIdColumn extends Column {
 			// we expect that the sentences are non-overlapping and thus ordered strictly ascending by offset
 			int sentenceNumber = 0;
 			for (Annotation s : sentenceIndex.getIndex().values().stream().flatMap(sentences -> sentences.stream()).collect(Collectors.toList())) {
-				String sentenceId = getValue(s);
+				String sentenceId = getValue(s).peekFirst();
 				if (sentenceId == null) {
 					if (documentId == null)
 						throw new IllegalArgumentException("At least one sentence does not have an ID, but the sentence ID column was added for output columns and the document ID column was not defined. But it is required to create a unique sentence ID.");
@@ -50,7 +52,7 @@ public class SentenceIdColumn extends Column {
 	}
 
 	@Override
-	public String getValue(TOP a) {
+	public Deque<String> getValue(TOP a) {
 		String value = null;
 		Annotation sentence = sentenceIndex.get((Annotation) a);
 		if (sentence != null) {
@@ -58,7 +60,10 @@ public class SentenceIdColumn extends Column {
 		} else {
 			log.warn("There was no sentence found covering the annotation " + a);
 		}
-		return value;
+		Deque<String> ret = new ArrayDeque<>(1);
+		if (value != null)
+		ret.add(value);
+		return ret;
 	}
 
 }

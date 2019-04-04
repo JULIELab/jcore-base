@@ -18,6 +18,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class DocumentIdColumn extends Column {
 
 	public DocumentIdColumn(Column c) {
@@ -25,7 +28,7 @@ public class DocumentIdColumn extends Column {
 	}
 
 	@Override
-	public String getValue(TOP a) {
+	public Deque<String> getValue(TOP a) {
 		String value;
 		try {
 			JCas jCas = a.getCAS().getJCas();
@@ -37,7 +40,9 @@ public class DocumentIdColumn extends Column {
 			Annotation docInfoAnnotation = it.next();
 			JCoReFeaturePath fp = featurePathMap.get(documentMetaInformationType);
 			value = fp.getValueAsString(docInfoAnnotation);
-			return value;
+			Deque<String> ret = new ArrayDeque<>();
+			ret.add(value);
+			return ret;
 		} catch (CASException e) {
 			throw new RuntimeException(e);
 		}

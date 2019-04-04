@@ -16,9 +16,7 @@ import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NavigableMap;
+import java.util.*;
 
 public class OffsetsColumn extends Column {
 
@@ -49,7 +47,7 @@ public class OffsetsColumn extends Column {
 	}
 
 	@Override
-	public String getValue(TOP a) {
+	public Deque<String> getValue(TOP a) {
 		Annotation an = (Annotation) a;
 		NavigableMap<Integer, Integer> numWsMap = documentNumWsMap;
 		int annotationOffset = 0;
@@ -61,7 +59,10 @@ public class OffsetsColumn extends Column {
 			annotationOffset = s.getBegin();
 		}
 
-		return getOffsets(an, numWsMap, annotationOffset);
+		final String offsets = getOffsets(an, numWsMap, annotationOffset);
+		Deque<String> ret = new ArrayDeque<>(1);
+		ret.add(offsets);
+		return ret;
 	}
 
 	/**

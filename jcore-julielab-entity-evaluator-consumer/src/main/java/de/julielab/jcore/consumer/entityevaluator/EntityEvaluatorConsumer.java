@@ -16,6 +16,8 @@ import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
 import de.julielab.jcore.utility.index.Comparators;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -23,6 +25,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -34,11 +37,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@ResourceMetaData(name="JCoRe Entity Evaluator / TSV Consumer", description = "This component was originally created to output the tab separated format used the JULIE Entity Evaluator. However, this component can be used to create a TSV file from any annotation or annotation set. The component allows to define columns by specifying the annotation type to draw feature values from and a feature path that specifies the location of the desired feature. All feature paths will be applied to each configured annotation, returning null values if an annotation does not exhibit a value for a column's feature path.", vendor = "JULIE Lab Jena, Germany")
 public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
-
     // If you add a new built-in column, don't forget to add its name to the
     // "predefinedColumnNames" set!
     public static final String DOCUMENT_ID_COLUMN = "DocumentId";
@@ -52,6 +56,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     public final static String PARAM_OFFSET_MODE = "OffsetMode";
     public final static String PARAM_OFFSET_SCOPE = "OffsetScope";
     public final static String PARAM_OUTPUT_FILE = "OutputFile";
+    public static final String PARAM_MULTI_VALUE_MODE = "MultiValueMode";
     private static final Logger log = LoggerFactory.getLogger(EntityEvaluatorConsumer.class);
     @ConfigurationParameter(name = PARAM_OUTPUT_COLUMNS, description = "A list of column names that are either defined with the parameter " + PARAM_COLUMN_DEFINITIONS + " or one of '" + DOCUMENT_ID_COLUMN + "', '" + SENTENCE_ID_COLUMN + "' or '" + OFFSETS_COLUMN + "'. This list determines the set and the order of columns that are written into the output file in a tab-separated manner.")
     private String[] outputColumnNamesArray;
@@ -71,6 +76,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
             + "docId EGID begin end confidence\n"
             + "Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.")
     private String outputFilePath;
+    @ConfigurationParameter(name = PARAM_MULTI_VALUE_MODE, mandatory = false, description = "This parameter comes to effect if multiple columns define a feature path that points to a multi-valued feature (array features). Possible values are 'parallel' and 'cartesian'. The first mode assumes all multi-valued arrays values to be index-wise associated to one another and outputs the pairs with the same array index. If one array has more elements then the others, the missing values are null. The cartesian mode outputs the cartesian product of the array values. Defaults to 'cartesian'.", defaultValue = "CARTESIAN")
+    private MultiValueMode multiValueMode;
     private Set<String> predefinedColumnNames = new HashSet<>();
     private LinkedHashSet<String> outputColumnNames;
     private LinkedHashMap<String, Column> columns;
@@ -156,7 +163,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
             Column docIdColumn = columns.get(DOCUMENT_ID_COLUMN);
             String documentId = null;
             if (docIdColumn != null)
-                documentId = docIdColumn.getValue(aJCas.getDocumentAnnotationFs());
+                documentId = docIdColumn.getValue(aJCas.getDocumentAnnotationFs()).getFirst();
             Type sentenceType = c.getSingleType();
             // put all sentences into an index with an
             // overlap-comparator - this way the index can be
@@ -224,6 +231,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         String offsetScopeStr = (String) aContext.getConfigParameterValue(PARAM_OFFSET_SCOPE);
 
         outputColumnNames = new LinkedHashSet<>(Stream.of(outputColumnNamesArray).collect(Collectors.toList()));
+
+        multiValueMode = MultiValueMode.valueOf(Optional.ofNullable(((String) aContext.getConfigParameterValue(PARAM_MULTI_VALUE_MODE)).toUpperCase()).orElse(MultiValueMode.CARTESIAN.name()));
 
         offsetMode = null == offsetModeStr ? OffsetMode.CharacterSpan : OffsetMode.valueOf(offsetModeStr);
         if (null == offsetScopeStr) {
@@ -325,12 +334,37 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                     continue;
                 int colIndex = 0;
                 String[] record = new String[outputColumnNames.size()];
+                List<Pair<Deque<String>, Integer>> multiValues = null;
                 for (String outputColumnName : outputColumnNames) {
                     assertColumnDefined(outputColumnName);
                     Column c = columns.get(outputColumnName);
-                    record[colIndex++] = removeLineBreak(c.getValue(a));
+                    final Deque<String> values = removeLineBreak(c.getValue(a));
+                    // The following case distinction is important:
+                    // if there are multi valued values, the respective locations in the
+                    // record array will be filled below. For the cartesian product
+                    // algorithm, no values may be already read, otherwise we
+                    // cannot build all combinations. Thus, the record indices
+                    // corresponding to multi value columns stay empty for now.
+                    if (c.isMultiValued) {
+                        if (multiValues == null)
+                            multiValues = new ArrayList<>();
+                        multiValues.add(new ImmutablePair(values, colIndex));
+                    } else {
+                        // This is the simple case: No multivalues, just add the value to
+                        // the record
+                        record[colIndex] = values.isEmpty() ? null : values.removeFirst();
+                    }
+                    ++colIndex;
                 }
-                entityRecords.add(record);
+                if (multiValues == null)
+                    entityRecords.add(record);
+                if (multiValues != null) {
+                    if (multiValueMode == MultiValueMode.PARALLEL) {
+                        addParallelMultiValues(record, multiValues);
+                    } else {
+                        addCartesianProduct(multiValues, 0, Arrays.copyOf(record, record.length));
+                    }
+                }
             }
         } catch (CASException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -342,17 +376,59 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     }
 
     /**
+     * Assumes that all the multi valued feature values are meant to be index-parallel. So, this algorithm
+     * produces records where the non-multi valued feature values that have already been entered before stay fixed
+     * and for each index-parallel value tupel, a new record is created. If the value lists have different size,
+     * missing values will be null.
+     * @param record The record where the non-multi value entries are already filled and the multi valued positions are blank.
+     * @param multiValues The list of columns values that are multivalued.
+     */
+    private void addParallelMultiValues(String[] record, List<Pair<Deque<String>, Integer>> multiValues) {
+        while (multiValues.stream().map(Pair::getLeft).filter(Predicate.not(Collection::isEmpty)).findAny().isPresent()) {
+            final String[] additionalRecord = Arrays.copyOf(record, record.length);
+            for (Pair<Deque<String>, Integer> pair : multiValues) {
+                Deque<String> values = pair.getLeft();
+                int index = pair.getRight();
+                final String firstValue = values.isEmpty() ? values.peekFirst() : values.removeFirst();
+                additionalRecord[index] = firstValue;
+            }
+            entityRecords.add(additionalRecord);
+        }
+    }
+
+    /**
+     * Recursively creates all combinations of the given value lists in a cartesian product manner.
+     * @param multiValues The list of columns values that are multivalued.
+     * @param listIndex The index of the list that should enter its next value. The initial, non-recursive call should enter a 0 here.
+     * @param record he record where the non-multi value entries are already filled and the multi valued positions are blank.
+     */
+    private void addCartesianProduct(List<Pair<Deque<String>, Integer>> multiValues, int listIndex, String[] record) {
+        for (String value : multiValues.get(listIndex).getLeft()) {
+            record[multiValues.get(listIndex).getRight()] = value;
+            if (listIndex < multiValues.size() - 1) {
+                addCartesianProduct(multiValues, listIndex + 1, Arrays.copyOf(record, record.length));
+            } else {
+                entityRecords.add(Arrays.copyOf(record, record.length));
+            }
+        }
+    }
+
+    /**
      * Primitive removal of line breaks within entity text by replacing newlines
      * by white spaces. May go wrong if the line break is after a dash, for
-     * example.
+     * example. The Deque implementation returned by this method is a {@link LinkedList} to allow efficient
+     * {@link Deque#removeFirst()} operations.
      *
      * @param text
      * @return
      */
-    private String removeLineBreak(String text) {
-        if (text == null)
-            return null;
-        String ret = text.replaceAll("\n", " ");
+    private Deque<String> removeLineBreak(Deque<String> text) {
+        if (text == null || text.isEmpty())
+            return new ArrayDeque<>(0);
+        Deque<String> ret = new LinkedList<>();
+        for (String s : text) {
+            ret.add(s);
+        }
         return ret;
     }
 
@@ -366,6 +442,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
             }
         }
     }
+
+    public enum MultiValueMode {PARALLEL, CARTESIAN}
 
     public enum OffsetMode {
         CharacterSpan, NonWsCharacters
