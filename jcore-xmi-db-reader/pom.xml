@@ -13,7 +13,7 @@
     <description>Reads CAS XMI data from a relational database (Postgres). Thus, the stored CASes may then be processed
         further.
     </description>
-
+    <version>2.4.1-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>de.julielab</groupId>

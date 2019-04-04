@@ -4,6 +4,7 @@ import de.julielab.jcore.reader.db.DBMultiplierReader;
 import de.julielab.jcore.reader.db.SubsetReaderConstants;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.jcore.utility.JCoReTools;
+import de.julielab.xmlData.cli.TableNotFoundException;
 import de.julielab.xmlData.config.FieldConfig;
 import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
@@ -110,9 +111,11 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
         }
         try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
             List<Map<String, String>> primaryKeyFields = dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList());
+            String table = (String) getConfigParameterValue(PARAM_TABLE);
+            if (!dbc.tableExists(table))
+                throw new ResourceInitializationException(new TableNotFoundException("Table " + table + " does not exist in database " + dbc.getDbURL()));
             if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
 
-                String table = (String) getConfigParameterValue(PARAM_TABLE);
                 determineDataInGzipFormat(table);
 
                 FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
@@ -125,7 +128,6 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
                 XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName());
             } else {
                 // Complete XMI reading mode
-                String table = (String) getConfigParameterValue(PARAM_TABLE);
                 determineDataInGzipFormat(table);
                 FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
