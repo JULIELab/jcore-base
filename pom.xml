@@ -58,6 +58,7 @@
         <module>jcore-event-flattener-ae</module>
         <module>jcore-feature-value-replacement-ae</module>
         <module>jcore-file-reader</module>
+        <module>jcore-flair-ner-ae</module>
         <module>jcore-iexml-consumer</module>
         <module>jcore-iexml-reader</module>
         <module>jcore-ign-reader</module>
@@ -102,6 +103,8 @@
         <module>jcore-bc2gmformat-writer</module>
         <module>jcore-bc2gm-reader</module>
         <module>jcore-annotation-adder-ae</module>
+        <module>jcore-flair-embedding-writer</module>
+        <module>jcore-flair-token-embedding-ae</module>
 
     </modules>
     <scm>

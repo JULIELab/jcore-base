@@ -56,7 +56,7 @@
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    <version>2.4.0</version></analysisEngineMetaData>
+    <version>2.5.0-SNAPSHOT</version></analysisEngineMetaData>
     <externalResourceDependencies>
         <externalResourceDependency>
             <key>TopicModelFile</key>

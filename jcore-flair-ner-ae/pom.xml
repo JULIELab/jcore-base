@@ -5,7 +5,6 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jcore-flair-ner-ae</artifactId>
     <packaging>jar</packaging>
-    <groupId>de.julielab.jcore.ae.flairner</groupId>
 
     <parent>
         <groupId>de.julielab</groupId>
@@ -59,13 +58,13 @@
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
-    <name>JCoRe FLAIR NER AE</name>
+    <name>JCoRe Flair NER AE</name>
     <organization>
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
     </organization>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-flair-ner-ae</url>
-    <description>This component uses the Zalando FLAIR toolkit (https://github.com/zalandoresearch/flair) for named
+    <description>This component uses the Zalando Flair toolkit (https://github.com/zalandoresearch/flair) for named
         entity recognition. Since FLAIR is a python library, this component must use python for the actual NER part.
     </description>
 </project>

@@ -11,6 +11,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
@@ -50,7 +51,8 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
         try {
             annotationProvider = (AnnotationProvider<? extends AnnotationData>) aContext.getResourceObject(KEY_ANNOTATION_SOURCE);
         } catch (ResourceAccessException e) {
-            e.printStackTrace();
+            log.error("Could not create the annotation provider", e);
+            throw new ResourceInitializationException(e);
         }
         adderConfiguration = new AnnotationAdderConfiguration();
         adderConfiguration.setOffsetMode(offsetMode);

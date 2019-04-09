@@ -51,8 +51,8 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
         entityClass = (String) aContext.getConfigParameterValue(PARAM_ANNOTATION_TYPE);
         flairModel = (String) aContext.getConfigParameterValue(PARAM_FLAIR_MODEL);
-        connector = new StdioPythonConnector(flairModel);
         try {
+            connector = new StdioPythonConnector(flairModel);
             connector.start();
         } catch (IOException e) {
             log.error("Could not start the python connector", e);

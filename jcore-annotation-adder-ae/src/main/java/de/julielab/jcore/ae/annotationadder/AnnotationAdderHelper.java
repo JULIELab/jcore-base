@@ -1,6 +1,6 @@
 package de.julielab.jcore.ae.annotationadder;
 
-import de.julielab.jcore.ae.annotationadder.annotationrepresentations.ExternalAnnotation;
+import de.julielab.jcore.ae.annotationadder.annotationrepresentations.TextAnnotation;
 import de.julielab.jcore.types.Token;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
@@ -18,7 +18,7 @@ public class AnnotationAdderHelper {
     // Required for token-offsets
     private List<Token> tokenList;
 
-    public void setAnnotationOffsets(Annotation annotation, ExternalAnnotation a, AnnotationAdderConfiguration configuration) throws CASException {
+    public void setAnnotationOffsets(Annotation annotation, TextAnnotation a, AnnotationAdderConfiguration configuration) throws CASException {
         if (configuration.getOffsetMode() == AnnotationAdderAnnotator.OffsetMode.CHARACTER) {
             annotation.setBegin(a.getStart());
             annotation.setEnd(a.getEnd());

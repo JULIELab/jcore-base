@@ -1,6 +1,6 @@
 package de.julielab.jcore.ae.annotationadder.annotationrepresentations;
 
-public class ExternalAnnotation implements AnnotationData {
+public class ExternalAnnotation implements TextAnnotation {
     private String documentId;
     private int start;
     private int end;

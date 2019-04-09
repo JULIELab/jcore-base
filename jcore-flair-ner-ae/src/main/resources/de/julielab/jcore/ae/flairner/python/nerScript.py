@@ -5,10 +5,20 @@ from typing import List
 
 import sys
 
+def decodeString(buffer):
+    lengthBuffer = bytearray(4)
+    buffer.readinto(lengthBuffer)
+    length = int.from_bytes(lengthBuffer, 'big')
+    content = bytearray(length)
+    buffer.readinto(content)
+    return content.decode("utf-8")
+
 taggerPath = sys.argv[1]
 tagger = SequenceTagger.load_from_file(taggerPath)
 
-for line in sys.stdin:
+stdbuffer = sys.stdin.buffer
+while True:
+    line = decodeString(stdbuffer)
     if line.strip() == "exit":
         sys.exit(0)
     split = line.split("\t")
