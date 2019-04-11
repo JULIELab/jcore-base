@@ -2,16 +2,50 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
-  <annotatorImplementationName>FlairTokenEmbeddingAnnotator</annotatorImplementationName>
+  <annotatorImplementationName>de.julielab.jcore.ae.fte.FlairTokenEmbeddingAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>JCoRe Flair Token Embedding Annotator</name>
-    <description>The actual descriptor should be created using the JCoRe Descriptor Creator.</description>
-    <version>2.4.0</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
-    <configurationParameters/>
+    <description>Adds the Flair compatible embedding vectors to the token annotations.</description>
+    <configurationParameters>
+      <configurationParameter>
+        <name>EmbeddingPath</name>
+        <description>Path to a Flair compatible embedding file. Since flair supports a range of different embeddings, a type prefix is required. The syntax is 'prefix:&lt;path or built-in flair embedding name&gt;. The possible prefixes are 'word', 'char', 'bytepair', 'flair', 'bert', 'elmo'.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ComputationFilter</name>
+        <description>This parameter may be set to a fully qualified annotation type. If given, only for documents containing at least one annotation of this type embeddings will be computed.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>EmbeddingSource</name>
+        <description>The value of this parameter will be set to the source feature of the EmbeddingVector annotation instance created on the tokens. If left blank, the value of the EmbeddingPath will be used.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
     <configurationParameterSettings/>
-    <typeSystemDescription/>
-    <capabilities/>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+      </imports>
+    </typeSystemDescription>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs>
+          <type>de.julielab.jcore.types.Sentence</type>
+          <type>de.julielab.jcore.types.Token</type>
+        </inputs>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
     <operationalProperties>
       <modifiesCas>true</modifiesCas>
       <multipleDeploymentAllowed>true</multipleDeploymentAllowed>

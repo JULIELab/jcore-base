@@ -1,9 +1,13 @@
 package de.julielab.jcore.ae.fte;
 
+import com.google.gson.Gson;
 import de.julielab.ipc.javabridge.Options;
+import de.julielab.ipc.javabridge.ResultDecoders;
 import de.julielab.ipc.javabridge.StdioBridge;
+import de.julielab.jcore.types.EmbeddingVector;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.jcore.utility.index.Comparators;
 import de.julielab.jcore.utility.index.JCoReAnnotationIndex;
 import de.julielab.jcore.utility.index.JCoReOverlapAnnotationIndex;
@@ -19,6 +23,7 @@ import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.pear.util.StringUtil;
 import org.apache.uima.resource.Resource;
@@ -36,13 +41,23 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_EMBEDDING_PATH = "EmbeddingPath";
     public static final String PARAM_COMPUTATION_FILTER = "ComputationFilter";
+    public static final String PARAM_EMBEDDING_SOURCE  = "EmbeddingSource";
     private final static Logger log = LoggerFactory.getLogger(FlairTokenEmbeddingAnnotator.class);
+    /**
+     * The number of documents after the embedding computation time is output
+     */
+    private static final int TIME_OUTPUT_INTERVAL = 1000;
     @ConfigurationParameter(name = PARAM_EMBEDDING_PATH, description = "Path to a Flair compatible embedding file. Since flair supports a range of different embeddings, a type prefix is required. The syntax is 'prefix:<path or built-in flair embedding name>. The possible prefixes are 'word', 'char', 'bytepair', 'flair', 'bert', 'elmo'.")
     private String embeddingPath;
     @ConfigurationParameter(name = PARAM_COMPUTATION_FILTER, mandatory = false, description = "This parameter may be set to a fully qualified annotation type. If given, only for documents containing at least one annotation of this type embeddings will be computed.")
     private String computationFilter;
-
+    @ConfigurationParameter(name=PARAM_EMBEDDING_SOURCE, mandatory =  false, description = "The value of this parameter will be set to the source feature of the EmbeddingVector annotation instance created on the tokens. If left blank, the value of the " + PARAM_EMBEDDING_PATH + " will be used.")
+    private String embeddingSource;
     private StdioBridge<byte[]> flairBridge;
+    private Gson gson;
+    private long embeddingRequestTime;
+    private long embeddingRequestTimeForLastInterval;
+    private int docsProcessed;
 
     /**
      * This method is called a single time by the framework at component
@@ -52,16 +67,24 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
         embeddingPath = (String) aContext.getConfigParameterValue(PARAM_EMBEDDING_PATH);
         computationFilter = (String) aContext.getConfigParameterValue(PARAM_COMPUTATION_FILTER);
+        embeddingSource = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_EMBEDDING_SOURCE)).orElse(embeddingPath);
 
         try {
             final Options<byte[]> options = new Options<>(byte[].class);
+            options.setExecutable("python");
+            options.setExternalProgramTerminationSignal("exit");
+            options.setExternalProgramReadySignal("Script is ready");
             String script = IOUtils.toString(getClass().getResourceAsStream("/de/julielab/jcore/ae/fte/python/getEmbeddingScript.py"), StandardCharsets.UTF_8);
             flairBridge = new StdioBridge<>(options, "-u", "-c", script, embeddingPath);
+            flairBridge.start();
         } catch (IOException e) {
             log.error("Could not create the IO bridge object.", e);
             throw new ResourceInitializationException(e);
         }
-
+        gson = new Gson();
+        docsProcessed = 0;
+        embeddingRequestTime = 0;
+        embeddingRequestTimeForLastInterval = 0;
     }
 
     /**
@@ -71,6 +94,7 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
 
+        List<Token> tokenToAddEmbeddingsTo = new ArrayList<>();
         JCoReSetAnnotationIndex<Annotation> filterAnnotationIndex = null;
         if (!StringUtils.isBlank(computationFilter)) {
             Type type = aJCas.getTypeSystem().getType(computationFilter);
@@ -81,23 +105,85 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
                 return;
             filterAnnotationIndex = new JCoReSetAnnotationIndex<>(Comparators.overlapComparator(), aJCas, type);
         }
+        final String json = constructEmbeddingRequest(aJCas, tokenToAddEmbeddingsTo, filterAnnotationIndex);
+        try {
+            long time = System.currentTimeMillis();
+            final Optional<double[][]> any = flairBridge.sendAndReceive(json).map(ResultDecoders.decodeVectors).findAny();
+            time = System.currentTimeMillis() - time;
+            log.trace("Sending and receiving token embeddings took {} ms", time);
+            embeddingRequestTime += time;
+            embeddingRequestTimeForLastInterval += time;
+            writeEmbeddingsToCas(aJCas, tokenToAddEmbeddingsTo, any);
+        } catch (InterruptedException e) {
+            log.error("Computation of embedding vectors was interrupted", e);
+            throw new AnalysisEngineProcessException(e);
+        }
+
+        ++docsProcessed;
+        if (docsProcessed % TIME_OUTPUT_INTERVAL == 0) {
+            if (log.isDebugEnabled())
+                log.debug("Embedding computation for the last {} documents took {}ms (avg: {}ms). Total time for all {} processed documents until here: {}ms ({}s)", TIME_OUTPUT_INTERVAL, embeddingRequestTimeForLastInterval, embeddingRequestTimeForLastInterval / TIME_OUTPUT_INTERVAL, docsProcessed, embeddingRequestTime, embeddingRequestTime / 60);
+            embeddingRequestTimeForLastInterval = 0;
+        }
+
+    }
+
+    private void writeEmbeddingsToCas(JCas aJCas, List<Token> tokenToAddEmbeddingsTo, Optional<double[][]> embeddingOptional) {
+        if (embeddingOptional.isPresent()) {
+            final double[][] embeddingVectors = embeddingOptional.get();
+            for (int i = 0; i < tokenToAddEmbeddingsTo.size(); i++) {
+                Token token = tokenToAddEmbeddingsTo.get(i);
+                double[] embedding = embeddingVectors[i];
+                final DoubleArray embeddingArray = new DoubleArray(aJCas, embedding.length);
+                embeddingArray.copyFromArray(embedding, 0, 0, embedding.length);
+                final EmbeddingVector casEmbedding = new EmbeddingVector(aJCas, token.getBegin(), token.getEnd());
+                casEmbedding.setSource(embeddingSource);
+                casEmbedding.setVector(embeddingArray);
+                token.setEmbeddingVectors(JCoReTools.addToFSArray(token.getEmbeddingVectors(), casEmbedding));
+            }
+        }
+    }
+
+    private String constructEmbeddingRequest(JCas aJCas, List<Token> tokenToAddEmbeddingsTo, JCoReSetAnnotationIndex<Annotation> filterAnnotationIndex) {
         final Map<Sentence, Collection<Token>> tokenBySentence = JCasUtil.indexCovered(aJCas, Sentence.class, Token.class);
+        List<Map<String, Object>> sentencesAndIndices = new ArrayList<>();
         for (Annotation sentence : aJCas.getAnnotationIndex(Sentence.type)) {
             // We will add to this list only if there are only specific tokens we want to set the embedding vectors for.
             // Otherwise, we leave it empty which signals to return the embeddings vectors of all tokens.
             List<Integer> tokenIndicesToSet = filterAnnotationIndex != null ? new ArrayList<>() : Collections.emptyList();
             int tokenIndex = 0;
+            StringBuilder sentenceTextSb = new StringBuilder();
             for (Token token : tokenBySentence.get(sentence)) {
+                sentenceTextSb.append(token.getCoveredText()).append(" ");
                 if (filterAnnotationIndex != null) {
                     // Check if there are filter annotations overlapping with this token
-                    if (!filterAnnotationIndex.searchSubset(token).isEmpty())
+                    if (!filterAnnotationIndex.searchSubset(token).isEmpty()) {
                         tokenIndicesToSet.add(tokenIndex);
+                        tokenToAddEmbeddingsTo.add(token);
+                    }
+                } else {
+                    tokenToAddEmbeddingsTo.add(token);
                 }
+                ++tokenIndex;
             }
-            ++tokenIndex;
+            sentenceTextSb.deleteCharAt(sentenceTextSb.length()-1);
+            Map<String, Object> sentenceAndIndices = new HashMap<>();
+            sentenceAndIndices.put("sentence", sentenceTextSb.toString());
+            sentenceAndIndices.put("tokenIndicesToReturn", tokenIndicesToSet);
+            sentencesAndIndices.add(sentenceAndIndices);
         }
-
-
+        return gson.toJson(sentencesAndIndices);
     }
 
+    @Override
+    public void collectionProcessComplete() throws AnalysisEngineProcessException {
+        if (log.isDebugEnabled())
+            log.debug("The total time for embedding computation, including I/O, was {}ms ({}s)", embeddingRequestTime, embeddingRequestTime / 1000);
+        try {
+            flairBridge.stop();
+        } catch (InterruptedException | IOException e) {
+            log.error("Exception when trying shut down IO bridge to the python embedding computation script", e);
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 }
