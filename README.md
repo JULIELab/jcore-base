@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/JULIELab/jcore-base.svg?branch=master)](https://travis-ci.com/JULIELab/jcore-base)
+[![Build Status](https://travis-ci.com/JULIELab/jcore-base.svg?branch=v2.5)](https://travis-ci.com/JULIELab/jcore-base) [![Automated Release Notes by gren](https://img.shields.io/badge/%F0%9F%A4%96-release%20notes-00B2EE.svg)](https://github-tools.github.io/github-release-notes/)
 
 # JCoRe Base
 
