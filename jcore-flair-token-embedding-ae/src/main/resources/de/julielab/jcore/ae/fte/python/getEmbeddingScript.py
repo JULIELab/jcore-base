@@ -9,6 +9,7 @@ from flair.embeddings import StackedEmbeddings
 import sys
 import json
 from struct import *
+import time
 
 
 def decodeString(buffer):
@@ -82,7 +83,10 @@ while True:
 
     # Now compute the vectors
     # This does the actual embedding vector computation
+    runtime = time.time()
     embeddings.embed(sentences)
+    runtime = time.time() - runtime
+    print("flair embedding computation time:", runtime, file=sys.stderr)
 
     # 3. Get the vectorlength and write it into the output byte array
     vectorlength = len(sentences[0][0].embedding)

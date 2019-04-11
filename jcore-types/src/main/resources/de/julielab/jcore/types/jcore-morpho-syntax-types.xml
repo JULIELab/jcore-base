@@ -59,7 +59,26 @@
           <rangeTypeName>uima.cas.StringArray</rangeTypeName>
         </featureDescription>
         <featureDescription>
-          <name>embeddingVector</name>
+          <name>embeddingVectors</name>
+          <description>An array of embedding vectors for this token.</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>de.julielab.jcore.types.EmbeddingVector</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.EmbeddingVector</name>
+      <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>source</name>
+          <description>The source of the embedding, i.e. some identifier of the method that produces the embedding.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>vector</name>
+          <description>The actual embedding vector.</description>
           <rangeTypeName>uima.cas.DoubleArray</rangeTypeName>
         </featureDescription>
       </features>

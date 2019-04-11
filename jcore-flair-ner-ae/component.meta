@@ -2,7 +2,7 @@
     "categories": [
         "ae"
     ],
-    "description": "This component uses the Zalando FLAIR toolkit (https://github.com/zalandoresearch/flair) for named entity recognition. Since FLAIR is a python library, this component must use python for the actual NER part.",
+    "description": "This component uses the Zalando Flair toolkit (https://github.com/zalandoresearch/flair) for named entity recognition. Since FLAIR is a python library, this component must use python for the actual NER part.",
     "descriptors": [
         {
             "category": "ae",
@@ -16,5 +16,5 @@
         "groupId": "de.julielab",
         "version": "1.0-SNAPSHOT"
     },
-    "name": "JCoRe FLAIR NER AE"
+    "name": "JCoRe Flair NER AE"
 }
