@@ -58,6 +58,9 @@ while True:
     # In this byte array, all vectors from all sentences will be encoded
     ba = bytearray()
 
+    # We collect all sentences in one list in order to compute all embeddings in one call.
+    # This is important for contextualized embeddings.
+    sentences = []
     numReturnedVectors = 0
     # Compute the number of vectors returned. We need to do this beforehand
     # so we can then write the vectors directly into the byte array (see the format description above).
@@ -65,6 +68,7 @@ while True:
         # Read the JSON data: The sentence and potentially the indices of tokens for which embedding vectors
         # should be returned
         sentence = Sentence(sentenceTaggingRequest['sentence'])
+        sentences.append(sentence)
         tokenIndicesToReturn = []
         if 'tokenIndicesToReturn' in sentenceTaggingRequest.keys():
             tokenIndicesToReturn = sentenceTaggingRequest['tokenIndicesToReturn']
@@ -72,31 +76,35 @@ while True:
             numReturnedVectors = numReturnedVectors + len(sentence)
         else:
             numReturnedVectors = numReturnedVectors + len(tokenIndicesToReturn)
+
+    # 2. Write the number of vectors into the output
     ba.extend(pack('>i', numReturnedVectors))
 
     # Now compute the vectors
-    vectorlength = None
-    for sentenceTaggingRequest in sentenceTaggingRequests:
-        # Read the JSON data: The sentence and potentially the indices of tokens for which embedding vectors
-        # should be returned
-        sentence = Sentence(sentenceTaggingRequest['sentence'])
+    # This does the actual embedding vector computation
+    embeddings.embed(sentences)
+
+    # 3. Get the vectorlength and write it into the output byte array
+    vectorlength = len(sentences[0][0].embedding)
+    doubleformat = '>' + 'd'*vectorlength
+    ba.extend(pack('>i', vectorlength))
+
+    # Now iterate through the sentences and write the output
+    for i,sentenceTaggingRequest in enumerate(sentenceTaggingRequests):
         tokenIndicesToReturn = []
         if 'tokenIndicesToReturn' in sentenceTaggingRequest.keys():
             tokenIndicesToReturn = sentenceTaggingRequest['tokenIndicesToReturn']
 
-        # This does the actual embedding vector computation
-        embeddings.embed(sentence)
+        sentence = sentences[i]
 
-        if vectorlength == None:
-            vectorlength = len(sentence[0].embedding)
-            doubleformat = '>' + 'd'*vectorlength
-            ba.extend(pack('>i', vectorlength))
+        # 4. Write the actual vectors
         for i,token in enumerate(sentence):
             if len(tokenIndicesToReturn) == 0:
                 ba.extend(pack(doubleformat, *token.embedding.numpy()))
             elif i in tokenIndicesToReturn:
                 ba.extend(pack(doubleformat, *token.embedding.numpy()))
 
+    # 1. Write the length of the complete data to the output stream
     messagelength = pack('>i', len(ba))
     sys.stdout.buffer.write(messagelength)
     sys.stdout.buffer.write(ba)

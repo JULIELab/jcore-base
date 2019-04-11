@@ -2,6 +2,12 @@ package de.julielab.jcore.ae.fte;
 
 import de.julielab.ipc.javabridge.Options;
 import de.julielab.ipc.javabridge.StdioBridge;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
+import de.julielab.jcore.utility.index.Comparators;
+import de.julielab.jcore.utility.index.JCoReAnnotationIndex;
+import de.julielab.jcore.utility.index.JCoReOverlapAnnotationIndex;
+import de.julielab.jcore.utility.index.JCoReSetAnnotationIndex;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UimaContext;
@@ -11,7 +17,9 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.pear.util.StringUtil;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -20,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @ResourceMetaData(name = "JCoRe Flair Token Embedding Annotator", description = "Adds the Flair compatible embedding vectors to the token annotations.")
 @TypeCapability(inputs = {"de.julielab.jcore.types.Sentence", "de.julielab.jcore.types.Token"})
@@ -61,6 +70,8 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
+
+        JCoReSetAnnotationIndex<Annotation> filterAnnotationIndex = null;
         if (!StringUtils.isBlank(computationFilter)) {
             Type type = aJCas.getTypeSystem().getType(computationFilter);
             if (type == null) {
@@ -68,6 +79,22 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
             }
             if (!aJCas.getAnnotationIndex(type).iterator().hasNext())
                 return;
+            filterAnnotationIndex = new JCoReSetAnnotationIndex<>(Comparators.overlapComparator(), aJCas, type);
+        }
+        final Map<Sentence, Collection<Token>> tokenBySentence = JCasUtil.indexCovered(aJCas, Sentence.class, Token.class);
+        for (Annotation sentence : aJCas.getAnnotationIndex(Sentence.type)) {
+            // We will add to this list only if there are only specific tokens we want to set the embedding vectors for.
+            // Otherwise, we leave it empty which signals to return the embeddings vectors of all tokens.
+            List<Integer> tokenIndicesToSet = filterAnnotationIndex != null ? new ArrayList<>() : Collections.emptyList();
+            int tokenIndex = 0;
+            for (Token token : tokenBySentence.get(sentence)) {
+                if (filterAnnotationIndex != null) {
+                    // Check if there are filter annotations overlapping with this token
+                    if (!filterAnnotationIndex.searchSubset(token).isEmpty())
+                        tokenIndicesToSet.add(tokenIndex);
+                }
+            }
+            ++tokenIndex;
         }
 
 
