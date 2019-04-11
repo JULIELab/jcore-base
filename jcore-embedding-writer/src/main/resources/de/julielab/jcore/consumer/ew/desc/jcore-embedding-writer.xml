@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.julielab.jcore.consumer.ew.EmbeddingWriter</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe Flair Embedding Writer</name>
+    <description>Given a Flair compatible embedding and a UIMA annotation type, this component prints the embeddings of tokens annotated with the annotation to a file.</description>
+    <configurationParameters>
+      <configurationParameter>
+        <name>UseGzip</name>
+        <description>If set to true, the output data will be compressed. Defaults to false.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>AnnotationType</name>
+        <description>Fully qualified type name to output embeddings for. If an annotation spans multiple tokens, their embeddings are averaged. If this parameter is omitted, the embeddings of all tokens will be written</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>OutputDirectory</name>
+        <description>The directory into which the embedding files should be written. In a multi-threaded pipeline, each thread writes its own file. The file name will also include the the host name on which it ran.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+      </imports>
+    </typeSystemDescription>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs>
+          <type>de.julielab.jcore.types.Token</type>
+          <type>de.julielab.jcore.types.EmbeddingVector</type>
+        </inputs>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+</analysisEngineDescription>
