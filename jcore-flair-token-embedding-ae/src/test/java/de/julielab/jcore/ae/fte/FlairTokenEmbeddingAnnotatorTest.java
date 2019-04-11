@@ -1,14 +1,5 @@
 package de.julielab.jcore.ae.fte;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-
-import com.google.gson.Gson;
-import de.julielab.ipc.javabridge.Options;
-import de.julielab.ipc.javabridge.ResultDecoders;
-import de.julielab.ipc.javabridge.StdioBridge;
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
@@ -17,16 +8,12 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.assertj.core.data.Offset;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Collection;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Unit tests for jcore-flair-token-embedding-ae.
  */
@@ -58,7 +45,8 @@ public class FlairTokenEmbeddingAnnotatorTest {
 
     @Test
     public void testEmbeddingAnnotatorWithFilterAnnotation() throws Exception {
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
+        // Here we test the setting of only individual tokens
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types");
         String sentence1 = "Dysregulated inflammation leads to morbidity and mortality in neonates.";
         String sentence2 = "97 healthy subjects were enrolled in the present study.";
         jCas.setDocumentText(sentence1 + " " + sentence2);
@@ -66,8 +54,25 @@ public class FlairTokenEmbeddingAnnotatorTest {
         new Sentence(jCas, sentence1.length() + 1, sentence1.length() + 1 + sentence2.length()).addToIndexes();
         addTokens(jCas);
         new Gene(jCas, 13, 25).addToIndexes();
-        new Gene(jCas, 75, 82).addToIndexes();
+        // This annotation spans two tokens
+        new Gene(jCas, 75, 91).addToIndexes();
 
+        final String embeddingPath = "flair:src/test/resources/gene_small_best_lm.pt";
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.fte.desc.jcore-flair-token-embedding-ae", FlairTokenEmbeddingAnnotator.PARAM_EMBEDDING_PATH, embeddingPath, FlairTokenEmbeddingAnnotator.PARAM_COMPUTATION_FILTER, "de.julielab.jcore.types.Gene");
+
+        engine.process(jCas);
+
+        final Collection<Token> tokens = JCasUtil.select(jCas, Token.class);
+        assertThat(tokens).hasSize(20);
+        for (Token t : tokens) {
+            if (t.getBegin() == 13 || t.getBegin() == 75 || t.getBegin() == 83) {
+                assertThat(t.getEmbeddingVectors()).isNotNull().hasSize(1);
+                assertThat(t.getEmbeddingVectors(0).getVector()).hasSize(1024);
+                assertThat(t.getEmbeddingVectors(0).getSource()).isEqualTo(embeddingPath);
+            } else {
+                assertThat(t.getEmbeddingVectors()).isNull();
+            }
+        }
 
     }
 

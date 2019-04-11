@@ -49,7 +49,7 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
     private static final int TIME_OUTPUT_INTERVAL = 1000;
     @ConfigurationParameter(name = PARAM_EMBEDDING_PATH, description = "Path to a Flair compatible embedding file. Since flair supports a range of different embeddings, a type prefix is required. The syntax is 'prefix:<path or built-in flair embedding name>. The possible prefixes are 'word', 'char', 'bytepair', 'flair', 'bert', 'elmo'.")
     private String embeddingPath;
-    @ConfigurationParameter(name = PARAM_COMPUTATION_FILTER, mandatory = false, description = "This parameter may be set to a fully qualified annotation type. If given, only for documents containing at least one annotation of this type embeddings will be computed.")
+    @ConfigurationParameter(name = PARAM_COMPUTATION_FILTER, mandatory = false, description = "This parameter may be set to a fully qualified annotation type. If given, only for documents containing at least one annotation of this type embeddings will be retrieved from the computing flair python script. However, for contextualized embeddings, all embedding vectors are computed anyway and the the I/O cost is minor in comparison to the embedding computation. Thus, setting this parameter will most probably only result in small time savings.")
     private String computationFilter;
     @ConfigurationParameter(name=PARAM_EMBEDDING_SOURCE, mandatory =  false, description = "The value of this parameter will be set to the source feature of the EmbeddingVector annotation instance created on the tokens. If left blank, the value of the " + PARAM_EMBEDDING_PATH + " will be used.")
     private String embeddingSource;

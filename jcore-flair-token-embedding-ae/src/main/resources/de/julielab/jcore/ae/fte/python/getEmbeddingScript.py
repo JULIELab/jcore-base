@@ -49,6 +49,7 @@ while True:
     line = decodeString(stdbuffer)
     if line.strip() == "exit":
         sys.exit(0)
+    overalltime = time.time()
     sentenceTaggingRequests = json.loads(line)
     # The format contract for the response is:
     # 1. The total number of bytes sent (including 2. and 3.)
@@ -86,7 +87,7 @@ while True:
     runtime = time.time()
     embeddings.embed(sentences)
     runtime = time.time() - runtime
-    print("flair embedding computation time:", runtime, file=sys.stderr)
+    #print("flair embedding computation time:", runtime, file=sys.stderr)
 
     # 3. Get the vectorlength and write it into the output byte array
     vectorlength = len(sentences[0][0].embedding)
@@ -110,6 +111,11 @@ while True:
 
     # 1. Write the length of the complete data to the output stream
     messagelength = pack('>i', len(ba))
+    sendtime = time.time()
     sys.stdout.buffer.write(messagelength)
     sys.stdout.buffer.write(ba)
+    sendtime = time.time() - sendtime
+    #print("embedding sending time:", sendtime, file=sys.stderr)
     print(end='')
+    overalltime = time.time() - overalltime
+    #print("overall script processing time:", overalltime, file=sys.stderr)

@@ -16,7 +16,7 @@
       </configurationParameter>
       <configurationParameter>
         <name>ComputationFilter</name>
-        <description>This parameter may be set to a fully qualified annotation type. If given, only for documents containing at least one annotation of this type embeddings will be computed.</description>
+        <description>This parameter may be set to a fully qualified annotation type. If given, only for documents containing at least one annotation of this type embeddings will be retrieved from the computing flair python script. However, for contextualized embeddings, all embedding vectors are computed anyway and the the I/O cost is minor in comparison to the embedding computation. Thus, setting this parameter will most probably only result in small time savings.</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
