@@ -141,8 +141,8 @@ public class EmbeddingWriter extends JCasAnnotator_ImplBase {
     private void cacheEmbeddingsForAnnotation(List<Token> tokens) throws IOException {
         // get the text from the first to the last token
         String text = tokens.get(0).getCAS().getDocumentText().substring(tokens.get(0).getBegin(), tokens.get(tokens.size() - 1).getEnd());
-        final double[] avgEmbedding = Encoder.getAverageEmbeddingVector(tokens.stream().map(t -> t.getEmbeddingVectors(0).getVector().toArray()));
-        byte[] cacheArray = Encoder.encodeTextVectorPair(text, avgEmbedding, bb, gzip);
+        final double[] avgEmbedding = VectorOperations.getAverageEmbeddingVector(tokens.stream().map(t -> t.getEmbeddingVectors(0).getVector().toArray()));
+        byte[] cacheArray = Encoder.encodeTextVectorPair(text, avgEmbedding, bb);
         outputCache.put(text, cacheArray);
     }
 

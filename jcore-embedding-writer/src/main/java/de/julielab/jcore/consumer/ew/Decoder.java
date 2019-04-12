@@ -9,10 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -66,6 +63,17 @@ public class Decoder {
         return new ImmutablePair<>(text, currentVector);
     }
 
+    /**
+     * Merge multiple InputStreams of byte encoded text-embeddingvector pairs into a single OutputStream.
+     * All sources are expected to be sorted lexicographically ascending with regards to the text elements.
+     * If <tt>groupByText</tt> is set to <tt>true</tt>, the output will be grouped by the text. Each text
+     * element will then only exist once in the output and all its originally associated vectors will be collapsed
+     * into one averaged vector for this text.
+     * @param inputStreams The input streams holding the text-vector pairs in byte format.
+     * @param os The output stream to write the text-vector pairs in byte format to.
+     * @param groupByText If the vectors associated with the same text should be averaged into a single vector, a centroid.
+     * @throws IOException
+     */
     public static void mergeEmbeddingFiles(List<InputStream> inputStreams, OutputStream os, boolean groupByText) throws IOException {
         // Define the data structures we need
         List<Pair<String, double[]>> outputBuffer = new ArrayList<>();
@@ -95,6 +103,7 @@ public class Decoder {
         // by averaging over them and only writing the averaged vector to the output stream. This would be the final
         // result of the whole processing: For each text we then have the centroid of all its embedding vectors.
         int numExhaustedStreams = 0;
+        ByteBuffer outputBb = ByteBuffer.allocate(8192);
         while (numExhaustedStreams < inputStreams.size()) {
             int minIndex = -1;
             String min = null;
@@ -114,13 +123,20 @@ public class Decoder {
                 // to the output stream, averaging the vectors first if we are in groupByTextMode
                 if (!outputBuffer.isEmpty() && outputBuffer.get(outputBuffer.size() - 1).equals(minValue.getLeft())) {
                     if (groupByText) {
-                    // TODO collaps the output buffer by averaging the vectors
+                        double[] avgVector = VectorOperations.getAverageEmbeddingVector(outputBuffer.stream().map(Pair::getRight));
+                        String text = outputBuffer.get(0).getLeft();
+                        os.write(Encoder.encodeTextVectorPair(text, avgVector, outputBb, false));
                     } else {
-
+                        for (Pair<String, double[]> p : outputBuffer)
+                            os.write(Encoder.encodeTextVectorPair(p, outputBb, false));
                     }
-
+                    outputBuffer.clear();
                 }
+                // Either we have written something out or not, continue to add to the output buffer until
+                // the next change of the text part happens
                 outputBuffer.add(minValue);
+                // Now get the text-vector pair from the InputStream we just read from, setting null to the
+                // current stream values for this stream if it is now exhausted.
                 InputStream minStream = inputStreams.get(minIndex);
                 ByteBuffer minBb = streamBuffers.get(minIndex);
                 Pair<String, double[]> nextVectorPair;
@@ -131,6 +147,8 @@ public class Decoder {
                 }
                 currentStreamValues.set(minIndex, nextVectorPair);
             }
+            // Check if there still is a stream with values or if all values are null now.
+            // If there is still a value, continue on top of the loop with the next smallest value.
             numExhaustedStreams = (int) currentStreamValues.stream().filter(Objects::nonNull).count();
         }
 
