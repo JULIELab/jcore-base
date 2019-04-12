@@ -70,7 +70,7 @@ public class EmbeddingWriter extends JCasAnnotator_ImplBase {
         annotationType = (String) aContext.getConfigParameterValue(PARAM_ANNOTATION_TYPE);
         outputDir = (String) aContext.getConfigParameterValue(PARAM_OUTDIR);
         gzip = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_GZIP)).orElse(false);
-        maxEntriesPerFile = Integer.valueOf(Optional.ofNullable((String)aContext.getConfigParameterValue(PARAM_MAX_FILE_ENTRY_SIZE)).orElse("200000"));
+        maxEntriesPerFile = Integer.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_MAX_FILE_ENTRY_SIZE)).orElse("200000"));
         pid = getPID();
         hostName = getHostName();
         synchronized (PARAM_OUTDIR) {
@@ -120,7 +120,7 @@ public class EmbeddingWriter extends JCasAnnotator_ImplBase {
                 }
             } else {
                 for (Annotation token : aJCas.getAnnotationIndex(Token.type))
-                    cacheEmbeddingsForAnnotation(Arrays.asList((Token)token));
+                    cacheEmbeddingsForAnnotation(Arrays.asList((Token) token));
             }
             if (outputCache.size() >= maxEntriesPerFile)
                 writeEmbeddingsToFile();
@@ -139,54 +139,11 @@ public class EmbeddingWriter extends JCasAnnotator_ImplBase {
     }
 
     private void cacheEmbeddingsForAnnotation(List<Token> tokens) throws IOException {
-        final double[] avgEmbedding = getAverageEmbeddingVector(tokens.stream());
         // get the text from the first to the last token
         String text = tokens.get(0).getCAS().getDocumentText().substring(tokens.get(0).getBegin(), tokens.get(tokens.size() - 1).getEnd());
-        final byte[] textBytes = text.getBytes(StandardCharsets.UTF_8);
-        int requiredBytes = Integer.BYTES * 2 + textBytes.length + avgEmbedding.length * Double.BYTES;
-        if (bb == null || bb.capacity() < requiredBytes)
-            bb = ByteBuffer.allocate(requiredBytes);
-        bb.position(0);
-
-        bb.putInt(textBytes.length);
-        bb.put(textBytes);
-        bb.putInt(avgEmbedding.length);
-        for (double d : avgEmbedding)
-            bb.putDouble(d);
-
-        byte[] output = bb.array();
-        if (gzip) {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            final GZIPOutputStream os = new GZIPOutputStream(baos);
-            os.write(output);
-            os.close();
-            output = baos.toByteArray();
-        }
-
-        byte[] cacheArray = Arrays.copyOf(output, output.length);
+        final double[] avgEmbedding = Encoder.getAverageEmbeddingVector(tokens.stream().map(t -> t.getEmbeddingVectors(0).getVector().toArray()));
+        byte[] cacheArray = Encoder.encodeTextVectorPair(text, avgEmbedding, bb, gzip);
         outputCache.put(text, cacheArray);
-    }
-
-    private double[] getAverageEmbeddingVector(Stream<Token> tokens) {
-        final MutablePair<Integer, double[]> vectorAvg = tokens.collect(() -> new MutablePair<>(0, null), (p, t) -> {
-            p.setLeft(p.getLeft() + 1);
-            double[] vector = p.getRight();
-            if (vector == null) {
-                vector = new double[t.getEmbeddingVectors(0).getVector().size()];
-                t.getEmbeddingVectors(0).getVector().copyToArray(0, vector, 0, vector.length);
-                p.setRight(vector);
-            } else {
-                for (int i = 0; i < vector.length; i++) {
-                    vector[i] += t.getEmbeddingVectors(0).getVector(i);
-                }
-            }
-        }, (p1, p2) -> {
-            p1.setLeft(p1.getLeft() + p2.getLeft());
-            double[] vectorSum = p1.getRight();
-            for (int i = 0; i < vectorSum.length; i++)
-                vectorSum[i] += p2.getRight()[i];
-        });
-        return DoubleStream.of(vectorAvg.getRight()).map(d -> d / vectorAvg.getLeft()).toArray();
     }
 
     @Override

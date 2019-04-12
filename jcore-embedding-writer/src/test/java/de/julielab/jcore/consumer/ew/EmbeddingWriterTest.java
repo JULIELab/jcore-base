@@ -26,29 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class EmbeddingWriterTest {
     @Test
-    public void testGetAverageEmbeddingVector() throws Exception{
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
-        Token t1 = new Token(jCas, 0, 1);
-        final EmbeddingVector e1 = new EmbeddingVector(jCas, 0, 1);
-        final DoubleArray v1 = new DoubleArray(jCas, 2);
-        v1.set(0, 3);
-        v1.set(1, 12);
-        e1.setVector(v1);
-        t1.setEmbeddingVectors(JCoReTools.addToFSArray(null, e1));
-
-        Token t2 = new Token(jCas, 1, 2);
-        final EmbeddingVector e2 = new EmbeddingVector(jCas, 1, 2);
-        final DoubleArray v2 = new DoubleArray(jCas, 2);
-        v2.set(0, 7);
-        v2.set(1, 5);
-        e2.setVector(v2);
-        t2.setEmbeddingVectors(JCoReTools.addToFSArray(null, e2));
-
-        final Stream<Token> stream = Stream.<Token>builder().add(t1).add(t2).build();
-
-        final Method m = EmbeddingWriter.class.getDeclaredMethod("getAverageEmbeddingVector", Stream.class);
-        m.setAccessible(true);
-        final double[] avgVector = (double[]) m.invoke(new EmbeddingWriter(), stream);
+    public void testGetAverageEmbeddingVector() throws Exception {
+        final double[] d1 = {3, 12};
+        final double[] d2 = {7, 5};
+        final double[] avgVector = Encoder.getAverageEmbeddingVector(Stream.of(d1, d2));
 
         assertThat(avgVector).containsExactly(5, 8.5);
     }
