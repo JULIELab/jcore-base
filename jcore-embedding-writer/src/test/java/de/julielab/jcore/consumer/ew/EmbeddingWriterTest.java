@@ -4,6 +4,7 @@ package de.julielab.jcore.consumer.ew;
 import de.julielab.jcore.types.EmbeddingVector;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReTools;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -11,7 +12,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,9 +84,18 @@ public class EmbeddingWriterTest {
         t3.setEmbeddingVectors(JCoReTools.addToFSArray(null, e3));
         t3.addToIndexes();
 
-        final AnalysisEngine engine = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.ew.desc.jcore-embedding-writer", EmbeddingWriter.PARAM_OUTDIR, "src/test/resources/output");
+        final String outputDir = "src/test/resources/output";
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.ew.desc.jcore-embedding-writer", EmbeddingWriter.PARAM_OUTDIR, outputDir);
 
         engine.process(jCas);
         engine.collectionProcessComplete();
+
+        // Check if we wrote what we expected to
+        final File[] files = new File(outputDir).listFiles(file -> file.getName().startsWith("embeddings-"));
+        assertThat(files).withFailMessage("There are multiple files in the test output directory, only one file is expected. You can just delete the whole directory " + outputDir).hasSize(1);
+        final Pair<List<String>, List<double[]>> embeddings = Decoder.decodeBinaryEmbeddingVectors(new FileInputStream(files[0]));
+        assertThat(embeddings.getLeft()).containsExactly("t1", "t2", "t3");
+        assertThat(embeddings.getRight()).containsExactly(new double[]{3, 12}, new double[]{7, 5}, new double[]{45, 13});
+        files[0].delete();
     }
 }

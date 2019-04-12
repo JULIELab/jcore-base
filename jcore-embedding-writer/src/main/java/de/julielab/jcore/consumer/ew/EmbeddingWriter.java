@@ -68,7 +68,7 @@ public class EmbeddingWriter extends JCasAnnotator_ImplBase {
         synchronized (PARAM_OUTDIR) {
             consumerNumber = currentConsumerNumber++;
         }
-        file = new File(outputDir + File.separator + "embeddings-" + hostName + "-" + pid + "-writer" + consumerNumber + (gzip ? ".gz" : ""));
+        file = new File(outputDir + File.separator + "embeddings-" + hostName + "-" + pid + "-writer" + consumerNumber + ".dat" + (gzip ? ".gz" : ""));
         final File dir = file.getParentFile();
         if (!dir.exists())
             dir.mkdirs();
