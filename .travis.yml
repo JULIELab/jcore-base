@@ -3,6 +3,9 @@ jdk: oraclejdk11
 dist: trusty
 addons:
   apt:
+    update: true
+    sources:
+      - deadsnakes
     packages:
       - python3.6
 
