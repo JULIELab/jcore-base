@@ -29,7 +29,7 @@ public class EmbeddingWriterTest {
     public void testGetAverageEmbeddingVector() throws Exception {
         final double[] d1 = {3, 12};
         final double[] d2 = {7, 5};
-        final double[] avgVector = Encoder.getAverageEmbeddingVector(Stream.of(d1, d2));
+        final double[] avgVector = VectorOperations.getAverageEmbeddingVector(Stream.of(d1, d2));
 
         assertThat(avgVector).containsExactly(5, 8.5);
     }

@@ -69,9 +69,10 @@ public class Decoder {
      * If <tt>groupByText</tt> is set to <tt>true</tt>, the output will be grouped by the text. Each text
      * element will then only exist once in the output and all its originally associated vectors will be collapsed
      * into one averaged vector for this text.
+     *
      * @param inputStreams The input streams holding the text-vector pairs in byte format.
-     * @param os The output stream to write the text-vector pairs in byte format to.
-     * @param groupByText If the vectors associated with the same text should be averaged into a single vector, a centroid.
+     * @param os           The output stream to write the text-vector pairs in byte format to.
+     * @param groupByText  If the vectors associated with the same text should be averaged into a single vector, a centroid.
      * @throws IOException
      */
     public static void mergeEmbeddingFiles(List<InputStream> inputStreams, OutputStream os, boolean groupByText) throws IOException {
@@ -88,6 +89,11 @@ public class Decoder {
         for (int i = 0; i < inputStreams.size(); i++) {
             final InputStream is = inputStreams.get(i);
             final ByteBuffer bb = streamBuffers.get(i);
+            // The byte buffers are empty at this point. The method we call next assumed that
+            // the byte buffers contain data from the input stream.
+            // By setting the buffers to appear completely read, we cause the subsequently called method
+            // to read data from the input stream into the byte buffer first.
+            bb.position(bb.capacity());
             try {
                 final Pair<String, double[]> pair = getNextTextEmbeddingPair(is, bb, integerBuffer, doubleBuffer);
                 currentStreamValues.add(pair);
@@ -104,6 +110,9 @@ public class Decoder {
         // result of the whole processing: For each text we then have the centroid of all its embedding vectors.
         int numExhaustedStreams = 0;
         ByteBuffer outputBb = ByteBuffer.allocate(8192);
+        // We save the next vector pair to write only for the purpose to write the very last vector to the output,
+        // after all streams have been exhausted.
+        Pair<String, double[]> nextVectorPair = null;
         while (numExhaustedStreams < inputStreams.size()) {
             int minIndex = -1;
             String min = null;
@@ -121,17 +130,7 @@ public class Decoder {
                 final Pair<String, double[]> minValue = currentStreamValues.get(minIndex);
                 // Check if we arrived at the next text. If so, we will write the current output buffer contents
                 // to the output stream, averaging the vectors first if we are in groupByTextMode
-                if (!outputBuffer.isEmpty() && outputBuffer.get(outputBuffer.size() - 1).equals(minValue.getLeft())) {
-                    if (groupByText) {
-                        double[] avgVector = VectorOperations.getAverageEmbeddingVector(outputBuffer.stream().map(Pair::getRight));
-                        String text = outputBuffer.get(0).getLeft();
-                        os.write(Encoder.encodeTextVectorPair(text, avgVector, outputBb, false));
-                    } else {
-                        for (Pair<String, double[]> p : outputBuffer)
-                            os.write(Encoder.encodeTextVectorPair(p, outputBb, false));
-                    }
-                    outputBuffer.clear();
-                }
+                writeTextEmbeddingPairToOutputStream(minValue, outputBuffer, os, outputBb, groupByText);
                 // Either we have written something out or not, continue to add to the output buffer until
                 // the next change of the text part happens
                 outputBuffer.add(minValue);
@@ -139,7 +138,6 @@ public class Decoder {
                 // current stream values for this stream if it is now exhausted.
                 InputStream minStream = inputStreams.get(minIndex);
                 ByteBuffer minBb = streamBuffers.get(minIndex);
-                Pair<String, double[]> nextVectorPair;
                 try {
                     nextVectorPair = getNextTextEmbeddingPair(minStream, minBb, integerBuffer, doubleBuffer);
                 } catch (NoSuchElementException e) {
@@ -149,10 +147,25 @@ public class Decoder {
             }
             // Check if there still is a stream with values or if all values are null now.
             // If there is still a value, continue on top of the loop with the next smallest value.
-            numExhaustedStreams = (int) currentStreamValues.stream().filter(Objects::nonNull).count();
+            numExhaustedStreams = (int) currentStreamValues.stream().filter(Objects::isNull).count();
         }
+        writeTextEmbeddingPairToOutputStream(null, outputBuffer, os, outputBb, groupByText);
 
 
+    }
+
+    private static void writeTextEmbeddingPairToOutputStream(Pair<String, double[]> textEmbeddingPair, List<Pair<String, double[]>> outputBuffer, OutputStream os, ByteBuffer outputBb, boolean groupByText) throws IOException {
+        if (!outputBuffer.isEmpty() && (textEmbeddingPair == null || !outputBuffer.get(outputBuffer.size() - 1).getLeft().equals(textEmbeddingPair.getLeft()))) {
+            if (groupByText) {
+                double[] avgVector = VectorOperations.getAverageEmbeddingVector(outputBuffer.stream().map(Pair::getRight));
+                String text = outputBuffer.get(0).getLeft();
+                os.write(Encoder.encodeTextVectorPair(text, avgVector, outputBb));
+            } else {
+                for (Pair<String, double[]> p : outputBuffer)
+                    os.write(Encoder.encodeTextVectorPair(p, outputBb));
+            }
+            outputBuffer.clear();
+        }
     }
 
     /**
@@ -215,10 +228,12 @@ public class Decoder {
             if (bytesRead < dest.length) {
                 // read the next chunk of data right into the array wrapped by the passes ByteBuffer.
                 // Then reset the ByteBuffer's position so we can start reading from it
-                if (is.read(bb.array()) == -1)
+                int numRead;
+                if ((numRead = is.read(bb.array())) == -1)
                     throw new NoSuchElementException("The input stream does not offer enough bytes to fill the passed destination array.");
 
                 bb.position(0);
+                bb.limit(numRead < 0 ? 0 : numRead);
             }
         }
     }
