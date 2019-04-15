@@ -8,7 +8,7 @@ addons:
       - deadsnakes
     packages:
       - python3.6
-      - python3.6-setuptools
+      - python3-pip
 
 env:
   global:
@@ -26,7 +26,7 @@ before_install:
   - "ls -l /usr/local/bin/"
   - "PY=/usr/bin/python3.6"
   - $PY --version
-  - pip --version
+  - pip3 --version
   - "pip install flair"
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: mvn -T 1C test -B
