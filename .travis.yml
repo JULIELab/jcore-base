@@ -11,7 +11,9 @@ env:
   - secure: pxYxmA/9xS/9DO6rUAhlbAtYQMmG633jSwG8OIVCnnoQSXS4UILJgNl7Q6dQsAuT27tk+/fin0kXTnxWqCe0URb3c3XgNQwfGAuz1JIYVPHvezoDQLLRQA6LRgqd7GuvBDsyXJvBANozGKJYJVfoeT9gqFosFuMdRZ88eQm+ltX7zVKyMiz2rqKYPoSFInNxDGMOaIQ+RZdf8ai8rLY3E11PxsMC0LgypEDbuC7d9Q+Tu89YfUeuRly0hAuxmW++RrMgeeAs/7BndmZqcHVpkrcX6Drq8nZ2cj0ev4IDJelV/Nd17Vjfg7HgfJ4/d9S+PCg4KhvOY/y9Xad8geIIzXLFD9ZgcaK7MT9+BFGYXj7ExizFSc+Ico5Q822RJA1XZWfc/EgnY+7jEZCCMz/ceHx8oSh0ce1VbPl7c+O+jMXUMQC69Gpys57XC48rdPn0bbjc4/jpSOq46Xv7YdcGuA2BcWEEeQ0WAbi9IDcevpCXiZ7kng5hHTCpfaYVhn63KAIAMKf7tu6C78wFZR63F8Gf4x/jKE37QqvHV3uOzD7ar6nTAuy/ukZK0p4zyeIYe25PnS9K4kpolT1I12i7/l/7MO9NPFdB0aOCBHUNPBEkifwceltX6RP4PDIKdtCEQ4vcqrRNvhtAhO9Vo1udkyaeFx5swbY3j11CjzcfrBE=
   - # GPG_PASSPHRASE
 
-before_install: "pip install flair --use-mirrors"
+before_install:
+  - python --version
+  - "pip install flair --use-mirrors"
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: mvn -T 1C test -B
 
