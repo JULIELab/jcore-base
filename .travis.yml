@@ -22,6 +22,7 @@ env:
   - PYTHON=3.6
 
 before_install:
+  - "ls /usr/bin"
   - python --version
   - pip --version
   - "pip install flair"
