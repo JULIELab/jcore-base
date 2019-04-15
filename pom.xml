@@ -104,7 +104,6 @@
         <module>jcore-bc2gmformat-writer</module>
         <module>jcore-bc2gm-reader</module>
         <module>jcore-annotation-adder-ae</module>
-        <module>jcore-embedding-writer</module>
         <module>jcore-flair-token-embedding-ae</module>
 
     </modules>
