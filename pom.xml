@@ -55,6 +55,7 @@
         <module>jcore-dta-reader</module>
         <module>jcore-ec-code-ae</module>
         <module>jcore-elasticsearch-consumer</module>
+        <module>jcore-embedding-writer</module>
         <module>jcore-event-flattener-ae</module>
         <module>jcore-feature-value-replacement-ae</module>
         <module>jcore-file-reader</module>
@@ -103,7 +104,7 @@
         <module>jcore-bc2gmformat-writer</module>
         <module>jcore-bc2gm-reader</module>
         <module>jcore-annotation-adder-ae</module>
-        <module>jcore-flair-embedding-writer</module>
+        <module>jcore-embedding-writer</module>
         <module>jcore-flair-token-embedding-ae</module>
 
     </modules>

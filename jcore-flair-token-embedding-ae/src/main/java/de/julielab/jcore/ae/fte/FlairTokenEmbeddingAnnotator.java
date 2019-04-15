@@ -36,7 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @ResourceMetaData(name = "JCoRe Flair Token Embedding Annotator", description = "Adds the Flair compatible embedding vectors to the token annotations.")
-@TypeCapability(inputs = {"de.julielab.jcore.types.Sentence", "de.julielab.jcore.types.Token"})
+@TypeCapability(inputs = {"de.julielab.jcore.types.Sentence", "de.julielab.jcore.types.Token"}, outputs = {"de.julielab.jcore.types.EmbeddingVector"})
 public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_EMBEDDING_PATH = "EmbeddingPath";
