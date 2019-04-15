@@ -22,7 +22,7 @@ env:
   - PYTHON=3.6
 
 before_install:
-  - python3 --version
+  - python --version
   - pip --version
   - "pip install flair"
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
