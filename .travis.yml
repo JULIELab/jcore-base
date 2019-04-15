@@ -17,7 +17,7 @@ env:
   - # GPG_PASSPHRASE
 
 before_install:
-  - python3 --version
+  - python36 --version
   - "pip3 install flair --use-mirrors"
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: mvn -T 1C test -B
