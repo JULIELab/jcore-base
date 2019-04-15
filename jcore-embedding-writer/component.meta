@@ -6,15 +6,15 @@
     "descriptors": [
         {
             "category": "consumer",
-            "location": "de.julielab.jcore.consumer.few.desc.jcore-flair-embedding-writer"
+            "location": "de.julielab.jcore.consumer.ew.desc.jcore-embedding-writer"
         }
     ],
     "exposable": true,
     "group": "general",
     "maven-artifact": {
-        "artifactId": "jcore-flair-embedding-writer",
+        "artifactId": "jcore-embedding-writer",
         "groupId": "de.julielab",
         "version": "2.4.0"
     },
-    "name": "jcore-flair-embedding-writer"
+    "name": "JCoRe Embedding Writer"
 }
