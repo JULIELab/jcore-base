@@ -16,6 +16,7 @@ def decodeString(buffer):
 taggerPath = sys.argv[1]
 tagger = SequenceTagger.load_from_file(taggerPath)
 
+print("Ready for tagging.")
 stdbuffer = sys.stdin.buffer
 while True:
     line = decodeString(stdbuffer)

@@ -19,6 +19,7 @@ public class StdioPythonConnector implements PythonConnector {
     public StdioPythonConnector(String languageModelPath) throws IOException {
         Options params = new Options(String.class);
         params.setExecutable("python");
+        params.setExternalProgramReadySignal("Ready for tagging.");
         params.setExternalProgramTerminationSignal("exit");
         params.setMultilineResponseDelimiter("tagging finished");
         String script = IOUtils.toString(getClass().getResourceAsStream("/de/julielab/jcore/ae/flairner/python/nerScript.py"), StandardCharsets.UTF_8);
@@ -47,6 +48,10 @@ public class StdioPythonConnector implements PythonConnector {
 
     @Override
     public void shutdown() throws InterruptedException {
-        bridge.stop();
+        try {
+            bridge.stop();
+        } catch (IOException e) {
+            log.error("Exception while stopping external process", e);
+        }
     }
 }
