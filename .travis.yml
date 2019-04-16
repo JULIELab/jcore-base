@@ -26,7 +26,11 @@ before_install:
     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
     sudo $PYTHON get-pip.py --force-reinstall
   - $PYTHON --version
-  - sudo -H $PYTHON -m pip install flair
+  - |
+    if [ ! -d "$HOME/pip-cache ]; then
+      $PYTHON -m pip download --destination-directory="$HOME/pip-cache" flair
+    fi
+    sudo -H $PYTHON -m pip install --no-index --find-links="$HOME/pip-cache" flair
   - export BOTO_CONFIG=/dev/null
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: mvn -T 1C test -B
@@ -34,6 +38,7 @@ script: mvn -T 1C test -B
 cache:
   directories:
     - $HOME/.m2/repository
+    - $HOME/pip-cache
 
 before_deploy: ./travis-deployment/before-deploy.sh
 deploy:
