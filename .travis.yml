@@ -21,10 +21,10 @@ env:
   - PYTHON=3.6
 
 before_install:
+  - "PY=/usr/bin/python3.6"
   - |
     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    python3 get-pip.py --force-reinstall
-  - "PY=/usr/bin/python3.6"
+    $PY get-pip.py --force-reinstall
   - $PY --version
   - "$PY -m pip install flair"
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
