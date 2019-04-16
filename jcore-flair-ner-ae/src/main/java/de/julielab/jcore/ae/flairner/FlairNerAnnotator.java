@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -33,6 +34,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_ANNOTATION_TYPE = "AnnotationType";
     public static final String PARAM_FLAIR_MODEL = "FlairModel";
+    public static final String PARAM_PYTHON_EXECUTABLE = "PythonExecutable";
 
     private final static Logger log = LoggerFactory.getLogger(FlairNerAnnotator.class);
     private PythonConnector connector;
@@ -41,6 +43,8 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     private String entityClass;
     @ConfigurationParameter(name = PARAM_FLAIR_MODEL, description = "Path to the Flair sequence tagger model.")
     private String flairModel;
+    @ConfigurationParameter(name=PARAM_PYTHON_EXECUTABLE, mandatory = false, description = "The path to the python executable. Required is a python verion >=3.6. Defaults to 'python'.")
+    private String pythonExecutable;
     private AnnotationAdderConfiguration adderConfig;
 
     /**
@@ -51,8 +55,25 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
         entityClass = (String) aContext.getConfigParameterValue(PARAM_ANNOTATION_TYPE);
         flairModel = (String) aContext.getConfigParameterValue(PARAM_FLAIR_MODEL);
+
+        Optional<String>  pythonExecutableOpt = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_PYTHON_EXECUTABLE));
+        if (!pythonExecutableOpt.isPresent()) {
+            log.debug("No python executable given in the component descriptor, trying to read PYTHON environment variable." );
+            final String pythonExecutableEnv = System.getenv("PYTHON");
+            if (pythonExecutableEnv != null) {
+                log.info("Python executable: {} (from environment variable PYTHON).", pythonExecutable);
+                pythonExecutable = pythonExecutableEnv;
+            }
+        } else {
+            pythonExecutable = pythonExecutableOpt.get();
+            log.info("Python executable: {} (from descriptor)", pythonExecutable);
+        }
+        if (pythonExecutable == null) {
+            pythonExecutable = "python";
+            log.info("Python executable: {} (default)", pythonExecutable);
+        }
         try {
-            connector = new StdioPythonConnector(flairModel);
+            connector = new StdioPythonConnector(flairModel, pythonExecutable);
             connector.start();
         } catch (IOException e) {
             log.error("Could not start the python connector", e);

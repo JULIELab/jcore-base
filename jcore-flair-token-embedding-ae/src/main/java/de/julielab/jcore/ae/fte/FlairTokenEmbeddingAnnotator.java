@@ -42,6 +42,7 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
     public static final String PARAM_EMBEDDING_PATH = "EmbeddingPath";
     public static final String PARAM_COMPUTATION_FILTER = "ComputationFilter";
     public static final String PARAM_EMBEDDING_SOURCE  = "EmbeddingSource";
+    public static final String PARAM_PYTHON_EXECUTABLE = "PythonExecutable";
     private final static Logger log = LoggerFactory.getLogger(FlairTokenEmbeddingAnnotator.class);
     /**
      * The number of documents after the embedding computation time is output
@@ -53,6 +54,8 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
     private String computationFilter;
     @ConfigurationParameter(name=PARAM_EMBEDDING_SOURCE, mandatory =  false, description = "The value of this parameter will be set to the source feature of the EmbeddingVector annotation instance created on the tokens. If left blank, the value of the " + PARAM_EMBEDDING_PATH + " will be used.")
     private String embeddingSource;
+    @ConfigurationParameter(name=PARAM_PYTHON_EXECUTABLE, mandatory = false, description = "The path to the python executable. Required is a python verion >=3.6.")
+    private String pythonExecutable;
     private StdioBridge<byte[]> flairBridge;
     private Gson gson;
     private long embeddingRequestTime;
@@ -69,9 +72,26 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
         computationFilter = (String) aContext.getConfigParameterValue(PARAM_COMPUTATION_FILTER);
         embeddingSource = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_EMBEDDING_SOURCE)).orElse(embeddingPath);
 
+        Optional<String>  pythonExecutableOpt = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_PYTHON_EXECUTABLE));
+        if (!pythonExecutableOpt.isPresent()) {
+            log.debug("No python executable given in the component descriptor, trying to read PYTHON environment variable." );
+            final String pythonExecutableEnv = System.getenv("PYTHON");
+            if (pythonExecutableEnv != null) {
+                log.info("Python executable: {} (from environment variable PYTHON).", pythonExecutable);
+                pythonExecutable = pythonExecutableEnv;
+            }
+        } else {
+            pythonExecutable = pythonExecutableOpt.get();
+            log.info("Python executable: {} (from descriptor)", pythonExecutable);
+        }
+        if (pythonExecutable == null) {
+            pythonExecutable = "python";
+            log.info("Python executable: {} (default)", pythonExecutable);
+        }
+
         try {
             final Options<byte[]> options = new Options<>(byte[].class);
-            options.setExecutable("python");
+            options.setExecutable(pythonExecutable);
             options.setExternalProgramTerminationSignal("exit");
             options.setExternalProgramReadySignal("Script is ready");
             String script = IOUtils.toString(getClass().getResourceAsStream("/de/julielab/jcore/ae/fte/python/getEmbeddingScript.py"), StandardCharsets.UTF_8);

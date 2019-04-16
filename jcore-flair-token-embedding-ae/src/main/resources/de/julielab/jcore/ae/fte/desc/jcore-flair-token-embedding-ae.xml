@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
@@ -28,22 +28,32 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+      <configurationParameter>
+        <name>PythonExecutable</name>
+        <description>The path to the python executable. Required is a python verion &gt;=3.6. Defaults to 'python'.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
-    <configurationParameterSettings />
+    <configurationParameterSettings>
+    </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
         <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
       </imports>
     </typeSystemDescription>
-    <fsIndexCollection />
+    <fsIndexCollection/>
     <capabilities>
       <capability>
         <inputs>
           <type>de.julielab.jcore.types.Sentence</type>
           <type>de.julielab.jcore.types.Token</type>
         </inputs>
-        <outputs />
-        <languagesSupported />
+        <outputs>
+          <type>de.julielab.jcore.types.EmbeddingVector</type>
+        </outputs>
+        <languagesSupported/>
       </capability>
     </capabilities>
     <operationalProperties>
@@ -51,5 +61,5 @@
       <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
-  <version>2.5.0-SNAPSHOT</version></analysisEngineMetaData>
+  </analysisEngineMetaData>
 </analysisEngineDescription>

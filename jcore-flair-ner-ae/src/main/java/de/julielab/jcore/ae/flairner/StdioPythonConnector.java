@@ -16,9 +16,9 @@ public class StdioPythonConnector implements PythonConnector {
     private final static Logger log = LoggerFactory.getLogger(StdioPythonConnector.class);
     private final StdioBridge<String> bridge;
 
-    public StdioPythonConnector(String languageModelPath) throws IOException {
+    public StdioPythonConnector(String languageModelPath, String pythonExecutable) throws IOException {
         Options params = new Options(String.class);
-        params.setExecutable("python");
+        params.setExecutable(pythonExecutable);
         params.setExternalProgramReadySignal("Ready for tagging.");
         params.setExternalProgramTerminationSignal("exit");
         params.setMultilineResponseDelimiter("tagging finished");

@@ -12,8 +12,6 @@
         <version>2.5.0-SNAPSHOT</version>
     </parent>
 
-    
-
     <dependencies>
         <dependency>
             <groupId>black.ninia</groupId>
@@ -24,6 +22,10 @@
             <groupId>de.julielab</groupId>
             <artifactId>java-stdio-ipc</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
