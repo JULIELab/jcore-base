@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-iob-consumer",
         "groupId": "de.julielab",
-        "version": "2.4.0"
+        "version": "2.5.0-SNAPSHOT"
     },
     "name": "JCoRe CAS to IOB Consumer"
 }
