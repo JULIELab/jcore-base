@@ -27,7 +27,7 @@ before_install:
     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
     sudo $PY get-pip.py --force-reinstall
   - $PY --version
-  - "$PY -m pip install flair"
+  - sudo $PY -m pip install flair
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: mvn -T 1C test -B
 
