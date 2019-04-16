@@ -162,4 +162,10 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             throw new ResourceInitializationException(e);
         }
     }
+
+    @Override
+    public void collectionProcessComplete() throws AnalysisEngineProcessException {
+        log.info("Closind database connector.");
+        dbc.close();
+    }
 }

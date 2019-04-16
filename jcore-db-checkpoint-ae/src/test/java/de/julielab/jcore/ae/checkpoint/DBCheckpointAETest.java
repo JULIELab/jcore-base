@@ -90,6 +90,8 @@ public class DBCheckpointAETest {
             }
             jCas.reset();
         }
+        xmiReader.close();
+        multiplier.collectionProcessComplete();
         checkpointAE.collectionProcessComplete();
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
