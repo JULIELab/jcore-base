@@ -77,8 +77,8 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
             log.debug("No python executable given in the component descriptor, trying to read PYTHON environment variable." );
             final String pythonExecutableEnv = System.getenv("PYTHON");
             if (pythonExecutableEnv != null) {
-                log.info("Python executable: {} (from environment variable PYTHON).", pythonExecutable);
                 pythonExecutable = pythonExecutableEnv;
+                log.info("Python executable: {} (from environment variable PYTHON).", pythonExecutable);
             }
         } else {
             pythonExecutable = pythonExecutableOpt.get();

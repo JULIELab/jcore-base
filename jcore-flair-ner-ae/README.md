@@ -7,7 +7,10 @@ de.julielab.jcore.ae.flairner.desc.jcore-flair-ner-ae
 
 This component uses the Zalando FLAIR toolkit (https://github.com/zalandoresearch/flair) for named entity recognition. Since FLAIR is a python library, this component must use python for the actual NER part.
 
-
+The python executable lookup works as follows:
+1. If it is configured in the descriptor, this value is used.
+2. Otherwise, if the environment variable `PYTHON` is set, this value is used.
+3. Otherwise, the `python` command is used.
 
 **1. Parameters**
 
