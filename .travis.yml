@@ -21,7 +21,9 @@ env:
   - PYTHON=3.6
 
 before_install:
-  - "ls -l /usr/local/bin/"
+  - |
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    python3 get-pip.py --force-reinstall
   - "PY=/usr/bin/python3.6"
   - $PY --version
   - "$PY -m pip install flair"
