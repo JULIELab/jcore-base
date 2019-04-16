@@ -54,7 +54,7 @@ public class DBCheckpointAETest {
     @AfterClass
     public static void shutdown() {
         postgres.close();
-        log.info("Closed postgres testcontainer instance, test class done..");
+        log.info("Closed postgres testcontainer instance, test class done.");
     }
 
     @Test

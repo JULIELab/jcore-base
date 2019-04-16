@@ -97,6 +97,8 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, docIds,indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
+        log.info("Closing database connector.");
+        dbc.close();
     }
 
     private void customBatchProcessingComplete() throws AnalysisEngineProcessException {
