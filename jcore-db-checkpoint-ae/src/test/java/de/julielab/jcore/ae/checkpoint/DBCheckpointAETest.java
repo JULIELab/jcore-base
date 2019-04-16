@@ -16,6 +16,8 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.jcas.JCas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -30,12 +32,13 @@ import java.util.EnumSet;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class DBCheckpointAETest {
+    private final static Logger log = LoggerFactory.getLogger(DBCheckpointAETest.class);
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
     private static int subsetCounter;
 
     @BeforeClass
-    public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+    public static void setup() throws UIMAException, IOException, ConfigurationException {
         postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
@@ -51,6 +54,7 @@ public class DBCheckpointAETest {
     @AfterClass
     public static void shutdown() {
         postgres.close();
+        log.info("Closed postgres testcontainer instance, test class done..");
     }
 
     @Test
@@ -92,5 +96,6 @@ public class DBCheckpointAETest {
         final SubsetStatus status = dbc.status(xmisubset, EnumSet.allOf(DataBaseConnector.StatusElement.class));
         assertEquals(1L, (long) status.isProcessed);
         assertEquals(0L, (long) status.inProcess);
+        dbc.close();
     }
 }
