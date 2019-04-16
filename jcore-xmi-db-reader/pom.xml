@@ -44,9 +44,9 @@
             <artifactId>julie-xml-tools</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>1.10.3</version>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-db-test-utilities</artifactId>
+            <version>2.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
