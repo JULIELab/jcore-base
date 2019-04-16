@@ -27,7 +27,8 @@ before_install:
     sudo $PYTHON get-pip.py --force-reinstall
   - $PYTHON --version
   - |
-    if [ ! -d "$HOME/pip-cache ]; then
+    # This checks if the cache directory is empty
+    if ! find "$HOME/pip-cache" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
       $PYTHON -m pip download --destination-directory="$HOME/pip-cache" flair
     fi
     sudo -H $PYTHON -m pip install --no-index --find-links="$HOME/pip-cache" flair
