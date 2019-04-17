@@ -85,7 +85,7 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
             log.info("Python executable: {} (from descriptor)", pythonExecutable);
         }
         if (pythonExecutable == null) {
-            pythonExecutable = "python";
+            pythonExecutable = "python2.7";
             log.info("Python executable: {} (default)", pythonExecutable);
         }
 
@@ -94,6 +94,7 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
             options.setExecutable(pythonExecutable);
             options.setExternalProgramTerminationSignal("exit");
             options.setExternalProgramReadySignal("Script is ready");
+            options.setTerminationSignalFromErrorStream("SyntaxError");
             String script = IOUtils.toString(getClass().getResourceAsStream("/de/julielab/jcore/ae/fte/python/getEmbeddingScript.py"), StandardCharsets.UTF_8);
             flairBridge = new StdioBridge<>(options, "-u", "-c", script, embeddingPath);
             flairBridge.start();

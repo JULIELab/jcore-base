@@ -22,6 +22,7 @@ public class StdioPythonConnector implements PythonConnector {
         params.setExternalProgramReadySignal("Ready for tagging.");
         params.setExternalProgramTerminationSignal("exit");
         params.setMultilineResponseDelimiter("tagging finished");
+        params.setTerminationSignalFromErrorStream("SyntaxError");
         String script = IOUtils.toString(getClass().getResourceAsStream("/de/julielab/jcore/ae/flairner/python/nerScript.py"), StandardCharsets.UTF_8);
         bridge = new StdioBridge<>(params, "-u", "-c", script, languageModelPath);
     }
