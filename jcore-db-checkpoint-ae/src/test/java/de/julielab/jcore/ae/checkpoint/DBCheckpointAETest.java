@@ -22,6 +22,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -30,7 +31,6 @@ import java.sql.SQLException;
 import java.util.EnumSet;
 
 import static org.testng.AssertJUnit.assertEquals;
-
 public class DBCheckpointAETest {
     private final static Logger log = LoggerFactory.getLogger(DBCheckpointAETest.class);
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();

@@ -34,7 +34,7 @@ before_install:
     sudo -H $PYTHON -m pip install --no-index --find-links="$HOME/pip-cache" flair
   - export BOTO_CONFIG=/dev/null
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-script: mvn -T 1C test -B
+script: mvn test -B
 
 cache:
   directories:
