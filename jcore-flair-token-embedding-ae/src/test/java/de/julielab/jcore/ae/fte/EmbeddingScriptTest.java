@@ -33,6 +33,7 @@ public class EmbeddingScriptTest {
         options.setExecutable("python");
         options.setExternalProgramTerminationSignal("exit");
         options.setExternalProgramReadySignal("Script is ready");
+        options.setTerminationSignalFromErrorStream("SyntaxError");
         StdioBridge<byte[]> bridge = new StdioBridge<>(options, "-u", SCRIPT_PATH, "flair:src/test/resources/gene_small_best_lm.pt");
         bridge.start();
         final Stream<byte[]> response = bridge.sendAndReceive(sentencesJson);
@@ -69,6 +70,7 @@ public class EmbeddingScriptTest {
         options.setExecutable("python");
         options.setExternalProgramTerminationSignal("exit");
         options.setExternalProgramReadySignal("Script is ready");
+        options.setTerminationSignalFromErrorStream("SyntaxError");
         StdioBridge<byte[]> bridge = new StdioBridge<>(options, "-u", SCRIPT_PATH, "flair:src/test/resources/gene_small_best_lm.pt");
         bridge.start();
         final Stream<byte[]> response = bridge.sendAndReceive(sentencesJson);
@@ -110,6 +112,7 @@ public class EmbeddingScriptTest {
         options.setExecutable("python");
         options.setExternalProgramTerminationSignal("exit");
         options.setExternalProgramReadySignal("Script is ready");
+        options.setTerminationSignalFromErrorStream("SyntaxError");
         StdioBridge<byte[]> bridge = new StdioBridge<>(options, "-u", SCRIPT_PATH, "flair:src/test/resources/gene_small_best_lm.pt");
         bridge.start();
         final Stream<byte[]> response = bridge.sendAndReceive(sentencesJson);
