@@ -5,6 +5,7 @@ import de.julielab.ipc.javabridge.Options;
 import de.julielab.ipc.javabridge.ResultDecoders;
 import de.julielab.ipc.javabridge.StdioBridge;
 import org.assertj.core.data.Offset;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,6 +18,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class EmbeddingScriptTest {
     private static final String SCRIPT_PATH = "src/main/resources/de/julielab/jcore/ae/fte/python/getEmbeddingScript.py";
+    private String pythonCommand;
+
+    @BeforeClass
+    public void setup() {
+        pythonCommand = System.getenv("PYTHON");
+        if (pythonCommand == null)
+            pythonCommand = "python3.6";
+    }
 
     @Test
     public void testPythonEmbeddingScriptSimple() throws Exception {

@@ -69,7 +69,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             log.info("Python executable: {} (from descriptor)", pythonExecutable);
         }
         if (pythonExecutable == null) {
-            pythonExecutable = "python";
+            pythonExecutable = "python3.6";
             log.info("Python executable: {} (default)", pythonExecutable);
         }
         try {

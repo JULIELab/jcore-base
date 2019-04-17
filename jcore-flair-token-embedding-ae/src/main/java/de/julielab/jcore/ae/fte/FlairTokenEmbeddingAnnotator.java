@@ -85,7 +85,7 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
             log.info("Python executable: {} (from descriptor)", pythonExecutable);
         }
         if (pythonExecutable == null) {
-            pythonExecutable = "python2.7";
+            pythonExecutable = "python3.6";
             log.info("Python executable: {} (default)", pythonExecutable);
         }
 
