@@ -39,7 +39,7 @@ public class EmbeddingScriptTest {
         Gson gson = new Gson();
         final String sentencesJson = gson.toJson(sentences);
         Options<byte[]> options = new Options<>(byte[].class);
-        options.setExecutable("python");
+        options.setExecutable(pythonCommand);
         options.setExternalProgramTerminationSignal("exit");
         options.setExternalProgramReadySignal("Script is ready");
         options.setTerminationSignalFromErrorStream("SyntaxError");
@@ -76,7 +76,7 @@ public class EmbeddingScriptTest {
         Gson gson = new Gson();
         final String sentencesJson = gson.toJson(sentences);
         Options<byte[]> options = new Options<>(byte[].class);
-        options.setExecutable("python");
+        options.setExecutable(pythonCommand);
         options.setExternalProgramTerminationSignal("exit");
         options.setExternalProgramReadySignal("Script is ready");
         options.setTerminationSignalFromErrorStream("SyntaxError");
@@ -118,7 +118,7 @@ public class EmbeddingScriptTest {
         Gson gson = new Gson();
         final String sentencesJson = gson.toJson(sentences);
         Options<byte[]> options = new Options<>(byte[].class);
-        options.setExecutable("python");
+        options.setExecutable(pythonCommand);
         options.setExternalProgramTerminationSignal("exit");
         options.setExternalProgramReadySignal("Script is ready");
         options.setTerminationSignalFromErrorStream("SyntaxError");
