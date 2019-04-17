@@ -18,10 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class EmbeddingScriptTest {
     private static final String SCRIPT_PATH = "src/main/resources/de/julielab/jcore/ae/fte/python/getEmbeddingScript.py";
-    private String pythonCommand;
+    private static String pythonCommand;
 
     @BeforeClass
-    public void setup() {
+    public static void setup() {
         pythonCommand = System.getenv("PYTHON");
         if (pythonCommand == null)
             pythonCommand = "python3.6";
