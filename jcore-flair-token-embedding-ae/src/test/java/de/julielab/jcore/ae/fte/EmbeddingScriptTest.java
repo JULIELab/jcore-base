@@ -56,12 +56,12 @@ public class EmbeddingScriptTest {
         }
 
         // Those values were output using print(token.embedding.numpy(), file=sys.stderr) in the script
-        assertThat(vectors[0][0]).isCloseTo(1.8812446e-01, Offset.offset(0.00000001));
-        assertThat(vectors[0][1]).isCloseTo(-1.0531080e-01, Offset.offset(0.00000001));
-        assertThat(vectors[0][2]).isCloseTo(-1.6942955e-04, Offset.offset(0.00000001));
-        assertThat(vectors[0][1021]).isCloseTo(5.4023921e-04, Offset.offset(0.00000001));
-        assertThat(vectors[0][1022]).isCloseTo(-2.4853314e-03, Offset.offset(0.00000001));
-        assertThat(vectors[0][1023]).isCloseTo(3.7118504e-04, Offset.offset(0.00000001));
+        assertThat(vectors[0][0]).isCloseTo(1.8812446e-01, Offset.offset(0.000001));
+        assertThat(vectors[0][1]).isCloseTo(-1.0531080e-01, Offset.offset(0.000001));
+        assertThat(vectors[0][2]).isCloseTo(-1.6942955e-04, Offset.offset(0.000001));
+        assertThat(vectors[0][1021]).isCloseTo(5.4023921e-04, Offset.offset(0.000001));
+        assertThat(vectors[0][1022]).isCloseTo(-2.4853314e-03, Offset.offset(0.000001));
+        assertThat(vectors[0][1023]).isCloseTo(3.7118504e-04, Offset.offset(0.000001));
     }
 
     @Test
@@ -93,13 +93,13 @@ public class EmbeddingScriptTest {
         }
 
         // Those values were output using print(token.embedding.numpy(), file=sys.stderr) in the script
-        assertThat(vectors[0][0]).isCloseTo(-0.16511102, Offset.offset(0.00000001));
-        assertThat(vectors[0][1]).isCloseTo(0.59705925, Offset.offset(0.00000001));
-        assertThat(vectors[0][2]).isCloseTo(-0.00156581, Offset.offset(0.00000001));
+        assertThat(vectors[0][0]).isCloseTo(-0.16511102, Offset.offset(0.000001));
+        assertThat(vectors[0][1]).isCloseTo(0.59705925, Offset.offset(0.000001));
+        assertThat(vectors[0][2]).isCloseTo(-0.00156581, Offset.offset(0.000001));
 
-        assertThat(vectors[1][0]).isCloseTo(4.8699617e-01, Offset.offset(0.00000001));
-        assertThat(vectors[1][1]).isCloseTo(2.7841574e-01, Offset.offset(0.00000001));
-        assertThat(vectors[1][2]).isCloseTo(-3.3565212e-04, Offset.offset(0.00000001));
+        assertThat(vectors[1][0]).isCloseTo(4.8699617e-01, Offset.offset(0.000001));
+        assertThat(vectors[1][1]).isCloseTo(2.7841574e-01, Offset.offset(0.000001));
+        assertThat(vectors[1][2]).isCloseTo(-3.3565212e-04, Offset.offset(0.000001));
     }
 
     @Test
