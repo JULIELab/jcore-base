@@ -73,7 +73,7 @@ public class FlairTokenEmbeddingAnnotatorTest {
                 assertThat(t.getEmbeddingVectors()).isNull();
             }
         }
-
+        engine.collectionProcessComplete();
     }
 
     private void addTokens(JCas jCas) {

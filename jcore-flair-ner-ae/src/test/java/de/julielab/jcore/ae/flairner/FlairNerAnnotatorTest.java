@@ -46,6 +46,7 @@ public class FlairNerAnnotatorTest{
             assertThat(g.getSpecificType().equals("Gene"));
         }
         assertThat(foundGenes).containsExactly("SUB1 homolog", "HIV-1", "VSV-G", "HIV-1");
+        engine.collectionProcessComplete();
     }
 
     private void addTokens(JCas jCas) {
