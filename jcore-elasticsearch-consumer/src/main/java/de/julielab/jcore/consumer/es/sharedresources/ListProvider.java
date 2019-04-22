@@ -1,20 +1,19 @@
 package de.julielab.jcore.consumer.es.sharedresources;
 
+import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.utility.JCoReTools;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class ListProvider implements IListProvider {
     private final static Logger log = LoggerFactory.getLogger(ListProvider.class);
@@ -25,15 +24,9 @@ public class ListProvider implements IListProvider {
     public void load(DataResource aData) throws ResourceInitializationException {
         try {
             list = new ArrayList<>();
-            InputStream is = JCoReTools.resolveExternalResourceGzipInputStream(aData);
-            LineIterator lineIt = IOUtils.lineIterator(new InputStreamReader(is, "UTF-8"));
-            while (lineIt.hasNext()) {
-                String line = lineIt.nextLine();
-                if (line.trim().length() == 0 || line.startsWith("#"))
-                    continue;
-                list.add(line.intern());
+            try (BufferedReader br = IOStreamUtilities.getReaderFromInputStream(JCoReTools.resolveExternalResourceGzipInputStream(aData))) {
+                br.lines().filter(Predicate.not(String::isBlank)).filter(line -> !line.startsWith("#")).map(String::intern).forEach(list::add);
             }
-            lineIt.close();
             ((ArrayList<String>) list).trimToSize();
         } catch (IOException e) {
             throw new ResourceInitializationException(e);
