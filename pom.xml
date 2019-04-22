@@ -38,6 +38,14 @@
             <groupId>org.apache.uima</groupId>
             <artifactId>uimafit-core</artifactId>
             <version>${uimafit-version}</version>
+            <exclusions>
+                <!-- UIMAFit uses an old version of commons-io (v2.2) which commonly conflicts with the newer versions
+                we use in JCoRe -->
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
