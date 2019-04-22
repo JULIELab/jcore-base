@@ -17,11 +17,11 @@
 
 package de.julielab.jcore.reader.file.main;
 
+import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.types.Date;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.pubmed.Header;
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.annotator.AnnotatorConfigurationException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -37,6 +37,7 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileReader extends CollectionReader_ImplBase {
@@ -215,7 +216,7 @@ public class FileReader extends CollectionReader_ImplBase {
 		// open input stream to file
 		File file = files.get(fileIndex++);
 
-		String text = FileUtils.readFileToString(file, "UTF-8");
+		String text = readFileToString(file);
 		// String text = FileUtils.file2String(file);
 
 		Pattern nws = Pattern.compile("[^\\s]+", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
@@ -223,7 +224,7 @@ public class FileReader extends CollectionReader_ImplBase {
 		String origText = null;
 		if (origFolder != null) {
 			File origFile = new File(origFolder, getFileName(file) + "." + origFileExt);
-			origText = FileUtils.readFileToString(origFile, "UTF-8");
+            origText = readFileToString(origFile);
 		}
 		
 		// sentence per line mode
@@ -456,5 +457,11 @@ public class FileReader extends CollectionReader_ImplBase {
 			}
 		}
 		return filename;
+	}
+
+	private String readFileToString(File file) throws IOException {
+		try(BufferedReader br = FileUtilities.getReaderFromFile(file)) {
+			return br.lines().collect(Collectors.joining(System.getProperty("line.separator")));
+		}
 	}
 }

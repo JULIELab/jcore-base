@@ -1,10 +1,10 @@
 package de.julielab.jcore.consumer.bc2gmformat;
 
 
+import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReTools;
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -18,10 +18,10 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,8 +44,8 @@ public class BC2GMFormatWriter extends JCasAnnotator_ImplBase {
     private String genesFile;
 
 
-    private FileOutputStream sentenceStream;
-    private FileOutputStream genesStream;
+    private BufferedWriter sentenceWriter;
+    private BufferedWriter genesWriter;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -55,10 +55,10 @@ public class BC2GMFormatWriter extends JCasAnnotator_ImplBase {
         genesFile = (String) aContext.getConfigParameterValue(PARAM_GENE_FILE);
 
         try {
-            sentenceStream = new FileOutputStream(outputDir.getAbsolutePath() + File.separatorChar + sentencesFile);
-            genesStream = new FileOutputStream(outputDir.getAbsolutePath() + File.separatorChar + genesFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            sentenceWriter = FileUtilities.getWriterToFile(Path.of(outputDir.getAbsolutePath(), sentencesFile).toFile());
+            genesWriter = FileUtilities.getWriterToFile(Path.of(outputDir.getAbsolutePath(), genesFile).toFile());
+        } catch (IOException e) {
+            log.error("IO error when trying to open the output files", e);
         }
 
         wsMatcher = Pattern.compile("\\s").matcher("");
@@ -80,7 +80,8 @@ public class BC2GMFormatWriter extends JCasAnnotator_ImplBase {
 
                 String sentId = docId + ":" + sentNum++;
                 String coveredText = sentence.getCoveredText();
-                IOUtils.write(sentId + " " + coveredText + "\n", sentenceStream, "UTF-8");
+                sentenceWriter.write(sentId + " " + coveredText);
+                sentenceWriter.newLine();
 
                 TreeMap<Integer, Integer> wsNumMap = buildWSMap(coveredText);
 
@@ -93,7 +94,8 @@ public class BC2GMFormatWriter extends JCasAnnotator_ImplBase {
                     // -1 because BC2 offsets are character positions
                     int endWOWs = (end - wsNumMap.floorEntry(end).getValue()) - 1;
                     String entry = sentId + "|" + beginWOWs + " " + endWOWs + "|" + gene.getCoveredText();
-                    IOUtils.write(entry + "\n", genesStream, "UTF-8");
+                    genesWriter.write(entry);
+                    genesWriter.newLine();
                 }
             }
         } catch (IOException e) {
@@ -106,8 +108,8 @@ public class BC2GMFormatWriter extends JCasAnnotator_ImplBase {
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
         try {
-            sentenceStream.close();
-            genesStream.close();
+            sentenceWriter.close();
+            genesWriter.close();
         } catch (IOException e) {
             throw new AnalysisEngineProcessException(e);
         }

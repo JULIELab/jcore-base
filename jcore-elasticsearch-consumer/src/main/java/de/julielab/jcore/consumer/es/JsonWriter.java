@@ -1,7 +1,7 @@
 package de.julielab.jcore.consumer.es;
 
+import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.consumer.es.preanalyzed.Document;
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -128,10 +128,10 @@ public class JsonWriter extends AbstractCasToJsonConsumer {
                     String filepath = outputDest.getAbsolutePath() + File.separator + id + ".json";
                     if (gzip)
                         filepath += ".gz";
-                    try (OutputStream os = gzip ? new GZIPOutputStream(new FileOutputStream(filepath))
-                            : new FileOutputStream(filepath)) {
+                    try (final BufferedWriter bw = FileUtilities.getWriterToFile(new File(filepath))) {
                         String json = gson.toJson(document);
-                        IOUtils.write(json, os, "UTF-8");
+                        bw.write(json);
+
                     }
                 }
             } catch (IOException e) {

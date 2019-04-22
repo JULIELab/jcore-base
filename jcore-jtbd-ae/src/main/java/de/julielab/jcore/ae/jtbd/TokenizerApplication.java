@@ -26,14 +26,15 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
-import org.apache.commons.io.FileUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 public class TokenizerApplication {
@@ -226,18 +227,6 @@ public class TokenizerApplication {
 
 	}
 
-	/**
-	 * general evaluation function, is called from doCrossEvaluation or
-	 * do9010Evaluation.
-	 *
-	 * @param crf
-	 *            the crf model
-	 * @param predictOrgSentences
-	 * @param predictTokSentences
-	 * @param errors
-	 * @param predictions
-	 * @return
-	 */
 	public static EvalResult doEvaluation(final ArrayList<String> trainOrgSentences,
 			final ArrayList<String> trainTokSentences, final ArrayList<String> predictOrgSentences,
 			final ArrayList<String> predictTokSentences, final ArrayList<String> errors,
@@ -380,7 +369,7 @@ public class TokenizerApplication {
 	 *            the directory with the documents to be tokenized
 	 * @param outDir
 	 *            the directory where the tokenized documents should be written to
-	 * @param modelFile
+	 * @param modelFilename
 	 *            the model to use for tokenization
 	 * @throws IOException
 	 */
@@ -401,8 +390,11 @@ public class TokenizerApplication {
 		for (final File predictOrgFile : predictOrgFiles) {
 			final long start = System.currentTimeMillis();
 
-			List<String> orgSentences = FileUtils.readLines(predictOrgFile, "utf-8");
-			// readFile(predictOrgFile); //TODO erik fragen was er davon hätl
+			List<String> orgSentences;
+			try (BufferedReader br = new BufferedReader(new FileReader(predictOrgFile, StandardCharsets.UTF_8))) {
+				orgSentences = br.lines().collect(Collectors.toList());
+
+			}
 			ArrayList<String> tokSentences = new ArrayList<String>();
 
 			ArrayList<String> predictions = new ArrayList<String>();

@@ -1,7 +1,7 @@
 package de.julielab.jcore.consumer.es;
 
+import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.es.test.*;
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -13,11 +13,9 @@ import org.testng.annotations.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.zip.GZIPInputStream;
 
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -90,7 +88,10 @@ public class JsonWriterTest {
 		consumer.process(cas.getCas());
 		consumer.collectionProcessComplete();
 		
-		String indexSource = IOUtils.toString(new GZIPInputStream(new FileInputStream("src/test/resources/json-output/theBeautyDoc.json.gz")));
+		String indexSource;
+		try (final BufferedReader br = FileUtilities.getReaderFromFile(new File("src/test/resources/json-output/theBeautyDoc.json.gz"))) {
+			indexSource = br.lines().collect(Collectors.joining(System.getProperty("line.separator")));
+		}
 		// No, I haven't written that JSON myself. I just printed out the indexSource, checked that it is correct (I
 		// recommend an online formatter for this, e.g. at http://jsonformatter.curiousconcept.com/), checked that it
 		// was right and then added it into the assertion statement. Another tip: All the escaping has been done by
