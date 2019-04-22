@@ -3,7 +3,6 @@ package de.julielab.jcore.ae.flairner;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderAnnotator;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderConfiguration;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderHelper;
-import de.julielab.jcore.ae.annotationadder.AnnotationListAdder;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReAnnotationTools;

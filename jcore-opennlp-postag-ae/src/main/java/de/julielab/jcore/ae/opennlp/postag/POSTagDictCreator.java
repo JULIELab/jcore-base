@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -40,7 +41,7 @@ public class POSTagDictCreator {
 
 		
 		POSDictionary posDictionary = createPOSTagDict(sampleFile, caseSensitive);
-		try (FileOutputStream os = FileUtils.openOutputStream(dictOutputFile)) {
+		try (FileOutputStream os = new FileOutputStream(dictOutputFile)) {
 			posDictionary.serialize(os);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -73,7 +74,7 @@ public class POSTagDictCreator {
 	public static List<POSSample> readPOSSamples(File sampleFile) {
 		List<POSSample> posSamples = new ArrayList<>();
 		try (FileInputStream is = FileUtils.openInputStream(sampleFile)) {
-			List<String> lines = IOUtils.readLines(is);
+			List<String> lines = IOUtils.readLines(is, StandardCharsets.UTF_8);
 			for (String sentenceString : lines) {
 				POSSample posSample = POSSample.parse(sentenceString);
 				posSamples.add(posSample);
