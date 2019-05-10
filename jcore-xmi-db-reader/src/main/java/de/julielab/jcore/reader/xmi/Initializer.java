@@ -101,7 +101,7 @@ public class Initializer {
         // complete and valid. Thus, ignore the namespace table.
         Map<String, String> nsAndXmiVersion = null;
         if (joinTables || readsBaseDocument) {
-            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+            try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
                 nsAndXmiVersion = getNamespaceMap();
             }
         }

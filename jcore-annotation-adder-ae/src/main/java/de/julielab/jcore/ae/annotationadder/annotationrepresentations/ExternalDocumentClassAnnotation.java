@@ -1,7 +1,6 @@
 package de.julielab.jcore.ae.annotationadder.annotationrepresentations;
 
 public class ExternalDocumentClassAnnotation implements AnnotationData {
-    private String uimaType;
     private String documentId;
     /**
      * What is the classes name?
@@ -16,8 +15,7 @@ public class ExternalDocumentClassAnnotation implements AnnotationData {
      */
     private double confidence;
 
-    public ExternalDocumentClassAnnotation(String documentId, String documentClass, double confidence, String componentId, String uimaType) {
-        this.uimaType = uimaType;
+    public ExternalDocumentClassAnnotation(String documentId, String documentClass, double confidence, String componentId) {
         this.documentId = documentId;
         this.documentClass = documentClass;
         this.componentId = componentId;
@@ -40,4 +38,5 @@ public class ExternalDocumentClassAnnotation implements AnnotationData {
     public String getDocumentId() {
         return documentId;
     }
+
 }

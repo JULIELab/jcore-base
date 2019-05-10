@@ -15,8 +15,6 @@ public class DocumentClassAnnotationFormat implements AnnotationFormat<ExternalD
         String documentClass = record[2].intern();
         String componentId = record[3].intern();
         String type = null;
-        if (record.length > 4)
-            type = record[4].intern();
-        return new ExternalDocumentClassAnnotation(docId, documentClass, confidence, componentId, type);
+        return new ExternalDocumentClassAnnotation(docId, documentClass, confidence, componentId);
     }
 }

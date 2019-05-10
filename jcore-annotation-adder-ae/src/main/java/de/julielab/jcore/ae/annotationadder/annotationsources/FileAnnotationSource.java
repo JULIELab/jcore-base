@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class FileAnnotationSource implements AnnotationSource<AnnotationList> {
+public class FileAnnotationSource<T extends AnnotationData> implements AnnotationSource<AnnotationList<T>> {
     private final static Logger log = LoggerFactory.getLogger(FileAnnotationSource.class);
-    private AnnotationFormat<? extends AnnotationData> format;
-    private Map<String, AnnotationList> entitiesByDocId;
+    private AnnotationFormat<T> format;
+    private Map<String, AnnotationList<T>> entitiesByDocId;
 
-    public FileAnnotationSource(AnnotationFormat<? extends AnnotationData> format) {
+    public FileAnnotationSource(AnnotationFormat<T> format) {
         this.format = format;
     }
 
@@ -38,7 +38,7 @@ public class FileAnnotationSource implements AnnotationSource<AnnotationList> {
     }
 
     @Override
-    public AnnotationList getAnnotations(String id) {
+    public AnnotationList<T> getAnnotations(String id) {
         return entitiesByDocId.get(id);
     }
 }

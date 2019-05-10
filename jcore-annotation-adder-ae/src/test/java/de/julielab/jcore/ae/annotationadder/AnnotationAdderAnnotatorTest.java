@@ -1,18 +1,19 @@
 
 package de.julielab.jcore.ae.annotationadder;
 
-import de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileAnnotationProvider;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.Token;
+import de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileDocumentClassAnnotationProvider;
+import de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileTextAnnotationProvider;
+import de.julielab.jcore.types.*;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public class AnnotationAdderAnnotatorTest{
     @Test
     public void testCharacterOffsets() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
-        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileAnnotationProvider.class, new File("src/test/resources/geneannotations_character_offsets.tsv"));
+        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/geneannotations_character_offsets.tsv"));
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(AnnotationAdderAnnotator.class, AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, externalResourceDescription);
         // Test doc1 (two gene annotations)
         jCas.setDocumentText("BRCA PRKII are the genes of this sentence.");
@@ -71,7 +72,7 @@ public class AnnotationAdderAnnotatorTest{
     @Test
     public void testTokenOffsets() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
-        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileAnnotationProvider.class, new File("src/test/resources/geneannotations_token_offsets.tsv"));
+        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/geneannotations_token_offsets.tsv"));
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(AnnotationAdderAnnotator.class, AnnotationAdderAnnotator.PARAM_OFFSET_MODE, AnnotationAdderAnnotator.OffsetMode.TOKEN, AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, externalResourceDescription);
         // Test doc1 (two gene annotations)
         jCas.setDocumentText("BRCA PRKII are the genes of this sentence.");
@@ -131,7 +132,7 @@ public class AnnotationAdderAnnotatorTest{
     @Test
     public void testTokenOffsetsNoType() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
-        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileAnnotationProvider.class, new File("src/test/resources/geneannotations_token_offsets_notype.tsv"));
+        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/geneannotations_token_offsets_notype.tsv"));
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(AnnotationAdderAnnotator.class,
                 AnnotationAdderAnnotator.PARAM_OFFSET_MODE, AnnotationAdderAnnotator.OffsetMode.TOKEN,
                 AnnotationAdderAnnotator.PARAM_DEFAULT_UIMA_TYPE, "de.julielab.jcore.types.Gene",
@@ -197,7 +198,7 @@ public class AnnotationAdderAnnotatorTest{
         final AnalysisEngineDescription desc = AnalysisEngineFactory.createEngineDescriptionFromPath("src/main/resources/de/julielab/jcore/ae/annotationadder/desc/jcore-annotation-adder-ae.xml");
         // The descriptor has a preconfigured external resource which we need to remove because it does specify an empty URL which would lead to errors, if left in place.
         desc.getResourceManagerConfiguration().setExternalResources(null);
-        ExternalResourceFactory.bindResource(desc, AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, InMemoryFileAnnotationProvider.class, new File("src/test/resources/geneannotations_character_offsets.tsv").toURI().toString());
+        ExternalResourceFactory.bindResource(desc, AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/geneannotations_character_offsets.tsv").toURI().toString());
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(desc);
         // Test doc1 (two gene annotations)
         jCas.setDocumentText("BRCA PRKII are the genes of this sentence.");
@@ -235,5 +236,31 @@ public class AnnotationAdderAnnotatorTest{
         final Gene gene = JCasUtil.selectSingle(jCas, Gene.class);
         assertThat(gene.getBegin()).isEqualTo(0);
         assertThat(gene.getEnd()).isEqualTo(6);
+    }
+
+    @Test
+    public void testDocumentClasses() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-document-meta-types");
+        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileDocumentClassAnnotationProvider.class, new File("src/test/resources/documentClasses.tsv"));
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(AnnotationAdderAnnotator.class,
+                AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, externalResourceDescription);
+        // Test doc1 (two gene annotations)
+        jCas.setDocumentText("BRCA PRKII are the genes of this sentence.");
+        final Header h = new Header(jCas);
+        h.setDocId("doc1");
+        h.addToIndexes();
+        engine.process(jCas);
+
+        final AutoDescriptor ad = JCasUtil.selectSingle(jCas, AutoDescriptor.class);
+        assertThat(ad.getDocumentClasses().size()).isEqualTo(2);
+        final DocumentClass dc1 = (DocumentClass) ad.getDocumentClasses().get(0);
+        final DocumentClass dc2 = (DocumentClass) ad.getDocumentClasses().get(1);
+        assertThat(dc1.getClassname()).isEqualTo("PM");
+        assertThat(dc1.getConfidence()).isCloseTo(0.97989035, Offset.offset(.000000001));
+        assertThat(dc1.getComponentId()).isEqualTo("2017 GRU");
+
+        assertThat(dc2.getClassname()).isEqualTo("Not PM");
+        assertThat(dc2.getConfidence()).isCloseTo(0.9543127, Offset.offset(.000000001));
+        assertThat(dc2.getComponentId()).isEqualTo("2018 GRU");
     }
 }

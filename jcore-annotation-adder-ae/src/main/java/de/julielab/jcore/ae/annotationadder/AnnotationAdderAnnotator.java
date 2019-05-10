@@ -36,7 +36,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	@ConfigurationParameter(name=PARAM_DEFAULT_UIMA_TYPE, mandatory = false, description = "Most external annotation formats require that the qualified name a UIMA type is provided which reflects the annotation to be created for the respective annotation. With this parameter, a default type can be provided which will be forwarded to the format parser. If the parser supports it, the type can then be omitted from the external annotation source.")
 	private String defaultUimaType;
 
-    private List<AnnotationAdder> annotationAdders = Arrays.asList(new TextAnnotationListAdder());
+    private List<AnnotationAdder> annotationAdders = Arrays.asList(new TextAnnotationListAdder(), new DocumentClassAnnotationAdder());
 
     /**
 	 * This method is called a single time by the framework at component

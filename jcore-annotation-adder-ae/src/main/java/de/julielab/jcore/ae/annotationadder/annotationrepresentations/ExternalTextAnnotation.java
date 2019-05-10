@@ -1,6 +1,6 @@
 package de.julielab.jcore.ae.annotationadder.annotationrepresentations;
 
-public class ExternalAnnotation implements TextAnnotation {
+public class ExternalTextAnnotation implements TextAnnotation {
     private String documentId;
     private int start;
     private int end;
@@ -38,7 +38,7 @@ public class ExternalAnnotation implements TextAnnotation {
         this.documentId = documentId;
     }
 
-    public ExternalAnnotation(String documentId, int start, int end, String uimaType) {
+    public ExternalTextAnnotation(String documentId, int start, int end, String uimaType) {
 
         this.documentId = documentId;
         this.start = start;
