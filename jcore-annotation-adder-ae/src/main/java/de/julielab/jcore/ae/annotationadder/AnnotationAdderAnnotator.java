@@ -6,12 +6,10 @@ import de.julielab.jcore.ae.annotationadder.annotationsources.AnnotationProvider
 import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
@@ -38,7 +36,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	@ConfigurationParameter(name=PARAM_DEFAULT_UIMA_TYPE, mandatory = false, description = "Most external annotation formats require that the qualified name a UIMA type is provided which reflects the annotation to be created for the respective annotation. With this parameter, a default type can be provided which will be forwarded to the format parser. If the parser supports it, the type can then be omitted from the external annotation source.")
 	private String defaultUimaType;
 
-    private List<AnnotationAdder> annotationAdders = Arrays.asList(new AnnotationListAdder());
+    private List<AnnotationAdder> annotationAdders = Arrays.asList(new TextAnnotationListAdder());
 
     /**
 	 * This method is called a single time by the framework at component
@@ -64,7 +62,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	 * is where the actual work happens.
 	 */
 	@Override
-	public void process(final JCas aJCas) throws AnalysisEngineProcessException {
+	public void process(final JCas aJCas) {
         final String docId = JCoReTools.getDocId(aJCas);
         if (docId == null)
             log.error("The current document does not have a header. Cannot add external annotations.");

@@ -2,8 +2,8 @@ package de.julielab.jcore.ae.annotationadder.annotationsources;
 
 import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.ae.annotationadder.annotationformat.AnnotationFormat;
+import de.julielab.jcore.ae.annotationadder.annotationrepresentations.AnnotationData;
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.AnnotationList;
-import de.julielab.jcore.ae.annotationadder.annotationrepresentations.ExternalAnnotation;
 import org.apache.uima.resource.DataResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,18 +14,18 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class FileEntityAnnotationSource implements AnnotationSource<AnnotationList> {
-    private final static Logger log = LoggerFactory.getLogger(FileEntityAnnotationSource.class);
-    private AnnotationFormat<ExternalAnnotation> format;
+public class FileAnnotationSource implements AnnotationSource<AnnotationList> {
+    private final static Logger log = LoggerFactory.getLogger(FileAnnotationSource.class);
+    private AnnotationFormat<? extends AnnotationData> format;
     private Map<String, AnnotationList> entitiesByDocId;
 
-    public FileEntityAnnotationSource(AnnotationFormat<ExternalAnnotation> format) {
+    public FileAnnotationSource(AnnotationFormat<? extends AnnotationData> format) {
         this.format = format;
     }
 
     public void loadAnnotations(File annotationfile) {
         try (BufferedReader br = FileUtilities.getReaderFromFile(annotationfile)) {
-            entitiesByDocId = br.lines().map(format::parse).collect(Collectors.groupingBy(ExternalAnnotation::getDocumentId, Collectors.toCollection(AnnotationList::new)));
+            entitiesByDocId = br.lines().map(format::parse).collect(Collectors.groupingBy(AnnotationData::getDocumentId, Collectors.toCollection(AnnotationList::new)));
         } catch (IOException e) {
             e.printStackTrace();
         }

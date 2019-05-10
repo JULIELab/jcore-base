@@ -5,7 +5,7 @@ import de.julielab.jcore.ae.annotationadder.annotationrepresentations.Annotation
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 
-public class InMemoryFileEntityProvider implements AnnotationProvider<AnnotationList> {
+public class InMemoryFileAnnotationProvider implements AnnotationProvider<AnnotationList> {
     private AnnotationSource<AnnotationList> annotationSource;
 
     @Override
@@ -16,7 +16,7 @@ public class InMemoryFileEntityProvider implements AnnotationProvider<Annotation
     @Override
     public void load(DataResource dataResource) throws ResourceInitializationException {
         // This logic could be made configurable if required so in the future.
-        annotationSource = new FileEntityAnnotationSource(new SimpleTSVEntityAnnotationFormat());
+        annotationSource = new FileAnnotationSource(new SimpleTSVEntityAnnotationFormat());
         annotationSource.initialize(dataResource);
     }
 

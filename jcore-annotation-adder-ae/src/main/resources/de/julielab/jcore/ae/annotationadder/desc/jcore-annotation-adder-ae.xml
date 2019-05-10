@@ -72,7 +72,7 @@
                         <configurationParameterSettings />
                     </resourceMetaData>
                 </configurableDataResourceSpecifier>
-                <implementationName>de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileEntityProvider
+                <implementationName>de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileAnnotationProvider
                 </implementationName>
             </externalResource>
         </externalResources>

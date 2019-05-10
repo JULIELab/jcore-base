@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class AnnotationListAdder implements AnnotationAdder {
-    private final static Logger log = LoggerFactory.getLogger(AnnotationListAdder.class);
+public class TextAnnotationListAdder implements AnnotationAdder {
+    private final static Logger log = LoggerFactory.getLogger(TextAnnotationListAdder.class);
 
     @Override
     public boolean addAnnotations(AnnotationData data, AnnotationAdderHelper helper, AnnotationAdderConfiguration configuration, JCas jCas) {
-        AnnotationList annotationList;
+        AnnotationList<ExternalAnnotation> annotationList;
         try {
             annotationList = (AnnotationList) data;
         } catch (ClassCastException e) {
