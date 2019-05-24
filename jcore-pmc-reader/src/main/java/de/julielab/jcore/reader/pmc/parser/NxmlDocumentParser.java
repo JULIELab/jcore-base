@@ -40,8 +40,6 @@ public class NxmlDocumentParser extends NxmlParser {
     private DefaultElementParser defaultElementParser;
     private Map<String, Map<String, Object>> tagProperties;
     private Tagset tagset;
-    @Deprecated
-    private File nxmlFile;
     private URI uri;
 
     public void reset(File nxmlFile, JCas cas) throws DocumentParsingException {
@@ -89,7 +87,7 @@ public class NxmlDocumentParser extends NxmlParser {
      * @throws NavException
      * @throws DocTypeNotFoundException
      */
-    private void setTagset() throws NavException, DocTypeNotFoundException {
+    private void setTagset() throws NavException, DocTypeNotFoundException, DocTypeNotSupportedException {
         for (int i = 0; i < vn.getTokenCount(); i++) {
             if (vn.getTokenType(i) == VTDNav.TOKEN_DTD_VAL) {
                 String docType = StringUtils.normalizeSpace(vn.toString(i)).replaceAll("'", "\"");
@@ -100,12 +98,11 @@ public class NxmlDocumentParser extends NxmlParser {
                 else if (docType.contains("journalpublishing3.dtd") || docType.contains("archivearticle3.dtd"))
                     tagset = Tagset.NLM_3_0;
                 else
-                    throw new IllegalArgumentException(
-                            "Unsupported document type in file " + nxmlFile.getAbsolutePath() + ": " + docType);
+                    throw new DocTypeNotSupportedException("Unsupported document type: "  + docType);
                 return;
             }
         }
-        throw new DocTypeNotFoundException("Could not find a doctype in file " + nxmlFile);
+        throw new DocTypeNotFoundException("Could not find a doctype.");
     }
 
     private void setupParserRegistry() {
@@ -126,10 +123,6 @@ public class NxmlDocumentParser extends NxmlParser {
 
     public VTDNav getVn() {
         return vn;
-    }
-
-    public File getNxmlFile() {
-        return nxmlFile;
     }
 
     public Tagset getTagset() {

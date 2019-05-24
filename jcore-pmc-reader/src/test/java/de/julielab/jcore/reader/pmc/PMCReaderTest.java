@@ -380,4 +380,25 @@ public class PMCReaderTest {
         }
         assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
     }
+
+	@Test
+	public void testReadDocumentsAfterCommNonCommSeparation() throws Exception {
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		CollectionReader reader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.pmc.desc.jcore-pmc-reader", PMCReader.PARAM_INPUT,
+				"src/test/resources/documents-after-comm-noncomm-separation/PMC5006539.nxml");
+		assertTrue(reader.hasNext());
+		Set<String> foundDocuments = new HashSet<>();
+		while (reader.hasNext()) {
+			reader.getNext(cas.getCas());
+
+			Header header = (Header) CasUtil.selectSingle(cas.getCas(),
+					CasUtil.getAnnotationType(cas.getCas(), Header.class));
+			assertNotNull(header);
+			foundDocuments.add(header.getDocId());
+
+			cas.reset();
+		}
+		assertThat(foundDocuments).containsExactlyInAnyOrder("5006539");
+	}
 }
