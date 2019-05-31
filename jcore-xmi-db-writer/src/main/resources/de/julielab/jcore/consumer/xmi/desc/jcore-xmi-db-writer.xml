@@ -1,11 +1,11 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
     <annotatorImplementationName>de.julielab.jcore.consumer.xmi.XMIDBWriter</annotatorImplementationName>
     <analysisEngineMetaData>
         <name>JCoRe XMI Database Writer</name>
-        <description>This component is capable of storing the standard UIMA serialization of documents in one or even multiple database tables. The UIMA serialization format is XMI, an XML format that expressed an annotation graph. This component either stores the whole annotation graph in XMI format in a database row, together with the document ID. Alternatively, it makes use of the jcore-xmi-splitter to segment the annotation graph with respect to a user specified list of annotation types. Then, the XMI data of each annotation type is extracted from the document XMI data and stored in a separate table. The tables are created automatically according to the primary key of the active table schema in the Corpus Storage System (CoStoSys) configuration file that is also given as a parameter. The jcore-xmi-db-reader is capable of reading this kind of distributed annotation graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This component is part of the Jena Document Information System, JeDIS.</description>
+        <description>This component is capable of storing the standard UIMA serialization of documents in one or even multiple database tables. The UIMA serialization format is XMI, an XML format that expressed an annotation graph. This component either stores the whole annotation graph in XMI format in a database row, together with the document ID. Alternatively, it makes use of the jcore-xmi-splitter to segment the annotation graph with respect to a user specified list of annotation types. Then, the XMI data of each annotation type is extracted from the document XMI data and stored in a separate table. The tables are created automatically according to the primary key of the active table schema in the Corpus Storage System (CoStoSys) configuration file that is also given as a parameter. The jcore-xmi-db-reader is capable of reading this kind of distributed annotation graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This consumer is UIMA DUCC compatible. It requires the collection reader to forward the work item CAS to the consumer. This is required so the consumer knows that a work item has been finished and that all cached data - in this case the XMI data - should be flushed. This is important! Without the forwarding of the work item CAS, the last batch of cached XMI data will not be written into the database. This component is part of the Jena Document Information System, JeDIS.</description>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
@@ -45,7 +45,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>DocumentTable</name>
-                <description>String parameter indicating the name of the table where the XMI data will be stored (if StoreEntireXmiData is true) or where the base document will be stored (if StoreBaseDocument is true). If the name is schema qualified, i.e. contains a dot, the table name will be used as provided. If no schema is qualified, the active data postgres schema as configured in the CoStoSys configuration will be used to find or create the table.</description>
+                <description>String parameter indicating the name of the table where the XMI data will be stored (if StoreEntireXmiData is true) or where the base document is (to be) stored (if the base document or annotation data is written). If the name is schema qualified, i.e. contains a dot, the table name will be used as provided. If no schema is qualified, the active data postgres schema as configured in the CoStoSys configuration will be used to find or create the table.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
@@ -79,6 +79,13 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
+                <name>WriteBatchSize</name>
+                <description>The number of processed CASes after which the XMI data should be flushed into the database. Defaults to 50.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
                 <name>ComponentDbName</name>
                 <description> Subset tables store the name of the last component that has sent data for a document. This parameter allows to specify a custom name for each CAS DB Consumer. Defaults to the implementation class name.</description>
                 <type>String</type>
@@ -94,7 +101,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>AnnotationsToStore</name>
-                <description>An array of qualified UIMA type names, for instance de.julielab.jcore.types.Sentence. Annotations of those types are segmented away from the serialized document annotation graph in XMI format for storage in separate tables. When the 'StoreRecursively' parameter is set to true, annotations are stored together with referenced annotations, if those are not specified in the list of additional tables themselves. The table names are directly derived from the annotation type names by converting dots to underlines and adding a postgres schema qualification according to the active data postgres schema defined in the CoStoSys configuration. If an annotation table should be stored or looked up in another postgres schema, prepend the type name with the string 'q:' and the schema name, e.g. 'q:myschema.de.julielab.jcore.types.Token.</description>
+                <description>An array of qualified UIMA type names, for instance de.julielab.jcore.types.Sentence. Annotations of those types are segmented away from the serialized document annotation graph in XMI format for storage in separate tables. When the 'StoreRecursively' parameter is set to true, annotations are stored together with referenced annotations, if those are not specified in the list of additional tables themselves. The table names are directly derived from the annotation type names by converting dots to underlines and adding a postgres schema qualification according to the active data postgres schema defined in the CoStoSys configuration. If an annotation table should be stored or looked up in another postgres schema, prepend the type name with the string '&lt;schema&gt;:', e.g. 'myschema:de.julielab.jcore.types.Token.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
@@ -105,6 +112,12 @@
                 <name>DeleteObsoleteAnnotations</name>
                 <value>
                     <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>WriteBatchSize</name>
+                <value>
+                    <integer>50</integer>
                 </value>
             </nameValuePair>
             <nameValuePair>
@@ -121,12 +134,12 @@
                 <import name="org.apache.uima.ducc.FlowControllerTS" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection />
-        <capabilities />
+        <fsIndexCollection/>
+        <capabilities/>
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    <version>2.5.0-SNAPSHOT</version></analysisEngineMetaData>
+    </analysisEngineMetaData>
 </analysisEngineDescription>
