@@ -71,7 +71,7 @@ public class AnnotationTableManager {
         // will thus have dots replaced by underline.
         String effectiveTableName = tableNameParameter.contains(":") ? tableNameParameter.substring(tableNameParameter.indexOf(':') + 1) : tableNameParameter;
         effectiveTableName = effectiveTableName.replace(".", "_");
-        String schema = tableNameParameter.contains(":") ? tableNameParameter.substring(0, tableNameParameter.indexOf('.')) : annotationStorageSchema;
+        String schema = tableNameParameter.contains(":") ? tableNameParameter.substring(0, tableNameParameter.indexOf(':')) : annotationStorageSchema;
         return schema + "." + effectiveTableName;
     }
 
