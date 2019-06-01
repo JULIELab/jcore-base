@@ -40,6 +40,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -103,6 +104,9 @@ public class XmiDBReader extends DBReader implements Initializable {
     public void initialize(UimaContext context) throws ResourceInitializationException {
         adaptReaderConfigurationForXmiData();
         super.initialize(context);
+        // This is necessary when one or more tables have schema qualifications which are resolved
+        // by the super class in the super.initialize() call above
+        this.additionalTableNames = Stream.of(this.additionalTableNames).map(table -> table.contains(":") ? table.substring(table.indexOf(':')+1) : table).toArray(String[]::new);
         dbc.reserveConnection();
         initializer = new Initializer(this, dbc, additionalTableNames, joinTables);
         initializer.initialize(context);

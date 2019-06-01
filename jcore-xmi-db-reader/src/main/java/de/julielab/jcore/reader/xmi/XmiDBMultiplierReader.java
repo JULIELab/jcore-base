@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
 @ResourceMetaData(name = "XMI Database Multiplier Reader", description = "This is an extension of the " +
@@ -62,6 +63,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
             "resizing, this parameter should be set to a size that makes buffer resizing unnecessary.")
     private int xercesAttributeBufferSize;
     private boolean doGzip;
+    private String[] additionalTableNames;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -77,6 +79,11 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
                 .ifPresent(v -> maxXmlAttributeSize = v);
         Optional.ofNullable((Integer) context.getConfigParameterValue(PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE))
                 .ifPresent(v -> xercesAttributeBufferSize = v);
+        super.initialize(context);
+        // This is necessary when one or more tables have schema qualifications which are resolved
+        // by the super class in the super.initialize() call above.
+        // For the XMI Builder we require the non-qualified type nymes.
+        additionalTableNames = Stream.of(this.additionalTableNames).map(table -> table.contains(":") ? table.substring(table.indexOf(':')+1) : table).toArray(String[]::new);
     }
 
     @Override

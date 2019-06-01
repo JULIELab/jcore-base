@@ -37,7 +37,7 @@ public class XmiDBMultiplierTest {
     private static int subsetCounter;
 
     @BeforeClass
-    public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+    public static void setup() throws UIMAException, IOException, ConfigurationException {
         postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
