@@ -145,6 +145,8 @@ public abstract class DBSubsetReader extends DBReaderBase {
                         ImmutablePair<Integer, String[]> additionalTableNumAndNames = checkAndAdjustAdditionalTables(dbc, dataTable, additionalTableNames);
                         int numAdditionalTables = additionalTableNumAndNames.getLeft();
                         tables = additionalTableNumAndNames.getRight();
+                        if (numAdditionalTables > 0)
+                            System.arraycopy(tables, 1, additionalTableNames, 0, additionalTableNames.length);
 
                         // Assemble the data table schema together with all additional table schemas in one array.
                         schemas = new String[numAdditionalTables + 1];

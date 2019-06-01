@@ -2,6 +2,7 @@ package de.julielab.jcore.consumer.xmi;
 
 import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.*;
+import de.julielab.xmlData.dataBase.CoStoSysConnection;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
@@ -65,6 +66,9 @@ public class XmiDBWriterTest {
                 XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), de.julielab.jcore.types.pubmed.Header.class.getCanonicalName()}
         );
         JCas jCas = getJCasWithRequiredTypes();
+        final Header header = new Header(jCas);
+        header.setDocId("789");
+        header.addToIndexes();
         jCas.setDocumentText("This is a sentence. This is another one.");
         new Sentence(jCas, 0, 19).addToIndexes();
         new Sentence(jCas, 20, 40).addToIndexes();
@@ -76,11 +80,13 @@ public class XmiDBWriterTest {
         xmiWriter.collectionProcessComplete();
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
-        dbc.reserveConnection();
-        assertThat(dbc.tableExists("_data.documents")).isTrue();
-        assertThat(dbc.tableExists("_data.de_julielab_jcore_types_token")).isTrue();
-        assertThat(dbc.tableExists("_data.de_julielab_jcore_types_sentence")).isTrue();
-        dbc.releaseConnections();
+        try(CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
+            assertThat(dbc.tableExists("_data.documents")).isTrue();
+            assertThat(dbc.tableExists("_data.de_julielab_jcore_types_token")).isTrue();
+            assertThat(dbc.tableExists("_data.de_julielab_jcore_types_sentence")).isTrue();
+            assertThat(dbc.isEmpty("_data.de_julielab_jcore_types_token")).isFalse();
+            assertThat(dbc.isEmpty("_data.de_julielab_jcore_types_sentence")).isFalse();
+        }
     }
 
     @Test
@@ -98,6 +104,9 @@ public class XmiDBWriterTest {
                 XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), de.julielab.jcore.types.pubmed.Header.class.getCanonicalName()}
         );
         JCas jCas = getJCasWithRequiredTypes();
+        final Header header = new Header(jCas);
+        header.setDocId("789");
+        header.addToIndexes();
         jCas.setDocumentText("This is a sentence. This is another one.");
         new Sentence(jCas, 0, 19).addToIndexes();
         new Sentence(jCas, 20, 40).addToIndexes();
@@ -109,10 +118,12 @@ public class XmiDBWriterTest {
         xmiWriter.collectionProcessComplete();
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
-        dbc.reserveConnection();
-        assertThat(dbc.tableExists("_data.documents")).isTrue();
-        assertThat(dbc.tableExists("tokenschema.de_julielab_jcore_types_token")).isTrue();
-        assertThat(dbc.tableExists("sentenceschema.de_julielab_jcore_types_sentence")).isTrue();
-        dbc.releaseConnections();
+        try(CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
+            assertThat(dbc.tableExists("_data.documents")).isTrue();
+            assertThat(dbc.tableExists("tokenschema.de_julielab_jcore_types_token")).isTrue();
+            assertThat(dbc.tableExists("sentenceschema.de_julielab_jcore_types_sentence")).isTrue();
+            assertThat(dbc.isEmpty("tokenschema.de_julielab_jcore_types_token")).isFalse();
+            assertThat(dbc.isEmpty("sentenceschema.de_julielab_jcore_types_sentence")).isFalse();
+        }
     }
 }

@@ -36,6 +36,8 @@ public class AnnotationTableManager {
 
     private List<String> annotationsToStore;
 
+    private Map<String, String> annotationPgSchemaMap = new HashMap<>();
+
     public AnnotationTableManager(DataBaseConnector dbc, String rawDocumentTableName, List<String> annotationsToStore,
                                   String documentTableSchema, String annotationTableSchema, Boolean storeAll, Boolean storeBaseDocument, String annotationStorageSchema) throws TableSchemaMismatchException {
         this.dbc = dbc;
@@ -50,6 +52,14 @@ public class AnnotationTableManager {
         for (String annotation : annotationsToStore)
             createTable(annotation, annotationTableSchema);
         createAnnotationListTable();
+        for (String qualifiedAnnotation : annotationsToStore) {
+            final int colonIndex = qualifiedAnnotation.indexOf(':');
+            if (colonIndex >= 0) {
+                String typeName = qualifiedAnnotation.substring(colonIndex + 1);
+                String schemaName = qualifiedAnnotation.substring(0, colonIndex);
+                annotationPgSchemaMap.put(typeName, schemaName);
+            }
+        }
     }
 
     /**
@@ -71,7 +81,9 @@ public class AnnotationTableManager {
         // will thus have dots replaced by underline.
         String effectiveTableName = tableNameParameter.contains(":") ? tableNameParameter.substring(tableNameParameter.indexOf(':') + 1) : tableNameParameter;
         effectiveTableName = effectiveTableName.replace(".", "_");
-        String schema = tableNameParameter.contains(":") ? tableNameParameter.substring(0, tableNameParameter.indexOf(':')) : annotationStorageSchema;
+        String schema = annotationPgSchemaMap.get(tableNameParameter);
+        if (schema == null)
+            schema = tableNameParameter.contains(":") ? tableNameParameter.substring(0, tableNameParameter.indexOf(':')) : annotationStorageSchema;
         return schema + "." + effectiveTableName;
     }
 
@@ -116,7 +128,7 @@ public class AnnotationTableManager {
         if (null == obsoleteAnnotationTables) {
             obsoleteAnnotationTables = new ArrayList<>();
             // first get the names of all annotation tables
-            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT " + TABLE_NAME + " FROM " + dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE);
                 while (rs.next()) {
@@ -200,7 +212,7 @@ public class AnnotationTableManager {
      * @param tablename
      */
     void addAnnotationTableToList(String tablename) {
-        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             conn.setAutoCommit(true);
             Statement stmt = conn.createStatement();
 
@@ -221,7 +233,7 @@ public class AnnotationTableManager {
 
     private void createAnnotationListTable() {
         if (!dbc.tableExists(dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE)) {
-            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                 conn.setAutoCommit(true);
                 Statement stmt = conn.createStatement();
                 String sql = String.format("CREATE TABLE %s (%s text PRIMARY KEY)",

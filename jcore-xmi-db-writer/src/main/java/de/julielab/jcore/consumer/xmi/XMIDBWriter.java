@@ -133,6 +133,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "table.")
     private String docTableParamValue;
     private List<String> annotationsToStore;
+    private Map<String, String> annotationPgSchemaMap;
     @ConfigurationParameter(name = PARAM_STORE_RECURSIVELY, description = "Only in effect when storing annotations " +
             "separately from the base document. If set to true, annotations that are referenced by other annotations, " +
             "i.e. are (direct or indirect) features of other annotations, they " +
@@ -242,6 +243,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         writeBatchSize = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_WRITE_BATCH_SIZE)).orElse(50);
         componentDbName = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME)).orElse(getClass().getSimpleName());
         annotationStorageSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
+        annotations = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE)).orElse(new String[0]);
 
         List<String> annotationsToStoreTableNames = new ArrayList<>();
         annotationsToStore = Collections.emptyList();
@@ -250,18 +252,33 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         } else {
             schemaDocument = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
             schemaAnnotation = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
-            annotations = (String[]) aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE);
-            if (null != annotations)
-                annotationsToStore = new ArrayList<>(Arrays.asList(annotations));
-            else
+            if (null != annotations) {
+                // In 'annotationsToStore' we keep the un-qualified annotation types. We need those for the XMI splitter.
+                // We also create a map from type name to schema so we know where to put each annotation later
+                annotationsToStore = new ArrayList<>(annotations.length);
+                annotationPgSchemaMap = new HashMap<>();
+                for (int i = 0; i < annotations.length; i++) {
+                    final int colonIndex = annotations[i].indexOf(':');
+                    if (colonIndex < 0) {
+                        annotationsToStore.add(annotations[i]);
+                    } else {
+                        String typeName = annotations[i].substring(colonIndex + 1);
+                        String schemaName = annotations[i].substring(0, colonIndex);
+                        annotationsToStore.add(typeName);
+                        annotationPgSchemaMap.put(typeName, schemaName);
+                    }
+                }
+            } else {
                 annotationsToStore = Collections.emptyList();
-            recursively = (Boolean) aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY) == null ? false
+            }
+            recursively = aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY) == null ? false
                     : (Boolean) aContext.getConfigParameterValue(PARAM_STORE_RECURSIVELY);
 
         }
         dbc.reserveConnection();
         try {
-            annotationTableManager = new AnnotationTableManager(dbc, docTableParamValue, annotationsToStore, schemaDocument,
+            // Here we need to pass the original 'annotations' parameter because it contains the schema qualification for the annotation tables
+            annotationTableManager = new AnnotationTableManager(dbc, docTableParamValue, Arrays.asList(annotations), schemaDocument,
                     schemaAnnotation, storeAll, storeBaseDocument, annotationStorageSchema);
         } catch (TableSchemaMismatchException e) {
             throw new ResourceInitializationException(e);
@@ -275,7 +292,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             serializedCASes.put(effectiveDocTableName, new ArrayList<>());
         }
         if (!storeAll) {
-            for (String annotation : annotationsToStore) {
+            // Here we use the schema-qualified 'annotations' field
+            for (String annotation : annotations) {
                 String annotationTableName = annotationTableManager.convertAnnotationTypeToTableName(annotation, storeAll);
                 if (dbc.tableExists(annotationTableName))
                     checkTableDefinition(annotationTableName, schemaAnnotation);
@@ -349,8 +367,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     "The document table is null. You must provide it to either store the entire xmi data, to store the base document "
                             + " or to update the next possible xmi id."));
         String[] annotations = (String[]) aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE);
-        if ((Boolean) aContext.getConfigParameterValue(PARAM_STORE_ALL) == null && annotations == null
-                && (Boolean) aContext.getConfigParameterValue(PARAM_STORE_BASE_DOCUMENT) == null) {
+        if (aContext.getConfigParameterValue(PARAM_STORE_ALL) == null && annotations == null
+                && aContext.getConfigParameterValue(PARAM_STORE_BASE_DOCUMENT) == null) {
             throw new ResourceInitializationException(new IllegalStateException(
                     "The parameter to store the entire xmi data is not checked, but there are no annotations specified to"
                             + " store instead. You must provide the names of the selected annotations, if you do not want to "
@@ -390,7 +408,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 // Do nothing; this is not the work item CAS
             }
             DocumentId docId = getDocumentId(aJCas);
-            if (docId == null) return;
+            if (docId == null) {
+                log.warn("The current document does not have a document ID. It is omitted from database import.");
+                return;
+            }
             int nextXmiId = determineNextXmiId(aJCas, docId);
             Map<String, Integer> baseDocumentSofaIdMap = getOriginalSofaIdMappings(aJCas, docId);
             // and now delete the XMI meta data
@@ -475,9 +496,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             // since the convention is that the data
                             // goes to the second column currently.
                             Object storedData = handleDataZipping(dataBytes, tableSchemaName);
-                            // tableName = tableName.replace(".", "_");
-                            // tableName = dbc.getActiveDataPGSchema() + "."
-                            // + tableName;
                             if (storeBaseDocument && isDocumentTable) {
                                 serializedCASes.get(tableName)
                                         .add(new DocumentXmiData(docId, storedData, newXmiId, currentSofaXmiIdMap));
@@ -637,7 +655,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
      * @throws IOException
      */
     protected Object handleDataZipping(byte[] dataBytes, String tableSchemaName) throws IOException {
-        Object storedData = null;
+        Object storedData;
         Map<String, String> field = dbc.getFieldConfiguration(tableSchemaName).getFields().get(1);
         String xmiFieldType = field.get(JulieXMLConstants.TYPE);
         if (doGzip) {
