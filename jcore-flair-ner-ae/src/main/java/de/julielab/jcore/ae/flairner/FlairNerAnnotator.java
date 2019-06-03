@@ -95,7 +95,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         Map<String, Sentence> sentenceMap = new HashMap<>();
         for (Sentence sentence : sentIndex) {
             if (sentence.getId() == null)
-                sentence.setId("s" + i);
+                sentence.setId("s" + i++);
             sentenceMap.put(sentence.getId(), sentence);
         }
         try {
@@ -103,11 +103,8 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             final Stream<TaggedEntity> taggedEntities = connector.tagSentences(StreamSupport.stream(sentIndex.spliterator(), false));
             for (TaggedEntity entity : (Iterable<TaggedEntity>) () -> taggedEntities.iterator()) {
                 final Sentence sentence = sentenceMap.get(entity.getDocumentId());
-                int sbegin = sentence.getBegin();
                 EntityMention em = (EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, entityClass);
-                helper.setAnnotationOffsets(em, entity, adderConfig);
-                em.setBegin(em.getBegin() + sbegin);
-                em.setEnd(em.getEnd() + sbegin);
+                helper.setAnnotationOffsetsRelativeToSentence(sentence, em, entity, adderConfig);
                 em.setSpecificType(entity.getTag());
                 em.setComponentId(FlairNerAnnotator.class.getSimpleName());
                 em.addToIndexes();
