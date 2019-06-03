@@ -82,8 +82,9 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
         super.initialize(context);
         // This is necessary when one or more tables have schema qualifications which are resolved
         // by the super class in the super.initialize() call above.
-        // For the XMI Builder we require the non-qualified type nymes.
-        additionalTableNames = Stream.of(this.additionalTableNames).map(table -> table.contains(":") ? table.substring(table.indexOf(':')+1) : table).toArray(String[]::new);
+        // For the XMI Builder we require the non-qualified type names.
+        if (additionalTableNames != null)
+            additionalTableNames = Stream.of(this.additionalTableNames).map(table -> table.contains(":") ? table.substring(table.indexOf(':') + 1) : table).toArray(String[]::new);
     }
 
     @Override
