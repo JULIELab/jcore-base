@@ -321,18 +321,22 @@ class Abstract2UnitPipe extends Pipe {
             if (splitAfterPunctuation) {
                 Matcher punctMatcher = punctuationPattern.matcher(rep);
                 while (punctMatcher.find()) {
-                    String punctRep = punctMatcher.group();
-                    int punctEnd = begin + punctMatcher.start();
-                    punctEnd = begin + punctMatcher.end();
+                    int punctEnd = begin + punctMatcher.end();
+
+                    boolean beforeWs = begin > 0 && Character.isWhitespace(line.charAt(begin - 1));
+                    boolean afterWs = punctEnd < line.length() && Character.isWhitespace(line.charAt(punctEnd));
 
                     boolean isTokenInternal = punctEnd < end;
-                    units.add(new Unit(begin, punctEnd, line.substring(newBegin, punctEnd), isTokenInternal));
+                    units.add(new Unit(begin, punctEnd, line.substring(newBegin, punctEnd), isTokenInternal, beforeWs, afterWs));
                     newBegin = punctEnd;
                 }
             }
             begin = newBegin;
-            if (begin < end && begin < line.length())
-                units.add(new Unit(begin, end, line.substring(begin, end), false));
+            if (begin < end && begin < line.length()) {
+                boolean beforeWs = begin > 0 && Character.isWhitespace(line.charAt(begin - 1));
+                boolean afterWs = end < line.length() && Character.isWhitespace(line.charAt(end));
+                units.add(new Unit(begin, end, line.substring(begin, end), false, beforeWs, afterWs));
+            }
         }
         return units;
 

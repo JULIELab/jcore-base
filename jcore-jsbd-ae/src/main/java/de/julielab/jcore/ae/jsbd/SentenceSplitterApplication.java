@@ -113,7 +113,7 @@ public class SentenceSplitterApplication {
 		}
 
 		File[] abstractArray = abstractDir.listFiles();
-		TreeSet<String> errorList = new TreeSet<String>();
+		TreeSet<String> errorList = new TreeSet<>();
 
 		EvalResult er = doEvaluation(crf, abstractArray, errorList);
 		writeFile(errorList, new File(args[3]));
@@ -148,7 +148,7 @@ public class SentenceSplitterApplication {
 			System.exit(-1);
 		}
 		File[] abstractArray = abstractDir.listFiles();
-		TreeSet<String> errorList = new TreeSet<String>();
+		TreeSet<String> errorList = new TreeSet<>();
 
         boolean splitUnitsAfterPunctuation = Boolean.parseBoolean(args[3]);
         System.out.println("Allow sentence split after all punctuation: " + splitUnitsAfterPunctuation);
@@ -191,7 +191,7 @@ public class SentenceSplitterApplication {
 			System.exit(-1);
 		}
 
-		TreeSet<String> errorList = new TreeSet<String>();
+		TreeSet<String> errorList = new TreeSet<>();
 
         boolean splitUnitsAfterPunctuation = Boolean.parseBoolean(args[4]);
         System.out.println("Allowing sentence split after all punctuation: " + splitUnitsAfterPunctuation);
@@ -306,7 +306,7 @@ public class SentenceSplitterApplication {
 	 */
 	private static EvalResult do9010Evaluation(File[] abstractArray, TreeSet<String> errorList, boolean splitUnitsAfterPunctuation) {
 
-		ArrayList<File> abstractList = new ArrayList<File>();
+		ArrayList<File> abstractList = new ArrayList<>();
 		for (int i = 0; i < abstractArray.length; i++)
 			abstractList.add(abstractArray[i]);
 
@@ -346,7 +346,7 @@ public class SentenceSplitterApplication {
 	 */
 	private static double doCrossEvaluation(File[] abstractArray, int n, TreeSet<String> errorList, boolean splitUnitsAfterPunctuation) {
 
-		ArrayList<File> abstractList = new ArrayList<File>();
+		ArrayList<File> abstractList = new ArrayList<>();
 		for (int i = 0; i < abstractArray.length; i++)
 			abstractList.add(abstractArray[i]);
 		Collections.shuffle(abstractList, new Random(1));
@@ -684,7 +684,6 @@ public class SentenceSplitterApplication {
 
 			tmp = new Instance(fileLines, "", "", inFiles[i].getName());
 			inst = myPipe.instanceFrom(tmp);
-			fileLines = null;
 
 			List<Unit> units = null;
 
@@ -694,7 +693,7 @@ public class SentenceSplitterApplication {
 				e.printStackTrace();
 			}
 
-			ArrayList<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
+		//	ArrayList<String> orgLabels = getLabelsFromLabelSequence((LabelSequence) inst.getTarget());
 
 			// for postprocessing
 			// if (doPostprocessing) {
@@ -713,12 +712,14 @@ public class SentenceSplitterApplication {
 
 			File fNew = new File(outDir.toString() + "/" + newfName);
 
-			ArrayList<String> lines = new ArrayList<String>();
+			ArrayList<String> lines = new ArrayList<>();
 			String sentence = "";
-			for (int j = 0; j < units.size(); j++) {
-				String label = units.get(j).label;
-				String unitRep = units.get(j).rep;
-				sentence += (sentence.length() == 0) ? unitRep : " " + unitRep;
+			for (Unit unit : units) {
+				String label = unit.label;
+				String unitRep = unit.rep;
+                sentence += unitRep;
+                if (unit.afterWs)
+                    sentence += " ";
 				if (label.equals("EOS")) {
 					lines.add(sentence);
 					sentence = "";
@@ -732,7 +733,7 @@ public class SentenceSplitterApplication {
 	}
 
 	private static ArrayList<String> getLabelsFromLabelSequence(LabelSequence ls) {
-		ArrayList<String> labels = new ArrayList<String>();
+		ArrayList<String> labels = new ArrayList<>();
 		for (int j = 0; j < ls.size(); j++)
 			labels.add((String) ls.get(j));
 		return labels;
