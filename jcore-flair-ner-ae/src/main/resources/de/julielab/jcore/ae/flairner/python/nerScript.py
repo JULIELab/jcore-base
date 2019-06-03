@@ -24,7 +24,6 @@ while True:
         sys.exit(0)
     split = line.split("\t")
     sid      = split[0]
-    print(split[1], file=sys.stderr)
     sentence = Sentence(split[1])
     tagger.predict(sentence)
     for e in sentence.get_spans("ner"):
