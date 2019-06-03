@@ -36,7 +36,7 @@ public class TextAnnotationListAdder implements AnnotationAdder {
                 throw new IllegalArgumentException("The entity annotation type " + a.getUimaType() + " does not exist in the type system.");
             try {
                 final Annotation annotation = JCoReAnnotationTools.getAnnotationByClassName(jCas, uimaType);
-                helper.setAnnotationOffsets(annotation, a, configuration);
+                helper.setAnnotationOffsetsRelativeToDocument(annotation, a, configuration);
                 annotation.addToIndexes();
             } catch (ClassNotFoundException | NoSuchMethodException |InstantiationException | IllegalAccessException | InvocationTargetException | CASException e) {
                 e.printStackTrace();
