@@ -28,9 +28,6 @@ while True:
     sentence = Sentence(split[1])
     tagger.predict(sentence)
     for e in sentence.get_spans("ner"):
-        print(e.text, file=sys.stderr)
         tokenids = [t.idx for t in e.tokens]
-        print(sid, file=sys.stderr)
-        print(tokenids, file=sys.stderr)
         print(sid + "\t" + e.tag + "\t" + str(tokenids[0]) + "\t" + str(tokenids[-1]) + os.linesep)
     print("tagging finished")
