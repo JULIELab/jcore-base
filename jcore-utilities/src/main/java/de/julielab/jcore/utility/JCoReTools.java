@@ -177,7 +177,7 @@ public class JCoReTools {
      * with the return value of this method.
      * </p>
      *
-     * @param inputArray  The array to what the feature structures should be added
+     * @param inputArray  The array to what the feature structures should be added, may be null.
      * @param newElements The feature structure that should be added to the array
      * @return An <code>FSArray</code> containing all entries from <code>inputArray</code> plus <code>newElements</code>. The
      * returned <code>FSArray</code> will be <code>inputArray</code> if there was enough space to add <code>newElements</code>
@@ -193,7 +193,7 @@ public class JCoReTools {
 
         if (null == array) {
             try {
-                array = new FSArray(newElements.iterator().next().getCAS().getJCas(), 1);
+                array = new FSArray(newElements.iterator().next().getCAS().getJCas(), newElements.size());
             } catch (CASException e1) {
                 throw new JCoReUtilitiesException(e1);
             }
