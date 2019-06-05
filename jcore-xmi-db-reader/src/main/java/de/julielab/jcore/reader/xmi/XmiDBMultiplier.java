@@ -165,7 +165,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 
     @Override
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
-        log.info("Closind database connector.");
+        log.info("Closing database connector.");
         dbc.close();
     }
 }
