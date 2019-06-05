@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
-@ResourceMetaData(name = "XMI Database Multiplier Reader", description = "This is an extension of the " +
+@ResourceMetaData(name = "JCoRe XMI Database Multiplier Reader", description = "This is an extension of the " +
         "DBMultiplierReader to handle JeDIS XMI annotation module data.")
 public class XmiDBMultiplierReader extends DBMultiplierReader {
     public static final String PARAM_STORE_XMI_ID = Initializer.PARAM_STORE_XMI_ID;

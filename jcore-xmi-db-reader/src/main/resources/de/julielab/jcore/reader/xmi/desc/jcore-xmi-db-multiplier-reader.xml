@@ -3,7 +3,7 @@
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.xmi.XmiDBMultiplierReader</implementationName>
     <processingResourceMetaData>
-        <name>XMI Database Multiplier Reader</name>
+        <name>JCoRe XMI Database Multiplier Reader</name>
         <description>This is an extension of the DBMultiplierReader to handle JeDIS XMI annotation module data.</description>
         <configurationParameters>
             <configurationParameter>
