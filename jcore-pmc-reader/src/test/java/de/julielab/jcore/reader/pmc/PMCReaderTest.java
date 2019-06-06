@@ -394,7 +394,7 @@ public class PMCReaderTest {
 				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
 		CollectionReader reader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.pmc.desc.jcore-pmc-reader",
 				PMCReader.PARAM_INPUT,
-				"src/test/resources/documents-errorcauses/PMC3747765.nxml", PMCReader.PARAM_RECURSIVELY, false, PMCReader.PARAM_SEARCH_ZIP, false);
+				"src/test/resources/documents-errorcauses/PMC3747765.nxml.gz", PMCReader.PARAM_RECURSIVELY, false, PMCReader.PARAM_SEARCH_ZIP, false);
 		assertTrue(reader.hasNext());
 		while (reader.hasNext()) {
 			reader.getNext(cas.getCas());
