@@ -29,7 +29,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
-
+import static org.assertj.core.api.Assertions.*;
 public class PMCReaderTest {
 	@Test
 	public void testPmcReader1() throws Exception {
@@ -380,4 +380,29 @@ public class PMCReaderTest {
         }
         assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
     }
+
+	@Test
+	public void testDocWithSubarticleFront() throws Exception {
+		// In this test we have a document that is actually a list of poster references. Each poster
+        // is listed in a sub-article element which has its own front element.
+        // In a previous version of the reader, for each of those front elements a new Header was
+        // created. This shouldn't be done, at least not the way it was done back then. Because
+        // the FrontParser assumes only one front element and specifies absolute XPath expression
+        // to retrieve the Header feature values which are then the wrong ones. Also, most
+        // AEs expect only one Header to be present.
+		JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+		CollectionReader reader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.pmc.desc.jcore-pmc-reader",
+				PMCReader.PARAM_INPUT,
+				"src/test/resources/documents-errorcauses/PMC3747765.nxml", PMCReader.PARAM_RECURSIVELY, false, PMCReader.PARAM_SEARCH_ZIP, false);
+		assertTrue(reader.hasNext());
+		while (reader.hasNext()) {
+			reader.getNext(cas.getCas());
+
+			assertThatCode(() -> CasUtil.selectSingle(cas.getCas(),
+					CasUtil.getAnnotationType(cas.getCas(), Header.class))).doesNotThrowAnyException();
+
+			cas.reset();
+		}
+	}
 }

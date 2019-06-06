@@ -249,7 +249,7 @@ public class DefaultElementParser extends NxmlElementParser {
 	 */
 	@SuppressWarnings("unchecked")
 	private Optional<Map<String, Object>> getApplicableProperties() throws NavException {
-		Optional<Map<String, Object>> applicableProperties = null;
+		Optional<Map<String, Object>> applicableProperties;
 
 		// First: Check the paths
 		applicableProperties = getPathMap();
