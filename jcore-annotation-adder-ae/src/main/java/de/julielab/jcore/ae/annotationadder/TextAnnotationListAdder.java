@@ -38,7 +38,7 @@ public class TextAnnotationListAdder implements AnnotationAdder {
                 final Annotation annotation = JCoReAnnotationTools.getAnnotationByClassName(jCas, uimaType);
                 helper.setAnnotationOffsetsRelativeToDocument(annotation, a, configuration);
                 annotation.addToIndexes();
-            } catch (ClassNotFoundException | NoSuchMethodException |InstantiationException | IllegalAccessException | InvocationTargetException | CASException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException |InstantiationException | IllegalAccessException | InvocationTargetException | CASException | AnnotationOffsetException e) {
                 e.printStackTrace();
             }
         }

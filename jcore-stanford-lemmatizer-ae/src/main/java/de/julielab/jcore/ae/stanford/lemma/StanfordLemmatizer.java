@@ -33,7 +33,7 @@ public class StanfordLemmatizer extends JCasAnnotator_ImplBase {
 	 * tokenization, POS tagging) to run beforehand. We therefore use this class
 	 * instead to integrate lemmatization in our own pipeline.
 	 */
-	Morphology lemmatizer = new Morphology();
+	private Morphology lemmatizer = new Morphology();
 
 	@SuppressWarnings("rawtypes")
 	@Override

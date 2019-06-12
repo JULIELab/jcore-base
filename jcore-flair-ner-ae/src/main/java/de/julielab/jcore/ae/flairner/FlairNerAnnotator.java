@@ -3,9 +3,11 @@ package de.julielab.jcore.ae.flairner;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderAnnotator;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderConfiguration;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderHelper;
+import de.julielab.jcore.ae.annotationadder.AnnotationOffsetException;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -117,6 +119,10 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             throw new AnalysisEngineProcessException(e);
         } catch (CASException e) {
             log.error("Could not set the entity offsets", e);
+            throw new AnalysisEngineProcessException(e);
+        } catch (AnnotationOffsetException e) {
+            final String docId = JCoReTools.getDocId(aJCas);
+            log.error("Could not set the offsets of an annotation in document {}", docId);
             throw new AnalysisEngineProcessException(e);
         }
     }
