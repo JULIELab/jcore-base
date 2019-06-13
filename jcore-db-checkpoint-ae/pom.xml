@@ -54,7 +54,6 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-db-test-utilities</artifactId>
-            <version>2.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

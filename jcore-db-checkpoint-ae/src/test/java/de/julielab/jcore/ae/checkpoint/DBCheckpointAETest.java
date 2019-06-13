@@ -1,13 +1,13 @@
 package de.julielab.jcore.ae.checkpoint;
 
+import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.costosys.dbconnection.SubsetStatus;
 import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.reader.xmi.XmiDBMultiplier;
 import de.julielab.jcore.reader.xmi.XmiDBMultiplierReader;
 import de.julielab.jcore.reader.xmi.XmiDBReader;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
-import de.julielab.xmlData.dataBase.SubsetStatus;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;

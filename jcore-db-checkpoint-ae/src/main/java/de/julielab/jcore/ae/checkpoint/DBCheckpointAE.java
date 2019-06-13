@@ -1,11 +1,11 @@
 package de.julielab.jcore.ae.checkpoint;
 
+import de.julielab.costosys.Constants;
+import de.julielab.costosys.configuration.FieldConfig;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.jcore.utility.JCoReTools;
-import de.julielab.xmlData.Constants;
-import de.julielab.xmlData.config.FieldConfig;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
