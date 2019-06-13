@@ -41,7 +41,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@ResourceMetaData(name="JCoRe Entity Evaluator / TSV Consumer", description = "This component was originally created to output the tab separated format used the JULIE Entity Evaluator. However, this component can be used to create a TSV file from any annotation or annotation set. The component allows to define columns by specifying the annotation type to draw feature values from and a feature path that specifies the location of the desired feature. All feature paths will be applied to each configured annotation, returning null values if an annotation does not exhibit a value for a column's feature path.", vendor = "JULIE Lab Jena, Germany")
+@ResourceMetaData(name="JCoRe Entity Evaluator and TSV Consumer", description = "This component was originally created to output the tab separated format used the JULIE Entity Evaluator. However, this component can be used to create a TSV file from any annotation or annotation set. The component allows to define columns by specifying the annotation type to draw feature values from and a feature path that specifies the location of the desired feature. All feature paths will be applied to each configured annotation, returning null values if an annotation does not exhibit a value for a column's feature path.", vendor = "JULIE Lab Jena, Germany")
 public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     // If you add a new built-in column, don't forget to add its name to the
     // "predefinedColumnNames" set!
