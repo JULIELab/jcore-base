@@ -14,7 +14,7 @@ def decodeString(buffer):
     return content.decode("utf-8")
 
 taggerPath = sys.argv[1]
-tagger = SequenceTagger.load_from_file(taggerPath)
+tagger = SequenceTagger.load(taggerPath)
 
 print("Ready for tagging.")
 stdbuffer = sys.stdin.buffer
