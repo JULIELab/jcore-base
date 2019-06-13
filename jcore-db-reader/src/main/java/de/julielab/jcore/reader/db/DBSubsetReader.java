@@ -110,17 +110,16 @@ public abstract class DBSubsetReader extends DBReaderBase {
         try {
             // Check whether a subset table name or a data table name was given.
             if (readDataTable) {
-                if (additionalTableNames != null && additionalTableNames.length > 0)
+                if (additionalTableNames != null && additionalTableNames.length > 0) {
                     prepareTableJoin();
-//                    throw new NotImplementedException("At the moment multiple tables can only be joined"
-//                            + " if the data table is referenced by a subset, for which the name has to be"
-//                            + " given in the Table parameter.");
+                } else {
+                    tables = new String[]{tableName};
+                    schemas = new String[]{dbc.getActiveTableSchema()};
+                }
                 dbc.checkTableDefinition(tableName);
                 Integer tableRows = dbc.withConnectionQueryInteger(c -> c.countRowsOfDataTable(tableName, whereCondition));
                 totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
                 hasNext = !dbc.withConnectionQueryBoolean(c -> c.isEmpty(tableName));
-//                tables = new String[]{tableName};
-//                schemas = new String[]{dbc.getActiveTableSchema()};
             } else {
                 if (batchSize == 0)
                     log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
