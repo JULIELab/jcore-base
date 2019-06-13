@@ -24,6 +24,10 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.*;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
@@ -36,6 +40,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -283,12 +288,4 @@ public class FileReaderTest {
 			e.printStackTrace();
 		}
 	}
-//	@AfterClass
-//	public static void tearDown() throws Exception {
-//		File artifactFile1 = new File(FILE_ARTIFACT_1);
-//		artifactFile1.delete();
-//
-//		File artifactFile2 = new File(FILE_ARTIFACT_2);
-//		artifactFile2.delete();
-//	}
 }

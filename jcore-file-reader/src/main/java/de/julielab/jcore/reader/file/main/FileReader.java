@@ -142,7 +142,7 @@ public class FileReader extends CollectionReader_ImplBase {
 
 		Boolean filenameAsDocId = (Boolean) getConfigParameterValue(FILENAME_AS_DOC_ID);
 		if (null == filenameAsDocId) {
-			useFilenameAsDocId = false;
+			useFilenameAsDocId = true;
 		} else {
 			useFilenameAsDocId = filenameAsDocId;
 		}
