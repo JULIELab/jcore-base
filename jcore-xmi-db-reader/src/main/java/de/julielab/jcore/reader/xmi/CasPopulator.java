@@ -108,7 +108,7 @@ public class CasPopulator {
                 if (data.length != numAdditionalTables + numDataRetrievedDataFields) {
                     throw new CollectionException(new IllegalStateException(
                             "The number of retrieved fields does not match the expected number (expected: "
-                                    + (numAdditionalTables + 4) + ", actual: " + data.length + "). Make sure"
+                                    + (numAdditionalTables + numDataRetrievedDataFields) + ", actual: " + data.length + "). Make sure"
                                     + " to set the primary key fields in the annotation schema to false, since this"
                                     + " should be retrieved only once from the document table."));
                 }

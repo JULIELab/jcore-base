@@ -119,8 +119,8 @@ public abstract class DBSubsetReader extends DBReaderBase {
                 Integer tableRows = dbc.withConnectionQueryInteger(c -> c.countRowsOfDataTable(tableName, whereCondition));
                 totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
                 hasNext = !dbc.withConnectionQueryBoolean(c -> c.isEmpty(tableName));
-                tables = new String[]{tableName};
-                schemas = new String[]{dbc.getActiveTableSchema()};
+//                tables = new String[]{tableName};
+//                schemas = new String[]{dbc.getActiveTableSchema()};
             } else {
                 if (batchSize == 0)
                     log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");

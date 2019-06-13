@@ -154,7 +154,7 @@ public abstract class DBReader extends DBSubsetReader {
         dataTimestamp = (String) getConfigParameterValue(PARAM_DATA_TIMESTAMP);
         if (readDataTable && hasNext) {
             log.info("Querying data table {} with schema {} and where condition {}", tableName, dbc.getActiveTableSchema(), whereCondition);
-            xmlBytes = dbc.queryDataTable(tableName, whereCondition);
+            xmlBytes = dbc.queryDataTable(tableName, whereCondition, additionalTableNames, schemas);
         }
     }
 
