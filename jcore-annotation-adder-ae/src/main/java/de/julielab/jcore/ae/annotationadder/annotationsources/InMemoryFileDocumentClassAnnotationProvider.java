@@ -1,7 +1,6 @@
 package de.julielab.jcore.ae.annotationadder.annotationsources;
 
 import de.julielab.jcore.ae.annotationadder.annotationformat.DocumentClassAnnotationFormat;
-import de.julielab.jcore.ae.annotationadder.annotationformat.SimpleTSVEntityAnnotationFormat;
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.AnnotationList;
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.ExternalDocumentClassAnnotation;
 import org.apache.uima.resource.DataResource;

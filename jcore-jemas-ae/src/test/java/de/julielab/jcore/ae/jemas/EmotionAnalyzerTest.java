@@ -1,6 +1,5 @@
 package de.julielab.jcore.ae.jemas;
 
-import de.julielab.jcore.types.*;
 import junit.framework.TestCase;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;

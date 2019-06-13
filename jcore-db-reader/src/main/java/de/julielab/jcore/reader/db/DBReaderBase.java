@@ -1,6 +1,6 @@
 package de.julielab.jcore.reader.db;
 
-import de.julielab.xmlData.dataBase.DataBaseConnector;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;

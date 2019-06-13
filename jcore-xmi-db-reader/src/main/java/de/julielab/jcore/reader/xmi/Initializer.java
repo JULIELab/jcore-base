@@ -1,11 +1,11 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.xml.XmiBuilder;
 import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.XmiSplitUtilities;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;

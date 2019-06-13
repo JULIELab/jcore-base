@@ -1,10 +1,10 @@
 package de.julielab.jcore.consumer.xmi;
 
-import de.julielab.xmlData.cli.TableNotFoundException;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
-import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
-import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
+import de.julielab.costosys.cli.TableNotFoundException;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.costosys.dbconnection.util.CoStoSysSQLRuntimeException;
+import de.julielab.costosys.dbconnection.util.TableSchemaMismatchException;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

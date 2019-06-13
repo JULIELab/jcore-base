@@ -3,16 +3,16 @@ package de.julielab.jcore.ae.annotationadder;
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.TextAnnotation;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import de.julielab.jcore.utility.index.Comparators;
-import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
-import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Caches information for the current document.

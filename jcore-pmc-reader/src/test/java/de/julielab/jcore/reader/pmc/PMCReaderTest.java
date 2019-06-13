@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.*;
-import static org.assertj.core.api.Assertions.*;
 public class PMCReaderTest {
 	@Test
 	public void testPmcReader1() throws Exception {

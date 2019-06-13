@@ -1,13 +1,13 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.cli.TableNotFoundException;
+import de.julielab.costosys.configuration.FieldConfig;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBMultiplierReader;
 import de.julielab.jcore.reader.db.SubsetReaderConstants;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.jcore.utility.JCoReTools;
-import de.julielab.xmlData.cli.TableNotFoundException;
-import de.julielab.xmlData.config.FieldConfig;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;

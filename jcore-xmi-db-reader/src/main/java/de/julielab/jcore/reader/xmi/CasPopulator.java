@@ -1,11 +1,11 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.XmiBuilder;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;

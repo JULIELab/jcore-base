@@ -1,9 +1,9 @@
 package de.julielab.jcore.consumer.xmi;
 
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.*;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -16,10 +16,11 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class XmiDBWriterTest {
@@ -80,7 +81,7 @@ public class XmiDBWriterTest {
         xmiWriter.collectionProcessComplete();
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
-        try(CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
+        try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
             assertThat(dbc.tableExists("_data.documents")).isTrue();
             assertThat(dbc.tableExists("_data.de_julielab_jcore_types_token")).isTrue();
             assertThat(dbc.tableExists("_data.de_julielab_jcore_types_sentence")).isTrue();
@@ -93,7 +94,7 @@ public class XmiDBWriterTest {
     public void testXmiDBWriterSplitAnnotationsSpecifyAnnotationSchemas() throws UIMAException, IOException {
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
-                XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{"tokenschema:"+Token.class.getCanonicalName(), "sentenceschema:"+Sentence.class.getCanonicalName()},
+                XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{"tokenschema:" + Token.class.getCanonicalName(), "sentenceschema:" + Sentence.class.getCanonicalName()},
                 XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
                 XMIDBWriter.PARAM_STORE_ALL, false,
                 XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,
@@ -118,7 +119,7 @@ public class XmiDBWriterTest {
         xmiWriter.collectionProcessComplete();
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
-        try(CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
+        try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
             assertThat(dbc.tableExists("_data.documents")).isTrue();
             assertThat(dbc.tableExists("tokenschema.de_julielab_jcore_types_token")).isTrue();
             assertThat(dbc.tableExists("sentenceschema.de_julielab_jcore_types_sentence")).isTrue();

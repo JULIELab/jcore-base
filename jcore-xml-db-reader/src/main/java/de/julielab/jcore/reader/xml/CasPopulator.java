@@ -1,7 +1,7 @@
 package de.julielab.jcore.reader.xml;
 
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

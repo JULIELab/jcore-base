@@ -1,10 +1,10 @@
 package de.julielab.jcore.reader.xmi;
 
-import de.julielab.xmlData.cli.TableNotFoundException;
-import de.julielab.xmlData.config.FieldConfig;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
-import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
-import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
+import de.julielab.costosys.cli.TableNotFoundException;
+import de.julielab.costosys.configuration.FieldConfig;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.costosys.dbconnection.util.CoStoSysSQLRuntimeException;
+import de.julielab.costosys.dbconnection.util.TableSchemaMismatchException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

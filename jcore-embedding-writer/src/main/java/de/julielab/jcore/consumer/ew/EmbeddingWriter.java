@@ -1,9 +1,10 @@
 package de.julielab.jcore.consumer.ew;
 
 import de.julielab.jcore.types.Token;
-import de.julielab.jcore.utility.index.*;
+import de.julielab.jcore.utility.index.Comparators;
+import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
+import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -22,10 +23,11 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 

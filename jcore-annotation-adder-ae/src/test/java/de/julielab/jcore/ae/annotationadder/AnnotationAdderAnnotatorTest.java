@@ -6,7 +6,6 @@ import de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileTextAn
 import de.julielab.jcore.types.*;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.factory.JCasFactory;

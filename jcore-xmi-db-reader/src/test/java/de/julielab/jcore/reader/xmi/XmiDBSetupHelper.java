@@ -1,9 +1,9 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.Constants;
 import de.julielab.jcore.consumer.xmi.XMIDBWriter;
 import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.Header;
-import de.julielab.xmlData.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;

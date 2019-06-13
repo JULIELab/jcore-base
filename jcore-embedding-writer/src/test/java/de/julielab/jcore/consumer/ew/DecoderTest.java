@@ -1,18 +1,16 @@
 package de.julielab.jcore.consumer.ew;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.assertj.core.api.AbstractDoubleArrayAssert;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
 
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DecoderTest {
     @Test

@@ -1,10 +1,10 @@
 package de.julielab.jcore.reader.db;
 
+import de.julielab.costosys.Constants;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
 import de.julielab.jcore.utility.JCoReTools;
-import de.julielab.xmlData.Constants;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionException;
