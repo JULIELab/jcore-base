@@ -37,7 +37,7 @@ public class XmiDBReaderTest {
         XmiDBSetupHelper.createDbcConfig(postgres);
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
-        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 1, postgres);
+        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 2, postgres);
         XmiDBSetupHelper.processAndSplitData(costosysConfig, false);
         assertTrue("The data document table exists", dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")));
         xmisubset = "xmisubset";
@@ -61,6 +61,31 @@ public class XmiDBReaderTest {
                 XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
                 XmiDBReader.PARAM_RESET_TABLE, true
+        );
+        JCas jCas = XmiDBSetupHelper.getJCasWithRequiredTypes();
+        List<String> tokenText = new ArrayList<>();
+        List<String> sentenceText = new ArrayList<>();
+        assertTrue(xmiReader.hasNext());
+        while (xmiReader.hasNext()) {
+            xmiReader.getNext(jCas.getCas());
+            // throws an exception if there is no such element
+            JCasUtil.selectSingle(jCas, Header.class);
+            JCasUtil.select(jCas, Token.class).stream().map(Annotation::getCoveredText).forEach(tokenText::add);
+            JCasUtil.select(jCas, Sentence.class).stream().map(Annotation::getCoveredText).forEach(sentenceText::add);
+            jCas.reset();
+        }
+        assertFalse(tokenText.isEmpty());
+        assertFalse(sentenceText.isEmpty());
+    }
+
+    @Test
+    public void testAdditionalTablesWithDataTable() throws UIMAException, IOException {
+        CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
+                XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
+                XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
+                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_TABLE, "_data.documents",
+                XmiDBReader.PARAM_RESET_TABLE, false
         );
         JCas jCas = XmiDBSetupHelper.getJCasWithRequiredTypes();
         List<String> tokenText = new ArrayList<>();

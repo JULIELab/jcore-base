@@ -107,11 +107,11 @@ public class XmiDBReader extends DBReader implements Initializable {
         // This is necessary when one or more tables have schema qualifications which are resolved
         // by the super class in the super.initialize() call above
         this.additionalTableNames = Stream.of(this.additionalTableNames).map(table -> table.contains(":") ? table.substring(table.indexOf(':')+1) : table).toArray(String[]::new);
-        dbc.reserveConnection();
-        initializer = new Initializer(this, dbc, additionalTableNames, joinTables);
-        initializer.initialize(context);
-        casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
-        dbc.releaseConnections();
+        try(final CoStoSysConnection ignore = dbc.obtainOrReserveConnection()) {
+            initializer = new Initializer(this, dbc, additionalTableNames, joinTables);
+            initializer.initialize(context);
+            casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
+        }
     }
 
     /**
