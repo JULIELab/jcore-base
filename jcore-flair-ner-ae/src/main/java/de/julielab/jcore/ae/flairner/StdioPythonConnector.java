@@ -2,9 +2,9 @@ package de.julielab.jcore.ae.flairner;
 
 import de.julielab.ipc.javabridge.Options;
 import de.julielab.ipc.javabridge.StdioBridge;
+import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ public class StdioPythonConnector implements PythonConnector {
         params.setExternalProgramTerminationSignal("exit");
         params.setMultilineResponseDelimiter("tagging finished");
         params.setTerminationSignalFromErrorStream("SyntaxError");
-        String script = IOUtils.toString(getClass().getResourceAsStream("/de/julielab/jcore/ae/flairner/python/nerScript.py"), StandardCharsets.UTF_8);
+        String script = IOStreamUtilities.getStringFromInputStream(getClass().getResourceAsStream("/de/julielab/jcore/ae/flairner/python/nerScript.py"));
         bridge = new StdioBridge<>(params, "-u", "-c", script, languageModelPath);
     }
 
