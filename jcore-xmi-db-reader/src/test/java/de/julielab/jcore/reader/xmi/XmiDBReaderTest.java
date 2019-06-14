@@ -1,8 +1,10 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.dbconnection.DBCIterator;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.consumer.xmi.XMIDBWriter;
 import de.julielab.jcore.db.test.DBTestUtils;
+import de.julielab.jcore.reader.db.TableReaderConstants;
 import de.julielab.jcore.types.*;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
@@ -101,6 +103,33 @@ public class XmiDBReaderTest {
         }
         assertFalse(tokenText.isEmpty());
         assertFalse(sentenceText.isEmpty());
+    }
+
+    @Test
+    public void testAdditionalTablesWithDataTableWhereClause() throws UIMAException, IOException {
+        CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
+                XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
+                XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
+                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_TABLE, "_data.documents",
+                XmiDBReader.PARAM_RESET_TABLE, false,
+                TableReaderConstants.PARAM_WHERE_CONDITION, "_data.documents.docid = '12345'"
+        );
+        JCas jCas = XmiDBSetupHelper.getJCasWithRequiredTypes();
+        List<String> tokenText = new ArrayList<>();
+        List<String> sentenceText = new ArrayList<>();
+        assertTrue(xmiReader.hasNext());
+        while (xmiReader.hasNext()) {
+            xmiReader.getNext(jCas.getCas());
+            // throws an exception if there is no such element
+            JCasUtil.selectSingle(jCas, Header.class);
+            JCasUtil.select(jCas, Token.class).stream().map(Annotation::getCoveredText).forEach(tokenText::add);
+            JCasUtil.select(jCas, Sentence.class).stream().map(Annotation::getCoveredText).forEach(sentenceText::add);
+            jCas.reset();
+        }
+        assertFalse(tokenText.isEmpty());
+        assertFalse(sentenceText.isEmpty());
+
     }
 
     @Test

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Caches information for the current document.
@@ -21,6 +23,8 @@ public class AnnotationAdderHelper {
     // Required for token-offsets
     private List<Token> tokenList;
     private Map<Sentence, List<Token>> tokensBySentences;
+    private Matcher wsFinder = Pattern.compile("\\s").matcher("");
+   private  Matcher nonWsMatcher = Pattern.compile("[^\\s]+").matcher("");
 
     public void setAnnotationOffsetsRelativeToDocument(Annotation annotation, TextAnnotation a, AnnotationAdderConfiguration configuration) throws CASException, AnnotationOffsetException {
         if (configuration.getOffsetMode() == AnnotationAdderAnnotator.OffsetMode.CHARACTER) {
@@ -85,7 +89,17 @@ public class AnnotationAdderHelper {
         List<Token> tokens = new ArrayList<>();
         while (tokenSubiterator.hasNext()) {
             Token t = tokenSubiterator.next();
-            tokens.add(t);
+            final String tokenText = t.getCoveredText();
+            wsFinder.reset(tokenText);
+            if (wsFinder.find()) {
+                nonWsMatcher.reset(tokenText);
+                while (nonWsMatcher.find()) {
+                    final Token subtoken = new Token(sentence.getCAS().getJCas(), nonWsMatcher.start(), nonWsMatcher.end());
+                    tokens.add(subtoken);
+                }
+            } else {
+                tokens.add(t);
+            }
         }
         tokensBySentences.put(sentence, tokens);
     }
