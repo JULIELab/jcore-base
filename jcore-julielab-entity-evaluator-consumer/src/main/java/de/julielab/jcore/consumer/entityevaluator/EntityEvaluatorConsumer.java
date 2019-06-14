@@ -16,6 +16,7 @@ import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
 import de.julielab.jcore.utility.index.Comparators;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
@@ -41,7 +42,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@ResourceMetaData(name="JCoRe Entity Evaluator and TSV Consumer", description = "This component was originally created to output the tab separated format used the JULIE Entity Evaluator. However, this component can be used to create a TSV file from any annotation or annotation set. The component allows to define columns by specifying the annotation type to draw feature values from and a feature path that specifies the location of the desired feature. All feature paths will be applied to each configured annotation, returning null values if an annotation does not exhibit a value for a column's feature path.", vendor = "JULIE Lab Jena, Germany")
+@ResourceMetaData(name = "JCoRe Entity Evaluator and TSV Consumer", description = "This component was originally created to output the tab separated format used the JULIE Entity Evaluator. However, this component can be used to create a TSV file from any annotation or annotation set. The component allows to define columns by specifying the annotation type to draw feature values from and a feature path that specifies the location of the desired feature. All feature paths will be applied to each configured annotation, returning null values if an annotation does not exhibit a value for a column's feature path.", vendor = "JULIE Lab Jena, Germany")
 public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     // If you add a new built-in column, don't forget to add its name to the
     // "predefinedColumnNames" set!
@@ -57,6 +58,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     public final static String PARAM_OFFSET_SCOPE = "OffsetScope";
     public final static String PARAM_OUTPUT_FILE = "OutputFile";
     public static final String PARAM_MULTI_VALUE_MODE = "MultiValueMode";
+    public static final String PARAM_NORMALIZE_SPACE = "NormalizeSpace";
     private static final Logger log = LoggerFactory.getLogger(EntityEvaluatorConsumer.class);
     @ConfigurationParameter(name = PARAM_OUTPUT_COLUMNS, description = "A list of column names that are either defined with the parameter " + PARAM_COLUMN_DEFINITIONS + " or one of '" + DOCUMENT_ID_COLUMN + "', '" + SENTENCE_ID_COLUMN + "' or '" + OFFSETS_COLUMN + "'. This list determines the set and the order of columns that are written into the output file in a tab-separated manner.")
     private String[] outputColumnNamesArray;
@@ -78,6 +80,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     private String outputFilePath;
     @ConfigurationParameter(name = PARAM_MULTI_VALUE_MODE, mandatory = false, description = "This parameter comes to effect if multiple columns define a feature path that points to a multi-valued feature (array features). Possible values are 'parallel' and 'cartesian'. The first mode assumes all multi-valued arrays values to be index-wise associated to one another and outputs the pairs with the same array index. If one array has more elements then the others, the missing values are null. The cartesian mode outputs the cartesian product of the array values. Defaults to 'cartesian'.", defaultValue = "CARTESIAN")
     private MultiValueMode multiValueMode;
+    @ConfigurationParameter(name = PARAM_NORMALIZE_SPACE, mandatory = false, defaultValue = "true", description = "Optional. Default: true. Determines whether or not to apply space normalization to the output column values. This is most helpful in cases where covered text is output which might contain tab characters or newlines which would break the TSV format.")
+    private boolean normalizeSpace;
     private Set<String> predefinedColumnNames = new HashSet<>();
     private LinkedHashSet<String> outputColumnNames;
     private LinkedHashMap<String, Column> columns;
@@ -181,6 +185,11 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     protected void appendEntityRecordsToFile() {
         for (String[] entityRecord : entityRecords) {
             try {
+                if (normalizeSpace) {
+                    for (int i = 0; i < entityRecord.length; i++) {
+                        entityRecord[i] = StringUtils.normalizeSpace(entityRecord[i]);
+                    }
+                }
                 bw.write(Stream.of(entityRecord).collect(Collectors.joining("\t")) + "\n");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -240,6 +249,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         } else {
             offsetScope = OffsetScope.valueOf(offsetScopeStr);
         }
+
+        normalizeSpace = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_NORMALIZE_SPACE)).orElse(true);
 
         outputFile = new File(outputFilePath);
         if (outputFile.exists()) {
@@ -380,7 +391,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
      * produces records where the non-multi valued feature values that have already been entered before stay fixed
      * and for each index-parallel value tupel, a new record is created. If the value lists have different size,
      * missing values will be null.
-     * @param record The record where the non-multi value entries are already filled and the multi valued positions are blank.
+     *
+     * @param record      The record where the non-multi value entries are already filled and the multi valued positions are blank.
      * @param multiValues The list of columns values that are multivalued.
      */
     private void addParallelMultiValues(String[] record, List<Pair<Deque<String>, Integer>> multiValues) {
@@ -398,9 +410,10 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
     /**
      * Recursively creates all combinations of the given value lists in a cartesian product manner.
+     *
      * @param multiValues The list of columns values that are multivalued.
-     * @param listIndex The index of the list that should enter its next value. The initial, non-recursive call should enter a 0 here.
-     * @param record he record where the non-multi value entries are already filled and the multi valued positions are blank.
+     * @param listIndex   The index of the list that should enter its next value. The initial, non-recursive call should enter a 0 here.
+     * @param record      he record where the non-multi value entries are already filled and the multi valued positions are blank.
      */
     private void addCartesianProduct(List<Pair<Deque<String>, Integer>> multiValues, int listIndex, String[] record) {
         for (String value : multiValues.get(listIndex).getLeft()) {
