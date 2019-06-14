@@ -27,22 +27,27 @@ public class OffsetsColumn extends Column {
 	private NavigableMap<Integer, Integer> documentNumWsMap;
 
 	public OffsetsColumn(NavigableMap<Integer, Integer> numWsMap, OffsetMode offsetMode) {
+		this();
 		this.documentNumWsMap = numWsMap;
 		this.offsetMode = offsetMode;
 		this.offsetScope = OffsetScope.Document;
-		this.numWsMaps = new HashMap<>();
 	}
 
 	public OffsetsColumn(JCoReTreeMapAnnotationIndex<Long, ? extends Annotation> sentenceIndex, OffsetMode offsetMode) {
+		this();
 		this.sentenceIndex = sentenceIndex;
 		this.offsetMode = offsetMode;
 		this.offsetScope = OffsetScope.Sentence;
-		this.numWsMaps = new HashMap<>();
 	}
 
 	public OffsetsColumn(OffsetMode offsetMode) {
+		this();
 		this.offsetMode = offsetMode;
 		this.offsetScope = OffsetScope.Document;
+	}
+
+	private OffsetsColumn() {
+		this.name = EntityEvaluatorConsumer.OFFSETS_COLUMN;
 		this.numWsMaps = new HashMap<>();
 	}
 

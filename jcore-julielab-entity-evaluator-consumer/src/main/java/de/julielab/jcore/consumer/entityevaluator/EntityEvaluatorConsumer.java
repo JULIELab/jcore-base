@@ -186,8 +186,11 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         for (String[] entityRecord : entityRecords) {
             try {
                 if (normalizeSpace) {
+                    final Iterator<String> colIt = outputColumnNames.iterator();
                     for (int i = 0; i < entityRecord.length; i++) {
-                        entityRecord[i] = StringUtils.normalizeSpace(entityRecord[i]);
+                        final Column currentCol = columns.get(colIt.next());
+                        if (!(currentCol instanceof OffsetsColumn))
+                            entityRecord[i] = StringUtils.normalizeSpace(entityRecord[i]);
                     }
                 }
                 bw.write(Stream.of(entityRecord).collect(Collectors.joining("\t")) + "\n");
