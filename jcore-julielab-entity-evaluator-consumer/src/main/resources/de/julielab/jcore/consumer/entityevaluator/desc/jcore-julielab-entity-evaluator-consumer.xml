@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -60,8 +60,8 @@
             <configurationParameter>
                 <name>OutputFile</name>
                 <description>Output file to which all entity information is written in the format
-                    docId EGID begin end confidence
-                    Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.</description>
+docId EGID begin end confidence
+Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
@@ -73,6 +73,13 @@
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>NormalizeSpace</name>
+                <description>Optional. Default: true. Determines whether or not to apply space normalization to the output column values. This is most helpful in cases where covered text is output which might contain tab characters or newlines which would break the TSV format.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
             <nameValuePair>
@@ -81,14 +88,20 @@
                     <string>CARTESIAN</string>
                 </value>
             </nameValuePair>
+            <nameValuePair>
+                <name>NormalizeSpace</name>
+                <value>
+                    <boolean>true</boolean>
+                </value>
+            </nameValuePair>
         </configurationParameterSettings>
-        <typeSystemDescription />
-        <fsIndexCollection />
-        <capabilities />
+        <typeSystemDescription/>
+        <fsIndexCollection/>
+        <capabilities/>
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    <version>2.5.0-SNAPSHOT</version></analysisEngineMetaData>
+    </analysisEngineMetaData>
 </analysisEngineDescription>
