@@ -5,6 +5,8 @@ import de.julielab.ipc.javabridge.StdioBridge;
 import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
@@ -15,9 +17,8 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Spliterators;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -38,7 +39,7 @@ public class StdioPythonConnector implements PythonConnector {
     }
 
     @Override
-    public Stream<TaggedEntity> tagSentences(Stream<Sentence> sentences) {
+    public NerTaggingResponse tagSentences(Stream<Sentence> sentences) {
         final Stream<byte[]> byteResponse = sentences.flatMap(sentence -> {
             try {
                 final JCas jCas = sentence.getCAS().getJCas();
@@ -54,8 +55,9 @@ public class StdioPythonConnector implements PythonConnector {
         })
                 .filter(Objects::nonNull);
 
+        List<TokenEmbedding> embeddings = new ArrayList<>();
         final Iterator<byte[]> bytesIt = byteResponse.iterator();
-        final Stream.Builder<TaggedEntity> taggedEntityStreamBuilder = Stream.builder();
+        final List<TaggedEntity> taggedEntities = new ArrayList<>();
         while (bytesIt.hasNext()) {
             byte[] sentenceResponseBytes = bytesIt.next();
             final ByteBuffer bb = ByteBuffer.wrap(sentenceResponseBytes);
@@ -64,17 +66,27 @@ public class StdioPythonConnector implements PythonConnector {
                 final int taggedEntityResponseLength = bb.getInt();
                 byte[] taggedEntityRepsonseBytes = new byte[taggedEntityResponseLength];
                 bb.get(taggedEntityRepsonseBytes);
-                final ByteArrayInputStream bais = new ByteArrayInputStream(taggedEntityRepsonseBytes);
-                try {
-                    final String taggedEntityString = IOStreamUtilities.getStringFromInputStream(bais);
-                    final String[] taggedEntityRecord = taggedEntityString.split("\\t");
-                    taggedEntityStreamBuilder.accept(new TaggedEntity(taggedEntityRecord[0], taggedEntityRecord[1], Integer.valueOf(taggedEntityRecord[2]), Integer.valueOf(taggedEntityRecord[3])));
-                } catch (IOException e) {
-                    log.error("Could not convert the tagged entity response bytes into a string.");
+                final String taggedEntityString = new String(taggedEntityRepsonseBytes, StandardCharsets.UTF_8);
+                final String[] taggedEntityRecord = taggedEntityString.split("\\t");
+                taggedEntities.add(new TaggedEntity(taggedEntityRecord[0], taggedEntityRecord[1], Integer.valueOf(taggedEntityRecord[2]), Integer.valueOf(taggedEntityRecord[3])));
+            }
+            final int numEmbeddingVectors = bb.getInt();
+            final int vectorLength = bb.getInt();
+            for (int i = 0; i < numEmbeddingVectors; i++) {
+                final int sentenceIdLength = bb.getInt();
+                final byte[] sentenceIdBytes = new byte[sentenceIdLength];
+                bb.get(sentenceIdBytes);
+                final String sid = new String(sentenceIdBytes, StandardCharsets.UTF_8);
+                final int tokenId = bb.getInt();
+                double[] vector = new double[vectorLength];
+                for (int j = 0; j < vectorLength; j++) {
+                    vector[j] = bb.getDouble();
                 }
+                final TokenEmbedding tokenEmbedding = new TokenEmbedding(sid, tokenId, vector);
+                embeddings.add(tokenEmbedding);
             }
         }
-        return taggedEntityStreamBuilder.build();
+        return new NerTaggingResponse(taggedEntities, embeddings);
     }
 
     @Override

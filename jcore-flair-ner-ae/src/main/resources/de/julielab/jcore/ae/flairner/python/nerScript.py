@@ -35,7 +35,8 @@ while True:
     sid      = split[0]
     sentence = Sentence(split[1])
     # NER tagging
-    tagger.predict(sentence, clear_word_embeddings=False)
+    clearWordEmbeddings = sendEmbeddings == "NONE"
+    tagger.predict(sentence, clear_word_embeddings=clearWordEmbeddings)
 
     # Resonse
 
@@ -44,9 +45,12 @@ while True:
 
     numReturnedVectors = 0
     taggedEntities = []
+    embeddings = []
     for e in sentence.get_spans("ner"):
         tokenids = [t.idx for t in e.tokens]
-        embeddings = [sentence.tokens[i-1].embedding.numpy() for i in tokenids]
+        # Store sentence ID, token ID and the embedding
+        if sendEmbeddings != "NONE":
+            embeddings.extend([(sid, i, sentence.tokens[i-1].embedding.numpy()) for i in tokenids])
         numReturnedVectors = len(embeddings)
         taggedEntities.append(sid + "\t" + e.tag + "\t" + str(tokenids[0]) + "\t" + str(tokenids[-1]))
 
@@ -59,13 +63,18 @@ while True:
     # 2. Write the number of vectors into the output
     ba.extend(pack('>i', numReturnedVectors))
     # 3. Get the vectorlength and write it into the output byte array
-    vectorlength = 0 if len(embeddings) == 0 else len(embeddings[0])
+    vectorlength = 0 if len(embeddings) == 0 else len(embeddings[0][2])
     doubleformat = '>' + 'd'*vectorlength
     ba.extend(pack('>i', vectorlength))
 
-    # 4. Write the actual vectors
-    for vector in embeddings:
-        ba.extend(pack(doubleformat, *vector))
+    # 4. Write the actual vectors. The "embeddings" contain pairs
+    # of token ID (1-based) and the actual vector.
+    for triple in embeddings:
+        sentenceIdBytes = bytes(triple[0], 'utf-8')
+        ba.extend(pack('>i', len(sentenceIdBytes)))
+        ba.extend(sentenceIdBytes)
+        ba.extend(pack('>i', triple[1]))
+        ba.extend(pack(doubleformat, *triple[2]))
 
     sys.stdout.buffer.write(pack('>i', len(ba)))
     sys.stdout.buffer.write(ba)

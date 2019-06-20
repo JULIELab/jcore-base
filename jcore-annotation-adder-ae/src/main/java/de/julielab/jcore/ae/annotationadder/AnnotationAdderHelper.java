@@ -24,7 +24,8 @@ public class AnnotationAdderHelper {
     private List<Token> tokenList;
     private Map<Sentence, List<Token>> tokensBySentences;
     private Matcher wsFinder = Pattern.compile("\\s").matcher("");
-   private  Matcher nonWsMatcher = Pattern.compile("[^\\s]+").matcher("");
+    private Matcher nonWsMatcher = Pattern.compile("[^\\s]+").matcher("");
+
 
     public void setAnnotationOffsetsRelativeToDocument(Annotation annotation, TextAnnotation a, AnnotationAdderConfiguration configuration) throws CASException, AnnotationOffsetException {
         if (configuration.getOffsetMode() == AnnotationAdderAnnotator.OffsetMode.CHARACTER) {
@@ -35,7 +36,7 @@ public class AnnotationAdderHelper {
             if (!JCasUtil.exists(jCas, Token.class))
                 throw new AnnotationOffsetException("The external annotations should be added according to token offset. However, no annotations of type " + Token.class.getCanonicalName() + " are present in the CAS.");
             if (tokenList == null)
-                createTokenList(jCas);
+                tokenList = createTokenList(jCas, configuration);
             int startTokenNum = a.getStart();
             int endTokenNum = a.getEnd();
             if (startTokenNum < 1 || startTokenNum > tokenList.size())
@@ -63,8 +64,7 @@ public class AnnotationAdderHelper {
                 throw new AnnotationOffsetException("The external annotations should be added according to token offset. However, no annotations of type " + Token.class.getCanonicalName() + " are present in the CAS.");
             if (!JCasUtil.exists(jCas, Sentence.class))
                 throw new AnnotationOffsetException("The external annotations should be added according to token offset relative to the sentence containing the tokens. However, no annotations of type " + Sentence.class.getCanonicalName() + " are present in the CAS.");
-            if (tokensBySentences == null || !tokensBySentences.containsKey(sentence))
-                createSentenceTokenMap(sentence);
+            tokensBySentences = createSentenceTokenMap(sentence, configuration);
             List<Token> tokenList = tokensBySentences.get(sentence);
             int startTokenNum = a.getStart();
             int endTokenNum = a.getEnd();
@@ -75,23 +75,26 @@ public class AnnotationAdderHelper {
             if (endTokenNum < startTokenNum)
                 throw new AnnotationOffsetException("The current annotation to add has a lower end offset than start offset. Start: " + startTokenNum + ", end: " + endTokenNum);
 
-            int begin = tokenList.get(startTokenNum-1).getBegin();
-            int end = tokenList.get(endTokenNum-1).getEnd();
+            int begin = tokenList.get(startTokenNum - 1).getBegin();
+            int end = tokenList.get(endTokenNum - 1).getEnd();
 
             annotation.setBegin(begin);
             annotation.setEnd(end);
         }
     }
 
-    private void createSentenceTokenMap(Sentence sentence) throws CASException {
-        tokensBySentences = new HashMap<>();
+    public Map<Sentence, List<Token>> createSentenceTokenMap(Sentence sentence, AnnotationAdderConfiguration configuration) throws CASException {
+        if (tokensBySentences != null && tokensBySentences.containsKey(sentence))
+            return tokensBySentences;
+        Map<Sentence, List<Token>> tokensBySentences = new HashMap<>();
         final FSIterator<Token> tokenSubiterator = sentence.getCAS().getJCas().<Token>getAnnotationIndex(Token.type).subiterator(sentence);
         List<Token> tokens = new ArrayList<>();
         while (tokenSubiterator.hasNext()) {
             Token t = tokenSubiterator.next();
             final String tokenText = t.getCoveredText();
-            wsFinder.reset(tokenText);
-            if (wsFinder.find()) {
+            if (configuration.isSplitTokensAtWhitespace())
+                wsFinder.reset(tokenText);
+            if (wsFinder.find() && configuration.isSplitTokensAtWhitespace()) {
                 nonWsMatcher.reset(tokenText);
                 while (nonWsMatcher.find()) {
                     final Token subtoken = new Token(sentence.getCAS().getJCas(), nonWsMatcher.start(), nonWsMatcher.end());
@@ -102,14 +105,29 @@ public class AnnotationAdderHelper {
             }
         }
         tokensBySentences.put(sentence, tokens);
+        return tokensBySentences;
     }
 
-    private void createTokenList(JCas jCas) {
-        tokenList = new ArrayList<>();
+    public List<Token> createTokenList(JCas jCas, AnnotationAdderConfiguration configuration) {
+        if (tokenList != null)
+            return tokenList;
+        List<Token> tokenList = new ArrayList<>();
         final FSIterator<Annotation> tokenIt = jCas.getAnnotationIndex(Token.type).iterator(false);
         while (tokenIt.hasNext()) {
-            Token token = (Token) tokenIt.next();
-            tokenList.add(token);
+            Token t = (Token) tokenIt.next();
+            final String tokenText = t.getCoveredText();
+            if (configuration.isSplitTokensAtWhitespace())
+                wsFinder.reset(tokenText);
+            if (wsFinder.find() && configuration.isSplitTokensAtWhitespace()) {
+                nonWsMatcher.reset(tokenText);
+                while (nonWsMatcher.find()) {
+                    final Token subtoken = new Token(jCas, nonWsMatcher.start(), nonWsMatcher.end());
+                    tokenList.add(subtoken);
+                }
+            } else {
+                tokenList.add(t);
+            }
         }
+        return tokenList;
     }
 }
