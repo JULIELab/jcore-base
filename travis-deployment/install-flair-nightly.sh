@@ -3,5 +3,5 @@
 if [ ! -d "flair" ]; then
     git clone https://github.com/khituras/flair.git
     cd flair
-    python3.6 setup.py install
+    sudo python3.6 setup.py install
 fi
