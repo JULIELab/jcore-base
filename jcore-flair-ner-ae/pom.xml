@@ -60,8 +60,8 @@
             <version>${jcore-types-version}</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
         </dependency>
     </dependencies>
     <name>JCoRe Flair NER AE</name>

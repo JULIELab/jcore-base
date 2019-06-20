@@ -32,7 +32,6 @@ public class StdioPythonConnector implements PythonConnector {
         params.setExecutable(pythonExecutable);
         params.setExternalProgramReadySignal("Ready for tagging.");
         params.setExternalProgramTerminationSignal("exit");
-//        params.setMultilineResponseDelimiter("tagging finished");
         params.setTerminationSignalFromErrorStream("SyntaxError");
         String script = IOStreamUtilities.getStringFromInputStream(getClass().getResourceAsStream("/de/julielab/jcore/ae/flairner/python/nerScript.py"));
         bridge = new StdioBridge<>(params, "-u", "-c", script, languageModelPath, storeEmbeddings.name());

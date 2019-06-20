@@ -43,17 +43,18 @@ while True:
     # In this byte array, all entities and all vectors from the sentence will be encoded
     ba = bytearray()
 
-    numReturnedVectors = 0
     taggedEntities = []
     embeddings = []
     for e in sentence.get_spans("ner"):
         tokenids = [t.idx for t in e.tokens]
         # Store sentence ID, token ID and the embedding
-        if sendEmbeddings != "NONE":
+        if sendEmbeddings == "ENTITIES":
             embeddings.extend([(sid, i, sentence.tokens[i-1].embedding.numpy()) for i in tokenids])
-        numReturnedVectors = len(embeddings)
         taggedEntities.append(sid + "\t" + e.tag + "\t" + str(tokenids[0]) + "\t" + str(tokenids[-1]))
 
+    if sendEmbeddings == "ALL":
+        for i, token in enumerate(sentence.tokens):
+            embeddings.append((sid, i+1, token.embedding.numpy()))
 
     ba.extend(pack('>i', len(taggedEntities)))
     for taggedEntity in taggedEntities:
@@ -61,7 +62,7 @@ while True:
         ba.extend(pack('>i', len(taggedEntityBytes)))
         ba.extend(taggedEntityBytes)
     # 2. Write the number of vectors into the output
-    ba.extend(pack('>i', numReturnedVectors))
+    ba.extend(pack('>i', len(embeddings)))
     # 3. Get the vectorlength and write it into the output byte array
     vectorlength = 0 if len(embeddings) == 0 else len(embeddings[0][2])
     doubleformat = '>' + 'd'*vectorlength

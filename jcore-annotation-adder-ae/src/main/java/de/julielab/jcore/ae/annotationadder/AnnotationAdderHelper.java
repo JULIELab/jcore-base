@@ -97,7 +97,7 @@ public class AnnotationAdderHelper {
             if (wsFinder.find() && configuration.isSplitTokensAtWhitespace()) {
                 nonWsMatcher.reset(tokenText);
                 while (nonWsMatcher.find()) {
-                    final Token subtoken = new Token(sentence.getCAS().getJCas(), nonWsMatcher.start(), nonWsMatcher.end());
+                    final Token subtoken = new Token(sentence.getCAS().getJCas(), t.getBegin() + nonWsMatcher.start(), t.getBegin() + nonWsMatcher.end());
                     tokens.add(subtoken);
                 }
             } else {
@@ -121,7 +121,7 @@ public class AnnotationAdderHelper {
             if (wsFinder.find() && configuration.isSplitTokensAtWhitespace()) {
                 nonWsMatcher.reset(tokenText);
                 while (nonWsMatcher.find()) {
-                    final Token subtoken = new Token(jCas, nonWsMatcher.start(), nonWsMatcher.end());
+                    final Token subtoken = new Token(jCas, t.getBegin() + nonWsMatcher.start(), t.getBegin() + nonWsMatcher.end());
                     tokenList.add(subtoken);
                 }
             } else {

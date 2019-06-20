@@ -4,12 +4,10 @@ import de.julielab.jcore.ae.annotationadder.AnnotationAdderAnnotator;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderConfiguration;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderHelper;
 import de.julielab.jcore.ae.annotationadder.AnnotationOffsetException;
-import de.julielab.jcore.types.EmbeddingVector;
-import de.julielab.jcore.types.EntityMention;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.*;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.JCoReTools;
+import de.julielab.jcore.utility.index.Comparators;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.commons.logging.Log;
@@ -23,6 +21,7 @@ import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -143,11 +143,12 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         final List<TokenEmbedding> tokenEmbeddings = taggingResponse.getTokenEmbeddings();
         JCoReTreeMapAnnotationIndex<Long, Token> tokenIndex = null;
         if (!tokenEmbeddings.isEmpty())
-            tokenIndex = new JCoReTreeMapAnnotationIndex<>(TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), aJCas, Token.type);
+            tokenIndex = new JCoReTreeMapAnnotationIndex<>(Comparators.longOverlapComparator(),TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), aJCas, Token.type);
         Map<Token, List<double[]>> originalTokenEmbeddings = new HashMap<>();
         for (TokenEmbedding tokenEmbedding : tokenEmbeddings) {
             final Sentence sentence = sentenceMap.get(tokenEmbedding.getSentenceId());
             final List<Token> tokens = helper.createSentenceTokenMap(sentence, adderConfig).get(sentence);
+
             // The tokens created by the annotation adder helper may include subtokens of original tokens
             // that contain a whitespace. Thus, for one original token there might exist several subtokens.
             Token subtoken = tokens.get(tokenEmbedding.getTokenId() - 1);
@@ -184,7 +185,6 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             embeddingVector.setVector(uimaVector);
             embeddingVector.setSource(flairModel);
             token.setEmbeddingVectors(JCoReTools.addToFSArray(token.getEmbeddingVectors(), embeddingVector));
-            System.out.println(token.getCoveredText());
         }
     }
 

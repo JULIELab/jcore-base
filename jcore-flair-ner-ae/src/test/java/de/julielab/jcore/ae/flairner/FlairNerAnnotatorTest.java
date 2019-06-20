@@ -1,4 +1,3 @@
-
 package de.julielab.jcore.ae.flairner;
 
 import de.julielab.jcore.types.EmbeddingVector;
@@ -12,10 +11,12 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.Test;
+import org.assertj.core.data.Offset;
+import org.testng.annotations.Test;
 
 import java.io.FileInputStream;
 import java.nio.file.Path;
@@ -26,11 +27,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Unit tests for jcore-flair-ner-ae.
- *
  */
-public class FlairNerAnnotatorTest{
+public class FlairNerAnnotatorTest {
+    /**
+     * This field is a global state to carry some information between two tests. This should allow to show
+     * that for the case that FLAIR creates subtokens (due to whitespace token splitting) to our UIMA tokens,
+     * the original embeddings get averaged. For this, the first test writes the original embeddings into this field
+     * and the second test can retrieve them for comparison.
+     */
+    private List<double[]> embeddingsCache = new ArrayList<>();
+
     @Test
     public void testAnnotatorWithoutWordEmbeddings() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
@@ -52,7 +61,6 @@ public class FlairNerAnnotatorTest{
                 Token token = tokenIt.next();
                 assertThat(token.getEmbeddingVectors()).isNull();
             }
-
         }
         assertThat(foundGenes).containsExactly("SUB1 homolog", "HIV-1", "VSV-G", "HIV-1");
         engine.collectionProcessComplete();
@@ -60,6 +68,7 @@ public class FlairNerAnnotatorTest{
 
     @Test
     public void testAnnotatorWithEntityWordEmbeddings() throws Exception {
+        embeddingsCache.clear();
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, FlairNerAnnotator.StoreEmbeddings.ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
         String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
@@ -82,10 +91,98 @@ public class FlairNerAnnotatorTest{
                 final EmbeddingVector embedding = (EmbeddingVector) token.getEmbeddingVectors().get(0);
                 assertThat(embedding.getSource()).isEqualTo("src/test/resources/genes-small-model.pt");
                 assertThat(embedding.getVector()).hasSize(1024);
+                embeddingsCache.add(embedding.getVector().toArray());
             }
         }
         assertThat(foundGenes).containsExactly("SUB1 homolog", "HIV-1", "VSV-G", "HIV-1");
         engine.collectionProcessComplete();
+    }
+
+    @Test(dependsOnMethods = "testAnnotatorWithEntityWordEmbeddings")
+    public void testAnnotatorWithEntitySubWordEmbeddings() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, FlairNerAnnotator.StoreEmbeddings.ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
+        String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
+        jCas.setDocumentText(text);
+        Sentence s = new Sentence(jCas, 0, text.length());
+        addTokens(jCas);
+        // We now manipulate the tokenization to have "SUB1 homolog" appear as one UIMA token. FLAIR will interpret
+        // the two words still as two tokens. We want to check if this case in handles correctly.
+        final List<Token> tokens = new ArrayList<>(JCasUtil.select(jCas, Token.class));
+        final Token newToken = new Token(jCas, tokens.get(2).getBegin(), tokens.get(3).getEnd());
+        tokens.get(2).removeFromIndexes();
+        tokens.get(3).removeFromIndexes();
+        newToken.addToIndexes();
+        assertThat(newToken.getCoveredText()).isEqualTo("SUB1 homolog");
+        s.addToIndexes();
+        engine.process(jCas);
+        List<String> foundGenes = new ArrayList<>();
+        JCoReTreeMapAnnotationIndex<Long, Token> tokenIndex = new JCoReTreeMapAnnotationIndex<>(TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), jCas, Token.type);
+        int i = 0;
+        for (Annotation a : jCas.getAnnotationIndex(Gene.type)) {
+            Gene g = (Gene) a;
+            foundGenes.add(g.getCoveredText());
+            assertThat(g.getSpecificType().equals("Gene"));
+            final Iterator<Token> tokenIt = tokenIndex.searchFuzzy(g).iterator();
+            while (tokenIt.hasNext()) {
+                Token token = tokenIt.next();
+                assertThat(token.getEmbeddingVectors()).isNotNull();
+                assertThat(token.getEmbeddingVectors()).hasSize(1);
+                final EmbeddingVector embedding = (EmbeddingVector) token.getEmbeddingVectors().get(0);
+                assertThat(embedding.getSource()).isEqualTo("src/test/resources/genes-small-model.pt");
+                assertThat(embedding.getVector()).hasSize(1024);
+
+                // We manipulated the first entity to have a single token in UIMA but two for flair.
+                // We average the subtoken embeddings to obtain a single embedding for the UIMA token.
+                if (i == 0) {
+                    // Check that we know have the average of the two subtokens
+                    final double[] avgEmbedding = embedding.getVector().toArray();
+                    // This is what the embeddingsCache field is for: We can now access the subtoken embeddings created
+                    // in another test
+                    final double[] sub1Embedding = embeddingsCache.get(0);
+                    final double[] homologEmbedding = embeddingsCache.get(1);
+
+                    assertThat(l2Norm(avgEmbedding)).isNotCloseTo(l2Norm(sub1Embedding), Offset.offset(0.0001));
+                    assertThat(l2Norm(avgEmbedding)).isNotCloseTo(l2Norm(homologEmbedding), Offset.offset(0.0001));
+
+                    double[] sub1HomoloAvg = new double[sub1Embedding.length];
+                    for (int j = 0; j < sub1HomoloAvg.length; j++) {
+                        sub1HomoloAvg[j] = (sub1HomoloAvg[j] + homologEmbedding[j]) / 2;
+                    }
+                    assertThat(l2Norm(avgEmbedding)).isCloseTo(l2Norm(sub1HomoloAvg), Offset.offset(0.0001));
+                }
+            }
+            ++i;
+        }
+        assertThat(foundGenes).containsExactly("SUB1 homolog", "HIV-1", "VSV-G", "HIV-1");
+        engine.collectionProcessComplete();
+    }
+
+    private double l2Norm(double[] vector) {
+        double norm = 0;
+        for (int i = 0; i < vector.length; i++) {
+            norm += Math.pow(vector[i], 2);
+        }
+        return Math.sqrt(norm);
+    }
+
+    @Test
+    public void testAnnotatorWithAllEmbeddings() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, FlairNerAnnotator.StoreEmbeddings.ALL, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
+        String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
+        jCas.setDocumentText(text);
+        Sentence s = new Sentence(jCas, 0, text.length());
+        addTokens(jCas);
+        s.addToIndexes();
+        engine.process(jCas);
+        for (Token token : jCas.<Token>getAnnotationIndex(Token.type)) {
+            assertThat(token.getEmbeddingVectors()).isNotNull();
+            assertThat(token.getEmbeddingVectors()).hasSize(1);
+            final EmbeddingVector embedding = (EmbeddingVector) token.getEmbeddingVectors().get(0);
+            assertThat(embedding.getSource()).isEqualTo("src/test/resources/genes-small-model.pt");
+            assertThat(embedding.getVector()).hasSize(1024);
+        }
     }
 
     private void addTokens(JCas jCas) {
