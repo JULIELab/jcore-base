@@ -7,6 +7,7 @@ import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
@@ -38,54 +39,65 @@ public class StdioPythonConnector implements PythonConnector {
     }
 
     @Override
-    public NerTaggingResponse tagSentences(Stream<Sentence> sentences) {
-        final Stream<byte[]> byteResponse = sentences.flatMap(sentence -> {
+    public NerTaggingResponse tagSentences(Stream<Sentence> sentences) throws AnalysisEngineProcessException {
+        StringBuilder requestBuilder = new StringBuilder("[");
+        sentences.forEach(sentence -> {
             try {
                 final JCas jCas = sentence.getCAS().getJCas();
                 final FSIterator<Token> tokensInSentence = jCas.<Token>getAnnotationIndex(Token.type).subiterator(sentence);
                 final String tokenizedSentenceText = StreamSupport.stream(Spliterators.spliteratorUnknownSize(tokensInSentence, 0), false).map(Annotation::getCoveredText).collect(Collectors.joining(" "));
-                return bridge.sendAndReceive(sentence.getId() + "\t" + tokenizedSentenceText);
-            } catch (InterruptedException e) {
-                log.error("Python communication was interrupted", e);
+                if (!tokenizedSentenceText.isBlank()) {
+                    requestBuilder.append("{\"sid\":\"").append(sentence.getId()).append("\"").append(",");
+                    requestBuilder.append("\"text\":\"").append(tokenizedSentenceText).append("\"}").append(",");
+                }
             } catch (CASException e) {
                 log.error("Could not retrieve the JCas from the CAS", e);
             }
-            return null;
-        })
-                .filter(Objects::nonNull);
+        });
+
+        // Remove the last comma
+        requestBuilder.deleteCharAt(requestBuilder.length() - 1);
+        requestBuilder.append("]");
 
         List<TokenEmbedding> embeddings = new ArrayList<>();
-        final Iterator<byte[]> bytesIt = byteResponse.iterator();
-        final List<TaggedEntity> taggedEntities = new ArrayList<>();
-        while (bytesIt.hasNext()) {
-            byte[] sentenceResponseBytes = bytesIt.next();
-            final ByteBuffer bb = ByteBuffer.wrap(sentenceResponseBytes);
-            final int numEntities = bb.getInt();
-            for (int i = 0; i < numEntities; i++) {
-                final int taggedEntityResponseLength = bb.getInt();
-                byte[] taggedEntityRepsonseBytes = new byte[taggedEntityResponseLength];
-                bb.get(taggedEntityRepsonseBytes);
-                final String taggedEntityString = new String(taggedEntityRepsonseBytes, StandardCharsets.UTF_8);
-                final String[] taggedEntityRecord = taggedEntityString.split("\\t");
-                taggedEntities.add(new TaggedEntity(taggedEntityRecord[0], taggedEntityRecord[1], Integer.valueOf(taggedEntityRecord[2]), Integer.valueOf(taggedEntityRecord[3])));
-            }
-            final int numEmbeddingVectors = bb.getInt();
-            final int vectorLength = bb.getInt();
-            for (int i = 0; i < numEmbeddingVectors; i++) {
-                final int sentenceIdLength = bb.getInt();
-                final byte[] sentenceIdBytes = new byte[sentenceIdLength];
-                bb.get(sentenceIdBytes);
-                final String sid = new String(sentenceIdBytes, StandardCharsets.UTF_8);
-                final int tokenId = bb.getInt();
-                double[] vector = new double[vectorLength];
-                for (int j = 0; j < vectorLength; j++) {
-                    vector[j] = bb.getDouble();
+        final Iterator<byte[]> bytesIt;
+        try {
+            bytesIt = bridge.sendAndReceive(requestBuilder.toString()).iterator();
+
+            final List<TaggedEntity> taggedEntities = new ArrayList<>();
+            while (bytesIt.hasNext()) {
+                byte[] sentenceResponseBytes = bytesIt.next();
+                final ByteBuffer bb = ByteBuffer.wrap(sentenceResponseBytes);
+                final int numEntities = bb.getInt();
+                for (int i = 0; i < numEntities; i++) {
+                    final int taggedEntityResponseLength = bb.getInt();
+                    byte[] taggedEntityRepsonseBytes = new byte[taggedEntityResponseLength];
+                    bb.get(taggedEntityRepsonseBytes);
+                    final String taggedEntityString = new String(taggedEntityRepsonseBytes, StandardCharsets.UTF_8);
+                    final String[] taggedEntityRecord = taggedEntityString.split("\\t");
+                    taggedEntities.add(new TaggedEntity(taggedEntityRecord[0], taggedEntityRecord[1], Integer.valueOf(taggedEntityRecord[2]), Integer.valueOf(taggedEntityRecord[3])));
                 }
-                final TokenEmbedding tokenEmbedding = new TokenEmbedding(sid, tokenId, vector);
-                embeddings.add(tokenEmbedding);
+                final int numEmbeddingVectors = bb.getInt();
+                final int vectorLength = bb.getInt();
+                for (int i = 0; i < numEmbeddingVectors; i++) {
+                    final int sentenceIdLength = bb.getInt();
+                    final byte[] sentenceIdBytes = new byte[sentenceIdLength];
+                    bb.get(sentenceIdBytes);
+                    final String sid = new String(sentenceIdBytes, StandardCharsets.UTF_8);
+                    final int tokenId = bb.getInt();
+                    double[] vector = new double[vectorLength];
+                    for (int j = 0; j < vectorLength; j++) {
+                        vector[j] = bb.getDouble();
+                    }
+                    final TokenEmbedding tokenEmbedding = new TokenEmbedding(sid, tokenId, vector);
+                    embeddings.add(tokenEmbedding);
+                }
             }
+            return new NerTaggingResponse(taggedEntities, embeddings);
+        } catch (InterruptedException e) {
+            log.error("Python communication was interrupted", e);
+            throw new AnalysisEngineProcessException(e);
         }
-        return new NerTaggingResponse(taggedEntities, embeddings);
     }
 
     @Override

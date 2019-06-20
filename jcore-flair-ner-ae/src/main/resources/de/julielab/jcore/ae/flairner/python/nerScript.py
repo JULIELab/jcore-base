@@ -3,6 +3,7 @@ from flair.models import SequenceTagger
 from flair.data import Sentence
 from typing import List
 
+import json
 from struct import *
 
 import sys
@@ -31,30 +32,31 @@ while True:
     line = decodeString(stdbuffer)
     if line.strip() == "exit":
         sys.exit(0)
-    split = line.split("\t")
-    sid      = split[0]
-    sentence = Sentence(split[1])
-    # NER tagging
-    clearWordEmbeddings = sendEmbeddings == "NONE"
-    tagger.predict(sentence, clear_word_embeddings=clearWordEmbeddings)
-
-    # Resonse
-
-    # In this byte array, all entities and all vectors from the sentence will be encoded
-    ba = bytearray()
-
+    sentenceTaggingRequests = json.loads(line)
     taggedEntities = []
     embeddings = []
-    for e in sentence.get_spans("ner"):
-        tokenids = [t.idx for t in e.tokens]
-        # Store sentence ID, token ID and the embedding
-        if sendEmbeddings == "ENTITIES":
-            embeddings.extend([(sid, i, sentence.tokens[i-1].embedding.numpy()) for i in tokenids])
-        taggedEntities.append(sid + "\t" + e.tag + "\t" + str(tokenids[0]) + "\t" + str(tokenids[-1]))
+    for sentenceToTag in sentenceTaggingRequests:
+        sid      = sentenceToTag['sid']
+        sentence = Sentence(sentenceToTag['text'])
+        # NER tagging
+        clearWordEmbeddings = sendEmbeddings == "NONE"
+        tagger.predict(sentence, clear_word_embeddings=clearWordEmbeddings)
 
-    if sendEmbeddings == "ALL":
-        for i, token in enumerate(sentence.tokens):
-            embeddings.append((sid, i+1, token.embedding.numpy()))
+        # Response
+
+        # In this byte array, all entities and all vectors from the sentence will be encoded
+        ba = bytearray()
+
+        for e in sentence.get_spans("ner"):
+            tokenids = [t.idx for t in e.tokens]
+            # Store sentence ID, token ID and the embedding
+            if sendEmbeddings == "ENTITIES":
+                embeddings.extend([(sid, i, sentence.tokens[i-1].embedding.numpy()) for i in tokenids])
+            taggedEntities.append(sid + "\t" + e.tag + "\t" + str(tokenids[0]) + "\t" + str(tokenids[-1]))
+
+        if sendEmbeddings == "ALL":
+            for i, token in enumerate(sentence.tokens):
+                embeddings.append((sid, i+1, token.embedding.numpy()))
 
     ba.extend(pack('>i', len(taggedEntities)))
     for taggedEntity in taggedEntities:
@@ -79,5 +81,3 @@ while True:
 
     sys.stdout.buffer.write(pack('>i', len(ba)))
     sys.stdout.buffer.write(ba)
-
-    #print("tagging finished")

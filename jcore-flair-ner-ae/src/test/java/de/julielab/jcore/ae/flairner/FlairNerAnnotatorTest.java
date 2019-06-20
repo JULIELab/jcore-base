@@ -4,6 +4,7 @@ import de.julielab.jcore.types.EmbeddingVector;
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.jcore.utility.index.Comparators;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -78,7 +79,7 @@ public class FlairNerAnnotatorTest {
         s.addToIndexes();
         engine.process(jCas);
         List<String> foundGenes = new ArrayList<>();
-        JCoReTreeMapAnnotationIndex<Long, Token> tokenIndex = new JCoReTreeMapAnnotationIndex<>(TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), jCas, Token.type);
+        JCoReTreeMapAnnotationIndex<Long, Token> tokenIndex = new JCoReTreeMapAnnotationIndex<>(Comparators.longOverlapComparator(), TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), jCas, Token.type);
         for (Annotation a : jCas.getAnnotationIndex(Gene.type)) {
             Gene g = (Gene) a;
             foundGenes.add(g.getCoveredText());
@@ -147,7 +148,7 @@ public class FlairNerAnnotatorTest {
 
                     double[] sub1HomoloAvg = new double[sub1Embedding.length];
                     for (int j = 0; j < sub1HomoloAvg.length; j++) {
-                        sub1HomoloAvg[j] = (sub1HomoloAvg[j] + homologEmbedding[j]) / 2;
+                        sub1HomoloAvg[j] = (sub1Embedding[j] + homologEmbedding[j]) / 2;
                     }
                     assertThat(l2Norm(avgEmbedding)).isCloseTo(l2Norm(sub1HomoloAvg), Offset.offset(0.0001));
                 }
