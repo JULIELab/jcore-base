@@ -36,6 +36,9 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     public static final String PARAM_ANNOTATION_TYPE = "AnnotationType";
     public static final String PARAM_FLAIR_MODEL = "FlairModel";
     public static final String PARAM_PYTHON_EXECUTABLE = "PythonExecutable";
+    public static final String PARAM_STORE_EMBEDDINGS = "StoreEmbeddings";
+
+    public enum StoreEmbeddings {ALL, ENTITIES, NONE}
 
     private final static Logger log = LoggerFactory.getLogger(FlairNerAnnotator.class);
     private PythonConnector connector;
@@ -46,6 +49,8 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     private String flairModel;
     @ConfigurationParameter(name=PARAM_PYTHON_EXECUTABLE, mandatory = false, description = "The path to the python executable. Required is a python verion >=3.6. Defaults to 'python'.")
     private String pythonExecutable;
+    @ConfigurationParameter(name = PARAM_STORE_EMBEDDINGS, mandatory = false, description = "Optional. Possible values: ALL, ENTITIES, NONE. The FLAIR SequenceTagger first computes the embeddings for each sentence and uses those as input for the actual NER algorithm. By default, the embeddings are not stored. By setting this parameter to ALL, the embeddings of all tokens of the sentence are retrieved from flair and stored in the embeddingVectors feature of each token. Setting the parameter to ENTITIES will restrict the embedding storage to those tokens which overlap with an entity recognized by FLAIR.")
+    private StoreEmbeddings storeEmbeddings;
     private AnnotationAdderConfiguration adderConfig;
 
     /**
@@ -56,6 +61,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
         entityClass = (String) aContext.getConfigParameterValue(PARAM_ANNOTATION_TYPE);
         flairModel = (String) aContext.getConfigParameterValue(PARAM_FLAIR_MODEL);
+        storeEmbeddings = StoreEmbeddings.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_STORE_EMBEDDINGS)).orElse(StoreEmbeddings.NONE.name()));
 
         Optional<String>  pythonExecutableOpt = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_PYTHON_EXECUTABLE));
         if (!pythonExecutableOpt.isPresent()) {
@@ -70,11 +76,11 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             log.info("Python executable: {} (from descriptor)", pythonExecutable);
         }
         if (pythonExecutable == null) {
-            pythonExecutable = "python3.6";
+            pythonExecutable = "python";
             log.info("Python executable: {} (default)", pythonExecutable);
         }
         try {
-            connector = new StdioPythonConnector(flairModel, pythonExecutable);
+            connector = new StdioPythonConnector(flairModel, pythonExecutable, storeEmbeddings);
             connector.start();
         } catch (IOException e) {
             log.error("Could not start the python connector", e);
