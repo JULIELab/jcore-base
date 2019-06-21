@@ -58,20 +58,22 @@ while True:
             for i, token in enumerate(sentence.tokens):
                 embeddings.append((sid, i+1, token.embedding.numpy()))
 
+    # 1. Write the number of tagged entities
     ba.extend(pack('>i', len(taggedEntities)))
+    # 2. Write the entity recognition results
     for taggedEntity in taggedEntities:
         taggedEntityBytes = bytes(taggedEntity, 'utf-8')
         ba.extend(pack('>i', len(taggedEntityBytes)))
         ba.extend(taggedEntityBytes)
-    # 2. Write the number of vectors into the output
+    # 3. Write the number of vectors into the output
     ba.extend(pack('>i', len(embeddings)))
-    # 3. Get the vectorlength and write it into the output byte array
+    # 4. Get the vectorlength and write it into the output byte array
     vectorlength = 0 if len(embeddings) == 0 else len(embeddings[0][2])
     doubleformat = '>' + 'd'*vectorlength
     ba.extend(pack('>i', vectorlength))
 
-    # 4. Write the actual vectors. The "embeddings" contain pairs
-    # of token ID (1-based) and the actual vector.
+    # 5. Write the actual vectors. The "embeddings" contain triples
+    # of sentence ID, token ID (1-based sentence-relative token number) and the actual vector.
     for triple in embeddings:
         sentenceIdBytes = bytes(triple[0], 'utf-8')
         ba.extend(pack('>i', len(sentenceIdBytes)))
