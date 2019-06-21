@@ -1,5 +1,7 @@
 package de.julielab.jcore.ae.flairner;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import de.julielab.ipc.javabridge.Options;
 import de.julielab.ipc.javabridge.StdioBridge;
 import de.julielab.java.utilities.IOStreamUtilities;
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -40,29 +43,35 @@ public class StdioPythonConnector implements PythonConnector {
 
     @Override
     public NerTaggingResponse tagSentences(Stream<Sentence> sentences) throws AnalysisEngineProcessException {
-        StringBuilder requestBuilder = new StringBuilder("[");
-        sentences.forEach(sentence -> {
-            try {
-                final JCas jCas = sentence.getCAS().getJCas();
-                final FSIterator<Token> tokensInSentence = jCas.<Token>getAnnotationIndex(Token.type).subiterator(sentence);
-                final String tokenizedSentenceText = StreamSupport.stream(Spliterators.spliteratorUnknownSize(tokensInSentence, 0), false).map(Annotation::getCoveredText).collect(Collectors.joining(" "));
-                if (!tokenizedSentenceText.isBlank()) {
-                    requestBuilder.append("{\"sid\":\"").append(sentence.getId()).append("\"").append(",");
-                    requestBuilder.append("\"text\":\"").append(tokenizedSentenceText).append("\"}").append(",");
-                }
-            } catch (CASException e) {
-                log.error("Could not retrieve the JCas from the CAS", e);
-            }
-        });
-
-        // Remove the last comma
-        requestBuilder.deleteCharAt(requestBuilder.length() - 1);
-        requestBuilder.append("]");
-
-        List<TokenEmbedding> embeddings = new ArrayList<>();
-        final Iterator<byte[]> bytesIt;
         try {
-            bytesIt = bridge.sendAndReceive(requestBuilder.toString()).iterator();
+            final StringWriter sw = new StringWriter();
+            final JsonGenerator generator = new JsonFactory().createGenerator(sw);
+            generator.writeStartArray();
+            sentences.forEach(sentence -> {
+                try {
+                    final JCas jCas = sentence.getCAS().getJCas();
+                    final FSIterator<Token> tokensInSentence = jCas.<Token>getAnnotationIndex(Token.type).subiterator(sentence);
+                    final String tokenizedSentenceText = StreamSupport.stream(Spliterators.spliteratorUnknownSize(tokensInSentence, 0), false).map(Annotation::getCoveredText).collect(Collectors.joining(" "));
+                    if (!tokenizedSentenceText.isBlank()) {
+                        generator.writeStartObject();
+                        generator.writeFieldName("sid");
+                        generator.writeString(sentence.getId());
+                        generator.writeFieldName("text");
+                        generator.writeString(tokenizedSentenceText);
+                        generator.writeEndObject();
+                    }
+                } catch (CASException e) {
+                    log.error("Could not retrieve the JCas from the CAS", e);
+                } catch (IOException e) {
+                    log.error("Could not write JSON", e);
+                }
+            });
+
+            generator.writeEndArray();
+            generator.close();
+            List<TokenEmbedding> embeddings = new ArrayList<>();
+            final Iterator<byte[]> bytesIt;
+            bytesIt = bridge.sendAndReceive(sw.toString()).iterator();
 
             final List<TaggedEntity> taggedEntities = new ArrayList<>();
             while (bytesIt.hasNext()) {
@@ -96,6 +105,9 @@ public class StdioPythonConnector implements PythonConnector {
             return new NerTaggingResponse(taggedEntities, embeddings);
         } catch (InterruptedException e) {
             log.error("Python communication was interrupted", e);
+            throw new AnalysisEngineProcessException(e);
+        } catch (IOException e) {
+            log.error("IOException occurred", e);
             throw new AnalysisEngineProcessException(e);
         }
     }
