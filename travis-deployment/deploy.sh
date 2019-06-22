@@ -2,7 +2,7 @@
 if [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
 	echo "Executing deploy"
 	if [ ! -f julie-xml-tools.jar ]; then
-	    wget https://search.maven.org/remotecontent?filepath=de/julielab/julie-xml-tools/0.4.2/julie-xml-tools-0.4.2-xml-tools-assembly.jar --output-document julie-xml-tools.jar
+	    wget https://repo1.maven.org/maven2/de/julielab/julie-xml-tools/0.6.0/julie-xml-tools-0.6.0-xml-tools-assembly.jar --output-document julie-xml-tools.jar
 	else
 	    echo "julie-xml-tools.jar already exists and is not downloaded."
 	fi
