@@ -8,13 +8,11 @@ import de.julielab.jcore.utility.index.Comparators;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
@@ -24,6 +22,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,6 +92,13 @@ public class FlairNerAnnotatorTest {
                 assertThat(embedding.getSource()).isEqualTo("src/test/resources/genes-small-model.pt");
                 assertThat(embedding.getVector()).hasSize(1024);
                 embeddingsCache.add(embedding.getVector().toArray());
+            }
+        }
+        JCoReTreeMapAnnotationIndex<Long, Token> geneIndex = new JCoReTreeMapAnnotationIndex<>(Comparators.longOverlapComparator(), TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), jCas, Gene.type);
+        for (Token t : jCas.<Token>getAnnotationIndex(Token.type)) {
+            final Optional<Token> any = geneIndex.searchFuzzy(t).findAny();
+            if (!any.isPresent()) {
+                assertThat(t.getEmbeddingVectors()).isNull();
             }
         }
         assertThat(foundGenes).containsExactly("SUB1 homolog", "HIV-1", "VSV-G", "HIV-1");
