@@ -12,7 +12,7 @@ In order to automate the builds of complex NLP pipelines and properly represent 
 A description for each individual component can be found in their respective `README.md`.
 
 ### Requirements & Dependencies
-In order to use our components you need at least [JDK 7](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)(Java SE Development Kit 7), [UIMA 2.6](https://uima.apache.org/index.html) & [Maven 3.0](https://maven.apache.org/). We also recommend using [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/) as your Java IDE, since it comes with the Maven Plugin. However, you're free to try it with different versions than those mentioned, but we can't make promises for a flawless functioning of our components in these cases.
+In order to use our components you need at least [JDK 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html) (Java SE Development Kit 11), [UIMA 2.10](https://uima.apache.org/index.html) & [Maven 3](https://maven.apache.org/). We develop with the [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/) and [IntelliJ IDEA](https://www.jetbrains.com/idea/) Java IDEs. If course you're free to try it with different versions or tools than those mentioned, but we can't make promises for a flawless functioning of our components in these cases.
 
 ### UIMA's Collection Processing Engine (CPE)
 UIMA features a relatively easy way to combine UIMA components together in order to analyze a collection of artifacts. If you're not firm or willing to deal with Java Code, the usage of a CPE might be the right choice.
