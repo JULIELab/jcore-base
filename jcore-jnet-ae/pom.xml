@@ -29,7 +29,7 @@
                         </manifest>
                     </archive>
                     <appendAssemblyId>true</appendAssemblyId>
-                    <finalName>jcore-jnet-${project.version}</finalName>
+                    <finalName>jnet-${project.version}</finalName>
                 </configuration>
                 <executions>
                     <execution>
