@@ -40,7 +40,7 @@ public class XmiDBReaderTest {
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 2, postgres);
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, false);
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, "public");
         assertTrue("The data document table exists", dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")));
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");

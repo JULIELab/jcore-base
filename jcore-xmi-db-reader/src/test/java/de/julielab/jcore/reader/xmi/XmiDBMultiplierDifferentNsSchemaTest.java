@@ -30,7 +30,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 
-public class XmiDBMultiplierTest {
+public class XmiDBMultiplierDifferentNsSchemaTest {
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
     private static int subsetCounter;
@@ -42,7 +42,7 @@ public class XmiDBMultiplierTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 10, postgres);
         new File(costosysConfig).deleteOnExit();
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, "public");
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, "fancyschema");
         assertTrue(dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")), "The data document table exists");
         dbc.close();
 
@@ -70,7 +70,8 @@ public class XmiDBMultiplierTest {
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
                 XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
-                XmiDBReader.PARAM_RESET_TABLE, true
+                XmiDBReader.PARAM_RESET_TABLE, true,
+                XmiDBReader.PARAM_XMI_NAMESPACES_SCHEMA, "fancyschema"
         );
         final AnalysisEngine multiplier = AnalysisEngineFactory.createEngine(XmiDBMultiplier.class);
         JCas jCas = XmiDBSetupHelper.getJCasWithRequiredTypes();

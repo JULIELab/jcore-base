@@ -1,13 +1,15 @@
 package de.julielab.jcore.reader.xmi;
 
 import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.jcore.consumer.xmi.XMIDBWriter;
 import de.julielab.jcore.db.test.DBTestUtils;
-import de.julielab.jcore.types.Header;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import de.julielab.jcore.reader.db.TableReaderConstants;
+import de.julielab.jcore.types.*;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -17,20 +19,15 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-
-/**
- * The exact same test as {@link XmiDBReaderTest} but here, the data is gzipped.
- */
-public class XmiDBReaderGzippedDataTest {
+public class XmiDBReaderDifferentNsSchemaTest {
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
     private static String xmisubset;
@@ -41,10 +38,9 @@ public class XmiDBReaderGzippedDataTest {
         XmiDBSetupHelper.createDbcConfig(postgres);
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
-        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 1, postgres);
-        new File(costosysConfig).deleteOnExit();
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, true, "public");
-        assertTrue(dbc.withConnectionQueryBoolean( c -> c.tableExists("_data.documents")), "The data document table exists");
+        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 2, postgres);
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, "someotherschema");
+        assertTrue("The data document table exists", dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")));
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");
         dbc.reserveConnection();
@@ -53,11 +49,11 @@ public class XmiDBReaderGzippedDataTest {
         dbc.close();
     }
 
+
     @AfterClass
     public static void shutdown() {
         postgres.close();
     }
-
     @Test
     public void testXmiDBReader() throws UIMAException, IOException {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
@@ -65,7 +61,8 @@ public class XmiDBReaderGzippedDataTest {
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
                 XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
-                XmiDBReader.PARAM_RESET_TABLE, true
+                XmiDBReader.PARAM_RESET_TABLE, true,
+                XmiDBReader.PARAM_XMI_NAMESPACES_SCHEMA, "someotherschema"
         );
         JCas jCas = XmiDBSetupHelper.getJCasWithRequiredTypes();
         List<String> tokenText = new ArrayList<>();
@@ -82,4 +79,5 @@ public class XmiDBReaderGzippedDataTest {
         assertFalse(tokenText.isEmpty());
         assertFalse(sentenceText.isEmpty());
     }
+
 }

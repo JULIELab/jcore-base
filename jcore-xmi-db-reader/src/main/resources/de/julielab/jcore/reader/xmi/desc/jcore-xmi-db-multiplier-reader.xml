@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.xmi.XmiDBMultiplierReader</implementationName>
@@ -31,6 +31,13 @@
                 <name>XercesAttributeBufferSize</name>
                 <description>Initial XML parser buffer size in bytes. For large documents, it can happen that XMI parsing is extremely slow. By employing monitoring tools like the jconsole or (j)visualvm, the hot spots of work can be identified. If one of those is the XML attribute buffer resizing, this parameter should be set to a size that makes buffer resizing unnecessary.</description>
                 <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>XmiNamespacesPostgresSchema</name>
+                <description>Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '_xmi_namespaces' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Defaults to 'public'.</description>
+                <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
@@ -78,7 +85,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>BatchSize</name>
-                <description />
+                <description/>
                 <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -113,7 +120,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>Limit</name>
-                <description />
+                <description/>
                 <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -127,6 +134,12 @@
             </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
+            <nameValuePair>
+                <name>XmiNamespacesPostgresSchema</name>
+                <value>
+                    <string>public</string>
+                </value>
+            </nameValuePair>
             <nameValuePair>
                 <name>SendCasToLast</name>
                 <value>
@@ -148,13 +161,13 @@
             <nameValuePair>
                 <name>BatchSize</name>
                 <value>
-                    <integer>50</integer>
+                    <integer>1000</integer>
                 </value>
             </nameValuePair>
             <nameValuePair>
                 <name>SelectionOrder</name>
                 <value>
-                    <string />
+                    <string/>
                 </value>
             </nameValuePair>
         </configurationParameterSettings>
@@ -163,12 +176,12 @@
                 <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection />
-        <capabilities />
+        <fsIndexCollection/>
+        <capabilities/>
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    <version>2.5.0-SNAPSHOT</version></processingResourceMetaData>
+    </processingResourceMetaData>
 </collectionReaderDescription>

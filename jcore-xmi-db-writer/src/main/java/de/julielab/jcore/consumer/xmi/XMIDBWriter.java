@@ -91,6 +91,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_COMPONENT_DB_NAME = "ComponentDbName";
     public static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
     public static final String PARAM_WRITE_BATCH_SIZE = "WriteBatchSize";
+    public static final String PARAM_XMI_NAMESPACES_SCHEMA = "XmiNamespacesPostgresSchema";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
@@ -160,6 +161,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     @ConfigurationParameter(name = PARAM_WRITE_BATCH_SIZE, mandatory = false, defaultValue = "50", description =
             "The number of processed CASes after which the XMI data should be flushed into the database. Defaults to 50.")
     private int writeBatchSize;
+    @ConfigurationParameter(name = PARAM_XMI_NAMESPACES_SCHEMA, mandatory = false, defaultValue = "public", description = "Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '" + MetaTableManager.XMI_NS_TABLE + "' when splitting annotations in annotation modules for later retrieval by the XMI DB reader. This parameter allows to specify in which Postgres schema this table should be stored. Defaults to 'public'.")
+    private String nsSchema;
 
     private XmiSplitter splitter;
     // Must be a linked HashMap so that the document table comes first when
@@ -244,6 +247,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         componentDbName = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME)).orElse(getClass().getSimpleName());
         annotationStorageSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
         annotations = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE)).orElse(new String[0]);
+        nsSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_XMI_NAMESPACES_SCHEMA)).orElse("public");
 
         List<String> annotationsToStoreTableNames = new ArrayList<>();
         annotationsToStore = Collections.emptyList();
@@ -344,7 +348,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Annotation table schema (only required if annotations are stored separatly): {}", schemaAnnotation);
         log.info("Batch size of cached documents sent to database: {}", writeBatchSize);
 
-        metaTableManager = new MetaTableManager(dbc);
+        metaTableManager = new MetaTableManager(dbc, nsSchema);
         annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, effectiveDocTableName, dbc,
                 schemaDocument, schemaAnnotation, storeAll, storeBaseDocument, updateMode, componentDbName);
         dbc.releaseConnections();

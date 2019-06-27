@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.xmi.XmiDBReader</implementationName>
@@ -43,6 +43,13 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
+                <name>XmiNamespacesPostgresSchema</name>
+                <description>Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '_xmi_namespaces' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Defaults to 'public'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
                 <name>Timestamp</name>
                 <description>PostgreSQL timestamp expression that is evaluated against the data table. The data table schema, which must be the active data table schema in the CoStoSys configuration as always, must specify a single timestamp field for this parameter to work. Only data rows with a timestamp value larger than the given timestamp expression will be processed. Note that when reading from a subset table, there may be subset rows indicated to be in process which are finally not read from the data table. This is an implementational shortcoming and might be addressed if respective feature requests are given through the JULIE Lab GitHub page or JCoRe issues.</description>
                 <type>String</type>
@@ -79,7 +86,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>BatchSize</name>
-                <description />
+                <description/>
                 <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -114,7 +121,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>Limit</name>
-                <description />
+                <description/>
                 <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -128,6 +135,12 @@
             </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
+            <nameValuePair>
+                <name>XmiNamespacesPostgresSchema</name>
+                <value>
+                    <string>public</string>
+                </value>
+            </nameValuePair>
             <nameValuePair>
                 <name>ResetTable</name>
                 <value>
@@ -143,13 +156,13 @@
             <nameValuePair>
                 <name>BatchSize</name>
                 <value>
-                    <integer>50</integer>
+                    <integer>1000</integer>
                 </value>
             </nameValuePair>
             <nameValuePair>
                 <name>SelectionOrder</name>
                 <value>
-                    <string />
+                    <string/>
                 </value>
             </nameValuePair>
         </configurationParameterSettings>
@@ -159,12 +172,12 @@
                 <import name="de.julielab.jcore.types.jcore-all-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection />
-        <capabilities />
+        <fsIndexCollection/>
+        <capabilities/>
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    <version>2.5.0-SNAPSHOT</version></processingResourceMetaData>
+    </processingResourceMetaData>
 </collectionReaderDescription>
