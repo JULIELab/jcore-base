@@ -103,7 +103,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
             rowBatch.setStoreMaxXmiId(storeMaxXmiId);
             rowBatch.setIncreasedAttributeSize(maxXmlAttributeSize);
             rowBatch.setXercesAttributeBufferSize(xercesAttributeBufferSize);
-            rowBatch.setNamespaceSchema(xmiMetaSchema);
+            rowBatch.setXmiMetaTablesPostgresSchema(xmiMetaSchema);
         } catch (Throwable throwable) {
             log.error("Exception ocurred while trying to get the next document", throwable);
             throw throwable;

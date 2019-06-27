@@ -85,7 +85,7 @@ public class Initializer {
         readsBaseDocument = rowBatch.getReadsBaseXmiDocument();
         maxXmlAttributeSize = rowBatch.getIncreasedAttributeSize();
         xercesAttributeBufferSize = rowBatch.getXercesAttributeBufferSize();
-        xmiMetaSchema = rowBatch.getNamespaceSchema();
+        xmiMetaSchema = rowBatch.getXmiMetaTablesPostgresSchema();
         initAfterParameterReading();
     }
 
