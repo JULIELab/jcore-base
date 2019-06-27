@@ -27,7 +27,7 @@ public class Initializer {
     public static final String PARAM_READS_BASE_DOCUMENT = "ReadsBaseDocument";
     public static final String PARAM_INCREASED_ATTRIBUTE_SIZE = "IncreasedAttributeSize";
     public static final String PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE = "XercesAttributeBufferSize";
-    public static final String PARAM_XMI_NAMESPACES_SCHEMA = "XmiNamespacesPostgresSchema";
+    public static final String PARAM_XMI_META_SCHEMA = "XmiMetaTablesSchema";
     private final static Logger log = LoggerFactory.getLogger(Initializer.class);
     private final String[] additionalTableNames;
     private final boolean joinTables;
@@ -42,7 +42,7 @@ public class Initializer {
     private Boolean logFinalXmi;
     private DataBaseConnector dbc;
     private Initializable initializable;
-    private String nsSchema;
+    private String xmiMetaSchema;
 
     public Initializer(Initializable initializable, DataBaseConnector dbc, String[] additionalTableNames, boolean joinTables) {
         this.initializable = initializable;
@@ -75,7 +75,7 @@ public class Initializer {
                 .ifPresent(v -> maxXmlAttributeSize = v);
         Optional.ofNullable((Integer) context.getConfigParameterValue(PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE))
                 .ifPresent(v -> xercesAttributeBufferSize = v);
-        nsSchema = Optional.ofNullable((String) context.getConfigParameterValue(PARAM_XMI_NAMESPACES_SCHEMA)).orElse("public");
+        xmiMetaSchema = Optional.ofNullable((String) context.getConfigParameterValue(PARAM_XMI_META_SCHEMA)).orElse("public");
         initAfterParameterReading();
     }
 
@@ -85,7 +85,7 @@ public class Initializer {
         readsBaseDocument = rowBatch.getReadsBaseXmiDocument();
         maxXmlAttributeSize = rowBatch.getIncreasedAttributeSize();
         xercesAttributeBufferSize = rowBatch.getXercesAttributeBufferSize();
-        nsSchema = rowBatch.getNamespaceSchema();
+        xmiMetaSchema = rowBatch.getNamespaceSchema();
         initAfterParameterReading();
     }
 
@@ -159,13 +159,13 @@ public class Initializer {
 
     private Map<String, String> getNamespaceMap() {
         Map<String, String> map = null;
-        if (dbc.tableExists(nsSchema + "." + XmiSplitConstants.XMI_NS_TABLE)) {
+        if (dbc.tableExists(xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE)) {
             try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
                 map = new HashMap<>();
                 conn.setAutoCommit(true);
                 Statement stmt = conn.createStatement();
                 String sql = String.format("SELECT %s,%s FROM %s", XmiSplitConstants.PREFIX, XmiSplitConstants.NS_URI,
-                        nsSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
+                        xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
                 ResultSet rs = stmt.executeQuery(String.format(sql));
                 while (rs.next())
                     map.put(rs.getString(1), rs.getString(2));
@@ -178,7 +178,7 @@ public class Initializer {
         } else {
             log.warn(
                     "Table \"{}\" was not found. It is assumed that the table from which is read contains complete XMI documents.",
-                    nsSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
+                    xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
         }
         return map;
     }

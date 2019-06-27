@@ -86,8 +86,8 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
-                <name>XmiNamespacesPostgresSchema</name>
-                <description>Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '_xmi_namespaces' when splitting annotations in annotation modules for later retrieval by the XMI DB reader. This parameter allows to specify in which Postgres schema this table should be stored. Defaults to 'public'.</description>
+                <name>XmiMetaTablesSchema</name>
+                <description>Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '_xmi_namespaces' when splitting annotations in annotation modules for later retrieval by the XMI DB reader. This parameter allows to specify in which Postgres schema this table should be stored. Also, the table listing the annotation tables is stored in this Postgres schema. Defaults to 'public'.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -128,7 +128,7 @@
                 </value>
             </nameValuePair>
             <nameValuePair>
-                <name>XmiNamespacesPostgresSchema</name>
+                <name>XmiMetaTablesSchema</name>
                 <value>
                     <string>public</string>
                 </value>

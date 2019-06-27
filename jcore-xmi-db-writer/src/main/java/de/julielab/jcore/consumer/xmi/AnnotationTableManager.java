@@ -29,6 +29,7 @@ public class AnnotationTableManager {
 
     private String dbDocumentTableName;
     private String annotationStorageSchema;
+    private String xmiMetaSchema;
 
     private Boolean storeBaseDocument;
 
@@ -39,7 +40,7 @@ public class AnnotationTableManager {
     private Map<String, String> annotationPgSchemaMap = new HashMap<>();
 
     public AnnotationTableManager(DataBaseConnector dbc, String rawDocumentTableName, List<String> annotationsToStore,
-                                  String documentTableSchema, String annotationTableSchema, Boolean storeAll, Boolean storeBaseDocument, String annotationStorageSchema) throws TableSchemaMismatchException {
+                                  String documentTableSchema, String annotationTableSchema, Boolean storeAll, Boolean storeBaseDocument, String annotationStorageSchema, String xmiMetaSchema) throws TableSchemaMismatchException {
         this.dbc = dbc;
         this.annotationsToStore = annotationsToStore;
         this.documentTableSchema = documentTableSchema;
@@ -48,6 +49,7 @@ public class AnnotationTableManager {
         this.storeBaseDocument = storeBaseDocument;
         this.dbDocumentTableName = getEffectiveDocumentTableName(rawDocumentTableName);
         this.annotationStorageSchema = annotationStorageSchema;
+        this.xmiMetaSchema = xmiMetaSchema;
         createTable(rawDocumentTableName, documentTableSchema);
         for (String annotation : annotationsToStore)
             createTable(annotation, annotationTableSchema);
@@ -130,7 +132,7 @@ public class AnnotationTableManager {
             // first get the names of all annotation tables
             try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                 Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT " + TABLE_NAME + " FROM " + dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE);
+                ResultSet rs = stmt.executeQuery("SELECT " + TABLE_NAME + " FROM " + xmiMetaSchema + "." + ANNOTATION_LIST_TABLE);
                 while (rs.next()) {
                     obsoleteAnnotationTables.add(rs.getString(1));
                 }
@@ -217,7 +219,7 @@ public class AnnotationTableManager {
             Statement stmt = conn.createStatement();
 
             String template = "INSERT INTO %s VALUES('%s')";
-            String sql = String.format(template, dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE, tablename);
+            String sql = String.format(template, xmiMetaSchema + "." + ANNOTATION_LIST_TABLE, tablename);
             stmt.execute(sql);
 
         } catch (PSQLException e) {
@@ -232,12 +234,14 @@ public class AnnotationTableManager {
     }
 
     private void createAnnotationListTable() {
-        if (!dbc.tableExists(dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE)) {
+        if (!dbc.tableExists(xmiMetaSchema + "." + ANNOTATION_LIST_TABLE)) {
             try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                 conn.setAutoCommit(true);
+                if (!dbc.schemaExists(xmiMetaSchema))
+                    dbc.createSchema(xmiMetaSchema);
                 Statement stmt = conn.createStatement();
                 String sql = String.format("CREATE TABLE %s (%s text PRIMARY KEY)",
-                        dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE, TABLE_NAME);
+                        xmiMetaSchema + "." + ANNOTATION_LIST_TABLE, TABLE_NAME);
                 stmt.execute(sql);
             } catch (SQLException e) {
                 e.printStackTrace();

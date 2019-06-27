@@ -38,7 +38,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
     public static final String PARAM_READS_BASE_DOCUMENT = Initializer.PARAM_READS_BASE_DOCUMENT;
     public static final String PARAM_INCREASED_ATTRIBUTE_SIZE = Initializer.PARAM_INCREASED_ATTRIBUTE_SIZE;
     public static final String PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE = Initializer.PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE;
-    public static final String PARAM_XMI_NAMESPACES_SCHEMA = Initializer.PARAM_XMI_NAMESPACES_SCHEMA;
+    public static final String PARAM_XMI_META_SCHEMA = "XmiMetaTablesSchema";
     private final static Logger log = LoggerFactory.getLogger(XmiDBMultiplierReader.class);
     @ConfigurationParameter(name = PARAM_READS_BASE_DOCUMENT, description = "Indicates if this reader reads segmented " +
             "annotation data. If set to false, the XMI data is expected to represent complete annotated documents. " +
@@ -64,8 +64,8 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
             "(j)visualvm, the hot spots of work can be identified. If one of those is the XML attribute buffer " +
             "resizing, this parameter should be set to a size that makes buffer resizing unnecessary.")
     private int xercesAttributeBufferSize;
-    @ConfigurationParameter(name = PARAM_XMI_NAMESPACES_SCHEMA, mandatory = false, defaultValue = "public", description = "Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '" +XmiSplitConstants.XMI_NS_TABLE + "' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Defaults to 'public'.")
-    private String nsSchema;
+    @ConfigurationParameter(name = PARAM_XMI_META_SCHEMA, mandatory = false, defaultValue = "public", description = "Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '" +XmiSplitConstants.XMI_NS_TABLE + "' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Also, the table listing the annotation tables is stored in this Postgres schema. Defaults to 'public'.")
+    private String xmiMetaSchema;
     private boolean doGzip;
     private String[] additionalTableNames;
 
@@ -83,7 +83,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
                 .ifPresent(v -> maxXmlAttributeSize = v);
         Optional.ofNullable((Integer) context.getConfigParameterValue(PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE))
                 .ifPresent(v -> xercesAttributeBufferSize = v);
-        nsSchema = Optional.ofNullable((String) context.getConfigParameterValue(PARAM_XMI_NAMESPACES_SCHEMA)).orElse("public");
+        xmiMetaSchema = Optional.ofNullable((String) context.getConfigParameterValue(PARAM_XMI_META_SCHEMA)).orElse("public");
         super.initialize(context);
         // This is necessary when one or more tables have schema qualifications which are resolved
         // by the super class in the super.initialize() call above.
@@ -103,7 +103,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
             rowBatch.setStoreMaxXmiId(storeMaxXmiId);
             rowBatch.setIncreasedAttributeSize(maxXmlAttributeSize);
             rowBatch.setXercesAttributeBufferSize(xercesAttributeBufferSize);
-            rowBatch.setNamespaceSchema(nsSchema);
+            rowBatch.setNamespaceSchema(xmiMetaSchema);
         } catch (Throwable throwable) {
             log.error("Exception ocurred while trying to get the next document", throwable);
             throw throwable;

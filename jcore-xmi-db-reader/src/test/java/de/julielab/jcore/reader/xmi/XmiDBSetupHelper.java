@@ -27,7 +27,7 @@ public class XmiDBSetupHelper {
                 XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
                 XMIDBWriter.PARAM_UPDATE_MODE, true,
                 XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), Header.class.getCanonicalName()},
-                XMIDBWriter.PARAM_XMI_NAMESPACES_SCHEMA, nsSchema
+                XMIDBWriter.PARAM_XMI_META_SCHEMA, nsSchema
         );
         JCas jCas = getJCasWithRequiredTypes();
         jCas.setDocumentText("This is a sentence. This is another one.");

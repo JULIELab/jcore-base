@@ -21,11 +21,11 @@ public class MetaTableManager {
     private Set<String> knownNSPrefixes = new HashSet<String>();
 
     private DataBaseConnector dbc;
-    private String nsSchema;
+    private String xmiMetaSchema;
 
-    public MetaTableManager(DataBaseConnector dbc, String nsSchema) {
+    public MetaTableManager(DataBaseConnector dbc, String xmiMetaSchema) {
         this.dbc = dbc;
-        this.nsSchema = nsSchema;
+        this.xmiMetaSchema = xmiMetaSchema;
         createNamespaceTable(dbc);
     }
 
@@ -41,7 +41,7 @@ public class MetaTableManager {
             try (CoStoSysConnection conn = dbc.reserveConnection()) {
                 conn.setAutoCommit(true);
                 Statement stmt = conn.createStatement();
-                String sql = String.format("SELECT %s FROM %s", PREFIX, nsSchema + "." + XMI_NS_TABLE);
+                String sql = String.format("SELECT %s FROM %s", PREFIX, xmiMetaSchema + "." + XMI_NS_TABLE);
                 ResultSet rs = stmt.executeQuery(String.format(sql));
                 while (rs.next()) {
                     String knownPrefix = rs.getString(1);
@@ -52,7 +52,7 @@ public class MetaTableManager {
                 for (Entry<String, String> nsEntry : notFound) {
                     prefix = nsEntry.getKey();
                     uri = nsEntry.getValue();
-                    sql = String.format(template, nsSchema + "." + XMI_NS_TABLE, prefix, uri);
+                    sql = String.format(template, xmiMetaSchema + "." + XMI_NS_TABLE, prefix, uri);
                     stmt.execute(sql);
                 }
 
@@ -72,14 +72,14 @@ public class MetaTableManager {
 
 
     private void createNamespaceTable(DataBaseConnector dbc) {
-        if (!dbc.tableExists(nsSchema + "." + XMI_NS_TABLE)) {
+        if (!dbc.tableExists(xmiMetaSchema + "." + XMI_NS_TABLE)) {
             try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                 conn.setAutoCommit(true);
-                if (!dbc.schemaExists(nsSchema))
-                    dbc.createSchema(nsSchema);
+                if (!dbc.schemaExists(xmiMetaSchema))
+                    dbc.createSchema(xmiMetaSchema);
                 Statement stmt = conn.createStatement();
-                log.info("Creating XMI namespace table at {}", nsSchema + "."+ XMI_NS_TABLE);
-                String sql = String.format("CREATE TABLE %s (%s text PRIMARY KEY, %s text)", nsSchema + "." + XMI_NS_TABLE, PREFIX, NS_URI);
+                log.info("Creating XMI namespace table {}", xmiMetaSchema + "."+ XMI_NS_TABLE);
+                String sql = String.format("CREATE TABLE %s (%s text PRIMARY KEY, %s text)", xmiMetaSchema + "." + XMI_NS_TABLE, PREFIX, NS_URI);
                 stmt.execute(sql);
             } catch (SQLException e) {
                 e.printStackTrace();
