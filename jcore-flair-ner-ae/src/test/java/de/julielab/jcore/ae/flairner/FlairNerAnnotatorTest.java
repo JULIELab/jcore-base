@@ -9,6 +9,7 @@ import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
+import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
@@ -17,6 +18,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
