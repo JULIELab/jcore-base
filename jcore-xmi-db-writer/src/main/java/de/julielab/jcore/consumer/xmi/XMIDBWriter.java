@@ -26,7 +26,9 @@ import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xml.*;
+import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import de.julielab.xml.util.XMISplitterException;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -77,6 +79,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_COSTOSYS_CONFIG = "CostosysConfigFile";
     public static final String PARAM_UPDATE_MODE = "UpdateMode";
     public static final String PARAM_DO_GZIP = "PerformGZIP";
+    public static final String PARAM_USE_BINARY_FORNAT = "UseBinaryFormat";
     public static final String PARAM_STORE_ALL = "StoreEntireXmiData";
 
     public static final String PARAM_TABLE_DOCUMENT = "DocumentTable";
@@ -163,8 +166,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private int writeBatchSize;
     @ConfigurationParameter(name = PARAM_XMI_META_SCHEMA, mandatory = false, defaultValue = "public", description = "Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '" + MetaTableManager.XMI_NS_TABLE + "' when splitting annotations in annotation modules for later retrieval by the XMI DB reader. This parameter allows to specify in which Postgres schema this table should be stored. Also, the table listing the annotation tables is stored in this Postgres schema. Defaults to 'public'.")
     private String xmiMetaSchema;
+    @ConfigurationParameter(name = PARAM_USE_BINARY_FORNAT, mandatory = false, defaultValue = "false", description = "If set to true, the XMI data is stored in a binary format to avoid a lot of the XML format overhead. This is meant to reduce storage size.")
+    private boolean useBinaryFormat;
 
     private XmiSplitter splitter;
+    private BinaryJeDISNodeEncoder binaryEncoder;
     // Must be a linked HashMap so that the document table comes first when
     // iterating over all tables to insert data. This is required because the
     // annotation tables have a foreign key to the document table.
@@ -181,6 +187,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
     private int headerlessDocuments = 0;
     private int currentBatchSize = 0;
+    private Map<String, Integer> binaryStringMapping = Collections.emptyMap();
+    private Map<String, Boolean> binaryMappedFeatures = Collections.emptyMap();
 
     private XmiDataInserter annotationInserter;
 
@@ -248,6 +256,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         annotationStorageSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA)).orElse(dbc.getActiveDataPGSchema());
         annotations = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE)).orElse(new String[0]);
         xmiMetaSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_XMI_META_SCHEMA)).orElse("public");
+        useBinaryFormat = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_USE_BINARY_FORNAT)).orElse(false);
 
         List<String> annotationsToStoreTableNames = new ArrayList<>();
         annotationsToStore = Collections.emptyList();
@@ -335,10 +344,15 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         baseDocumentAnnotationTypes);
             }
         }
+        if (useBinaryFormat) {
+            this.binaryEncoder = new BinaryJeDISNodeEncoder();
+        }
+
         log.info(XMIDBWriter.class.getName() + " initialized.");
         log.info("Effective document table name: {}", effectiveDocTableName);
         log.info("Is base document stored: {}", storeBaseDocument);
         log.info("CAS XMI data will be GZIPed: {}", doGzip);
+        log.info("Use binary format: {}", useBinaryFormat);
         log.info("Is the whole, unsplit XMI document stored: {}", storeAll);
         log.info("Annotations belonging to the base document: {}", baseDocumentAnnotationTypes);
         log.info("Annotation types to store in separate tables: {}", annotationsToStore);
@@ -490,6 +504,19 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                                         "that should be stored now.");
                     log.trace("Updating max xmi id of document {}. New max xmi id: {}", docId, newXmiId);
                     log.trace("Sofa ID map for this document: {}", currentSofaXmiIdMap);
+
+                    if (useBinaryFormat) {
+                        final ImmutablePair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable((existingMapping, existingMappedFeatures) -> binaryEncoder.findMissingItemsForMapping(result.jedisNodesInAnnotationModules, aJCas.getTypeSystem(), existingMapping, existingMappedFeatures), binaryStringMapping, binaryMappedFeatures);
+                        binaryStringMapping = updatedMappingAndMappedFeatures.left;
+                        binaryMappedFeatures = updatedMappingAndMappedFeatures.right;
+                        final Map<String, ByteArrayOutputStream> encodedXmiData = binaryEncoder.encode(result.jedisNodesInAnnotationModules, aJCas.getTypeSystem(), binaryStringMapping, binaryMappedFeatures);
+                        splitXmiData = encodedXmiData;
+                    }
+
+
+
+
+
                     for (String tableName : serializedCASes.keySet()) {
                         boolean isDocumentTable = tableName.equals(effectiveDocTableName);
                         ByteArrayOutputStream dataBaos = splitXmiData.get(tableName);

@@ -3,17 +3,29 @@ package de.julielab.jcore.consumer.xmi;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.xml.XmiSplitConstants;
+import de.julielab.xml.binary.BinaryStorageAnalysisResult;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.TypeSystem;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 
 public class MetaTableManager {
+    public static final String BINARY_MAPPING_TABLE = "_binary_string_mapping";
+    public static final String BINARY_FEATURES_TO_MAP_TABLE = "_binary_features_to_map";
+    public static final String BINARY_MAPPING_COL_STRING = "mapping_string";
+    public static final String BINARY_MAPPING_COL_ID = "mapping_id";
+    public static final String BINARY_FEATURES_TO_MAP_COL_FEATURE = "feature";
+    public static final String BINARY_FEATURES_TO_MAP_COL_MAP = "map";
     public static final String XMI_NS_TABLE = XmiSplitConstants.XMI_NS_TABLE;
     public static final String PREFIX = XmiSplitConstants.PREFIX;
     public static final String NS_URI = XmiSplitConstants.NS_URI;
@@ -78,7 +90,7 @@ public class MetaTableManager {
                 if (!dbc.schemaExists(xmiMetaSchema))
                     dbc.createSchema(xmiMetaSchema);
                 Statement stmt = conn.createStatement();
-                log.info("Creating XMI namespace table {}", xmiMetaSchema + "."+ XMI_NS_TABLE);
+                log.info("Creating XMI namespace table {}", xmiMetaSchema + "." + XMI_NS_TABLE);
                 String sql = String.format("CREATE TABLE %s (%s text PRIMARY KEY, %s text)", xmiMetaSchema + "." + XMI_NS_TABLE, PREFIX, NS_URI);
                 stmt.execute(sql);
             } catch (SQLException e) {
@@ -89,5 +101,109 @@ public class MetaTableManager {
             }
         }
     }
+
+    /**
+     * <p>Synchronized updates to the map XMI string -> ID. The 'XMI strings' are XML element names, attribute names and also attribute values which don't seem to have a lot of
+     * values as determined by the {@link de.julielab.xml.binary.BinaryJeDISNodeEncoder#findMissingItemsForMapping(Collection, TypeSystem, Map, Map)} method. An attribute is assumed to
+     * not have a lot of different values if it has at most half as many different values as there are occurrences of the attribute, and, thus, the respective UIMA type feature.
+     * This strategy is currently only applied to string values.</p>
+     * <p>This method checks if there are items to be mapped which are not yet present in the current mapping which is passed from the <tt>XMIDBWriter</tt>. If there
+     * are new items, the mapping table is locked from concurrent access and updated with the new values. The updated
+     * mapping is returned to be kept for future applications.</p>
+     *
+     * @param missingItemsFunction A function that wraps the call to {@link de.julielab.xml.binary.BinaryJeDISNodeEncoder#findMissingItemsForMapping(Collection, TypeSystem, Map, Map)} to keep uninteresting parameters from being passed to this method.
+     * @param currentMappingState  The mapping as it is currently known to the <tt>XMIDBWriter</tt> instance.
+     * @return The mapping with all known mappings from the database, potentially with updated elements from the current document.
+     * @throws AnalysisEngineProcessException If the database communication fails.
+     */
+    public ImmutablePair<Map<String, Integer>, Map<String, Boolean>> updateBinaryStringMappingTable(BiFunction<Map<String, Integer>, Map<String, Boolean>,BinaryStorageAnalysisResult> missingItemsFunction, Map<String, Integer> currentMappingState, Map<String, Boolean> currentMappedAttributes) throws AnalysisEngineProcessException {
+        Map<String, Integer> completeMapping = currentMappingState;
+        Map<String, Boolean> completeMappedAttributes = currentMappedAttributes;
+        final BinaryStorageAnalysisResult missingItemsFromCurrentState = missingItemsFunction.apply(currentMappingState, currentMappedAttributes);
+        if (!missingItemsFromCurrentState.getValuesToMap().isEmpty()) {
+            String mappingTableName = xmiMetaSchema + "." + BINARY_MAPPING_TABLE;
+            String featuresToMapTableName = xmiMetaSchema + "." + BINARY_FEATURES_TO_MAP_TABLE;
+            try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
+                costoConn.setAutoCommit(false);
+                final Statement stmt = costoConn.createStatement();
+                // Create mapping table
+                try {
+                    if (!dbc.tableExists(mappingTableName)) {
+                        String sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
+                        stmt.execute(sql);
+                    }
+                } catch (SQLException e) {
+                    log.debug("Tried to create table {} but did not succeed. The table was probably already created by another process or thread.", mappingTableName);
+                }
+                // Create features to map table
+                try {
+                    if (!dbc.tableExists(mappingTableName)) {
+                        String sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER)", featuresToMapTableName,BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP);
+                        stmt.execute(sql);
+                    }
+                } catch (SQLException e) {
+                    log.debug("Tried to create table {} but did not succeed. The table was probably already created by another process or thread.", mappingTableName);
+                }
+                // Completely lock the tables. This is a synchronization mechanism: All mapping updates will wait at this
+                // exact location. On gaining access exclusive access, the table is first updated before it is
+                // released again (which happens on the end of the transaction).
+                stmt.execute(String.format("LOCK TABLE ONLY %s IN ACCESS EXCLUSIVE ", mappingTableName));
+                stmt.execute(String.format("LOCK TABLE ONLY %s ACCESS EXCLUSIVE", featuresToMapTableName));
+
+                // Read the mapping table
+                Map<String, Integer> existingMapping = new HashMap<>();
+                String sql = String.format("SELECT %s,%s FROM %s", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName);
+                final ResultSet rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    existingMapping.put(rs.getString(1), rs.getInt(2));
+                }
+
+                // Read the features to map table
+                Map<String, Boolean> existingFeaturesToMap = new HashMap<>();
+                String sqlFeaturesToMap = String.format("SELECT %s,%s FROM %s", BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP, featuresToMapTableName);
+                final ResultSet rsFeaturesToMap = stmt.executeQuery(sqlFeaturesToMap);
+                while (rsFeaturesToMap.next()) {
+                    existingFeaturesToMap.put(rsFeaturesToMap.getString(1), rsFeaturesToMap.getBoolean(2));
+                }
+
+                // Run the analysis with the fresh data from the database
+                final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMapping, existingFeaturesToMap);
+
+                // Add the missing mapping items into the mapping table
+                final Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
+                String insertSql = String.format("INSERT INTO %s values(?, ?)", mappingTableName);
+                final PreparedStatement ps = costoConn.prepareStatement(insertSql);
+                for (String mappedString : missingItems.keySet()) {
+                    ps.setString(1, mappedString);
+                    ps.setInt(2, missingItems.get(mappedString));
+                }
+                ps.executeBatch();
+
+                final Map<String, Boolean> missingFeaturesToMap = analysisResult.getFeaturesToMap();
+                String insertFeaturesToMapSql = String.format("INSERT INTO %s values(?, ?)", mappingTableName);
+                final PreparedStatement psFeaturesToMap = costoConn.prepareStatement(insertFeaturesToMapSql);
+                for (String mappedString : missingFeaturesToMap.keySet()) {
+                    psFeaturesToMap.setString(1, mappedString);
+                    psFeaturesToMap.setBoolean(2, missingFeaturesToMap.get(mappedString));
+                }
+                psFeaturesToMap.executeBatch();
+
+                // Commit the changes made
+                costoConn.commit();
+                costoConn.setAutoCommit(true);
+
+                completeMapping = existingMapping;
+                completeMapping.putAll(missingItems);
+
+                completeMappedAttributes = existingFeaturesToMap;
+                completeMappedAttributes.putAll(missingFeaturesToMap);
+            } catch (SQLException e) {
+                log.error("Could not retrieve binary string mapping data from table {}.", mappingTableName, e);
+                throw new AnalysisEngineProcessException(e);
+            }
+        }
+        return new ImmutablePair(completeMapping, completeMappedAttributes);
+    }
+
 
 }
