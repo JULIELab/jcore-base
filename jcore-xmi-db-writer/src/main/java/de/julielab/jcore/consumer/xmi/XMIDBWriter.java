@@ -42,6 +42,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -261,10 +262,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         List<String> annotationsToStoreTableNames = new ArrayList<>();
         annotationsToStore = Collections.emptyList();
         if (storeAll) {
-            schemaDocument = dbc.addXmiDocumentFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
+            schemaDocument = dbc.addXmiDocumentFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip || useBinaryFormat).getName();
         } else {
-            schemaDocument = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
-            schemaAnnotation = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip).getName();
+            schemaDocument = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip || useBinaryFormat).getName();
+            schemaAnnotation = dbc.addXmiAnnotationFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip || useBinaryFormat).getName();
             if (null != annotations) {
                 // In 'annotationsToStore' we keep the un-qualified annotation types. We need those for the XMI splitter.
                 // We also create a map from type name to schema so we know where to put each annotation later
@@ -337,10 +338,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             }
         } else {
             if (null != attributeSize) {
-                splitter = new StaxXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument, docTableParamValue,
+                splitter = new StaxXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument,
                         baseDocumentAnnotationTypes, attributeSize);
             } else {
-                splitter = new StaxXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument, docTableParamValue,
+                splitter = new StaxXmiSplitter(new HashSet<>(annotationsToStore), recursively, storeBaseDocument,
                         baseDocumentAnnotationTypes);
             }
         }
@@ -481,17 +482,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     // Split the xmi data.
                     XmiSplitterResult result = splitter.process(completeXmiData, aJCas, nextXmiId, baseDocumentSofaIdMap);
                     Map<String, ByteArrayOutputStream> splitXmiData = result.xmiData;
-                    // adapt the map keys to table names (currently, the keys are the
-                    // Java type names)
-                    Map<String, ByteArrayOutputStream> convertedMap = new HashMap<>();
-                    for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet()) {
-                        if (!e.getKey().equals(docTableParamValue))
-                            convertedMap.put(annotationTableManager.convertAnnotationTypeToTableName(e.getKey(), storeAll),
-                                    e.getValue());
-                        else
-                            convertedMap.put(effectiveDocTableName, e.getValue());
-                    }
-                    splitXmiData = convertedMap;
                     Integer newXmiId = result.maxXmiId;
                     Map<String, String> nsAndXmiVersionMap = result.namespaces;
                     Map<Integer, String> currentSofaXmiIdMap = result.currentSofaIdMap;
@@ -513,7 +503,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         splitXmiData = encodedXmiData;
                     }
 
-
+                    // adapt the map keys to table names (currently, the keys are the
+                    // Java type names)
+                    splitXmiData = convertModuleLabelsToTableNames(splitXmiData);
 
 
 
@@ -571,6 +563,19 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             log.error("Error occurred at document {}: ", docid, throwable);
             throw throwable;
         }
+    }
+
+    @NotNull
+    private Map<String, ByteArrayOutputStream> convertModuleLabelsToTableNames(Map<String, ByteArrayOutputStream> splitXmiData) {
+        Map<String, ByteArrayOutputStream> convertedMap = new HashMap<>();
+        for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet()) {
+            if (!e.getKey().equals(XmiSplitter.DOCUMENT_MODULE_LABEL))
+                convertedMap.put(annotationTableManager.convertAnnotationTypeToTableName(e.getKey(), storeAll),
+                        e.getValue());
+            else
+                convertedMap.put(effectiveDocTableName, e.getValue());
+        }
+        return convertedMap;
     }
 
     private DocumentId getDocumentId(JCas aJCas) {
@@ -689,16 +694,21 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         Object storedData;
         Map<String, String> field = dbc.getFieldConfiguration(tableSchemaName).getFields().get(1);
         String xmiFieldType = field.get(JulieXMLConstants.TYPE);
-        if (doGzip) {
+        if (doGzip || useBinaryFormat) {
             if (!xmiFieldType.equalsIgnoreCase("bytea"))
                 log.warn("The table schema \"" + tableSchemaName + "\" specifies the data type \"" + xmiFieldType
                         + "\" for the field \"" + field.get(JulieXMLConstants.NAME)
                         + "\" which is supposed to be filled with gzipped XMI data. However, binary data should go to a field of type bytea.");
-            ByteArrayOutputStream gzipBaos = new ByteArrayOutputStream();
-            GZIPOutputStream gzos = new GZIPOutputStream(gzipBaos);
-            gzos.write(dataBytes);
-            gzos.close();
-            storedData = gzipBaos.toByteArray();
+            if (doGzip) {
+                ByteArrayOutputStream gzipBaos = new ByteArrayOutputStream();
+                GZIPOutputStream gzos = new GZIPOutputStream(gzipBaos);
+                gzos.write(dataBytes);
+                gzos.close();
+                storedData = gzipBaos.toByteArray();
+            } else {
+                // Unzipped binary format
+                storedData = dataBytes;
+            }
         } else {
             if (!xmiFieldType.equalsIgnoreCase("text") && !xmiFieldType.equalsIgnoreCase("xml"))
                 log.warn("The table schema \"" + tableSchemaName + "\" specifies the data type \"" + xmiFieldType

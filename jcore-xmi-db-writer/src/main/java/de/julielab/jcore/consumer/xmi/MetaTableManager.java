@@ -116,20 +116,21 @@ public class MetaTableManager {
      * @return The mapping with all known mappings from the database, potentially with updated elements from the current document.
      * @throws AnalysisEngineProcessException If the database communication fails.
      */
-    public ImmutablePair<Map<String, Integer>, Map<String, Boolean>> updateBinaryStringMappingTable(BiFunction<Map<String, Integer>, Map<String, Boolean>,BinaryStorageAnalysisResult> missingItemsFunction, Map<String, Integer> currentMappingState, Map<String, Boolean> currentMappedAttributes) throws AnalysisEngineProcessException {
+    public ImmutablePair<Map<String, Integer>, Map<String, Boolean>> updateBinaryStringMappingTable(BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction, Map<String, Integer> currentMappingState, Map<String, Boolean> currentMappedAttributes) throws AnalysisEngineProcessException {
         Map<String, Integer> completeMapping = currentMappingState;
         Map<String, Boolean> completeMappedAttributes = currentMappedAttributes;
         final BinaryStorageAnalysisResult missingItemsFromCurrentState = missingItemsFunction.apply(currentMappingState, currentMappedAttributes);
-        if (!missingItemsFromCurrentState.getValuesToMap().isEmpty()) {
+        if (!missingItemsFromCurrentState.getMissingValuesToMap().isEmpty()) {
             String mappingTableName = xmiMetaSchema + "." + BINARY_MAPPING_TABLE;
             String featuresToMapTableName = xmiMetaSchema + "." + BINARY_FEATURES_TO_MAP_TABLE;
+            String sql = null;
             try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
                 costoConn.setAutoCommit(false);
                 final Statement stmt = costoConn.createStatement();
                 // Create mapping table
                 try {
                     if (!dbc.tableExists(mappingTableName)) {
-                        String sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
+                        sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
                         stmt.execute(sql);
                     }
                 } catch (SQLException e) {
@@ -137,8 +138,8 @@ public class MetaTableManager {
                 }
                 // Create features to map table
                 try {
-                    if (!dbc.tableExists(mappingTableName)) {
-                        String sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER)", featuresToMapTableName,BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP);
+                    if (!dbc.tableExists(featuresToMapTableName)) {
+                        sql = String.format("CREATE TABLE %s (%s TEXT, %s BOOL)", featuresToMapTableName, BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP);
                         stmt.execute(sql);
                     }
                 } catch (SQLException e) {
@@ -147,12 +148,14 @@ public class MetaTableManager {
                 // Completely lock the tables. This is a synchronization mechanism: All mapping updates will wait at this
                 // exact location. On gaining access exclusive access, the table is first updated before it is
                 // released again (which happens on the end of the transaction).
-                stmt.execute(String.format("LOCK TABLE ONLY %s IN ACCESS EXCLUSIVE ", mappingTableName));
-                stmt.execute(String.format("LOCK TABLE ONLY %s ACCESS EXCLUSIVE", featuresToMapTableName));
+                sql = String.format("LOCK TABLE ONLY %s IN ACCESS EXCLUSIVE MODE", mappingTableName);
+                stmt.execute(sql);
+                sql = String.format("LOCK TABLE ONLY %s IN ACCESS EXCLUSIVE MODE", featuresToMapTableName);
+                stmt.execute(sql);
 
                 // Read the mapping table
                 Map<String, Integer> existingMapping = new HashMap<>();
-                String sql = String.format("SELECT %s,%s FROM %s", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName);
+                sql = String.format("SELECT %s,%s FROM %s", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName);
                 final ResultSet rs = stmt.executeQuery(sql);
                 while (rs.next()) {
                     existingMapping.put(rs.getString(1), rs.getInt(2));
@@ -160,8 +163,8 @@ public class MetaTableManager {
 
                 // Read the features to map table
                 Map<String, Boolean> existingFeaturesToMap = new HashMap<>();
-                String sqlFeaturesToMap = String.format("SELECT %s,%s FROM %s", BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP, featuresToMapTableName);
-                final ResultSet rsFeaturesToMap = stmt.executeQuery(sqlFeaturesToMap);
+                sql = String.format("SELECT %s,%s FROM %s", BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP, featuresToMapTableName);
+                final ResultSet rsFeaturesToMap = stmt.executeQuery(sql);
                 while (rsFeaturesToMap.next()) {
                     existingFeaturesToMap.put(rsFeaturesToMap.getString(1), rsFeaturesToMap.getBoolean(2));
                 }
@@ -171,20 +174,22 @@ public class MetaTableManager {
 
                 // Add the missing mapping items into the mapping table
                 final Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
-                String insertSql = String.format("INSERT INTO %s values(?, ?)", mappingTableName);
-                final PreparedStatement ps = costoConn.prepareStatement(insertSql);
+                sql = String.format("INSERT INTO %s values(?, ?)", mappingTableName);
+                final PreparedStatement ps = costoConn.prepareStatement(sql);
                 for (String mappedString : missingItems.keySet()) {
                     ps.setString(1, mappedString);
                     ps.setInt(2, missingItems.get(mappedString));
+                    ps.addBatch();
                 }
                 ps.executeBatch();
 
-                final Map<String, Boolean> missingFeaturesToMap = analysisResult.getFeaturesToMap();
-                String insertFeaturesToMapSql = String.format("INSERT INTO %s values(?, ?)", mappingTableName);
-                final PreparedStatement psFeaturesToMap = costoConn.prepareStatement(insertFeaturesToMapSql);
+                final Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
+                sql = String.format("INSERT INTO %s values(?, ?)", featuresToMapTableName);
+                final PreparedStatement psFeaturesToMap = costoConn.prepareStatement(sql);
                 for (String mappedString : missingFeaturesToMap.keySet()) {
                     psFeaturesToMap.setString(1, mappedString);
                     psFeaturesToMap.setBoolean(2, missingFeaturesToMap.get(mappedString));
+                    psFeaturesToMap.addBatch();
                 }
                 psFeaturesToMap.executeBatch();
 
@@ -198,7 +203,7 @@ public class MetaTableManager {
                 completeMappedAttributes = existingFeaturesToMap;
                 completeMappedAttributes.putAll(missingFeaturesToMap);
             } catch (SQLException e) {
-                log.error("Could not retrieve binary string mapping data from table {}.", mappingTableName, e);
+                log.error("Could not retrieve or update binary meta data tables. The last sent SQL query was {}", sql, e);
                 throw new AnalysisEngineProcessException(e);
             }
         }
