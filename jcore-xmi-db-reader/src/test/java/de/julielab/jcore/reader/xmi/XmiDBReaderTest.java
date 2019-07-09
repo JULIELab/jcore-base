@@ -1,6 +1,5 @@
 package de.julielab.jcore.reader.xmi;
 
-import de.julielab.costosys.dbconnection.DBCIterator;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.consumer.xmi.XMIDBWriter;
 import de.julielab.jcore.db.test.DBTestUtils;
@@ -40,7 +39,7 @@ public class XmiDBReaderTest {
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 2, postgres);
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, "public");
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, false,"public");
         assertTrue("The data document table exists", dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")));
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");

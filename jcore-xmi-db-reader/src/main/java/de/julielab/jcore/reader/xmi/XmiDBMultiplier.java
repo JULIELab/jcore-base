@@ -5,6 +5,7 @@ import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBMultiplier;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
+import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
@@ -33,6 +34,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     private CasPopulator casPopulator;
     private String[] xmiModuleAnnotationNames;
     private boolean doGzip;
+    private boolean useBinaryFormat;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -58,7 +60,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
         super.process(aJCas);
         // Now all global variables, most importantly "tables" and "schemaNames" have been initialized
         if (initializer == null) {
-            initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, getAdditionalTableNames().length > 0);
+            initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, getAdditionalTableNames().length > 0, useBinaryFormat);
             initializer.initialize(rowBatch);
             casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
         }
@@ -120,7 +122,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 
                 tableName = rowBatch.getTableName();
                 dataTable = rowBatch.getTables(0);
-                determineDataInGzipFormat(dataTable);
+                determineDataFormat(dataTable);
 
                 FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
@@ -134,32 +136,46 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             } else {
                 // Complete XMI reading mode
                 String table = rowBatch.getTables(0);
-                determineDataInGzipFormat(table);
+                determineDataFormat(table);
                 FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
             }
         }
     }
 
-    private void determineDataInGzipFormat(String table) throws ResourceInitializationException {
+    private void determineDataFormat(String table) throws ResourceInitializationException {
         doGzip = true;
+        useBinaryFormat = true;
         dataTable = dbc.getNextOrThisDataTable(table);
         log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
-        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
             while (rs.next()) {
                 byte[] xmiData = rs.getBytes("xmi");
                 try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
-                    gzis.read();
+                    byte[] firstTwoBytes = new byte[2];
+                    gzis.read(firstTwoBytes);
+                    checkForJeDISBinaryFormat(firstTwoBytes);
                 } catch (IOException e) {
                     log.debug("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
                     doGzip = false;
+                    checkForJeDISBinaryFormat(xmiData);
                 }
             }
         } catch (SQLException e) {
             if (e.getMessage().contains("does not exist"))
                 log.error("An exception occurred when trying to read the xmi column of the data table \"{}\". It seems the table does not contain XMI data and this is invalid to use with this reader.", dataTable);
             throw new ResourceInitializationException(e);
+        }
+    }
+
+    private void checkForJeDISBinaryFormat(byte[] firstTwoBytes) {
+        short header = (short) ((firstTwoBytes[0]<<8) | (0xff & firstTwoBytes[1]));
+        if (header != BinaryJeDISNodeEncoder.JEDIS_BINARY_MAGIC) {
+            useBinaryFormat = false;
+            log.debug("Is data encoded in JeDIS binary format: false");
+        } else {
+            log.debug("Is data encoded in JeDIS binary format: true");
         }
     }
 

@@ -43,7 +43,7 @@ public class XmiDBReaderGzippedDataTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 1, postgres);
         new File(costosysConfig).deleteOnExit();
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, true, "public");
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, true, false,"public");
         assertTrue(dbc.withConnectionQueryBoolean( c -> c.tableExists("_data.documents")), "The data document table exists");
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");

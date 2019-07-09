@@ -6,6 +6,10 @@ import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.XmiBuilder;
+import de.julielab.xml.XmiSplitter;
+import de.julielab.xml.binary.BinaryDecodingResult;
+import de.julielab.xml.binary.BinaryJeDISNodeDecoder;
+import de.julielab.xml.binary.BinaryXmiBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
@@ -23,8 +27,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CasPopulator {
     private final static Logger log = LoggerFactory.getLogger(CasPopulator.class);
@@ -40,16 +48,21 @@ public class CasPopulator {
     private final Boolean storeMaxXmiId;
     private final Boolean readsDataTable;
     private final String tableName;
+    private final Map<Integer, String> reverseBinaryMapping;
+    private final Map<String, Boolean> featuresToMapBinary;
+    private final BinaryXmiBuilder binaryBuilder;
+    private final boolean useBinaryFormat;
+    private final BinaryJeDISNodeDecoder binaryJeDISNodeDecoder;
     private boolean joinTables;
 
     /**
      * Takes document and annotation data from a XMI reader or XMI multiplier. Assembles a complete XMI document from
      * these data and populates a CAS with them. This class employs the XmiBuilder to assemble the XMI document.
      *
-     * @param dataTable The table that is read for document data.
-     * @param initializer The {@link Initializer} instance used to initialize the component that creates this class.
+     * @param dataTable     The table that is read for document data.
+     * @param initializer   The {@link Initializer} instance used to initialize the component that creates this class.
      * @param readDataTable Whether the data table is read directly in contrast of reading from a subset table.
-     * @param tableName The name of table that is primarily read. May be a data table or a subset table.
+     * @param tableName     The name of table that is primarily read. May be a data table or a subset table.
      */
     public CasPopulator(String dataTable, Initializer initializer, Boolean readDataTable, String tableName) {
         this.dbc = initializer.getDataBaseConnector();
@@ -62,14 +75,23 @@ public class CasPopulator {
         this.dataTable = dataTable;
         this.additionalTableNames = initializer.getAdditionalTableNames();
         this.builder = initializer.getXmiBuilder();
+        binaryBuilder = initializer.getBinaryBuilder();
+        useBinaryFormat = initializer.isUseBinaryFormat();
         this.logFinalXmi = initializer.getLogFinalXmi();
         this.xercesAttributeBufferSize = initializer.getXercesAttributeBufferSize();
         this.storeMaxXmiId = initializer.getStoreMaxXmiId();
+        reverseBinaryMapping = initializer.getReverseBinaryMapping();
+        featuresToMapBinary = initializer.getFeaturesToMapBinary();
+        if (useBinaryFormat) {
+            binaryJeDISNodeDecoder = new BinaryJeDISNodeDecoder(Stream.of(additionalTableNames).collect(Collectors.toSet()), true);
+        } else
+            binaryJeDISNodeDecoder = null;
     }
 
     /**
      * Retrieves document text and annotation XMI from <code>data</code>, assembles it into one single XMI document,
      * if necessary, and deserializes the XMI into the <code>jCas</code>.
+     *
      * @param data The XMI data that was read from one or more database tables.
      * @param jCas The CAS to populate.
      * @throws CasPopulationException If deserialization fails.
@@ -113,7 +135,7 @@ public class CasPopulator {
                                     + " should be retrieved only once from the document table."));
                 }
                 // Construct the input for the XmiBuilder.
-                xmiData.put(dataTable, documentIS);
+                xmiData.put(XmiSplitter.DOCUMENT_MODULE_LABEL, documentIS);
                 if (joinTables) {
                     for (int i = numDataRetrievedDataFields; i < data.length; i++) {
                         documentIS = data[i] != null ? new ByteArrayInputStream(data[i]) : null;
@@ -125,13 +147,19 @@ public class CasPopulator {
                 }
 
                 log.trace("Received {} bytes of XMI data, taking base document and annotation XMI together", dataSize);
-                builder.setInputSize((int) dataSize);
+                if (!useBinaryFormat)
+                    builder.setInputSize((int) dataSize);
 
                 log.trace(
                         "Building complete XMI data from separate XMI base document and annotation data retrieved from the database.");
                 ByteArrayOutputStream baos;
                 try {
-                    baos = builder.buildXmi(xmiData, dataTable, jCas.getTypeSystem());
+                    if (!useBinaryFormat)
+                        baos = builder.buildXmi(xmiData, jCas.getTypeSystem());
+                    else {
+                        final BinaryDecodingResult decodingResult = binaryJeDISNodeDecoder.decode(xmiData, jCas.getTypeSystem(), reverseBinaryMapping, featuresToMapBinary, binaryBuilder.getNamespaces());
+                        baos = binaryBuilder.buildXmi(decodingResult);
+                    }
                 } catch (OutOfMemoryError e) {
                     log.error("Document with ID {} could not be built from XMI: {}", new String(data[0]), e);
                     log.error("Full error:", e);

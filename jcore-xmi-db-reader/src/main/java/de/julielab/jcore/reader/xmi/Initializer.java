@@ -6,6 +6,7 @@ import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.xml.XmiBuilder;
 import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.XmiSplitUtilities;
+import de.julielab.xml.binary.BinaryXmiBuilder;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
@@ -31,6 +32,9 @@ public class Initializer {
     private final static Logger log = LoggerFactory.getLogger(Initializer.class);
     private final String[] additionalTableNames;
     private final boolean joinTables;
+    private boolean useBinaryFormat;
+    private Map<Integer, String> reverseBinaryMapping;
+    private Map<String, Boolean> featuresToMapBinary;
     private Boolean storeMaxXmiId;
     private int maxXmlAttributeSize;
     private int xercesAttributeBufferSize;
@@ -39,16 +43,18 @@ public class Initializer {
     private int numAdditionalTables;
     private int numDataRetrievedDataFields;
     private XmiBuilder builder;
+    private BinaryXmiBuilder binaryBuilder;
     private Boolean logFinalXmi;
     private DataBaseConnector dbc;
     private Initializable initializable;
     private String xmiMetaSchema;
 
-    public Initializer(Initializable initializable, DataBaseConnector dbc, String[] additionalTableNames, boolean joinTables) {
+    public Initializer(Initializable initializable, DataBaseConnector dbc, String[] additionalTableNames, boolean joinTables, boolean useBinaryFormat) {
         this.initializable = initializable;
         this.dbc = dbc;
         this.additionalTableNames = additionalTableNames;
         this.joinTables = joinTables;
+        this.useBinaryFormat = useBinaryFormat;
     }
 
     public XmiBuilder getXmiBuilder() {
@@ -89,6 +95,14 @@ public class Initializer {
         initAfterParameterReading();
     }
 
+    public boolean isUseBinaryFormat() {
+        return useBinaryFormat;
+    }
+
+    public BinaryXmiBuilder getBinaryBuilder() {
+        return binaryBuilder;
+    }
+
     private void initAfterParameterReading() {
         initializationComplete = true;
         numAdditionalTables = additionalTableNames == null ? 0 : additionalTableNames.length;
@@ -107,10 +121,17 @@ public class Initializer {
         if (joinTables || readsBaseDocument) {
             try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
                 nsAndXmiVersion = getNamespaceMap();
+                reverseBinaryMapping = getReverseBinaryMappingFromDb();
+                featuresToMapBinary = getFeaturesToMapBinaryFromDb();
             }
         }
-        // if the maxXmlAttributeSize is 0, the default is used
-        builder = new XmiBuilder(nsAndXmiVersion, additionalTableNames, maxXmlAttributeSize);
+        if (!useBinaryFormat) {
+            // if the maxXmlAttributeSize is 0, the default is used
+            builder = new XmiBuilder(nsAndXmiVersion, additionalTableNames, maxXmlAttributeSize);
+        } else {
+            binaryBuilder = new BinaryXmiBuilder(nsAndXmiVersion);
+
+        }
 
         numDataRetrievedDataFields = dbc.getFieldConfiguration().getColumnsToRetrieve().length;
 
@@ -129,6 +150,7 @@ public class Initializer {
         // the default types namespace will be added and it will be checked if
         // the type system contains the thus
         // constructed type.
+
         if (!initializationComplete) {
             log.debug(
                     "Initializing annotation table table names from type system, if any additional table names are given.");
@@ -157,10 +179,72 @@ public class Initializer {
         }
     }
 
+    private Map<Integer, String> getReverseBinaryMappingFromDb() {
+        Map<Integer, String> map = null;
+        final String mappingTableName = xmiMetaSchema + "." + XmiSplitConstants.BINARY_MAPPING_TABLE;
+        if (dbc.tableExists(mappingTableName)) {
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+                map = new HashMap<>();
+                conn.setAutoCommit(true);
+                Statement stmt = conn.createStatement();
+                String sql = String.format("SELECT %s,%s FROM %s", XmiSplitConstants.BINARY_MAPPING_COL_ID, XmiSplitConstants.BINARY_MAPPING_COL_STRING,
+                        mappingTableName);
+                ResultSet rs = stmt.executeQuery(String.format(sql));
+                while (rs.next())
+                    map.put(rs.getInt(1), rs.getString(2));
+            } catch (SQLException e) {
+                e.printStackTrace();
+                SQLException ne = e.getNextException();
+                if (null != ne)
+                    ne.printStackTrace();
+            }
+        } else {
+            log.warn(
+                    "JeDIS XMI annotation module meta table \"{}\" was not found. It is assumed that the table from which is read contains complete XMI documents.",
+                    xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
+        }
+        return map;
+    }
+
+    public Map<Integer, String> getReverseBinaryMapping() {
+        return reverseBinaryMapping;
+    }
+
+    public Map<String, Boolean> getFeaturesToMapBinary() {
+        return featuresToMapBinary;
+    }
+
+    private Map<String, Boolean> getFeaturesToMapBinaryFromDb() {
+        Map<String, Boolean> map = null;
+        final String mappingTableName = xmiMetaSchema + "." + XmiSplitConstants.BINARY_FEATURES_TO_MAP_TABLE;
+        if (dbc.tableExists(mappingTableName)) {
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+                map = new HashMap<>();
+                conn.setAutoCommit(true);
+                Statement stmt = conn.createStatement();
+                String sql = String.format("SELECT %s,%s FROM %s", XmiSplitConstants.BINARY_FEATURES_TO_MAP_COL_FEATURE, XmiSplitConstants.BINARY_FEATURES_TO_MAP_COL_MAP,
+                        mappingTableName);
+                ResultSet rs = stmt.executeQuery(String.format(sql));
+                while (rs.next())
+                    map.put(rs.getString(1), rs.getBoolean(2));
+            } catch (SQLException e) {
+                e.printStackTrace();
+                SQLException ne = e.getNextException();
+                if (null != ne)
+                    ne.printStackTrace();
+            }
+        } else {
+            log.warn(
+                    "JeDIS XMI annotation module meta table \"{}\" was not found. It is assumed that the table from which is read contains complete XMI documents.",
+                    xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
+        }
+        return map;
+    }
+
     private Map<String, String> getNamespaceMap() {
         Map<String, String> map = null;
         if (dbc.tableExists(xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE)) {
-            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                 map = new HashMap<>();
                 conn.setAutoCommit(true);
                 Statement stmt = conn.createStatement();

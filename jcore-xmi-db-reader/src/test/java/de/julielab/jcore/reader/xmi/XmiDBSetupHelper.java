@@ -16,7 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class XmiDBSetupHelper {
-    public static void processAndSplitData(String costosysConfig, boolean gzip, String nsSchema) throws UIMAException, IOException {
+    public static void processAndSplitData(String costosysConfig, boolean gzip, boolean binaryFormat, String nsSchema) throws UIMAException, IOException {
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
                 XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
@@ -27,7 +27,8 @@ public class XmiDBSetupHelper {
                 XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
                 XMIDBWriter.PARAM_UPDATE_MODE, true,
                 XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), Header.class.getCanonicalName()},
-                XMIDBWriter.PARAM_XMI_META_SCHEMA, nsSchema
+                XMIDBWriter.PARAM_XMI_META_SCHEMA, nsSchema,
+                XMIDBWriter.PARAM_USE_BINARY_FORNAT, binaryFormat
         );
         JCas jCas = getJCasWithRequiredTypes();
         jCas.setDocumentText("This is a sentence. This is another one.");

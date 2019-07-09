@@ -1,15 +1,11 @@
 package de.julielab.jcore.reader.xmi;
 
 import de.julielab.costosys.dbconnection.DataBaseConnector;
-import de.julielab.jcore.consumer.xmi.XMIDBWriter;
 import de.julielab.jcore.db.test.DBTestUtils;
-import de.julielab.jcore.reader.db.TableReaderConstants;
 import de.julielab.jcore.types.*;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
-import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReader;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -27,7 +23,7 @@ import java.util.List;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class XmiDBReaderDifferentNsSchemaTest {
+public class XmiDBReaderBinaryFormatTest {
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
     private static String costosysConfig;
     private static String xmisubset;
@@ -39,7 +35,7 @@ public class XmiDBReaderDifferentNsSchemaTest {
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 2, postgres);
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, false, "someotherschema");
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, true,"public");
         assertTrue("The data document table exists", dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")));
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");
@@ -55,14 +51,13 @@ public class XmiDBReaderDifferentNsSchemaTest {
         postgres.close();
     }
     @Test
-    public void testXmiDBReader() throws UIMAException, IOException {
+    public void testXmiDBReaderBinaryFormat() throws UIMAException, IOException {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
                 XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
-                XmiDBReader.PARAM_RESET_TABLE, true,
-                XmiDBReader.PARAM_XMI_NAMESPACES_SCHEMA, "someotherschema"
+                XmiDBReader.PARAM_RESET_TABLE, true
         );
         JCas jCas = XmiDBSetupHelper.getJCasWithRequiredTypes();
         List<String> tokenText = new ArrayList<>();

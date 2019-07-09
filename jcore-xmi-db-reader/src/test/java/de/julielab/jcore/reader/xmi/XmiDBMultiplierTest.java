@@ -42,7 +42,7 @@ public class XmiDBMultiplierTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 10, postgres);
         new File(costosysConfig).deleteOnExit();
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, "public");
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, false,"public");
         assertTrue(dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")), "The data document table exists");
         dbc.close();
 

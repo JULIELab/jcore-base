@@ -20,12 +20,12 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 
 public class MetaTableManager {
-    public static final String BINARY_MAPPING_TABLE = "_binary_string_mapping";
-    public static final String BINARY_FEATURES_TO_MAP_TABLE = "_binary_features_to_map";
-    public static final String BINARY_MAPPING_COL_STRING = "mapping_string";
-    public static final String BINARY_MAPPING_COL_ID = "mapping_id";
-    public static final String BINARY_FEATURES_TO_MAP_COL_FEATURE = "feature";
-    public static final String BINARY_FEATURES_TO_MAP_COL_MAP = "map";
+    public static final String BINARY_MAPPING_TABLE = XmiSplitConstants.BINARY_MAPPING_TABLE;
+    public static final String BINARY_FEATURES_TO_MAP_TABLE = XmiSplitConstants.BINARY_FEATURES_TO_MAP_TABLE;
+    public static final String BINARY_MAPPING_COL_STRING = XmiSplitConstants.BINARY_MAPPING_COL_STRING;
+    public static final String BINARY_MAPPING_COL_ID = XmiSplitConstants.BINARY_MAPPING_COL_ID;
+    public static final String BINARY_FEATURES_TO_MAP_COL_FEATURE = XmiSplitConstants.BINARY_FEATURES_TO_MAP_COL_FEATURE;
+    public static final String BINARY_FEATURES_TO_MAP_COL_MAP = XmiSplitConstants.BINARY_FEATURES_TO_MAP_COL_MAP;
     public static final String XMI_NS_TABLE = XmiSplitConstants.XMI_NS_TABLE;
     public static final String PREFIX = XmiSplitConstants.PREFIX;
     public static final String NS_URI = XmiSplitConstants.NS_URI;

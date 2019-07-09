@@ -24,6 +24,7 @@ import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.reader.db.SubsetReaderConstants;
 import de.julielab.xml.XmiSplitConstants;
+import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -69,6 +70,7 @@ public class XmiDBReader extends DBReader implements Initializable {
     @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = "An array of qualified UIMA type names. The provided names will be converted to database table names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, the default assumed Postgres schema for the annotation tables is the active data table as configured in the CoStoSys configuration file. This can be overwritten by appending '<schema>:' to a table name. The given type names will be converted to valid Postgres table names by replacing dots with underscores. From the resolved tables, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.")
     protected String[] additionalTableNames;
     private Boolean doGzip;
+    private Boolean useBinaryFormat;
     @ConfigurationParameter(name = PARAM_READS_BASE_DOCUMENT, description = "Indicates if this reader reads segmented " +
             "annotation data. If set to false, the XMI data is expected to represent complete annotated documents. " +
             "If it is set to true, a segmented annotation graph is expected and the table given with the 'Table' parameter " +
@@ -93,7 +95,7 @@ public class XmiDBReader extends DBReader implements Initializable {
             "(j)visualvm, the hot spots of work can be identified. If one of those is the XML attribute buffer " +
             "resizing, this parameter should be set to a size that makes buffer resizing unnecessary.")
     private int xercesAttributeBufferSize;
-    @ConfigurationParameter(name = PARAM_XMI_NAMESPACES_SCHEMA, mandatory = false, defaultValue = "public", description = "Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '" +XmiSplitConstants.XMI_NS_TABLE + "' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Also, the table listing the annotation tables is stored in this Postgres schema. Defaults to 'public'.")
+    @ConfigurationParameter(name = PARAM_XMI_NAMESPACES_SCHEMA, mandatory = false, defaultValue = "public", description = "Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '" + XmiSplitConstants.XMI_NS_TABLE + "' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Also, the table listing the annotation tables is stored in this Postgres schema. Defaults to 'public'.")
     private String xmiMetaSchema;
     private Initializer initializer;
     private CasPopulator casPopulator;
@@ -110,9 +112,9 @@ public class XmiDBReader extends DBReader implements Initializable {
         super.initialize(context);
         // This is necessary when one or more tables have schema qualifications which are resolved
         // by the super class in the super.initialize() call above
-        this.additionalTableNames = Stream.of(this.additionalTableNames).map(table -> table.contains(":") ? table.substring(table.indexOf(':')+1) : table).toArray(String[]::new);
-        try(final CoStoSysConnection ignore = dbc.obtainOrReserveConnection()) {
-            initializer = new Initializer(this, dbc, additionalTableNames, joinTables);
+        this.additionalTableNames = Stream.of(this.additionalTableNames).map(table -> table.contains(":") ? table.substring(table.indexOf(':') + 1) : table).toArray(String[]::new);
+        try (final CoStoSysConnection ignore = dbc.obtainOrReserveConnection()) {
+            initializer = new Initializer(this, dbc, additionalTableNames, joinTables, useBinaryFormat);
             initializer.initialize(context);
             casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
         }
@@ -136,7 +138,7 @@ public class XmiDBReader extends DBReader implements Initializable {
             if ((Boolean) getConfigParameterValue(PARAM_READS_BASE_DOCUMENT)) {
 
                 String table = (String) getConfigParameterValue(PARAM_TABLE);
-                determineDataInGzipFormat(table);
+                determineDataFormat(table);
 
                 FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
@@ -149,26 +151,30 @@ public class XmiDBReader extends DBReader implements Initializable {
             } else {
                 // Complete XMI reading mode
                 String table = (String) getConfigParameterValue(PARAM_TABLE);
-                determineDataInGzipFormat(table);
+                determineDataFormat(table);
                 FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
             }
         }
     }
 
-    private void determineDataInGzipFormat(String table) throws ResourceInitializationException {
+    private void determineDataFormat(String table) throws ResourceInitializationException {
         doGzip = true;
+        useBinaryFormat = true;
         dataTable = dbc.getNextOrThisDataTable(table);
         log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
-        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
             while (rs.next()) {
                 byte[] xmiData = rs.getBytes("xmi");
                 try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
-                    gzis.read();
+                    byte[] firstTwoBytes = new byte[2];
+                    gzis.read(firstTwoBytes);
+                    checkForJeDISBinaryFormat(firstTwoBytes);
                 } catch (IOException e) {
                     log.debug("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
                     doGzip = false;
+                    checkForJeDISBinaryFormat(xmiData);
                 }
             }
         } catch (SQLException e) {
@@ -177,6 +183,17 @@ public class XmiDBReader extends DBReader implements Initializable {
             throw new ResourceInitializationException(e);
         }
     }
+
+    private void checkForJeDISBinaryFormat(byte[] firstTwoBytes) {
+        short header = (short) ((firstTwoBytes[0]<<8) | (0xff & firstTwoBytes[1]));
+        if (header != BinaryJeDISNodeEncoder.JEDIS_BINARY_MAGIC) {
+            useBinaryFormat = false;
+            log.debug("Is data encoded in JeDIS binary format: false");
+        } else {
+            log.debug("Is data encoded in JeDIS binary format: true");
+        }
+    }
+
 
     /*
      * (non-Javadoc)

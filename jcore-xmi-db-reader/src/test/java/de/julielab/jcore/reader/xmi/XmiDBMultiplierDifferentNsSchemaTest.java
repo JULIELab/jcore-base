@@ -42,7 +42,7 @@ public class XmiDBMultiplierDifferentNsSchemaTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 10, postgres);
         new File(costosysConfig).deleteOnExit();
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, "fancyschema");
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, false,"fancyschema");
         assertTrue(dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")), "The data document table exists");
         dbc.close();
 
