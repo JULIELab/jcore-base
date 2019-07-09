@@ -13,7 +13,7 @@
         should be written into separate tables. The JCoRe XMI Database Reader can then be used to assemble XMI data from
         a given set of annotations.
     </description>
-    
+    <version>2.5.1-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>de.julielab</groupId>
