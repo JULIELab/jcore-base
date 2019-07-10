@@ -1,10 +1,12 @@
 package de.julielab.jcore.consumer.xmi;
 
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
-import de.julielab.costosys.dbconnection.DBCIterator;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.*;
+import de.julielab.xml.XmiSplitConstants;
+import de.julielab.xml.binary.BinaryDecodingResult;
+import de.julielab.xml.binary.BinaryJeDISNodeDecoder;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -18,14 +20,21 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class XmiDBWriterBinaryFormatTest {
     @ClassRule
@@ -64,12 +73,12 @@ public class XmiDBWriterBinaryFormatTest {
                 XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
                 XMIDBWriter.PARAM_STORE_ALL, false,
                 XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,
-                XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents",
+                XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents2",
                 XMIDBWriter.PARAM_DO_GZIP, false,
                 XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
                 XMIDBWriter.PARAM_UPDATE_MODE, true,
                 XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), de.julielab.jcore.types.pubmed.Header.class.getCanonicalName()},
-                XMIDBWriter.PARAM_USE_BINARY_FORNAT, true
+                XMIDBWriter.PARAM_USE_BINARY_FORMAT, true
         );
         JCas jCas = getJCasWithRequiredTypes();
         final Header header = new Header(jCas);
@@ -96,13 +105,14 @@ public class XmiDBWriterBinaryFormatTest {
         String binaryMappingTable = "public." + MetaTableManager.BINARY_MAPPING_TABLE;
         String binaryFeaturesToMapTable = "public." + MetaTableManager.BINARY_FEATURES_TO_MAP_TABLE;
         Set<String> itemsInInitialMapping = new HashSet<>();
-            Map<String, Boolean> initialFeaturesToMap = new HashMap<>();
+        Map<String, Boolean> initialFeaturesToMap = new HashMap<>();
         try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
-            assertThat(dbc.tableExists("_data.documents")).isTrue();
-            assertThat(dbc.tableExists("_data.de_julielab_jcore_types_token")).isTrue();
-            assertThat(dbc.tableExists("_data.de_julielab_jcore_types_sentence")).isTrue();
-            assertThat(dbc.isEmpty("_data.de_julielab_jcore_types_token")).isFalse();
-            assertThat(dbc.isEmpty("_data.de_julielab_jcore_types_sentence")).isFalse();
+            assertThat(dbc.tableExists("_data.documents2")).isTrue();
+            final Set<String> columnNames = dbc.getTableColumnNames("_data.documents2").collect(Collectors.toSet());
+            assertThat(columnNames).contains(XmiSplitConstants.BASE_DOC_COLUMN, "de_julielab_jcore_types_token", "de_julielab_jcore_types_sentence");
+
+            assertThat(dbc.isEmpty("_data.documents2", "de_julielab_jcore_types_token")).isFalse();
+            assertThat(dbc.isEmpty("_data.documents2", "de_julielab_jcore_types_sentence")).isFalse();
 
             assertThat(dbc.tableExists(binaryMappingTable)).isTrue();
             assertThat(dbc.tableExists(binaryFeaturesToMapTable)).isTrue();
@@ -162,7 +172,7 @@ public class XmiDBWriterBinaryFormatTest {
     }
 
     @Test
-    public void testXmiDBWriterSplitAnnotationsSpecifyAnnotationSchemas() throws UIMAException, IOException {
+    public void testXmiDBWriterSplitAnnotationsSpecifyAnnotationSchemas() throws Exception {
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
                 XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{"tokenschema:" + Token.class.getCanonicalName(), "sentenceschema:" + Sentence.class.getCanonicalName()},
@@ -174,7 +184,7 @@ public class XmiDBWriterBinaryFormatTest {
                 XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
                 XMIDBWriter.PARAM_UPDATE_MODE, true,
                 XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), de.julielab.jcore.types.pubmed.Header.class.getCanonicalName()},
-                XMIDBWriter.PARAM_USE_BINARY_FORNAT, true
+                XMIDBWriter.PARAM_USE_BINARY_FORMAT, true
         );
         JCas jCas = getJCasWithRequiredTypes();
         final Header header = new Header(jCas);
@@ -191,12 +201,47 @@ public class XmiDBWriterBinaryFormatTest {
         xmiWriter.collectionProcessComplete();
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
-        try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
+        try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
             assertThat(dbc.tableExists("_data.documents")).isTrue();
-            assertThat(dbc.tableExists("tokenschema.de_julielab_jcore_types_token")).isTrue();
-            assertThat(dbc.tableExists("sentenceschema.de_julielab_jcore_types_sentence")).isTrue();
-            assertThat(dbc.isEmpty("tokenschema.de_julielab_jcore_types_token")).isFalse();
-            assertThat(dbc.isEmpty("sentenceschema.de_julielab_jcore_types_sentence")).isFalse();
+
+            final List<Map<String, Object>> infos = dbc.getTableColumnInformation("_data.documents", "column_name");
+            final Set<String> columnNames = infos.stream().map(info -> info.get("column_name")).map(String.class::cast).collect(Collectors.toSet());
+
+            final String tokenColumn = "tokenschema$de_julielab_jcore_types_token";
+            final String sentenceColumn = "sentenceschema$de_julielab_jcore_types_sentence";
+            assertThat(columnNames).contains(tokenColumn, sentenceColumn);
+
+            final ResultSet rs = costoConn.createStatement().executeQuery("SELECT " + XmiSplitConstants.BASE_DOC_COLUMN + "," + tokenColumn + "," + sentenceColumn + " FROM _data.documents");
+            assertTrue(rs.next());
+            // Check that the data for the base document, the tokens and the sentences are there
+            assertNotNull(rs.getString(1));
+            assertNotNull(rs.getString(2));
+            assertNotNull(rs.getString(3));
+
+            Map<String, InputStream> encodedXmiData = new HashMap<>();
+            encodedXmiData.put(XmiSplitConstants.BASE_DOC_COLUMN, new ByteArrayInputStream(rs.getBytes(1)));
+            encodedXmiData.put(tokenColumn, new ByteArrayInputStream(rs.getBytes(2)));
+            encodedXmiData.put(sentenceColumn, new ByteArrayInputStream(rs.getBytes(3)));
+
+            // Read all the meta table data required to decode the binary XMI data
+            Map<Integer, String> mapping = new HashMap<>();
+            final ResultSet rs2 = costoConn.createStatement().executeQuery(String.format("SELECT * FROM %s", "public." + XmiSplitConstants.BINARY_MAPPING_TABLE));
+            while (rs2.next())
+                mapping.put(rs2.getInt(2), rs2.getString(1));
+            final ResultSet rs3 = costoConn.createStatement().executeQuery(String.format("SELECT * FROM %s", "public." + XmiSplitConstants.BINARY_FEATURES_TO_MAP_TABLE));
+            Map<String, Boolean> mappedFeatures = new HashMap();
+            while (rs3.next())
+                mappedFeatures.put(rs3.getString(1), rs3.getBoolean(2));
+            Map<String, String> nsMap = new HashMap<>();
+            final ResultSet rs4 = costoConn.createStatement().executeQuery(String.format("SELECT * FROM %s", "public." + XmiSplitConstants.XMI_NS_TABLE));
+            while (rs4.next())
+                nsMap.put(rs4.getString(1), rs4.getString(2));
+
+            final BinaryJeDISNodeDecoder decoder = new BinaryJeDISNodeDecoder(Collections.emptySet(), false);
+            final BinaryDecodingResult decodingResult = decoder.decode(encodedXmiData, jCas.getTypeSystem(), mapping, mappedFeatures, nsMap);
+
+            String finalXmi = decodingResult.getXmiData().toString(UTF_8);
+            assertThat(finalXmi).contains("This is a sentence. This is another one.", "types:Token", "types:Sentence");
         }
     }
 }

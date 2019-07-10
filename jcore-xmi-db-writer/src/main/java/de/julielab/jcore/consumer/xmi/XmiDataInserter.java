@@ -27,7 +27,6 @@ public class XmiDataInserter {
 
     private Boolean updateMode;
     private String schemaDocument;
-    private String schemaAnnotation;
     private Boolean storeAll;
     private String effectiveDocTableName;
     private DataBaseConnector dbc;
@@ -39,20 +38,19 @@ public class XmiDataInserter {
     private List<DocumentId> processedDocumentIds;
 
     public XmiDataInserter(List<String> annotationsToStore, String effectiveDocTableName,
-                           DataBaseConnector dbc, String schemaDocument, String schemaAnnotation, Boolean storeAll,
+                           DataBaseConnector dbc, String schemaDocument, Boolean storeAll,
                            Boolean storeBaseDocument, Boolean updateMode, String componentDbName) {
         super();
         this.annotationsToStore = annotationsToStore;
         this.effectiveDocTableName = effectiveDocTableName;
         this.dbc = dbc;
         this.schemaDocument = schemaDocument;
-        this.schemaAnnotation = schemaAnnotation;
         this.storeAll = storeAll;
         this.storeBaseDocument = storeBaseDocument;
         this.updateMode = updateMode;
         this.componentDbName = componentDbName;
-        this.maxXmiIdMap = new HashMap<DocumentId, Integer>();
-        this.processedDocumentIds = new ArrayList<DocumentId>();
+        this.maxXmiIdMap = new HashMap<>();
+        this.processedDocumentIds = new ArrayList<>();
     }
 
     /**
@@ -63,40 +61,34 @@ public class XmiDataInserter {
      * will be a primary key constraint violation, i.e. duplicates).
      *
      * @param serializedCASes
-     * @param tablesWithoutData
+     * @param columnsWithoutData
+     * @param deleteObsolete
      * @throws XmiDataInsertionException
      * @throws AnalysisEngineProcessException
      */
-    public void sendXmiDataToDatabase(LinkedHashMap<String, List<XmiData>> serializedCASes,
-                                      Map<String, List<DocumentId>> tablesWithoutData, String subsetTableName) throws XmiDataInsertionException {
+    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> serializedCASes,
+                                      Map<String, List<DocumentId>> columnsWithoutData, String subsetTableName, Boolean deleteObsolete) throws XmiDataInsertionException {
         if (log.isTraceEnabled()) {
             log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
-            log.trace("Sending {} XMI data items", serializedCASes.entrySet().stream().map(Entry::getValue).collect(Collectors.summingInt(v -> v.size())));
+            log.trace("Sending {} XMI data items", serializedCASes.size());
         }
+        final Map<DocumentId, List<XmiData>> dataByDoc = serializedCASes.stream().collect(Collectors.groupingBy(XmiData::getDocId));
         class RowIterator implements Iterator<Map<String, Object>> {
 
-            private int index = 0;
-            private List<XmiData> tableDataList;
-
-            public RowIterator(String table) {
-                tableDataList = serializedCASes.get(table);
-            }
+            private Iterator<DocumentId> docIdIterator = dataByDoc.keySet().iterator();
+            private FieldConfig fieldConfig = dbc.getFieldConfiguration(schemaDocument);
+            private List<Map<String, String>> fields = fieldConfig.getFields();
 
             @Override
             public boolean hasNext() {
-                return index < tableDataList.size();
+                return docIdIterator.hasNext();
             }
 
             @Override
             public Map<String, Object> next() {
                 Map<String, Object> row = new HashMap<String, Object>();
-                XmiData results = tableDataList.get(index);
-
-                // get the appropriate table schema: the document schema or
-                // annotation schema
-                FieldConfig fieldConfig = results.getClass().equals(DocumentXmiData.class)
-                        ? dbc.getFieldConfiguration(schemaDocument) : dbc.getFieldConfiguration(schemaAnnotation);
-                List<Map<String, String>> fields = fieldConfig.getFields();
+                final DocumentId docId = docIdIterator.next();
+                final List<XmiData> dataList = dataByDoc.get(docId);
                 // this lambda says "give me the name of ith field of the
                 // current field configuration"
                 Function<Integer, String> fName = num -> fields.get(num).get(JulieXMLConstants.NAME);
@@ -106,30 +98,37 @@ public class XmiDataInserter {
                 // to the order of the primary key definition in the field configuration.
                 int i = 0;
                 for (Integer pkIndex : fieldConfig.getPrimaryKeyFieldNumbers()) {
-                    row.put(fName.apply(pkIndex), results.docId.getId()[i++]);
+                    row.put(fName.apply(pkIndex), docId.getId()[i++]);
                     if (log.isTraceEnabled())
                         log.trace("{}={}", fName.apply(pkIndex), row.get(fName.apply(pkIndex)));
                 }
                 // This statement puts the XMI data into the first column after the primary key
-                row.put(fName.apply(i++), results.data);
-                if (log.isTraceEnabled())
-                    log.trace("{}={}", fName.apply(i - 1), row.get(fName.apply(i - 1)));
-                if (results.getClass().equals(DocumentXmiData.class) && !storeAll) {
-                    if (fieldConfig.getFields().size() - fieldConfig.getPrimaryKey().length < 3)
-                        throw new IllegalArgumentException("The XMI data table schema is set to the schema with name " +
-                                "\"" + schemaDocument + "\" that specifies the fields \"" +
-                                StringUtils.join(fieldConfig.getColumns(), ",") + "\". However, this schema " +
-                                "is not compatible with XMI base " +
-                                "document storage since the storage requires two extra fields to store the maximum XMI " +
-                                "ID of the document and the sofa mapping.");
-                    DocumentXmiData docResults = (DocumentXmiData) results;
-                    row.put("max_xmi_id", docResults.newXmiId);
-                    log.trace("{}={}", "max_xmi_id", docResults.newXmiId);
-                    row.put("sofa_mapping", docResults.serializedSofaXmiIdMap);
-                    log.trace("{}={}", "sofa_mapping", docResults.serializedSofaXmiIdMap);
+                for (XmiData data : dataList) {
+                    row.put(data.getColumnName(), data.data);
+                    if (log.isTraceEnabled())
+                        log.trace("{}={}", fName.apply(i - 1), row.get(fName.apply(i - 1)));
+                    if (data.getClass().equals(DocumentXmiData.class) && !storeAll) {
+                        if (fieldConfig.getFields().size() - fieldConfig.getPrimaryKey().length < 3)
+                            throw new IllegalArgumentException("The XMI data table schema is set to the schema with name " +
+                                    "\"" + schemaDocument + "\" that specifies the fields \"" +
+                                    StringUtils.join(fieldConfig.getColumns(), ",") + "\". However, this schema " +
+                                    "is not compatible with XMI base " +
+                                    "document storage since the storage requires two extra fields to store the maximum XMI " +
+                                    "ID of the document and the sofa mapping.");
+                        DocumentXmiData docResults = (DocumentXmiData) data;
+                        row.put("max_xmi_id", docResults.newXmiId);
+                        log.trace("{}={}", "max_xmi_id", docResults.newXmiId);
+                        row.put("sofa_mapping", docResults.serializedSofaXmiIdMap);
+                        log.trace("{}={}", "sofa_mapping", docResults.serializedSofaXmiIdMap);
+                    }
                 }
-
-                index++;
+                // Set columns without values explicitly to null. This will automatically remove old column values.
+                if (deleteObsolete) {
+                    Set<String> missingColumns = fieldConfig.getFields().stream().map(f -> f.get(JulieXMLConstants.NAME)).collect(Collectors.toSet());
+                    for (String filledColumn : row.keySet())
+                        missingColumns.remove(filledColumn);
+                    missingColumns.forEach(c -> row.put(c, null));
+                }
                 return row;
             }
 
@@ -140,43 +139,28 @@ public class XmiDataInserter {
         }
 
 
-        try  (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             conn.setAutoCommit(false);
-            for (String tableName : serializedCASes.keySet()) {
-                if (serializedCASes.get(tableName).size() == 0) {
-                    log.trace("No XMI data for table \"" + tableName + "\" (annotation type \"" + tableName
-                            + "\"), skipping.");
-                    continue;
-                }
 
-                RowIterator iterator = new RowIterator(tableName);
-                try {
-                    if (updateMode) {
-                        log.debug("Updating {} XMI CAS data in database table '{}'.",
-                                serializedCASes.get(tableName).size(), tableName);
-                        if (storeAll) {
-                            dbc.updateFromRowIterator(iterator, tableName, false, schemaDocument);
-                        } else {
-                            dbc.updateFromRowIterator(iterator, tableName, false,
-                                    tableName.equals(effectiveDocTableName) ? schemaDocument : schemaAnnotation);
-                        }
-                    } else {
-                        log.debug("Inserting {} XMI CAS data into database table '{}'.",
-                                serializedCASes.get(tableName).size(), tableName);
-                        if (storeAll) {
-                            dbc.importFromRowIterator(iterator, tableName, false, schemaDocument);
-                        } else {
-                            dbc.importFromRowIterator(iterator, tableName, false,
-                                    tableName.equals(effectiveDocTableName) ? schemaDocument : schemaAnnotation);
-                        }
+            RowIterator iterator = new RowIterator();
+            try {
+                if (updateMode) {
+                    log.debug("Updating {} XMI CAS data in database table '{}'.",
+                            serializedCASes.size(), xmiTableName);
+                    dbc.updateFromRowIterator(iterator, xmiTableName, false, schemaDocument);
+                } else {
+                    log.debug("Inserting {} XMI CAS data into database table '{}'.",
+                            serializedCASes.size(), xmiTableName);
+                    if (storeAll) {
+                        dbc.importFromRowIterator(iterator, xmiTableName, false, schemaDocument);
                     }
-                } catch (Exception e) {
-                    log.error("Error occurred while sending data to database. Exception:", e);
-                    throw new XmiDataInsertionException(e);
                 }
+            } catch (Exception e) {
+                log.error("Error occurred while sending data to database. Exception:", e);
+                throw new XmiDataInsertionException(e);
             }
             updateMaxXmiId(conn);
-            deleteRowsFromTablesWithoutData(tablesWithoutData, conn, dbc, annotationsToStore);
+            //deleteRowsFromTablesWithoutData(columnsWithoutData, conn, dbc, annotationsToStore);
             setLastComponent(conn, subsetTableName);
             log.debug("Committing XMI data to database.");
             conn.commit();
@@ -254,23 +238,21 @@ public class XmiDataInserter {
      * suddenly a ChunkADVP (this actually happened). This method should delete
      * such deprecated annotations.
      *
-     * @param tablesWithoutData
+     * @param columnsWithoutData
      * @param conn
      * @throws XmiDataInsertionException
      * @throws AnalysisEngineProcessException
+     * @deprecated Not required anymore since all annotations are now stored in one single table
      */
 
-    private void deleteRowsFromTablesWithoutData(Map<String, List<DocumentId>> tablesWithoutData, CoStoSysConnection conn,
+    private void deleteRowsFromTablesWithoutData(Map<String, List<DocumentId>> columnsWithoutData, CoStoSysConnection conn,
                                                  DataBaseConnector dbc, List<String> annotationsToStore) throws XmiDataInsertionException {
         if (!updateMode || storeAll || annotationsToStore.isEmpty())
             return;
 
-        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(schemaAnnotation);
-        String[] primaryKey = annotationFieldConfig.getPrimaryKey();
-        if (primaryKey.length > 1)
-            throw new IllegalArgumentException("Currently, only one-element primary keys are supported.");
+        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(schemaDocument);
 
-        for (Entry<String, List<DocumentId>> entry : tablesWithoutData.entrySet()) {
+        for (Entry<String, List<DocumentId>> entry : columnsWithoutData.entrySet()) {
             List<DocumentId> docIds = entry.getValue();
             if (docIds.size() == 0)
                 continue;
@@ -319,7 +301,7 @@ public class XmiDataInserter {
 
         log.debug("Updating {} max XMI IDs.", maxXmiIdMap.size());
 
-        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(schemaAnnotation);
+        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(schemaDocument);
         // gives:
         // pk1 = ?
         // pk2 = ?

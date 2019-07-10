@@ -4,6 +4,7 @@ import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.*;
+import de.julielab.xml.XmiSplitConstants;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -19,9 +20,16 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class XmiDBWriterTest {
     @ClassRule
@@ -60,7 +68,7 @@ public class XmiDBWriterTest {
                 XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
                 XMIDBWriter.PARAM_STORE_ALL, false,
                 XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,
-                XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents",
+                XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents2",
                 XMIDBWriter.PARAM_DO_GZIP, false,
                 XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
                 XMIDBWriter.PARAM_UPDATE_MODE, true,
@@ -82,16 +90,16 @@ public class XmiDBWriterTest {
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
         try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
-            assertThat(dbc.tableExists("_data.documents")).isTrue();
-            assertThat(dbc.tableExists("_data.de_julielab_jcore_types_token")).isTrue();
-            assertThat(dbc.tableExists("_data.de_julielab_jcore_types_sentence")).isTrue();
-            assertThat(dbc.isEmpty("_data.de_julielab_jcore_types_token")).isFalse();
-            assertThat(dbc.isEmpty("_data.de_julielab_jcore_types_sentence")).isFalse();
+            assertThat(dbc.tableExists("_data.documents2")).isTrue();
+
+            assertThat(dbc.getTableColumnNames("_data.documents2")).contains("de_julielab_jcore_types_token", "de_julielab_jcore_types_sentence");
+            assertThat(dbc.isEmpty("_data.documents2", "de_julielab_jcore_types_token")).isFalse();
+            assertThat(dbc.isEmpty("_data.documents2", "de_julielab_jcore_types_sentence")).isFalse();
         }
     }
 
     @Test
-    public void testXmiDBWriterSplitAnnotationsSpecifyAnnotationSchemas() throws UIMAException, IOException {
+    public void testXmiDBWriterSplitAnnotationsSpecifyAnnotationSchemas() throws Exception {
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
                 XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{"tokenschema:" + Token.class.getCanonicalName(), "sentenceschema:" + Sentence.class.getCanonicalName()},
@@ -119,12 +127,18 @@ public class XmiDBWriterTest {
         xmiWriter.collectionProcessComplete();
 
         dbc = DBTestUtils.getDataBaseConnector(postgres);
-        try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
+        try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
             assertThat(dbc.tableExists("_data.documents")).isTrue();
-            assertThat(dbc.tableExists("tokenschema.de_julielab_jcore_types_token")).isTrue();
-            assertThat(dbc.tableExists("sentenceschema.de_julielab_jcore_types_sentence")).isTrue();
-            assertThat(dbc.isEmpty("tokenschema.de_julielab_jcore_types_token")).isFalse();
-            assertThat(dbc.isEmpty("sentenceschema.de_julielab_jcore_types_sentence")).isFalse();
+
+            final List<Map<String, Object>> infos = dbc.getTableColumnInformation("_data.documents", "column_name");
+            final Set<String> columnNames = infos.stream().map(info -> info.get("column_name")).map(String.class::cast).collect(Collectors.toSet());
+
+            final String tokenColumn = "tokenschema$de_julielab_jcore_types_token";
+            final String sentenceColumn = "sentenceschema$de_julielab_jcore_types_sentence";
+            assertThat(columnNames).contains(tokenColumn, sentenceColumn);
+
+            assertThat(dbc.isEmpty("_data.documents", tokenColumn)).isFalse();
+            assertThat(dbc.isEmpty("_data.documents", sentenceColumn)).isFalse();
         }
     }
 }

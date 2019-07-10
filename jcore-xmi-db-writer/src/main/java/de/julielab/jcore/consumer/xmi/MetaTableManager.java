@@ -5,6 +5,7 @@ import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.binary.BinaryStorageAnalysisResult;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.TypeSystem;
 import org.postgresql.util.PSQLException;
@@ -116,7 +117,7 @@ public class MetaTableManager {
      * @return The mapping with all known mappings from the database, potentially with updated elements from the current document.
      * @throws AnalysisEngineProcessException If the database communication fails.
      */
-    public ImmutablePair<Map<String, Integer>, Map<String, Boolean>> updateBinaryStringMappingTable(BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction, Map<String, Integer> currentMappingState, Map<String, Boolean> currentMappedAttributes) throws AnalysisEngineProcessException {
+    public Pair<Map<String, Integer>, Map<String, Boolean>> updateBinaryStringMappingTable(BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction, Map<String, Integer> currentMappingState, Map<String, Boolean> currentMappedAttributes) throws AnalysisEngineProcessException {
         Map<String, Integer> completeMapping = currentMappingState;
         Map<String, Boolean> completeMappedAttributes = currentMappedAttributes;
         final BinaryStorageAnalysisResult missingItemsFromCurrentState = missingItemsFunction.apply(currentMappingState, currentMappedAttributes);
