@@ -55,7 +55,7 @@ public class XmiDBMultiplierTest {
     }
 
     @Test(threadPoolSize = 3, invocationCount = 10, timeOut = 500000)
-    public void testXmiDBReader() throws Exception {
+    public void testXmiDBMultiplierReader() throws Exception {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         String xmisubset = "xmisubset" + subsetCounter++;
         dbc.setActiveTableSchema("xmi_text");
@@ -68,7 +68,7 @@ public class XmiDBMultiplierTest {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBMultiplierReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
-                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_ANNOTATIONS_TO_LOAD, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
                 XmiDBReader.PARAM_RESET_TABLE, true
         );

@@ -92,7 +92,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_DELETE_OBSOLETE_ANNOTATIONS = "DeleteObsoleteAnnotations";
     public static final String PARAM_ATTRIBUTE_SIZE = "IncreasedAttributeSize";
-    public static final String PARAM_ANNO_STORAGE_PG_SCHEMA = "AnnotationStoragePostgresSchema";
+    public static final String PARAM_ANNO_DEFAULT_QUALIFIER = "DefaultAnnotationColumnQualifier";
     public static final String PARAM_COMPONENT_DB_NAME = "ComponentDbName";
     public static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
     public static final String PARAM_WRITE_BATCH_SIZE = "WriteBatchSize";
@@ -155,13 +155,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "parameter that takes Java annotation type names. These names will be stored with the base document, " +
             "if the 'StoreBaseDocument' parameter is set to true.")
     private Set<String> baseDocumentAnnotationTypes;
-    @ConfigurationParameter(name = PARAM_ANNO_STORAGE_PG_SCHEMA, mandatory = false, description =
-            "This optional parameter specifies the Postgres schema in which the XMI annotation storage tables are located by default. If " +
-                    "omitted, the active data schema from the CoStoSys configuration is used. The tables derived from " +
+    @ConfigurationParameter(name = PARAM_ANNO_DEFAULT_QUALIFIER, mandatory = false, description =
+            "This optional parameter specifies the qualifier given to annotation storage columns in the XMI by default. If " +
+                    "omitted, no qualifier will added. The column names derived from " +
                     "the annotation types specified with the '" + PARAM_ANNOS_TO_STORE + "' " +
-                    "parameter will be stored in this postgres schema. The default can be overwritten for individual " +
+                    "parameter will be prefixed with this qualifier, separated by the dollar character. The default can be overwritten for individual " +
                     "types. See the description of the '" + PARAM_ANNOS_TO_STORE + "' parameter.")
-    private String annotationStorageSchema;
+    private String defaultAnnotationColumnQualifier;
     @ConfigurationParameter(name = PARAM_WRITE_BATCH_SIZE, mandatory = false, defaultValue = "50", description =
             "The number of processed CASes after which the XMI data should be flushed into the database. Defaults to 50.")
     private int writeBatchSize;
@@ -251,10 +251,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         attributeSize = (Integer) aContext.getConfigParameterValue(PARAM_ATTRIBUTE_SIZE);
         writeBatchSize = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_WRITE_BATCH_SIZE)).orElse(50);
         componentDbName = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME)).orElse(getClass().getSimpleName());
-        annotationStorageSchema = (String) aContext.getConfigParameterValue(PARAM_ANNO_STORAGE_PG_SCHEMA);
+        defaultAnnotationColumnQualifier = (String) aContext.getConfigParameterValue(PARAM_ANNO_DEFAULT_QUALIFIER);
         annotations = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE)).orElse(new String[0]);
         xmiMetaSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_XMI_META_SCHEMA)).orElse("public");
         useBinaryFormat = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_USE_BINARY_FORMAT)).orElse(false);
+
+        if (xmiMetaSchema.isBlank())
+            throw new ResourceInitializationException(new IllegalArgumentException("The XMI meta table Postgres schema must either be omitted at all or non-empty but was."));
 
         List<String> annotationsToStoreTableNames = new ArrayList<>();
         unqualifiedAnnotationNames = Collections.emptyList();
@@ -264,10 +267,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
         if (storeAll) {
             schemaDocument = dbc.addXmiDocumentFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip || useBinaryFormat).getName();
+            dbc.setActiveTableSchema(schemaDocument);
         } else {
             List<Map<String, String>> xmiAnnotationColumnsDefinitions = new ArrayList<>();
             for (String qualifiedAnnotation : annotations) {
-                final String columnName = annotationTableManager.convertQualifiedAnnotationTypeToColumnName(qualifiedAnnotation);
+                final String columnName = annotationTableManager.convertQualifiedAnnotationTypeToColumnName(qualifiedAnnotation, defaultAnnotationColumnQualifier);
                 final Map<String, String> field = FieldConfig.createField(
                         JulieXMLConstants.NAME, columnName,
                         JulieXMLConstants.GZIP, String.valueOf(doGzip),
@@ -301,7 +305,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         try {
             // Here we need to pass the original 'annotations' parameter because it contains the schema qualification for the annotation tables
             annotationTableManager = new AnnotationTableManager(dbc, docTableParamValue, Arrays.asList(annotations), doGzip || useBinaryFormat, schemaDocument,
-                    storeAll, storeBaseDocument, annotationStorageSchema, xmiMetaSchema);
+                    storeAll, storeBaseDocument, defaultAnnotationColumnQualifier, xmiMetaSchema);
         } catch (TableSchemaMismatchException e) {
             throw new ResourceInitializationException(e);
         }
@@ -314,7 +318,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         if (!storeAll) {
             // Here we use the schema-qualified 'annotations' field
             for (String annotation : annotations) {
-                String annotationTableName = annotationTableManager.convertAnnotationTypeToTableName(annotation, storeAll);
+                String annotationTableName = annotationTableManager.convertUnqualifiedAnnotationTypetoColumnName(annotation, storeAll);
                 modulesWithoutData.put(annotationTableName, new ArrayList<>());
                 annotationsToStoreTableNames.add(annotationTableName);
             }
@@ -478,7 +482,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             try {
                 if (storeAll) {
                     Object storedData = handleDataZipping(completeXmiData, schemaDocument);
-                    serializedCASes.add(new DocumentXmiData(XmiSplitConstants.BASE_DOC_COLUMN, docId, storedData, 0, null));// new
+                    final String dataColumnName = dbc.getActiveTableFieldConfiguration().getFieldsToRetrieve().get(dbc.getActiveTableFieldConfiguration().getPrimaryKey().length).get(JulieXMLConstants.NAME);
+                    serializedCASes.add(new DocumentXmiData(dataColumnName, docId, storedData, 0, null));// new
                 } else {
                     // Split the xmi data.
                     XmiSplitterResult result = splitter.process(completeXmiData, aJCas, nextXmiId, baseDocumentSofaIdMap);
@@ -565,7 +570,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         Map<String, ByteArrayOutputStream> convertedMap = new HashMap<>();
         for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet()) {
             if (!e.getKey().equals(XmiSplitter.DOCUMENT_MODULE_LABEL))
-                convertedMap.put(annotationTableManager.convertAnnotationTypeToTableName(e.getKey(), storeAll),
+                convertedMap.put(annotationTableManager.convertUnqualifiedAnnotationTypetoColumnName(e.getKey(), storeAll),
                         e.getValue());
             else
                 convertedMap.put(XmiSplitConstants.BASE_DOC_COLUMN, e.getValue());

@@ -143,7 +143,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
                         schemas = new String[1];
                         schemas[0] = dbc.getActiveTableSchema();
                     }
-                    dbc.checkTableDefinition(dataTable, schemas[0]);
+                    dbc.checkTableHasSchemaColumns(dataTable, schemas[0]);
                 }
             }
         } catch (TableSchemaMismatchException | TableNotFoundException e) {

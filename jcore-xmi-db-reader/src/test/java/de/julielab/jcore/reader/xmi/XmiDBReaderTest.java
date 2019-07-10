@@ -59,7 +59,7 @@ public class XmiDBReaderTest {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
-                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_ANNOTATIONS_TO_LOAD, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
                 XmiDBReader.PARAM_RESET_TABLE, true
         );
@@ -84,7 +84,7 @@ public class XmiDBReaderTest {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
-                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_ANNOTATIONS_TO_LOAD, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, "_data.documents",
                 XmiDBReader.PARAM_RESET_TABLE, false
         );
@@ -109,7 +109,7 @@ public class XmiDBReaderTest {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
-                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_ANNOTATIONS_TO_LOAD, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, "_data.documents",
                 XmiDBReader.PARAM_RESET_TABLE, false,
                 TableReaderConstants.PARAM_WHERE_CONDITION, "_data.documents.docid = '12345'"
@@ -164,7 +164,7 @@ public class XmiDBReaderTest {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
-                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{"tokenschema:"+Token.class.getCanonicalName(), "sentenceschema:"+Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_ANNOTATIONS_TO_LOAD, new String[]{"tokenschema:"+Token.class.getCanonicalName(), "sentenceschema:"+Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
                 XmiDBReader.PARAM_RESET_TABLE, true
         );

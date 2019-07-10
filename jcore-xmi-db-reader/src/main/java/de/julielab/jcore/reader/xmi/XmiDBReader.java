@@ -23,6 +23,7 @@ import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.reader.db.SubsetReaderConstants;
+import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import org.apache.uima.UimaContext;
@@ -39,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -60,15 +62,12 @@ public class XmiDBReader extends DBReader implements Initializable {
     public static final String PARAM_INCREASED_ATTRIBUTE_SIZE = Initializer.PARAM_INCREASED_ATTRIBUTE_SIZE;
     public static final String PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE = Initializer.PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE;
     public static final String PARAM_XMI_NAMESPACES_SCHEMA = Initializer.PARAM_XMI_META_SCHEMA;
+    public static final String PARAM_ANNOTATIONS_TO_LOAD = Initializer.PARAM_ANNOTATIONS_TO_LOAD;
 
     private final static Logger log = LoggerFactory.getLogger(XmiDBReader.class);
-    /**
-     * This is basically a copy of the same parameter in {@link de.julielab.jcore.reader.db.DBSubsetReader}. It is
-     * not actually used to write any values into it and it shouldn't be. It is here to generate a different
-     * description for the specific use of the parameter in the context of the XMI reader.
-     */
-    @ConfigurationParameter(name = PARAM_ADDITIONAL_TABLES, mandatory = false, description = "An array of qualified UIMA type names. The provided names will be converted to database table names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, the default assumed Postgres schema for the annotation tables is the active data table as configured in the CoStoSys configuration file. This can be overwritten by appending '<schema>:' to a table name. The given type names will be converted to valid Postgres table names by replacing dots with underscores. From the resolved tables, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.")
-    protected String[] additionalTableNames;
+
+    @ConfigurationParameter(name = PARAM_ANNOTATIONS_TO_LOAD, mandatory = false, description = "An array of qualified UIMA type names. The provided names will be converted to database table column names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, by default the columns of the XMI table holding annotation module information are named by lowercased UIMA type name where dots are replaced by underscores.. This can be overwritten by appending '<schema>:' to a table name. The given type names will be converted to valid Postgres columns names by replacing dots with underscores and the colon will be converted to the dollar character. From the resolved columns, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.")
+    protected String[] qualifiedAnnotationColumnNames;
     private Boolean doGzip;
     private Boolean useBinaryFormat;
     @ConfigurationParameter(name = PARAM_READS_BASE_DOCUMENT, description = "Indicates if this reader reads segmented " +
@@ -108,13 +107,11 @@ public class XmiDBReader extends DBReader implements Initializable {
      */
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
+        this.qualifiedAnnotationColumnNames = (String[]) context.getConfigParameterValue(PARAM_ANNOTATIONS_TO_LOAD);
         adaptReaderConfigurationForXmiData();
         super.initialize(context);
-        // This is necessary when one or more tables have schema qualifications which are resolved
-        // by the super class in the super.initialize() call above
-        this.additionalTableNames = Stream.of(this.additionalTableNames).map(table -> table.contains(":") ? table.substring(table.indexOf(':') + 1) : table).toArray(String[]::new);
         try (final CoStoSysConnection ignore = dbc.obtainOrReserveConnection()) {
-            initializer = new Initializer(this, dbc, additionalTableNames, joinTables, useBinaryFormat);
+            initializer = new Initializer(this, dbc, qualifiedAnnotationColumnNames, joinTables, useBinaryFormat);
             initializer.initialize(context);
             casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
         }
@@ -140,13 +137,20 @@ public class XmiDBReader extends DBReader implements Initializable {
                 String table = (String) getConfigParameterValue(PARAM_TABLE);
                 determineDataFormat(table);
 
-                FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
-                dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
-                String[] additionalTables = (String[]) getConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLES);
-                if (additionalTables != null && additionalTables.length > 0) {
-                    FieldConfig xmiAnnotationTableSchema = dbc.addXmiAnnotationFieldConfiguration(primaryKeyFields, doGzip);
-                    setConfigParameterValue(SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS, new String[]{xmiAnnotationTableSchema.getName()});
+                List<Map<String, String>> xmiAnnotationColumnsDefinitions = new ArrayList<>();
+                for (String qualifiedAnnotation : qualifiedAnnotationColumnNames) {
+                    final String columnName = qualifiedAnnotation.toLowerCase().replace('.', '_').replace(':', '$');
+                    final Map<String, String> field = FieldConfig.createField(
+                            JulieXMLConstants.NAME, columnName,
+                            JulieXMLConstants.GZIP, String.valueOf(doGzip),
+                            JulieXMLConstants.RETRIEVE, "true",
+                            JulieXMLConstants.TYPE, doGzip || useBinaryFormat ? "bytea" : "xml"
+                    );
+                    xmiAnnotationColumnsDefinitions.add(field);
                 }
+                FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, xmiAnnotationColumnsDefinitions, doGzip);
+                dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
+
                 XmiReaderUtils.checkXmiTableSchema(dbc, tableName, xmiDocumentTableSchema, getMetaData().getName());
             } else {
                 // Complete XMI reading mode
@@ -164,9 +168,10 @@ public class XmiDBReader extends DBReader implements Initializable {
         dataTable = dbc.getNextOrThisDataTable(table);
         log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
+            final String documentColumnName = (readsBaseDocument) ? XmiSplitConstants.BASE_DOC_COLUMN : "xmi";
+            ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT %s FROM %s LIMIT 1", documentColumnName, dataTable));
             while (rs.next()) {
-                byte[] xmiData = rs.getBytes("xmi");
+                byte[] xmiData = rs.getBytes(documentColumnName);
                 try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
                     byte[] firstTwoBytes = new byte[2];
                     gzis.read(firstTwoBytes);

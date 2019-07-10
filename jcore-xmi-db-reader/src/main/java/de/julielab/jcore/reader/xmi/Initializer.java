@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class Initializer {
     public static final String PARAM_STORE_XMI_ID = "StoreMaxXmiId";
@@ -29,8 +30,9 @@ public class Initializer {
     public static final String PARAM_INCREASED_ATTRIBUTE_SIZE = "IncreasedAttributeSize";
     public static final String PARAM_XERCES_ATTRIBUTE_BUFFER_SIZE = "XercesAttributeBufferSize";
     public static final String PARAM_XMI_META_SCHEMA = "XmiMetaTablesSchema";
+    public static final String PARAM_ANNOTATIONS_TO_LOAD = "AnnotationsToLoad";
     private final static Logger log = LoggerFactory.getLogger(Initializer.class);
-    private final String[] additionalTableNames;
+    private final String[] unqualifiedAnnotationModuleNames;
     private final boolean joinTables;
     private boolean useBinaryFormat;
     private Map<Integer, String> reverseBinaryMapping;
@@ -49,10 +51,10 @@ public class Initializer {
     private Initializable initializable;
     private String xmiMetaSchema;
 
-    public Initializer(Initializable initializable, DataBaseConnector dbc, String[] additionalTableNames, boolean joinTables, boolean useBinaryFormat) {
+    public Initializer(Initializable initializable, DataBaseConnector dbc, String[] unqualifiedAnnotationModuleNames, boolean joinTables, boolean useBinaryFormat) {
         this.initializable = initializable;
         this.dbc = dbc;
-        this.additionalTableNames = additionalTableNames;
+        this.unqualifiedAnnotationModuleNames = unqualifiedAnnotationModuleNames != null ? Stream.of(unqualifiedAnnotationModuleNames).map(name -> name.split(":")).map(split -> split.length == 1 ? split[0] : split[1]).toArray(String[]::new): null;
         this.joinTables = joinTables;
         this.useBinaryFormat = useBinaryFormat;
     }
@@ -61,9 +63,9 @@ public class Initializer {
         return builder;
     }
 
-    public String[] getAdditionalTableNames() {
+    public String[] getUnqualifiedAnnotationModuleNames() {
 
-        return additionalTableNames;
+        return unqualifiedAnnotationModuleNames;
     }
 
     public boolean isJoinTables() {
@@ -105,9 +107,9 @@ public class Initializer {
 
     private void initAfterParameterReading() {
         initializationComplete = true;
-        numAdditionalTables = additionalTableNames == null ? 0 : additionalTableNames.length;
+        numAdditionalTables = unqualifiedAnnotationModuleNames == null ? 0 : unqualifiedAnnotationModuleNames.length;
         if (joinTables)
-            for (String annotation : additionalTableNames) {
+            for (String annotation : unqualifiedAnnotationModuleNames) {
                 if (!annotation.contains(".")) {
                     initializationComplete = false;
                     log.debug(annotation
@@ -127,7 +129,7 @@ public class Initializer {
         }
         if (!useBinaryFormat) {
             // if the maxXmlAttributeSize is 0, the default is used
-            builder = new XmiBuilder(nsAndXmiVersion, additionalTableNames, maxXmlAttributeSize);
+            builder = new XmiBuilder(nsAndXmiVersion, unqualifiedAnnotationModuleNames, maxXmlAttributeSize);
         } else {
             binaryBuilder = new BinaryXmiBuilder(nsAndXmiVersion);
 

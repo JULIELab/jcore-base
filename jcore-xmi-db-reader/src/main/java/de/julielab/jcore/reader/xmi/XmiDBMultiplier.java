@@ -5,6 +5,8 @@ import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBMultiplier;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
+import de.julielab.xml.JulieXMLConstants;
+import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -20,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +63,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
         super.process(aJCas);
         // Now all global variables, most importantly "tables" and "schemaNames" have been initialized
         if (initializer == null) {
-            initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, getAdditionalTableNames().length > 0, useBinaryFormat);
+            initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, xmiModuleAnnotationNames.length > 0, useBinaryFormat);
             initializer.initialize(rowBatch);
             casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
         }
@@ -93,7 +96,8 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 
     @Override
     public String[] getAdditionalTableNames() {
-        return tables.length > 1 ? Arrays.copyOfRange(tables, 1, tables.length) : new String[0];
+        // The XMI multiplier doesn't use table joining
+        return new String[0];
     }
 
     @Override
@@ -124,7 +128,18 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
                 dataTable = rowBatch.getTables(0);
                 determineDataFormat(dataTable);
 
-                FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
+                List<Map<String, String>> xmiAnnotationColumnsDefinitions = new ArrayList<>();
+                for (String qualifiedAnnotation : rowBatch.getXmiAnnotationModuleNames()) {
+                    final String columnName = qualifiedAnnotation.toLowerCase().replace('.', '_').replace(':', '$');
+                    final Map<String, String> field = FieldConfig.createField(
+                            JulieXMLConstants.NAME, columnName,
+                            JulieXMLConstants.GZIP, String.valueOf(doGzip),
+                            JulieXMLConstants.RETRIEVE, "true",
+                            JulieXMLConstants.TYPE, doGzip || useBinaryFormat ? "bytea" : "xml"
+                    );
+                    xmiAnnotationColumnsDefinitions.add(field);
+                }
+                FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, xmiAnnotationColumnsDefinitions, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
                 final String[] tables = rowBatch.getTables().toStringArray();
                 String[] additionalTables = Arrays.copyOfRange(tables, 1, tables.length);
@@ -149,9 +164,9 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
         dataTable = dbc.getNextOrThisDataTable(table);
         log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
+            ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT %s FROM %s LIMIT 1",XmiSplitConstants.BASE_DOC_COLUMN, dataTable));
             while (rs.next()) {
-                byte[] xmiData = rs.getBytes("xmi");
+                byte[] xmiData = rs.getBytes(XmiSplitConstants.BASE_DOC_COLUMN);
                 try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
                     byte[] firstTwoBytes = new byte[2];
                     gzis.read(firstTwoBytes);

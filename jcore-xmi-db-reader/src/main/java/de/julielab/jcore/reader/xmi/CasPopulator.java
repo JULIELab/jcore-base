@@ -1,11 +1,14 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.utility.JCoReTools;
+import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.XmiBuilder;
+import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.XmiSplitter;
 import de.julielab.xml.binary.BinaryDecodingResult;
 import de.julielab.xml.binary.BinaryJeDISNodeDecoder;
@@ -27,7 +30,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +75,7 @@ public class CasPopulator {
         this.numAdditionalTables = initializer.getNumAdditionalTables();
         this.numDataRetrievedDataFields = initializer.getNumDataRetrievedDataFields();
         this.dataTable = dataTable;
-        this.additionalTableNames = initializer.getAdditionalTableNames();
+        this.additionalTableNames = initializer.getUnqualifiedAnnotationModuleNames();
         this.builder = initializer.getXmiBuilder();
         binaryBuilder = initializer.getBinaryBuilder();
         useBinaryFormat = initializer.isUseBinaryFormat();
@@ -109,41 +111,25 @@ public class CasPopulator {
         // the data sizes we work with here).
         long dataSize = documentXmi.length + 100;
         LinkedHashMap<String, InputStream> xmiData = new LinkedHashMap<>();
+        final FieldConfig fieldConfig = dbc.getActiveTableFieldConfiguration();
+        final int pkLength = fieldConfig.getPrimaryKey().length;
+
         try {
-            ByteArrayInputStream documentIS = new ByteArrayInputStream(documentXmi);
-            // joinTables is true if we have additional tables to join;
-            // otherwise we
-            // expect a complete XMI document, just parse it and be done.
+            for (int i = pkLength; i < fieldConfig.getColumnsToRetrieve().length; i++) {
+                if (data[i] != null) {
+                    String columnName = fieldConfig.getFields().get(i).get(JulieXMLConstants.NAME);
+                    if (columnName.equals(XmiSplitConstants.BASE_DOC_COLUMN))
+                        columnName = XmiSplitter.DOCUMENT_MODULE_LABEL;
+                    xmiData.put(columnName, new ByteArrayInputStream(data[i]));
+                }
+            }
             if (joinTables || readsBaseDocument) {
-                // data will contain pmid, document-xmi, max-xmi-id,
-                // sofa_id_mapping
-                // and the
-                // additional
-                // annotation-xmis
-                // (in this order).
-                // UNLESS we read from a table without the max-xmi-id field
-                // which
-                // would
-                // correspond to a table with complete XMIs in contrast to split
-                // XMI
-                // tables. Thus only check when joinTables is TRUE.
-                if (data.length != numAdditionalTables + numDataRetrievedDataFields) {
+                if (data.length != numDataRetrievedDataFields) {
                     throw new CollectionException(new IllegalStateException(
                             "The number of retrieved fields does not match the expected number (expected: "
-                                    + (numAdditionalTables + numDataRetrievedDataFields) + ", actual: " + data.length + "). Make sure"
+                                    + numDataRetrievedDataFields + ", actual: " + data.length + "). Make sure"
                                     + " to set the primary key fields in the annotation schema to false, since this"
                                     + " should be retrieved only once from the document table."));
-                }
-                // Construct the input for the XmiBuilder.
-                xmiData.put(XmiSplitter.DOCUMENT_MODULE_LABEL, documentIS);
-                if (joinTables) {
-                    for (int i = numDataRetrievedDataFields; i < data.length; i++) {
-                        documentIS = data[i] != null ? new ByteArrayInputStream(data[i]) : null;
-                        dataSize += data[i] != null ? data[i].length : 0;
-                        if (null != documentIS) {
-                            xmiData.put(additionalTableNames[i - numDataRetrievedDataFields], documentIS);
-                        }
-                    }
                 }
 
                 log.trace("Received {} bytes of XMI data, taking base document and annotation XMI together", dataSize);
@@ -169,11 +155,10 @@ public class CasPopulator {
                 byte[] xmiByteData = baos.toByteArray();
                 if (logFinalXmi)
                     log.info(new String(xmiByteData, StandardCharsets.UTF_8));
-                documentIS = new ByteArrayInputStream(xmiByteData);
                 try {
                     log.trace("Deserializing XMI data into the CAS.");
 
-                    JCoReTools.deserializeXmi(jCas.getCas(), documentIS, xercesAttributeBufferSize);
+                    JCoReTools.deserializeXmi(jCas.getCas(), new ByteArrayInputStream(xmiByteData), xercesAttributeBufferSize);
                 } catch (SAXException e) {
                     String docData = new String(xmiByteData, StandardCharsets.UTF_8);
                     if (!docData.contains("xmi:XMI xmlns:xmi=\"http://www.omg.org/XMI\""))
@@ -187,7 +172,7 @@ public class CasPopulator {
             } else {
                 // Don't join tables, assume a complete XMI document.
                 try {
-                    XmiCasDeserializer.deserialize(documentIS, jCas.getCas());
+                    XmiCasDeserializer.deserialize(new ByteArrayInputStream(data[1]), jCas.getCas());
                 } catch (SAXException e) {
                     String docData = new String(documentXmi, StandardCharsets.UTF_8);
                     if (!docData.contains("xmi:XMI xmlns:xmi=\"http://www.omg.org/XMI\""))

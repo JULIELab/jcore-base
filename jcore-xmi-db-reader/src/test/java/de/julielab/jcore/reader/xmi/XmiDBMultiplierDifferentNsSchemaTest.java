@@ -68,7 +68,7 @@ public class XmiDBMultiplierDifferentNsSchemaTest {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBMultiplierReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
-                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_ANNOTATIONS_TO_LOAD, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
                 XmiDBReader.PARAM_RESET_TABLE, true,
                 XmiDBReader.PARAM_XMI_NAMESPACES_SCHEMA, "fancyschema"

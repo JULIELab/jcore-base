@@ -57,7 +57,6 @@ public class XmiDBReaderMonolithicDocumentsTest {
 
     @Test
     public void testXmiDBReader() throws UIMAException, IOException {
-        System.out.println("HIER: " + Thread.currentThread().getId());
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, false,
