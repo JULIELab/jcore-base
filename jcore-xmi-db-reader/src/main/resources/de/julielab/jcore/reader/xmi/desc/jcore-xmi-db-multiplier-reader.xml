@@ -14,6 +14,13 @@
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
+                <name>AnnotationsToLoad</name>
+                <description>An array of qualified UIMA type names. The provided names will be converted to database table column names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, by default the columns of the XMI table holding annotation module information are named by lowercased UIMA type name where dots are replaced by underscores.. This can be overwritten by appending '&lt;schema&gt;:' to a table name. The given type names will be converted to valid Postgres columns names by replacing dots with underscores and the colon will be converted to the dollar character. From the resolved columns, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
                 <name>StoreMaxXmiId</name>
                 <description>This parameter is required to be set to true, if this reader is contained in a pipeline that also contains a jcore-xmi-db-writer andthe writer will segment the CAS annotation graph and store only parts of it. Then, it is important to keep track of the free XMI element IDs that may be assigned to new annotation elements to avoid ID clashes when assembling an XMI document from separately stored annotation graph segments.</description>
                 <type>Boolean</type>
@@ -61,27 +68,6 @@
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
-            </configurationParameter>
-            <configurationParameter>
-                <name>AdditionalTables</name>
-                <description>An array of table names or a string in the form of a qualified Java class, i.e. a dot-separated path. In the latter case, an existing table is searched for by converting the dots to underscores. A specific Postgres schema can be specified by prepending the Java-style path with a schema name followed by a colon, e.g. 'myschema:de.julielab.jcore.types.Token'. By default, the table names will be resolved against the active data postgres schema configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains a dot or a colon, the active data schema will be ignored for this table. When reading documents from the document data table, the additional tables will be joined onto the data table using the primary keys of the queried documents. Using the table schema for the additional documents defined by the 'AdditionalTableSchema' parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned together with the main document data. This mechanism is most prominently used to retrieve annotation table data together with the original document text in XMI format for the JeDIS system.</description>
-                <type>String</type>
-                <multiValued>true</multiValued>
-                <mandatory>false</mandatory>
-            </configurationParameter>
-            <configurationParameter>
-                <name>AdditionalTableSchemas</name>
-                <description>The table schemas that corresponds to the additional tables given with the 'AdditionalTables' parameter. If only one schema name is given, that schema must apply to all additional tables.</description>
-                <type>String</type>
-                <multiValued>true</multiValued>
-                <mandatory>false</mandatory>
-            </configurationParameter>
-            <configurationParameter>
-                <name>AdditionalTablesPostgresSchema</name>
-                <description>This optional parameter specifies the Postgres schema in which the additional tables to read are searched by default. If omitted, the active data schema from the CoStoSys configuration is assumed. The default can be overwritten for individual types. For details, see the description of the 'AdditionalTables' parameter.</description>
-                <type>String</type>
-                <multiValued>false</multiValued>
-                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>BatchSize</name>
