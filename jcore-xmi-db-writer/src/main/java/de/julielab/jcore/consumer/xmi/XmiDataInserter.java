@@ -23,7 +23,7 @@ public class XmiDataInserter {
 
     private static final Logger log = LoggerFactory.getLogger(XmiDataInserter.class);
 
-    private static final String FIELD_MAX_XMI_ID = "max_xmi_id";
+    public static final String FIELD_MAX_XMI_ID = "max_xmi_id";
 
     private Boolean updateMode;
     private String schemaDocument;
@@ -107,6 +107,7 @@ public class XmiDataInserter {
                     row.put(data.getColumnName(), data.data);
                     if (log.isTraceEnabled())
                         log.trace("{}={}", fName.apply(i - 1), row.get(fName.apply(i - 1)));
+                    // If the base document is stored, update the sofa mapping (which sofa ID is which sofa name in the base document)
                     if (data.getClass().equals(DocumentXmiData.class) && !storeAll) {
                         if (fieldConfig.getFields().size() - fieldConfig.getPrimaryKey().length < 3)
                             throw new IllegalArgumentException("The XMI data table schema is set to the schema with name " +
@@ -116,12 +117,12 @@ public class XmiDataInserter {
                                     "document storage since the storage requires two extra fields to store the maximum XMI " +
                                     "ID of the document and the sofa mapping.");
                         DocumentXmiData docResults = (DocumentXmiData) data;
-                        row.put("max_xmi_id", docResults.newXmiId);
-                        log.trace("{}={}", "max_xmi_id", docResults.newXmiId);
                         row.put("sofa_mapping", docResults.serializedSofaXmiIdMap);
                         log.trace("{}={}", "sofa_mapping", docResults.serializedSofaXmiIdMap);
                     }
                 }
+                // Also update the new max XMI ID
+                row.put(FIELD_MAX_XMI_ID, maxXmiIdMap.get(docId));
                 // Set columns without values explicitly to null. This will automatically remove old column values.
                 if (deleteObsolete) {
                     Set<String> missingColumns = fieldConfig.getFields().stream().map(f -> f.get(JulieXMLConstants.NAME)).collect(Collectors.toSet());
@@ -159,7 +160,7 @@ public class XmiDataInserter {
                 log.error("Error occurred while sending data to database. Exception:", e);
                 throw new XmiDataInsertionException(e);
             }
-            updateMaxXmiId(conn);
+           // updateMaxXmiId(conn);
             //deleteRowsFromTablesWithoutData(columnsWithoutData, conn, dbc, annotationsToStore);
             setLastComponent(conn, subsetTableName);
             log.debug("Committing XMI data to database.");

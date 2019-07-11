@@ -61,7 +61,7 @@ public class XmiDBWriterTest {
     }
 
     @Test
-    public void testXmiDBWriterSplitAnnotations() throws UIMAException, IOException {
+    public void testXmiDBWriterSplitAnnotations() throws Exception {
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
                 XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
@@ -93,8 +93,12 @@ public class XmiDBWriterTest {
             assertThat(dbc.tableExists("_data.documents2")).isTrue();
 
             assertThat(dbc.getTableColumnNames("_data.documents2")).contains("de_julielab_jcore_types_token", "de_julielab_jcore_types_sentence");
+            assertThat(dbc.isEmpty("_data.documents2", XmiSplitConstants.BASE_DOC_COLUMN)).isFalse();
+            assertThat(dbc.isEmpty("_data.documents2", XmiDataInserter.FIELD_MAX_XMI_ID)).isFalse();
+            assertThat(dbc.isEmpty("_data.documents2", "sofa_mapping")).isFalse();
             assertThat(dbc.isEmpty("_data.documents2", "de_julielab_jcore_types_token")).isFalse();
             assertThat(dbc.isEmpty("_data.documents2", "de_julielab_jcore_types_sentence")).isFalse();
+
         }
     }
 

@@ -18,12 +18,10 @@ import java.util.Map.Entry;
  * 
  */
 public class DocumentXmiData extends XmiData {
-	public Integer newXmiId;
 	public String serializedSofaXmiIdMap;
 
-	public DocumentXmiData(String columnName, DocumentId docId, Object storedData, Integer newXmiId, Map<Integer, String> currentSofaXmiIdMap) {
+	public DocumentXmiData(String columnName, DocumentId docId, Object storedData, Map<Integer, String> currentSofaXmiIdMap) {
 		super(columnName, docId, storedData);
-		this.newXmiId = newXmiId;
 		setSofaXmiIdMap(currentSofaXmiIdMap);
 	}
 

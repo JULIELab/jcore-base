@@ -371,7 +371,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
         metaTableManager = new MetaTableManager(dbc, xmiMetaSchema);
         annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, effectiveDocTableName, dbc,
-                schemaDocument,  storeAll, storeBaseDocument, updateMode, componentDbName);
+                schemaDocument, storeAll, storeBaseDocument, updateMode, componentDbName);
         dbc.releaseConnections();
     }
 
@@ -483,7 +483,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 if (storeAll) {
                     Object storedData = handleDataZipping(completeXmiData, schemaDocument);
                     final String dataColumnName = dbc.getActiveTableFieldConfiguration().getFieldsToRetrieve().get(dbc.getActiveTableFieldConfiguration().getPrimaryKey().length).get(JulieXMLConstants.NAME);
-                    serializedCASes.add(new DocumentXmiData(dataColumnName, docId, storedData, 0, null));// new
+                    serializedCASes.add(new DocumentXmiData(dataColumnName, docId, storedData,  null));// new
                 } else {
                     // Split the xmi data.
                     XmiSplitterResult result = splitter.process(completeXmiData, aJCas, nextXmiId, baseDocumentSofaIdMap);
@@ -511,27 +511,24 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
                     // adapt the map keys to table names (currently, the keys are the
                     // Java type names)
-                    splitXmiData = convertModuleLabelsToTableNames(splitXmiData);
+                    splitXmiData = convertModuleLabelsToColumnNames(splitXmiData);
 
 
-
-                    for (String tableName : splitXmiData.keySet()) {
-                        boolean isDocumentTable = tableName.equals(effectiveDocTableName);
-                        ByteArrayOutputStream dataBaos = splitXmiData.get(tableName);
+                    for (String columnName : splitXmiData.keySet()) {
+                        boolean isBaseDocumentColumn = columnName.equals(XmiSplitConstants.BASE_DOC_COLUMN);
+                        ByteArrayOutputStream dataBaos = splitXmiData.get(columnName);
                         if (null != dataBaos) {
                             byte[] dataBytes = dataBaos.toByteArray();
                             // Get the second field of the appropriate table schema,
                             // since the convention is that the data
                             // goes to the second column currently.
                             Object storedData = handleDataZipping(dataBytes, schemaDocument);
-                            if (storeBaseDocument && isDocumentTable) {
-                                serializedCASes.add(new DocumentXmiData(XmiSplitConstants.BASE_DOC_COLUMN, docId, storedData, newXmiId, currentSofaXmiIdMap));
+                            if (storeBaseDocument && isBaseDocumentColumn) {
+                                serializedCASes.add(new DocumentXmiData(XmiSplitConstants.BASE_DOC_COLUMN, docId, storedData, currentSofaXmiIdMap));
                             } else {
-                                serializedCASes.add(new XmiData(tableName, docId, storedData));
-                                if (!storeBaseDocument)
-                                    annotationInserter.putXmiIdMapping(docId, newXmiId);
-
+                                serializedCASes.add(new XmiData(columnName, docId, storedData));
                             }
+                            annotationInserter.putXmiIdMapping(docId, newXmiId);
                         } else if (updateMode) {
                             // There was no data for the annotation table. Since we
                             // are updating this could mean we once had annotations
@@ -539,7 +536,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             // delete the old annotations to avoid xmi:id clashes.
                             // Thus add here the document id for the table we have
                             // to clear the row from (one row per document).
-                            modulesWithoutData.get(tableName).add(docId);
+                            modulesWithoutData.get(columnName).add(docId);
                         }
                     }
                 }
@@ -566,7 +563,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     }
 
     @NotNull
-    private Map<String, ByteArrayOutputStream> convertModuleLabelsToTableNames(Map<String, ByteArrayOutputStream> splitXmiData) {
+    private Map<String, ByteArrayOutputStream> convertModuleLabelsToColumnNames(Map<String, ByteArrayOutputStream> splitXmiData) {
         Map<String, ByteArrayOutputStream> convertedMap = new HashMap<>();
         for (Entry<String, ByteArrayOutputStream> e : splitXmiData.entrySet()) {
             if (!e.getKey().equals(XmiSplitter.DOCUMENT_MODULE_LABEL))
