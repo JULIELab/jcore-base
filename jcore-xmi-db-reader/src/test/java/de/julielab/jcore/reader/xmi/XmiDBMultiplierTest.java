@@ -57,7 +57,10 @@ public class XmiDBMultiplierTest {
     @Test(threadPoolSize = 3, invocationCount = 10, timeOut = 500000)
     public void testXmiDBMultiplierReader() throws Exception {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
-        String xmisubset = "xmisubset" + subsetCounter++;
+        String xmisubset;
+        synchronized (XmiDBMultiplierDifferentNsSchemaTest.class) {
+            xmisubset = "xmisubset" + subsetCounter++;
+        }
         dbc.setActiveTableSchema("xmi_text");
         dbc.reserveConnection();
         dbc.createSubsetTable(xmisubset, "_data.documents", "Test XMI subset");
