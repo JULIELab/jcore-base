@@ -137,6 +137,7 @@ public class MetaTableManager {
                 } catch (SQLException e) {
                     log.debug("Tried to create table {} but did not succeed. The table was probably already created by another process or thread.", mappingTableName);
                 }
+                costoConn.commit();
                 // Create features to map table
                 try {
                     if (!dbc.tableExists(featuresToMapTableName)) {
@@ -146,6 +147,7 @@ public class MetaTableManager {
                 } catch (SQLException e) {
                     log.debug("Tried to create table {} but did not succeed. The table was probably already created by another process or thread.", mappingTableName);
                 }
+                costoConn.commit();
                 // Completely lock the tables. This is a synchronization mechanism: All mapping updates will wait at this
                 // exact location. On gaining access exclusive access, the table is first updated before it is
                 // released again (which happens on the end of the transaction).
