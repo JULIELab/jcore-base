@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class CasPopulator {
@@ -115,7 +116,10 @@ public class CasPopulator {
         final int pkLength = fieldConfig.getPrimaryKey().length;
 
         try {
-            for (int i = pkLength; i < fieldConfig.getColumnsToRetrieve().length; i++) {
+            final int[] xmiColumnIndices = IntStream.range(pkLength, fieldConfig.getColumnsToRetrieve().length)
+                    .filter(i -> !fieldConfig.getColumnsToRetrieve()[i].equals("max_xmi_id") && !fieldConfig.getColumnsToRetrieve()[i].equals("sofa_mapping"))
+                    .toArray();
+            for (int i : xmiColumnIndices) {
                 if (data[i] != null) {
                     String columnName = fieldConfig.getFields().get(i).get(JulieXMLConstants.NAME);
                     if (columnName.equals(XmiSplitConstants.BASE_DOC_COLUMN))
