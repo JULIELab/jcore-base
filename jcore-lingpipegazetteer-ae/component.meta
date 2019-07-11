@@ -6,11 +6,11 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "de.julielab.jcore.ae.lingpipegazetteer.desc.jcore-lingpipe-gazetteer-ae-configurable-resource"
+            "location": "de.julielab.jcore.ae.lingpipegazetteer.desc.jcore-lingpipe-gazetteer-ae"
         },
         {
             "category": "ae",
-            "location": "de.julielab.jcore.ae.lingpipegazetteer.desc.jcore-lingpipe-gazetteer-ae"
+            "location": "de.julielab.jcore.ae.lingpipegazetteer.desc.jcore-lingpipe-gazetteer-ae-configurable-resource"
         }
     ],
     "exposable": true,

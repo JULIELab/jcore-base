@@ -6,16 +6,16 @@
     "description": "A UIMA reader for the Pubmed Central NXML format.",
     "descriptors": [
         {
-            "category": "multiplier",
-            "location": "de.julielab.jcore.multiplier.pmc.desc.jcore-pmc-multiplier"
-        },
-        {
             "category": "reader",
             "location": "de.julielab.jcore.reader.pmc.desc.jcore-pmc-multiplier-reader"
         },
         {
             "category": "reader",
             "location": "de.julielab.jcore.reader.pmc.desc.jcore-pmc-reader"
+        },
+        {
+            "category": "multiplier",
+            "location": "de.julielab.jcore.multiplier.pmc.desc.jcore-pmc-multiplier"
         }
     ],
     "exposable": true,

@@ -6,15 +6,15 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "de.julielab.jcore.ae.medxn.desc.MedNormAE"
-        },
-        {
-            "category": "ae",
             "location": "de.julielab.jcore.ae.medxn.desc.jcore-medxn-ae-attributes-german"
         },
         {
             "category": "ae",
             "location": "de.julielab.jcore.ae.medxn.desc.jcore-medxn-ae-extractor-german"
+        },
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.medxn.desc.MedNormAE"
         }
     ],
     "exposable": true,
