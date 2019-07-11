@@ -78,7 +78,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
-        this.qualifiedAnnotationColumnNames = (String[]) context.getConfigParameterValue(PARAM_ANNOTATIONS_TO_LOAD);
+        this.qualifiedAnnotationColumnNames = Optional.ofNullable((String[]) context.getConfigParameterValue(PARAM_ANNOTATIONS_TO_LOAD)).orElse(new String[0]);
         adaptReaderConfigurationForXmiData();
         super.initialize(context);
         readsBaseDocument = (Boolean) (context.getConfigParameterValue(PARAM_READS_BASE_DOCUMENT) == null ? false
