@@ -116,7 +116,7 @@ public abstract class DBSubsetReader extends DBReaderBase {
                     tables = new String[]{tableName};
                     schemas = new String[]{dbc.getActiveTableSchema()};
                 }
-                dbc.checkTableDefinition(tableName);
+                dbc.checkTableHasSchemaColumns(tableName, dbc.getActiveTableSchema());
                 Integer tableRows = dbc.withConnectionQueryInteger(c -> c.countRowsOfDataTable(tableName, whereCondition));
                 totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
                 hasNext = !dbc.withConnectionQueryBoolean(c -> c.isEmpty(tableName));
