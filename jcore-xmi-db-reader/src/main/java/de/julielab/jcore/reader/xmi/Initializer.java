@@ -50,11 +50,10 @@ public class Initializer {
     private DataBaseConnector dbc;
     private Initializable initializable;
     private String xmiMetaSchema;
-
     public Initializer(Initializable initializable, DataBaseConnector dbc, String[] unqualifiedAnnotationModuleNames, boolean joinTables, boolean useBinaryFormat) {
         this.initializable = initializable;
         this.dbc = dbc;
-        this.unqualifiedAnnotationModuleNames = unqualifiedAnnotationModuleNames != null ? Stream.of(unqualifiedAnnotationModuleNames).map(name -> name.split(":")).map(split -> split.length == 1 ? split[0] : split[1]).toArray(String[]::new): null;
+        this.unqualifiedAnnotationModuleNames = unqualifiedAnnotationModuleNames != null ? Stream.of(unqualifiedAnnotationModuleNames).map(name -> name.split(":")).map(split -> split.length == 1 ? split[0] : split[1]).toArray(String[]::new) : null;
         this.joinTables = joinTables;
         this.useBinaryFormat = useBinaryFormat;
     }
@@ -287,6 +286,10 @@ public class Initializer {
 
     public Boolean getLogFinalXmi() {
         return logFinalXmi;
+    }
+
+    public void setLogFinalXmi(Boolean logFinalXmi) {
+        this.logFinalXmi = logFinalXmi;
     }
 
     public DataBaseConnector getDataBaseConnector() {

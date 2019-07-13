@@ -181,7 +181,7 @@ public class CasPopulator {
                     String docData = new String(documentXmi, StandardCharsets.UTF_8);
                     if (!docData.contains("xmi:XMI xmlns:xmi=\"http://www.omg.org/XMI\""))
                         throw new CollectionException(new IllegalArgumentException("The document that has been received from the database does not " +
-                                "appear to contain XMI data. The beginning of the document data is: " +
+                                "appear to contain valid XMI data. The beginning of the document data is: " +
                                 StringUtils.abbreviate(docData, 200)));
                     log.error("SAXException while deserializing CAS XMI data. Beginning of data was: {}", StringUtils.abbreviate(docData, 200));
                     throw new CollectionException(e);

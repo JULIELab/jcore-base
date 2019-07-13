@@ -11,6 +11,7 @@ import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -22,17 +23,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 public class XmiDBMultiplier extends DBMultiplier implements Initializable {
-
+    public static final String PARAM_LOG_FINAL_XMI = Initializer.PARAM_LOG_FINAL_XMI;
     private final static Logger log = LoggerFactory.getLogger(XmiDBMultiplier.class);
-
+    @ConfigurationParameter(name = PARAM_LOG_FINAL_XMI, mandatory = false, defaultValue = "false", description = "For debugging purposes. If set to true, before parsing the final XMI data assembled from the annotation modules, it is printed to console.")
+    private boolean logFinalXmi;
     private Initializer initializer;
     private CasPopulator casPopulator;
     private String[] xmiModuleAnnotationNames;
@@ -42,6 +41,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         super.initialize(aContext);
+        logFinalXmi = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_LOG_FINAL_XMI)).orElse(false);
     }
 
     @Override
@@ -65,6 +65,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
         if (initializer == null) {
             initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, xmiModuleAnnotationNames.length > 0, useBinaryFormat);
             initializer.initialize(rowBatch);
+            initializer.setLogFinalXmi(logFinalXmi);
             casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
         }
     }
@@ -164,7 +165,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
         dataTable = dbc.getNextOrThisDataTable(table);
         log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT %s FROM %s LIMIT 1",XmiSplitConstants.BASE_DOC_COLUMN, dataTable));
+            ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT %s FROM %s LIMIT 1", XmiSplitConstants.BASE_DOC_COLUMN, dataTable));
             while (rs.next()) {
                 byte[] xmiData = rs.getBytes(XmiSplitConstants.BASE_DOC_COLUMN);
                 try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
@@ -185,7 +186,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     }
 
     private void checkForJeDISBinaryFormat(byte[] firstTwoBytes) {
-        short header = (short) ((firstTwoBytes[0]<<8) | (0xff & firstTwoBytes[1]));
+        short header = (short) ((firstTwoBytes[0] << 8) | (0xff & firstTwoBytes[1]));
         if (header != BinaryJeDISNodeEncoder.JEDIS_BINARY_MAGIC) {
             useBinaryFormat = false;
             log.debug("Is data encoded in JeDIS binary format: false");
