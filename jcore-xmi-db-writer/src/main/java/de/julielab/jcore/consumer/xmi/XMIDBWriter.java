@@ -741,7 +741,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         super.batchProcessComplete();
         log.debug("Running batchProcessComplete.");
         try {
-            if (!featuresToMapDryRun && useBinaryFormat)
+            if (!(featuresToMapDryRun && useBinaryFormat))
                 annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, serializedCASes, modulesWithoutData, subsetTable, deleteObsolete);
             else
                 log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
@@ -764,7 +764,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         super.collectionProcessComplete();
         log.debug("Running collectionProcessComplete.");
         try {
-            if (!featuresToMapDryRun && useBinaryFormat)
+            if (!(featuresToMapDryRun && useBinaryFormat))
                 annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, serializedCASes, modulesWithoutData, subsetTable, deleteObsolete);
             else
                 log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
