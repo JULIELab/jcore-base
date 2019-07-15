@@ -177,11 +177,10 @@ public class MetaTableManager {
                 // Run the analysis with the fresh data from the database
                 final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMapping, existingFeaturesToMap);
 
-                Map<String, Integer> missingItems = Collections.emptyMap();
-                Map<String, Boolean> missingFeaturesToMap = Collections.emptyMap();
+                Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
+                Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
                 if (writeToDatabase) {
                     // Add the missing mapping items into the mapping table
-                    missingItems = analysisResult.getMissingItemsMapping();
                     sql = String.format("INSERT INTO %s values(?, ?)", mappingTableName);
                     final PreparedStatement ps = costoConn.prepareStatement(sql);
                     for (String mappedString : missingItems.keySet()) {
@@ -191,7 +190,6 @@ public class MetaTableManager {
                     }
                     ps.executeBatch();
 
-                    missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
                     sql = String.format("INSERT INTO %s values(?, ?)", featuresToMapTableName);
                     final PreparedStatement psFeaturesToMap = costoConn.prepareStatement(sql);
                     for (String mappedString : missingFeaturesToMap.keySet()) {
