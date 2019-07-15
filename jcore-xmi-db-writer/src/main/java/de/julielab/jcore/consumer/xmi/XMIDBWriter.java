@@ -97,6 +97,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_STORE_BASE_DOCUMENT = "StoreBaseDocument";
     public static final String PARAM_WRITE_BATCH_SIZE = "WriteBatchSize";
     public static final String PARAM_XMI_META_SCHEMA = "XmiMetaTablesSchema";
+    public static final String PARAM_FEATURES_TO_MAP_DRYRUN = "BinaryFeaturesToMapDryRun";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
@@ -213,6 +214,17 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "table should be stored or looked up in another postgres schema, prepend the type name with the " +
             "string '<schema>:', e.g. 'myschema:de.julielab.jcore.types.Token.")
     private String[] annotations;
+    @ConfigurationParameter(name = PARAM_FEATURES_TO_MAP_DRYRUN, mandatory = false, defaultValue = "false",
+            description = "This parameter is useful when using the binary format and has no effect if not. Then, the UIMA type features " +
+                    "that should be mapped to integers will be determined automatically from the input. For each " +
+                    "document that has a string (!) feature not seen before, the ratio of occurrences of that feature in the " +
+                    "document to the number of distinct values of the feature in the document determines whether " +
+                    "or not the feature values will be mapped. This purely one-instance statistical approach " +
+                    "can have unwanted results in that a feature is mapped or not mapped that should not be or should. " +
+                    "Setting this parameter to true will cause the algorithm that determines which features to map to output details about which features " +
+                    "would be mapped without actually writing anything into the database. This is done on the INFO log level. This can be used for " +
+                    "new corpora in order to check which features should manually be switched on or off for mapping.")
+    private boolean featuresToMapDryRun;
 
     /*
      * (non-Javadoc)
@@ -255,6 +267,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         annotations = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE)).orElse(new String[0]);
         xmiMetaSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_XMI_META_SCHEMA)).orElse("public");
         useBinaryFormat = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_USE_BINARY_FORMAT)).orElse(false);
+        featuresToMapDryRun = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_FEATURES_TO_MAP_DRYRUN)).orElse(false);
 
         if (xmiMetaSchema.isBlank())
             throw new ResourceInitializationException(new IllegalArgumentException("The XMI meta table Postgres schema must either be omitted at all or non-empty but was."));
@@ -483,7 +496,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 if (storeAll) {
                     Object storedData = handleDataZipping(completeXmiData, schemaDocument);
                     final String dataColumnName = dbc.getActiveTableFieldConfiguration().getFieldsToRetrieve().get(dbc.getActiveTableFieldConfiguration().getPrimaryKey().length).get(JulieXMLConstants.NAME);
-                    serializedCASes.add(new DocumentXmiData(dataColumnName, docId, storedData,  null));// new
+                    serializedCASes.add(new DocumentXmiData(dataColumnName, docId, storedData, null));// new
                 } else {
                     // Split the xmi data.
                     XmiSplitterResult result = splitter.process(completeXmiData, aJCas, nextXmiId, baseDocumentSofaIdMap);
@@ -491,7 +504,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     Integer newXmiId = result.maxXmiId;
                     Map<String, String> nsAndXmiVersionMap = result.namespaces;
                     Map<Integer, String> currentSofaXmiIdMap = result.currentSofaIdMap;
-                    metaTableManager.manageXMINamespaces(nsAndXmiVersionMap);
+                    if (!featuresToMapDryRun && useBinaryFormat)
+                        metaTableManager.manageXMINamespaces(nsAndXmiVersionMap);
 
                     if (currentSofaXmiIdMap.isEmpty())
                         throw new IllegalStateException(
@@ -502,7 +516,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     log.trace("Sofa ID map for this document: {}", currentSofaXmiIdMap);
 
                     if (useBinaryFormat) {
-                        final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable((existingMapping, existingMappedFeatures) -> binaryEncoder.findMissingItemsForMapping(result.jedisNodesInAnnotationModules, aJCas.getTypeSystem(), existingMapping, existingMappedFeatures), binaryStringMapping, binaryMappedFeatures);
+                        final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable((existingMapping, existingMappedFeatures) -> binaryEncoder.findMissingItemsForMapping(result.jedisNodesInAnnotationModules, aJCas.getTypeSystem(), existingMapping, existingMappedFeatures, featuresToMapDryRun), binaryStringMapping, binaryMappedFeatures, !featuresToMapDryRun);
                         binaryStringMapping = updatedMappingAndMappedFeatures.getLeft();
                         binaryMappedFeatures = updatedMappingAndMappedFeatures.getRight();
                         final Map<String, ByteArrayOutputStream> encodedXmiData = binaryEncoder.encode(result.jedisNodesInAnnotationModules, aJCas.getTypeSystem(), binaryStringMapping, binaryMappedFeatures);
@@ -727,7 +741,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         super.batchProcessComplete();
         log.debug("Running batchProcessComplete.");
         try {
-            annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, serializedCASes, modulesWithoutData, subsetTable, deleteObsolete);
+            if (!featuresToMapDryRun && useBinaryFormat)
+                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, serializedCASes, modulesWithoutData, subsetTable, deleteObsolete);
+            else
+                log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
             serializedCASes.clear();
             for (List<DocumentId> docIds : modulesWithoutData.values())
                 docIds.clear();
@@ -747,7 +764,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         super.collectionProcessComplete();
         log.debug("Running collectionProcessComplete.");
         try {
-            annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, serializedCASes, modulesWithoutData, subsetTable, deleteObsolete);
+            if (!featuresToMapDryRun && useBinaryFormat)
+                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, serializedCASes, modulesWithoutData, subsetTable, deleteObsolete);
+            else
+                log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
             serializedCASes.clear();
             for (List<DocumentId> docIds : modulesWithoutData.values())
                 docIds.clear();
