@@ -133,8 +133,8 @@ public class MetaTableManager {
                 // Create mapping table
                 try {
                     if (!dbc.tableExists(mappingTableName)) {
-                        sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER PRIMARY KEY)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
-//                        sql += String.format("CREATE INDEX %s_%s_idx ON items USING btree (%s);", mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID);
+//                        sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER PRIMARY KEY)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
+                        sql += String.format("CREATE INDEX %s_%s_idx ON items USING btree (%s);", mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID);
                         stmt.execute(sql);
                     }
                 } catch (SQLException e) {
@@ -170,10 +170,10 @@ public class MetaTableManager {
                 while (rs.next()) {
                     existingMapping.put(rs.getString(1), rs.getInt(2));
                 }
-                System.out.println("Current mapping size: " + currentMappingState.size());
-                System.out.println("Existing mapping size: " + existingMapping.size());
-                System.out.println("Existing mapping IDs: " + existingMapping.values().stream().sorted().collect(Collectors.toList()));
-                System.out.println("Maximum existing mapping ID: " + existingMapping.values().stream().mapToInt(Integer::intValue).max());
+//                System.out.println("Current mapping size: " + currentMappingState.size());
+//                System.out.println("Existing mapping size: " + existingMapping.size());
+//                System.out.println("Existing mapping IDs: " + existingMapping.values().stream().sorted().collect(Collectors.toList()));
+//                System.out.println("Maximum existing mapping ID: " + existingMapping.values().stream().mapToInt(Integer::intValue).max());
                 // Read the features to map table; we use the 'currentMappedAttributes' as the base map
                 // because this allows us to initialize the features to map with manually given values
                 // (whitelist and/or blacklist).
@@ -188,7 +188,7 @@ public class MetaTableManager {
                 final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMapping, existingFeaturesToMap);
 
                 Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
-                System.out.println("Missing items IDs: " + Arrays.toString(missingItems.values().stream().mapToInt(Integer::intValue).sorted().toArray()));
+//                System.out.println("Missing items IDs: " + Arrays.toString(missingItems.values().stream().mapToInt(Integer::intValue).sorted().toArray()));
 
                 Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
                 if (writeToDatabase) {
