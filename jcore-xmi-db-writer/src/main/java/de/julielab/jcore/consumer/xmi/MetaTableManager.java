@@ -19,6 +19,7 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class MetaTableManager {
     public static final String BINARY_MAPPING_TABLE = XmiSplitConstants.BINARY_MAPPING_TABLE;
@@ -168,8 +169,9 @@ public class MetaTableManager {
                 while (rs.next()) {
                     existingMapping.put(rs.getString(1), rs.getInt(2));
                 }
-                System.out.println("Current mapping: " + currentMappingState);
-                System.out.println("Existing mapping: " + existingMapping);
+                System.out.println("Current mapping size: " + currentMappingState.size());
+                System.out.println("Existing mapping size: " + existingMapping.size());
+                System.out.println("Maximum existing mapping ID: " + existingMapping.values().stream().mapToInt(Integer::intValue).max());
                 // Read the features to map table; we use the 'currentMappedAttributes' as the base map
                 // because this allows us to initialize the features to map with manually given values
                 // (whitelist and/or blacklist).
@@ -184,7 +186,8 @@ public class MetaTableManager {
                 final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMapping, existingFeaturesToMap);
 
                 Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
-                System.out.println("Missing items: " + missingItems);
+                System.out.println("Missing items IDs: " + Arrays.toString(missingItems.values().stream().mapToInt(Integer::intValue).sorted().toArray()));
+
                 Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
                 if (writeToDatabase) {
                     // Add the missing mapping items into the mapping table
