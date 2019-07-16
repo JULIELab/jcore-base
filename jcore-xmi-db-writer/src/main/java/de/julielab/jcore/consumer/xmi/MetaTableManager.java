@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MetaTableManager {
     public static final String BINARY_MAPPING_TABLE = XmiSplitConstants.BINARY_MAPPING_TABLE;
@@ -171,6 +172,7 @@ public class MetaTableManager {
                 }
                 System.out.println("Current mapping size: " + currentMappingState.size());
                 System.out.println("Existing mapping size: " + existingMapping.size());
+                System.out.println("Existing mapping IDs: " + existingMapping.values().stream().sorted().collect(Collectors.toList()));
                 System.out.println("Maximum existing mapping ID: " + existingMapping.values().stream().mapToInt(Integer::intValue).max());
                 // Read the features to map table; we use the 'currentMappedAttributes' as the base map
                 // because this allows us to initialize the features to map with manually given values
