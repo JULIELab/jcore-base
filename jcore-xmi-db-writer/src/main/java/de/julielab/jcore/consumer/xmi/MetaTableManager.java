@@ -133,8 +133,8 @@ public class MetaTableManager {
                 // Create mapping table
                 try {
                     if (!dbc.tableExists(mappingTableName)) {
-//                        sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER PRIMARY KEY)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
-                        sql += String.format("CREATE INDEX %s_%s_idx ON items USING btree (%s);", mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID);
+                        sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER PRIMARY KEY)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
+//                        sql += String.format("CREATE INDEX %s_%s_idx ON items USING btree (%s);", mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID);
                         stmt.execute(sql);
                     }
                 } catch (SQLException e) {
@@ -164,8 +164,8 @@ public class MetaTableManager {
                 // Only request what we don't already have. Since the mapping IDs are a enumeration,
                 // we can just order by them descendingly and get the head of this list. The remainder
                 // of size currentMappingState.size() is already known.
-//                sql = String.format("SELECT %s,%s FROM %s ORDER BY %s DESC LIMIT (SELECT count(%s) FROM %s)-%d", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID, mappingTableName, currentMappingState.size());
-                sql = String.format("SELECT %s,%s FROM %s", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName);
+                sql = String.format("SELECT %s,%s FROM %s ORDER BY %s DESC LIMIT (SELECT count(%s) FROM %s)-%d", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID, mappingTableName, currentMappingState.size());
+//                sql = String.format("SELECT %s,%s FROM %s", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName);
                 final ResultSet rs = stmt.executeQuery(sql);
                 while (rs.next()) {
                     existingMapping.put(rs.getString(1), rs.getInt(2));
