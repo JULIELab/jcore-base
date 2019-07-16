@@ -518,7 +518,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
-                final BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction = (existingMapping, existingMappedFeatures) -> binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping, binaryMappedFeatures, featuresToMapDryRun);
+                final BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction = (existingMapping, existingMappedFeatures) -> binaryEncoder.findMissingItemsForMapping(allNodes, ts, existingMapping, existingMappedFeatures, featuresToMapDryRun);
                 final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsFunction, binaryStringMapping, binaryMappedFeatures, !featuresToMapDryRun);
                 binaryStringMapping = updatedMappingAndMappedFeatures.getLeft();
                 binaryMappedFeatures = updatedMappingAndMappedFeatures.getRight();

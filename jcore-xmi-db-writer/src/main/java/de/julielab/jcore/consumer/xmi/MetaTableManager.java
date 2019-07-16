@@ -163,7 +163,6 @@ public class MetaTableManager {
                 while (rs.next()) {
                     existingMapping.put(rs.getString(1), rs.getInt(2));
                 }
-
                 // Read the features to map table; we use the 'currentMappedAttributes' as the base map
                 // because this allows us to initialize the features to map with manually given values
                 // (whitelist and/or blacklist).
