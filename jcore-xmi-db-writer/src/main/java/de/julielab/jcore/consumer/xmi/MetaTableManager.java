@@ -158,8 +158,11 @@ public class MetaTableManager {
                 stmt.execute(sql);
 
                 // Read the mapping table
-                Map<String, Integer> existingMapping = new HashMap<>();
-                sql = String.format("SELECT %s,%s FROM %s", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName);
+                Map<String, Integer> existingMapping = new HashMap<>(currentMappingState);
+                // Only request what we don't already have. Since the mapping IDs are a enumeration,
+                // we can just order by them descendingly and get the head of this list. The remainder
+                // of size currentMappingState.size() is already known.
+                sql = String.format("SELECT %s,%s FROM %s ORDER BY %s DESC LIMIT (SELECT count(%s) FROM %s)-%d", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID, mappingTableName, currentMappingState.size());
                 final ResultSet rs = stmt.executeQuery(sql);
                 while (rs.next()) {
                     existingMapping.put(rs.getString(1), rs.getInt(2));
