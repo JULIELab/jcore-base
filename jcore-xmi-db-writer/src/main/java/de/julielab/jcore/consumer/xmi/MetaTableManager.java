@@ -131,7 +131,7 @@ public class MetaTableManager {
                 // Create mapping table
                 try {
                     if (!dbc.tableExists(mappingTableName)) {
-                        sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
+                        sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER PRIMARY KEY)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
                         stmt.execute(sql);
                     }
                 } catch (SQLException e) {
