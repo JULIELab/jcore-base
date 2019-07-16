@@ -168,6 +168,8 @@ public class MetaTableManager {
                 while (rs.next()) {
                     existingMapping.put(rs.getString(1), rs.getInt(2));
                 }
+                System.out.println("Current mapping: " + currentMappingState);
+                System.out.println("Existing mapping: " + existingMapping);
                 // Read the features to map table; we use the 'currentMappedAttributes' as the base map
                 // because this allows us to initialize the features to map with manually given values
                 // (whitelist and/or blacklist).
@@ -182,6 +184,7 @@ public class MetaTableManager {
                 final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMapping, existingFeaturesToMap);
 
                 Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
+                System.out.println("Missing items: " + missingItems);
                 Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
                 if (writeToDatabase) {
                     // Add the missing mapping items into the mapping table

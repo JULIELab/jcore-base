@@ -524,40 +524,25 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 binaryMappedFeatures = updatedMappingAndMappedFeatures.getRight();
             }
 
-            createAnnotationModules();
+            createAnnotationModules(splitterResults);
         }
         xmiItemBuffer.clear();
     }
 
-    private void createAnnotationModules() throws AnalysisEngineProcessException {
-        for (XmiBufferItem item : xmiItemBuffer) {
+    private void createAnnotationModules(List<XmiSplitterResult> splitterResults) throws AnalysisEngineProcessException {
+        for (int i = 0; i < xmiItemBuffer.size(); i++) {
+            final XmiBufferItem item = xmiItemBuffer.get(i);
             DocumentId docId = item.getDocId();
-            byte[] completeXmiData = item.getXmiData();
-            TypeSystem ts = item.getTypeSystem();
-            int nextXmiId = item.getNextXmiId();
-            final Map<String, Integer> baseDocumentSofaIdMap = item.getSofaIdMap();
 
             try {
-
-                // Split the xmi data.
-                XmiSplitterResult result = splitter.process(completeXmiData, ts, nextXmiId, baseDocumentSofaIdMap);
+                XmiSplitterResult result = splitterResults.get(i);
                 Map<String, ByteArrayOutputStream> splitXmiData = result.xmiData;
                 Integer newXmiId = result.maxXmiId;
-                Map<String, String> nsAndXmiVersionMap = result.namespaces;
                 Map<Integer, String> currentSofaXmiIdMap = result.currentSofaIdMap;
-                if (!featuresToMapDryRun && useBinaryFormat)
-                    metaTableManager.manageXMINamespaces(nsAndXmiVersionMap);
 
-                if (currentSofaXmiIdMap.isEmpty())
-                    throw new IllegalStateException(
-                            "The XmiSplitter returned an empty Sofa XMI ID map. This is a critical errors since it means " +
-                                    "that the splitter was not able to resolve the correct Sofa XMI IDs for the annotations " +
-                                    "that should be stored now.");
-                log.trace("Updating max xmi id of document {}. New max xmi id: {}", docId, newXmiId);
-                log.trace("Sofa ID map for this document: {}", currentSofaXmiIdMap);
 
                 if (useBinaryFormat) {
-                    final Map<String, ByteArrayOutputStream> encodedXmiData = binaryEncoder.encode(result.jedisNodesInAnnotationModules, ts, binaryStringMapping, binaryMappedFeatures);
+                    final Map<String, ByteArrayOutputStream> encodedXmiData = binaryEncoder.encode(result.jedisNodesInAnnotationModules, item.getTypeSystem(), binaryStringMapping, binaryMappedFeatures);
                     splitXmiData = encodedXmiData;
                 }
 
@@ -593,7 +578,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 }
                 // as the very last thing, add this document to the processed list
                 annotationInserter.addProcessedDocumentId(docId);
-            } catch (IOException | XMISplitterException e) {
+            } catch (IOException e) {
                 throw new AnalysisEngineProcessException(e);
             }
         }
