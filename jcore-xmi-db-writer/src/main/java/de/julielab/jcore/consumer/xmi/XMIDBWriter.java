@@ -598,7 +598,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 XmiSplitterResult result = splitter.process(completeXmiData, ts, nextXmiId, baseDocumentSofaIdMap);
                 splitterResults.add(result);
                 Integer newXmiId = result.maxXmiId;
-                if (!featuresToMapDryRun && useBinaryFormat)
+                if (!(featuresToMapDryRun && useBinaryFormat))
                     metaTableManager.manageXMINamespaces(result.namespaces);
 
                 if (result.currentSofaIdMap.isEmpty())
