@@ -132,9 +132,8 @@ public class MetaTableManager {
                 try {
                     if (!dbc.tableExists(mappingTableName)) {
                         sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER PRIMARY KEY)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
+//                        sql += String.format("CREATE INDEX %s_%s_idx ON items USING btree (%s);", mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID);
                         stmt.execute(sql);
-                        sql = String.format("CREATE INDEX %s_%s_idx ON items USING btree (%s)", mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID);
-                        stmt.executeQuery(sql);
                     }
                 } catch (SQLException e) {
                     log.debug("Tried to create table {} but did not succeed. The table was probably already created by another process or thread.", mappingTableName);
