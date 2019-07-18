@@ -161,7 +161,7 @@ public class MetaTableManager {
                 Map<String, Boolean> existingFeaturesToMap = missingItemsFromCurrentState.getMissingFeaturesToMap();
                 // Only do the update if new features are to be added
                 if (!existingFeaturesToMap.isEmpty())
-                    updateFeaturesToMap(featuresToMapTableName, currentMappedAttributes, stmt);
+                    existingFeaturesToMap = updateFeaturesToMap(featuresToMapTableName, currentMappedAttributes, stmt);
 
                 // Run the analysis with the fresh data from the database
                 final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMapping, existingFeaturesToMap);
