@@ -14,10 +14,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.ByteArrayInputStream;
@@ -55,6 +52,18 @@ public class XmiDBWriterBinaryFormatTest {
     @AfterClass
     public static void shutDown() {
         dbc.close();
+    }
+
+    @Before
+    public void cleanForTest() throws SQLException {
+        String binaryMappingTable = "public." + MetaTableManager.BINARY_MAPPING_TABLE;
+        String binaryFeaturesToMapTable = "public." + MetaTableManager.BINARY_FEATURES_TO_MAP_TABLE;
+        try (CoStoSysConnection ignore = dbc.obtainOrReserveConnection()) {
+           if (dbc.tableExists(binaryMappingTable))
+               dbc.dropTable(binaryMappingTable);
+           if (dbc.tableExists(binaryFeaturesToMapTable))
+               dbc.dropTable(binaryFeaturesToMapTable);
+        }
     }
 
     public static JCas getJCasWithRequiredTypes() throws UIMAException {
