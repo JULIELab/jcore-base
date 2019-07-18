@@ -19,8 +19,6 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class MetaTableManager {
     public static final String BINARY_MAPPING_TABLE = XmiSplitConstants.BINARY_MAPPING_TABLE;
@@ -154,62 +152,26 @@ public class MetaTableManager {
                 // Completely lock the tables. This is a synchronization mechanism: All mapping updates will wait at this
                 // exact location. On gaining access exclusive access, the table is first updated before it is
                 // released again (which happens on the end of the transaction).
-                sql = String.format("LOCK TABLE ONLY %s IN ACCESS EXCLUSIVE MODE", mappingTableName);
-                stmt.execute(sql);
-                sql = String.format("LOCK TABLE ONLY %s IN ACCESS EXCLUSIVE MODE", featuresToMapTableName);
-                stmt.execute(sql);
+                obtainLockToMappingTable(mappingTableName, stmt);
+                obtainLockToMappingTable(featuresToMapTableName, stmt);
 
                 // Read the mapping table
-                Map<String, Integer> existingMapping = new HashMap<>(currentMappingState);
-                // Only request what we don't already have. Since the mapping IDs are a enumeration,
-                // we can just order by them descendingly and get the head of this list. The remainder
-                // of size currentMappingState.size() is already known.
-                sql = String.format("SELECT %s,%s FROM %s ORDER BY %s DESC LIMIT (SELECT count(%s) FROM %s)-%d", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID, mappingTableName, currentMappingState.size());
-//                sql = String.format("SELECT %s,%s FROM %s", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName);
-                final ResultSet rs = stmt.executeQuery(sql);
-                while (rs.next()) {
-                    existingMapping.put(rs.getString(1), rs.getInt(2));
-                }
-//                System.out.println("Current mapping size: " + currentMappingState.size());
-//                System.out.println("Existing mapping size: " + existingMapping.size());
-//                System.out.println("Existing mapping IDs: " + existingMapping.values().stream().sorted().collect(Collectors.toList()));
-//                System.out.println("Maximum existing mapping ID: " + existingMapping.values().stream().mapToInt(Integer::intValue).max());
-                // Read the features to map table; we use the 'currentMappedAttributes' as the base map
-                // because this allows us to initialize the features to map with manually given values
-                // (whitelist and/or blacklist).
-                Map<String, Boolean> existingFeaturesToMap = new HashMap<>(currentMappedAttributes);
-                sql = String.format("SELECT %s,%s FROM %s", BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP, featuresToMapTableName);
-                final ResultSet rsFeaturesToMap = stmt.executeQuery(sql);
-                while (rsFeaturesToMap.next()) {
-                    existingFeaturesToMap.put(rsFeaturesToMap.getString(1), rsFeaturesToMap.getBoolean(2));
-                }
+                Map<String, Integer> existingMapping = updateMapping(mappingTableName, currentMappingState, stmt);
+
+                Map<String, Boolean> existingFeaturesToMap = missingItemsFromCurrentState.getMissingFeaturesToMap();
+                // Only do the update if new features are to be added
+                if (!existingFeaturesToMap.isEmpty())
+                    updateFeaturesToMap(featuresToMapTableName, currentMappedAttributes, stmt);
 
                 // Run the analysis with the fresh data from the database
                 final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMapping, existingFeaturesToMap);
 
                 Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
-//                System.out.println("Missing items IDs: " + Arrays.toString(missingItems.values().stream().mapToInt(Integer::intValue).sorted().toArray()));
 
                 Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
                 if (writeToDatabase) {
-                    // Add the missing mapping items into the mapping table
-                    sql = String.format("INSERT INTO %s values(?, ?)", mappingTableName);
-                    final PreparedStatement ps = costoConn.prepareStatement(sql);
-                    for (String mappedString : missingItems.keySet()) {
-                        ps.setString(1, mappedString);
-                        ps.setInt(2, missingItems.get(mappedString));
-                        ps.addBatch();
-                    }
-                    ps.executeBatch();
-
-                    sql = String.format("INSERT INTO %s values(?, ?)", featuresToMapTableName);
-                    final PreparedStatement psFeaturesToMap = costoConn.prepareStatement(sql);
-                    for (String mappedString : missingFeaturesToMap.keySet()) {
-                        psFeaturesToMap.setString(1, mappedString);
-                        psFeaturesToMap.setBoolean(2, missingFeaturesToMap.get(mappedString));
-                        psFeaturesToMap.addBatch();
-                    }
-                    psFeaturesToMap.executeBatch();
+                    insertMissingMappings(mappingTableName, costoConn, missingItems);
+                    insertMissingFeaturestoMap(featuresToMapTableName, costoConn, missingFeaturesToMap);
 
                     // Commit the changes made
                     costoConn.commit();
@@ -229,5 +191,99 @@ public class MetaTableManager {
         return new ImmutablePair(completeMapping, completeMappedAttributes);
     }
 
+    private void obtainLockToMappingTable(String mappingTableName, Statement stmt) throws AnalysisEngineProcessException {
+        String sql = null;
+        try {
+            sql = String.format("LOCK TABLE ONLY %s IN ACCESS EXCLUSIVE MODE", mappingTableName);
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            log.error("Could not lock table {}. SQL was: {}", mappingTableName, sql);
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    private void obtainLockToMappedFeaturesTable(String featuresToMapTableName, Statement stmt) throws AnalysisEngineProcessException {
+        String sql = null;
+        try {
+            sql = String.format("LOCK TABLE ONLY %s IN ACCESS EXCLUSIVE MODE", featuresToMapTableName);
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            log.error("Could not lock table {}. SQL was: {}", featuresToMapTableName, sql);
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    private Map<String, Integer> updateMapping(String mappingTableName, Map<String, Integer> currentMappingState, Statement stmt) throws AnalysisEngineProcessException {
+        String sql = null;
+        try {
+            Map<String, Integer> existingMapping = new HashMap<>(currentMappingState);
+            // Only request what we don't already have. Since the mapping IDs are a enumeration,
+            // we can just order by them descendingly and get the head of this list. The remainder
+            // of size currentMappingState.size() is already known.
+            sql = String.format("SELECT %s,%s FROM %s ORDER BY %s DESC LIMIT (SELECT count(%s) FROM %s)-%d", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID, mappingTableName, currentMappingState.size());
+            final ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                existingMapping.put(rs.getString(1), rs.getInt(2));
+            }
+            return existingMapping;
+        } catch (SQLException e) {
+            log.error("Could not retrieve mappings from the mapping table {}. SQL was: {}", mappingTableName, sql);
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    private Map<String, Boolean> updateFeaturesToMap(String featuresToMapTableName, Map<String, Boolean> currentMappedAttributes, Statement stmt) throws AnalysisEngineProcessException {
+        String sql = null;
+        try {
+            // Read the features to map table; we use the 'currentMappedAttributes' as the base map
+            // because this allows us to initialize the features to map with manually given values
+            // (whitelist and/or blacklist).
+            Map<String, Boolean> existingFeaturesToMap = new HashMap<>(currentMappedAttributes);
+            sql = String.format("SELECT %s,%s FROM %s", BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP, featuresToMapTableName);
+            final ResultSet rsFeaturesToMap = stmt.executeQuery(sql);
+            while (rsFeaturesToMap.next()) {
+                existingFeaturesToMap.put(rsFeaturesToMap.getString(1), rsFeaturesToMap.getBoolean(2));
+            }
+            return existingFeaturesToMap;
+        } catch (SQLException e) {
+            log.error("Could not retrieve the features to be mapped from {}. SQL was: {}", featuresToMapTableName, sql);
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    private void insertMissingMappings(String mappingTableName, CoStoSysConnection costoConn, Map<String, Integer> missingItems) {
+        if (missingItems.isEmpty())
+            return;
+        String sql = null;
+        try {
+            // Add the missing mapping items into the mapping table
+            sql = String.format("INSERT INTO %s values(?, ?)", mappingTableName);
+            final PreparedStatement ps = costoConn.prepareStatement(sql);
+            for (String mappedString : missingItems.keySet()) {
+                ps.setString(1, mappedString);
+                ps.setInt(2, missingItems.get(mappedString));
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        } catch (SQLException e) {
+            log.error("Could not insert new mapping into the table {}. SQL was: ", mappingTableName, sql);
+        }
+    }
+
+    private void insertMissingFeaturestoMap(String featuresToMapTableName, CoStoSysConnection costoConn, Map<String, Boolean> missingFeaturesToMap) {
+        String sql = null;
+        try {
+            sql = String.format("INSERT INTO %s values(?, ?)", featuresToMapTableName);
+            final PreparedStatement psFeaturesToMap = costoConn.prepareStatement(sql);
+            for (String mappedString : missingFeaturesToMap.keySet()) {
+                psFeaturesToMap.setString(1, mappedString);
+                psFeaturesToMap.setBoolean(2, missingFeaturesToMap.get(mappedString));
+                psFeaturesToMap.addBatch();
+            }
+            psFeaturesToMap.executeBatch();
+        } catch (SQLException e) {
+            log.error("Could not insert new features to be mapped into the table {}. SQL was: {}", featuresToMapTableName, sql);
+        }
+    }
 
 }
