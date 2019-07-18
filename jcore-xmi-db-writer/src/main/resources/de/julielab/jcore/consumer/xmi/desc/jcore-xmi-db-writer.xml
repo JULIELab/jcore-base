@@ -127,6 +127,13 @@
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>BinaryFeaturesBlacklist</name>
+                <description>A blacklist of full UIMA feature names. The listed features will be excluded from binary value mapping. This makes sense for features with a lot of different values that still come up as being mapping from the automatic features-to-map selection algorithm.It also makes sense for features that only consist of strings of length around 4 characters length or shorter. Then, the replacement with an integer of 4 bytes won't probably make much sense (unless the strings mainly consist of characters that require more than 1 byte, of course).</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
             <nameValuePair>

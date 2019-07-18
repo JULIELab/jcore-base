@@ -244,4 +244,54 @@ public class XmiDBWriterBinaryFormatTest {
             assertThat(finalXmi).contains("This is a sentence. This is another one.", "types:Token", "types:Sentence");
         }
     }
+
+    @Test
+    public void testBinaryFeatureMapBlacklist() throws Exception {
+
+        AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
+                XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
+                XMIDBWriter.PARAM_STORE_ALL, false,
+                XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,
+                XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents2",
+                XMIDBWriter.PARAM_DO_GZIP, false,
+                XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
+                XMIDBWriter.PARAM_UPDATE_MODE, true,
+                XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), de.julielab.jcore.types.pubmed.Header.class.getCanonicalName()},
+                XMIDBWriter.PARAM_USE_BINARY_FORMAT, true,
+                XMIDBWriter.PARAM_BINARY_FEATURES_BLACKLIST, new String[]{de.julielab.jcore.types.Annotation.class.getCanonicalName() + ":componentId"}
+        );
+        JCas jCas = getJCasWithRequiredTypes();
+        final Header header = new Header(jCas);
+        header.setDocId("789");
+        header.addToIndexes();
+        jCas.setDocumentText("This is a sentence. This is another one.");
+        final Sentence s1 = new Sentence(jCas, 0, 19);
+        s1.setComponentId("SentenceTagger");
+        s1.addToIndexes();
+        final Sentence s2 = new Sentence(jCas, 20, 40);
+        s2.setComponentId("SentenceTagger");
+        s2.addToIndexes();
+        // Of course, these token offsets are wrong, but it doesn't matter to the test
+        final Token t1 = new Token(jCas, 0, 19);
+        t1.setComponentId("TokenSplitter");
+        t1.addToIndexes();
+        final Token t2 = new Token(jCas, 20, 40);
+        t2.setComponentId("TokenSplitter");
+        t2.addToIndexes();
+        assertThatCode(() -> xmiWriter.process(jCas)).doesNotThrowAnyException();
+        xmiWriter.collectionProcessComplete();
+
+        dbc = DBTestUtils.getDataBaseConnector(postgres);
+        String binaryFeaturesToMapTable = "public." + MetaTableManager.BINARY_FEATURES_TO_MAP_TABLE;
+        Map<String, Boolean> initialFeaturesToMap = new HashMap<>();
+        try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
+            final Statement stmt = costoConn.createStatement();
+            final ResultSet rs2 = stmt.executeQuery(String.format("SELECT %s,%s FROM %s", MetaTableManager.BINARY_FEATURES_TO_MAP_COL_FEATURE, MetaTableManager.BINARY_FEATURES_TO_MAP_COL_MAP, binaryFeaturesToMapTable));
+            while (rs2.next()) {
+                initialFeaturesToMap.put(rs2.getString(1), rs2.getBoolean(2));
+            }
+            System.out.println(initialFeaturesToMap);
+            assertThat(initialFeaturesToMap.get(de.julielab.jcore.types.Annotation.class.getCanonicalName() + ":componentId")).isFalse();
+        }}
 }

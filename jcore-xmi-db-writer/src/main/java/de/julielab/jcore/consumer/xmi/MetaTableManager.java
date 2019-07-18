@@ -1,5 +1,6 @@
 package de.julielab.jcore.consumer.xmi;
 
+import com.google.common.collect.Sets;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.xml.XmiSplitConstants;
@@ -153,35 +154,33 @@ public class MetaTableManager {
                 // exact location. On gaining access exclusive access, the table is first updated before it is
                 // released again (which happens on the end of the transaction).
                 obtainLockToMappingTable(mappingTableName, stmt);
-                obtainLockToMappingTable(featuresToMapTableName, stmt);
+                obtainLockToMappedFeaturesTable(featuresToMapTableName, stmt);
 
                 // Read the mapping table
-                Map<String, Integer> existingMapping = updateMapping(mappingTableName, currentMappingState, stmt);
-
-                Map<String, Boolean> existingFeaturesToMap = missingItemsFromCurrentState.getMissingFeaturesToMap();
-                // Only do the update if new features are to be added
-                if (!existingFeaturesToMap.isEmpty())
-                    existingFeaturesToMap = updateFeaturesToMap(featuresToMapTableName, currentMappedAttributes, stmt);
+                Map<String, Integer> existingMappingWithDbUpdate = updateMapping(mappingTableName, currentMappingState, stmt);
+                Map<String, Boolean> featuresToMapFromDatabase = readFeaturesToMapFromDatabase(featuresToMapTableName, stmt);
 
                 // Run the analysis with the fresh data from the database
-                final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMapping, existingFeaturesToMap);
+                Map<String, Boolean> existingFeaturesToMapWithDbUpdate = new HashMap<>(currentMappedAttributes);
+                existingFeaturesToMapWithDbUpdate.putAll(featuresToMapFromDatabase);
+                final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMappingWithDbUpdate, existingFeaturesToMapWithDbUpdate);
 
                 Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
 
                 Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
                 if (writeToDatabase) {
                     insertMissingMappings(mappingTableName, costoConn, missingItems);
-                    insertMissingFeaturestoMap(featuresToMapTableName, costoConn, missingFeaturesToMap);
+                    insertMissingFeaturesToMap(featuresToMapTableName, costoConn, missingFeaturesToMap, currentMappedAttributes, featuresToMapFromDatabase);
 
                     // Commit the changes made
                     costoConn.commit();
                     costoConn.setAutoCommit(true);
                 }
 
-                completeMapping = existingMapping;
+                completeMapping = existingMappingWithDbUpdate;
                 completeMapping.putAll(missingItems);
 
-                completeMappedAttributes = existingFeaturesToMap;
+                completeMappedAttributes = featuresToMapFromDatabase;
                 completeMappedAttributes.putAll(missingFeaturesToMap);
             } catch (SQLException e) {
                 log.error("Could not retrieve or update binary meta data tables. The last sent SQL query was {}", sql, e);
@@ -232,13 +231,10 @@ public class MetaTableManager {
         }
     }
 
-    private Map<String, Boolean> updateFeaturesToMap(String featuresToMapTableName, Map<String, Boolean> currentMappedAttributes, Statement stmt) throws AnalysisEngineProcessException {
+    private Map<String, Boolean> readFeaturesToMapFromDatabase(String featuresToMapTableName, Statement stmt) throws AnalysisEngineProcessException {
         String sql = null;
         try {
-            // Read the features to map table; we use the 'currentMappedAttributes' as the base map
-            // because this allows us to initialize the features to map with manually given values
-            // (whitelist and/or blacklist).
-            Map<String, Boolean> existingFeaturesToMap = new HashMap<>(currentMappedAttributes);
+            Map<String, Boolean> existingFeaturesToMap = new HashMap<>();
             sql = String.format("SELECT %s,%s FROM %s", BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP, featuresToMapTableName);
             final ResultSet rsFeaturesToMap = stmt.executeQuery(sql);
             while (rsFeaturesToMap.next()) {
@@ -270,14 +266,23 @@ public class MetaTableManager {
         }
     }
 
-    private void insertMissingFeaturestoMap(String featuresToMapTableName, CoStoSysConnection costoConn, Map<String, Boolean> missingFeaturesToMap) {
+    private void insertMissingFeaturesToMap(String featuresToMapTableName, CoStoSysConnection costoConn, Map<String, Boolean> missingFeaturesToMap, Map<String, Boolean> currentMappedAttributes, Map<String, Boolean> featuresToMapFromDatabase) {
         String sql = null;
         try {
+            Map<String, Boolean> toInsert = new HashMap<>(missingFeaturesToMap);
+            // If we gave a blacklist of features to the XmiXbWriter and this is the very first table update,
+            // there will be elements in the current state which are not yet in the table
+            final Sets.SetView<String> predefinedFeaturesToMap = Sets.difference(currentMappedAttributes.keySet(), featuresToMapFromDatabase.keySet());
+            predefinedFeaturesToMap.forEach(feature -> {
+                toInsert.put(feature, currentMappedAttributes.get(feature));
+                featuresToMapFromDatabase.put(feature, currentMappedAttributes.get(feature));
+            });
+
             sql = String.format("INSERT INTO %s values(?, ?)", featuresToMapTableName);
             final PreparedStatement psFeaturesToMap = costoConn.prepareStatement(sql);
-            for (String mappedString : missingFeaturesToMap.keySet()) {
+            for (String mappedString : toInsert.keySet()) {
                 psFeaturesToMap.setString(1, mappedString);
-                psFeaturesToMap.setBoolean(2, missingFeaturesToMap.get(mappedString));
+                psFeaturesToMap.setBoolean(2, toInsert.get(mappedString));
                 psFeaturesToMap.addBatch();
             }
             psFeaturesToMap.executeBatch();

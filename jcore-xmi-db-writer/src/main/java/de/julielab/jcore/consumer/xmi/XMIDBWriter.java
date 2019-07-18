@@ -30,6 +30,7 @@ import de.julielab.xml.*;
 import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import de.julielab.xml.binary.BinaryStorageAnalysisResult;
 import de.julielab.xml.util.XMISplitterException;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -59,6 +60,7 @@ import java.io.OutputStream;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
@@ -102,6 +104,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_WRITE_BATCH_SIZE = "WriteBatchSize";
     public static final String PARAM_XMI_META_SCHEMA = "XmiMetaTablesSchema";
     public static final String PARAM_FEATURES_TO_MAP_DRYRUN = "BinaryFeaturesToMapDryRun";
+    public static final String PARAM_BINARY_FEATURES_BLACKLIST = "BinaryFeaturesBlacklist";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
@@ -230,6 +233,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     "would be mapped without actually writing anything into the database. This is done on the INFO log level. This can be used for " +
                     "new corpora in order to check which features should manually be switched on or off for mapping.")
     private boolean featuresToMapDryRun;
+    @ConfigurationParameter(name = PARAM_BINARY_FEATURES_BLACKLIST, mandatory = false, description = "A blacklist of " +
+            "full UIMA feature names. The listed features will be excluded from binary value mapping. This makes sense " +
+            "for features with a lot of different values that still come up as being mapping from the automatic features-to-map selection algorithm." +
+            "It also makes sense for features that only consist of strings of length around 4 characters length or shorter. " +
+            "Then, the replacement with an integer of 4 bytes won't probably make much sense (unless the strings mainly " +
+            "consist of characters that require more than 1 byte, of course).")
+    private String[] binaryFeaturesBlacklistParameter;
 
     /*
      * (non-Javadoc)
@@ -273,6 +283,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         xmiMetaSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_XMI_META_SCHEMA)).orElse("public");
         useBinaryFormat = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_USE_BINARY_FORMAT)).orElse(false);
         featuresToMapDryRun = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_FEATURES_TO_MAP_DRYRUN)).orElse(false);
+        binaryFeaturesBlacklistParameter = (String[]) aContext.getConfigParameterValue(PARAM_BINARY_FEATURES_BLACKLIST);
+        if (binaryFeaturesBlacklistParameter != null)
+            binaryMappedFeatures = Arrays.stream(binaryFeaturesBlacklistParameter).collect(Collectors.toMap(Function.identity(), x -> false));
 
         if (xmiMetaSchema.isBlank())
             throw new ResourceInitializationException(new IllegalArgumentException("The XMI meta table Postgres schema must either be omitted at all or non-empty but was."));
@@ -491,6 +504,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     /**
      * <p>This method gets all the current items from xmiItemBuffer, creates annotation modules and writes those into
      * the annotationModules field.</p>
+     *
      * @throws AnalysisEngineProcessException
      */
     private void processXmiBuffer() throws AnalysisEngineProcessException {
