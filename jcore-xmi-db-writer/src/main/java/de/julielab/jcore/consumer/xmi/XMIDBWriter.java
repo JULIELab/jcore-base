@@ -576,11 +576,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         Object storedData = handleDataZipping(dataBytes, schemaDocument);
                         if (storeBaseDocument && isBaseDocumentColumn) {
                             annotationModules.add(new DocumentXmiData(XmiSplitConstants.BASE_DOC_COLUMN, docId, storedData, currentSofaXmiIdMap));
-                        } else {
+                        } else if (!isBaseDocumentColumn){
                             annotationModules.add(new XmiData(columnName, docId, storedData));
                         }
                         annotationInserter.putXmiIdMapping(docId, newXmiId);
-                    } else if (updateMode) {
+                    } else if (updateMode && !isBaseDocumentColumn) {
                         // There was no data for the annotation table. Since we
                         // are updating this could mean we once had annotations
                         // but the new text version doesn't have them. We must
