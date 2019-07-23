@@ -5,6 +5,7 @@ import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.xml.JulieXMLConstants;
+import de.julielab.xml.XmiSplitter;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -105,6 +106,8 @@ public class XmiDataInserter {
                 // This statement puts the XMI data into the first column after the primary key
                 for (XmiData data : dataList) {
                     row.put(data.getColumnName(), data.data);
+                    if (data.getColumnName().equals(XmiSplitter.DOCUMENT_MODULE_LABEL) && data.data == null)
+                        throw new IllegalStateException("The base_document column data for document " + docId + " is null.");
                     if (log.isTraceEnabled())
                         log.trace("{}={}", fName.apply(i - 1), row.get(fName.apply(i - 1)));
                     // If the base document is stored, update the sofa mapping (which sofa ID is which sofa name in the base document)
