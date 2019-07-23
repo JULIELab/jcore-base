@@ -132,6 +132,7 @@ public class XmiDataInserter {
                     for (String filledColumn : row.keySet())
                         missingColumns.remove(filledColumn);
                     missingColumns.forEach(c -> row.put(c, null));
+                    System.out.println(missingColumns);
                 }
                 return row;
             }
