@@ -104,6 +104,8 @@ public class CasPopulator {
         String docId = getPkStringFromData(data);
         log.debug("Reading document with ID {} as delivered from database.", docId);
         byte[] documentXmi = data[1];
+        if (documentXmi == null)
+            throw new CasPopulationException("The base document XMI data for document with ID " + docId + " is null.");
         // In this variable we record the total size of the retrieved data. We
         // use this information for the XMIBuilder to avoid resizing buffers and
         // even OutOfMemory errors
