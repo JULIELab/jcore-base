@@ -36,7 +36,10 @@ public class LinnaeusMatcherProviderImpl implements LinnaeusMatcherProvider {
             }
         } else if (getClass().getResource(uri.toString()) != null) {
             log.info("Loading LINNAEUS configuration as classpath resource from {}", uri);
-            configFile = "internal:" + uri.toString();
+            String classpathResource = uri.toString();
+            if (classpathResource.contains("!"))
+                classpathResource = classpathResource.substring(classpathResource.indexOf('!') + 1);
+            configFile = "internal:" + classpathResource;
         }
         else
             throw new ResourceInitializationException(new IllegalArgumentException("Could not find the LINNAEUS configuration as a file or a classpath resource at " + uri.toString()));

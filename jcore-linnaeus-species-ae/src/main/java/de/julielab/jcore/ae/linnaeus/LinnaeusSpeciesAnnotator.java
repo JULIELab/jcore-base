@@ -12,11 +12,9 @@ package de.julielab.jcore.ae.linnaeus;
 import de.julielab.jcore.types.Organism;
 import de.julielab.jcore.types.ResourceEntry;
 import de.julielab.jcore.utility.JCoReTools;
-import martin.common.ArgParser;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
@@ -24,12 +22,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
-import uk.ac.man.entitytagger.EntityTagger;
 import uk.ac.man.entitytagger.Mention;
 import uk.ac.man.entitytagger.matching.Matcher;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Uses the Linnaeus software (http://linnaeus.sourceforge.net/) to detect
@@ -47,13 +43,11 @@ public class LinnaeusSpeciesAnnotator extends JCasAnnotator_ImplBase {
     // which we don't need.
     private static final String linnaeusIdPrefix = "species:ncbi:";
     private Matcher matcher;
-    private Logger logger;
     @ExternalResource(key = RES_KEY_LINNAEUS_MATCHER, description = "This resource dependency requires as resource the LINNAEUS configuration file. For each configuration file, one matcher will be created and shared between annotators.")
     private LinnaeusMatcherProvider matcherProvider;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
-        this.logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         try {
             matcherProvider = (LinnaeusMatcherProvider) aContext.getResourceObject(RES_KEY_LINNAEUS_MATCHER);
             if (matcherProvider == null)
