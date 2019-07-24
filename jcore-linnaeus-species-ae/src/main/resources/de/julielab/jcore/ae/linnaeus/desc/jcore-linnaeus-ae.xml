@@ -8,15 +8,7 @@
     <description />
     <version>2.5.0-SNAPSHOT</version>
     <vendor>JULIE Lab Jena, Germany</vendor>
-    <configurationParameters>
-      <configurationParameter>
-        <name>ConfigFile</name>
-        <description>Path or classpath location of a LINNAEUS configuration file. Please refer to the LINNAEUS documentation for details of the configuration file.</description>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>true</mandatory>
-      </configurationParameter>
-    </configurationParameters>
+    <configurationParameters/>
     <configurationParameterSettings>
       </configurationParameterSettings>
     <typeSystemDescription>

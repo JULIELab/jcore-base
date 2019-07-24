@@ -131,27 +131,9 @@ public class MetaTableManager {
                 boolean wasAutoCommit = costoConn.getAutoCommit();
                 costoConn.setAutoCommit(false);
                 final Statement stmt = costoConn.createStatement();
-                // Create mapping table
-                try {
-                    if (!dbc.tableExists(mappingTableName)) {
-                        sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER PRIMARY KEY)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
-//                        sql += String.format("CREATE INDEX %s_%s_idx ON items USING btree (%s);", mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID);
-                        stmt.execute(sql);
-                    }
-                } catch (SQLException e) {
-                    log.debug("Tried to create table {} but did not succeed. The table was probably already created by another process or thread.", mappingTableName);
-                }
-                costoConn.commit();
-                // Create features to map table
-                try {
-                    if (!dbc.tableExists(featuresToMapTableName)) {
-                        sql = String.format("CREATE TABLE %s (%s TEXT, %s BOOL)", featuresToMapTableName, BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP);
-                        stmt.execute(sql);
-                    }
-                } catch (SQLException e) {
-                    log.debug("Tried to create table {} but did not succeed. The table was probably already created by another process or thread.", mappingTableName);
-                }
-                costoConn.commit();
+
+                createBinaryMetaTables(mappingTableName, featuresToMapTableName, costoConn);
+
                 // Completely lock the tables. This is a synchronization mechanism: All mapping updates will wait at this
                 // exact location. On gaining access exclusive access, the table is first updated before it is
                 // released again (which happens on the end of the transaction).
@@ -162,17 +144,9 @@ public class MetaTableManager {
                 Map<String, Integer> existingMappingWithDbUpdate = updateMapping(mappingTableName, currentMappingState, stmt);
                 Map<String, Boolean> featuresToMapFromDatabase = readFeaturesToMapFromDatabase(featuresToMapTableName, stmt);
 
-                // Run the analysis with the fresh data from the database
-                Map<String, Boolean> existingFeaturesToMapWithDbUpdate = new HashMap<>(currentMappedAttributes);
-                existingFeaturesToMapWithDbUpdate.putAll(featuresToMapFromDatabase);
-                final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMappingWithDbUpdate, existingFeaturesToMapWithDbUpdate);
-
-                Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
-
-                Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
-                if (writeToDatabase) {
-                    writeToMappingsToDatabase(currentMappedAttributes, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, featuresToMapFromDatabase, missingItems, missingFeaturesToMap);
-                }
+                final ImmutablePair<Map<String, Integer>, Map<String, Boolean>> missing = performMappingUpdate(missingItemsFunction, featuresToMapFromDatabase, currentMappedAttributes, existingMappingWithDbUpdate, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, writeToDatabase);
+                final Map<String, Integer> missingItems = missing.getLeft();
+                final Map<String, Boolean> missingFeaturesToMap = missing.getRight();
 
                 completeMapping = existingMappingWithDbUpdate;
                 completeMapping.putAll(missingItems);
@@ -195,6 +169,21 @@ public class MetaTableManager {
         costoConn.commit();
         costoConn.setAutoCommit(wasAutoCommit);
         costoConn.getConnection().endRequest();
+    }
+
+    private ImmutablePair<Map<String, Integer>, Map<String, Boolean>> performMappingUpdate(BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Boolean> currentMappedAttributes, Map<String, Integer> existingMappingWithDbUpdate, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, boolean writeToDatabase) throws SQLException {
+        // Run the analysis with the fresh data from the database
+        Map<String, Boolean> existingFeaturesToMapWithDbUpdate = new HashMap<>(currentMappedAttributes);
+        existingFeaturesToMapWithDbUpdate.putAll(featuresToMapFromDatabase);
+        final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMappingWithDbUpdate, existingFeaturesToMapWithDbUpdate);
+
+        Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
+
+        Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
+        if (writeToDatabase) {
+            writeToMappingsToDatabase(currentMappedAttributes, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, featuresToMapFromDatabase, missingItems, missingFeaturesToMap);
+        }
+        return new ImmutablePair<>(missingItems, missingFeaturesToMap);
     }
 
     private void obtainLockToMappingTable(String mappingTableName, Statement stmt) throws AnalysisEngineProcessException {
@@ -298,4 +287,28 @@ public class MetaTableManager {
         }
     }
 
+    private void createBinaryMetaTables(String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn) throws SQLException {
+        String sql;
+        final Statement stmt = costoConn.createStatement();
+        // Create mapping table
+        try {
+            if (!dbc.tableExists(mappingTableName)) {
+                sql = String.format("CREATE TABLE %s (%s TEXT, %s INTEGER PRIMARY KEY)", mappingTableName, BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID);
+                stmt.execute(sql);
+            }
+        } catch (SQLException e) {
+            log.debug("Tried to create table {} but did not succeed. The table was probably already created by another process or thread.", mappingTableName);
+        }
+        costoConn.commit();
+        // Create features to map table
+        try {
+            if (!dbc.tableExists(featuresToMapTableName)) {
+                sql = String.format("CREATE TABLE %s (%s TEXT, %s BOOL)", featuresToMapTableName, BINARY_FEATURES_TO_MAP_COL_FEATURE, BINARY_FEATURES_TO_MAP_COL_MAP);
+                stmt.execute(sql);
+            }
+        } catch (SQLException e) {
+            log.debug("Tried to create table {} but did not succeed. The table was probably already created by another process or thread.", mappingTableName);
+        }
+        costoConn.commit();
+    }
 }
