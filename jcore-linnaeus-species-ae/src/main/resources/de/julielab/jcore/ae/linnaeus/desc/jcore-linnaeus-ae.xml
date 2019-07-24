@@ -1,36 +1,40 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <primitive>true</primitive>
-  <annotatorImplementationName>de.julielab.jcore.ae.linnaeus.LinnaeusSpeciesAnnotator</annotatorImplementationName>
-  <analysisEngineMetaData>
-    <name>JCoRe Token Annotator</name>
-    <description />
-    <version>2.5.0-SNAPSHOT</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
-    <configurationParameters/>
-    <configurationParameterSettings>
-      </configurationParameterSettings>
-    <typeSystemDescription>
-      <imports>
-        <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
-      </imports>
-    </typeSystemDescription>
-    <capabilities>
-      <capability>
-        <inputs>
-          </inputs>
-        <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.ResourceEntry</type>
-        <type allAnnotatorFeatures="true">de.julielab.jcore.types.Organism</type>
-        </outputs>
-        <languagesSupported />
-      </capability>
-    </capabilities>
-    <operationalProperties>
-      <modifiesCas>true</modifiesCas>
-      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
-      <outputsNewCASes>false</outputsNewCASes>
-    </operationalProperties>
-  </analysisEngineMetaData>
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.ae.linnaeus.LinnaeusSpeciesAnnotator</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCore LINNAEUS Species AE</name>
+        <configurationParameters/>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.Organism</type>
+                    <type>de.julielab.jcore.types.ResourceEntry</type>
+                </inputs>
+                <outputs/>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+    <externalResourceDependencies>
+        <externalResourceDependency>
+            <key>LinnaeusMatcher</key>
+            <description>This resource dependency requires as resource the LINNAEUS configuration file. For each configuration file, one matcher will be created and shared between annotators.</description>
+            <interfaceName>de.julielab.jcore.ae.linnaeus.LinnaeusMatcherProvider</interfaceName>
+            <optional>false</optional>
+        </externalResourceDependency>
+    </externalResourceDependencies>
 </analysisEngineDescription>

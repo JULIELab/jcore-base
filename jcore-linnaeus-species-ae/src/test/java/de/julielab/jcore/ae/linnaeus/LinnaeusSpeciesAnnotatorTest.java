@@ -33,7 +33,6 @@ public class LinnaeusSpeciesAnnotatorTest {
 		jCas.setDocumentText("In this text we talk about humans and mice. Because a mouse is no killifish nor a caenorhabditis elegans. Thus, c. elegans is now abbreviated as well as n. furzeri.");
 
 		final ExternalResourceDescription testConfiguration = ExternalResourceFactory.createExternalResourceDescription("TestConfiguration", LinnaeusMatcherProviderImpl.class, "file:linnaeus-properties-test.conf");
-		final ExternalResourceBinding binding = ExternalResourceFactory.createExternalResourceBinding(LinnaeusSpeciesAnnotator.RES_KEY_LINNAEUS_MATCHER, testConfiguration);
 		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(LinnaeusSpeciesAnnotator.class, LinnaeusSpeciesAnnotator.RES_KEY_LINNAEUS_MATCHER, testConfiguration);
 
 		annotator.process(jCas);

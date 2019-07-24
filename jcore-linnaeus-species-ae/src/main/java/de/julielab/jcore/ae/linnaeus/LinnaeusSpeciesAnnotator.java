@@ -17,6 +17,9 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceAccessException;
@@ -35,6 +38,8 @@ import java.util.logging.Logger;
  * @author faessler
  *
  */
+@ResourceMetaData(name="JCore LINNAEUS Species AE")
+@TypeCapability(inputs = {"de.julielab.jcore.types.Organism", "de.julielab.jcore.types.ResourceEntry"})
 public class LinnaeusSpeciesAnnotator extends JCasAnnotator_ImplBase {
     public static final String RES_KEY_LINNAEUS_MATCHER = "LinnaeusMatcher";
     public static final String PARAM_CONFIG_FILE = "ConfigFile";
@@ -43,13 +48,16 @@ public class LinnaeusSpeciesAnnotator extends JCasAnnotator_ImplBase {
     private static final String linnaeusIdPrefix = "species:ncbi:";
     private Matcher matcher;
     private Logger logger;
+    @ExternalResource(key = RES_KEY_LINNAEUS_MATCHER, description = "This resource dependency requires as resource the LINNAEUS configuration file. For each configuration file, one matcher will be created and shared between annotators.")
+    private LinnaeusMatcherProvider matcherProvider;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         this.logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        LinnaeusMatcherProvider matcherProvider;
         try {
             matcherProvider = (LinnaeusMatcherProvider) aContext.getResourceObject(RES_KEY_LINNAEUS_MATCHER);
+            if (matcherProvider == null)
+                throw new ResourceInitializationException(ResourceInitializationException.RESOURCE_DEPENDENCY_NOT_SATISFIED,new Object[]{ RES_KEY_LINNAEUS_MATCHER});
         } catch (ResourceAccessException e) {
             throw new ResourceInitializationException(e);
         }
