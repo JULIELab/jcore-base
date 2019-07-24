@@ -32,7 +32,7 @@ public class LinnaeusMatcherProviderImpl implements LinnaeusMatcherProvider {
             } catch (URISyntaxException e) {
                 throw new ResourceInitializationException(e);
             }
-        } else if (getClass().getResource(uri.toString()) != null) {
+        } else if (getClass().getResource(uri.toString()) != null || aData.getUri().toString().contains("!")) {
             String classpathResource = uri.toString();
             if (classpathResource.contains("!"))
                 classpathResource = classpathResource.substring(classpathResource.indexOf('!') + 1);
