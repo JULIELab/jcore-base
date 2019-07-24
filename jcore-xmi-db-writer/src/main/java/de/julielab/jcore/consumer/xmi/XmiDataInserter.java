@@ -5,6 +5,7 @@ import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.xml.JulieXMLConstants;
+import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.XmiSplitter;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -22,10 +23,8 @@ import java.util.stream.Collectors;
 
 public class XmiDataInserter {
 
-    private static final Logger log = LoggerFactory.getLogger(XmiDataInserter.class);
-
     public static final String FIELD_MAX_XMI_ID = "max_xmi_id";
-
+    private static final Logger log = LoggerFactory.getLogger(XmiDataInserter.class);
     private Boolean updateMode;
     private String schemaDocument;
     private Boolean storeAll;
@@ -106,8 +105,6 @@ public class XmiDataInserter {
                 // This statement puts the XMI data into the first column after the primary key
                 for (XmiData data : dataList) {
                     row.put(data.getColumnName(), data.data);
-                    if (data.getColumnName().equals(XmiSplitter.DOCUMENT_MODULE_LABEL) && data.data == null)
-                        throw new IllegalStateException("The base_document column data for document " + docId + " is null.");
                     if (log.isTraceEnabled())
                         log.trace("{}={}", fName.apply(i - 1), row.get(fName.apply(i - 1)));
                     // If the base document is stored, update the sofa mapping (which sofa ID is which sofa name in the base document)
@@ -132,7 +129,6 @@ public class XmiDataInserter {
                     for (String filledColumn : row.keySet())
                         missingColumns.remove(filledColumn);
                     missingColumns.forEach(c -> row.put(c, null));
-                    System.out.println(missingColumns);
                 }
                 return row;
             }
@@ -156,15 +152,13 @@ public class XmiDataInserter {
                 } else {
                     log.debug("Inserting {} XMI CAS data into database table '{}'.",
                             serializedCASes.size(), xmiTableName);
-                    if (storeAll) {
-                        dbc.importFromRowIterator(iterator, xmiTableName, false, schemaDocument);
-                    }
+                    dbc.importFromRowIterator(iterator, xmiTableName, false, schemaDocument);
                 }
             } catch (Exception e) {
                 log.error("Error occurred while sending data to database. Exception:", e);
                 throw new XmiDataInsertionException(e);
             }
-           // updateMaxXmiId(conn);
+            // updateMaxXmiId(conn);
             //deleteRowsFromTablesWithoutData(columnsWithoutData, conn, dbc, annotationsToStore);
             setLastComponent(conn, subsetTableName);
             log.debug("Committing XMI data to database.");

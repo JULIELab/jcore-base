@@ -127,6 +127,8 @@ public class MetaTableManager {
             String featuresToMapTableName = xmiMetaSchema + "." + BINARY_FEATURES_TO_MAP_TABLE;
             String sql = null;
             try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
+                costoConn.getConnection().beginRequest();
+                boolean wasAutoCommit = costoConn.getAutoCommit();
                 costoConn.setAutoCommit(false);
                 final Statement stmt = costoConn.createStatement();
                 // Create mapping table
@@ -169,12 +171,7 @@ public class MetaTableManager {
 
                 Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
                 if (writeToDatabase) {
-                    insertMissingMappings(mappingTableName, costoConn, missingItems);
-                    insertMissingFeaturesToMap(featuresToMapTableName, costoConn, missingFeaturesToMap, currentMappedAttributes, featuresToMapFromDatabase);
-
-                    // Commit the changes made
-                    costoConn.commit();
-                    costoConn.setAutoCommit(true);
+                    writeToMappingsToDatabase(currentMappedAttributes, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, featuresToMapFromDatabase, missingItems, missingFeaturesToMap);
                 }
 
                 completeMapping = existingMappingWithDbUpdate;
@@ -188,6 +185,16 @@ public class MetaTableManager {
             }
         }
         return new ImmutablePair(completeMapping, completeMappedAttributes);
+    }
+
+    private void writeToMappingsToDatabase(Map<String, Boolean> currentMappedAttributes, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Integer> missingItems, Map<String, Boolean> missingFeaturesToMap) throws SQLException {
+        insertMissingMappings(mappingTableName, costoConn, missingItems);
+        insertMissingFeaturesToMap(featuresToMapTableName, costoConn, missingFeaturesToMap, currentMappedAttributes, featuresToMapFromDatabase);
+
+        // Commit the changes made
+        costoConn.commit();
+        costoConn.setAutoCommit(wasAutoCommit);
+        costoConn.getConnection().endRequest();
     }
 
     private void obtainLockToMappingTable(String mappingTableName, Statement stmt) throws AnalysisEngineProcessException {
