@@ -235,9 +235,12 @@ public class MetaTableManager {
             // of size currentMappingState.size() is already known.
             sql = String.format("SELECT %s,%s FROM %s ORDER BY %s DESC LIMIT (SELECT count(%s) FROM %s)-%d", BINARY_MAPPING_COL_STRING, BINARY_MAPPING_COL_ID, mappingTableName, BINARY_MAPPING_COL_ID, BINARY_MAPPING_COL_ID, mappingTableName, currentMappingState.size());
             final ResultSet rs = stmt.executeQuery(sql);
+            int count = 0;
             while (rs.next()) {
                 existingMapping.put(rs.getString(1), rs.getInt(2));
+                ++count;
             }
+            log.debug("Received {} previously unknown mappings from the database", count);
             return existingMapping;
         } catch (SQLException e) {
             log.error("Could not retrieve mappings from the mapping table {}. SQL was: {}", mappingTableName, sql);

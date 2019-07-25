@@ -29,6 +29,7 @@ import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xml.*;
 import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import de.julielab.xml.binary.BinaryStorageAnalysisResult;
+import de.julielab.xml.util.MissingBinaryMappingException;
 import de.julielab.xml.util.XMISplitterException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
@@ -549,10 +550,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
                 final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
-//                final BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction = (existingMapping, existingMappedFeatures) -> binaryEncoder.findMissingItemsForMapping(allNodes, ts, existingMapping, existingMappedFeatures, featuresToMapDryRun);
-                final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
-                binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
-                binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
+                synchronized (binaryStringMapping.get(mappingCacheKey)) {
+                    final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
+                    binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
+                    binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
+                }
             }
 
             createAnnotationModules();
@@ -573,8 +575,15 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
 
                 if (useBinaryFormat) {
-                    final Map<String, ByteArrayOutputStream> encodedXmiData = binaryEncoder.encode(result.jedisNodesInAnnotationModules, item.getTypeSystem(), binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey));
-                    splitXmiData = encodedXmiData;
+                    try {
+                        final Map<String, ByteArrayOutputStream> encodedXmiData = binaryEncoder.encode(result.jedisNodesInAnnotationModules, item.getTypeSystem(), binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey));
+                        splitXmiData = encodedXmiData;
+                    } catch (MissingBinaryMappingException e) {
+                        log.error("Binary mapping mismatch, mapping item {} was not found", e.getMissingItem());
+                        final Map<String, Integer> mapping = binaryStringMapping.get(mappingCacheKey);
+                        log.error("The given mapping contains {}: {}", e.getMissingItem(), mapping.get(e.getMissingItem()));
+                        log.error("The current mapping has size {}", mapping.size());
+                    }
                 }
 
                 // adapt the map keys to table names (currently, the keys are the
