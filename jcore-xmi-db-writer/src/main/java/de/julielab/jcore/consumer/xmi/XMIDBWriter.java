@@ -569,7 +569,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                                 splitterResultMap.get(mappingCacheKey).clear();
                             }
                             final List<XmiBufferItem> xmiBufferItemsFromOtherThreads = splitterResults.stream().filter(i -> !splitterResultsToProcess.containsKey(i.getDocId())).collect(Collectors.toList());
-                            final Collection<List<XmiBufferItem>> xmiBufferItemsWaitedFor = xmiBufferItemsToProcess.get(mappingCacheKey).values();
+                            final Collection<List<XmiBufferItem>> xmiBufferItemsWaitedFor = new ArrayList<>(xmiBufferItemsToProcess.get(mappingCacheKey).values());
                             xmiBufferItemsWaitedFor.stream().flatMap(Collection::stream).forEach(xmiBufferItemsFromOtherThreads::add);
 
                             final List<JeDISVTDGraphNode> nodesFromOtherThreads = xmiBufferItemsFromOtherThreads.stream().flatMap(i -> i.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
