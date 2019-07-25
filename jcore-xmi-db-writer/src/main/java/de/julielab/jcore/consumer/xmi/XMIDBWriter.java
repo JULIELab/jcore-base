@@ -549,18 +549,25 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
+                mappingBefore = new HashMap<>(binaryStringMapping.get(mappingCacheKey));
                 synchronized (binaryStringMapping) {
                     final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
+                    missingItems = missingItemsForMapping.getMissingItemsMapping();
                     final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
                     binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
                     binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
                 }
+                mappingAfter = new HashMap<>(binaryStringMapping.get(mappingCacheKey));
             }
 
             createAnnotationModules();
         }
         xmiItemBuffer.clear();
     }
+
+    Map<String, Integer> mappingBefore;
+    Map<String, Integer> mappingAfter;
+    Map<String, Integer> missingItems;
 
     private void createAnnotationModules() throws AnalysisEngineProcessException {
         for (int i = 0; i < xmiItemBuffer.size(); i++) {
@@ -579,10 +586,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         final Map<String, ByteArrayOutputStream> encodedXmiData = binaryEncoder.encode(result.jedisNodesInAnnotationModules, item.getTypeSystem(), binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey));
                         splitXmiData = encodedXmiData;
                     } catch (MissingBinaryMappingException e) {
-                        log.error("Binary mapping mismatch, mapping item {} was not found", e.getMissingItem());
+                        log.error("Binary mapping mismatch, mapping item '{}' was not found", e.getMissingItem());
                         final Map<String, Integer> mapping = binaryStringMapping.get(mappingCacheKey);
                         log.error("Does the current mapping contain {}: {}", e.getMissingItem(), mapping.get(e.getMissingItem()) != null);
                         log.error("The current mapping has size {}", mapping.size());
+                        log.error("Was in mapping before: {}", mappingBefore.containsKey(e.getMissingItem()));
+                        log.error("Was in missing items: {}", missingItems.containsKey(e.getMissingItem()));
+                        log.error("Was in mapping after: {}", mappingAfter.containsKey(e.getMissingItem()));
                         throw new AnalysisEngineProcessException(e);
                     }
                 }
