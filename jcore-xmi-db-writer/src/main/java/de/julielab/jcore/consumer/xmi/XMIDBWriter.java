@@ -555,18 +555,18 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
             }
 
-            createAnnotationModules(splitterResults);
+            createAnnotationModules();
         }
         xmiItemBuffer.clear();
     }
 
-    private void createAnnotationModules(List<XmiSplitterResult> splitterResults) throws AnalysisEngineProcessException {
+    private void createAnnotationModules() throws AnalysisEngineProcessException {
         for (int i = 0; i < xmiItemBuffer.size(); i++) {
             final XmiBufferItem item = xmiItemBuffer.get(i);
             DocumentId docId = item.getDocId();
 
             try {
-                XmiSplitterResult result = splitterResults.get(i);
+                XmiSplitterResult result = xmiItemBuffer.get(i).getSplitterResult();
                 Map<String, ByteArrayOutputStream> splitXmiData = result.xmiData;
                 Integer newXmiId = result.maxXmiId;
                 Map<Integer, String> currentSofaXmiIdMap = result.currentSofaIdMap;
