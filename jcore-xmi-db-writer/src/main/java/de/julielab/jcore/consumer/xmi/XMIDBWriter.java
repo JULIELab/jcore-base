@@ -547,6 +547,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     requiredMappingAnalysisResult = binaryEncoder.findMissingItemsForMapping(splitterResultsToProcess.values().stream().flatMap(result -> result.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList()), ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
                 }
                 if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty()) {
+                    log.debug("Required mappings: {}", requiredMappingAnalysisResult.getMissingValuesToMap());
                     synchronized (binaryStringMapping) {
                         time = System.currentTimeMillis() - time;
                         log.debug("Waited {}ms for the binary string update monitor", time);
@@ -558,8 +559,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             splitterResults = new ArrayList<>(splitterResultMap.get(mappingCacheKey));
                             splitterResultMap.get(mappingCacheKey).clear();
                         }
-                        final List<JeDISVTDGraphNode> nodesFromOtherThreads = splitterResults.stream().filter(i -> !splitterResultsToProcess.containsKey(i.getDocId())).flatMap(i -> i.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
-                        log.debug("Got {} JeDIS nodes from other threads to check for missing mappings", nodesFromOtherThreads.size());
+                        final List<XmiBufferItem> xmiBufferItemsFromOtherThreads = splitterResults.stream().filter(i -> !splitterResultsToProcess.containsKey(i.getDocId())).collect(Collectors.toList());
+                        final List<JeDISVTDGraphNode> nodesFromOtherThreads = xmiBufferItemsFromOtherThreads.stream().flatMap(i -> i.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
+                        log.debug("Got {} XmiBufferItems from other threads to check for missing mappings", xmiBufferItemsFromOtherThreads.size());
                         mappingBefore.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
                         final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(nodesFromOtherThreads, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
                         missingItemsForMapping.getMissingValuesToMap().addAll(requiredMappingAnalysisResult.getMissingValuesToMap());
