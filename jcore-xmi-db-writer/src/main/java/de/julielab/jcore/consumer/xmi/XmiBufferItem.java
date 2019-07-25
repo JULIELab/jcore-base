@@ -16,23 +16,17 @@ public class XmiBufferItem {
     private int nextXmiId;
     private TypeSystem typeSystem;
     private XmiSplitterResult splitterResult;
-
-    public XmiSplitterResult getSplitterResult() {
-        return splitterResult;
-    }
+    private boolean isProcessedForBinaryMappings;
 
     public XmiBufferItem(XmiSplitterResult splitterResult, DocumentId docId, Map<String, Integer> baseDocumentSofaIdMap, int nextXmiId, TypeSystem typeSystem) {
 
         this.splitterResult = splitterResult;
         this.docId = docId;
 
-        sofaIdMap = baseDocumentSofaIdMap;
+        this.sofaIdMap = baseDocumentSofaIdMap;
         this.nextXmiId = nextXmiId;
         this.typeSystem = typeSystem;
-    }
-
-    public TypeSystem getTypeSystem() {
-        return typeSystem;
+        this.isProcessedForBinaryMappings = false;
     }
 
     public XmiBufferItem(byte[] xmiData, DocumentId docId, Map<String, Integer> sofaIdMap, int nextXmiId, TypeSystem typeSystem) {
@@ -42,6 +36,18 @@ public class XmiBufferItem {
         this.sofaIdMap = sofaIdMap;
         this.nextXmiId = nextXmiId;
         this.typeSystem = typeSystem;
+    }
+
+    public XmiSplitterResult getSplitterResult() {
+        return splitterResult;
+    }
+
+    public boolean isProcessedForBinaryMappings() {
+        return isProcessedForBinaryMappings;
+    }
+
+    public TypeSystem getTypeSystem() {
+        return typeSystem;
     }
 
     public DocumentId getDocId() {
@@ -58,5 +64,9 @@ public class XmiBufferItem {
 
     public int getNextXmiId() {
         return nextXmiId;
+    }
+
+    public void setProcessedForBinaryMappings(boolean processedForBinaryMappings) {
+        isProcessedForBinaryMappings = processedForBinaryMappings;
     }
 }
