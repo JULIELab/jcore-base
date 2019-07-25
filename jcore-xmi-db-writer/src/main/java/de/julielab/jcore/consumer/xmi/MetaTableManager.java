@@ -139,6 +139,7 @@ public class MetaTableManager {
                 // released again (which happens on the end of the transaction).
                 obtainLockToMappingTable(mappingTableName, stmt);
                 obtainLockToMappedFeaturesTable(featuresToMapTableName, stmt);
+                log.debug("Thread {} obtained locks to the binary mapping tables.", Thread.currentThread());
 
                 // Read the mapping table
                 Map<String, Integer> existingMappingWithDbUpdate = updateMapping(mappingTableName, currentMappingState, stmt);
@@ -161,11 +162,12 @@ public class MetaTableManager {
         return new ImmutablePair(completeMapping, completeMappedAttributes);
     }
 
-    private void writeToMappingsToDatabase(Map<String, Boolean> currentMappedAttributes, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Integer> missingItems, Map<String, Boolean> missingFeaturesToMap) throws SQLException {
+    private void writeMappingsToDatabase(Map<String, Boolean> currentMappedAttributes, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Integer> missingItems, Map<String, Boolean> missingFeaturesToMap) throws SQLException {
         insertMissingMappings(mappingTableName, costoConn, missingItems);
         insertMissingFeaturesToMap(featuresToMapTableName, costoConn, missingFeaturesToMap, currentMappedAttributes, featuresToMapFromDatabase);
 
         // Commit the changes made
+        log.debug("Thread {} is committing mapping changes to the database.", Thread.currentThread().getName());
         costoConn.commit();
         costoConn.setAutoCommit(wasAutoCommit);
         costoConn.getConnection().endRequest();
@@ -181,7 +183,7 @@ public class MetaTableManager {
 
         Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
         if (writeToDatabase) {
-            writeToMappingsToDatabase(currentMappedAttributes, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, featuresToMapFromDatabase, missingItems, missingFeaturesToMap);
+            writeMappingsToDatabase(currentMappedAttributes, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, featuresToMapFromDatabase, missingItems, missingFeaturesToMap);
         }
         return new ImmutablePair<>(missingItems, missingFeaturesToMap);
     }
@@ -244,6 +246,7 @@ public class MetaTableManager {
     }
 
     private void insertMissingMappings(String mappingTableName, CoStoSysConnection costoConn, Map<String, Integer> missingItems) {
+        log.debug("Inserting {} missing mappings into the mapping table {}", mappingTableName);
         if (missingItems.isEmpty())
             return;
         String sql = null;
