@@ -550,7 +550,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
                 final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
-                synchronized (binaryStringMapping.get(mappingCacheKey)) {
+                synchronized (binaryStringMapping) {
                     final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
                     binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
                     binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
