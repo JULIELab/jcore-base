@@ -111,6 +111,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private static Map<String, Map<String, Integer>> binaryStringMapping = Collections.emptyMap();
     private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
     private static Map<String, List<XmiSplitterResult>> splitterResultMap;
+    Map<String, Integer> mappingBefore;
+    Map<String, Integer> mappingAfter;
+    static Map<String, Integer> missingItems = new HashMap<>();
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
             "into an XMI document or annotation table that already has data for the respective document, will result " +
@@ -194,12 +197,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private int headerlessDocuments = 0;
     private int currentBatchSize = 0;
     private XmiDataInserter annotationInserter;
-
     @ConfigurationParameter(name = PARAM_COMPONENT_DB_NAME, description = " Subset tables store the name of the last " +
             "component that has sent data for a document. This parameter allows to specify a custom name for each CAS " +
             "DB Consumer. Defaults to the implementation class name.", defaultValue = "XMIDBWriter")
     private String componentDbName;
-
     private String subsetTable;
     @ConfigurationParameter(name = PARAM_COSTOSYS_CONFIG, description = "File path or classpath resource location " +
             "of a Corpus Storage System (CoStoSys) configuration file. This file specifies the database to " +
@@ -422,7 +423,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
     }
 
-
     private void checkParameters(UimaContext aContext) throws ResourceInitializationException {
         if (aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG) == null)
             throw new ResourceInitializationException(new IllegalStateException(
@@ -550,9 +550,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
                 mappingBefore = new HashMap<>(binaryStringMapping.get(mappingCacheKey));
+                final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
+                missingItems.putAll(missingItemsForMapping.getMissingItemsMapping());
                 synchronized (binaryStringMapping) {
-                    final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
-                    missingItems = missingItemsForMapping.getMissingItemsMapping();
                     final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
                     binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
                     binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
@@ -564,10 +564,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
         xmiItemBuffer.clear();
     }
-
-    Map<String, Integer> mappingBefore;
-    Map<String, Integer> mappingAfter;
-    Map<String, Integer> missingItems;
 
     private void createAnnotationModules() throws AnalysisEngineProcessException {
         for (int i = 0; i < xmiItemBuffer.size(); i++) {
