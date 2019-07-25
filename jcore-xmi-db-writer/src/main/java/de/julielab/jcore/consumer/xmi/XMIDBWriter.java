@@ -554,6 +554,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 missingItemsForMapping.getMissingItemsMapping().keySet().stream().forEach(value -> missingItems.put(value, Thread.currentThread().getName()));
                 synchronized (binaryStringMapping) {
                     final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
+                    for (String missingItem : missingItemsForMapping.getMissingValuesToMap())
+                        if (!updatedMappingAndMappedFeatures.getLeft().containsKey(missingItem))
+                            throw new IllegalStateException("The missing item '" + missingItem + "' was not included in the updated mapping");
                     binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
                     binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
                 }
@@ -590,8 +593,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         if (missingItems.containsKey(e.getMissingItem())) {
                             final String threadName = missingItems.get(e.getMissingItem());
                             log.error("Item was in thread {}", threadName);
-                            log.error("Was in mapping before of thread {}: {}", mappingBefore.get(threadName).containsKey(e.getMissingItem()));
-                            log.error("Was in mapping after of thread {}: {}", mappingAfter.get(threadName).containsKey(e.getMissingItem()));
+                            log.error("Was in mapping before of thread {}: {}",threadName, mappingBefore.get(threadName).containsKey(e.getMissingItem()));
+                            log.error("Was in mapping after of thread {}: {}", threadName,mappingAfter.get(threadName).containsKey(e.getMissingItem()));
 
                         }
                         throw new AnalysisEngineProcessException(e);
