@@ -1,5 +1,6 @@
 package de.julielab.jcore.consumer.xmi;
 
+import de.julielab.xml.XmiSplitterResult;
 import org.apache.uima.cas.TypeSystem;
 
 import java.util.Map;
@@ -14,6 +15,21 @@ public class XmiBufferItem {
     private Map<String, Integer> sofaIdMap;
     private int nextXmiId;
     private TypeSystem typeSystem;
+    private XmiSplitterResult splitterResult;
+
+    public XmiSplitterResult getSplitterResult() {
+        return splitterResult;
+    }
+
+    public XmiBufferItem(XmiSplitterResult splitterResult, DocumentId docId, Map<String, Integer> baseDocumentSofaIdMap, int nextXmiId, TypeSystem typeSystem) {
+
+        this.splitterResult = splitterResult;
+        this.docId = docId;
+
+        sofaIdMap = baseDocumentSofaIdMap;
+        this.nextXmiId = nextXmiId;
+        this.typeSystem = typeSystem;
+    }
 
     public TypeSystem getTypeSystem() {
         return typeSystem;

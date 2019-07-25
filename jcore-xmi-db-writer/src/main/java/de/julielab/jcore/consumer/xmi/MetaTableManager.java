@@ -20,6 +20,8 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MetaTableManager {
     public static final String BINARY_MAPPING_TABLE = XmiSplitConstants.BINARY_MAPPING_TABLE;
@@ -113,16 +115,26 @@ public class MetaTableManager {
      * are new items, the mapping table is locked from concurrent access and updated with the new values. The updated
      * mapping is returned to be kept for future applications.</p>
      *
-     * @param missingItemsFunction A function that wraps the call to {@link de.julielab.xml.binary.BinaryJeDISNodeEncoder#findMissingItemsForMapping(Collection, TypeSystem, Map, Map)} to keep uninteresting parameters from being passed to this method.
+     * @param analysisResults The analysis results of the documents to be encoded next.
      * @param currentMappingState  The mapping as it is currently known to the <tt>XMIDBWriter</tt> instance.
      * @return The mapping with all known mappings from the database, potentially with updated elements from the current document.
      * @throws AnalysisEngineProcessException If the database communication fails.
      */
-    public Pair<Map<String, Integer>, Map<String, Boolean>> updateBinaryStringMappingTable(BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction, Map<String, Integer> currentMappingState, Map<String, Boolean> currentMappedAttributes, boolean writeToDatabase) throws AnalysisEngineProcessException {
+    public Pair<Map<String, Integer>, Map<String, Boolean>> updateBinaryStringMappingTable(List<BinaryStorageAnalysisResult> analysisResults, Map<String, Integer> currentMappingState, Map<String, Boolean> currentMappedAttributes, boolean writeToDatabase) throws AnalysisEngineProcessException {
+
+
+        final Set<String> missingValuesToMap = new HashSet<>();
+        Map<String, Boolean> missingFeaturesToMap = new HashMap<>();
+        for (BinaryStorageAnalysisResult result : analysisResults) {
+            result.getMissingValuesToMap().stream().filter(value -> !currentMappingState.containsKey(value)).forEach(missingValuesToMap::add);
+            // Different analysis results might actually override each other here. This could be handled if it turns out to be an issue
+            result.getMissingFeaturesToMap().keySet().stream().filter(key -> !currentMappedAttributes.containsKey(key)).forEach(feature -> missingFeaturesToMap.put(feature, result.getMissingFeaturesToMap().get(feature)));
+        }
+
+
         Map<String, Integer> completeMapping = currentMappingState;
         Map<String, Boolean> completeMappedAttributes = currentMappedAttributes;
-        final BinaryStorageAnalysisResult missingItemsFromCurrentState = missingItemsFunction.apply(currentMappingState, currentMappedAttributes);
-        if (!missingItemsFromCurrentState.getMissingValuesToMap().isEmpty()) {
+        if (!missingValuesToMap.isEmpty()) {
             String mappingTableName = xmiMetaSchema + "." + BINARY_MAPPING_TABLE;
             String featuresToMapTableName = xmiMetaSchema + "." + BINARY_FEATURES_TO_MAP_TABLE;
             String sql = null;
@@ -148,17 +160,17 @@ public class MetaTableManager {
                 Map<String, Integer> existingMappingWithDbUpdate = updateMapping(mappingTableName, currentMappingState, stmt);
                 Map<String, Boolean> featuresToMapFromDatabase = readFeaturesToMapFromDatabase(featuresToMapTableName, stmt);
 
-                final ImmutablePair<Map<String, Integer>, Map<String, Boolean>> missing = performMappingUpdate(missingItemsFunction, featuresToMapFromDatabase, currentMappedAttributes, existingMappingWithDbUpdate, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, writeToDatabase);
+                final ImmutablePair<Map<String, Integer>, Map<String, Boolean>> missing = performMappingUpdate(missingValuesToMap, missingFeaturesToMap, featuresToMapFromDatabase, currentMappedAttributes, existingMappingWithDbUpdate, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, writeToDatabase);
                 time = System.currentTimeMillis() - time;
                 log.debug("Thread {} had the table lock for {}ms", Thread.currentThread().getName(), time);
-                final Map<String, Integer> missingItems = missing.getLeft();
-                final Map<String, Boolean> missingFeaturesToMap = missing.getRight();
+                final Map<String, Integer> missingItemsAfterDbComparison = missing.getLeft();
+                final Map<String, Boolean> missingFeaturesToMapAfterDbComparison = missing.getRight();
 
                 completeMapping = existingMappingWithDbUpdate;
-                completeMapping.putAll(missingItems);
+                completeMapping.putAll(missingItemsAfterDbComparison);
 
                 completeMappedAttributes = featuresToMapFromDatabase;
-                completeMappedAttributes.putAll(missingFeaturesToMap);
+                completeMappedAttributes.putAll(missingFeaturesToMapAfterDbComparison);
             } catch (SQLException e) {
                 log.error("Could not retrieve or update binary meta data tables. The last sent SQL query was {}", sql, e);
                 throw new AnalysisEngineProcessException(e);
@@ -178,19 +190,23 @@ public class MetaTableManager {
         costoConn.getConnection().endRequest();
     }
 
-    private ImmutablePair<Map<String, Integer>, Map<String, Boolean>> performMappingUpdate(BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Boolean> currentMappedAttributes, Map<String, Integer> existingMappingWithDbUpdate, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, boolean writeToDatabase) throws SQLException {
-        // Run the analysis with the fresh data from the database
-        Map<String, Boolean> existingFeaturesToMapWithDbUpdate = new HashMap<>(currentMappedAttributes);
-        existingFeaturesToMapWithDbUpdate.putAll(featuresToMapFromDatabase);
-        final BinaryStorageAnalysisResult analysisResult = missingItemsFunction.apply(existingMappingWithDbUpdate, existingFeaturesToMapWithDbUpdate);
+    private ImmutablePair<Map<String, Integer>, Map<String, Boolean>> performMappingUpdate(Set<String> missingValuesToMap, Map<String, Boolean> missingFeaturesToMap, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Boolean> currentMappedAttributes, Map<String, Integer> existingMappingWithDbUpdate, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, boolean writeToDatabase) throws SQLException {
+        final Set<String> stillMissingValuesToMap = new HashSet<>();
+        Map<String, Boolean> stillMissingFeaturesToMap = new HashMap<>();
+            missingValuesToMap.stream().filter(value -> !existingMappingWithDbUpdate.containsKey(value)).forEach(stillMissingValuesToMap::add);
+            // Different analysis results might actually override each other here. This could be handled if it turns out to be an issue
+        missingFeaturesToMap.keySet().stream().filter(key -> !featuresToMapFromDatabase.containsKey(key)).forEach(feature -> stillMissingFeaturesToMap.put(feature, missingFeaturesToMap.get(feature)));
 
-        Map<String, Integer> missingItems = analysisResult.getMissingItemsMapping();
+        Map<String, Integer> stillMissingValuesMap = new HashMap<>();
+        int id = existingMappingWithDbUpdate.size();
+        for (String value : stillMissingValuesToMap)
+            stillMissingValuesMap.put(value, id++);
 
-        Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap();
+
         if (writeToDatabase) {
-            writeMappingsToDatabase(currentMappedAttributes, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, featuresToMapFromDatabase, missingItems, missingFeaturesToMap);
+            writeMappingsToDatabase(currentMappedAttributes, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, featuresToMapFromDatabase, stillMissingValuesMap, stillMissingFeaturesToMap);
         }
-        return new ImmutablePair<>(missingItems, missingFeaturesToMap);
+        return new ImmutablePair<>(stillMissingValuesMap, missingFeaturesToMap);
     }
 
     private void obtainLockToMappingTable(String mappingTableName, Statement stmt) throws AnalysisEngineProcessException {

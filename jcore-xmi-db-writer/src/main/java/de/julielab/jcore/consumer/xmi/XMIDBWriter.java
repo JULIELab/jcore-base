@@ -107,6 +107,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_FEATURES_TO_MAP_DRYRUN = "BinaryFeaturesToMapDryRun";
     public static final String PARAM_BINARY_FEATURES_BLACKLIST = "BinaryFeaturesBlacklist";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
+    // The mappings are keyed by the costosys.xml path and the table schema, see 'getMappingCacheKey()'.
+    // The idea is to save costly database connections by sharing updating mapping across threads.
+    private static Map<String, Map<String, Integer>> binaryStringMapping = Collections.emptyMap();
+    private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
+    private static Map<String, List<BinaryStorageAnalysisResult>> analysisResultMap;
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
             "into an XMI document or annotation table that already has data for the respective document, will result " +
@@ -178,27 +183,17 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private String xmiMetaSchema;
     @ConfigurationParameter(name = PARAM_USE_BINARY_FORMAT, mandatory = false, defaultValue = "false", description = "If set to true, the XMI data is stored in a binary format to avoid a lot of the XML format overhead. This is meant to reduce storage size.")
     private boolean useBinaryFormat;
-
     private XmiSplitter splitter;
     private BinaryJeDISNodeEncoder binaryEncoder;
-    private List<XmiBufferItem> xmiItemBuffer = new ArrayList<XmiBufferItem>();
+    private List<XmiBufferItem> xmiItemBuffer = new ArrayList<>();
     private List<XmiData> annotationModules = new ArrayList<>();
     private Map<String, List<DocumentId>> modulesWithoutData = new HashMap<>();
     private String schemaDocument;
-
     private String effectiveDocTableName;
-
     private MetaTableManager metaTableManager;
-
     private AnnotationTableManager annotationTableManager;
-
     private int headerlessDocuments = 0;
     private int currentBatchSize = 0;
-    // The mappings are keyed by the costosys.xml path and the table schema, see 'getMappingCacheKey()'.
-    // The idea is to save costly database connections by sharing updating mapping across threads.
-    private static Map<String, Map<String, Integer>> binaryStringMapping = Collections.emptyMap();
-    private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
-
     private XmiDataInserter annotationInserter;
 
     @ConfigurationParameter(name = PARAM_COMPONENT_DB_NAME, description = " Subset tables store the name of the last " +
@@ -292,9 +287,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             binaryMappedFeatures.put(getMappingCacheKey(), new ConcurrentHashMap<>());
             binaryStringMapping = new ConcurrentHashMap<>();
             binaryStringMapping.put(getMappingCacheKey(), new ConcurrentHashMap<>());
+            analysisResultMap = new ConcurrentHashMap<>();
+            analysisResultMap.put(getMappingCacheKey(), new ArrayList<>(writeBatchSize));
         }
         if (binaryFeaturesBlacklistParameter != null) {
-            binaryMappedFeatures.put(getMappingCacheKey(), Arrays.stream(binaryFeaturesBlacklistParameter).collect(Collectors.toMap(Function.identity(), x -> false, (x,y) -> x && y, ConcurrentHashMap::new)));
+            binaryMappedFeatures.put(getMappingCacheKey(), Arrays.stream(binaryFeaturesBlacklistParameter).collect(Collectors.toMap(Function.identity(), x -> false, (x, y) -> x && y, ConcurrentHashMap::new)));
         }
 
         if (xmiMetaSchema.isBlank())
@@ -428,6 +425,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private String getMappingCacheKey() {
         return dbcConfigPath + "_" + xmiMetaSchema;
     }
+
     private void checkParameters(UimaContext aContext) throws ResourceInitializationException {
         if (aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG) == null)
             throw new ResourceInitializationException(new IllegalStateException(
@@ -538,16 +536,17 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 }
             }
         } else {
-            List<XmiSplitterResult> splitterResults = createAnnotationModulesForXmiItems();
 
+
+            final List<XmiSplitterResult> splitterResults = xmiItemBuffer.stream().map(XmiBufferItem::getSplitterResult).collect(Collectors.toList());
             if (useBinaryFormat) {
                 // Here, we check for missing mappings for the whole buffer. This is important for performance
                 // because each binary mapping update requires exclusive read/write access to the mapping table
                 // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
-                final BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction = (existingMapping, existingMappedFeatures) -> binaryEncoder.findMissingItemsForMapping(allNodes, ts, existingMapping, existingMappedFeatures, featuresToMapDryRun);
-                final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsFunction, binaryStringMapping.get(getMappingCacheKey()), binaryMappedFeatures.get(getMappingCacheKey()), !featuresToMapDryRun);
+//                final BiFunction<Map<String, Integer>, Map<String, Boolean>, BinaryStorageAnalysisResult> missingItemsFunction = (existingMapping, existingMappedFeatures) -> binaryEncoder.findMissingItemsForMapping(allNodes, ts, existingMapping, existingMappedFeatures, featuresToMapDryRun);
+                final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(analysisResultMap.get(getMappingCacheKey()), binaryStringMapping.get(getMappingCacheKey()), binaryMappedFeatures.get(getMappingCacheKey()), !featuresToMapDryRun);
                 binaryStringMapping.put(getMappingCacheKey(), Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
                 binaryMappedFeatures.put(getMappingCacheKey(), Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
             }
@@ -590,7 +589,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         Object storedData = handleDataZipping(dataBytes, schemaDocument);
                         if (storeBaseDocument && isBaseDocumentColumn) {
                             annotationModules.add(new DocumentXmiData(XmiSplitConstants.BASE_DOC_COLUMN, docId, storedData, currentSofaXmiIdMap));
-                        } else if (!isBaseDocumentColumn){
+                        } else if (!isBaseDocumentColumn) {
                             annotationModules.add(new XmiData(columnName, docId, storedData));
                         }
                         annotationInserter.putXmiIdMapping(docId, newXmiId);
@@ -612,6 +611,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
     }
 
+    @Deprecated
     private List<XmiSplitterResult> createAnnotationModulesForXmiItems() {
         List<XmiSplitterResult> splitterResults = new ArrayList<>();
         for (XmiBufferItem item : xmiItemBuffer) {
@@ -662,7 +662,28 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         "There are multiple XmiMetaData annotations in the cas for document " + docId + "."));
             xmiMetaData.forEach(XmiMetaData::removeFromIndexes);
 
-            xmiItemBuffer.add(new XmiBufferItem(baos.toByteArray(), docId, baseDocumentSofaIdMap, nextXmiId, aJCas.getTypeSystem()));
+            if (storeAll) {
+                xmiItemBuffer.add(new XmiBufferItem(baos.toByteArray(), docId, baseDocumentSofaIdMap, nextXmiId, aJCas.getTypeSystem()));
+            } else {
+                XmiSplitterResult result = splitter.process(baos.toByteArray(), aJCas.getTypeSystem(), nextXmiId, baseDocumentSofaIdMap);
+                if (useBinaryFormat) {
+                    final BinaryStorageAnalysisResult binaryStorageAnalysisResult = binaryEncoder.findMissingItemsForMapping(result.jedisNodesInAnnotationModules, aJCas.getTypeSystem(), binaryStringMapping.get(getMappingCacheKey()), binaryMappedFeatures.get(getMappingCacheKey()), !featuresToMapDryRun);
+                    analysisResultMap.get(getMappingCacheKey()).add(binaryStorageAnalysisResult);
+                }
+                xmiItemBuffer.add(new XmiBufferItem(result, docId, baseDocumentSofaIdMap, nextXmiId, aJCas.getTypeSystem()));
+
+//                Integer newXmiId = result.maxXmiId;
+                if (!(featuresToMapDryRun && useBinaryFormat))
+                    metaTableManager.manageXMINamespaces(result.namespaces);
+
+                if (result.currentSofaIdMap.isEmpty())
+                    throw new IllegalStateException(
+                            "The XmiSplitter returned an empty Sofa XMI ID map. This is a critical errors since it means " +
+                                    "that the splitter was not able to resolve the correct Sofa XMI IDs for the annotations " +
+                                    "that should be stored now.");
+//                log.trace("Updating max xmi id of document {}. New max xmi id: {}", docId, newXmiId);
+//                log.trace("Sofa ID map for this document: {}", result.currentSofaIdMap);
+            }
         } catch (SAXParseException e) {
             // we did have the issue that in PMID 23700993 there was an XMI-1.0
             // illegal character in the affiliation beginning with
@@ -677,6 +698,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             throw new AnalysisEngineProcessException(e);
         } catch (IOException e) {
             e.printStackTrace();
+            throw new AnalysisEngineProcessException(e);
+        } catch (XMISplitterException e) {
             throw new AnalysisEngineProcessException(e);
         }
     }
