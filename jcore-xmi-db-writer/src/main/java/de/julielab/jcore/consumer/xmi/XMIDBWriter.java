@@ -243,7 +243,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "consist of characters that require more than 1 byte, of course).")
     private String[] binaryFeaturesBlacklistParameter;
     private String mappingCacheKey;
-    private ReentrantLock mappingUpdateLock = new ReentrantLock();
+    private static ReentrantLock mappingUpdateLock = new ReentrantLock();
 
     /*
      * (non-Javadoc)
