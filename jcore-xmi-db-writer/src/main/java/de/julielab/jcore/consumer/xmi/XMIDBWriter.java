@@ -940,6 +940,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         super.collectionProcessComplete();
         log.debug("Running collectionProcessComplete.");
         try {
+            processXmiBuffer();
             if (!(featuresToMapDryRun && useBinaryFormat))
                 annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete);
             else

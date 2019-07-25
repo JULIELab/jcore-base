@@ -169,7 +169,10 @@ public class MetaTableManager {
                 log.error("Could not retrieve or update binary meta data tables. The last sent SQL query was {}", sql, e);
                 throw new AnalysisEngineProcessException(e);
             }
+        } else {
+            log.debug("Not actually updating anything because the missing mappings had been added while waiting for the lock." );
         }
+
         return new ImmutablePair(completeMapping, completeMappedAttributes);
     }
 
