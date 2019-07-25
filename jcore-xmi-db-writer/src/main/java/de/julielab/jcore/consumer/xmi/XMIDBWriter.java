@@ -25,6 +25,7 @@ import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.costosys.dbconnection.util.TableSchemaMismatchException;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
+import de.julielab.jcore.types.ace.Document;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xml.*;
 import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
@@ -114,7 +115,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     // The idea is to save costly database connections by sharing updating mapping across threads.
     private static Map<String, Map<String, Integer>> binaryStringMapping = Collections.emptyMap();
     private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
-    private static Map<String, List<XmiSplitterResult>> splitterResultMap;
+    private static Map<String, List<XmiBufferItem>> splitterResultMap;
     private static ReentrantLock binaryUpdateLock;
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
@@ -540,28 +541,40 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             if (useBinaryFormat) {
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 long time = System.currentTimeMillis();
-                synchronized (binaryStringMapping) {
-                    time = System.currentTimeMillis() - time;
-                    log.debug("Waited {} for the binary string update monitor", time);
-                    // Here, we check for missing mappings for the whole buffer. This is important for performance
-                    // because each binary mapping update requires exclusive read/write access to the mapping table
-                    // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
-                    final List<XmiSplitterResult> splitterResults;
-                    synchronized (splitterResultMap.get(mappingCacheKey)) {
-                        splitterResults = new ArrayList<>(splitterResultMap.get(mappingCacheKey));
-                        splitterResultMap.get(mappingCacheKey).clear();
+                final Map<DocumentId, XmiSplitterResult> splitterResultsToProcess = xmiItemBuffer.stream().collect(Collectors.toMap(XmiBufferItem::getDocId, XmiBufferItem::getSplitterResult));
+                final BinaryStorageAnalysisResult requiredMappingAnalysisResult;
+                // Check if we need new mappings at all
+                synchronized (binaryMappedFeatures) {
+                    requiredMappingAnalysisResult = binaryEncoder.findMissingItemsForMapping(splitterResultsToProcess.values().stream().flatMap(result -> result.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList()), ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
+                }
+                if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty()) {
+                    synchronized (binaryStringMapping) {
+                        time = System.currentTimeMillis() - time;
+                        log.debug("Waited {} for the binary string update monitor", time);
+                        // Here, we check for missing mappings for the whole buffer. This is important for performance
+                        // because each binary mapping update requires exclusive read/write access to the mapping table
+                        // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
+                        final List<XmiBufferItem> splitterResults;
+                        synchronized (splitterResultMap.get(mappingCacheKey)) {
+                            splitterResults = new ArrayList<>(splitterResultMap.get(mappingCacheKey));
+                            splitterResultMap.get(mappingCacheKey).clear();
+                        }
+                        final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().filter(i -> !splitterResultsToProcess.containsKey(i.getDocId())).flatMap(i -> i.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
+                        mappingBefore.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
+                        final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
+                        missingItemsForMapping.getMissingValuesToMap().addAll(requiredMappingAnalysisResult.getMissingValuesToMap());
+                        missingItemsForMapping.getMissingFeaturesToMap().putAll(requiredMappingAnalysisResult.getMissingFeaturesToMap());
+                        missingItemsForMapping.getMissingItemsMapping().keySet().stream().forEach(value -> missingItems.put(value, Thread.currentThread().getName()));
+                        final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
+                        for (String missingItem : missingItemsForMapping.getMissingValuesToMap())
+                            if (!updatedMappingAndMappedFeatures.getLeft().containsKey(missingItem))
+                                throw new IllegalStateException("The missing item '" + missingItem + "' was not included in the updated mapping");
+                        synchronized (binaryMappedFeatures) {
+                            binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
+                            binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
+                        }
+                        mappingAfter.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
                     }
-                    final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
-                    mappingBefore.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
-                    final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
-                    missingItemsForMapping.getMissingItemsMapping().keySet().stream().forEach(value -> missingItems.put(value, Thread.currentThread().getName()));
-                    final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
-                    for (String missingItem : missingItemsForMapping.getMissingValuesToMap())
-                        if (!updatedMappingAndMappedFeatures.getLeft().containsKey(missingItem))
-                            throw new IllegalStateException("The missing item '" + missingItem + "' was not included in the updated mapping");
-                    binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
-                    binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
-                    mappingAfter.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
                 }
             }
 
@@ -696,12 +709,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 xmiItemBuffer.add(new XmiBufferItem(baos.toByteArray(), docId, baseDocumentSofaIdMap, nextXmiId, aJCas.getTypeSystem()));
             } else {
                 XmiSplitterResult result = splitter.process(baos.toByteArray(), aJCas.getTypeSystem(), nextXmiId, baseDocumentSofaIdMap);
+                final XmiBufferItem xmiBufferItem = new XmiBufferItem(result, docId, baseDocumentSofaIdMap, nextXmiId, aJCas.getTypeSystem());
+                xmiItemBuffer.add(xmiBufferItem);
                 if (useBinaryFormat) {
                     synchronized (splitterResultMap.get(mappingCacheKey)) {
-                        splitterResultMap.get(mappingCacheKey).add(result);
+                        splitterResultMap.get(mappingCacheKey).add(xmiBufferItem);
                     }
                 }
-                xmiItemBuffer.add(new XmiBufferItem(result, docId, baseDocumentSofaIdMap, nextXmiId, aJCas.getTypeSystem()));
 
 //                Integer newXmiId = result.maxXmiId;
                 if (!(featuresToMapDryRun && useBinaryFormat))
