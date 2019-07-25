@@ -549,9 +549,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
-                mappingBefore.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
-                final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
                 synchronized (binaryStringMapping) {
+                    mappingBefore.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
+                    final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
                     missingItemsForMapping.getMissingItemsMapping().keySet().stream().forEach(value -> missingItems.put(value, Thread.currentThread().getName()));
                     final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
                     for (String missingItem : missingItemsForMapping.getMissingValuesToMap())
