@@ -137,9 +137,11 @@ public class MetaTableManager {
                 // Completely lock the tables. This is a synchronization mechanism: All mapping updates will wait at this
                 // exact location. On gaining access exclusive access, the table is first updated before it is
                 // released again (which happens on the end of the transaction).
+                long time = System.currentTimeMillis();
                 obtainLockToMappingTable(mappingTableName, stmt);
                 obtainLockToMappedFeaturesTable(featuresToMapTableName, stmt);
-                log.debug("Thread {} obtained locks to the binary mapping tables.", Thread.currentThread());
+                time = System.currentTimeMillis() - time;
+                log.debug("Thread {} obtained locks to the binary mapping tables after {}ms.", Thread.currentThread(), time);
 
                 // Read the mapping table
                 Map<String, Integer> existingMappingWithDbUpdate = updateMapping(mappingTableName, currentMappingState, stmt);
