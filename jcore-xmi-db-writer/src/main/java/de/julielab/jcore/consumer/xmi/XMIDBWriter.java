@@ -549,8 +549,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
-                final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
                 synchronized (binaryStringMapping) {
+                    final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
                     final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
                     binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
                     binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
@@ -581,8 +581,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     } catch (MissingBinaryMappingException e) {
                         log.error("Binary mapping mismatch, mapping item {} was not found", e.getMissingItem());
                         final Map<String, Integer> mapping = binaryStringMapping.get(mappingCacheKey);
-                        log.error("The given mapping contains {}: {}", e.getMissingItem(), mapping.get(e.getMissingItem()));
+                        log.error("Does the current mapping contain {}: {}", e.getMissingItem(), mapping.get(e.getMissingItem()) != null);
                         log.error("The current mapping has size {}", mapping.size());
+                        throw new AnalysisEngineProcessException(e);
                     }
                 }
 
