@@ -25,7 +25,6 @@ import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.costosys.dbconnection.util.TableSchemaMismatchException;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
-import de.julielab.jcore.types.ace.Document;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xml.*;
 import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
@@ -520,9 +519,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
      *
      * @throws AnalysisEngineProcessException
      */
-    private void processXmiBuffer() throws AnalysisEngineProcessException {
+    private boolean processXmiBuffer() throws AnalysisEngineProcessException {
         if (xmiItemBuffer.isEmpty())
-            return;
+            return false;
 
         if (storeAll) {
             for (XmiBufferItem item : xmiItemBuffer) {
@@ -550,7 +549,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty()) {
                     synchronized (binaryStringMapping) {
                         time = System.currentTimeMillis() - time;
-                        log.debug("Waited {} for the binary string update monitor", time);
+                        log.debug("Waited {}ms for the binary string update monitor", time);
                         // Here, we check for missing mappings for the whole buffer. This is important for performance
                         // because each binary mapping update requires exclusive read/write access to the mapping table
                         // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
@@ -581,6 +580,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             createAnnotationModules();
         }
         xmiItemBuffer.clear();
+        return true;
     }
 
     private void createAnnotationModules() throws AnalysisEngineProcessException {
@@ -914,14 +914,16 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         super.batchProcessComplete();
         log.debug("Running batchProcessComplete.");
         try {
-            processXmiBuffer();
-            if (!(featuresToMapDryRun && useBinaryFormat))
-                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete);
-            else
-                log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
-            annotationModules.clear();
-            for (List<DocumentId> docIds : modulesWithoutData.values())
-                docIds.clear();
+            final boolean readyToSendData = processXmiBuffer();
+            if (readyToSendData) {
+                if (!(featuresToMapDryRun && useBinaryFormat))
+                    annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete);
+                else
+                    log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
+                annotationModules.clear();
+                for (List<DocumentId> docIds : modulesWithoutData.values())
+                    docIds.clear();
+            }
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
         }
@@ -938,7 +940,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         super.collectionProcessComplete();
         log.debug("Running collectionProcessComplete.");
         try {
-            processXmiBuffer();
             if (!(featuresToMapDryRun && useBinaryFormat))
                 annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete);
             else
