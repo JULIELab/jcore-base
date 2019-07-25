@@ -142,12 +142,15 @@ public class MetaTableManager {
                 obtainLockToMappedFeaturesTable(featuresToMapTableName, stmt);
                 time = System.currentTimeMillis() - time;
                 log.debug("Thread {} obtained locks to the binary mapping tables after {}ms.", Thread.currentThread(), time);
+                time = System.currentTimeMillis();
 
                 // Read the mapping table
                 Map<String, Integer> existingMappingWithDbUpdate = updateMapping(mappingTableName, currentMappingState, stmt);
                 Map<String, Boolean> featuresToMapFromDatabase = readFeaturesToMapFromDatabase(featuresToMapTableName, stmt);
 
                 final ImmutablePair<Map<String, Integer>, Map<String, Boolean>> missing = performMappingUpdate(missingItemsFunction, featuresToMapFromDatabase, currentMappedAttributes, existingMappingWithDbUpdate, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, writeToDatabase);
+                time = System.currentTimeMillis() - time;
+                log.debug("Thread {} had the table lock for {}ms", Thread.currentThread().getName(), time);
                 final Map<String, Integer> missingItems = missing.getLeft();
                 final Map<String, Boolean> missingFeaturesToMap = missing.getRight();
 
