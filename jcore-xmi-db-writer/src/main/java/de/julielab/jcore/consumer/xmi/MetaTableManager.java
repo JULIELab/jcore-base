@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -115,21 +114,16 @@ public class MetaTableManager {
      * are new items, the mapping table is locked from concurrent access and updated with the new values. The updated
      * mapping is returned to be kept for future applications.</p>
      *
-     * @param analysisResults The analysis results of the documents to be encoded next.
-     * @param currentMappingState  The mapping as it is currently known to the <tt>XMIDBWriter</tt> instance.
+     * @param analysisResult     The analysis result of the documents to be encoded next.
+     * @param currentMappingState The mapping as it is currently known to the <tt>XMIDBWriter</tt> instance.
      * @return The mapping with all known mappings from the database, potentially with updated elements from the current document.
      * @throws AnalysisEngineProcessException If the database communication fails.
      */
-    public Pair<Map<String, Integer>, Map<String, Boolean>> updateBinaryStringMappingTable(List<BinaryStorageAnalysisResult> analysisResults, Map<String, Integer> currentMappingState, Map<String, Boolean> currentMappedAttributes, boolean writeToDatabase) throws AnalysisEngineProcessException {
+    public Pair<Map<String, Integer>, Map<String, Boolean>> updateBinaryStringMappingTable(BinaryStorageAnalysisResult analysisResult, Map<String, Integer> currentMappingState, Map<String, Boolean> currentMappedAttributes, boolean writeToDatabase) throws AnalysisEngineProcessException {
 
 
-        final Set<String> missingValuesToMap = new HashSet<>();
-        Map<String, Boolean> missingFeaturesToMap = new HashMap<>();
-        for (BinaryStorageAnalysisResult result : analysisResults) {
-            result.getMissingValuesToMap().stream().filter(value -> !currentMappingState.containsKey(value)).forEach(missingValuesToMap::add);
-            // Different analysis results might actually override each other here. This could be handled if it turns out to be an issue
-            result.getMissingFeaturesToMap().keySet().stream().filter(key -> !currentMappedAttributes.containsKey(key)).forEach(feature -> missingFeaturesToMap.put(feature, result.getMissingFeaturesToMap().get(feature)));
-        }
+        final List<String> missingValuesToMap = analysisResult.getMissingValuesToMap().stream().filter(value -> !currentMappingState.containsKey(value)).collect(Collectors.toList());
+        Map<String, Boolean> missingFeaturesToMap = analysisResult.getMissingFeaturesToMap().keySet().stream().filter(key -> !currentMappedAttributes.containsKey(key)).collect(Collectors.toMap(Function.identity(), analysisResult.getMissingFeaturesToMap()::get));
 
 
         Map<String, Integer> completeMapping = currentMappingState;
@@ -179,8 +173,8 @@ public class MetaTableManager {
         return new ImmutablePair(completeMapping, completeMappedAttributes);
     }
 
-    private void writeMappingsToDatabase(Map<String, Boolean> currentMappedAttributes, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Integer> missingItems, Map<String, Boolean> missingFeaturesToMap) throws SQLException {
-        insertMissingMappings(mappingTableName, costoConn, missingItems);
+    private void writeMappingsToDatabase(Map<String, Boolean> currentMappedAttributes, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Integer> stillMissingValuesMap, Map<String, Boolean> missingFeaturesToMap) throws SQLException {
+        insertMissingMappings(mappingTableName, costoConn, stillMissingValuesMap);
         insertMissingFeaturesToMap(featuresToMapTableName, costoConn, missingFeaturesToMap, currentMappedAttributes, featuresToMapFromDatabase);
 
         // Commit the changes made
@@ -190,11 +184,11 @@ public class MetaTableManager {
         costoConn.getConnection().endRequest();
     }
 
-    private ImmutablePair<Map<String, Integer>, Map<String, Boolean>> performMappingUpdate(Set<String> missingValuesToMap, Map<String, Boolean> missingFeaturesToMap, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Boolean> currentMappedAttributes, Map<String, Integer> existingMappingWithDbUpdate, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, boolean writeToDatabase) throws SQLException {
+    private ImmutablePair<Map<String, Integer>, Map<String, Boolean>> performMappingUpdate(List<String> missingValuesToMap, Map<String, Boolean> missingFeaturesToMap, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Boolean> currentMappedAttributes, Map<String, Integer> existingMappingWithDbUpdate, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, boolean writeToDatabase) throws SQLException {
         final Set<String> stillMissingValuesToMap = new HashSet<>();
         Map<String, Boolean> stillMissingFeaturesToMap = new HashMap<>();
-            missingValuesToMap.stream().filter(value -> !existingMappingWithDbUpdate.containsKey(value)).forEach(stillMissingValuesToMap::add);
-            // Different analysis results might actually override each other here. This could be handled if it turns out to be an issue
+        missingValuesToMap.stream().filter(value -> !existingMappingWithDbUpdate.containsKey(value)).forEach(stillMissingValuesToMap::add);
+        // Different analysis results might actually override each other here. This could be handled if it turns out to be an issue
         missingFeaturesToMap.keySet().stream().filter(key -> !featuresToMapFromDatabase.containsKey(key)).forEach(feature -> stillMissingFeaturesToMap.put(feature, missingFeaturesToMap.get(feature)));
 
         Map<String, Integer> stillMissingValuesMap = new HashMap<>();
