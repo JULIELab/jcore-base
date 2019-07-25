@@ -558,9 +558,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             splitterResults = new ArrayList<>(splitterResultMap.get(mappingCacheKey));
                             splitterResultMap.get(mappingCacheKey).clear();
                         }
-                        final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().filter(i -> !splitterResultsToProcess.containsKey(i.getDocId())).flatMap(i -> i.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
+                        final List<JeDISVTDGraphNode> nodesFromOtherThreads = splitterResults.stream().filter(i -> !splitterResultsToProcess.containsKey(i.getDocId())).flatMap(i -> i.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
+                        log.debug("Got {} JeDIS nodes from other threads to check for missing mappings", nodesFromOtherThreads.size());
                         mappingBefore.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
-                        final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
+                        final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(nodesFromOtherThreads, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
                         missingItemsForMapping.getMissingValuesToMap().addAll(requiredMappingAnalysisResult.getMissingValuesToMap());
                         missingItemsForMapping.getMissingFeaturesToMap().putAll(requiredMappingAnalysisResult.getMissingFeaturesToMap());
                         missingItemsForMapping.getMissingItemsMapping().keySet().stream().forEach(value -> missingItems.put(value, Thread.currentThread().getName()));
