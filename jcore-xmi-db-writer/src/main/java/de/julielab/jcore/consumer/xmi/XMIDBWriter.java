@@ -106,14 +106,14 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_FEATURES_TO_MAP_DRYRUN = "BinaryFeaturesToMapDryRun";
     public static final String PARAM_BINARY_FEATURES_BLACKLIST = "BinaryFeaturesBlacklist";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
+    static Map<String, Map<String, Integer>> mappingBefore = new ConcurrentHashMap<>();
+    static Map<String, Map<String, Integer>> mappingAfter = new ConcurrentHashMap<>();
+    static Map<String, String> missingItems = new ConcurrentHashMap<>();
     // The mappings are keyed by the costosys.xml path and the table schema, see 'mappingCacheKey'.
     // The idea is to save costly database connections by sharing updating mapping across threads.
     private static Map<String, Map<String, Integer>> binaryStringMapping = Collections.emptyMap();
     private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
     private static Map<String, List<XmiSplitterResult>> splitterResultMap;
-    static Map<String, Map<String, Integer>> mappingBefore= new ConcurrentHashMap<>();
-    static Map<String, Map<String, Integer>> mappingAfter= new ConcurrentHashMap<>();
-    static Map<String, String> missingItems = new ConcurrentHashMap<>();
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
             "into an XMI document or annotation table that already has data for the respective document, will result " +
@@ -549,18 +549,18 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
                 final List<JeDISVTDGraphNode> allNodes = splitterResults.stream().flatMap(r -> r.jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
-                mappingBefore.compute(Thread.currentThread().getName(), (k,v) -> v != null? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
+                mappingBefore.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
                 final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(allNodes, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
-                missingItemsForMapping.getMissingItemsMapping().keySet().stream().forEach(value -> missingItems.put(value, Thread.currentThread().getName()));
                 synchronized (binaryStringMapping) {
+                    missingItemsForMapping.getMissingItemsMapping().keySet().stream().forEach(value -> missingItems.put(value, Thread.currentThread().getName()));
                     final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
                     for (String missingItem : missingItemsForMapping.getMissingValuesToMap())
                         if (!updatedMappingAndMappedFeatures.getLeft().containsKey(missingItem))
                             throw new IllegalStateException("The missing item '" + missingItem + "' was not included in the updated mapping");
                     binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
                     binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
+                    mappingAfter.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
                 }
-                mappingAfter.compute(Thread.currentThread().getName(), (k,v) -> v != null? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
             }
 
             createAnnotationModules();
@@ -593,8 +593,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         if (missingItems.containsKey(e.getMissingItem())) {
                             final String threadName = missingItems.get(e.getMissingItem());
                             log.error("Item was in thread {}", threadName);
-                            log.error("Was in mapping before of thread {}: {}",threadName, mappingBefore.get(threadName).containsKey(e.getMissingItem()));
-                            log.error("Was in mapping after of thread {}: {}", threadName,mappingAfter.get(threadName).containsKey(e.getMissingItem()));
+                            log.error("Was in mapping before of thread {}: {}", threadName, mappingBefore.get(threadName).containsKey(e.getMissingItem()));
+                            log.error("Was in mapping after of thread {}: {}", threadName, mappingAfter.get(threadName).containsKey(e.getMissingItem()));
 
                         }
                         throw new AnalysisEngineProcessException(e);
