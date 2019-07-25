@@ -272,7 +272,7 @@ public class MetaTableManager {
 
     private void insertMissingMappings(String mappingTableName, CoStoSysConnection costoConn, Map<String, Integer> missingItems) {
         log.debug("Inserting {} missing mappings into the mapping table {}", missingItems.size(), mappingTableName);
-        log.debug("Inserting {}", missingItems.keySet());
+        log.trace("Inserting {}", missingItems.keySet());
         if (missingItems.isEmpty())
             return;
         long time = System.currentTimeMillis();
