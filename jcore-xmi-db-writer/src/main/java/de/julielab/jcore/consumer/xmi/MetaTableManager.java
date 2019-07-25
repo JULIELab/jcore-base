@@ -246,7 +246,7 @@ public class MetaTableManager {
     }
 
     private void insertMissingMappings(String mappingTableName, CoStoSysConnection costoConn, Map<String, Integer> missingItems) {
-        log.debug("Inserting {} missing mappings into the mapping table {}", mappingTableName);
+        log.debug("Inserting {} missing mappings into the mapping table {}", missingItems.size(), mappingTableName);
         if (missingItems.isEmpty())
             return;
         String sql = null;
