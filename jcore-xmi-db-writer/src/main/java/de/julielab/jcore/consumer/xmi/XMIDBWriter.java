@@ -590,10 +590,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             mappingAfter.compute(Thread.currentThread().getName(), (k, v) -> v != null ? v : new HashMap<>()).putAll(binaryStringMapping.get(mappingCacheKey));
                             for (List<XmiBufferItem> itemsWaitedFor : xmiBufferItemsWaitedFor) {
                                 synchronized (itemsWaitedFor) {
-                                    itemsWaitedFor.forEach(item -> item.setProcessedForBinaryMappings(true));
                                     itemsWaitedFor.notify();
                                 }
                             }
+                            // Mark all the items as processed for other threads which might wait for them, otherwise.
+                            xmiBufferItemsFromOtherThreads.forEach(item -> item.setProcessedForBinaryMappings(true));
                         } finally {
                             mappingUpdateLock.unlock();
                         }
