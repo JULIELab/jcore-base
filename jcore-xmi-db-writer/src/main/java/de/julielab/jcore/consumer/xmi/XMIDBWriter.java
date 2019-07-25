@@ -539,7 +539,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
             if (useBinaryFormat) {
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
+                long time = System.currentTimeMillis();
                 synchronized (binaryStringMapping) {
+                    time = System.currentTimeMillis() - time;
+                    log.debug("Waited {} for the binary string update monitor", time);
                     // Here, we check for missing mappings for the whole buffer. This is important for performance
                     // because each binary mapping update requires exclusive read/write access to the mapping table
                     // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
