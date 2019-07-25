@@ -213,6 +213,7 @@ public class MetaTableManager {
     }
 
     private Map<String, Integer> updateMapping(String mappingTableName, Map<String, Integer> currentMappingState, Statement stmt) throws AnalysisEngineProcessException {
+        long time = System.currentTimeMillis();
         String sql = null;
         try {
             Map<String, Integer> existingMapping = new HashMap<>(currentMappingState);
@@ -228,6 +229,9 @@ public class MetaTableManager {
         } catch (SQLException e) {
             log.error("Could not retrieve mappings from the mapping table {}. SQL was: {}", mappingTableName, sql);
             throw new AnalysisEngineProcessException(e);
+        } finally {
+            time = System.currentTimeMillis() - time;
+            log.debug("Updating the mapping from the database took {}ms", time);
         }
     }
 
@@ -251,6 +255,7 @@ public class MetaTableManager {
         log.debug("Inserting {} missing mappings into the mapping table {}", missingItems.size(), mappingTableName);
         if (missingItems.isEmpty())
             return;
+        long time = System.currentTimeMillis();
         String sql = null;
         try {
             // Add the missing mapping items into the mapping table
@@ -264,6 +269,8 @@ public class MetaTableManager {
             ps.executeBatch();
         } catch (SQLException e) {
             log.error("Could not insert new mapping into the table {}. SQL was: ", mappingTableName, sql);
+            time = System.currentTimeMillis() - time;
+            log.debug("Inserting new mapping took {}ms", time);
         }
     }
 
