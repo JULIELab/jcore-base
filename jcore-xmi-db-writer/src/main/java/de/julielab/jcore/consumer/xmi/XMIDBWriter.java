@@ -522,8 +522,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
      * @throws AnalysisEngineProcessException
      */
     private boolean processXmiBuffer() throws AnalysisEngineProcessException {
-        if (xmiItemBuffer.isEmpty())
+        if (xmiItemBuffer.isEmpty()) {
+             log.debug("The XMI item buffer is empty, nothing to do.");
             return false;
+        }
 
         if (storeAll) {
             for (XmiBufferItem item : xmiItemBuffer) {
@@ -538,7 +540,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 }
             }
         } else {
-
             if (useBinaryFormat) {
                 log.debug("In use binary format");
                 // We will now, first, find missing mapping items relative to the currently known binary string mapping.
@@ -629,6 +630,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     }
 
     private void createAnnotationModules() throws AnalysisEngineProcessException {
+        log.debug("Creating annotation modules for {} items in the XMI buffer",xmiItemBuffer.size() );
         for (int i = 0; i < xmiItemBuffer.size(); i++) {
             final XmiBufferItem item = xmiItemBuffer.get(i);
             DocumentId docId = item.getDocId();
