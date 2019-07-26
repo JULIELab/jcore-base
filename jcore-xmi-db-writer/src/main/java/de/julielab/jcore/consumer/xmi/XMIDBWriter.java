@@ -412,6 +412,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Update mode: {}", updateMode);
         log.info("Base document table schema: {}", schemaDocument);
         log.info("Batch size of cached documents sent to database: {}", writeBatchSize);
+        log.info("Do a dry run and output binary features to map: {}", featuresToMapDryRun);
 
         metaTableManager = new MetaTableManager(dbc, xmiMetaSchema);
         annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, effectiveDocTableName, dbc,
