@@ -540,6 +540,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         } else {
 
             if (useBinaryFormat) {
+                System.out.println("In use binary format");
                 // We will now, first, find missing mapping items relative to the currently known binary string mapping.
                 // If we have missing items, we will add the XmiBufferItems that we currently have and in which we
                 // found missing mapping items, to the 'xmiBufferItemsToProcess' map.
