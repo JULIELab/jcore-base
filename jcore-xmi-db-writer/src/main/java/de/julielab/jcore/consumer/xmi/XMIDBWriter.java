@@ -945,6 +945,12 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public void batchProcessComplete() throws AnalysisEngineProcessException {
         super.batchProcessComplete();
         log.debug("Running batchProcessComplete.");
+        if (xmiBufferItemsToProcess != null && xmiBufferItemsToProcess.get(mappingCacheKey).size() > 50)
+            log.warn("The 'xmiBufferITemsToProcess' field has size {}. If this number does not shrink again, there is a memory leak.", xmiBufferItemsToProcess.get(mappingCacheKey).size());
+        if (xmiItemBuffer.size() > 5000)
+            log.warn("The 'xmiItemBuffer' field has size {}. If this number does not shrink again, there is a memory leak.", xmiItemBuffer.size());
+        if (annotationModules.size() > 1000)
+            log.warn("The 'annotationModules' field has size {}. If this number does not shrink again, there is a memory leak.", annotationModules.size());
         try {
             final boolean readyToSendData = processXmiBuffer();
             if (readyToSendData) {
