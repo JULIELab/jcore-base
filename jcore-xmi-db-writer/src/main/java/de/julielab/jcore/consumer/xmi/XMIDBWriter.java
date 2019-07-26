@@ -594,6 +594,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             for (List<XmiBufferItem> itemsWaitedFor : xmiBufferItemsWaitedFor) {
                                 synchronized (itemsWaitedFor) {
                                     itemsWaitedFor.forEach(item -> item.setProcessedForBinaryMappings(true));
+                                    itemsWaitedFor.clear();
                                     itemsWaitedFor.notify();
                                 }
                             }
@@ -798,8 +799,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         } catch (IllegalArgumentException e) {
             // it seems there is not DBProcessingMetaData we could get a complex primary key from. The document ID
             // will have to do.
-            log.debug("Could not find the primary key in the DBProcessingMetaData due to exception: {}. Using the document ID as primary key.",
-                    DBProcessingMetaData.class.getSimpleName());
+            log.trace("Could not find the primary key in the DBProcessingMetaData due to exception: {}. Using the document ID as primary key.",e.getMessage());
         }
         if (docId == null) {
             AnnotationIndex<Annotation> headerIndex = aJCas.getAnnotationIndex(Header.type);
