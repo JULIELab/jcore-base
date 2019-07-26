@@ -946,7 +946,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         super.batchProcessComplete();
         log.debug("Running batchProcessComplete.");
         if (splitterResultMap != null && splitterResultMap.get(mappingCacheKey).size() > 500) {
-            log.warn("The 'splitterResultMap' field has size {}. If this number does not shrink again, there is a memory leak.", xmiBufferItemsToProcess.get(mappingCacheKey).size());
+            log.warn("The 'splitterResultMap' field has size {}. If this number does not shrink again, there is a memory leak.", splitterResultMap.get(mappingCacheKey).size());
         }
         if (xmiBufferItemsToProcess != null && xmiBufferItemsToProcess.get(mappingCacheKey).size() > 50) {
             log.trace("Current size of 'xmiBufferItemsToProcess': {}", xmiBufferItemsToProcess.get(mappingCacheKey).size());
