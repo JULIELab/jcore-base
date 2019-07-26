@@ -541,7 +541,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             }
         } else {
             if (useBinaryFormat) {
-                log.debug("In use binary format");
                 // We will now, first, find missing mapping items relative to the currently known binary string mapping.
                 // If we have missing items, we will add the XmiBufferItems that we currently have and in which we
                 // found missing mapping items, to the 'xmiBufferItemsToProcess' map.
@@ -559,7 +558,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty())
                         xmiBufferItemsToProcess.compute(mappingCacheKey, (k, v) -> v != null ? v : new ConcurrentHashMap<>()).put(Thread.currentThread().getName(), unanalyzedItems);
                 }
-                log.debug("Items to process: {}", xmiBufferItemsToProcess);
                 if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty() || xmiBufferItemsToProcess.get(mappingCacheKey).values().stream().flatMap(Collection::stream).findAny().isPresent()) {
                     log.trace("Required mappings: {}", requiredMappingAnalysisResult.getMissingValuesToMap());
                     // Now the current threads checks if it can do the processing itself or if another
