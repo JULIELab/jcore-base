@@ -265,6 +265,7 @@ public class Initializer {
                     "Table \"{}\" was not found. It is assumed that the table from which is read contains complete XMI documents.",
                     xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
         }
+        log.debug("Got XMI namespace map from table {}: {}",xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE, map );
         return map;
     }
 
