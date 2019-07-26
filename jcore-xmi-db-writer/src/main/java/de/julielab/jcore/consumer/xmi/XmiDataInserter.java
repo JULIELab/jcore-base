@@ -30,7 +30,6 @@ public class XmiDataInserter {
     private Boolean storeAll;
     private String effectiveDocTableName;
     private DataBaseConnector dbc;
-    private List<String> annotationsToStore;
     private Boolean storeBaseDocument;
     private Map<DocumentId, Integer> maxXmiIdMap;
     private String componentDbName;
@@ -41,7 +40,6 @@ public class XmiDataInserter {
                            DataBaseConnector dbc, String schemaDocument, Boolean storeAll,
                            Boolean storeBaseDocument, Boolean updateMode, String componentDbName) {
         super();
-        this.annotationsToStore = annotationsToStore;
         this.effectiveDocTableName = effectiveDocTableName;
         this.dbc = dbc;
         this.schemaDocument = schemaDocument;
@@ -163,6 +161,7 @@ public class XmiDataInserter {
             setLastComponent(conn, subsetTableName);
             log.debug("Committing XMI data to database.");
             conn.commit();
+            maxXmiIdMap.clear();
         } catch (SQLException e) {
             log.error("Database error occurred while updating max-xmi-IDs: {}", e);
             e.printStackTrace();

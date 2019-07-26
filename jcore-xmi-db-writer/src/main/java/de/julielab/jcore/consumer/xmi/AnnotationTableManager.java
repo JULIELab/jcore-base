@@ -24,7 +24,6 @@ public class AnnotationTableManager {
     private DataBaseConnector dbc;
 
     private boolean binaryAnnotationColumns;
-    private String documentTableSchema;
 
     private Boolean storeAll;
 
@@ -45,7 +44,6 @@ public class AnnotationTableManager {
         this.dbc = dbc;
         this.annotationsToStore = qualifiedAnnotationsToStore;
         this.binaryAnnotationColumns = binaryAnnotationColumns;
-        this.documentTableSchema = documentTableSchema;
         this.storeAll = storeAll;
         this.storeBaseDocument = storeBaseDocument;
         this.dbDocumentTableName = getEffectiveDocumentTableName(rawDocumentTableName);

@@ -945,8 +945,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public void batchProcessComplete() throws AnalysisEngineProcessException {
         super.batchProcessComplete();
         log.debug("Running batchProcessComplete.");
-        if (xmiBufferItemsToProcess != null && xmiBufferItemsToProcess.get(mappingCacheKey).size() > 50)
+        if (splitterResultMap != null && splitterResultMap.get(mappingCacheKey).size() > 500) {
+            log.warn("The 'splitterResultMap' field has size {}. If this number does not shrink again, there is a memory leak.", xmiBufferItemsToProcess.get(mappingCacheKey).size());
+        }
+        if (xmiBufferItemsToProcess != null && xmiBufferItemsToProcess.get(mappingCacheKey).size() > 50) {
+            log.trace("Current size of 'xmiBufferItemsToProcess': {}", xmiBufferItemsToProcess.get(mappingCacheKey).size());
             log.warn("The 'xmiBufferITemsToProcess' field has size {}. If this number does not shrink again, there is a memory leak.", xmiBufferItemsToProcess.get(mappingCacheKey).size());
+        }
         if (xmiItemBuffer.size() > 5000)
             log.warn("The 'xmiItemBuffer' field has size {}. If this number does not shrink again, there is a memory leak.", xmiItemBuffer.size());
         if (annotationModules.size() > 1000)
@@ -958,6 +963,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete);
                 else
                     log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
+                log.trace("Clearing {} annotation modules", annotationModules.size());
                 annotationModules.clear();
                 for (List<DocumentId> docIds : modulesWithoutData.values())
                     docIds.clear();
