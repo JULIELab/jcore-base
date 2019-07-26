@@ -112,7 +112,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     // The idea is to save costly database connections by sharing updating mapping across threads.
     private static Map<String, Map<String, Integer>> binaryStringMapping = Collections.emptyMap();
     private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
-    private static Map<String, BlockingQueue<XmiBufferItem>> splitterResultMap;
+    private static Map<String, Map<DocumentId, XmiBufferItem>> splitterResultMap;
     private static Map<String, Map<String, List<XmiBufferItem>>> xmiBufferItemsToProcess;
     private static ReentrantLock mappingUpdateLock;
     private DataBaseConnector dbc;
@@ -291,7 +291,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             binaryStringMapping = new ConcurrentHashMap<>();
             binaryStringMapping.put(mappingCacheKey, new ConcurrentHashMap<>());
             splitterResultMap = new ConcurrentHashMap<>();
-            splitterResultMap.put(mappingCacheKey, new LinkedBlockingDeque<>());
+            splitterResultMap.put(mappingCacheKey, new ConcurrentHashMap<>());
             xmiBufferItemsToProcess = new ConcurrentHashMap<>();
             xmiBufferItemsToProcess.put(mappingCacheKey, new ConcurrentHashMap<>(writeBatchSize));
             mappingUpdateLock = new ReentrantLock();
@@ -570,8 +570,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             // Here, we check for missing mappings for the whole buffer. This is important for performance
                             // because each binary mapping update requires exclusive read/write access to the mapping table
                             // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
-                            final List<XmiBufferItem> splitterResults = new ArrayList<>();
-                            splitterResultMap.get(mappingCacheKey).drainTo(splitterResults);
+                            final List<XmiBufferItem> splitterResults = splitterResultMap.get(mappingCacheKey).keySet().stream().map(splitterResultMap.get(mappingCacheKey)::remove).filter(Objects::nonNull).collect(Collectors.toList());
                             final List<XmiBufferItem> xmiBufferItemsFromOtherThreads = splitterResults.stream().filter(i -> !splitterResultsToProcess.containsKey(i.getDocId())).collect(Collectors.toList());
                             final Collection<List<XmiBufferItem>> xmiBufferItemsWaitedFor = new ArrayList<>(xmiBufferItemsToProcess.get(mappingCacheKey).values());
                             xmiBufferItemsWaitedFor.stream().flatMap(Collection::stream).forEach(xmiBufferItemsFromOtherThreads::add);
@@ -618,6 +617,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             }
                         }
                     }
+                } else {
+                    // No mappings are missed, don't perform a mapping update.
+                    // But remove the XmiBufferItems from the waiting list so that no unneeded work is done
+                    // and also the waiting list does not grow to eternity.
+                    unanalyzedItems.stream().map(XmiBufferItem::getDocId).forEach(splitterResultMap.get(mappingCacheKey)::remove);
                 }
             }
 
@@ -746,7 +750,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 xmiItemBuffer.add(xmiBufferItem);
                 if (useBinaryFormat) {
                     synchronized (splitterResultMap.get(mappingCacheKey)) {
-                        splitterResultMap.get(mappingCacheKey).add(xmiBufferItem);
+                        splitterResultMap.get(mappingCacheKey).put(xmiBufferItem.getDocId(), xmiBufferItem);
                     }
                 }
 
