@@ -949,16 +949,16 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public void batchProcessComplete() throws AnalysisEngineProcessException {
         super.batchProcessComplete();
         log.debug("Running batchProcessComplete.");
-        if (splitterResultMap != null && splitterResultMap.get(mappingCacheKey).size() > 500) {
+        if (splitterResultMap != null && splitterResultMap.get(mappingCacheKey).size() > 10000) {
             log.warn("The 'splitterResultMap' field has size {}. If this number does not shrink again, there is a memory leak.", splitterResultMap.get(mappingCacheKey).size());
         }
-        if (xmiBufferItemsToProcess != null && xmiBufferItemsToProcess.get(mappingCacheKey).size() > 50) {
+        if (xmiBufferItemsToProcess != null && xmiBufferItemsToProcess.get(mappingCacheKey).size() > 10000) {
             log.trace("Current size of 'xmiBufferItemsToProcess': {}", xmiBufferItemsToProcess.get(mappingCacheKey).size());
             log.warn("The 'xmiBufferITemsToProcess' field has size {}. If this number does not shrink again, there is a memory leak.", xmiBufferItemsToProcess.get(mappingCacheKey).size());
         }
-        if (xmiItemBuffer.size() > 5000)
+        if (xmiItemBuffer.size() > 100000)
             log.warn("The 'xmiItemBuffer' field has size {}. If this number does not shrink again, there is a memory leak.", xmiItemBuffer.size());
-        if (annotationModules.size() > 1000)
+        if (annotationModules.size() > 10000)
             log.warn("The 'annotationModules' field has size {}. If this number does not shrink again, there is a memory leak.", annotationModules.size());
         try {
             final boolean readyToSendData = processXmiBuffer();
