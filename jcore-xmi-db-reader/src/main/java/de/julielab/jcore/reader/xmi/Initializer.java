@@ -131,7 +131,6 @@ public class Initializer {
             builder = new XmiBuilder(nsAndXmiVersion, unqualifiedAnnotationModuleNames, maxXmlAttributeSize);
         } else {
             binaryBuilder = new BinaryXmiBuilder(nsAndXmiVersion);
-
         }
 
         numDataRetrievedDataFields = dbc.getFieldConfiguration().getColumnsToRetrieve().length;

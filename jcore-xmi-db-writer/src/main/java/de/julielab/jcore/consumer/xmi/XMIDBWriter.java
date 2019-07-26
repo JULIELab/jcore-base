@@ -114,6 +114,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
     private static Map<String, BlockingQueue<XmiBufferItem>> splitterResultMap;
     private static Map<String, Map<String, List<XmiBufferItem>>> xmiBufferItemsToProcess;
+    private static ReentrantLock mappingUpdateLock;
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
             "into an XMI document or annotation table that already has data for the respective document, will result " +
@@ -239,7 +240,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "consist of characters that require more than 1 byte, of course).")
     private String[] binaryFeaturesBlacklistParameter;
     private String mappingCacheKey;
-    private static ReentrantLock mappingUpdateLock;
 
     /*
      * (non-Javadoc)
@@ -584,16 +584,18 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                                 binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
                                 binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
                             }
+                            // Mark all the items as processed for other threads which might wait for them, otherwise.
+                            xmiBufferItemsFromOtherThreads.forEach(item -> item.setProcessedForBinaryMappings(true));
                             // Now notify all waiting threads that their work items have been processed.
                             // This 'notify()' call is the counterpart to the 'wait()' call in the 'else'
                             // branch below.
+                            log.debug("Releasing the locks of {} lists of XmiBufferItems to process", xmiBufferItemsWaitedFor.size());
                             for (List<XmiBufferItem> itemsWaitedFor : xmiBufferItemsWaitedFor) {
                                 synchronized (itemsWaitedFor) {
+                                    itemsWaitedFor.forEach(item -> item.setProcessedForBinaryMappings(true));
                                     itemsWaitedFor.notify();
                                 }
                             }
-                            // Mark all the items as processed for other threads which might wait for them, otherwise.
-                            xmiBufferItemsFromOtherThreads.forEach(item -> item.setProcessedForBinaryMappings(true));
                         } finally {
                             mappingUpdateLock.unlock();
                         }
