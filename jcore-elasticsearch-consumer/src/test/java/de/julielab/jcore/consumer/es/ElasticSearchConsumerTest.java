@@ -129,8 +129,8 @@ public class ElasticSearchConsumerTest {
         method.setAccessible(true);
         String indexSource = (String) method.invoke(consumer, document);
         // No, I haven't written that JSON myself. I just printed out the indexSource, checked that it is correct (I
-        // recommend an online formatter for this, e.g. at http://jsonformatter.curiousconcept.com/), checked that it
-        // was right and then added it into the assertion statement. Another tip: All the escaping has been done by
+        // recommend an online formatter for this, e.g. at http://jsonformatter.curiousconcept.com/),
+        // and then added it into the assertion statement. Another tip: All the escaping has been done by
         // Eclipse for me, there is an editor setting that says "automatically escape when pasting into string literal".
         // Very handy at times.
         assertEquals(
