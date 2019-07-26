@@ -557,6 +557,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty())
                         xmiBufferItemsToProcess.compute(mappingCacheKey, (k, v) -> v != null ? v : new ConcurrentHashMap<>()).put(Thread.currentThread().getName(), unanalyzedItems);
                 }
+                System.out.println(xmiBufferItemsToProcess);
                 if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty() || xmiBufferItemsToProcess.get(mappingCacheKey).values().stream().flatMap(Collection::stream).findAny().isPresent()) {
                     log.trace("Required mappings: {}", requiredMappingAnalysisResult.getMissingValuesToMap());
                     // Now the current threads checks if it can do the processing itself or if another
