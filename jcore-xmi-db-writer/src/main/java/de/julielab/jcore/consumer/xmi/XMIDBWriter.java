@@ -548,7 +548,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 // This map is open for processing to other threads, but may also end up being processed
                 // by the current thread.
                 TypeSystem ts = xmiItemBuffer.get(0).getTypeSystem();
-                final Map<DocumentId, XmiSplitterResult> splitterResultsToProcess = xmiItemBuffer.stream().collect(Collectors.toMap(XmiBufferItem::getDocId, XmiBufferItem::getSplitterResult));
+                // Note the merging function at the end: If a document ID occurrs multiple times in the xmiItemBuffer (which actually can happen for
+                // PubMed, for example, where the baseline may include some IDs multiple times in different versions), we take the latter one.
+                // The hope is that this is the newer document or more recent version.
+                final Map<DocumentId, XmiSplitterResult> splitterResultsToProcess = xmiItemBuffer.stream().collect(Collectors.toMap(XmiBufferItem::getDocId, XmiBufferItem::getSplitterResult, (res1, res2) -> res2));
                 final BinaryStorageAnalysisResult requiredMappingAnalysisResult;
                 // Check if we need new mappings at all
                 final List<XmiBufferItem> unanalyzedItems;
