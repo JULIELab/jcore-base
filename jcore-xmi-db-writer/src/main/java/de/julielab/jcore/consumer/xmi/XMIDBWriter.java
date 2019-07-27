@@ -555,11 +555,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 final BinaryStorageAnalysisResult requiredMappingAnalysisResult;
                 // Check if we need new mappings at all
                 final List<XmiBufferItem> unanalyzedItems;
+                boolean hasMissingMappingItems;
                 synchronized (binaryMappedFeatures) {
                     unanalyzedItems = xmiItemBuffer.stream().filter(Predicate.not(XmiBufferItem::isProcessedForBinaryMappings)).collect(Collectors.toList());
                     requiredMappingAnalysisResult = binaryEncoder.findMissingItemsForMapping(unanalyzedItems.stream().flatMap(item -> item.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList()), ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
                     // Here we add a list of XmiBufferItems that this thread needs processed to encode its annotation modules into the binary format.
-                    if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty())
+                    hasMissingMappingItems =!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty();
+                    if (hasMissingMappingItems)
                         xmiBufferItemsToProcess.compute(mappingCacheKey, (k, v) -> v != null ? v : new ConcurrentHashMap<>()).put(Thread.currentThread().getName(), unanalyzedItems);
                 }
                 if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty() || xmiBufferItemsToProcess.get(mappingCacheKey).values().stream().flatMap(Collection::stream).findAny().isPresent()) {
@@ -605,7 +607,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         } finally {
                             mappingUpdateLock.unlock();
                         }
-                    } else {
+                    } else if (hasMissingMappingItems) {
+                        // Do this only if there actually are missing mapping items. Because otherwise, the
+                        // 'analyzedItems' list was never added to the 'xmiBufferItemsToProcess' and thus,
+                        // notify() is never called on our 'unanlyzedItems' list which would mean we are stuck here forever.
                         synchronized (unanalyzedItems) {
                             try {
                                 if (unanalyzedItems.stream().filter(Predicate.not(XmiBufferItem::isProcessedForBinaryMappings)).findAny().isPresent()) {
