@@ -495,6 +495,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             try {
                 serializeCasIntoBuffer(aJCas, docId);
             } catch (SAXParseException e) {
+                log.error("Could not serialize CAS for document {}",Arrays.toString(docId.getId()), e );
                 return;
             }
 
