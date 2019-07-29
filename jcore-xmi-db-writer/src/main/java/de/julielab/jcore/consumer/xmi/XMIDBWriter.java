@@ -299,7 +299,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             xmiBufferItemsToProcess.put(mappingCacheKey, new ConcurrentHashMap<>(writeBatchSize));
             mappingUpdateLock = new ReentrantLock();
         }
-        if (binaryFeaturesBlacklistParameter != null) {
+        if (useBinaryFormat && binaryFeaturesBlacklistParameter != null) {
             binaryMappedFeatures.put(mappingCacheKey, Arrays.stream(binaryFeaturesBlacklistParameter).collect(Collectors.toMap(Function.identity(), x -> false, (x, y) -> x && y, ConcurrentHashMap::new)));
         }
 
