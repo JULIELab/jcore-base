@@ -280,6 +280,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         componentDbName = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_DB_NAME)).orElse(getClass().getSimpleName());
         defaultAnnotationColumnQualifier = (String) aContext.getConfigParameterValue(PARAM_ANNO_DEFAULT_QUALIFIER);
         annotations = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ANNOS_TO_STORE)).orElse(new String[0]);
+        Set<String> annotationsSet = Arrays.stream(annotations).collect(Collectors.toCollection(LinkedHashSet::new));
+        if (annotationsSet.size() != annotations.length)
+            log.warn("Some annotation module names for storage were duplicated. They are de-duplicated to avoid errors when adding the annotation modules into the database.");
         xmiMetaSchema = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_XMI_META_SCHEMA)).orElse("public");
         useBinaryFormat = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_USE_BINARY_FORMAT)).orElse(false);
         featuresToMapDryRun = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_FEATURES_TO_MAP_DRYRUN)).orElse(false);
