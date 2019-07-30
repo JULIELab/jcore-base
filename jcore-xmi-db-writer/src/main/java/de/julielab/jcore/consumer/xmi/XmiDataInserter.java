@@ -4,6 +4,7 @@ import de.julielab.costosys.Constants;
 import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.jcore.types.ace.Document;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.XmiSplitter;
@@ -65,7 +66,7 @@ public class XmiDataInserter {
      * @throws AnalysisEngineProcessException
      */
     public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> serializedCASes,
-                                      Map<String, List<DocumentId>> columnsWithoutData, String subsetTableName, Boolean deleteObsolete) throws XmiDataInsertionException {
+                                      Map<DocumentId, List<String>> columnsWithoutData, String subsetTableName, Boolean deleteObsolete) throws XmiDataInsertionException {
         if (log.isTraceEnabled()) {
             log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
             log.trace("Sending {} XMI data items", serializedCASes.size());
@@ -127,6 +128,11 @@ public class XmiDataInserter {
                     for (String filledColumn : row.keySet())
                         missingColumns.remove(filledColumn);
                     missingColumns.forEach(c -> row.put(c, null));
+                }
+                // Set columns without a value to null to delete a potentially existing value.
+                if (updateMode) {
+                    final List<String> columns = columnsWithoutData.getOrDefault(docId, Collections.emptyList());
+                    columns.forEach(col -> row.put(col, null));
                 }
                 return row;
             }

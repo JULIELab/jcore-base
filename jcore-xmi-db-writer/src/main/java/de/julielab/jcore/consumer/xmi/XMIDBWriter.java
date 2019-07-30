@@ -190,7 +190,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private BinaryJeDISNodeEncoder binaryEncoder;
     private List<XmiBufferItem> xmiItemBuffer = new ArrayList<>();
     private List<XmiData> annotationModules = new ArrayList<>();
-    private Map<String, List<DocumentId>> modulesWithoutData = new HashMap<>();
+    private Map<DocumentId, List<String>> modulesWithoutData = new HashMap<>();
     private String schemaDocument;
     private String effectiveDocTableName;
     private MetaTableManager metaTableManager;
@@ -366,7 +366,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             // Here we use the schema-qualified 'annotations' field
             for (String annotation : annotations) {
                 String annotationTableName = annotationTableManager.convertUnqualifiedAnnotationTypetoColumnName(annotation, storeAll);
-                modulesWithoutData.put(annotationTableName, new ArrayList<>());
                 annotationsToStoreTableNames.add(annotationTableName);
             }
         }
@@ -380,8 +379,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 log.info(
                         "Annotations from the following tables will be obsolete by updating the base document and will be deleted: {}"
                         , obsoleteAnnotationTableNames);
-                for (String table : obsoleteAnnotationTableNames)
-                    modulesWithoutData.put(table, new ArrayList<>());
             }
         }
         if (storeAll) {
@@ -692,7 +689,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         // delete the old annotations to avoid xmi:id clashes.
                         // Thus add here the document id for the table we have
                         // to clear the row from (one row per document).
-                        modulesWithoutData.get(columnName).add(docId);
+                        modulesWithoutData.compute(docId, (k,v) -> v != null ? v : new ArrayList<>()).add(columnName);
                     }
                 }
                 // as the very last thing, add this document to the processed list
@@ -981,8 +978,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
                 log.trace("Clearing {} annotation modules", annotationModules.size());
                 annotationModules.clear();
-                for (List<DocumentId> docIds : modulesWithoutData.values())
-                    docIds.clear();
+                modulesWithoutData.clear();
             }
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
@@ -1006,8 +1002,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             else
                 log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
             annotationModules.clear();
-            for (List<DocumentId> docIds : modulesWithoutData.values())
-                docIds.clear();
+           modulesWithoutData.clear();
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
         }
