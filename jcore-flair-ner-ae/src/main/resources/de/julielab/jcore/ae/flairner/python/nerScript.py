@@ -35,6 +35,8 @@ while True:
     sentenceTaggingRequests = json.loads(line)
     taggedEntities = []
     embeddings = []
+    # In this byte array, all entities and all vectors from the sentence will be encoded
+    ba = bytearray()
     for sentenceToTag in sentenceTaggingRequests:
         sid      = sentenceToTag['sid']
         sentence = Sentence(sentenceToTag['text'])
@@ -42,10 +44,7 @@ while True:
         clearWordEmbeddings = sendEmbeddings == "NONE"
         tagger.predict(sentence, clear_word_embeddings=clearWordEmbeddings)
 
-        # Response
 
-        # In this byte array, all entities and all vectors from the sentence will be encoded
-        ba = bytearray()
 
         for e in sentence.get_spans("ner"):
             tokenids = [t.idx for t in e.tokens]
