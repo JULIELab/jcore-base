@@ -43,6 +43,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
@@ -107,7 +108,7 @@ public class XmiDBReader extends DBReader implements Initializable {
      */
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
-        this.qualifiedAnnotationColumnNames = (String[]) context.getConfigParameterValue(PARAM_ANNOTATIONS_TO_LOAD);
+        this.qualifiedAnnotationColumnNames = Optional.ofNullable((String[]) context.getConfigParameterValue(PARAM_ANNOTATIONS_TO_LOAD)).orElse(new String[0]);
         adaptReaderConfigurationForXmiData();
         super.initialize(context);
         try (final CoStoSysConnection ignore = dbc.obtainOrReserveConnection()) {
