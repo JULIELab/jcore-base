@@ -122,8 +122,10 @@ public class Initializer {
         if (joinTables || readsBaseDocument) {
             try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
                 nsAndXmiVersion = getNamespaceMap();
-                reverseBinaryMapping = getReverseBinaryMappingFromDb();
-                featuresToMapBinary = getFeaturesToMapBinaryFromDb();
+                if (useBinaryFormat) {
+                    reverseBinaryMapping = getReverseBinaryMappingFromDb();
+                    featuresToMapBinary = getFeaturesToMapBinaryFromDb();
+                }
             }
         }
         if (!useBinaryFormat) {
@@ -201,7 +203,7 @@ public class Initializer {
         } else {
             log.warn(
                     "JeDIS XMI annotation module meta table \"{}\" was not found. It is assumed that the table from which is read contains complete XMI documents.",
-                    xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
+                    xmiMetaSchema + "." + XmiSplitConstants.BINARY_MAPPING_TABLE);
         }
         return map;
     }
@@ -236,7 +238,7 @@ public class Initializer {
         } else {
             log.warn(
                     "JeDIS XMI annotation module meta table \"{}\" was not found. It is assumed that the table from which is read contains complete XMI documents.",
-                    xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
+                    xmiMetaSchema + "." + XmiSplitConstants.BINARY_FEATURES_TO_MAP_TABLE);
         }
         return map;
     }
