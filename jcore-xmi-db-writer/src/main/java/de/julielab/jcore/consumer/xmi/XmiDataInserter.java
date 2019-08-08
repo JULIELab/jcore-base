@@ -109,7 +109,7 @@ public class XmiDataInserter {
                 for (XmiData data : dataList) {
                     row.put(data.getColumnName(), data.data);
                     if (log.isTraceEnabled())
-                        log.trace("{}={}", fName.apply(i - 1), row.get(fName.apply(i - 1)));
+                        log.trace("{}={}", data.getColumnName(), data.data);
                     // If the base document is stored, update the sofa mapping (which sofa ID is which sofa name in the base document)
                     if (data.getClass().equals(DocumentXmiData.class) && !storeAll) {
                         if (fieldConfig.getFields().size() - fieldConfig.getPrimaryKey().length < 3)
