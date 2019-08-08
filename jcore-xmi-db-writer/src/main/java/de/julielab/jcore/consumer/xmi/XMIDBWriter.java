@@ -318,6 +318,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         dbc.reserveConnection();
 
 
+        String hashColumnName = null;
         if (storeAll) {
             schemaDocument = dbc.addXmiDocumentFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), doGzip || useBinaryFormat).getName();
             dbc.setActiveTableSchema(schemaDocument);
@@ -332,6 +333,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         JulieXMLConstants.TYPE, doGzip || useBinaryFormat ? "bytea" : "xml"
                 );
                 xmiAnnotationColumnsDefinitions.add(field);
+                if (documentItemToHash != null) {
+                    shaMap = new HashMap<>();
+                    hashColumnName = documentItemToHash + "_sha256";
+                    xmiAnnotationColumnsDefinitions.add(FieldConfig.createField(JulieXMLConstants.NAME, hashColumnName, JulieXMLConstants.TYPE, "text"));
+                }
             }
             final FieldConfig fieldConfig = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), xmiAnnotationColumnsDefinitions, doGzip || useBinaryFormat);
             schemaDocument = fieldConfig.getName();
@@ -421,12 +427,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Batch size of cached documents sent to database: {}", writeBatchSize);
         log.info("Do a dry run and output binary features to map: {}", featuresToMapDryRun);
 
-        String hashColumnName = null;
-        shaMap = new HashMap<>();
-        if (documentItemToHash != null) {
-            hashColumnName = documentItemToHash + "_sha256";
-            dbc.assureColumnsExist(effectiveDocTableName, Collections.singletonList(hashColumnName), "text");
-        }
+
         metaTableManager = new MetaTableManager(dbc, xmiMetaSchema);
         annotationInserter = new XmiDataInserter(annotationModulesColumnNames, effectiveDocTableName, dbc,
                 schemaDocument, storeAll, storeBaseDocument, updateMode, componentDbName, hashColumnName);
