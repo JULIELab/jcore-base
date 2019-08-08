@@ -48,7 +48,13 @@
             <groupId>de.julielab</groupId>
             <artifactId>jcore-descriptor-creator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.13</version>
+        </dependency>
     </dependencies>
+
     <name>JCoRe Annotation Adder</name>
     <organization>
         <name>JULIE Lab Jena, Germany</name>

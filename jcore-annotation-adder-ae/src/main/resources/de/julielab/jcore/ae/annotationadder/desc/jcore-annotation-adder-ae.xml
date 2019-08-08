@@ -37,6 +37,7 @@
                 <import name="de.julielab.jcore.types.jcore-document-meta-types" />
                 <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
                 <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+                <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types"/>
             </imports>
         </typeSystemDescription>
         <fsIndexCollection />

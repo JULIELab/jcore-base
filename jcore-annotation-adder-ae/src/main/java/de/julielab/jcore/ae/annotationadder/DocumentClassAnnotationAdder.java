@@ -17,7 +17,7 @@ public class DocumentClassAnnotationAdder implements AnnotationAdder {
     private final static Logger log = LoggerFactory.getLogger(DocumentClassAnnotationAdder.class);
 
     @Override
-    public boolean addAnnotations(AnnotationData data, AnnotationAdderHelper helper, AnnotationAdderConfiguration configuration, JCas jCas) {
+    public boolean addAnnotations(AnnotationData data, AnnotationAdderHelper helper, AnnotationAdderConfiguration configuration, JCas jCas, boolean preventProcessedOnDigestMismatch) {
         AnnotationList<ExternalDocumentClassAnnotation> annotationList;
         try {
             annotationList = (AnnotationList<ExternalDocumentClassAnnotation>) data;

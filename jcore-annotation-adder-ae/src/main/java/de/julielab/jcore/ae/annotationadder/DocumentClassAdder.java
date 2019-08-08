@@ -5,7 +5,7 @@ import org.apache.uima.jcas.JCas;
 
 public class DocumentClassAdder implements AnnotationAdder {
     @Override
-    public boolean addAnnotations(AnnotationData data, AnnotationAdderHelper helper, AnnotationAdderConfiguration configuration, JCas jCas) {
+    public boolean addAnnotations(AnnotationData data, AnnotationAdderHelper helper, AnnotationAdderConfiguration configuration, JCas jCas, boolean preventProcessedOnDigestMismatch) {
 
         return false;
     }

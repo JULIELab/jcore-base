@@ -11,8 +11,9 @@ public interface AnnotationAdder {
      * @param helper This object serves as utility method object as well as cache for data that would otherwise be computed multiple times.
      * @param configuration Configuration relevant to adding annotations such as the offset mode.
      * @param jCas The CAS to add the annotations to.
+     * @param preventProcessedOnDigestMismatch
      * @return <tt>true</tt> if the data was accepted, <tt>false</tt> otherwise.
      */
-    boolean addAnnotations(AnnotationData data, AnnotationAdderHelper helper, AnnotationAdderConfiguration configuration, JCas jCas);
+    boolean addAnnotations(AnnotationData data, AnnotationAdderHelper helper, AnnotationAdderConfiguration configuration, JCas jCas, boolean preventProcessedOnDigestMismatch);
 
 }

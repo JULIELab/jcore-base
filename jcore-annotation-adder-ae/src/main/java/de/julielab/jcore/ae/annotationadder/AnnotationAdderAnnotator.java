@@ -29,12 +29,15 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	public static final String KEY_ANNOTATION_SOURCE = "AnnotationSource";
 	public static final String PARAM_OFFSET_MODE = "OffsetMode";
 	public static final String PARAM_DEFAULT_UIMA_TYPE = "DefaultUimaType";
+    public static final String PARAM_PREVENT_PROCESSED_MARK = "PreventProcessedMarkOnDigestMismatch";
 	@ExternalResource(key = KEY_ANNOTATION_SOURCE, description = "A provider of annotations to add to the CAS. Must implement the de.julielab.jcore.ae.annotationadder.annotationsources.AnnotationProvider interface.")
     private AnnotationProvider<? extends AnnotationData> annotationProvider;
 	@ConfigurationParameter(name=PARAM_OFFSET_MODE, mandatory = false, description = "Determines the interpretation of annotation offsets. Possible values: \"CHARACTER\" and \"TOKEN\". For the TOKEN offset mode, the correct tokenization must be given in the CAS. TOKEN offsets start with 1, CHARACTER offsets are 0-based. Defaults to CHARACTER.", defaultValue = "CHARACTER")
     private OffsetMode offsetMode;
 	@ConfigurationParameter(name=PARAM_DEFAULT_UIMA_TYPE, mandatory = false, description = "Most external annotation formats require that the qualified name a UIMA type is provided which reflects the annotation to be created for the respective annotation. With this parameter, a default type can be provided which will be forwarded to the format parser. If the parser supports it, the type can then be omitted from the external annotation source.")
 	private String defaultUimaType;
+	@ConfigurationParameter(name = PARAM_PREVENT_PROCESSED_MARK, mandatory = false, description = "This setting is only in effect if an input format is used that contains document text SHA256 digests while also writing the annotation results into a JeDIS database. If then a CAS document text, to which annotations should be added, does not match the digest given by an annotation, this CAS will not marked as being finished processing by DBCheckpointAE that may follow in the pipeline. The idea is that the mismatched documents require a reprocessing of the original annotation creation algorithm because their text has been changed relative to the annotation on file. By not setting the document as being finished processed, it is straightforward to process only those documents again that failed to add one or multiple annotations.")
+    private boolean preventProcessedOnDigestMismatch;
 
     private List<AnnotationAdder> annotationAdders = Arrays.asList(new TextAnnotationListAdder(), new DocumentClassAnnotationAdder());
 
@@ -72,7 +75,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
             boolean success = false;
             int adderNum = 0;
             // We are now iterating through the available annotation adders for the one that handles the obtained annotation data
-            while (adderNum < annotationAdders.size() && !(success = annotationAdders.get(adderNum).addAnnotations(annotations, helper, adderConfiguration, aJCas))) {
+            while (adderNum < annotationAdders.size() && !(success = annotationAdders.get(adderNum).addAnnotations(annotations, helper, adderConfiguration, aJCas, preventProcessedOnDigestMismatch))) {
                 ++adderNum;
             }
             if (!success)

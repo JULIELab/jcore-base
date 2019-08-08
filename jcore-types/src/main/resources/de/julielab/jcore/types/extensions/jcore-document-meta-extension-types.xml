@@ -20,6 +20,11 @@
           <description>The subset table that is used to specify the set of documents to processes and to store processing status information. May be empty in the case the documents are directly read from a data table.</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
+        <featureDescription>
+          <name>doNotMarkAsProcessed</name>
+          <description>This feature is used by the DBCheckpointAE. It allows components in the pipeline to prevent a document to be marked as being finished with processing. This can be used to indicate issues with specific documents which will require reprocessing.</description>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

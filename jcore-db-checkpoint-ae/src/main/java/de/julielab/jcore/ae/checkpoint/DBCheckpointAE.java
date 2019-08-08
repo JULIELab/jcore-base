@@ -117,25 +117,27 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         String docId;
         try {
             final DBProcessingMetaData dbProcessingMetaData = JCasUtil.selectSingle(aJCas, DBProcessingMetaData.class);
-            documentId = new DocumentId(dbProcessingMetaData);
-            if (subsetTable == null)
-                subsetTable = dbProcessingMetaData.getSubsetTable();
-            if (subsetTable == null) {
-                if (dbProcessingMetaData.getSubsetTable() == null) {
-                    log.error("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name.");
-                    throw new AnalysisEngineProcessException(new IllegalStateException("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name."));
+            if (!dbProcessingMetaData.getDoNotMarkAsProcessed()) {
+                documentId = new DocumentId(dbProcessingMetaData);
+                if (subsetTable == null)
+                    subsetTable = dbProcessingMetaData.getSubsetTable();
+                if (subsetTable == null) {
+                    if (dbProcessingMetaData.getSubsetTable() == null) {
+                        log.error("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name.");
+                        throw new AnalysisEngineProcessException(new IllegalStateException("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name."));
+                    }
+                    subsetTable = dbProcessingMetaData.getSubsetTable();
                 }
-                subsetTable = dbProcessingMetaData.getSubsetTable();
-            }
-            docIds.add(documentId);
-            log.trace("Adding document ID {} for subset table {} for checkpoint marking", documentId, subsetTable);
-            if (docIds.size() >= writeBatchSize) {
-                log.debug("Cached documents have reached the configured batch size of {}, sending to database.", writeBatchSize);
-                customBatchProcessingComplete();
+                docIds.add(documentId);
+                log.trace("Adding document ID {} for subset table {} for checkpoint marking", documentId, subsetTable);
+                if (docIds.size() >= writeBatchSize) {
+                    log.debug("Cached documents have reached the configured batch size of {}, sending to database.", writeBatchSize);
+                    customBatchProcessingComplete();
+                }
             }
         } catch (IllegalArgumentException e) {
             docId = JCoReTools.getDocId(aJCas);
-            log.error("The document with document ID {} does not have an annotation of type {}. This annotation ought to contain the name of the subset table. It should be set by the DB reader. Cannot write the checkpoint to the datbase since the target subset table or its schema is unknown.", docId, DBProcessingMetaData.class.getCanonicalName());
+            log.error("The document with document ID {} does not have an annotation of type {}. This annotation ought to contain the name of the subset table. It should be set by the DB reader. Cannot write the checkpoint to the database since the target subset table or its schema is unknown.", docId, DBProcessingMetaData.class.getCanonicalName());
             throw new AnalysisEngineProcessException(e);
         }
     }
