@@ -134,6 +134,13 @@
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>AddShaHash</name>
+                <description>Possible values: document_text. If this parameter is set to a valid value, the SHA256 hash for the given value will be calculated and added to each document as a new column in the document table. The column will be named after the parameter value, suffixe by '_sha256'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
             <nameValuePair>

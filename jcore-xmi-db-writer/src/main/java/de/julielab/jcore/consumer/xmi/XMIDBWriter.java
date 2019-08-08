@@ -422,8 +422,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Do a dry run and output binary features to map: {}", featuresToMapDryRun);
 
         String hashColumnName = null;
+        shaMap = new HashMap<>();
         if (documentItemToHash != null) {
-            shaMap = new HashMap<>();
             hashColumnName = documentItemToHash + "_sha256";
             dbc.assureColumnsExist(effectiveDocTableName, Collections.singletonList(hashColumnName), "text");
         }
