@@ -70,6 +70,10 @@ public class XmiDataInserter {
         if (log.isTraceEnabled()) {
             log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
             log.trace("Sending {} XMI data items", serializedCASes.size());
+            log.trace("Columns without data which will be set to null:");
+            for (DocumentId id : columnsWithoutData.keySet()) {
+                log.trace("{}: {}", Arrays.toString(id.getId()), columnsWithoutData.get(id));
+            }
         }
         final Map<DocumentId, List<XmiData>> dataByDoc = serializedCASes.stream().collect(Collectors.groupingBy(XmiData::getDocId));
         class RowIterator implements Iterator<Map<String, Object>> {

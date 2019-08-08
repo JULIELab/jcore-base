@@ -163,7 +163,7 @@ public class LingscopePosAnnotator extends JCasAnnotator_ImplBase {
                 }
             }
         } catch (Throwable t) {
-            log.warn("Skipping this document for lingscope processing because of previous error.");
+            log.warn("Skipping this document for lingscope processing because of previous error.", t);
         }
     }
 
