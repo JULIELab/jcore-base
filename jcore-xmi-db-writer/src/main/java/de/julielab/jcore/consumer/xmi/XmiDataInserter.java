@@ -5,10 +5,7 @@ import de.julielab.costosys.Constants;
 import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
-import de.julielab.jcore.types.ace.Document;
 import de.julielab.xml.JulieXMLConstants;
-import de.julielab.xml.XmiSplitConstants;
-import de.julielab.xml.XmiSplitter;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -36,12 +33,13 @@ public class XmiDataInserter {
     private Boolean storeBaseDocument;
     private Map<DocumentId, Integer> maxXmiIdMap;
     private String componentDbName;
+    private String hashColumnName;
 
     private List<DocumentId> processedDocumentIds;
 
     public XmiDataInserter(Set<String> annotationModuleColumnNames, String effectiveDocTableName,
                            DataBaseConnector dbc, String schemaDocument, Boolean storeAll,
-                           Boolean storeBaseDocument, Boolean updateMode, String componentDbName) {
+                           Boolean storeBaseDocument, Boolean updateMode, String componentDbName, String hashColumnName) {
         super();
         this.annotationModuleColumnNames = annotationModuleColumnNames;
         this.effectiveDocTableName = effectiveDocTableName;
@@ -51,6 +49,7 @@ public class XmiDataInserter {
         this.storeBaseDocument = storeBaseDocument;
         this.updateMode = updateMode;
         this.componentDbName = componentDbName;
+        this.hashColumnName = hashColumnName;
         this.maxXmiIdMap = new HashMap<>();
         this.processedDocumentIds = new ArrayList<>();
     }
@@ -65,11 +64,12 @@ public class XmiDataInserter {
      * @param serializedCASes
      * @param columnsWithoutData
      * @param deleteObsolete
+     * @param shaMap
      * @throws XmiDataInsertionException
      * @throws AnalysisEngineProcessException
      */
     public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> serializedCASes,
-                                      Map<DocumentId, List<String>> columnsWithoutData, String subsetTableName, Boolean deleteObsolete) throws XmiDataInsertionException {
+                                      Map<DocumentId, List<String>> columnsWithoutData, String subsetTableName, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
         if (log.isTraceEnabled()) {
             log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
             log.trace("Sending {} XMI data items", serializedCASes.size());
@@ -146,6 +146,11 @@ public class XmiDataInserter {
                         row.put(col, null);
                         log.trace("{}=null", col);
                     });
+                }
+                if (shaMap != null) {
+                    final String hash = shaMap.get(docId);
+                    row.put(hashColumnName, hash);
+                    log.trace("{}={}", hashColumnName, hash);
                 }
                 return row;
             }

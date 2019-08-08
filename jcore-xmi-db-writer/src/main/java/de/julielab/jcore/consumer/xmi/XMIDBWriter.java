@@ -31,6 +31,8 @@ import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import de.julielab.xml.binary.BinaryStorageAnalysisResult;
 import de.julielab.xml.util.MissingBinaryMappingException;
 import de.julielab.xml.util.XMISplitterException;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -107,6 +109,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_XMI_META_SCHEMA = "XmiMetaTablesSchema";
     public static final String PARAM_FEATURES_TO_MAP_DRYRUN = "BinaryFeaturesToMapDryRun";
     public static final String PARAM_BINARY_FEATURES_BLACKLIST = "BinaryFeaturesBlacklist";
+    public static final String PARAM_ADD_SHA_HASH = "AddShaHash";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     // The mappings are keyed by the costosys.xml path and the table schema, see 'mappingCacheKey'.
     // The idea is to save costly database connections by sharing updating mapping across threads.
@@ -239,6 +242,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "Then, the replacement with an integer of 4 bytes won't probably make much sense (unless the strings mainly " +
             "consist of characters that require more than 1 byte, of course).")
     private String[] binaryFeaturesBlacklistParameter;
+    @ConfigurationParameter(name = PARAM_ADD_SHA_HASH, mandatory = false, description = "Possible values: document_text. If this parameter is set to a valid value, the SHA256 hash for the given value will be calculated and added to each document as a new column in the document table. The column will be named after the parameter value, suffixe by '_sha256'.")
+    private String documentItemToHash;
+    private Map<DocumentId, String> shaMap;
     private String mappingCacheKey;
 
     /*
@@ -263,9 +269,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 : (Boolean) aContext.getConfigParameterValue(PARAM_UPDATE_MODE);
         doGzip = aContext.getConfigParameterValue(PARAM_DO_GZIP) == null ? false
                 : (Boolean) aContext.getConfigParameterValue(PARAM_DO_GZIP);
-        storeAll = (Boolean) aContext.getConfigParameterValue(PARAM_STORE_ALL) == null ? false
+        storeAll = aContext.getConfigParameterValue(PARAM_STORE_ALL) == null ? false
                 : (Boolean) aContext.getConfigParameterValue(PARAM_STORE_ALL);
         docTableParamValue = (String) aContext.getConfigParameterValue(PARAM_TABLE_DOCUMENT);
+        documentItemToHash = (String) aContext.getConfigParameterValue(PARAM_ADD_SHA_HASH);
         storeBaseDocument = aContext.getConfigParameterValue(PARAM_STORE_BASE_DOCUMENT) == null ? false
                 : (Boolean) aContext.getConfigParameterValue(PARAM_STORE_BASE_DOCUMENT);
         deleteObsolete = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_DELETE_OBSOLETE_ANNOTATIONS)).orElse(false);
@@ -407,16 +414,22 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Use binary format: {}", useBinaryFormat);
         log.info("Is the whole, unsplit XMI document stored: {}", storeAll);
         log.info("Annotations belonging to the base document: {}", baseDocumentAnnotationTypes);
-        log.info("Annotation types to store in the columns of {}: {}",effectiveDocTableName, unqualifiedAnnotationNames);
+        log.info("Annotation types to store in the columns of {}: {}", effectiveDocTableName, unqualifiedAnnotationNames);
         log.info("Store annotations recursively: {}", recursively);
         log.info("Update mode: {}", updateMode);
         log.info("Base document table schema: {}", schemaDocument);
         log.info("Batch size of cached documents sent to database: {}", writeBatchSize);
         log.info("Do a dry run and output binary features to map: {}", featuresToMapDryRun);
 
+        String hashColumnName = null;
+        if (documentItemToHash != null) {
+            shaMap = new HashMap<>();
+            hashColumnName = documentItemToHash + "_sha256";
+            dbc.assureColumnsExist(effectiveDocTableName, Collections.singletonList(hashColumnName), "text");
+        }
         metaTableManager = new MetaTableManager(dbc, xmiMetaSchema);
         annotationInserter = new XmiDataInserter(annotationModulesColumnNames, effectiveDocTableName, dbc,
-                schemaDocument, storeAll, storeBaseDocument, updateMode, componentDbName);
+                schemaDocument, storeAll, storeBaseDocument, updateMode, componentDbName, hashColumnName);
         dbc.releaseConnections();
     }
 
@@ -499,6 +512,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 return;
             }
 
+            handleAddhash(aJCas, docId);
+
             ++currentBatchSize;
             if (currentBatchSize % writeBatchSize == 0) {
                 log.trace("Document nr {} processed, filling batch nr {} of size {}, sending to database.", currentBatchSize, currentBatchSize / writeBatchSize, writeBatchSize);
@@ -513,6 +528,15 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             }
             log.error("Error occurred at document {}: ", docid, throwable);
             throw throwable;
+        }
+    }
+
+    private void handleAddhash(JCas aJCas, DocumentId docId) {
+        if (documentItemToHash != null) {
+            final String documentText = aJCas.getDocumentText();
+            final byte[] sha = DigestUtils.sha256(documentText.getBytes());
+            final String finalHash = Base64.encodeBase64String(sha);
+            shaMap.put(docId, finalHash);
         }
     }
 
@@ -942,12 +966,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             final boolean readyToSendData = processXmiBuffer();
             if (readyToSendData) {
                 if (!(featuresToMapDryRun && useBinaryFormat))
-                    annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete);
+                    annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete, shaMap);
                 else
                     log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
                 log.trace("Clearing {} annotation modules", annotationModules.size());
                 annotationModules.clear();
                 modulesWithoutData.clear();
+                shaMap.clear();
             }
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
@@ -967,11 +992,12 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         try {
             processXmiBuffer();
             if (!(featuresToMapDryRun && useBinaryFormat))
-                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete);
+                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete, shaMap);
             else
                 log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
             annotationModules.clear();
             modulesWithoutData.clear();
+            shaMap.clear();
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
         }
