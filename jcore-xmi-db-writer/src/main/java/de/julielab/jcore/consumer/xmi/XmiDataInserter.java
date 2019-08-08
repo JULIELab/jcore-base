@@ -108,8 +108,14 @@ public class XmiDataInserter {
                 // This statement puts the XMI data into the first column after the primary key
                 for (XmiData data : dataList) {
                     row.put(data.getColumnName(), data.data);
-                    if (log.isTraceEnabled())
-                        log.trace("{}={}", data.getColumnName(), data.data);
+                    if (log.isTraceEnabled()) {
+                        String datarep = data.toString();
+                        if (data.data instanceof byte[])
+                            datarep = "byte array of length " + ((byte[]) data.data).length;
+                        if (datarep.length() > 79)
+                            datarep = datarep.substring(0, 80);
+                        log.trace("{}={}", data.getColumnName(), datarep);
+                    }
                     // If the base document is stored, update the sofa mapping (which sofa ID is which sofa name in the base document)
                     if (data.getClass().equals(DocumentXmiData.class) && !storeAll) {
                         if (fieldConfig.getFields().size() - fieldConfig.getPrimaryKey().length < 3)
