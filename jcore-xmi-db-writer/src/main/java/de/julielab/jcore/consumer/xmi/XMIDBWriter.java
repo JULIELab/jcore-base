@@ -495,7 +495,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             try {
                 serializeCasIntoBuffer(aJCas, docId);
             } catch (SAXParseException e) {
-                log.error("Could not serialize CAS for document {}",Arrays.toString(docId.getId()), e );
+                log.error("Could not serialize CAS for document {}", Arrays.toString(docId.getId()), e);
                 return;
             }
 
@@ -524,7 +524,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
      */
     private boolean processXmiBuffer() throws AnalysisEngineProcessException {
         if (xmiItemBuffer.isEmpty()) {
-             log.debug("The XMI item buffer is empty, nothing to do.");
+            log.debug("The XMI item buffer is empty, nothing to do.");
             return false;
         }
 
@@ -560,7 +560,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     unanalyzedItems = xmiItemBuffer.stream().filter(Predicate.not(XmiBufferItem::isProcessedForBinaryMappings)).collect(Collectors.toList());
                     requiredMappingAnalysisResult = binaryEncoder.findMissingItemsForMapping(unanalyzedItems.stream().flatMap(item -> item.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList()), ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
                     // Here we add a list of XmiBufferItems that this thread needs processed to encode its annotation modules into the binary format.
-                    hasMissingMappingItems =!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty();
+                    hasMissingMappingItems = !requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty();
                     if (hasMissingMappingItems)
                         xmiBufferItemsToProcess.compute(mappingCacheKey, (k, v) -> v != null ? v : new ConcurrentHashMap<>()).put(Thread.currentThread().getName(), unanalyzedItems);
                 }
@@ -641,7 +641,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     }
 
     private void createAnnotationModules() throws AnalysisEngineProcessException {
-        log.debug("Creating annotation modules for {} items in the XMI buffer",xmiItemBuffer.size() );
+        log.debug("Creating annotation modules for {} items in the XMI buffer", xmiItemBuffer.size());
         for (int i = 0; i < xmiItemBuffer.size(); i++) {
             final XmiBufferItem item = xmiItemBuffer.get(i);
             DocumentId docId = item.getDocId();
@@ -682,6 +682,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             annotationModules.add(new XmiData(columnName, docId, storedData));
                         }
                         annotationInserter.putXmiIdMapping(docId, newXmiId);
+                        log.trace("{} has new value for columns {} of length {}, new max xmi ID is {}", docId.getId(), columnName, dataBytes.length, newXmiId);
                     } else if (updateMode && !isBaseDocumentColumn) {
                         // There was no data for the annotation table. Since we
                         // are updating this could mean we once had annotations
@@ -689,7 +690,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         // delete the old annotations to avoid xmi:id clashes.
                         // Thus add here the document id for the table we have
                         // to clear the row from (one row per document).
-                        modulesWithoutData.compute(docId, (k,v) -> v != null ? v : new ArrayList<>()).add(columnName);
+                        modulesWithoutData.compute(docId, (k, v) -> v != null ? v : new ArrayList<>()).add(columnName);
+                        log.trace("{} has no value for column {}, will be set to null.", docId.getId(), columnName);
                     }
                 }
                 // as the very last thing, add this document to the processed list
@@ -1002,7 +1004,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             else
                 log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
             annotationModules.clear();
-           modulesWithoutData.clear();
+            modulesWithoutData.clear();
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
         }
