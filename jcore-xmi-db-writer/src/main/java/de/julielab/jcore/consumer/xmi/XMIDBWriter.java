@@ -333,11 +333,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         JulieXMLConstants.TYPE, doGzip || useBinaryFormat ? "bytea" : "xml"
                 );
                 xmiAnnotationColumnsDefinitions.add(field);
-                if (documentItemToHash != null) {
-                    shaMap = new HashMap<>();
-                    hashColumnName = documentItemToHash + "_sha256";
-                    xmiAnnotationColumnsDefinitions.add(FieldConfig.createField(JulieXMLConstants.NAME, hashColumnName, JulieXMLConstants.TYPE, "text"));
-                }
+            }
+            if (documentItemToHash != null) {
+                shaMap = new HashMap<>();
+                hashColumnName = documentItemToHash + "_sha256";
+                xmiAnnotationColumnsDefinitions.add(FieldConfig.createField(JulieXMLConstants.NAME, hashColumnName, JulieXMLConstants.TYPE, "text"));
             }
             final FieldConfig fieldConfig = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), xmiAnnotationColumnsDefinitions, doGzip || useBinaryFormat);
             schemaDocument = fieldConfig.getName();
