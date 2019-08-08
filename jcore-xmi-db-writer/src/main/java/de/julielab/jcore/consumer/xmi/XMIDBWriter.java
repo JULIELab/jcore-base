@@ -306,7 +306,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         if (xmiMetaSchema.isBlank())
             throw new ResourceInitializationException(new IllegalArgumentException("The XMI meta table Postgres schema must either be omitted at all or non-empty but was."));
 
-        List<String> annotationsToStoreTableNames = new ArrayList<>();
         unqualifiedAnnotationNames = Collections.emptyList();
 
         dbc.reserveConnection();
@@ -361,12 +360,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         // annotation tables have foreign keys to the document table.
         // Thus, we can't add annotations for documents not in the
         // document table.
+        Set<String> annotationModulesColumnNames = new HashSet<>();
         effectiveDocTableName = annotationTableManager.getEffectiveDocumentTableName(docTableParamValue);
         if (!storeAll) {
             // Here we use the schema-qualified 'annotations' field
             for (String annotation : annotations) {
-                String annotationTableName = annotationTableManager.convertUnqualifiedAnnotationTypetoColumnName(annotation, storeAll);
-                annotationsToStoreTableNames.add(annotationTableName);
+                String annotationModuleColumName = annotationTableManager.convertUnqualifiedAnnotationTypetoColumnName(annotation, storeAll);
+                annotationModulesColumnNames.add(annotationModuleColumName);
             }
         }
         // does currently only compare the primary keys...
@@ -407,7 +407,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Use binary format: {}", useBinaryFormat);
         log.info("Is the whole, unsplit XMI document stored: {}", storeAll);
         log.info("Annotations belonging to the base document: {}", baseDocumentAnnotationTypes);
-        log.info("Annotation types to store in separate tables: {}", unqualifiedAnnotationNames);
+        log.info("Annotation types to store in the columns of {}: {}",effectiveDocTableName, unqualifiedAnnotationNames);
         log.info("Store annotations recursively: {}", recursively);
         log.info("Update mode: {}", updateMode);
         log.info("Base document table schema: {}", schemaDocument);
@@ -415,7 +415,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         log.info("Do a dry run and output binary features to map: {}", featuresToMapDryRun);
 
         metaTableManager = new MetaTableManager(dbc, xmiMetaSchema);
-        annotationInserter = new XmiDataInserter(annotationsToStoreTableNames, effectiveDocTableName, dbc,
+        annotationInserter = new XmiDataInserter(annotationModulesColumnNames, effectiveDocTableName, dbc,
                 schemaDocument, storeAll, storeBaseDocument, updateMode, componentDbName);
         dbc.releaseConnections();
     }
@@ -682,7 +682,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             annotationModules.add(new XmiData(columnName, docId, storedData));
                         }
                         annotationInserter.putXmiIdMapping(docId, newXmiId);
-                        log.trace("{} has new value for columns {} of length {}, new max xmi ID is {}", docId.getId(), columnName, dataBytes.length, newXmiId);
+                        log.trace("{} has new value for column {} of length {}, new max xmi ID is {}", docId.getId(), columnName, dataBytes.length, newXmiId);
                     } else if (updateMode && !isBaseDocumentColumn) {
                         // There was no data for the annotation table. Since we
                         // are updating this could mean we once had annotations
@@ -700,39 +700,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 throw new AnalysisEngineProcessException(e);
             }
         }
-    }
-
-    @Deprecated
-    private List<XmiSplitterResult> createAnnotationModulesForXmiItems() {
-        List<XmiSplitterResult> splitterResults = new ArrayList<>();
-        for (XmiBufferItem item : xmiItemBuffer) {
-            DocumentId docId = item.getDocId();
-            byte[] completeXmiData = item.getXmiData();
-            TypeSystem ts = item.getTypeSystem();
-            int nextXmiId = item.getNextXmiId();
-            final Map<String, Integer> baseDocumentSofaIdMap = item.getSofaIdMap();
-
-            try {
-                // Split the xmi data.
-                XmiSplitterResult result = splitter.process(completeXmiData, ts, nextXmiId, baseDocumentSofaIdMap);
-                splitterResults.add(result);
-                Integer newXmiId = result.maxXmiId;
-                if (!(featuresToMapDryRun && useBinaryFormat))
-                    metaTableManager.manageXMINamespaces(result.namespaces);
-
-                if (result.currentSofaIdMap.isEmpty())
-                    throw new IllegalStateException(
-                            "The XmiSplitter returned an empty Sofa XMI ID map. This is a critical errors since it means " +
-                                    "that the splitter was not able to resolve the correct Sofa XMI IDs for the annotations " +
-                                    "that should be stored now.");
-                log.trace("Updating max xmi id of document {}. New max xmi id: {}", docId, newXmiId);
-                log.trace("Sofa ID map for this document: {}", result.currentSofaIdMap);
-            } catch (XMISplitterException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return splitterResults;
     }
 
     @Nullable

@@ -1,5 +1,6 @@
 package de.julielab.jcore.consumer.xmi;
 
+import com.google.common.collect.Sets;
 import de.julielab.costosys.Constants;
 import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
@@ -29,6 +30,7 @@ public class XmiDataInserter {
     private Boolean updateMode;
     private String schemaDocument;
     private Boolean storeAll;
+    private Set<String> annotationModuleColumnNames;
     private String effectiveDocTableName;
     private DataBaseConnector dbc;
     private Boolean storeBaseDocument;
@@ -37,10 +39,11 @@ public class XmiDataInserter {
 
     private List<DocumentId> processedDocumentIds;
 
-    public XmiDataInserter(List<String> annotationsToStore, String effectiveDocTableName,
+    public XmiDataInserter(Set<String> annotationModuleColumnNames, String effectiveDocTableName,
                            DataBaseConnector dbc, String schemaDocument, Boolean storeAll,
                            Boolean storeBaseDocument, Boolean updateMode, String componentDbName) {
         super();
+        this.annotationModuleColumnNames = annotationModuleColumnNames;
         this.effectiveDocTableName = effectiveDocTableName;
         this.dbc = dbc;
         this.schemaDocument = schemaDocument;
@@ -70,10 +73,6 @@ public class XmiDataInserter {
         if (log.isTraceEnabled()) {
             log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
             log.trace("Sending {} XMI data items", serializedCASes.size());
-            log.trace("Columns without data which will be set to null:");
-            for (DocumentId id : columnsWithoutData.keySet()) {
-                log.trace("{}: {}", Arrays.toString(id.getId()), columnsWithoutData.get(id));
-            }
         }
         final Map<DocumentId, List<XmiData>> dataByDoc = serializedCASes.stream().collect(Collectors.groupingBy(XmiData::getDocId));
         class RowIterator implements Iterator<Map<String, Object>> {
@@ -141,8 +140,12 @@ public class XmiDataInserter {
                 }
                 // Set columns without a value to null to delete a potentially existing value.
                 if (updateMode) {
-                    final List<String> columns = columnsWithoutData.getOrDefault(docId, Collections.emptyList());
-                    columns.forEach(col -> row.put(col, null));
+                    Set<String> annotationColumnsWithValues = dataList.stream().map(XmiData::getColumnName).collect(Collectors.toSet());
+                    final Sets.SetView<String> columnsWithoutValues = Sets.difference(annotationModuleColumnNames, annotationColumnsWithValues);
+                    columnsWithoutValues.forEach(col -> {
+                        row.put(col, null);
+                        log.trace("{}=null", col);
+                    });
                 }
                 return row;
             }
