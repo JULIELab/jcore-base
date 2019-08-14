@@ -973,7 +973,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 log.trace("Clearing {} annotation modules", annotationModules.size());
                 annotationModules.clear();
                 modulesWithoutData.clear();
-                shaMap.clear();
+                if (shaMap != null)
+                    shaMap.clear();
             }
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
@@ -998,7 +999,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
             annotationModules.clear();
             modulesWithoutData.clear();
-            shaMap.clear();
+            if (shaMap != null)
+                shaMap.clear();
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
         }

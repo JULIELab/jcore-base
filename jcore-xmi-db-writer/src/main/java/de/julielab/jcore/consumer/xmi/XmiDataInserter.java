@@ -147,7 +147,7 @@ public class XmiDataInserter {
                         log.trace("{}=null", col);
                     });
                 }
-                if (!shaMap.isEmpty()) {
+                if (shaMap != null && !shaMap.isEmpty()) {
                     final String hash = shaMap.get(docId);
                     row.put(hashColumnName, hash);
                     log.trace("{}={}", hashColumnName, hash);

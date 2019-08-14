@@ -264,11 +264,11 @@ public class Initializer {
                     ne.printStackTrace();
             }
         } else {
-            throw new IllegalStateException("The table " + nsTable + " does not exist. This is a error since it is required to re-build the XMI data. Is '" + xmiMetaSchema + "' the correct Postgres schema for the table?");
+            throw new IllegalStateException("The table " + nsTable + " does not exist. This is an error since it is required to re-build the XMI data. Is '" + xmiMetaSchema + "' the correct Postgres schema for the table?");
         }
         log.debug("Got XMI namespace map from table {}: {}", nsTable, map );
         if (map.isEmpty())
-            throw new IllegalStateException("The table " + nsTable + " is empty. This is a error since it is required to re-build the XMI data. Is '"+xmiMetaSchema+"' the correct Postgres schema for the table?");
+            throw new IllegalStateException("The table " + nsTable + " is empty. This is an error since it is required to re-build the XMI data. Is '"+xmiMetaSchema+"' the correct Postgres schema for the table?");
         return map;
     }
 

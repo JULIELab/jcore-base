@@ -178,7 +178,7 @@ public class XmiDBReader extends DBReader implements Initializable {
                     gzis.read(firstTwoBytes);
                     checkForJeDISBinaryFormat(firstTwoBytes);
                 } catch (IOException e) {
-                    log.debug("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
+                    log.debug("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data.");
                     doGzip = false;
                     checkForJeDISBinaryFormat(xmiData);
                 }

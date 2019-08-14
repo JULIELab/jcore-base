@@ -97,6 +97,8 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     }
 
     private void populateCas(JCas jCas) throws AnalysisEngineProcessException {
+        if (casPopulator == null)
+            throw new AnalysisEngineProcessException(new IllegalStateException("Initialization of the component was not finished. See previous errors to learn the reason. Cannot continue."));
         try {
             final byte[][] data = documentDataIterator.next();
             log.trace("Populating CAS with {}", casPopulator);
