@@ -58,16 +58,21 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
                 throw new AnalysisEngineProcessException(e);
             }
         }
-        // The DBMultiplier is getting the IDs to read, the table names and schemas an eventually creates
-        // the documentDataIterator that we can use in next().
-        super.process(aJCas);
-        // Now all global variables, most importantly "tables" and "schemaNames" have been initialized
-        if (initializer == null) {
-            log.debug("Initializing");
-            initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, xmiModuleAnnotationNames.length > 0, useBinaryFormat);
-            initializer.initialize(rowBatch);
-            initializer.setLogFinalXmi(logFinalXmi);
-            casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
+        try {
+            // The DBMultiplier is getting the IDs to read, the table names and schemas an eventually creates
+            // the documentDataIterator that we can use in next().
+            super.process(aJCas);
+            // Now all global variables, most importantly "tables" and "schemaNames" have been initialized
+            if (initializer == null) {
+                log.debug("Initializing");
+                initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, xmiModuleAnnotationNames.length > 0, useBinaryFormat);
+                initializer.initialize(rowBatch);
+                initializer.setLogFinalXmi(logFinalXmi);
+                casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
+            }
+        } catch (Throwable t) {
+            log.error("Error when initializing: ", t);
+            throw new AnalysisEngineProcessException(t);
         }
     }
 
