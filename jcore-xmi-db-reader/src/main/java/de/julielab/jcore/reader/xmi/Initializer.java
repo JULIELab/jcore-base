@@ -245,13 +245,15 @@ public class Initializer {
 
     private Map<String, String> getNamespaceMap() {
         Map<String, String> map = null;
-        if (dbc.tableExists(xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE)) {
+        final String nsTable = xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE;
+        if (dbc.tableExists(nsTable)) {
+            log.debug("Reading XMI namespaces from {}", nsTable);
             try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                 map = new HashMap<>();
                 conn.setAutoCommit(true);
                 Statement stmt = conn.createStatement();
                 String sql = String.format("SELECT %s,%s FROM %s", XmiSplitConstants.PREFIX, XmiSplitConstants.NS_URI,
-                        xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
+                        nsTable);
                 ResultSet rs = stmt.executeQuery(String.format(sql));
                 while (rs.next())
                     map.put(rs.getString(1), rs.getString(2));
@@ -262,11 +264,11 @@ public class Initializer {
                     ne.printStackTrace();
             }
         } else {
-            log.warn(
-                    "Table \"{}\" was not found. It is assumed that the table from which is read contains complete XMI documents.",
-                    xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE);
+            throw new IllegalStateException("The table " + nsTable + " does not exist. This is a error since it is required to re-build the XMI data. Is '" + xmiMetaSchema + "' the correct Postgres schema for the table?");
         }
-        log.debug("Got XMI namespace map from table {}: {}",xmiMetaSchema + "." + XmiSplitConstants.XMI_NS_TABLE, map );
+        log.debug("Got XMI namespace map from table {}: {}", nsTable, map );
+        if (map.isEmpty())
+            throw new IllegalStateException("The table " + nsTable + " is empty. This is a error since it is required to re-build the XMI data. Is '"+xmiMetaSchema+"' the correct Postgres schema for the table?");
         return map;
     }
 

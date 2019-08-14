@@ -242,7 +242,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             "Then, the replacement with an integer of 4 bytes won't probably make much sense (unless the strings mainly " +
             "consist of characters that require more than 1 byte, of course).")
     private String[] binaryFeaturesBlacklistParameter;
-    @ConfigurationParameter(name = PARAM_ADD_SHA_HASH, mandatory = false, description = "Possible values: document_text. If this parameter is set to a valid value, the SHA256 hash for the given value will be calculated, base64 encoded and added to each document as a new column in the document table. The column will be named after the parameter value, suffixe by '_sha256'.")
+    @ConfigurationParameter(name = PARAM_ADD_SHA_HASH, mandatory = false, description = "Possible values: document_text. If this parameter is set to a valid value, the SHA256 hash for the given value will be calculated, base64 encoded and added to each document as a new column in the document table. The column will be named after the parameter value, suffixed by '_sha256'.")
     private String documentItemToHash;
     private Map<DocumentId, String> shaMap;
     private String mappingCacheKey;

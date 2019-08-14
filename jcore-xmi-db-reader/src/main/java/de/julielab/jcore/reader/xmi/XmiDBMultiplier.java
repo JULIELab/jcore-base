@@ -73,13 +73,18 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     @Override
     public AbstractCas next() throws AnalysisEngineProcessException {
         JCas jCas = getEmptyJCas();
-        if (documentDataIterator.hasNext()) {
-            try {
-                initializer.initializeAnnotationTableNames(jCas);
-            } catch (ResourceInitializationException e) {
-                throw new AnalysisEngineProcessException(e);
+        try {
+            if (documentDataIterator.hasNext()) {
+                try {
+                    initializer.initializeAnnotationTableNames(jCas);
+                } catch (ResourceInitializationException e) {
+                    throw new AnalysisEngineProcessException(e);
+                }
+                populateCas(jCas);
             }
-            populateCas(jCas);
+        } catch (Throwable throwable) {
+            log.error("Error while reading document from the database: ", throwable);
+            throw throwable;
         }
         return jCas;
     }
