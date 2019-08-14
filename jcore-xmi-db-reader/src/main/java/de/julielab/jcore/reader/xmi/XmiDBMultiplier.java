@@ -92,6 +92,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     private void populateCas(JCas jCas) throws AnalysisEngineProcessException {
         try {
             final byte[][] data = documentDataIterator.next();
+            System.out.println("HIER: " + casPopulator);
             if (data != null)
                 casPopulator.populateCas(data, jCas);
         } catch (CasPopulationException e) {
