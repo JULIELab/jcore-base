@@ -63,6 +63,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
         super.process(aJCas);
         // Now all global variables, most importantly "tables" and "schemaNames" have been initialized
         if (initializer == null) {
+            log.debug("Initializing");
             initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, xmiModuleAnnotationNames.length > 0, useBinaryFormat);
             initializer.initialize(rowBatch);
             initializer.setLogFinalXmi(logFinalXmi);
@@ -75,6 +76,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
         JCas jCas = getEmptyJCas();
         try {
             if (documentDataIterator.hasNext()) {
+                log.trace("Returning next CAS");
                 try {
                     initializer.initializeAnnotationTableNames(jCas);
                 } catch (ResourceInitializationException e) {
@@ -92,7 +94,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     private void populateCas(JCas jCas) throws AnalysisEngineProcessException {
         try {
             final byte[][] data = documentDataIterator.next();
-            System.out.println("HIER: " + casPopulator);
+            log.trace("Populating CAS with {}", casPopulator);
             if (data != null)
                 casPopulator.populateCas(data, jCas);
         } catch (CasPopulationException e) {
