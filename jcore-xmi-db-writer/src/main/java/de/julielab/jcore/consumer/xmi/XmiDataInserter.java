@@ -130,7 +130,9 @@ public class XmiDataInserter {
                     }
                 }
                 // Also update the new max XMI ID
-                row.put(FIELD_MAX_XMI_ID, maxXmiIdMap.get(docId));
+                final Integer maxXmiId = maxXmiIdMap.get(docId);
+                if (maxXmiId != null)
+                    row.put(FIELD_MAX_XMI_ID, maxXmiId);
                 // Set columns without values explicitly to null. This will automatically remove old column values.
                 if (deleteObsolete) {
                     Set<String> missingColumns = fieldConfig.getFields().stream().map(f -> f.get(JulieXMLConstants.NAME)).collect(Collectors.toSet());

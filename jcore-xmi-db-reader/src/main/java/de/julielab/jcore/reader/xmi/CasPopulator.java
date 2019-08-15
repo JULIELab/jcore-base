@@ -243,7 +243,7 @@ public class CasPopulator {
         return sb.toString();
     }
 
-    private void storeMaxXmiIdAndSofaMappings(JCas aCAS, byte[][] data) throws CASException {
+    private void storeMaxXmiIdAndSofaMappings(JCas aCAS, byte[][] data) {
         if (storeMaxXmiId && data.length > 2) {
             String docId = JCoReTools.getDocId(aCAS);
             byte[] maxXmiIdBytes = data[2];
