@@ -193,7 +193,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private BinaryJeDISNodeEncoder binaryEncoder;
     private List<XmiBufferItem> xmiItemBuffer = new ArrayList<>();
     private List<XmiData> annotationModules = new ArrayList<>();
-    private Map<DocumentId, List<String>> modulesWithoutData = new HashMap<>();
     private String schemaDocument;
     private String effectiveDocTableName;
     private MetaTableManager metaTableManager;
@@ -708,15 +707,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         }
                         annotationInserter.putXmiIdMapping(docId, newXmiId);
                         log.trace("{} has new value for column {} of length {}, new max xmi ID is {}", docId.getId(), columnName, dataBytes.length, newXmiId);
-                    } else if (updateMode && !isBaseDocumentColumn) {
-                        // There was no data for the annotation table. Since we
-                        // are updating this could mean we once had annotations
-                        // but the new text version doesn't have them. We must
-                        // delete the old annotations to avoid xmi:id clashes.
-                        // Thus add here the document id for the table we have
-                        // to clear the row from (one row per document).
-                        modulesWithoutData.compute(docId, (k, v) -> v != null ? v : new ArrayList<>()).add(columnName);
-                        log.trace("{} has no value for column {}, will be set to null.", docId.getId(), columnName);
                     }
                 }
                 // as the very last thing, add this document to the processed list
@@ -757,7 +747,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     }
                 }
 
-//                Integer newXmiId = result.maxXmiId;
                 if (!(featuresToMapDryRun && useBinaryFormat))
                     metaTableManager.manageXMINamespaces(result.namespaces);
 
@@ -766,8 +755,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             "The XmiSplitter returned an empty Sofa XMI ID map. This is a critical errors since it means " +
                                     "that the splitter was not able to resolve the correct Sofa XMI IDs for the annotations " +
                                     "that should be stored now.");
-//                log.trace("Updating max xmi id of document {}. New max xmi id: {}", docId, newXmiId);
-//                log.trace("Sofa ID map for this document: {}", result.currentSofaIdMap);
             }
         } catch (SAXParseException e) {
             // we did have the issue that in PMID 23700993 there was an XMI-1.0
@@ -967,12 +954,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             final boolean readyToSendData = processXmiBuffer();
             if (readyToSendData) {
                 if (!(featuresToMapDryRun && useBinaryFormat))
-                    annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete, shaMap);
+                    annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, deleteObsolete, shaMap);
                 else
                     log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
                 log.trace("Clearing {} annotation modules", annotationModules.size());
                 annotationModules.clear();
-                modulesWithoutData.clear();
                 if (shaMap != null)
                     shaMap.clear();
             }
@@ -994,11 +980,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         try {
             processXmiBuffer();
             if (!(featuresToMapDryRun && useBinaryFormat))
-                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, modulesWithoutData, subsetTable, deleteObsolete, shaMap);
+                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, deleteObsolete, shaMap);
             else
                 log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
             annotationModules.clear();
-            modulesWithoutData.clear();
             if (shaMap != null)
                 shaMap.clear();
         } catch (XmiDataInsertionException e) {

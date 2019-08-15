@@ -62,22 +62,21 @@ public class XmiDataInserter {
      * will be a primary key constraint violation, i.e. duplicates).
      *
      * @param serializedCASes
-     * @param columnsWithoutData
      * @param deleteObsolete
      * @param shaMap
      * @throws XmiDataInsertionException
      * @throws AnalysisEngineProcessException
      */
-    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> serializedCASes,
-                                      Map<DocumentId, List<String>> columnsWithoutData, String subsetTableName, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
+    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> serializedCASes, String subsetTableName, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
         if (log.isTraceEnabled()) {
             log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
             log.trace("Sending {} XMI data items", serializedCASes.size());
         }
         final Map<DocumentId, List<XmiData>> dataByDoc = serializedCASes.stream().collect(Collectors.groupingBy(XmiData::getDocId));
+        final Set<DocumentId> documentIdsWithValues = shaMap != null ? Sets.union(dataByDoc.keySet(), shaMap.keySet()) : dataByDoc.keySet();
         class RowIterator implements Iterator<Map<String, Object>> {
 
-            private Iterator<DocumentId> docIdIterator = dataByDoc.keySet().iterator();
+            private Iterator<DocumentId> docIdIterator = documentIdsWithValues.iterator();
             private FieldConfig fieldConfig = dbc.getFieldConfiguration(schemaDocument);
             private List<Map<String, String>> fields = fieldConfig.getFields();
 
@@ -90,7 +89,8 @@ public class XmiDataInserter {
             public Map<String, Object> next() {
                 Map<String, Object> row = new HashMap<String, Object>();
                 final DocumentId docId = docIdIterator.next();
-                final List<XmiData> dataList = dataByDoc.get(docId);
+                // There might actually be no data when we only write the SHA hashes
+                final List<XmiData> dataList = dataByDoc.getOrDefault(docId, Collections.emptyList());
                 // this lambda says "give me the name of ith field of the
                 // current field configuration"
                 Function<Integer, String> fName = num -> fields.get(num).get(JulieXMLConstants.NAME);
