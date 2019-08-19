@@ -61,4 +61,35 @@
             <optional>false</optional>
         </externalResourceDependency>
     </externalResourceDependencies>
+    <resourceManagerConfiguration>
+        <externalResources>
+            <externalResource>
+                <name>Annotation Source file</name>
+                <description>A configurable resource for annotations.</description>
+                <configurableDataResourceSpecifier>
+                    <url />
+                    <resourceMetaData>
+                        <name />
+                        <configurationParameters>
+                            <configurationParameter>
+                                <name>AnnotationFormatClass</name>
+                                <description>The qualified class name of the annotation file format parser. Defaults to 'de.julielab.jcore.ae.annotationadder.annotationformat.SimpleTSVEntityAnnotationFormat'.</description>
+                                <type>String</type>
+                                <multiValued>false</multiValued>
+                                <mandatory>false</mandatory>
+                            </configurationParameter>
+                        </configurationParameters>
+                        <configurationParameterSettings/>
+                    </resourceMetaData>
+                </configurableDataResourceSpecifier>
+                <implementationName>de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileTextAnnotationProvider</implementationName>
+            </externalResource>
+        </externalResources>
+        <externalResourceBindings>
+            <externalResourceBinding>
+                <key>AnnotationSource</key>
+                <resourceName>Annotation Source file</resourceName>
+            </externalResourceBinding>
+        </externalResourceBindings>
+    </resourceManagerConfiguration>
 </analysisEngineDescription>
