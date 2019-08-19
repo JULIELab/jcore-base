@@ -24,18 +24,23 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.*;
 import java.util.Iterator;
+import java.util.Optional;
 
 public class SegmentConsumer extends JCasAnnotator_ImplBase {
 	
-    private static final Logger LOGGER = LoggerFactory.getLogger(BioEventConsumer.class);
 
     public static final String DIRECTORY_PARAM = "outDirectory";
+    public static final String SEGMENT_TYPE_PARAM = "segmentAnnotationName";
 
-    @ConfigurationParameter(name = DIRECTORY_PARAM, mandatory = true)
+    @ConfigurationParameter(name = DIRECTORY_PARAM)
     private File directory;
+    @ConfigurationParameter(name= SEGMENT_TYPE_PARAM, mandatory = false, description = "The qualified UIMA name of the segment annotation to be written. Defaults to de.julielab.jcore.types.Sentence.", defaultValue = "de.julielab.jcore.types.Sentence")
+    private String segmentAnnotationName;
+
     int id = 1;
 
     @Override
@@ -47,13 +52,14 @@ public class SegmentConsumer extends JCasAnnotator_ImplBase {
         if (!directory.exists()) {
             directory.mkdir();
         }
+        segmentAnnotationName = (String) Optional.ofNullable(aContext.getConfigParameterValue(SEGMENT_TYPE_PARAM)).orElse("de.julielab.jcore.types.Sentence");
     }
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
         CAS cas = aJCas.getCas();
         String id = getDocumentId(cas);
         String documentText = cas.getDocumentText();
-        Type sentenceType = cas.getTypeSystem().getType(Sentence.class.getCanonicalName());
+        Type sentenceType = cas.getTypeSystem().getType(segmentAnnotationName);
         try {
             DocumentWriter documentWriter = createDocumentWriter(id);
             SegmentWriter segmentWriter = createSegmentWriter(documentText, id);
