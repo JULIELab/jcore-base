@@ -15,6 +15,7 @@ import de.julielab.jcore.types.*;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
@@ -91,6 +92,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 						"Skipping event extraction for this document because no proteins have been found that could be involved in an event.");
 				return;
 			}
+            System.out.println(aJCas.getDocumentText());
 			List<String> proteinLines = getProteinLines(proteins, docId);
 			// Sometimes we have problems creating the text database.
 			// Unfortunately, I'm not sure why this is. However, we'd rather
@@ -372,7 +374,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	 * 
 	 * @return
 	 */
-	private List<String> getProteinLines(Map<String, Gene> proteins, String docId) {
+	private List<String> getProteinLines(Map<String, Gene> proteins, String docId) throws AnnotatorProcessException {
 		List<String> proteinLines = new ArrayList<>();
 		for (Entry<String, Gene> proteinEntry : proteins.entrySet()) {
 			String id = proteinEntry.getKey();
@@ -382,6 +384,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 						id + "\tProtein\t" + gene.getBegin() + "\t" + gene.getEnd() + "\t" + gene.getCoveredText());
 			} catch (Exception e) {
 				log.error("Failed to collect protein information for relation extraction for document {}", docId, e);
+				throw new AnnotatorProcessException(e);
 			}
 		}
 		return proteinLines;
