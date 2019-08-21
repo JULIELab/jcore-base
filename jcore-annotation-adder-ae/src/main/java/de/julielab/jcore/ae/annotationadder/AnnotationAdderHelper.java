@@ -80,6 +80,10 @@ public class AnnotationAdderHelper {
 
             annotation.setBegin(begin);
             annotation.setEnd(end);
+
+            if (end > sentence.getCAS().getDocumentText().length())
+                throw new IllegalStateException("The TextAnnotation " + a + " specifies an end offset that is outside of the document text which has a length of " + sentence.getCAS().getDocumentText().length());
+
         }
     }
 

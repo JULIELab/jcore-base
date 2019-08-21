@@ -15,6 +15,16 @@ public class TaggedEntity implements TextAnnotation {
         this.end = end;
     }
 
+    @Override
+    public String toString() {
+        return "TaggedEntity{" +
+                "documentId='" + documentId + '\'' +
+                ", tag='" + tag + '\'' +
+                ", start=" + start +
+                ", end=" + end +
+                '}';
+    }
+
     public String getDocumentId() {
         return documentId;
     }
