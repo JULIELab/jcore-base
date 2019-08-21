@@ -79,7 +79,14 @@
                                 <mandatory>false</mandatory>
                             </configurationParameter>
                         </configurationParameters>
-                        <configurationParameterSettings/>
+                        <configurationParameterSettings>
+                            <nameValuePair>
+                                <name>AnnotationFormatClass</name>
+                                <value>
+                                    <string>de.julielab.jcore.ae.annotationadder.annotationformat.SimpleTSVEntityAnnotationFormat</string>
+                                </value>
+                            </nameValuePair>
+                            </configurationParameterSettings>
                     </resourceMetaData>
                 </configurableDataResourceSpecifier>
                 <implementationName>de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileTextAnnotationProvider</implementationName>

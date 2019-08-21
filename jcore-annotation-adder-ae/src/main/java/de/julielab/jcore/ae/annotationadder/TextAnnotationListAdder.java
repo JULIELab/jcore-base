@@ -40,7 +40,7 @@ public class TextAnnotationListAdder implements AnnotationAdder {
             if (uimaType == null)
                 throw new IllegalArgumentException("Missing annotation type: Neither the annotation of document " + a.getDocumentId() + " with offsets " + a.getStart() + "-" + a.getEnd() + " provides a type nor is the default type set.");
             if (jCas.getTypeSystem().getType(uimaType) == null)
-                throw new IllegalArgumentException("The entity annotation type " + a.getUimaType() + " does not exist in the type system.");
+                throw new IllegalArgumentException("The entity annotation type " + uimaType + " does not exist in the type system.");
             try {
                 // The sha check is supposed to compare the document text on which the annotation was made with the
                 // document text the current CAS has. If the differ, the annotations will most likely have

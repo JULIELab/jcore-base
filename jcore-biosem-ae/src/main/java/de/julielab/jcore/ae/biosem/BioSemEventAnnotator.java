@@ -91,7 +91,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 						"Skipping event extraction for this document because no proteins have been found that could be involved in an event.");
 				return;
 			}
-			List<String> proteinLines = getProteinLines(proteins);
+			List<String> proteinLines = getProteinLines(proteins, docId);
 			// Sometimes we have problems creating the text database.
 			// Unfortunately, I'm not sure why this is. However, we'd rather
 			// want to skip those cases instead of letting the pipeline fail as
@@ -239,7 +239,6 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	 *            otherwise)
 	 * @param proteinMap
 	 * @param triggerAnnotations
-	 * @param eventAnnotations2
 	 * @param triggerMap
 	 * @param aJCas
 	 *            The CAS to connect the new <tt>ArgumentMention</tt> annotation
@@ -371,10 +370,9 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	 * </code> <br/>
 	 * Example: <samp> T3 Protein 166 174 TGF-beta </samp>
 	 * 
-	 * @param aJCas
 	 * @return
 	 */
-	private List<String> getProteinLines(Map<String, Gene> proteins) {
+	private List<String> getProteinLines(Map<String, Gene> proteins, String docId) {
 		List<String> proteinLines = new ArrayList<>();
 		for (Entry<String, Gene> proteinEntry : proteins.entrySet()) {
 			String id = proteinEntry.getKey();
@@ -383,8 +381,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 				proteinLines.add(
 						id + "\tProtein\t" + gene.getBegin() + "\t" + gene.getEnd() + "\t" + gene.getCoveredText());
 			} catch (Exception e) {
-				e.printStackTrace();
-				log.error("Failed to process Protein with its values.");
+				log.error("Failed to collect protein information for relation extraction for document {}", docId, e);
 			}
 		}
 		return proteinLines;
