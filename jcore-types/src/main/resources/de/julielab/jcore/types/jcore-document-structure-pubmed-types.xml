@@ -11,6 +11,36 @@
     </imports>
     <types>
         <typeDescription>
+            <name>de.julielab.jcore.types.pubmed.AbstractText</name>
+            <description>Annotation of the complete abstract.</description>
+            <supertypeName>de.julielab.jcore.types.AbstractText</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>abstractType</name>
+                    <description>A string specifying what kind of abstract this is.</description>
+                    <rangeTypeName>de.julielab.jcore.types.pubmed.AbstractType</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>de.julielab.jcore.types.pubmed.AbstractType</name>
+            <description>The type of an abstract:
+                main: the main abstract of a MEDLINE citation
+                other: the 'other' abstract of a MEDLINE citation
+            </description>
+            <supertypeName>uima.cas.String</supertypeName>
+            <allowedValues>
+                <value>
+                    <string>main</string>
+                    <description>The 'normal' abstract of a citation.</description>
+                </value>
+                <value>
+                    <string>other</string>
+                    <description>An additional abstract given by the publisher or a collaborating partner.</description>
+                </value>
+            </allowedValues>
+        </typeDescription>
+        <typeDescription>
             <name>de.julielab.jcore.types.AbstractSectionHeading</name>
             <description>The heading of a section of a structured abstract as
                 used by MEDLINE and PubMed.
