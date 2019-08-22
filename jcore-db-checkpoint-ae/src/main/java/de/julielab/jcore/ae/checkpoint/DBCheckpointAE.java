@@ -173,8 +173,8 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         // Now get those IDs from the cache that have been released by all registered components. Those are then
         // marked as finished.
         List<DocumentId> processedDocumentIds = releasedDocumentIds.entrySet().stream().filter(e -> e.getCount() == docReleaseCheckpoint.getNumberOfRegisteredComponents()).map(Multiset.Entry::getElement).collect(Collectors.toList());
-        processedDocumentIds.forEach(releasedDocumentIds::remove);
-        if (releasedDocumentIds.size() > 1000) {
+        processedDocumentIds.forEach(id -> releasedDocumentIds.remove(id, Integer.MAX_VALUE));
+        if (releasedDocumentIds.size() > 100) {
             log.warn("There are currently {} document IDs that have been released by some but not by all components. If this number doesn't decrease, there is a high chance of some component(s) failing to release their documents, perhaps due to errors. The current document ID release queues have the following sizes: {}", releasedDocumentIds.size(), docReleaseCheckpoint.getReleasedDocumentsState());
         }
         if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName)) {

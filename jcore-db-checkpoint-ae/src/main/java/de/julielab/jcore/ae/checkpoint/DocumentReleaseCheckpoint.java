@@ -73,6 +73,8 @@ public class DocumentReleaseCheckpoint {
      * @param releasedDocumentIds The document IDs to be released.
      */
     public void release(Object componentKey, Stream<DocumentId> releasedDocumentIds) {
+        if (!releasedDocuments.containsKey(componentKey))
+            throw new IllegalArgumentException("No component is registered for key " + componentKey);
         releasedDocumentIds.forEach(d -> releasedDocuments.get(componentKey).add(d));
     }
 
