@@ -1,5 +1,7 @@
 package de.julielab.jcore.ae.checkpoint;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import de.julielab.costosys.Constants;
 import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
@@ -22,9 +24,8 @@ import java.io.FileNotFoundException;
 import java.sql.BatchUpdateException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ResourceMetaData(name = "JCoRe Database Checkpoint AE", description = "This component can be used when using a JCoRe database reader that reads from a CoStoSys/JeDIS subset. Enters the configured component name in the 'last component' column. Can also mark documents as being completely processed.")
 public class DBCheckpointAE extends JCasAnnotator_ImplBase {
@@ -58,6 +59,9 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
 
     private List<DocumentId> docIds;
 
+    private DocumentReleaseCheckpoint docReleaseCheckpoint;
+    private Multiset<DocumentId> releasedDocumentIds;
+
     /**
      * This method is called a single time by the framework at component
      * creation. Here, descriptor parameters are read and initial setup is done.
@@ -75,6 +79,11 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             throw new ResourceInitializationException(e);
         }
         docIds = new ArrayList<>();
+
+        docReleaseCheckpoint = DocumentReleaseCheckpoint.get();
+        docReleaseCheckpoint.register(this);
+        releasedDocumentIds = HashMultiset.create();
+
         log.info("{}: {}", PARAM_CHECKPOINT_NAME, componentDbName);
         log.info("{}: {}", PARAM_INDICATE_FINISHED, indicateFinished);
         log.info("{}: {}", PARAM_CHECKPOINT_NAME, componentDbName);
@@ -84,26 +93,32 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     @Override
     public void batchProcessComplete() throws AnalysisEngineProcessException {
         super.batchProcessComplete();
-        log.debug("BatchProcessComplete called, writing checkpoints {} to database", docIds.size());
+        log.debug("BatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
+        docReleaseCheckpoint.release(this, docIds.stream());
+        docIds.clear();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds, indicateFinished, dbc.getActiveTableFieldConfiguration());
+            setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
     }
 
     @Override
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
-        log.info("CollectionProcessComplete called, writing {} checkpoints to database", docIds.size());
+        log.debug("BatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
+        docReleaseCheckpoint.release(this, docIds.stream());
+        docIds.clear();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds,indicateFinished, dbc.getActiveTableFieldConfiguration());
+            setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
         log.info("Closing database connector.");
         dbc.close();
     }
 
     private void customBatchProcessingComplete() throws AnalysisEngineProcessException {
+        docReleaseCheckpoint.release(this, docIds.stream());
+        docIds.clear();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds, indicateFinished, dbc.getActiveTableFieldConfiguration());
+            setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
     }
 
@@ -149,7 +164,19 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      * @throws AnalysisEngineProcessException
      */
     private void setLastComponent(CoStoSysConnection conn, String
-            subsetTableName, List<DocumentId> processedDocumentIds, boolean markIsProcessed, FieldConfig annotationFieldConfig) throws AnalysisEngineProcessException {
+            subsetTableName, boolean markIsProcessed, FieldConfig annotationFieldConfig) throws AnalysisEngineProcessException {
+        // Add all documents released from all the different components to the current cache of released documents. The
+        // cache is a multiset, counting the number of released for each document. This is important because we only
+        // want to mark documents as being processed if all registered components are finished with it, i.e. have
+        // stored their information about the document to the database, preventing data loss.
+        releasedDocumentIds.addAll(docReleaseCheckpoint.getReleasedDocumentIds());
+        // Now get those IDs from the cache that have been released by all registered components. Those are then
+        // marked as finished.
+        List<DocumentId> processedDocumentIds = releasedDocumentIds.entrySet().stream().filter(e -> e.getCount() == docReleaseCheckpoint.getNumberOfRegisteredComponents()).map(Multiset.Entry::getElement).collect(Collectors.toList());
+        processedDocumentIds.forEach(releasedDocumentIds::remove);
+        if (releasedDocumentIds.size() > 1000) {
+            log.warn("There are currently {} document IDs that have been released by some but not by all components. If this number doesn't decrease, there is a high chance of some component(s) failing to release their documents, perhaps due to errors. The current document ID release queues have the following sizes: {}", releasedDocumentIds.size(), docReleaseCheckpoint.getReleasedDocumentsState());
+        }
         if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName)) {
             log.debug("Not setting the last component because the processed document IDs list is empty (size: {}) or the subset table name wasn't found (is: {})", processedDocumentIds.size(), subsetTableName);
             return;

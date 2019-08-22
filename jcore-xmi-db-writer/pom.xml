@@ -144,6 +144,11 @@
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
+            <artifactId>jcore-db-checkpoint-ae</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
             <artifactId>jcore-db-test-utilities</artifactId>
         </dependency>
         <dependency>

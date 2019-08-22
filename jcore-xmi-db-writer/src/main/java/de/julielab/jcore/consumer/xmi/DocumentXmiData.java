@@ -1,5 +1,6 @@
 package de.julielab.jcore.consumer.xmi;
 
+import de.julielab.jcore.ae.checkpoint.DocumentId;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

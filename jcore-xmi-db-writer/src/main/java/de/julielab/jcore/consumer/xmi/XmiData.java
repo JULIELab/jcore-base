@@ -1,5 +1,7 @@
 package de.julielab.jcore.consumer.xmi;
 
+import de.julielab.jcore.ae.checkpoint.DocumentId;
+
 /**
  * The minimum of data required to store some portion of XMI data for a document
  * - i.e. the document's ID and the respective data.

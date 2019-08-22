@@ -1,5 +1,6 @@
 package de.julielab.jcore.consumer.xmi;
 
+import de.julielab.jcore.ae.checkpoint.DocumentId;
 import de.julielab.xml.XmiSplitterResult;
 import org.apache.uima.cas.TypeSystem;
 

@@ -5,6 +5,8 @@ import de.julielab.costosys.Constants;
 import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.jcore.ae.checkpoint.DocumentId;
+import de.julielab.jcore.ae.checkpoint.DocumentReleaseCheckpoint;
 import de.julielab.xml.JulieXMLConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -28,25 +30,21 @@ public class XmiDataInserter {
     private String schemaDocument;
     private Boolean storeAll;
     private Set<String> annotationModuleColumnNames;
-    private String effectiveDocTableName;
     private DataBaseConnector dbc;
-    private Boolean storeBaseDocument;
     private Map<DocumentId, Integer> maxXmiIdMap;
     private String componentDbName;
     private String hashColumnName;
 
     private List<DocumentId> processedDocumentIds;
 
-    public XmiDataInserter(Set<String> annotationModuleColumnNames, String effectiveDocTableName,
+    public XmiDataInserter(Set<String> annotationModuleColumnNames,
                            DataBaseConnector dbc, String schemaDocument, Boolean storeAll,
-                           Boolean storeBaseDocument, Boolean updateMode, String componentDbName, String hashColumnName) {
+                           Boolean updateMode, String componentDbName, String hashColumnName) {
         super();
         this.annotationModuleColumnNames = annotationModuleColumnNames;
-        this.effectiveDocTableName = effectiveDocTableName;
         this.dbc = dbc;
         this.schemaDocument = schemaDocument;
         this.storeAll = storeAll;
-        this.storeBaseDocument = storeBaseDocument;
         this.updateMode = updateMode;
         this.componentDbName = componentDbName;
         this.hashColumnName = hashColumnName;
@@ -182,8 +180,6 @@ public class XmiDataInserter {
                 log.error("Error occurred while sending data to database. Exception:", e);
                 throw new XmiDataInsertionException(e);
             }
-            // updateMaxXmiId(conn);
-            //deleteRowsFromTablesWithoutData(columnsWithoutData, conn, dbc, annotationsToStore);
             setLastComponent(conn, subsetTableName);
             log.debug("Committing XMI data to database.");
             conn.commit();
@@ -252,115 +248,6 @@ public class XmiDataInserter {
         }
     }
 
-    /**
-     * When performing updates, it might happen that an annotation which was
-     * present in the former version of a document isn't present in the new
-     * version. Then, we have a deprecated annotation and, more importantly, it
-     * might have the same xmi id as another annotation being written in another
-     * table. This collision can create documents where XMI elements reference
-     * wrong other XMI elements. Thus, where a Token should be, there is
-     * suddenly a ChunkADVP (this actually happened). This method should delete
-     * such deprecated annotations.
-     *
-     * @param columnsWithoutData
-     * @param conn
-     * @throws XmiDataInsertionException
-     * @throws AnalysisEngineProcessException
-     * @deprecated Not required anymore since all annotations are now stored in one single table
-     */
-
-    private void deleteRowsFromTablesWithoutData(Map<String, List<DocumentId>> columnsWithoutData, CoStoSysConnection conn,
-                                                 DataBaseConnector dbc, List<String> annotationsToStore) throws XmiDataInsertionException {
-        if (!updateMode || storeAll || annotationsToStore.isEmpty())
-            return;
-
-        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(schemaDocument);
-
-        for (Entry<String, List<DocumentId>> entry : columnsWithoutData.entrySet()) {
-            List<DocumentId> docIds = entry.getValue();
-            if (docIds.size() == 0)
-                continue;
-
-            String tableName = entry.getKey();
-            // Create the primary key string for the prepared statement:
-            // pk1 = ? AND pk2 = ? AND ...
-            String pkElementPsString = StringUtils.join(annotationFieldConfig.expandPKNames("%s = ?"), " AND ");
-            String deleteString = "DELETE FROM " + tableName + " WHERE " + pkElementPsString;
-
-            try {
-                PreparedStatement deleteRowWithoutData = conn.prepareStatement(deleteString);
-                for (DocumentId docId : docIds) {
-                    for (int i = 0; i < docId.getId().length; i++) {
-                        String pkElement = docId.getId()[i];
-                        deleteRowWithoutData.setString(i + 1, pkElement);
-                    }
-                    deleteRowWithoutData.addBatch();
-                }
-                deleteRowWithoutData.executeBatch();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                SQLException nextException = e.getNextException();
-                if (null == nextException)
-                    throw new XmiDataInsertionException(e);
-                else
-                    nextException.printStackTrace();
-                throw new XmiDataInsertionException(nextException);
-            } finally {
-                docIds.clear();
-            }
-        }
-    }
-
-    /**
-     * Stores the next possible xmi id that can be assigned to new annotations
-     * in order to make sure that there aren't any clashes with already existing
-     * ids.
-     *
-     * @throws XmiDataInsertionException
-     * @throws AnalysisEngineProcessException
-     */
-    public void updateMaxXmiId(CoStoSysConnection conn) throws XmiDataInsertionException {
-        if (storeAll || storeBaseDocument)
-            return;
-
-        log.debug("Updating {} max XMI IDs.", maxXmiIdMap.size());
-
-        FieldConfig annotationFieldConfig = dbc.getFieldConfiguration(schemaDocument);
-        // gives:
-        // pk1 = ?
-        // pk2 = ?
-        // ...
-        String[] pkPsPlaceholder = annotationFieldConfig.expandPKNames("%s = ?");
-        // gives:
-        // pk1 = ? AND pk2 = ? AND pk3 = ? ...
-        String pkElementCondition = StringUtils.join(pkPsPlaceholder, " AND ");
-
-        String updateString = "UPDATE " + effectiveDocTableName + " SET " + FIELD_MAX_XMI_ID
-                + " = ? WHERE " + pkElementCondition;
-
-        try {
-            PreparedStatement updateMaxXmiId = conn.prepareStatement(updateString);
-            for (DocumentId docId : maxXmiIdMap.keySet()) {
-                Integer maxXmiId = maxXmiIdMap.get(docId);
-                updateMaxXmiId.setInt(1, maxXmiId);
-                // fill the placeholders with actual primary key values
-                for (int i = 0; i < docId.getId().length; i++) {
-                    String pkElement = docId.getId()[i];
-                    updateMaxXmiId.setString(i + 2, pkElement);
-                }
-                updateMaxXmiId.addBatch();
-            }
-            updateMaxXmiId.executeBatch();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            SQLException nextException = e.getNextException();
-            if (null == nextException)
-                throw new XmiDataInsertionException(e);
-            throw new XmiDataInsertionException(nextException);
-        } finally {
-            maxXmiIdMap.clear();
-        }
-    }
 
     public void putXmiIdMapping(DocumentId docId, Integer newXmiId) {
         maxXmiIdMap.put(docId, newXmiId);

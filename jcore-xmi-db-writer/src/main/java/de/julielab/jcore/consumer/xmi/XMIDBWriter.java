@@ -23,6 +23,8 @@ import de.julielab.costosys.cli.TableNotFoundException;
 import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.costosys.dbconnection.util.TableSchemaMismatchException;
+import de.julielab.jcore.ae.checkpoint.DocumentId;
+import de.julielab.jcore.ae.checkpoint.DocumentReleaseCheckpoint;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
@@ -61,7 +63,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -245,6 +247,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private String documentItemToHash;
     private Map<DocumentId, String> shaMap;
     private String mappingCacheKey;
+    private DocumentReleaseCheckpoint docReleaseCheckpoint;
+    private List<DocumentId> currentDocumentIdBatch;
 
     /*
      * (non-Javadoc)
@@ -428,9 +432,13 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
 
         metaTableManager = new MetaTableManager(dbc, xmiMetaSchema);
-        annotationInserter = new XmiDataInserter(annotationModulesColumnNames, effectiveDocTableName, dbc,
-                schemaDocument, storeAll, storeBaseDocument, updateMode, componentDbName, hashColumnName);
+        annotationInserter = new XmiDataInserter(annotationModulesColumnNames, dbc,
+                schemaDocument, storeAll, updateMode, componentDbName, hashColumnName);
         dbc.releaseConnections();
+
+        docReleaseCheckpoint = DocumentReleaseCheckpoint.get();
+        docReleaseCheckpoint.register(this);
+        currentDocumentIdBatch = new ArrayList<>();
     }
 
     private void checkTableDefinition(String annotationTableName, String schemaAnnotation) throws ResourceInitializationException {
@@ -495,6 +503,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 log.warn("The current document does not have a document ID. It is omitted from database import.");
                 return;
             }
+
+            currentDocumentIdBatch.add(docId);
 
             if (subsetTable == null) {
                 Collection<DBProcessingMetaData> metaData = JCasUtil.select(aJCas, DBProcessingMetaData.class);
@@ -961,6 +971,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 annotationModules.clear();
                 if (shaMap != null)
                     shaMap.clear();
+                docReleaseCheckpoint.release(this, currentDocumentIdBatch.stream());
+                currentDocumentIdBatch.clear();
             }
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
@@ -986,6 +998,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             annotationModules.clear();
             if (shaMap != null)
                 shaMap.clear();
+            docReleaseCheckpoint.release(this, currentDocumentIdBatch.stream());
+            currentDocumentIdBatch.clear();
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
         }
