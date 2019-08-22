@@ -299,7 +299,9 @@ figure: title of a figure
 caption: title of a caption
 footnote: title of a footnote
 abstract: title of an abstract or abstract part
-document: title of the document</description>
+document: title of the document
+document_vernacular: the original title of the document
+      </description>
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
       	<value>
@@ -326,6 +328,10 @@ document: title of the document</description>
           <string>document</string>
           <description>Denotes the document title</description>
         </value>
+          <value>
+              <string>document_vernacular</string>
+              <description>Denotes the original document title</description>
+          </value>
       <value>
           <string>other</string>
           <description />
