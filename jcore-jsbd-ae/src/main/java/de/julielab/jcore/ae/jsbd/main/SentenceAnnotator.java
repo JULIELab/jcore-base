@@ -141,7 +141,8 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
      */
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
         if (StringUtils.isBlank(aJCas.getDocumentText())) {
-            LOGGER.warn("The document text is empty.");
+            final String docId = JCoReTools.getDocId(aJCas);
+            LOGGER.warn("The document text of document {} is empty.", docId);
             return;
         }
         JCoReCondensedDocumentText documentText;
