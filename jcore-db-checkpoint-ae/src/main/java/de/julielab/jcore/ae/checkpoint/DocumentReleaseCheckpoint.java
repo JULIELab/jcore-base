@@ -30,8 +30,16 @@ import java.util.stream.Stream;
  * is the last component in the pipeline</p>
  */
 public class DocumentReleaseCheckpoint {
+    public static final String SYNC_PARAM_DESC = "If set, the value of this parameter is used to synchronize the 'processed' mark in the subset table documents processed by the pipeline. " +
+            "This is useful when document data is sent batchwise to the database by multiple components: In the case of a crash or manual cancellation of a pipeline run without synchronization is might happen " +
+            "that some components have sent their data and others haven't at the time of termination. To avoid an inconsistent database state," +
+            "a document will only be marked as finished " +
+            "processed in the JeDIS subset table if all synchronied components in the pipeline have released the document. " +
+            "This is done by the DBCheckpointAE which must be at the end of the pipeline and have the 'IndicateFinished' parameter set to 'true'. " +
+            "Synchronized components are those that disclose this parameter and have a value set to it.";
+    public static final String PARAM_JEDIS_SYNCHRONIZATION_KEY = "JedisSynchronizationKey";
     private static DocumentReleaseCheckpoint checkpoint;
-    private Map<Object, BlockingDeque<DocumentId>> releasedDocuments;
+    private Map<String, BlockingDeque<DocumentId>> releasedDocuments;
 
     private DocumentReleaseCheckpoint() {
         releasedDocuments = new ConcurrentHashMap<>();
@@ -44,35 +52,31 @@ public class DocumentReleaseCheckpoint {
     }
 
     /**
-     * <p>Registers a component that will add {@link DocumentId}s via the {@link #release(Object, Stream)} method.</p>
-     * <p>The given object is commonly just the <tt>this</tt> reference of the UIMA component that needs
-     * synchronization.</p>
+     * <p>Registers a component that will add {@link DocumentId}s via the {@link #release(String, Stream)} method.</p>
      *
      * @param componentKey A canonical identifier of the component taking part in synchronization.
      */
-    public void register(Object componentKey) {
+    public void register(String componentKey) {
         releasedDocuments.put(componentKey, new LinkedBlockingDeque<>());
     }
 
     /**
      * <p>Removes a component from the list of document ID releasing components.</p>
-     * <p>The given object is commonly just the <tt>this</tt> reference of the UIMA component that needs
-     * synchronization.</p>
      * <p>This method is not commonly required and only here for functional completeness.</p>
      *
-     * @param componentKey The canonical identifier provided in {@link #register(Object)} earlier.
+     * @param componentKey The canonical identifier provided in {@link #register(String)} earlier.
      */
-    public void unregister(Object componentKey) {
+    public void unregister(String componentKey) {
         releasedDocuments.remove(componentKey);
     }
 
     /**
-     * <p>To be called from synchronizing components. They send their registration key - commonly just the annotator object itself - and the document IDs they are positively finished with.</p>
+     * <p>To be called from synchronizing components. They send their registration key and the document IDs they are positively finished with.</p>
      *
-     * @param componentKey        The canonical identifier provided in {@link #register(Object)} earlier.
+     * @param componentKey        The canonical identifier provided in {@link #register(String)} earlier.
      * @param releasedDocumentIds The document IDs to be released.
      */
-    public void release(Object componentKey, Stream<DocumentId> releasedDocumentIds) {
+    public void release(String componentKey, Stream<DocumentId> releasedDocumentIds) {
         if (!releasedDocuments.containsKey(componentKey))
             throw new IllegalArgumentException("No component is registered for key " + componentKey);
         releasedDocumentIds.forEach(d -> releasedDocuments.get(componentKey).add(d));
@@ -83,7 +87,7 @@ public class DocumentReleaseCheckpoint {
      * <p>Get all the document IDs from all synchronizing components that those components have released. The returned list will
      * contain duplicates of document IDs when multiple components have released that document. The {@link DBCheckpointAE}
      * will only mark those documents as processed that have been released as often as synchronizing components have been
-     * registered with {@link #register(Object)}.</p>
+     * registered with {@link #register(String)}.</p>
      *
      * @return The currently released document IDs.
      */
@@ -108,7 +112,7 @@ public class DocumentReleaseCheckpoint {
      *
      * @return A map showing the number of released documents by key.
      */
-    public Map<Object, Integer> getReleasedDocumentsState() {
+    public Map<String, Integer> getReleasedDocumentsState() {
         return releasedDocuments.keySet().stream().collect(Collectors.toMap(Function.identity(), o -> releasedDocuments.get(o).size()));
     }
 }

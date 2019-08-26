@@ -249,6 +249,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private String mappingCacheKey;
     private DocumentReleaseCheckpoint docReleaseCheckpoint;
     private List<DocumentId> currentDocumentIdBatch;
+    @ConfigurationParameter(name = DocumentReleaseCheckpoint.PARAM_JEDIS_SYNCHRONIZATION_KEY, mandatory = false, description = DocumentReleaseCheckpoint.SYNC_PARAM_DESC)
+    private String jedisSyncKey;
 
     /*
      * (non-Javadoc)
@@ -436,8 +438,11 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 schemaDocument, storeAll, updateMode, componentDbName, hashColumnName);
         dbc.releaseConnections();
 
-        docReleaseCheckpoint = DocumentReleaseCheckpoint.get();
-        docReleaseCheckpoint.register(this);
+        jedisSyncKey = (String) aContext.getConfigParameterValue(DocumentReleaseCheckpoint.PARAM_JEDIS_SYNCHRONIZATION_KEY);
+        if (jedisSyncKey != null) {
+            docReleaseCheckpoint = DocumentReleaseCheckpoint.get();
+            docReleaseCheckpoint.register(jedisSyncKey);
+        }
         currentDocumentIdBatch = new ArrayList<>();
     }
 
@@ -971,7 +976,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 annotationModules.clear();
                 if (shaMap != null)
                     shaMap.clear();
-                docReleaseCheckpoint.release(this, currentDocumentIdBatch.stream());
+                if (docReleaseCheckpoint != null)
+                    docReleaseCheckpoint.release(jedisSyncKey, currentDocumentIdBatch.stream());
                 currentDocumentIdBatch.clear();
             }
         } catch (XmiDataInsertionException e) {
@@ -998,7 +1004,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             annotationModules.clear();
             if (shaMap != null)
                 shaMap.clear();
-            docReleaseCheckpoint.release(this, currentDocumentIdBatch.stream());
+            if (docReleaseCheckpoint != null)
+                docReleaseCheckpoint.release(jedisSyncKey, currentDocumentIdBatch.stream());
             currentDocumentIdBatch.clear();
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);

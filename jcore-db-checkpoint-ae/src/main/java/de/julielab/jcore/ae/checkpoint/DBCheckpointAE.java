@@ -55,6 +55,10 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             "The number of processed CASes after which the checkpoint should be written into the database. Defaults to 50.")
     private int writeBatchSize;
 
+    @ConfigurationParameter(name = DocumentReleaseCheckpoint.PARAM_JEDIS_SYNCHRONIZATION_KEY, mandatory = false, description = DocumentReleaseCheckpoint.SYNC_PARAM_DESC)
+    private String jedisSyncKey;
+
+
     private String subsetTable;
 
     private List<DocumentId> docIds;
@@ -80,8 +84,9 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         }
         docIds = new ArrayList<>();
 
+        jedisSyncKey = (String) Optional.ofNullable(aContext.getConfigParameterValue(DocumentReleaseCheckpoint.PARAM_JEDIS_SYNCHRONIZATION_KEY)).orElse(getClass().getCanonicalName() + componentDbName);
         docReleaseCheckpoint = DocumentReleaseCheckpoint.get();
-        docReleaseCheckpoint.register(this);
+        docReleaseCheckpoint.register(jedisSyncKey);
         releasedDocumentIds = HashMultiset.create();
 
         log.info("{}: {}", PARAM_CHECKPOINT_NAME, componentDbName);
@@ -94,7 +99,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     public void batchProcessComplete() throws AnalysisEngineProcessException {
         super.batchProcessComplete();
         log.debug("BatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
-        docReleaseCheckpoint.release(this, docIds.stream());
+        docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
         docIds.clear();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
@@ -105,7 +110,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
         log.debug("BatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
-        docReleaseCheckpoint.release(this, docIds.stream());
+        docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
         docIds.clear();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
@@ -115,7 +120,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     }
 
     private void customBatchProcessingComplete() throws AnalysisEngineProcessException {
-        docReleaseCheckpoint.release(this, docIds.stream());
+        docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
         docIds.clear();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
@@ -174,7 +179,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         // marked as finished.
         List<DocumentId> processedDocumentIds = releasedDocumentIds.entrySet().stream().filter(e -> e.getCount() == docReleaseCheckpoint.getNumberOfRegisteredComponents()).map(Multiset.Entry::getElement).collect(Collectors.toList());
         processedDocumentIds.forEach(id -> releasedDocumentIds.remove(id, Integer.MAX_VALUE));
-        if (releasedDocumentIds.size() > 100) {
+        if (releasedDocumentIds.size() > 3*writeBatchSize) {
             log.warn("There are currently {} document IDs that have been released by some but not by all components. If this number doesn't decrease, there is a high chance of some component(s) failing to release their documents, perhaps due to errors. The current document ID release queues have the following sizes: {}", releasedDocumentIds.size(), docReleaseCheckpoint.getReleasedDocumentsState());
         }
         if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName)) {

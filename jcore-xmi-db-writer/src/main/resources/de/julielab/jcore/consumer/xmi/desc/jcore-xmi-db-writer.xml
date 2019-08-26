@@ -136,7 +136,14 @@
             </configurationParameter>
             <configurationParameter>
                 <name>AddShaHash</name>
-                <description>Possible values: document_text. If this parameter is set to a valid value, the SHA256 hash for the given value will be calculated and added to each document as a new column in the document table. The column will be named after the parameter value, suffixe by '_sha256'.</description>
+                <description>Possible values: document_text. If this parameter is set to a valid value, the SHA256 hash for the given value will be calculated, base64 encoded and added to each document as a new column in the document table. The column will be named after the parameter value, suffixed by '_sha256'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>JedisSynchronizationKey</name>
+                <description>If set, the value of this parameter is used to synchronize the 'processed' mark in the subset table documents processed by the pipeline. This is useful when document data is sent batchwise to the database by multiple components: In the case of a crash or manual cancellation of a pipeline run without synchronization is might happen that some components have sent their data and others haven't at the time of termination. To avoid an inconsistent database state,a document will only be marked as finished processed in the JeDIS subset table if all synchronied components in the pipeline have released the document. This is done by the DBCheckpointAE which must be at the end of the pipeline and have the 'IndicateFinished' parameter set to 'true'. Synchronized components are those that disclose this parameter and have a value set to it.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
