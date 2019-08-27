@@ -41,10 +41,8 @@ while True:
         sid      = sentenceToTag['sid']
         sentence = Sentence(sentenceToTag['text'])
         # NER tagging
-        clearWordEmbeddings = sendEmbeddings == "NONE"
-        tagger.predict(sentence, clear_word_embeddings=clearWordEmbeddings)
-
-
+        embeddingStorageMode = "none" if sendEmbeddings == "NONE" else "cpu";
+        tagger.predict(sentence, embedding_storage_mode = embeddingStorageMode)
 
         for e in sentence.get_spans("ner"):
             tokenids = [t.idx for t in e.tokens]

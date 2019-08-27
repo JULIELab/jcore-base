@@ -31,8 +31,8 @@ before_install:
     if ! find "$HOME/pip-cache" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
       $PYTHON -m pip download --destination-directory="$HOME/pip-cache" flair
     fi
-    #sudo -H $PYTHON -m pip install --no-index --find-links="$HOME/pip-cache" flair
-  - ./travis-deployment/install-flair-nightly.sh
+    sudo -H $PYTHON -m pip install --no-index --find-links="$HOME/pip-cache" flair=0.4.3
+  - #./travis-deployment/install-flair-nightly.sh
   - export BOTO_CONFIG=/dev/null
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: mvn -T 1C test -B
