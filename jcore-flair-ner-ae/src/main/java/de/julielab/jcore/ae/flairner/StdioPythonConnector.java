@@ -31,14 +31,14 @@ public class StdioPythonConnector implements PythonConnector {
     private final static Logger log = LoggerFactory.getLogger(StdioPythonConnector.class);
     private final StdioBridge<byte[]> bridge;
 
-    public StdioPythonConnector(String languageModelPath, String pythonExecutable, FlairNerAnnotator.StoreEmbeddings storeEmbeddings) throws IOException {
+    public StdioPythonConnector(String languageModelPath, String pythonExecutable, FlairNerAnnotator.StoreEmbeddings storeEmbeddings, int gpuNum) throws IOException {
         Options params = new Options(byte[].class);
         params.setExecutable(pythonExecutable);
         params.setExternalProgramReadySignal("Ready for tagging.");
         params.setExternalProgramTerminationSignal("exit");
         params.setTerminationSignalFromErrorStream("SyntaxError");
         String script = IOStreamUtilities.getStringFromInputStream(getClass().getResourceAsStream("/de/julielab/jcore/ae/flairner/python/nerScript.py"));
-        bridge = new StdioBridge<>(params, "-u", "-c", script, languageModelPath, storeEmbeddings.name());
+        bridge = new StdioBridge<>(params, "-u", "-c", script, languageModelPath, storeEmbeddings.name(), String.valueOf(gpuNum));
     }
 
     @Override

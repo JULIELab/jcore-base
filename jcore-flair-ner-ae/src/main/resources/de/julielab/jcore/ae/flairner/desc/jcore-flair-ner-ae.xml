@@ -35,8 +35,22 @@
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>GpuNumber</name>
+                <description>Specifies the GPU device number to be used for FLAIR.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings/>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>GpuNumber</name>
+                <value>
+                    <integer>0</integer>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>

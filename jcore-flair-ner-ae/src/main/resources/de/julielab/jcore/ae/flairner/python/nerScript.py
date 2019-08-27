@@ -1,4 +1,6 @@
 import os
+import flair
+import torch
 from flair.models import SequenceTagger
 from flair.data import Sentence
 from typing import List
@@ -23,6 +25,11 @@ def decodeString(buffer):
 taggerPath = sys.argv[1]
 # Possible values: ALL, ENTITIES, NONE
 sendEmbeddings = sys.argv[2]
+gpuNum = sys.argv[3]
+
+if torch.cuda.is_available():
+    flair.device = torch.device("cuda:"+gpuNum)
+
 tagger = SequenceTagger.load(taggerPath)
 
 print("Ready for tagging.")

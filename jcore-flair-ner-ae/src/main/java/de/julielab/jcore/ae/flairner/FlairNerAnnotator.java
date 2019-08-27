@@ -42,6 +42,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     public static final String PARAM_FLAIR_MODEL = "FlairModel";
     public static final String PARAM_PYTHON_EXECUTABLE = "PythonExecutable";
     public static final String PARAM_STORE_EMBEDDINGS = "StoreEmbeddings";
+    public static final String PARAM_GPU_NUM = "GpuNumber";
     private final static Logger log = LoggerFactory.getLogger(FlairNerAnnotator.class);
     private PythonConnector connector;
     @ConfigurationParameter(name = PARAM_ANNOTATION_TYPE, description = "The UIMA type of which annotations should be created, e.g. de.julielab.jcore.types.EntityMention, of which the given type must be a subclass of. The tag of the entities is written to the specificType feature.")
@@ -52,6 +53,8 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     private String pythonExecutable;
     @ConfigurationParameter(name = PARAM_STORE_EMBEDDINGS, mandatory = false, description = "Optional. Possible values: ALL, ENTITIES, NONE. The FLAIR SequenceTagger first computes the embeddings for each sentence and uses those as input for the actual NER algorithm. By default, the embeddings are not stored. By setting this parameter to ALL, the embeddings of all tokens of the sentence are retrieved from flair and stored in the embeddingVectors feature of each token. Setting the parameter to ENTITIES will restrict the embedding storage to those tokens which overlap with an entity recognized by FLAIR.")
     private StoreEmbeddings storeEmbeddings;
+    @ConfigurationParameter(name = PARAM_GPU_NUM, mandatory = false, defaultValue="0", description = "Specifies the GPU device number to be used for FLAIR.")
+    private int gpuNum;
     private AnnotationAdderConfiguration adderConfig;
 
     /**
@@ -63,6 +66,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         entityClass = (String) aContext.getConfigParameterValue(PARAM_ANNOTATION_TYPE);
         flairModel = (String) aContext.getConfigParameterValue(PARAM_FLAIR_MODEL);
         storeEmbeddings = StoreEmbeddings.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_STORE_EMBEDDINGS)).orElse(StoreEmbeddings.NONE.name()));
+        gpuNum = Optional.ofNullable((Integer)aContext.getConfigParameterValue(PARAM_GPU_NUM)).orElse(0);
 
         Optional<String> pythonExecutableOpt = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_PYTHON_EXECUTABLE));
         if (!pythonExecutableOpt.isPresent()) {
@@ -81,7 +85,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             log.info("Python executable: {} (default)", pythonExecutable);
         }
         try {
-            connector = new StdioPythonConnector(flairModel, pythonExecutable, storeEmbeddings);
+            connector = new StdioPythonConnector(flairModel, pythonExecutable, storeEmbeddings, gpuNum);
             connector.start();
         } catch (IOException e) {
             log.error("Could not start the python connector", e);
@@ -93,6 +97,11 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         // FLAIR interprets all whitespaces as token boundaries
         adderConfig.setSplitTokensAtWhitespace(true);
         adderConfig.setDefaultUimaType(entityClass);
+
+        log.info("{}: {}", PARAM_ANNOTATION_TYPE, entityClass);
+        log.info("{}: {}", PARAM_FLAIR_MODEL, flairModel);
+        log.info("{}: {}", PARAM_STORE_EMBEDDINGS, storeEmbeddings);
+        log.info("{}: {}", PARAM_GPU_NUM, gpuNum);
     }
 
     /**
