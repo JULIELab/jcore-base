@@ -52,7 +52,7 @@ public class TokenEmbedding {
         return "TokenEmbedding{" +
                 "sentenceId='" + sentenceId + '\'' +
                 ", tokenId=" + tokenId +
-                ", vector=" + Arrays.toString(Arrays.copyOfRange(vector, 0, Math.min(10, vector.length))) +
+                ", vector=" + Arrays.toString(Arrays.copyOfRange(vector, 0, Math.min(5, vector.length))) + " ("+vector.length+" elements)"+
                 '}';
     }
 }
