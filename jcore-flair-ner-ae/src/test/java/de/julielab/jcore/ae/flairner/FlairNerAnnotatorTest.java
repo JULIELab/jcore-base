@@ -21,13 +21,11 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static de.julielab.jcore.ae.flairner.FlairNerAnnotator.StoreEmbeddings.ENTITIES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -72,7 +70,7 @@ public class FlairNerAnnotatorTest {
     public void testAnnotatorWithEntityWordEmbeddings() throws Exception {
         embeddingsCache.clear();
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
-        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, FlairNerAnnotator.StoreEmbeddings.ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
         String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
         jCas.setDocumentText(text);
         Sentence s = new Sentence(jCas, 0, text.length());
@@ -110,7 +108,7 @@ public class FlairNerAnnotatorTest {
     @Test(dependsOnMethods = "testAnnotatorWithEntityWordEmbeddings")
     public void testAnnotatorWithEntitySubWordEmbeddings() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
-        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, FlairNerAnnotator.StoreEmbeddings.ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
         String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
         jCas.setDocumentText(text);
         Sentence s = new Sentence(jCas, 0, text.length());
@@ -251,6 +249,41 @@ public class FlairNerAnnotatorTest {
             foundGenes.add(g.getCoveredText());
             assertThat(g.getSpecificType().equals("Gene"));
         }
+        engine.collectionProcessComplete();
+    }
+
+
+    @Test
+    public void testEmbeddings2() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt", FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, ENTITIES);
+        // The sentence detection and tokenization was done by the jcore-j[st]bd-biomedical-english JCoRe project components, using the executable (java -jar) command line artifact created when building the components.
+        String text = "We show that tal controls gene expression and tissue folding in Drosophila , thus acting as a link between patterning and morphogenesis .\n tal function is mediated by several 33-nucleotide-long open reading frames ( ORFs )";
+        jCas.setDocumentText(text);
+        addSentences(jCas);
+        addTokens(jCas);
+
+        engine.process(jCas);
+        double[] v1 = null;
+        double[] v2 = null;
+        for (Token t : jCas.<Token>getAnnotationIndex(Token.type)) {
+            if (t.getEmbeddingVectors() != null) {
+                assertThat(t.getCoveredText()).isEqualTo("tal");
+                if (v1 == null)
+                    v1 = t.getEmbeddingVectors(0).getVector().toArray();
+                else
+                    v2 = t.getEmbeddingVectors(0).getVector().toArray();
+            }
+        }
+        int numDifferent = 0;
+        for (int i = 0; i < v1.length; i++) {
+            double d1 = v1[i];
+            double d2 = v2[i];
+            if (Math.abs(d1 - d2) > 0.00001)
+                ++numDifferent;
+        }
+        // A few positions might be very close just by chance
+        assertThat(numDifferent).isGreaterThan(1000);
         engine.collectionProcessComplete();
     }
 

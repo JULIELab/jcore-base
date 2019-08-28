@@ -130,7 +130,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
                 em.setComponentId(FlairNerAnnotator.class.getSimpleName());
                 em.addToIndexes();
             }
-
+            System.out.println(taggingResponse);
             addTokenEmbeddings(aJCas, sentenceMap, helper, taggingResponse);
         } catch (IOException e) {
             log.error("Could not tag entities", e);

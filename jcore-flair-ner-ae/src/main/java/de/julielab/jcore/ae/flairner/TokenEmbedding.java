@@ -1,5 +1,7 @@
 package de.julielab.jcore.ae.flairner;
 
+import java.util.Arrays;
+
 /**
  * <p>
  * A simple wrapper class around a 1-based token index (relative to the sent sentence) and the embedding vector
@@ -43,5 +45,14 @@ public class TokenEmbedding {
 
     public void setVector(double[] vector) {
         this.vector = vector;
+    }
+
+    @Override
+    public String toString() {
+        return "TokenEmbedding{" +
+                "sentenceId='" + sentenceId + '\'' +
+                ", tokenId=" + tokenId +
+                ", vector=" + Arrays.toString(vector) +
+                '}';
     }
 }

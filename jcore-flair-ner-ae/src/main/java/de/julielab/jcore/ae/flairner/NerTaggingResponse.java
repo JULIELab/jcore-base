@@ -32,4 +32,12 @@ public class NerTaggingResponse {
     public void setTokenEmbeddings(List<TokenEmbedding> tokenEmbeddings) {
         this.tokenEmbeddings = tokenEmbeddings;
     }
+
+    @Override
+    public String toString() {
+        return "NerTaggingResponse{" +
+                "taggedEntities=" + taggedEntities +
+                ", tokenEmbeddings=" + tokenEmbeddings +
+                '}';
+    }
 }
