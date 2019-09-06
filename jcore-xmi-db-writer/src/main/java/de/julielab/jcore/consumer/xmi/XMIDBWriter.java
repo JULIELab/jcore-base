@@ -632,9 +632,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                             synchronized (binaryMappedFeatures) {
                                 binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
                                 binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
-                                System.out.println("Updated mapped features:");
-                                for (String k : binaryMappedFeatures.get(mappingCacheKey).keySet())
-                                    System.out.println(k + ": " + binaryMappedFeatures.get(mappingCacheKey).get(k));
                             }
                             // Mark all the items as processed for other threads which might wait for them, otherwise.
                             xmiBufferItemsFromOtherThreads.forEach(item -> item.setProcessedForBinaryMappings(true));
@@ -700,23 +697,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
 
                 if (useBinaryFormat) {
                     try {
-                        System.out.println(result.jedisNodesInAnnotationModules.size());
-                        System.out.println("Num BaseDoc JedisNodes: " + result.jedisNodesInAnnotationModules.stream().filter(n -> n.getAnnotationModuleLabels().contains(XmiSplitter.DOCUMENT_MODULE_LABEL)).count());
-                        System.out.println(binaryStringMapping.get(mappingCacheKey).size());
-                        System.out.println(binaryMappedFeatures.get(mappingCacheKey).size());
-                        String mappingString = binaryStringMapping.get(mappingCacheKey).keySet().stream().sorted().map(k -> k + "->" + binaryStringMapping.get(mappingCacheKey).get(k)).collect(Collectors.joining(", "));
-                        String featuresString = binaryMappedFeatures.get(mappingCacheKey).keySet().stream().sorted().map(k -> k + "->" + binaryMappedFeatures.get(mappingCacheKey).get(k)).collect(Collectors.joining(", "));
-//                        for (String k : binaryMappedFeatures.get(mappingCacheKey).keySet())
-//                            System.out.println(k + ": " + binaryMappedFeatures.get(mappingCacheKey).get(k));
-                        System.out.println("Mapping MD5: " + new String(java.util.Base64.getEncoder().encode(DigestUtils.md5(mappingString.getBytes(UTF_8)))));
-                        System.out.println("Features to map MD5: " + new String(java.util.Base64.getEncoder().encode(DigestUtils.md5(featuresString.getBytes(UTF_8)))));
-                        final List<JeDISVTDGraphNode> baseDocNodes = result.jedisNodesInAnnotationModules.stream().filter(n -> n.getAnnotationModuleLabels().contains(XmiSplitter.DOCUMENT_MODULE_LABEL)).collect(Collectors.toList());
-                        for (JeDISVTDGraphNode n : baseDocNodes)
-                            System.out.println(n);
                         final Map<String, ByteArrayOutputStream> encodedXmiData = binaryEncoder.encode(result.jedisNodesInAnnotationModules, item.getTypeSystem(), binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey));
-                        System.out.println(Arrays.toString(encodedXmiData.get(XmiSplitter.DOCUMENT_MODULE_LABEL).toByteArray()));
-                        System.out.println(encodedXmiData.get(XmiSplitter.DOCUMENT_MODULE_LABEL).toByteArray().length);
-                        System.out.println(encodedXmiData.get(XmiSplitter.DOCUMENT_MODULE_LABEL).toString(UTF_8));
                         splitXmiData = encodedXmiData;
                     } catch (MissingBinaryMappingException e) {
                         throw new AnalysisEngineProcessException(e);
@@ -774,9 +755,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             if (storeAll) {
                 xmiItemBuffer.add(new XmiBufferItem(baos.toByteArray(), docId, baseDocumentSofaIdMap, nextXmiId, aJCas.getTypeSystem()));
             } else {
-                System.out.println(nextXmiId);
-                System.out.println(baseDocumentSofaIdMap);
-                System.out.println("Input XMI byte size: " + baos.toByteArray().length);
                 XmiSplitterResult result = splitter.process(baos.toByteArray(), aJCas.getTypeSystem(), nextXmiId, baseDocumentSofaIdMap);
                 final XmiBufferItem xmiBufferItem = new XmiBufferItem(result, docId, baseDocumentSofaIdMap, nextXmiId, aJCas.getTypeSystem());
                 xmiItemBuffer.add(xmiBufferItem);
