@@ -176,9 +176,9 @@ public class MetaTableManager {
         return new ImmutablePair(completeMapping, completeMappedAttributes);
     }
 
-    private void writeMappingsToDatabase(Map<String, Boolean> currentMappedAttributes, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Integer> stillMissingValuesMap, Map<String, Boolean> missingFeaturesToMap) throws SQLException {
+    private void writeMappingsToDatabase(Map<String, Boolean> currentMappedAttributes, String mappingTableName, String featuresToMapTableName, CoStoSysConnection costoConn, boolean wasAutoCommit, Map<String, Boolean> featuresToMapFromDatabase, Map<String, Integer> stillMissingValuesMap, Map<String, Boolean> stillMissingFeaturesToMap) throws SQLException {
         insertMissingMappings(mappingTableName, costoConn, stillMissingValuesMap);
-        insertMissingFeaturesToMap(featuresToMapTableName, costoConn, missingFeaturesToMap, currentMappedAttributes, featuresToMapFromDatabase);
+        insertMissingFeaturesToMap(featuresToMapTableName, costoConn, stillMissingFeaturesToMap, currentMappedAttributes, featuresToMapFromDatabase);
 
         // Commit the changes made
         log.debug("Thread {} is committing mapping changes to the database.", Thread.currentThread().getName());
@@ -199,11 +199,10 @@ public class MetaTableManager {
         for (String value : stillMissingValuesToMap)
             stillMissingValuesMap.put(value, id++);
 
-
         if (writeToDatabase) {
             writeMappingsToDatabase(currentMappedAttributes, mappingTableName, featuresToMapTableName, costoConn, wasAutoCommit, featuresToMapFromDatabase, stillMissingValuesMap, stillMissingFeaturesToMap);
         }
-        return new ImmutablePair<>(stillMissingValuesMap, missingFeaturesToMap);
+        return new ImmutablePair<>(stillMissingValuesMap, stillMissingFeaturesToMap);
     }
 
     private void obtainLockToMappingTable(String mappingTableName, Statement stmt) throws AnalysisEngineProcessException {
@@ -294,10 +293,10 @@ public class MetaTableManager {
         }
     }
 
-    private void insertMissingFeaturesToMap(String featuresToMapTableName, CoStoSysConnection costoConn, Map<String, Boolean> missingFeaturesToMap, Map<String, Boolean> currentMappedAttributes, Map<String, Boolean> featuresToMapFromDatabase) {
+    private void insertMissingFeaturesToMap(String featuresToMapTableName, CoStoSysConnection costoConn, Map<String, Boolean> stillMissingFeaturesToMap, Map<String, Boolean> currentMappedAttributes, Map<String, Boolean> featuresToMapFromDatabase) {
         String sql = null;
         try {
-            Map<String, Boolean> toInsert = new HashMap<>(missingFeaturesToMap);
+            Map<String, Boolean> toInsert = new HashMap<>(stillMissingFeaturesToMap);
             // If we gave a blacklist of features to the XmiXbWriter and this is the very first table update,
             // there will be elements in the current state which are not yet in the table
             final Sets.SetView<String> predefinedFeaturesToMap = Sets.difference(currentMappedAttributes.keySet(), featuresToMapFromDatabase.keySet());
