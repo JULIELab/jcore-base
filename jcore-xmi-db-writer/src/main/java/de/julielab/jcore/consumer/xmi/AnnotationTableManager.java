@@ -210,9 +210,9 @@ public class AnnotationTableManager {
                             + " after the annotation type.");
                 }
             }
-            dbc.assureColumnsExist(tableName, annotationColumns, binaryAnnotationColumns ? "bytea" : "xml");
+            dbc.assureColumnsExist(effectiveTableName, annotationColumns, binaryAnnotationColumns ? "bytea" : "xml");
 
-            dbc.checkTableHasSchemaColumns(tableName, schema);
+            dbc.checkTableHasSchemaColumns(effectiveTableName, schema);
 
             annotationColumns.forEach(this::addAnnotationTableToList);
         } catch (CoStoSysSQLRuntimeException e) {

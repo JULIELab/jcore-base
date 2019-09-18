@@ -333,7 +333,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         } else {
             List<Map<String, String>> xmiAnnotationColumnsDefinitions = new ArrayList<>();
             for (String qualifiedAnnotation : annotations) {
-                final String columnName = annotationTableManager.convertQualifiedAnnotationTypeToColumnName(qualifiedAnnotation, defaultAnnotationColumnQualifier);
+                final String columnName = AnnotationTableManager.convertQualifiedAnnotationTypeToColumnName(qualifiedAnnotation, defaultAnnotationColumnQualifier);
                 final Map<String, String> field = FieldConfig.createField(
                         JulieXMLConstants.NAME, columnName,
                         JulieXMLConstants.GZIP, String.valueOf(doGzip),
@@ -346,6 +346,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 shaMap = new HashMap<>();
                 hashColumnName = documentItemToHash + "_sha256";
                 xmiAnnotationColumnsDefinitions.add(FieldConfig.createField(JulieXMLConstants.NAME, hashColumnName, JulieXMLConstants.TYPE, "text"));
+                dbc.assureColumnsExist(docTableParamValue, Collections.singletonList(hashColumnName), "text");
             }
             final FieldConfig fieldConfig = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), xmiAnnotationColumnsDefinitions, doGzip || useBinaryFormat);
             schemaDocument = fieldConfig.getName();
