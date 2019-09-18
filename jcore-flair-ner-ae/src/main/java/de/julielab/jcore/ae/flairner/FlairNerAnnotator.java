@@ -43,6 +43,10 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     public static final String PARAM_PYTHON_EXECUTABLE = "PythonExecutable";
     public static final String PARAM_STORE_EMBEDDINGS = "StoreEmbeddings";
     public static final String PARAM_GPU_NUM = "GpuNumber";
+    /**
+     * The name of the Java system property to set the used GPU device externally.
+     */
+    public static final String GPU_NUM_SYS_PROP = "flairner.device";
     private final static Logger log = LoggerFactory.getLogger(FlairNerAnnotator.class);
     private PythonConnector connector;
     @ConfigurationParameter(name = PARAM_ANNOTATION_TYPE, description = "The UIMA type of which annotations should be created, e.g. de.julielab.jcore.types.EntityMention, of which the given type must be a subclass of. The tag of the entities is written to the specificType feature.")
@@ -53,7 +57,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     private String pythonExecutable;
     @ConfigurationParameter(name = PARAM_STORE_EMBEDDINGS, mandatory = false, description = "Optional. Possible values: ALL, ENTITIES, NONE. The FLAIR SequenceTagger first computes the embeddings for each sentence and uses those as input for the actual NER algorithm. By default, the embeddings are not stored. By setting this parameter to ALL, the embeddings of all tokens of the sentence are retrieved from flair and stored in the embeddingVectors feature of each token. Setting the parameter to ENTITIES will restrict the embedding storage to those tokens which overlap with an entity recognized by FLAIR.")
     private StoreEmbeddings storeEmbeddings;
-    @ConfigurationParameter(name = PARAM_GPU_NUM, mandatory = false, defaultValue="0", description = "Specifies the GPU device number to be used for FLAIR.")
+    @ConfigurationParameter(name = PARAM_GPU_NUM, mandatory = false, defaultValue="0", description = "Specifies the GPU device number to be used for FLAIR. This setting can be overwritten by the Java system property 'flairner.device'.")
     private int gpuNum;
     private AnnotationAdderConfiguration adderConfig;
 
@@ -67,6 +71,14 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         flairModel = (String) aContext.getConfigParameterValue(PARAM_FLAIR_MODEL);
         storeEmbeddings = StoreEmbeddings.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_STORE_EMBEDDINGS)).orElse(StoreEmbeddings.NONE.name()));
         gpuNum = Optional.ofNullable((Integer)aContext.getConfigParameterValue(PARAM_GPU_NUM)).orElse(0);
+        if (System.getProperty(GPU_NUM_SYS_PROP) != null) {
+            try {
+                gpuNum = Integer.valueOf(System.getProperty(GPU_NUM_SYS_PROP));
+                log.info("The GPU device number is set to '" + gpuNum + "' by the system property '" + GPU_NUM_SYS_PROP + "'. This causes the setting in the UIMA descriptor to be ignored.");
+            } catch (NumberFormatException e) {
+                log.error("The system property '" + GPU_NUM_SYS_PROP + "' is set to '" + System.getProperty(GPU_NUM_SYS_PROP) + "' which cannot be parsed to an integer. Please provide the device number of the GPU to use.", e);
+            }
+        }
 
         Optional<String> pythonExecutableOpt = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_PYTHON_EXECUTABLE));
         if (!pythonExecutableOpt.isPresent()) {
