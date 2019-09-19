@@ -54,6 +54,11 @@
             <version>3.8.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.13</version>
+        </dependency>
     </dependencies>
     <organization>
         <name>JULIE Lab, Germany</name>

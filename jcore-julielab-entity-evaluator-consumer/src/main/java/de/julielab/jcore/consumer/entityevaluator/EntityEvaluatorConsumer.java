@@ -10,6 +10,7 @@
 package de.julielab.jcore.consumer.entityevaluator;
 
 import de.julielab.java.utilities.FileUtilities;
+import de.julielab.jcore.types.DocumentAnnotation;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
@@ -49,6 +50,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     public static final String DOCUMENT_ID_COLUMN = "DocumentId";
     public static final String SENTENCE_ID_COLUMN = "SentenceId";
     public static final String OFFSETS_COLUMN = "Offsets";
+    public static final String DOCUMENT_TEXT_SHA256_COLUMN = "DocumentTextSha256";
     public static final String PARAM_OUTPUT_COLUMNS = "OutputColumns";
     public static final String PARAM_COLUMN_DEFINITIONS = "ColumnDefinitions";
     public static final String PARAM_TYPE_PREFIX = "TypePrefix";
@@ -156,6 +158,15 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                 c = new Column(DOCUMENT_ID_COLUMN + ":" + Header.class.getCanonicalName() + "=/docId", null, aJCas.getTypeSystem());
             c = new DocumentIdColumn(c);
             columns.put(DOCUMENT_ID_COLUMN, c);
+        }
+    }
+
+    private void addDocumentTextSha256Column() {
+        if (outputColumnNames.contains(DOCUMENT_TEXT_SHA256_COLUMN)) {
+            Column c = columns.get(DOCUMENT_TEXT_SHA256_COLUMN);
+            if (c == null)
+                c = new DocumentTextSha256Column();
+            columns.put(DOCUMENT_TEXT_SHA256_COLUMN, c);
         }
     }
 
@@ -308,6 +319,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                 featureFilters = Stream.of(featureFilterDefinitions).map(d -> new FeatureValueFilter(d, typePrefix, ts)).collect(Collectors.groupingBy(filter -> filter.getPathValuePair().fp.getFeaturePath()));
 
                 addDocumentIdColumn(aJCas);
+                addDocumentTextSha256Column();
             }
             // the sentence column must be created new for each document because
             // it is using a document-specific sentence index
