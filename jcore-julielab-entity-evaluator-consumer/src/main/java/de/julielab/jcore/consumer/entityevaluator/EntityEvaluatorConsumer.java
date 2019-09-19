@@ -61,7 +61,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     public static final String PARAM_MULTI_VALUE_MODE = "MultiValueMode";
     public static final String PARAM_NORMALIZE_SPACE = "NormalizeSpace";
     private static final Logger log = LoggerFactory.getLogger(EntityEvaluatorConsumer.class);
-    @ConfigurationParameter(name = PARAM_OUTPUT_COLUMNS, description = "A list of column names that are either defined with the parameter " + PARAM_COLUMN_DEFINITIONS + " or one of '" + DOCUMENT_ID_COLUMN + "', '" + SENTENCE_ID_COLUMN + "', '" + OFFSETS_COLUMN + "' or '"+DOCUMENT_TEXT_SHA256_COLUMN + "'. This list determines the set and the order of columns that are written into the output file in a tab-separated manner.")
+    @ConfigurationParameter(name = PARAM_OUTPUT_COLUMNS, description = "A list of column names that are either defined with the parameter " + PARAM_COLUMN_DEFINITIONS + " or one of '" + DOCUMENT_ID_COLUMN + "', '" + SENTENCE_ID_COLUMN + "', '" + OFFSETS_COLUMN + "' or '" + DOCUMENT_TEXT_SHA256_COLUMN + "'. This list determines the set and the order of columns that are written into the output file in a tab-separated manner.")
     private String[] outputColumnNamesArray;
     @ConfigurationParameter(name = PARAM_COLUMN_DEFINITIONS, mandatory = false, description = "Custom definitions of output columns. Predefined columns are '" + DOCUMENT_ID_COLUMN + "', '" + SENTENCE_ID_COLUMN + "', '" + OFFSETS_COLUMN + "' and '" + DOCUMENT_TEXT_SHA256_COLUMN + "'. The first two may be overwritten by a custom definition using their exact name. A column definition consists of the name of the column, the type of the annotation from which the values for this column should be derived, and a feature path pointing to the value. A single column definition may refer to multiple, different annotation types with their own feature path. Annotation types that should use the same feature path are separated by a comma. The sets of annotation types where each set shares one feature path are separated by a semicolon. Example: 'entityid:Chemical,Gene=/registryNumber;Disease=/specificType'. In this example, the column named 'entityid' will list the IDs of annotations of types 'Chemical', 'Gene' and 'Disease'. For the first two, the feature 'registryNumber' will be employed, for the latter the feature 'specificType'. The annotation type names will be resolved against the '" + PARAM_TYPE_PREFIX + "' parameter, if specified. The built-in feature path functions 'coveredText()' and 'typeName()' are available. For example, 'type:Gene=/:typeName()' (note the colon preceding the built-in function) will output the fully qualified name of the Gene type.")
     private String[] columnDefinitionDescriptions;
@@ -100,10 +100,10 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
      * offset may be retrieved using the floor entry for <tt>o</tt>, retrieving
      * its value and subtracting it from <tt>o</tt>.
      *
-     * @param input
-     * @return
+     * @param input The text to create the map for
+     * @return A map to track whitespace removal
      */
-    public static NavigableMap<Integer, Integer> createNumWsMap(String input) {
+    static NavigableMap<Integer, Integer> createNumWsMap(String input) {
         NavigableMap<Integer, Integer> map = new TreeMap<>();
         map.put(0, 0);
         int numWs = 0;
@@ -122,7 +122,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         return map;
     }
 
-    public static Type findType(String typeName, String typePrefix, TypeSystem ts) {
+    static Type findType(String typeName, String typePrefix, TypeSystem ts) {
         String effectiveName = typeName.contains(".") ? typeName : typePrefix + "." + typeName;
         Type type = ts.getType(effectiveName);
         if (type == null)
@@ -135,7 +135,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     }
 
     private void addOffsetsColumn(JCas aJCas) {
-        NavigableMap<Integer, Integer> numWsMap = null;
+        NavigableMap<Integer, Integer> numWsMap;
         OffsetsColumn offsetColumn;
         if (offsetMode == OffsetMode.NonWsCharacters && offsetScope == OffsetScope.Document) {
             numWsMap = createNumWsMap(aJCas.getDocumentText());
@@ -192,7 +192,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         }
     }
 
-    protected void appendEntityRecordsToFile() {
+    private void appendEntityRecordsToFile() {
         for (String[] entityRecord : entityRecords) {
             try {
                 if (normalizeSpace) {
@@ -203,7 +203,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                             entityRecord[i] = StringUtils.normalizeSpace(entityRecord[i]);
                     }
                 }
-                bw.write(Stream.of(entityRecord).collect(Collectors.joining("\t")) + "\n");
+                bw.write(String.join("\t", entityRecord) + "\n");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -252,7 +252,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         String offsetModeStr = (String) aContext.getConfigParameterValue(PARAM_OFFSET_MODE);
         String offsetScopeStr = (String) aContext.getConfigParameterValue(PARAM_OFFSET_SCOPE);
 
-        outputColumnNames = new LinkedHashSet<>(Stream.of(outputColumnNamesArray).collect(Collectors.toList()));
+        outputColumnNames = Stream.of(outputColumnNamesArray).collect(Collectors.toCollection(LinkedHashSet::new));
 
         multiValueMode = MultiValueMode.valueOf(Optional.ofNullable(((String) aContext.getConfigParameterValue(PARAM_MULTI_VALUE_MODE))).orElse(MultiValueMode.CARTESIAN.name()).toUpperCase());
 
@@ -271,7 +271,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
             outputFile.delete();
         }
         try {
-            if (outputFile != null && outputFile.getParentFile() != null && !outputFile.getParentFile().exists())
+            if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists())
                 outputFile.getParentFile().mkdirs();
             bw = FileUtilities.getWriterToFile(outputFile);
         } catch (IOException e) {
@@ -292,22 +292,21 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     }
 
     @Override
-    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+    public void process(JCas aJCas) {
         try {
             TypeSystem ts = aJCas.getTypeSystem();
             // Initialization of the columns, entity types and filters
             if (columns == null) {
                 columns = new LinkedHashMap<>();
-                for (int i = 0; i < columnDefinitionDescriptions.length; i++) {
-                    String definition = columnDefinitionDescriptions[i];
+                for (String definition : columnDefinitionDescriptions) {
                     Column c = new Column(definition, typePrefix, ts);
                     columns.put(c.getName(), c);
                 }
                 // collect all entity types from the column definitions and, one
                 // step below, the explicitly listed
-                entityTypes = new LinkedHashSet<>(
+                entityTypes =
                         columns.values().stream().filter(c -> !predefinedColumnNames.contains(c.getName()))
-                                .flatMap(c -> c.getTypes().stream()).collect(Collectors.toList()));
+                                .flatMap(c -> c.getTypes().stream()).collect(Collectors.toCollection(LinkedHashSet::new));
 
                 if (entityTypeStrings != null)
                     Stream.of(entityTypeStrings).map(name -> findType(name, typePrefix, ts)).forEach(entityTypes::add);
@@ -373,7 +372,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                     if (c.isMultiValued) {
                         if (multiValues == null)
                             multiValues = new ArrayList<>();
-                        multiValues.add(new ImmutablePair(values, colIndex));
+                        multiValues.add(new ImmutablePair<>(values, colIndex));
                     } else {
                         // This is the simple case: No multivalues, just add the value to
                         // the record
@@ -415,7 +414,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
             for (Pair<Deque<String>, Integer> pair : multiValues) {
                 Deque<String> values = pair.getLeft();
                 int index = pair.getRight();
-                final String firstValue = values.isEmpty() ? values.peekFirst() : values.removeFirst();
+                final String firstValue = values.isEmpty() ? null : values.removeFirst();
                 additionalRecord[index] = firstValue;
             }
             entityRecords.add(additionalRecord);
@@ -442,19 +441,19 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
     /**
      * Primitive removal of line breaks within entity text by replacing newlines
-     * by white spaces. May go wrong if the line break is after a dash, for
+     * with white spaces. May go wrong if the line break is after a dash, for
      * example. The Deque implementation returned by this method is a {@link LinkedList} to allow efficient
      * {@link Deque#removeFirst()} operations.
      *
-     * @param text
-     * @return
+     * @param text The entity text
+     * @return The same text but with whitespaces instead of line breaks.
      */
     private Deque<String> removeLineBreak(Deque<String> text) {
         if (text == null || text.isEmpty())
             return new ArrayDeque<>(0);
         Deque<String> ret = new LinkedList<>();
         for (String s : text) {
-            ret.add(s);
+            ret.add(s.replaceAll("\n", " "));
         }
         return ret;
     }
