@@ -35,7 +35,6 @@ import de.julielab.xml.util.MissingBinaryMappingException;
 import de.julielab.xml.util.XMISplitterException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -71,8 +70,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * @author faessler
@@ -346,7 +343,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 shaMap = new HashMap<>();
                 hashColumnName = documentItemToHash + "_sha256";
                 xmiAnnotationColumnsDefinitions.add(FieldConfig.createField(JulieXMLConstants.NAME, hashColumnName, JulieXMLConstants.TYPE, "text"));
-                dbc.assureColumnsExist(docTableParamValue, Collections.singletonList(hashColumnName), "text");
+                if (dbc.tableExists(docTableParamValue))
+                    dbc.assureColumnsExist(docTableParamValue, Collections.singletonList(hashColumnName), "text");
             }
             final FieldConfig fieldConfig = dbc.addXmiTextFieldConfiguration(dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().collect(Collectors.toList()), xmiAnnotationColumnsDefinitions, doGzip || useBinaryFormat);
             schemaDocument = fieldConfig.getName();
