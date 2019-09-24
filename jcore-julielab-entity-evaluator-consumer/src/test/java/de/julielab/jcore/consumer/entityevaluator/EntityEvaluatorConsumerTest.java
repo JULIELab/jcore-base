@@ -14,6 +14,7 @@ import com.google.common.io.Files;
 import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import de.julielab.jcore.utility.JCoReTools;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -23,14 +24,18 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.zip.GZIPInputStream;
 
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EntityEvaluatorConsumerTest {
 
@@ -385,7 +390,7 @@ public class EntityEvaluatorConsumerTest {
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] {
-						"embedding:EmbeddingVector=/vector", },
+						"embedding:EmbeddingVector=[concat,binary,gzip]/vector", },
 				PARAM_OUTPUT_COLUMNS,
 				// In this test, we employ the default DocumentId column, we did not define it.
 				new String[] { DOCUMENT_ID_COLUMN,  "embedding" },
@@ -399,12 +404,25 @@ public class EntityEvaluatorConsumerTest {
 		final EmbeddingVector ev = new EmbeddingVector(jcas, 0, 10);
 		final DoubleArray da = new DoubleArray(jcas, 3);
 		da.set(0, .1);
-		da.set(0, .2);
-		da.set(0, .3);
+		da.set(1, .2);
+		da.set(2, .3);
 		ev.setVector(da);
 		ev.addToIndexes();
 
 		consumer.process(jcas.getCas());
 		consumer.collectionProcessComplete();
+
+		List<String> lines = Files.readLines(new File("src/test/resources/outfile-test.tsv"), Charset.forName("UTF-8"));
+		assertEquals(1, lines.size());
+		final String base64encodedGzipData = lines.get(0).split("\t")[1];
+		System.out.println(base64encodedGzipData);
+		try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(Base64.decodeBase64(base64encodedGzipData)))){
+			final byte[] bytes = gis.readAllBytes();
+			final ByteBuffer bb = ByteBuffer.wrap(bytes);
+			assertEquals(0.1d, bb.getDouble(), 0.000000001);
+			assertEquals(0.2d, bb.getDouble(), 0.000000001);
+			assertEquals(0.3d, bb.getDouble(), 0.000000001);
+			assertTrue(bb.limit() == bb.position());
+		}
 	}
 }
