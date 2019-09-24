@@ -35,6 +35,7 @@ import de.julielab.xml.util.MissingBinaryMappingException;
 import de.julielab.xml.util.XMISplitterException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -64,6 +65,7 @@ import java.io.OutputStream;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -118,8 +120,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private static Map<String, Map<String, Integer>> binaryStringMapping = Collections.emptyMap();
     private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
     private static Map<String, Map<DocumentId, XmiBufferItem>> splitterResultMap;
-    private static Map<String, Map<String, List<XmiBufferItem>>> xmiBufferItemsToProcess;
+    private static Map<String, Map<String, Pair<List<XmiBufferItem>, CountDownLatch>>> xmiBufferItemsToProcess;
     private static ReentrantLock missingMappingsGatheringLock;
+    private static CountDownLatch missingMappingsGatheringLatch = new CountDownLatch(0);
     private static ReentrantLock mappingUpdateLock;
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
@@ -596,83 +599,58 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 final Map<DocumentId, XmiSplitterResult> splitterResultsToProcess = xmiItemBuffer.stream().collect(Collectors.toMap(XmiBufferItem::getDocId, XmiBufferItem::getSplitterResult, (res1, res2) -> res2));
                 final BinaryStorageAnalysisResult requiredMappingAnalysisResult;
                 // Check if we need new mappings at all
-                final List<XmiBufferItem> unanalyzedItems;
+                final Pair<List<XmiBufferItem>, CountDownLatch> unanalyzedItems;
                 boolean hasMissingMappingItems;
                 synchronized (binaryMappedFeatures) {
-                    unanalyzedItems = xmiItemBuffer.stream().filter(Predicate.not(XmiBufferItem::isProcessedForBinaryMappings)).collect(Collectors.toList());
-                    requiredMappingAnalysisResult = binaryEncoder.findMissingItemsForMapping(unanalyzedItems.stream().flatMap(item -> item.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList()), ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
+                    unanalyzedItems = new ImmutablePair<>(xmiItemBuffer.stream().filter(Predicate.not(XmiBufferItem::isProcessedForBinaryMappings)).collect(Collectors.toList()), new CountDownLatch(2));
+                    requiredMappingAnalysisResult = binaryEncoder.findMissingItemsForMapping(unanalyzedItems.getLeft().stream().flatMap(item -> item.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList()), ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
                     // Here we add a list of XmiBufferItems that this thread needs processed to encode its annotation modules into the binary format.
                     hasMissingMappingItems = !requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty();
                     if (hasMissingMappingItems)
                         xmiBufferItemsToProcess.compute(mappingCacheKey, (k, v) -> v != null ? v : new ConcurrentHashMap<>()).put(Thread.currentThread().getName(), unanalyzedItems);
                 }
-                if (hasMissingMappingItems || xmiBufferItemsToProcess.get(mappingCacheKey).values().stream().flatMap(Collection::stream).findAny().isPresent()) {
+                if (hasMissingMappingItems) {
                     log.trace("Required mappings: {}", requiredMappingAnalysisResult.getMissingValuesToMap());
-                    // Now the current threads checks if it can do the processing itself or if another
-                    // thread is already updating the binary string mapping. If there is another thread holding the
-                    // lock, we will just wait below for another thread to notify us that our items
-                    // in the 'xmiBufferItemsToProcess' map have been processed.
-                    if (mappingUpdateLock.tryLock()) {
-                        try {
-
-                            // Here, we check for missing mappings for the whole buffer. This is important for performance
-                            // because each binary mapping update requires exclusive read/write access to the mapping table
-                            // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
-                            final List<XmiBufferItem> splitterResults = splitterResultMap.get(mappingCacheKey).keySet().stream().map(splitterResultMap.get(mappingCacheKey)::remove).filter(Objects::nonNull).collect(Collectors.toList());
-                            final List<XmiBufferItem> xmiBufferItemsFromOtherThreads = splitterResults.stream().filter(i -> !splitterResultsToProcess.containsKey(i.getDocId())).collect(Collectors.toList());
-                            final Collection<List<XmiBufferItem>> xmiBufferItemsWaitedFor = new ArrayList<>(xmiBufferItemsToProcess.get(mappingCacheKey).values());
-                            xmiBufferItemsWaitedFor.stream().flatMap(Collection::stream).forEach(xmiBufferItemsFromOtherThreads::add);
-
-                            final List<JeDISVTDGraphNode> nodesFromOtherThreads = xmiBufferItemsFromOtherThreads.stream().flatMap(i -> i.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
-                            log.trace("Got {} XmiBufferItems from other threads to check for missing mappings", xmiBufferItemsFromOtherThreads.size());
-                            final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(nodesFromOtherThreads, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
-                            missingItemsForMapping.getMissingValuesToMap().addAll(requiredMappingAnalysisResult.getMissingValuesToMap());
-                            missingItemsForMapping.getMissingFeaturesToMap().putAll(requiredMappingAnalysisResult.getMissingFeaturesToMap());
-                            final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
-                            synchronized (binaryMappedFeatures) {
-                                binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
-                                binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
-                            }
-                            // Mark all the items as processed for other threads which might wait for them, otherwise.
-                            xmiBufferItemsFromOtherThreads.forEach(item -> item.setProcessedForBinaryMappings(true));
-                            // Now notify all waiting threads that their work items have been processed.
-                            // This 'notify()' call is the counterpart to the 'wait()' call in the 'else'
-                            // branch below.
-                            log.debug("Releasing the locks of {} lists of XmiBufferItems to process", xmiBufferItemsWaitedFor.size());
-                            for (List<XmiBufferItem> itemsWaitedFor : xmiBufferItemsWaitedFor) {
-                                synchronized (itemsWaitedFor) {
-                                    itemsWaitedFor.forEach(item -> item.setProcessedForBinaryMappings(true));
-                                    itemsWaitedFor.clear();
-                                    itemsWaitedFor.notify();
+                    try {
+                        while (unanalyzedItems.getRight().getCount() == 2) {
+                            // Try to do the update with the current thread
+                            if (!updateBinaryMapping(requiredMappingAnalysisResult, splitterResultsToProcess, ts)) {
+                                // Wait if another thread is currently assembling the missing items, perhaps it will also get those of this thread
+                                missingMappingsGatheringLatch.await();
+                                // Now check if the items of this thread have been gotten by another thread
+                                if (unanalyzedItems.getRight().getCount() == 2) {
+                                    // If we couldn't do the update with this thread (return value false) and
+                                    // this thread's missing items are not currently in process, wait for the current
+                                    // update to finish and then do it with the current thread by waiting for the update lock
+                                    mappingUpdateLock.lock();
                                 }
                             }
-                        } finally {
-                            mappingUpdateLock.unlock();
                         }
-                    } else if (hasMissingMappingItems) {
-                        // Do this only if there actually are missing mapping items. Because otherwise, the
-                        // 'analyzedItems' list was never added to the 'xmiBufferItemsToProcess' and thus,
-                        // notify() is never called on our 'unanalyzedItems' list which would mean we are stuck here forever.
-                        synchronized (unanalyzedItems) {
-                            try {
-                                if (unanalyzedItems.stream().anyMatch(Predicate.not(XmiBufferItem::isProcessedForBinaryMappings))) {
-                                    long time = System.currentTimeMillis();
-                                    // Here we wait for the 'notify()' call from another thread doing the processing
-                                    // above.
-                                    unanalyzedItems.wait();
-                                    time = System.currentTimeMillis() - time;
-                                    log.debug("Waited {}ms for required mappings to be created by another thread", time);
-                                }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                    } catch (InterruptedException e) {
+                        log.error("Interruption happened while waiting for another thread to gather the missing items of this thread ({}).", Thread.currentThread().getName());
+                        throw new AnalysisEngineProcessException(e);
+                    }
+                    // It is possible that the current thread aquired the lock in the while loop above despite the
+                    // fact that another thread had processed its items (another thread could get the lock and
+                    // process this thread's missing items). In that case the while loop will be exited without
+                    // calling the updateBinaryMapping() method and the lock wouldn't be unlocked so do it here.
+                    if (mappingUpdateLock.isHeldByCurrentThread())
+                        mappingUpdateLock.unlock();
+                    try {
+                        // Wait for this thread's items to be finished with the update. The current thread will
+                        // actually wait here if another thread has promised to process the items by counting
+                        // down the latch to 1. If the current thread did the update itself, the latch will
+                        // already by at 0 here and there will be no wait time.
+                        unanalyzedItems.getRight().await();
+                    } catch (InterruptedException e) {
+                        log.error("Interruption happened while waiting for another thread to update the missing binary mapping items for this thread ({}).", Thread.currentThread().getName());
+                        throw new AnalysisEngineProcessException(e);
                     }
                 } else {
                     // No mappings are missed, don't perform a mapping update.
                     // But remove the XmiBufferItems from the waiting list so that no unneeded work is done
                     // and also the waiting list does not grow to eternity.
-                    unanalyzedItems.stream().map(XmiBufferItem::getDocId).forEach(splitterResultMap.get(mappingCacheKey)::remove);
+                    unanalyzedItems.getLeft().stream().map(XmiBufferItem::getDocId).forEach(splitterResultMap.get(mappingCacheKey)::remove);
                 }
             }
 
@@ -680,6 +658,49 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
         xmiItemBuffer.clear();
         return true;
+    }
+
+    private boolean updateBinaryMapping(BinaryStorageAnalysisResult requiredMappingAnalysisResult, Map<DocumentId, XmiSplitterResult> splitterResultsToProcess, TypeSystem ts) throws AnalysisEngineProcessException {
+        if (mappingUpdateLock.tryLock()) {
+            try {
+                // Here, we check for missing mappings for the whole buffers of all threads. This is important for performance
+                // because each binary mapping update requires exclusive read/write access to the mapping table
+                // in the database which is a potential bottleneck. Doing it batchwise alleviates this.
+                missingMappingsGatheringLatch = new CountDownLatch(1);
+                final List<XmiBufferItem> splitterResults = splitterResultMap.get(mappingCacheKey).keySet().stream().map(splitterResultMap.get(mappingCacheKey)::remove).filter(Objects::nonNull).collect(Collectors.toList());
+                final List<XmiBufferItem> xmiBufferItemsFromOtherThreads = splitterResults.stream().filter(i -> !splitterResultsToProcess.containsKey(i.getDocId())).collect(Collectors.toList());
+                final Collection<Pair<List<XmiBufferItem>, CountDownLatch>> xmiBufferItemsWaitedFor = new ArrayList<>(xmiBufferItemsToProcess.get(mappingCacheKey).values());
+                xmiBufferItemsWaitedFor.stream().map(Pair::getLeft).flatMap(Collection::stream).forEach(xmiBufferItemsFromOtherThreads::add);
+                xmiBufferItemsWaitedFor.stream().map(Pair::getRight).forEach(CountDownLatch::countDown);
+                missingMappingsGatheringLatch.countDown();
+
+                final List<JeDISVTDGraphNode> nodesFromOtherThreads = xmiBufferItemsFromOtherThreads.stream().flatMap(i -> i.getSplitterResult().jedisNodesInAnnotationModules.stream()).collect(Collectors.toList());
+                log.trace("Got {} XmiBufferItems from other threads to check for missing mappings", xmiBufferItemsFromOtherThreads.size());
+                final BinaryStorageAnalysisResult missingItemsForMapping = binaryEncoder.findMissingItemsForMapping(nodesFromOtherThreads, ts, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), featuresToMapDryRun);
+                missingItemsForMapping.getMissingValuesToMap().addAll(requiredMappingAnalysisResult.getMissingValuesToMap());
+                missingItemsForMapping.getMissingFeaturesToMap().putAll(requiredMappingAnalysisResult.getMissingFeaturesToMap());
+                final Pair<Map<String, Integer>, Map<String, Boolean>> updatedMappingAndMappedFeatures = metaTableManager.updateBinaryStringMappingTable(missingItemsForMapping, binaryStringMapping.get(mappingCacheKey), binaryMappedFeatures.get(mappingCacheKey), !featuresToMapDryRun);
+                synchronized (binaryMappedFeatures) {
+                    binaryStringMapping.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getLeft()));
+                    binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
+                }
+                // Mark all the items as processed for other threads which might wait for them, otherwise.
+                // TODO not needed any more I think
+                xmiBufferItemsFromOtherThreads.forEach(item -> item.setProcessedForBinaryMappings(true));
+                log.debug("Releasing the locks of {} lists of XmiBufferItems to process", xmiBufferItemsWaitedFor.size());
+                for (Pair<List<XmiBufferItem>, CountDownLatch> itemsWaitedFor : xmiBufferItemsWaitedFor) {
+                    // TODO I think we can remove the processed flag on individual items since we always process whole lists
+                    itemsWaitedFor.getLeft().forEach(item -> item.setProcessedForBinaryMappings(true));
+                    itemsWaitedFor.getLeft().clear();
+                    // Indicate that this list of items has been processed and the mapping is updated
+                    itemsWaitedFor.getRight().countDown();
+                }
+                return true;
+            } finally {
+                mappingUpdateLock.unlock();
+            }
+        }
+        return false;
     }
 
     private void createAnnotationModules() throws AnalysisEngineProcessException {

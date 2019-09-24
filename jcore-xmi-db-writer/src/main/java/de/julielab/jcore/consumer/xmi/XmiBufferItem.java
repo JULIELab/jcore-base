@@ -67,6 +67,7 @@ public class XmiBufferItem {
         return nextXmiId;
     }
 
+    @Deprecated
     public void setProcessedForBinaryMappings(boolean processedForBinaryMappings) {
         isProcessedForBinaryMappings = processedForBinaryMappings;
     }
