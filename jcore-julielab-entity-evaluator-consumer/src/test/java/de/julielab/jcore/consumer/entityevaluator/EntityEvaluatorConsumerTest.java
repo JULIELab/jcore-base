@@ -390,7 +390,7 @@ public class EntityEvaluatorConsumerTest {
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] {
-						"embedding:EmbeddingVector=[concat,binary,gzip]/vector", },
+							"embedding:EmbeddingVector=[concat,binary,gzip]/vector", },
 				PARAM_OUTPUT_COLUMNS,
 				// In this test, we employ the default DocumentId column, we did not define it.
 				new String[] { DOCUMENT_ID_COLUMN,  "embedding" },

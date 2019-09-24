@@ -198,7 +198,7 @@ public class Column {
         if (value != null) {
             if (List.class.isAssignableFrom(value.getClass()) && !((List<?>) value).isEmpty()) {
                 List<?> l = (List<?>) value;
-                Set<String> options = optionsMap.get(a.getType());
+                Set<String> options = optionsMap.getOrDefault(a.getType(), Collections.emptySet());
                 if (!options.contains("concat")) {
                     isMultiValued = true;
                     ret = new ArrayDeque<>(l.size());
