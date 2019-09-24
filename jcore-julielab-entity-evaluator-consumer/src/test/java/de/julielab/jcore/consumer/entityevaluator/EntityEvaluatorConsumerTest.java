@@ -18,6 +18,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.junit.Test;
@@ -375,4 +376,35 @@ public class EntityEvaluatorConsumerTest {
         assertEquals("document1\tregistry 43\tHeadache\tABC", lines.get(2));
         assertEquals("document1\tregistry 43\tCephalalgia\tABC", lines.get(3));
     }
+
+    @Test
+	public void testDoubleArray() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
+				"de.julielab.jcore.types.jcore-semantics-biology-types",
+				"de.julielab.jcore.types.jcore-document-meta-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
+				PARAM_COLUMN_DEFINITIONS,
+				new String[] {
+						"embedding:EmbeddingVector=/vector", },
+				PARAM_OUTPUT_COLUMNS,
+				// In this test, we employ the default DocumentId column, we did not define it.
+				new String[] { DOCUMENT_ID_COLUMN,  "embedding" },
+				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv",
+				EntityEvaluatorConsumer.PARAM_OFFSET_SCOPE, "Document");
+
+		Header h = new Header(jcas);
+		h.setDocId("document1");
+		h.addToIndexes();
+
+		final EmbeddingVector ev = new EmbeddingVector(jcas, 0, 10);
+		final DoubleArray da = new DoubleArray(jcas, 3);
+		da.set(0, .1);
+		da.set(0, .2);
+		da.set(0, .3);
+		ev.setVector(da);
+		ev.addToIndexes();
+
+		consumer.process(jcas.getCas());
+		consumer.collectionProcessComplete();
+	}
 }

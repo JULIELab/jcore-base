@@ -18,6 +18,7 @@ import org.apache.uima.jcas.cas.TOP;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Column {
     /**
@@ -74,6 +75,7 @@ public class Column {
      * @see #typeDefinitionFormat
      */
     private Matcher mtypes;
+    private Set<String> options;
 
     public Column(Column other) {
         this();
@@ -123,7 +125,13 @@ public class Column {
                         String typeName = element.trim();
                         Type type = EntityEvaluatorConsumer.findType(typeName, typePrefix, ts);
                         JCoReFeaturePath fp = new JCoReFeaturePath();
-                        fp.initialize(elements.get(elements.size() - 1).trim());
+                        final String optionsAndFp = elements.get(elements.size() - 1).trim();
+                        final String[] optionSplit = optionsAndFp.split("[\\[]]");
+                        if (optionSplit.length > 1) {
+                            options = Arrays.stream(optionSplit[1].split("\\s*,\\s*")).collect(Collectors.toSet());
+                        }
+                        String fpDefinition = optionSplit[optionSplit.length - 1];
+                        fp.initialize(fpDefinition);
                         featurePathMap.put(type, fp);
                     }
                 }
