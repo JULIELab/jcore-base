@@ -54,7 +54,7 @@ public class XmiDBMultiplierDifferentNsSchemaTest {
         postgres.close();
     }
 
-    @Test(threadPoolSize = 3, invocationCount = 10, timeOut = 500000)
+    @Test(threadPoolSize = 1, invocationCount = 1, timeOut = 500000)
     public void testXmiDBReader() throws Exception {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         String xmisubset;
