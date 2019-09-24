@@ -685,11 +685,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     binaryMappedFeatures.put(mappingCacheKey, Collections.synchronizedMap(updatedMappingAndMappedFeatures.getRight()));
                 }
                 // Mark all the items as processed for other threads which might wait for them, otherwise.
-                // TODO not needed any more I think
                 xmiBufferItemsFromOtherThreads.forEach(item -> item.setProcessedForBinaryMappings(true));
                 log.debug("Releasing the locks of {} lists of XmiBufferItems to process", xmiBufferItemsWaitedFor.size());
                 for (Pair<List<XmiBufferItem>, CountDownLatch> itemsWaitedFor : xmiBufferItemsWaitedFor) {
-                    // TODO I think we can remove the processed flag on individual items since we always process whole lists
                     itemsWaitedFor.getLeft().forEach(item -> item.setProcessedForBinaryMappings(true));
                     itemsWaitedFor.getLeft().clear();
                     // Indicate that this list of items has been processed and the mapping is updated
