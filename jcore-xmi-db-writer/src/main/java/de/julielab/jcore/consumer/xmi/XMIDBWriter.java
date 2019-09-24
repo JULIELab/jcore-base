@@ -119,6 +119,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
     private static Map<String, Map<DocumentId, XmiBufferItem>> splitterResultMap;
     private static Map<String, Map<String, List<XmiBufferItem>>> xmiBufferItemsToProcess;
+    private static ReentrantLock missingMappingsGatheringLock;
     private static ReentrantLock mappingUpdateLock;
     private DataBaseConnector dbc;
     @ConfigurationParameter(name = PARAM_UPDATE_MODE, description = "If set to false, the attempt to write new data " +
@@ -605,7 +606,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     if (hasMissingMappingItems)
                         xmiBufferItemsToProcess.compute(mappingCacheKey, (k, v) -> v != null ? v : new ConcurrentHashMap<>()).put(Thread.currentThread().getName(), unanalyzedItems);
                 }
-                if (!requiredMappingAnalysisResult.getMissingValuesToMap().isEmpty() || xmiBufferItemsToProcess.get(mappingCacheKey).values().stream().flatMap(Collection::stream).findAny().isPresent()) {
+                if (hasMissingMappingItems || xmiBufferItemsToProcess.get(mappingCacheKey).values().stream().flatMap(Collection::stream).findAny().isPresent()) {
                     log.trace("Required mappings: {}", requiredMappingAnalysisResult.getMissingValuesToMap());
                     // Now the current threads checks if it can do the processing itself or if another
                     // thread is already updating the binary string mapping. If there is another thread holding the
@@ -651,10 +652,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     } else if (hasMissingMappingItems) {
                         // Do this only if there actually are missing mapping items. Because otherwise, the
                         // 'analyzedItems' list was never added to the 'xmiBufferItemsToProcess' and thus,
-                        // notify() is never called on our 'unanlyzedItems' list which would mean we are stuck here forever.
+                        // notify() is never called on our 'unanalyzedItems' list which would mean we are stuck here forever.
                         synchronized (unanalyzedItems) {
                             try {
-                                if (unanalyzedItems.stream().filter(Predicate.not(XmiBufferItem::isProcessedForBinaryMappings)).findAny().isPresent()) {
+                                if (unanalyzedItems.stream().anyMatch(Predicate.not(XmiBufferItem::isProcessedForBinaryMappings))) {
                                     long time = System.currentTimeMillis();
                                     // Here we wait for the 'notify()' call from another thread doing the processing
                                     // above.
