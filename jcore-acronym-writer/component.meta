@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-acronym-writer",
         "groupId": "de.julielab.jcore.consumer.acronyms",
-        "version": "2.4.0-SNAPSHOT"
+        "version": "2.5.0-SNAPSHOT"
     },
     "name": "JCoRe Acronym Writer"
 }
