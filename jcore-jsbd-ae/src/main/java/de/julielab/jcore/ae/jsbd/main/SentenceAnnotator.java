@@ -269,8 +269,13 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                         LOGGER.error("Document {}. Invalid sentence offsets: {}-{}. Document text length: {}.", JCoReTools.getDocId(documentText.getCas()), begin, end, documentText.getCas().getDocumentText().length());
                         throw e;
                     }
-                    if (letterMatcher.find())
+                    if (letterMatcher.find()) {
+                        if (LOGGER.isTraceEnabled()) {
+                            String docId = JCoReTools.getDocId(documentText.getCas());
+                            LOGGER.trace("Adding sentence with offsets {}-{}, length {} to document {}", begin, end, end-begin, docId);
+                        }
                         annotation.addToIndexes();
+                    }
                 }
                 start = -1;
             }

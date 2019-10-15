@@ -369,7 +369,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                     // algorithm, no values may be already read, otherwise we
                     // cannot build all combinations. Thus, the record indices
                     // corresponding to multi value columns stay empty for now.
-                    if (c.isMultiValued) {
+                    if (c.isMultiValued && (values.size() > 1 || multiValueMode == MultiValueMode.PARALLEL)) {
                         if (multiValues == null)
                             multiValues = new ArrayList<>();
                         multiValues.add(new ImmutablePair<>(values, colIndex));
@@ -380,8 +380,9 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                     }
                     ++colIndex;
                 }
-                if (multiValues == null)
+                if (multiValues == null) {
                     entityRecords.add(record);
+                }
                 if (multiValues != null) {
                     if (multiValueMode == MultiValueMode.PARALLEL) {
                         addParallelMultiValues(record, multiValues);
