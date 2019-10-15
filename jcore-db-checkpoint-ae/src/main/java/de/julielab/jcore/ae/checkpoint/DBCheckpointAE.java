@@ -198,17 +198,20 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         // create a string for the prepared statement in the form "pk1 = ? AND pk2 = ? ..."
         String primaryKeyPsString = StringUtils.join(annotationFieldConfig.expandPKNames("%s = ?"), " AND ");
 
-        if (markIsProcessed)
-            log.debug("Marking {} documents to having been processed by component \"{}\".", documentIdsToSetLastComponent.size(), componentDbName);
 
         String sqlSetLastComponent = String.format("UPDATE %s SET %s='%s' WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, primaryKeyPsString);
         String sqlMarkIsProcessed = null;
         if (markIsProcessed)
             sqlMarkIsProcessed = String.format("UPDATE %s SET %s='%s', %s=TRUE, %s=FALSE WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, Constants.IS_PROCESSED, Constants.IN_PROCESS, primaryKeyPsString);
 
-        updateSubsetTable(conn, documentIdsToSetLastComponent, sqlSetLastComponent);
-        if (markIsProcessed)
+        if (!documentIdsToSetLastComponent.isEmpty()) {
+            log.debug("Setting the last component to {} for {} documents", componentDbName, documentIdsToSetLastComponent.size());
+            updateSubsetTable(conn, documentIdsToSetLastComponent, sqlSetLastComponent);
+        }
+        if (markIsProcessed) {
+            log.debug("Marking {} documents to having been processed by component \"{}\".", documentIdsToSetLastComponent.size(), componentDbName);
             updateSubsetTable(conn, processedDocumentIds, sqlMarkIsProcessed);
+        }
     }
 
     private void updateSubsetTable(CoStoSysConnection conn, Collection<DocumentId> documentIdsToMark, String sql) throws AnalysisEngineProcessException {

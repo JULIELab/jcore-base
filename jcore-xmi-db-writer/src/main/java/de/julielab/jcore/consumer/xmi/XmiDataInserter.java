@@ -6,7 +6,6 @@ import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.ae.checkpoint.DocumentId;
-import de.julielab.jcore.ae.checkpoint.DocumentReleaseCheckpoint;
 import de.julielab.xml.JulieXMLConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +17,6 @@ import java.sql.BatchUpdateException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -60,12 +58,13 @@ public class XmiDataInserter {
      * will be a primary key constraint violation, i.e. duplicates).
      *
      * @param serializedCASes
+     * @param storeBaseDocument
      * @param deleteObsolete
      * @param shaMap
      * @throws XmiDataInsertionException
      * @throws AnalysisEngineProcessException
      */
-    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> serializedCASes, String subsetTableName, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
+    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> serializedCASes, String subsetTableName, Boolean storeBaseDocument, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
         if (log.isTraceEnabled()) {
             log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
             log.trace("Sending {} XMI data items", serializedCASes.size());
@@ -160,7 +159,8 @@ public class XmiDataInserter {
                 throw new NotImplementedException();
             }
         }
-
+        if(true)
+            return;
 
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             conn.setAutoCommit(false);
@@ -170,7 +170,7 @@ public class XmiDataInserter {
                 if (updateMode) {
                     log.debug("Updating {} XMI CAS data in database table '{}'.",
                             serializedCASes.size(), xmiTableName);
-                    dbc.updateFromRowIterator(iterator, xmiTableName, false, schemaDocument);
+                    dbc.updateFromRowIterator(iterator, xmiTableName, false, storeBaseDocument, schemaDocument);
                 } else {
                     log.debug("Inserting {} XMI CAS data into database table '{}'.",
                             serializedCASes.size(), xmiTableName);
