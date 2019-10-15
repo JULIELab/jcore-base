@@ -2,6 +2,7 @@ package de.julielab.jcore.ae.checkpoint;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import com.google.common.collect.Sets;
 import de.julielab.costosys.Constants;
 import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
@@ -61,7 +62,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
 
     private String subsetTable;
 
-    private List<DocumentId> docIds;
+    private Set<DocumentId> docIds;
 
     private DocumentReleaseCheckpoint docReleaseCheckpoint;
     private Multiset<DocumentId> releasedDocumentIds;
@@ -82,7 +83,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             log.error("Could not initiate database connector", e);
             throw new ResourceInitializationException(e);
         }
-        docIds = new ArrayList<>();
+        docIds = new HashSet<>();
 
         jedisSyncKey = (String) Optional.ofNullable(aContext.getConfigParameterValue(DocumentReleaseCheckpoint.PARAM_JEDIS_SYNCHRONIZATION_KEY)).orElse(getClass().getCanonicalName() + componentDbName);
         docReleaseCheckpoint = DocumentReleaseCheckpoint.get();
@@ -100,10 +101,10 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         super.batchProcessComplete();
         log.debug("BatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
         docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
-        docIds.clear();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
+        docIds.clear();
     }
 
     @Override
@@ -111,20 +112,20 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         super.collectionProcessComplete();
         log.debug("BatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
         docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
-        docIds.clear();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
+        docIds.clear();
         log.info("Closing database connector.");
         dbc.close();
     }
 
     private void customBatchProcessingComplete() throws AnalysisEngineProcessException {
         docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
-        docIds.clear();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
+        docIds.clear();
     }
 
     /**
@@ -134,7 +135,6 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
         DocumentId documentId;
-        String docId;
         try {
             final DBProcessingMetaData dbProcessingMetaData = JCasUtil.selectSingle(aJCas, DBProcessingMetaData.class);
             if (!dbProcessingMetaData.getDoNotMarkAsProcessed()) {
@@ -156,7 +156,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
                 }
             }
         } catch (IllegalArgumentException e) {
-            docId = JCoReTools.getDocId(aJCas);
+            String docId = JCoReTools.getDocId(aJCas);
             log.error("The document with document ID {} does not have an annotation of type {}. This annotation ought to contain the name of the subset table. It should be set by the DB reader. Cannot write the checkpoint to the database since the target subset table or its schema is unknown.", docId, DBProcessingMetaData.class.getCanonicalName());
             throw new AnalysisEngineProcessException(e);
         }
@@ -170,20 +170,25 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      */
     private void setLastComponent(CoStoSysConnection conn, String
             subsetTableName, boolean markIsProcessed, FieldConfig annotationFieldConfig) throws AnalysisEngineProcessException {
-        // Add all documents released from all the different components to the current cache of released documents. The
-        // cache is a multiset, counting the number of released for each document. This is important because we only
-        // want to mark documents as being processed if all registered components are finished with it, i.e. have
-        // stored their information about the document to the database, preventing data loss.
-        releasedDocumentIds.addAll(docReleaseCheckpoint.getReleasedDocumentIds());
-        // Now get those IDs from the cache that have been released by all registered components. Those are then
-        // marked as finished.
-        List<DocumentId> processedDocumentIds = releasedDocumentIds.entrySet().stream().filter(e -> e.getCount() == docReleaseCheckpoint.getNumberOfRegisteredComponents()).map(Multiset.Entry::getElement).collect(Collectors.toList());
-        processedDocumentIds.forEach(id -> releasedDocumentIds.remove(id, Integer.MAX_VALUE));
-        if (releasedDocumentIds.size() > 3*writeBatchSize) {
-            log.warn("There are currently {} document IDs that have been released by some but not by all components. If this number doesn't decrease, there is a high chance of some component(s) failing to release their documents, perhaps due to errors. The current document ID release queues have the following sizes: {}", releasedDocumentIds.size(), docReleaseCheckpoint.getReleasedDocumentsState());
+        // When we just want to set the document DB processing checkpoint we will do this for the current batch of documents no matter if they have been released by other components
+        Set<DocumentId> processedDocumentIds = Collections.emptySet();
+        if (markIsProcessed) {
+            // Add all documents released from all the different components to the current cache of released documents. The
+            // cache is a multiset, counting the number of released for each document. This is important because we only
+            // want to mark documents as being processed if all registered components are finished with it, i.e. have
+            // stored their information about the document to the database, preventing data loss.
+            releasedDocumentIds.addAll(docReleaseCheckpoint.getReleasedDocumentIds());
+            // Now get those IDs from the cache that have been released by all registered components. Those are then
+            // marked as finished.
+            processedDocumentIds = releasedDocumentIds.entrySet().stream().filter(e -> e.getCount() == docReleaseCheckpoint.getNumberOfRegisteredComponents()).map(Multiset.Entry::getElement).collect(Collectors.toSet());
+            processedDocumentIds.forEach(id -> releasedDocumentIds.remove(id, Integer.MAX_VALUE));
+            if (releasedDocumentIds.size() > 3 * writeBatchSize) {
+                log.warn("There are currently {} document IDs that have been released by some but not by all components. If this number doesn't decrease, there is a high chance of some component(s) failing to release their documents, perhaps due to errors. The current document ID release queues have the following sizes: {}", releasedDocumentIds.size(), docReleaseCheckpoint.getReleasedDocumentsState());
+            }
         }
-        if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName)) {
-            log.debug("Not setting the last component because the processed document IDs list is empty (size: {}) or the subset table name wasn't found (is: {})", processedDocumentIds.size(), subsetTableName);
+        Set<DocumentId> documentIdsToSetLastComponent = Sets.difference(docIds, processedDocumentIds);
+        if (documentIdsToSetLastComponent.isEmpty() || StringUtils.isBlank(subsetTableName)) {
+            log.debug("Not setting the last component because the processed document IDs list is empty (size: {}) or the subset table name wasn't found (is: {})", documentIdsToSetLastComponent.size(), subsetTableName);
             return;
         }
 
@@ -193,18 +198,26 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         // create a string for the prepared statement in the form "pk1 = ? AND pk2 = ? ..."
         String primaryKeyPsString = StringUtils.join(annotationFieldConfig.expandPKNames("%s = ?"), " AND ");
 
-        log.debug("Marking {} documents to having been processed by component \"{}\".", processedDocumentIds.size(), componentDbName);
-
-        String sql = String.format("UPDATE %s SET %s='%s' WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, primaryKeyPsString);
         if (markIsProcessed)
-            sql = String.format("UPDATE %s SET %s='%s', %s=TRUE, %s=FALSE WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, Constants.IS_PROCESSED, Constants.IN_PROCESS, primaryKeyPsString);
+            log.debug("Marking {} documents to having been processed by component \"{}\".", documentIdsToSetLastComponent.size(), componentDbName);
 
+        String sqlSetLastComponent = String.format("UPDATE %s SET %s='%s' WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, primaryKeyPsString);
+        String sqlMarkIsProcessed = null;
+        if (markIsProcessed)
+            sqlMarkIsProcessed = String.format("UPDATE %s SET %s='%s', %s=TRUE, %s=FALSE WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, Constants.IS_PROCESSED, Constants.IN_PROCESS, primaryKeyPsString);
+
+        updateSubsetTable(conn, documentIdsToSetLastComponent, sqlSetLastComponent);
+        if (markIsProcessed)
+            updateSubsetTable(conn, processedDocumentIds, sqlMarkIsProcessed);
+    }
+
+    private void updateSubsetTable(CoStoSysConnection conn, Collection<DocumentId> documentIdsToMark, String sql) throws AnalysisEngineProcessException {
         try {
             boolean tryagain;
             do {
                 tryagain = false;
                 PreparedStatement ps = conn.prepareStatement(sql);
-                for (DocumentId docId : processedDocumentIds) {
+                for (DocumentId docId : documentIdsToMark) {
                     for (int i = 0; i < docId.getId().length; i++) {
                         String pkElement = docId.getId()[i];
                         ps.setString(i + 1, pkElement);
@@ -228,8 +241,6 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             else
                 nextException.printStackTrace();
             throw new AnalysisEngineProcessException(nextException);
-        } finally {
-            processedDocumentIds.clear();
         }
     }
 
