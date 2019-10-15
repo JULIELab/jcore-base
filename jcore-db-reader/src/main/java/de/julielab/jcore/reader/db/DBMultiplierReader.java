@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ResourceMetaData(name = "JCoRe Database Multiplier Reader", description = "A collection reader that receives the IDs of documents from a database table. " +
         "Additional tables may be specified which will, together with the IDs, be sent to a CAS multiplier extending " +
@@ -69,6 +70,9 @@ public class DBMultiplierReader extends DBSubsetReader {
         log.trace("Requesting next batch of document IDs from the database.");
         List<Object[]> idList = getNextDocumentIdBatch();
         log.trace("Received a list of {} ID from the database.", idList.size());
+        if (log.isTraceEnabled()) {
+            log.trace("IDs of the current batch: {}", idList.stream().map(Arrays::toString).collect(Collectors.joining(", ")));
+        }
         RowBatch rowbatch = new RowBatch(jCas);
         FSArray ids = new FSArray(jCas, idList.size());
         for (int i = 0; i < idList.size(); i++) {
