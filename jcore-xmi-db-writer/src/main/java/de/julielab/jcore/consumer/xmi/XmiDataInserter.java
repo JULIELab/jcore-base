@@ -159,8 +159,6 @@ public class XmiDataInserter {
                 throw new NotImplementedException();
             }
         }
-        if(true)
-            return;
 
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             conn.setAutoCommit(false);
