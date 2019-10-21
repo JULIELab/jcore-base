@@ -54,31 +54,32 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
     public static final String PARAM_POSTPROCESSING = "Postprocessing";
     public static final String PARAM_SENTENCE_DELIMITER_TYPES = "SentenceDelimiterTypes";
     public static final String PARAM_CUT_AWAY_TYPES = "CutAwayTypes";
+    public static final String PARAM_MAX_SENTENCE_LENGTH = "MaximumSentenceLength";
     /**
      * Logger for this class
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(SentenceAnnotator.class);
+    private static AtomicInteger numEmptyCases = new AtomicInteger();
     /**
      * Matches all letters (not numbers, punctuation etc.).
      */
     private final Matcher letterMatcher = Pattern.compile("\\p{L}\\p{M}*").matcher("");
+    private final Matcher eolMatcher = Pattern.compile("(\\r\\n|\\r|\\n)").matcher("");
+    private final Matcher semicoliMatcher = Pattern.compile(";").matcher("");
+    private final Matcher wsMatcher = Pattern.compile(" ").matcher("");
     // activate post processing
     @ConfigurationParameter(name = PARAM_POSTPROCESSING, mandatory = false, defaultValue = {
             "false"}, description = "One of 'biomed' or 'medical'. Does some post processing to e.g. respect parenthesis and don't put a sentence boundary withing in a pair of opening and closing parenthesis.")
     private String postprocessingFilter = null;
-
     @ConfigurationParameter(name = PARAM_SENTENCE_DELIMITER_TYPES, mandatory = false, description = "An array of annotation types that should never begin or end within a sentence. For example, sentences should never reach out of a paragraph or a section heading.")
     private Set<String> sentenceDelimiterTypes;
-
     @ConfigurationParameter(name = PARAM_MODEL_FILE, mandatory = true)
     private String modelFilename;
-
     @ConfigurationParameter(name = PARAM_CUT_AWAY_TYPES, mandatory = false, description = "An array of fully qualified type names. Document text covered by annotations of these types will be ignored from sentence splitting. This means that sentence splitting happens as if the covered text of these annotations would not exist in the text. This helps for references, for example, which otherwise might confuse the sentence splitting. A post-processing step tries to extend sentences include such annotations if they appear directly after the sentence (e.g. references: '...as Smith et al. have shown.1 Further text follows...').")
     private Set<String> cutAwayTypes;
-
+    @ConfigurationParameter(name = PARAM_MAX_SENTENCE_LENGTH, mandatory = false, description = "Optional. If given, this parameter defines the maximum length in characters any sentence will have. If the machine learning algorithm produces sentences exceeding the given maximum length, they will be split first by newline and, if necessary, also at semicoli. If there are still too large sentences then, they will be split at whitespaces to stay within the given bound. Defaults to 0 which means no maximum length.")
+    private int maxSentenceLength;
     private SentenceSplitter sentenceSplitter;
-
-    private static AtomicInteger numEmptyCases = new AtomicInteger();
 
     /**
      * initiaziation of JSBD: load the model, set post processing
@@ -126,6 +127,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             String[] ignoredTypesArray = (String[]) aContext.getConfigParameterValue(PARAM_CUT_AWAY_TYPES);
             if (null != ignoredTypesArray)
                 cutAwayTypes = Stream.of(ignoredTypesArray).collect(toSet());
+            maxSentenceLength = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_MAX_SENTENCE_LENGTH)).orElse(0);
         } catch (ClassNotFoundException | IOException e) {
             throw new ResourceInitializationException(e);
         }
@@ -205,7 +207,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                 if (numEmptyCases.get() < 10) {
                     LOGGER.debug("document text empty. Skipping this document.");
                     numEmptyCases.incrementAndGet();
-                } else if (numEmptyCases.get() == 10){
+                } else if (numEmptyCases.get() == 10) {
                     LOGGER.warn("Encountered 10 documents with an empty text body. This message will not appear again " +
                             "to avoid scrolling in cases where this is expected.");
                 }
@@ -230,10 +232,8 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
      * such unit we decide whether this unit is at the end of a sentence. If so,
      * this unit gets the label "EOS" (end-of-sentence).
      *
-     * @param documentText
-     *            the associated JCas
-     * @param units
-     *            all sentence units as returned by JSBD
+     * @param documentText the associated JCas
+     * @param units        all sentence units as returned by JSBD
      * @param offset
      */
     private void addAnnotations(JCoReCondensedDocumentText documentText, List<Unit> units, int offset) {
@@ -253,10 +253,8 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                 int begin = documentText.getOriginalOffsetForCondensedOffset(start + offset);
                 int end = documentText.getOriginalOffsetForCondensedOffset(myUnit.end + offset);
                 // Adjust offsets to exclude leading or trailing white spaces
-                while (begin < documentText.getCas().getDocumentText().length() && Character.isWhitespace(documentText.getCas().getDocumentText().charAt(begin)))
-                    ++begin;
-                while (end > 0 && Character.isWhitespace(documentText.getCas().getDocumentText().codePointAt(end-1)))
-                    --end;
+                begin = adjustBeginOffsetForWhitespaces(begin, documentText);
+                end = adjustEndOffsetForWhitespaces(end, documentText);
                 if (begin < end) {
                     annotation.setBegin(begin);
                     annotation.setEnd(end);
@@ -272,14 +270,132 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                     if (letterMatcher.find()) {
                         if (LOGGER.isTraceEnabled()) {
                             String docId = JCoReTools.getDocId(documentText.getCas());
-                            LOGGER.trace("Adding sentence with offsets {}-{}, length {} to document {}", begin, end, end-begin, docId);
+                            LOGGER.trace("Adding sentence with offsets {}-{}, length {} to document {}", begin, end, end - begin, docId);
                         }
-                        annotation.addToIndexes();
+                        if (maxSentenceLength > 0 && annotation.getEnd() - annotation.getBegin() > maxSentenceLength) {
+                            Set<Sentence> subSentences = new HashSet<>();
+                            LOGGER.debug("Sentence length {} exceeds maximum sentence length of {}. It is split into smaller chunks.", annotation.getEnd()-annotation.getBegin(), maxSentenceLength);
+                            LOGGER.debug("Splitting at newlines.");
+                            // Split at newlines
+                            splitAtRegex(documentText, annotation, eolMatcher, subSentences);
+                            // If the set of new sentences is empty, it just means that there were no newlines
+                            if (subSentences.isEmpty())
+                                subSentences.add(annotation);
+                            // Resulting sentences that are still too long are also split at semicoli
+                            Iterator<Sentence> sentIt = subSentences.iterator();
+                            Set<Sentence> subSubSentences = new HashSet<>();
+                            while (sentIt.hasNext()) {
+                                Sentence s = sentIt.next();
+                                if (s.getEnd() - s.getBegin() > maxSentenceLength) {
+                                    LOGGER.debug("Newline splitting still produces overlong sentences. Splitting at semicoli.");
+                                    sentIt.remove();
+                                    int numSubSubBefore = subSubSentences.size();
+                                    splitAtRegex(documentText, s, semicoliMatcher, subSubSentences);
+                                    // If there was nothing added, there were no semicoli. Put the sentence back
+                                    // to the set that is too long.
+                                    if (numSubSubBefore == subSubSentences.size()) {
+                                        subSubSentences.add(s);
+                                    }
+                                }
+                            }
+                            subSentences.addAll(subSubSentences);
+                            // Sentences that are now still too long are just split at some whitespace
+                            sentIt = subSentences.iterator();
+                            subSubSentences = new HashSet<>();
+                            while (sentIt.hasNext()) {
+                                Sentence s = sentIt.next();
+                                if (s.getEnd() - s.getBegin() > maxSentenceLength) {
+                                    LOGGER.debug("Newline and semicoli splitting still produce overlong sentences. Chunking at whitespaces.");
+                                    sentIt.remove();
+                                    splitAtWhitespaces(documentText, s, subSubSentences);
+                                }
+                            }
+                            for (Sentence s : subSentences)
+                                s.addToIndexes();
+                            for (Sentence s : subSubSentences)
+                                s.addToIndexes();
+                        } else {
+                            annotation.addToIndexes();
+                        }
                     }
                 }
                 start = -1;
             }
-
         }
+    }
+
+    /**
+     * <p>The ultimate fallback for overlong sentences: Split at whitespaces so that the resulting "sentences" are short enough.</p>
+     * @param documentText
+     * @param overlongSentence
+     * @param subSentences
+     */
+    private void splitAtWhitespaces(JCoReCondensedDocumentText documentText, Sentence overlongSentence, Set<Sentence> subSentences) {
+        wsMatcher.reset(overlongSentence.getCoveredText());
+        int currentSentenceLength = 0;
+        int lastEnd = overlongSentence.getBegin();
+        while (wsMatcher.find()) {
+            if (currentSentenceLength + wsMatcher.end() > maxSentenceLength) {
+                int subBegin = adjustBeginOffsetForWhitespaces(lastEnd, documentText);
+                int subEnd = adjustEndOffsetForWhitespaces(overlongSentence.getBegin() + wsMatcher.start(), documentText);
+                Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
+                s.setComponentId(this.getClass().getName());
+                subSentences.add(s);
+                lastEnd = s.getEnd();
+                currentSentenceLength = 0;
+            }
+            currentSentenceLength += wsMatcher.end();
+        }
+        // Also add a sentence of the tail
+        int subBegin = adjustBeginOffsetForWhitespaces(lastEnd, documentText);
+        int subEnd = adjustEndOffsetForWhitespaces(overlongSentence.getEnd(), documentText);
+        Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
+        s.setComponentId(this.getClass().getName());
+        subSentences.add(s);
+    }
+
+    /**
+     * <p>Fallback algorithm for sentences that exceed the maximum sentence length.</p>
+     * <p>This splits simply at regular expression matches.</p>
+     *
+     * @param documentText
+     * @param originalOverlongSentence
+     * @param subSentences
+     */
+    private void splitAtRegex(JCoReCondensedDocumentText documentText, Sentence originalOverlongSentence, Matcher splitMatcher, Set<Sentence> subSentences) {
+        splitMatcher.reset(originalOverlongSentence.getCoveredText());
+        int lastEnd = originalOverlongSentence.getBegin();
+        while (splitMatcher.find()) {
+            int subBegin = adjustBeginOffsetForWhitespaces(lastEnd, documentText);
+            int subEnd = adjustEndOffsetForWhitespaces(originalOverlongSentence.getBegin() + splitMatcher.start(), documentText);
+            if (subBegin < subEnd) {
+                Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
+                s.setComponentId(this.getClass().getName());
+                subSentences.add(s);
+                lastEnd = subEnd;
+            }
+        }
+        // Check if the current end is also the end of overly large sentence. This is true if
+        // the original sentence ended in a newline. We give a margin of two additional characters
+        // for another newline or a double newline.
+        if (lastEnd < originalOverlongSentence.getEnd() - 2) {
+            int subBegin = adjustBeginOffsetForWhitespaces(lastEnd, documentText);
+            int subEnd = adjustEndOffsetForWhitespaces(originalOverlongSentence.getEnd(), documentText);
+            Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
+            s.setComponentId(this.getClass().getName());
+            subSentences.add(s);
+        }
+    }
+
+    private int adjustBeginOffsetForWhitespaces(int begin, JCoReCondensedDocumentText documentText) {
+        while (begin < documentText.getCas().getDocumentText().length() && Character.isWhitespace(documentText.getCas().getDocumentText().charAt(begin)))
+            ++begin;
+        return begin;
+    }
+
+    private int adjustEndOffsetForWhitespaces(int end, JCoReCondensedDocumentText documentText) {
+        while (end > 0 && Character.isWhitespace(documentText.getCas().getDocumentText().codePointAt(end - 1)))
+            --end;
+        return end;
     }
 }

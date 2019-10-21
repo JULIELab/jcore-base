@@ -25,6 +25,8 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.impl.XmiCasDeserializer;
+import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
@@ -39,6 +41,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -263,6 +267,26 @@ public class SentenceAnnotatorTest {
 
 		Sentence sentence = JCasUtil.select(jCas, Sentence.class).iterator().next();
 		assertFalse(sentence.getCoveredText().endsWith("\u2029"));
+	}
+
+	@Test
+	public void testmuh() throws Exception {
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
+
+		XmiCasDeserializer.deserialize(new FileInputStream("/Users/faessler/uima-pipelines/jedis-doc-to-xmi/data/output-xmi/4768370.xmi"), jCas.getCas());
+		JCasUtil.select(jCas, Sentence.class).forEach(Annotation::removeFromIndexes);
+		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+				"/Users/faessler/Coding/git/jcore-projects/jcore-jsbd-ae-biomedical-english/src/main/resources/de/julielab/jcore/ae/jsbd/model/jsbd-biomed-oversampled-abstracts-split-at-punctuation.mod.gz", SentenceAnnotator.PARAM_MAX_SENTENCE_LENGTH, 1000);
+
+		jsbd.process(jCas.getCas());
+
+		Set<Integer> set = new TreeSet<>();
+		for (Sentence s : JCasUtil.select(jCas, Sentence.class)) {
+			set.add(s.getEnd() - s.getBegin());
+		}
+		XmiCasSerializer.serialize(jCas.getCas(), new FileOutputStream("smallSentences.xmi"));
 	}
 
 }

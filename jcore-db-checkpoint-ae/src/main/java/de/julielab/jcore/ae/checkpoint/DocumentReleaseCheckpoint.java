@@ -1,13 +1,12 @@
 package de.julielab.jcore.ae.checkpoint;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.function.Function;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,11 +37,14 @@ public class DocumentReleaseCheckpoint {
             "This is done by the DBCheckpointAE which must be at the end of the pipeline and have the 'IndicateFinished' parameter set to 'true'. " +
             "Synchronized components are those that disclose this parameter and have a value set to it.";
     public static final String PARAM_JEDIS_SYNCHRONIZATION_KEY = "JedisSynchronizationKey";
+    private final static Logger log = LoggerFactory.getLogger(DocumentReleaseCheckpoint.class);
     private static DocumentReleaseCheckpoint checkpoint;
-    private Map<String, BlockingDeque<DocumentId>> releasedDocuments;
+    private Multiset<DocumentId> releasedDocuments;
+    private Set<String> registeredComponents;
 
     private DocumentReleaseCheckpoint() {
-        releasedDocuments = new ConcurrentHashMap<>();
+        releasedDocuments = HashMultiset.create();
+        registeredComponents = new HashSet<>();
     }
 
     public static DocumentReleaseCheckpoint get() {
@@ -57,7 +59,7 @@ public class DocumentReleaseCheckpoint {
      * @param componentKey A canonical identifier of the component taking part in synchronization.
      */
     public void register(String componentKey) {
-        releasedDocuments.put(componentKey, new LinkedBlockingDeque<>());
+        registeredComponents.add(componentKey);
     }
 
     /**
@@ -67,7 +69,7 @@ public class DocumentReleaseCheckpoint {
      * @param componentKey The canonical identifier provided in {@link #register(String)} earlier.
      */
     public void unregister(String componentKey) {
-        releasedDocuments.remove(componentKey);
+        registeredComponents.remove(componentKey);
     }
 
     /**
@@ -77,24 +79,29 @@ public class DocumentReleaseCheckpoint {
      * @param releasedDocumentIds The document IDs to be released.
      */
     public void release(String componentKey, Stream<DocumentId> releasedDocumentIds) {
-        if (!releasedDocuments.containsKey(componentKey))
+        if (!registeredComponents.contains(componentKey))
             throw new IllegalArgumentException("No component is registered for key " + componentKey);
-        releasedDocumentIds.forEach(d -> releasedDocuments.get(componentKey).add(d));
+        releasedDocumentIds.forEach(d -> releasedDocuments.add(d));
     }
 
     /**
      * <p>Used by the {@link DBCheckpointAE} to determine documents that can safely be marked as being finished with processing.</p>
-     * <p>Get all the document IDs from all synchronizing components that those components have released. The returned list will
+     * <p>Gets all the document IDs from all synchronizing components that those components have released. The returned list will
      * contain duplicates of document IDs when multiple components have released that document. The {@link DBCheckpointAE}
      * will only mark those documents as processed that have been released as often as synchronizing components have been
      * registered with {@link #register(String)}.</p>
      *
      * @return The currently released document IDs.
      */
-    public List<DocumentId> getReleasedDocumentIds() {
-        List<DocumentId> releasedIds = new ArrayList<>(releasedDocuments.values().stream().mapToInt(Collection::size).sum());
-        releasedDocuments.values().forEach(queue -> queue.drainTo(releasedIds));
-        return releasedIds;
+    public synchronized Set<DocumentId> getReleasedDocumentIds() {
+        // Get all documents released by all components
+        Set<DocumentId> returnedIds = this.releasedDocuments.entrySet().stream().filter(e -> e.getCount() == getNumberOfRegisteredComponents()).map(Multiset.Entry::getElement).collect(Collectors.toSet());
+        // Remove the completely released documents from the pool of potentially not yet completely released documents.
+        returnedIds.forEach(id -> this.releasedDocuments.remove(id, Integer.MAX_VALUE));
+        log.debug("Returning {} documents released by all registered components. {} document IDs remain that have not yet been released by all registered components.", returnedIds.size(), this.releasedDocuments.size());
+        if (this.releasedDocuments.size() > 1000)
+            log.warn("The number of document IDs that have not been released by all registered components has grown to {}. If it does not increase again, there is likely an errorneous component which does not release its documents.", releasedDocuments.size());
+        return returnedIds;
     }
 
     /**
@@ -103,16 +110,7 @@ public class DocumentReleaseCheckpoint {
      * @return The number of currently registered components.
      */
     public int getNumberOfRegisteredComponents() {
-        return releasedDocuments.size();
+        return registeredComponents.size();
     }
 
-    /**
-     * <p>For debugging purposes: Returns a map from registered keys to the number of document IDs currently released
-     * for each key.</p>
-     *
-     * @return A map showing the number of released documents by key.
-     */
-    public Map<String, Integer> getReleasedDocumentsState() {
-        return releasedDocuments.keySet().stream().collect(Collectors.toMap(Function.identity(), o -> releasedDocuments.get(o).size()));
-    }
 }
