@@ -425,16 +425,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             this.binaryEncoder = new BinaryJeDISNodeEncoder();
         }
 
-        if (storeBaseDocument) {
-            // Check if we are about to read from a mirror subset and to update the base document. This is not allowed
-            // because it would cause the subset to reset the updated columns, causing the same documents to be
-            // read again and again.
-            try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
-                LinkedHashMap<String, Boolean> mirrorSubsetNames = dbc.getMirrorSubsetNames(costoConn, effectiveDocTableName);
-                if (mirrorSubsetNames.keySet().contains(subsetTable.replace("^[^.]\\.", "")))
-                    throw new ResourceInitializationException(new IllegalArgumentException("The read subset table " + subsetTable + " is a mirror subset its document table " + effectiveDocTableName + " and the base document should be stored. This base document storage would cause all its subset to reset the updated documents. Thus, the subset " + subsetTable + " would be partially reset while processing, reading the same documents over and over again. This is therefore illegal."));
-            }
-        }
         log.info(XMIDBWriter.class.getName() + " initialized.");
         log.info("Effective document table name: {}", effectiveDocTableName);
         log.info("Is base document stored: {}", storeBaseDocument);
@@ -535,6 +525,17 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         throw new AnalysisEngineProcessException(new IllegalArgumentException(
                                 "There is more than one type of DBProcessingMetaData in document " + docId));
                     subsetTable = metaData.stream().findAny().get().getSubsetTable();
+
+                    if (subsetTable != null && storeBaseDocument) {
+                        // Check if we are about to read from a mirror subset and to update the base document. This is not allowed
+                        // because it would cause the subset to reset the updated columns, causing the same documents to be
+                        // read again and again.
+                        try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
+                            Map<String, Boolean> mirrorSubsetNames = dbc.getMirrorSubsetNames(costoConn, effectiveDocTableName);
+                            if (mirrorSubsetNames.keySet().contains(subsetTable.replace("^[^.]\\.", "")))
+                                throw new AnalysisEngineProcessException(new IllegalArgumentException("The read subset table " + subsetTable + " is a mirror subset its document table " + effectiveDocTableName + " and the base document should be stored. This base document storage would cause all its subset to reset the updated documents. Thus, the subset " + subsetTable + " would be partially reset while processing, reading the same documents over and over again. This is therefore illegal."));
+                        }
+                    }
                 }
             }
             try {
