@@ -75,7 +75,11 @@ class Sentence2TokenPipe extends Pipe {
 	/**
 	 * make the label sequence for the corresponding unit sequence
 	 *
-	 * @param tokSentence
+	 * @param orgSentence
+	 * @param units
+	 *            the single units of a sentence (w/o white space)
+	 * @param wSpaces
+	 *            info about white spaces from the testing data
 	 */
 	public ArrayList<String> makeLabels(final String tokSentence) {
 
@@ -180,10 +184,10 @@ class Sentence2TokenPipe extends Pipe {
 		int end = 0;
 
 		while (sentence.length() > 0) {
-			final char c = sentence.charAt(0);
+			final String c = String.valueOf(sentence.charAt(0));
 			LOGGER.trace("makeUnits() - " + c);
 
-			if (Character.isWhitespace(c)) {
+			if (Pattern.matches("\\s", c)) {
 				// at any whitespace position
 				// store the unit found till this position
 
@@ -235,8 +239,8 @@ class Sentence2TokenPipe extends Pipe {
 
 				if (sentence.length() > 1) { // check whether next token is a
 					// white space
-					final char c1 = sentence.charAt(1);
-					if (Character.isWhitespace(c1))
+					final String c1 = String.valueOf(sentence.charAt(1));
+					if (Pattern.matches("\\s", c1))
 						wSpaces.add("WS");
 					else
 						wSpaces.add("noWS");
