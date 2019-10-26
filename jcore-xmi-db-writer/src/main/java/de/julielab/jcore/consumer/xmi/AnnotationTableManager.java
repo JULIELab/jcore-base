@@ -88,7 +88,7 @@ public class AnnotationTableManager {
         String annotationName = nameIsQualified ? split[1] : split[0];
         String qualifier = nameIsQualified ? split[0] + "$" : "";
         if (qualifier.isEmpty() && defaultAnnotationColumnQualifier != null && !defaultAnnotationColumnQualifier.isBlank())
-            qualifier = defaultAnnotationColumnQualifier;
+            qualifier = defaultAnnotationColumnQualifier + "$";
         final String pgCompatibleAnnotationName = annotationName.toLowerCase().replace(".", "_");
         return qualifier + pgCompatibleAnnotationName;
     }

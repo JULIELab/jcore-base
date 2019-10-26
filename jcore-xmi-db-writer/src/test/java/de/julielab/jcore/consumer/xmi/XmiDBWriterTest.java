@@ -17,19 +17,15 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import static org.assertj.core.api.Assertions.*;
-
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class XmiDBWriterTest {
     @ClassRule
@@ -143,6 +139,48 @@ public class XmiDBWriterTest {
 
             assertThat(dbc.isEmpty("_data.documents", tokenColumn)).isFalse();
             assertThat(dbc.isEmpty("_data.documents", sentenceColumn)).isFalse();
+        }
+    }
+
+    @Test
+    public void testXmiDBWriterSplitAnnotationsDefaultAnnotationSchemas() throws Exception {
+
+        AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
+                XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{ Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XMIDBWriter.PARAM_ANNO_DEFAULT_QUALIFIER, "testschema",
+                XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
+                XMIDBWriter.PARAM_STORE_ALL, false,
+                XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,
+                XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents",
+                XMIDBWriter.PARAM_DO_GZIP, false,
+                XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
+                XMIDBWriter.PARAM_UPDATE_MODE, true,
+                XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), de.julielab.jcore.types.pubmed.Header.class.getCanonicalName()}
+        );
+        JCas jCas = getJCasWithRequiredTypes();
+        final Header header = new Header(jCas);
+        header.setDocId("789");
+        header.addToIndexes();
+        jCas.setDocumentText("This is a sentence. This is another one.");
+        new Sentence(jCas, 0, 19).addToIndexes();
+        new Sentence(jCas, 20, 40).addToIndexes();
+        // Of course, these token offsets are wrong, but it doesn't matter to the test
+        new Token(jCas, 0, 19).addToIndexes();
+        new Token(jCas, 20, 40).addToIndexes();
+        assertThatCode(() -> xmiWriter.process(jCas)).doesNotThrowAnyException();
+        jCas.reset();
+        xmiWriter.collectionProcessComplete();
+
+        dbc = DBTestUtils.getDataBaseConnector(postgres);
+        try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
+            assertThat(dbc.tableExists("_data.documents")).isTrue();
+
+            final List<Map<String, Object>> infos = dbc.getTableColumnInformation("_data.documents", "column_name");
+            final Set<String> columnNames = infos.stream().map(info -> info.get("column_name")).map(String.class::cast).collect(Collectors.toSet());
+
+            final String tokenColumn = "testschema$de_julielab_jcore_types_token";
+            final String sentenceColumn = "testschema$de_julielab_jcore_types_sentence";
+            assertThat(columnNames).contains(tokenColumn, sentenceColumn);
         }
     }
 }
