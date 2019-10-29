@@ -53,12 +53,12 @@ while True:
             tokenids = [t.idx for t in e.tokens]
             # Store sentence ID, token ID and the embedding
             if sendEmbeddings == "ENTITIES":
-                embeddings.extend([(sid, i, sentence.tokens[i-1].embedding.cpu().numpy()) for i in tokenids])
+                embeddings.extend([(sid, i, sentence.tokens[i-1].embedding.numpy()) for i in tokenids])
             taggedEntities.append(sid + "\t" + e.tag + "\t" + str(tokenids[0]) + "\t" + str(tokenids[-1]))
 
         if sendEmbeddings == "ALL":
             for i, token in enumerate(sentence.tokens):
-                embeddings.append((sid, i+1, token.embedding.cpu().numpy()))
+                embeddings.append((sid, i+1, token.embedding.numpy()))
 
     # 1. Write the number of tagged entities
     ba.extend(pack('>i', len(taggedEntities)))
