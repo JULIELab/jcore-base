@@ -274,7 +274,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                         }
                         if (maxSentenceLength > 0 && annotation.getEnd() - annotation.getBegin() > maxSentenceLength) {
                             Set<Sentence> subSentences = new HashSet<>();
-                            LOGGER.debug("Sentence length {} exceeds maximum sentence length of {}. It is split into smaller chunks.", annotation.getEnd()-annotation.getBegin(), maxSentenceLength);
+                            LOGGER.debug("Sentence length {} exceeds maximum sentence length of {}. It is split into smaller chunks.", annotation.getEnd() - annotation.getBegin(), maxSentenceLength);
                             LOGGER.debug("Splitting at newlines.");
                             // Split at newlines
                             splitAtRegex(documentText, annotation, eolMatcher, subSentences);
@@ -326,6 +326,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
 
     /**
      * <p>The ultimate fallback for overlong sentences: Split at whitespaces so that the resulting "sentences" are short enough.</p>
+     *
      * @param documentText
      * @param overlongSentence
      * @param subSentences
@@ -338,20 +339,28 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             if (currentSentenceLength + wsMatcher.end() > maxSentenceLength) {
                 int subBegin = adjustBeginOffsetForWhitespaces(lastEnd, documentText);
                 int subEnd = adjustEndOffsetForWhitespaces(overlongSentence.getBegin() + wsMatcher.start(), documentText);
-                Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
-                s.setComponentId(this.getClass().getName());
-                subSentences.add(s);
-                lastEnd = s.getEnd();
-                currentSentenceLength = 0;
+                if (subEnd > subBegin) {
+                    Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
+                    s.setComponentId(this.getClass().getName());
+                    subSentences.add(s);
+                    lastEnd = s.getEnd();
+                    currentSentenceLength = 0;
+                } else {
+                    LOGGER.warn("Not creating whitespace-segmented sub-sentence because its offsets would be invalid: {}-{}", subBegin, subEnd);
+                }
             }
             currentSentenceLength += wsMatcher.end();
         }
         // Also add a sentence of the tail
         int subBegin = adjustBeginOffsetForWhitespaces(lastEnd, documentText);
         int subEnd = adjustEndOffsetForWhitespaces(overlongSentence.getEnd(), documentText);
-        Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
-        s.setComponentId(this.getClass().getName());
-        subSentences.add(s);
+        if (subEnd > subBegin) {
+            Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
+            s.setComponentId(this.getClass().getName());
+            subSentences.add(s);
+        } else {
+            LOGGER.warn("Not creating whitespace-segmented sub-sentence because its offsets would be invalid: {}-{}", subBegin, subEnd);
+        }
     }
 
     /**
@@ -369,10 +378,15 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             int subBegin = adjustBeginOffsetForWhitespaces(lastEnd, documentText);
             int subEnd = adjustEndOffsetForWhitespaces(originalOverlongSentence.getBegin() + splitMatcher.start(), documentText);
             if (subBegin < subEnd) {
-                Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
-                s.setComponentId(this.getClass().getName());
-                subSentences.add(s);
-                lastEnd = subEnd;
+                if (subEnd < subBegin) {
+
+                    Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
+                    s.setComponentId(this.getClass().getName());
+                    subSentences.add(s);
+                    lastEnd = subEnd;
+                }
+            } else {
+                LOGGER.warn("Not creating regex-segmented sub-sentence because its offsets would be invalid: {}-{}", subBegin, subEnd);
             }
         }
         // Check if the current end is also the end of overly large sentence. This is true if
@@ -381,9 +395,13 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
         if (lastEnd < originalOverlongSentence.getEnd() - 2) {
             int subBegin = adjustBeginOffsetForWhitespaces(lastEnd, documentText);
             int subEnd = adjustEndOffsetForWhitespaces(originalOverlongSentence.getEnd(), documentText);
-            Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
-            s.setComponentId(this.getClass().getName());
-            subSentences.add(s);
+            if (subEnd > subBegin) {
+                Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
+                s.setComponentId(this.getClass().getName());
+                subSentences.add(s);
+            } else {
+                LOGGER.warn("Not creating regex-segmented sub-sentence because its offsets would be invalid: {}-{}", subBegin, subEnd);
+            }
         }
     }
 
