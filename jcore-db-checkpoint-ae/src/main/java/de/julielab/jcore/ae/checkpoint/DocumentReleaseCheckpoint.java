@@ -81,7 +81,9 @@ public class DocumentReleaseCheckpoint {
     public void release(String componentKey, Stream<DocumentId> releasedDocumentIds) {
         if (!registeredComponents.contains(componentKey))
             throw new IllegalArgumentException("No component is registered for key " + componentKey);
-        releasedDocumentIds.forEach(d -> releasedDocuments.add(d));
+        synchronized (releasedDocumentIds) {
+            releasedDocumentIds.forEach(d -> releasedDocuments.add(d));
+        }
     }
 
     /**
@@ -93,11 +95,14 @@ public class DocumentReleaseCheckpoint {
      *
      * @return The currently released document IDs.
      */
-    public synchronized Set<DocumentId> getReleasedDocumentIds() {
+    public Set<DocumentId> getReleasedDocumentIds() {
         // Get all documents released by all components
-        Set<DocumentId> returnedIds = this.releasedDocuments.entrySet().stream().filter(e -> e.getCount() == getNumberOfRegisteredComponents()).map(Multiset.Entry::getElement).collect(Collectors.toSet());
-        // Remove the completely released documents from the pool of potentially not yet completely released documents.
-        returnedIds.forEach(id -> this.releasedDocuments.remove(id, Integer.MAX_VALUE));
+        Set<DocumentId> returnedIds;
+        synchronized (releasedDocuments) {
+            returnedIds = this.releasedDocuments.entrySet().stream().filter(e -> e.getCount() == getNumberOfRegisteredComponents()).map(Multiset.Entry::getElement).collect(Collectors.toSet());
+            // Remove the completely released documents from the pool of potentially not yet completely released documents.
+            returnedIds.forEach(id -> this.releasedDocuments.remove(id, Integer.MAX_VALUE));
+        }
         log.debug("Returning {} documents released by all registered components. {} document IDs remain that have not yet been released by all registered components.", returnedIds.size(), this.releasedDocuments.size());
         if (this.releasedDocuments.size() > 1000)
             log.warn("The number of document IDs that have not been released by all registered components has grown to {}. If it does not increase again, there is likely an errorneous component which does not release its documents.", releasedDocuments.size());
