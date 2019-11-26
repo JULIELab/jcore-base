@@ -81,7 +81,7 @@ public class DocumentReleaseCheckpoint {
     public void release(String componentKey, Stream<DocumentId> releasedDocumentIds) {
         if (!registeredComponents.contains(componentKey))
             throw new IllegalArgumentException("No component is registered for key " + componentKey);
-        synchronized (releasedDocumentIds) {
+        synchronized (releasedDocuments) {
             releasedDocumentIds.forEach(d -> releasedDocuments.add(d));
         }
     }

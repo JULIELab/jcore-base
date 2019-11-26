@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNotNull;
  *
  */
 public class BioLemmatizerTest{
-	
+
 	@Test
 	public void testBioLemmatizer() {
 		try {
