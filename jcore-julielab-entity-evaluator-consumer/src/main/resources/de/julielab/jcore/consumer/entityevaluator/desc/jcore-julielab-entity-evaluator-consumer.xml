@@ -17,7 +17,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>ColumnDefinitions</name>
-                <description>Custom definitions of output columns. Predefined columns are 'DocumentId', 'SentenceId', 'Offsets' and 'DocumentTextSha256'. The first two may be overwritten by a custom definition using their exact name. A column definition consists of the name of the column, the type of the annotation from which the values for this column should be derived, and a feature path pointing to the value. A single column definition may refer to multiple, different annotation types with their own feature path. Annotation types that should use the same feature path are separated by a comma. The sets of annotation types where each set shares one feature path are separated by a semicolon. Example: 'entityid:Chemical,Gene=/registryNumber;Disease=/specificType'. In this example, the column named 'entityid' will list the IDs of annotations of types 'Chemical', 'Gene' and 'Disease'. For the first two, the feature 'registryNumber' will be employed, for the latter the feature 'specificType'. The annotation type names will be resolved against the 'TypePrefix' parameter, if specified. The built-in feature path functions 'coveredText()' and 'typeName()' are available. For example, 'type:Gene=/:typeName()' (note the colon preceding the built-in function) will output the fully qualified name of the Gene type.</description>
+                <description>Custom definitions of output columns. Predefined columns are 'DocumentId', 'SentenceId', 'Offsets' and 'DocumentTextSha256'. The first two may be overwritten by a custom definition using their exact name. A column definition consists of the name of the column, the type of the annotation from which the values for this column should be derived, and a feature path pointing to the value. A single column definition may refer to multiple, different annotation types with their own feature path. Annotation types that should use the same feature path are separated by a comma. The sets of annotation types where each set shares one feature path are separated by a semicolon. Example: 'entityid:Chemical,Gene=/registryNumber;Disease=/specificType'. In this example, the column named 'entityid' will list the IDs of annotations of types 'Chemical', 'Gene' and 'Disease'. For the first two, the feature 'registryNumber' will be employed, for the latter the feature 'specificType'. The annotation type names will be resolved against the 'TypePrefix' parameter, if specified. The built-in feature path functions 'coveredText()' and 'typeName()' are available. For example, 'type:Gene=/:typeName()' (note the colon preceding the built-in function) will output the fully qualified name of the Gene type. Additionally, some output options may be specified directly preceding the feature path, e.g. 'EmbeddingVector=[concat,binary,gzip]/vector'. Valid options are 'concat', 'binary', 'gzip', 'base64' and 'hex. Concat causes array-valued results to be concatenated. When 'binary' is not specified, elements will be converted to a string and concatenated by a comma delimiter. If 'binary' is specified, the value will be converted into binary form. By default to conversion to a string is done by the base64 algorithm. Another option is given by the 'hex' option. Finally, 'gzip' causes the data to be gzipped.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
@@ -60,8 +60,8 @@
             <configurationParameter>
                 <name>OutputFile</name>
                 <description>Output file to which all entity information is written in the format
-docId EGID begin end confidence
-Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.</description>
+                    docId EGID begin end confidence
+                    Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
@@ -80,6 +80,13 @@ Where the fields are separated by tab stops. If the file name ends with .gz, the
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>AddRecordsWithoutEntities</name>
+                <description>Optional. Default: false. If set to true, records will also be output for documents not having any requested entities.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
             <nameValuePair>
@@ -92,6 +99,12 @@ Where the fields are separated by tab stops. If the file name ends with .gz, the
                 <name>NormalizeSpace</name>
                 <value>
                     <boolean>true</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>AddRecordsWithoutEntities</name>
+                <value>
+                    <boolean>false</boolean>
                 </value>
             </nameValuePair>
         </configurationParameterSettings>

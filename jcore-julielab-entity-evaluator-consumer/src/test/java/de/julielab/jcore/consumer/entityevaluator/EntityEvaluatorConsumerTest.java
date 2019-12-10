@@ -76,6 +76,36 @@ public class EntityEvaluatorConsumerTest {
 	}
 
 	@Test
+	public void testEntityEvaluatorConsumerNoEntities() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
+				"de.julielab.jcore.types.jcore-semantics-biology-types",
+				"de.julielab.jcore.types.jcore-document-meta-types");
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
+				PARAM_COLUMN_DEFINITIONS,
+				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId",
+						"geneid:Gene=/resourceEntryList[0]/entryId", "name:/:coveredText()" },
+				// We here use the default SentenceId column, we did not provide a definition!
+				PARAM_OUTPUT_COLUMNS, new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, "geneid", "name" },
+				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv",
+				PARAM_ADD_RECORDS_WO_ENTITIES, true);
+
+		jcas.setDocumentText("One gene one sentence.");
+		Header h = new Header(jcas);
+		h.setDocId("document1");
+		h.addToIndexes();
+		Sentence s = new Sentence(jcas, 0, jcas.getDocumentText().length());
+		s.setId("sentence1");
+		s.addToIndexes();
+
+		consumer.process(jcas.getCas());
+		consumer.collectionProcessComplete();
+
+		List<String> lines = Files.readLines(new File("src/test/resources/outfile-test.tsv"), Charset.forName("UTF-8"));
+		assertEquals(1, lines.size());
+		assertEquals("document1\tdocument1:0\tnull\tOne gene one sentence.", lines.get(0));
+	}
+
+	@Test
 	public void testEntityEvaluatorConsumerSingleEntityDocumentTextHash() throws Exception {
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
 				"de.julielab.jcore.types.jcore-semantics-biology-types",

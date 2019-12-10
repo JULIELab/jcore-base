@@ -50,6 +50,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     public static final String SENTENCE_ID_COLUMN = "SentenceId";
     public static final String OFFSETS_COLUMN = "Offsets";
     public static final String DOCUMENT_TEXT_SHA256_COLUMN = "DocumentTextSha256";
+    public static final String PARAM_ADD_RECORDS_WO_ENTITIES = "AddRecordsWithoutEntities";
     public static final String PARAM_OUTPUT_COLUMNS = "OutputColumns";
     public static final String PARAM_COLUMN_DEFINITIONS = "ColumnDefinitions";
     public static final String PARAM_TYPE_PREFIX = "TypePrefix";
@@ -83,6 +84,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     private MultiValueMode multiValueMode;
     @ConfigurationParameter(name = PARAM_NORMALIZE_SPACE, mandatory = false, defaultValue = "true", description = "Optional. Default: true. Determines whether or not to apply space normalization to the output column values. This is most helpful in cases where covered text is output which might contain tab characters or newlines which would break the TSV format.")
     private boolean normalizeSpace;
+    @ConfigurationParameter(name = PARAM_ADD_RECORDS_WO_ENTITIES, mandatory = false, defaultValue = "false", description = "Optional. Default: false. If set to true, records will also be output for documents not having any requested entities.")
+    private boolean addRecordsWithoutEntites;
     private Set<String> predefinedColumnNames = new HashSet<>();
     private LinkedHashSet<String> outputColumnNames;
     private LinkedHashMap<String, Column> columns;
@@ -265,6 +268,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
         normalizeSpace = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_NORMALIZE_SPACE)).orElse(true);
 
+        addRecordsWithoutEntites = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_ADD_RECORDS_WO_ENTITIES)).orElse(false);
+
         outputFile = new File(outputFilePath);
         if (outputFile.exists()) {
             log.warn("File \"{}\" is overridden.", outputFile.getAbsolutePath());
@@ -319,6 +324,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                 addDocumentIdColumn(aJCas);
                 addDocumentTextSha256Column();
             }
+            boolean recordAdded = false;
             // the sentence column must be created new for each document because
             // it is using a document-specific sentence index
             addSentenceIdColumn(aJCas);
@@ -356,41 +362,12 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                 }
                 if (!featureFilters.isEmpty() && !isEligible)
                     continue;
-                int colIndex = 0;
-                String[] record = new String[outputColumnNames.size()];
-                List<Pair<Deque<String>, Integer>> multiValues = null;
-                for (String outputColumnName : outputColumnNames) {
-                    assertColumnDefined(outputColumnName);
-                    Column c = columns.get(outputColumnName);
-                    final Deque<String> values = removeLineBreak(c.getValue(a));
-                    // The following case distinction is important:
-                    // if there are multi valued values, the respective locations in the
-                    // record array will be filled below. For the cartesian product
-                    // algorithm, no values may be already read, otherwise we
-                    // cannot build all combinations. Thus, the record indices
-                    // corresponding to multi value columns stay empty for now.
-                    if (c.isMultiValued && (values.size() > 1 || multiValueMode == MultiValueMode.PARALLEL)) {
-                        if (multiValues == null)
-                            multiValues = new ArrayList<>();
-                        multiValues.add(new ImmutablePair<>(values, colIndex));
-                    } else {
-                        // This is the simple case: No multivalues, just add the value to
-                        // the record
-                        record[colIndex] = values.isEmpty() ? null : values.removeFirst();
-                    }
-                    ++colIndex;
-                }
-                if (multiValues == null) {
-                    entityRecords.add(record);
-                }
-                if (multiValues != null) {
-                    if (multiValueMode == MultiValueMode.PARALLEL) {
-                        addParallelMultiValues(record, multiValues);
-                    } else {
-                        addCartesianProduct(multiValues, 0, Arrays.copyOf(record, record.length));
-                    }
-                }
+
+                recordAdded = true;
+                addRecord(a);
             }
+            if (!recordAdded && addRecordsWithoutEntites)
+                addRecord(aJCas.getDocumentAnnotationFs());
         } catch (CASException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -398,6 +375,43 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         // before the next document is processed
         for (Column c : columns.values())
             c.reset();
+    }
+
+    private void addRecord(TOP a) {
+        int colIndex = 0;
+        String[] record = new String[outputColumnNames.size()];
+        List<Pair<Deque<String>, Integer>> multiValues = null;
+        for (String outputColumnName : outputColumnNames) {
+            assertColumnDefined(outputColumnName);
+            Column c = columns.get(outputColumnName);
+            final Deque<String> values = removeLineBreak(c.getValue(a));
+            // The following case distinction is important:
+            // if there are multi valued values, the respective locations in the
+            // record array will be filled below. For the cartesian product
+            // algorithm, no values may be already read, otherwise we
+            // cannot build all combinations. Thus, the record indices
+            // corresponding to multi value columns stay empty for now.
+            if (c.isMultiValued && (values.size() > 1 || multiValueMode == MultiValueMode.PARALLEL)) {
+                if (multiValues == null)
+                    multiValues = new ArrayList<>();
+                multiValues.add(new ImmutablePair<>(values, colIndex));
+            } else {
+                // This is the simple case: No multivalues, just add the value to
+                // the record
+                record[colIndex] = values.isEmpty() ? null : values.removeFirst();
+            }
+            ++colIndex;
+        }
+        if (multiValues == null) {
+            entityRecords.add(record);
+        }
+        if (multiValues != null) {
+            if (multiValueMode == MultiValueMode.PARALLEL) {
+                addParallelMultiValues(record, multiValues);
+            } else {
+                addCartesianProduct(multiValues, 0, Arrays.copyOf(record, record.length));
+            }
+        }
     }
 
     /**
