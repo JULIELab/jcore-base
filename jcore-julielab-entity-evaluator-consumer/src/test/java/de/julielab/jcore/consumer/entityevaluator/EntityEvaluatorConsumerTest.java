@@ -102,7 +102,7 @@ public class EntityEvaluatorConsumerTest {
 
 		List<String> lines = Files.readLines(new File("src/test/resources/outfile-test.tsv"), Charset.forName("UTF-8"));
 		assertEquals(1, lines.size());
-		assertEquals("document1\tdocument1:0\tnull\tOne gene one sentence.", lines.get(0));
+		assertEquals("document1\t\t\t", lines.get(0));
 	}
 
 	@Test

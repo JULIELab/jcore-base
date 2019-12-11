@@ -15,6 +15,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 
 import java.io.ByteArrayOutputStream;
@@ -186,7 +187,12 @@ public class Column {
         return featurePathMap.keySet().stream().findFirst().get();
     }
 
-    public Deque<String> getValue(TOP a) {
+    public Deque<String> getValue(TOP a, JCas aJCas) {
+        if (a == null) {
+            Deque<String> emptyVal = new ArrayDeque<>();
+            emptyVal.add("");
+            return emptyVal;
+        }
         Object value = null;
         JCoReFeaturePath fp = getMostSpecificApplicableFeaturePath(a.getType(), a.getCAS().getTypeSystem());
         if (fp != null) {

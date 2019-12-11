@@ -180,7 +180,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
             Column docIdColumn = columns.get(DOCUMENT_ID_COLUMN);
             String documentId = null;
             if (docIdColumn != null)
-                documentId = docIdColumn.getValue(aJCas.getDocumentAnnotationFs()).getFirst();
+                documentId = docIdColumn.getValue(aJCas.getDocumentAnnotationFs(), aJCas).getFirst();
             Type sentenceType = c.getSingleType();
             // put all sentences into an index with an
             // overlap-comparator - this way the index can be
@@ -364,10 +364,10 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                     continue;
 
                 recordAdded = true;
-                addRecord(a);
+                addRecord(a, aJCas);
             }
             if (!recordAdded && addRecordsWithoutEntites)
-                addRecord(aJCas.getDocumentAnnotationFs());
+                addRecord(null, aJCas);
         } catch (CASException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -377,14 +377,14 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
             c.reset();
     }
 
-    private void addRecord(TOP a) {
+    private void addRecord(TOP a, JCas aJCas) {
         int colIndex = 0;
         String[] record = new String[outputColumnNames.size()];
         List<Pair<Deque<String>, Integer>> multiValues = null;
         for (String outputColumnName : outputColumnNames) {
             assertColumnDefined(outputColumnName);
             Column c = columns.get(outputColumnName);
-            final Deque<String> values = removeLineBreak(c.getValue(a));
+            final Deque<String> values = removeLineBreak(c.getValue(a, aJCas));
             // The following case distinction is important:
             // if there are multi valued values, the respective locations in the
             // record array will be filled below. For the cartesian product
