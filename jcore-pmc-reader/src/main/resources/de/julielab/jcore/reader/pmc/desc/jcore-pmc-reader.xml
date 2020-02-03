@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.pmc.PMCReader</implementationName>
@@ -8,40 +8,36 @@
         <configurationParameters>
             <configurationParameter>
                 <name>Input</name>
-                <description>The path to an NXML file or a directory with NXML files and possibly subdirectories holding
-                    more NXML files.
-                </description>
+                <description>The path to an NXML file or a directory with NXML files and possibly subdirectories holding more NXML files.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>SearchRecursively</name>
-                <description>If set to true, subdirectories of the given input directory Input are also searched for
-                    NXML files. Defaults to false.
-                </description>
+                <description>If set to true, subdirectories of the given input directory Input are also searched for NXML files. Defaults to false.</description>
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>SearchInZipFiles</name>
-                <description>If set to true, ZIP files found among the input are opened and also searched for NXML
-                    files. Defaults to false.
-                </description>
+                <description>If set to true, ZIP files found among the input are opened and also searched for NXML files. Defaults to false.</description>
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>WhitelistFile</name>
-                <description>A file listing the file names that should be read. All other files will be discarded. The
-                    file name must be given without any extensions. For example, the file "PMC2847692.nxml.gz" would be
-                    represented as "PMC2847692" in the whitelist file. Each file name must appear on a line of its own.
-                    An empty file will cause nothing to be read. A file containing only the keyword "all" will behave as
-                    if no file was given at all.
-                </description>
+                <description>A file listing the file names that should be read. All other files will be discarded. The file name must be given without any extensions and subdirectories. For example, the file "Neural_Regen_Res/PMC2847692.nxml.gz" would be represented as "PMC2847692" in the whitelist file. Each file name must appear on a line of its own. An empty file will cause nothing to be read. A file containing only the keyword "all" will behave as if no file was given at all.</description>
                 <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ExtractIdFromFilename</name>
+                <description>Used for NXML documents that carry their ID in the file name but not in the document itself. Extracts the string after the last path separator and the first dot after the separator and sets it to the docId feature of the Header annotation.</description>
+                <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
@@ -66,10 +62,10 @@
                 <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection />
+        <fsIndexCollection/>
         <capabilities>
             <capability>
-                <inputs />
+                <inputs/>
                 <outputs>
                     <type>de.julielab.jcore.types.TitleType</type>
                     <type>de.julielab.jcore.types.Title</type>
@@ -87,7 +83,6 @@
                     <type>de.julielab.jcore.types.pubmed.Header</type>
                     <type>de.julielab.jcore.types.Footnote</type>
                     <type>de.julielab.jcore.types.Figure</type>
-                    <type>uima.tcas.DocumentAnnotation</type>
                     <type>de.julielab.jcore.types.Date</type>
                     <type>de.julielab.jcore.types.CaptionType</type>
                     <type>de.julielab.jcore.types.Caption</type>
@@ -97,7 +92,7 @@
                     <type>de.julielab.jcore.types.AbstractSectionHeading</type>
                     <type>de.julielab.jcore.types.AbstractSection</type>
                 </outputs>
-                <languagesSupported />
+                <languagesSupported/>
             </capability>
         </capabilities>
         <operationalProperties>
@@ -105,5 +100,5 @@
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    <version>2.5.0-SNAPSHOT</version></processingResourceMetaData>
+    </processingResourceMetaData>
 </collectionReaderDescription>
