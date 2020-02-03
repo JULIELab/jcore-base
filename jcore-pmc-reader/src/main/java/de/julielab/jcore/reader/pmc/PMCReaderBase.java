@@ -27,6 +27,7 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
     public static final String PARAM_RECURSIVELY = "SearchRecursively";
     public static final String PARAM_SEARCH_ZIP = "SearchInZipFiles";
     public static final String PARAM_WHITELIST = "WhitelistFile";
+    public static final String PARAM_EXTRACT_ID_FROM_FILENAME = "ExtractIdFromFilename";
     private final static Logger log = LoggerFactory.getLogger(PMCReaderBase.class);
     @ConfigurationParameter(name = PARAM_INPUT, description = "The path to an NXML file or a directory with NXML files and possibly subdirectories holding more NXML files.")
     protected File input;
@@ -39,6 +40,9 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
 
     @ConfigurationParameter(name = PARAM_WHITELIST, mandatory = false, description = "A file listing the file names that should be read. All other files will be discarded. The file name must be given without any extensions and subdirectories. For example, the file \"Neural_Regen_Res/PMC2847692.nxml.gz\" would be represented as \"PMC2847692\" in the whitelist file. Each file name must appear on a line of its own. An empty file will cause nothing to be read. A file containing only the keyword \"all\" will behave as if no file was given at all.")
     protected File whitelistFile;
+
+    @ConfigurationParameter(name = PARAM_EXTRACT_ID_FROM_FILENAME, mandatory = false, description = "Used for NXML documents that carry their ID in the file name but not in the document itself. Extracts the string after the last path separator and the first dot after the separator and sets it to the docId feature of the Header annotation.")
+    protected boolean extractIdFromFilename;
 
     protected Iterator<URI> pmcFiles;
 
@@ -77,6 +81,15 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
             log.debug("Read whitelist with {} entries from {}", whitelist.size(), whitelistFile);
         }
         return whitelist;
+    }
+
+    protected String getIdFromFilename(URI uri) {
+        String uriString = uri.toString();
+        int lastSlash = uriString.lastIndexOf('/');
+        int firstDotAfterSlash = uriString.indexOf('.', lastSlash);
+        if (lastSlash < 0)
+            lastSlash = 0;
+        return uriString.substring(lastSlash + 1, firstDotAfterSlash);
     }
 
 

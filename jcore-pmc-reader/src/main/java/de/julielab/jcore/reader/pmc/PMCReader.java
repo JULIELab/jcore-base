@@ -11,6 +11,7 @@
 package de.julielab.jcore.reader.pmc;
 
 import de.julielab.jcore.reader.pmc.parser.ElementParsingException;
+import de.julielab.jcore.types.Header;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
@@ -31,6 +32,7 @@ public class PMCReader extends PMCReaderBase {
     public static final String PARAM_RECURSIVELY = PMCReaderBase.PARAM_RECURSIVELY;
     public static final String PARAM_SEARCH_ZIP = PMCReaderBase.PARAM_SEARCH_ZIP;
     public static final String PARAM_WHITELIST = PMCReaderBase.PARAM_WHITELIST;
+    public static final String PARAM_EXTRACT_ID_FROM_FILENAME = PMCReaderBase.PARAM_EXTRACT_ID_FROM_FILENAME;
     private static final Logger log = LoggerFactory.getLogger(PMCReader.class);
     private CasPopulator casPopulator;
 
@@ -51,7 +53,8 @@ public class PMCReader extends PMCReaderBase {
         try {
             next = pmcFiles.next();
             casPopulator.populateCas(next, cas);
-
+            if (extractIdFromFilename)
+                ((Header)cas.getAnnotationIndex(Header.type).iterator().next()).setDocId(getIdFromFilename(next));
         } catch (ElementParsingException e) {
             log.error("Exception occurred when trying to parse {}", next, e);
             throw new CollectionException(e);

@@ -37,7 +37,10 @@ public class DocumentIdColumn extends Column {
         JCoReFeaturePath fp = featurePathMap.get(documentMetaInformationType);
         value = fp.getValueAsString(docInfoAnnotation);
         Deque<String> ret = new ArrayDeque<>();
-        ret.add(value);
+        if (value != null)
+            ret.add(value);
+        else
+            throw new IllegalArgumentException("The given CAS does not have a value for the document ID at the feature path " + fp.getFeaturePath() + " on annotation of type " + documentMetaInformationType.getName());
         return ret;
     }
 
