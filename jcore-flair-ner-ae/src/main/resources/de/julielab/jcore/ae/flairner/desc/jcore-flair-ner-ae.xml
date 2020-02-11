@@ -37,8 +37,15 @@
             </configurationParameter>
             <configurationParameter>
                 <name>GpuNumber</name>
-                <description>Specifies the GPU device number to be used for FLAIR.</description>
+                <description>Specifies the GPU device number to be used for FLAIR. This setting can be overwritten by the Java system property 'flairner.device'.</description>
                 <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ComponentId</name>
+                <description>Specifies the componentId feature value given to the created annotations. Defaults to 'FlairNerAnnotator'.</description>
+                <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
