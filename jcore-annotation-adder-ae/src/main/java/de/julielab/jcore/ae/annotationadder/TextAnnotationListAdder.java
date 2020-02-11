@@ -26,7 +26,7 @@ public class TextAnnotationListAdder implements AnnotationAdder {
         try {
             annotationList = (AnnotationList<ExternalTextAnnotation>) data;
             if (!annotationList.isEmpty()) {
-                // Try to provoke a ClassCastException to make sure we are handeling the right data.
+                // Try to provoke a ClassCastException to make sure we are handling the right data.
                 ExternalTextAnnotation ignored = annotationList.get(0);
             }
         } catch (ClassCastException e) {
@@ -48,16 +48,22 @@ public class TextAnnotationListAdder implements AnnotationAdder {
                 final String shaFromAnnotation = (String) a.getPayload("sha");
                 boolean shaMatches = true;
                 if (shaFromAnnotation != null) {
-                    if ( jCasDocTextSha == null) {
+                    if (jCasDocTextSha == null) {
                         final byte[] bytes = DigestUtils.sha256(jCas.getDocumentText());
                         jCasDocTextSha = Base64.encodeBase64String(bytes);
                     }
                     shaMatches = jCasDocTextSha.equals(shaFromAnnotation);
                 }
                 if (shaMatches) {
-                    final Annotation annotation = JCoReAnnotationTools.getAnnotationByClassName(jCas, uimaType);
-                    helper.setAnnotationOffsetsRelativeToDocument(annotation, a, configuration);
-                    annotation.addToIndexes();
+                    // ExternalAnnotations with offsets < 0 are not actual mentions but non-entity lines just to check
+                    // that the SHA was the same as it was at time of the original entity tagging.
+                    if (a.getStart() >= 0) {
+                        final Annotation annotation = JCoReAnnotationTools.getAnnotationByClassName(jCas, uimaType);
+                        helper.setAnnotationOffsetsRelativeToDocument(annotation, a, configuration);
+                        annotation.addToIndexes();
+                    } else {
+                        log.trace("ExternalAnnotation for document {} has no entity offsets or offsets < 0, not adding anything to the CAS.", a.getDocumentId());
+                    }
                 } else {
                     if (!shaMismatchWasReported) {
                         final String docId = JCoReTools.getDocId(jCas);
@@ -73,7 +79,7 @@ public class TextAnnotationListAdder implements AnnotationAdder {
                         }
                     }
                 }
-            } catch (ClassNotFoundException | NoSuchMethodException |InstantiationException | IllegalAccessException | InvocationTargetException | CASException | AnnotationOffsetException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | CASException | AnnotationOffsetException e) {
                 e.printStackTrace();
             }
         }

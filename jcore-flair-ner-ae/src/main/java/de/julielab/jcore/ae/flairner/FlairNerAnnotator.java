@@ -4,13 +4,15 @@ import de.julielab.jcore.ae.annotationadder.AnnotationAdderAnnotator;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderConfiguration;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderHelper;
 import de.julielab.jcore.ae.annotationadder.AnnotationOffsetException;
-import de.julielab.jcore.types.*;
+import de.julielab.jcore.types.EmbeddingVector;
+import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.jcore.utility.index.Comparators;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
-import org.apache.commons.logging.Log;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -21,7 +23,6 @@ import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @ResourceMetaData(name = "JCoRe Flair Named Entity Recognizer", description = "This component starts a child process to a python interpreter and loads a Flair sequence tagging model. Sentences are taken from the CAS, sent to Flair for tagging and the results are written into the CAS. The annotation type to use can be configured. It must be a subtype of de.julielab.jcore.types.EntityMention. The tag of each entity is written to the specificType feature.")
@@ -43,6 +42,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     public static final String PARAM_PYTHON_EXECUTABLE = "PythonExecutable";
     public static final String PARAM_STORE_EMBEDDINGS = "StoreEmbeddings";
     public static final String PARAM_GPU_NUM = "GpuNumber";
+    public static final String PARAM_COMPONENT_ID = "ComponentId";
     /**
      * The name of the Java system property to set the used GPU device externally.
      */
@@ -59,6 +59,8 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     private StoreEmbeddings storeEmbeddings;
     @ConfigurationParameter(name = PARAM_GPU_NUM, mandatory = false, defaultValue="0", description = "Specifies the GPU device number to be used for FLAIR. This setting can be overwritten by the Java system property 'flairner.device'.")
     private int gpuNum;
+    @ConfigurationParameter(name=PARAM_COMPONENT_ID, mandatory = false, description = "Specifies the componentId feature value given to the created annotations. Defaults to 'FlairNerAnnotator'.")
+    private String componentId;
     private AnnotationAdderConfiguration adderConfig;
 
     /**
@@ -71,6 +73,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         flairModel = (String) aContext.getConfigParameterValue(PARAM_FLAIR_MODEL);
         storeEmbeddings = StoreEmbeddings.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_STORE_EMBEDDINGS)).orElse(StoreEmbeddings.NONE.name()));
         gpuNum = Optional.ofNullable((Integer)aContext.getConfigParameterValue(PARAM_GPU_NUM)).orElse(0);
+        componentId = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_ID)).orElse(getClass().getSimpleName());
         if (System.getProperty(GPU_NUM_SYS_PROP) != null) {
             try {
                 gpuNum = Integer.valueOf(System.getProperty(GPU_NUM_SYS_PROP));
@@ -139,7 +142,8 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
                 EntityMention em = (EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, entityClass);
                 helper.setAnnotationOffsetsRelativeToSentence(sentence, em, entity, adderConfig);
                 em.setSpecificType(entity.getTag());
-                em.setComponentId(FlairNerAnnotator.class.getSimpleName());
+                em.setConfidence(String.valueOf(entity.getLabelConfidence()));
+                em.setComponentId(componentId);
                 em.addToIndexes();
             }
             addTokenEmbeddings(aJCas, sentenceMap, helper, taggingResponse);
@@ -204,6 +208,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             uimaVector.copyFromArray(avgEmbedding, 0, 0, avgEmbedding.length);
             embeddingVector.setVector(uimaVector);
             embeddingVector.setSource(flairModel);
+            embeddingVector.setComponentId(componentId);
             token.setEmbeddingVectors(JCoReTools.addToFSArray(token.getEmbeddingVectors(), embeddingVector));
         }
     }

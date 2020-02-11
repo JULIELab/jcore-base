@@ -7,8 +7,6 @@ import de.julielab.ipc.javabridge.StdioBridge;
 import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
@@ -17,12 +15,14 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -84,7 +84,7 @@ public class StdioPythonConnector implements PythonConnector {
                     bb.get(taggedEntityRepsonseBytes);
                     final String taggedEntityString = new String(taggedEntityRepsonseBytes, StandardCharsets.UTF_8);
                     final String[] taggedEntityRecord = taggedEntityString.split("\\t");
-                    taggedEntities.add(new TaggedEntity(taggedEntityRecord[0], taggedEntityRecord[1], Integer.valueOf(taggedEntityRecord[2]), Integer.valueOf(taggedEntityRecord[3])));
+                    taggedEntities.add(new TaggedEntity(taggedEntityRecord[0], taggedEntityRecord[1], Double.valueOf(taggedEntityRecord[2]), Integer.valueOf(taggedEntityRecord[3]), Integer.valueOf(taggedEntityRecord[4])));
                 }
                 final int numEmbeddingVectors = bb.getInt();
                 final int vectorLength = bb.getInt();

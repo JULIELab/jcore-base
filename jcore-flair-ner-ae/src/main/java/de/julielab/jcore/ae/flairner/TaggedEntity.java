@@ -5,12 +5,22 @@ import de.julielab.jcore.ae.annotationadder.annotationrepresentations.TextAnnota
 public class TaggedEntity implements TextAnnotation {
     private String documentId;
     private String tag;
+    private double labelConfidence;
     private int start;
     private int end;
 
-    public TaggedEntity(String sentenceId, String tag, int begin, int end) {
+    /**
+     * The confidence that the given label is correct.
+     * @return
+     */
+    public Double getLabelConfidence() {
+        return labelConfidence;
+    }
+
+    public TaggedEntity(String sentenceId, String tag, double labelConfidence, int begin, int end) {
         this.documentId = sentenceId;
         this.tag = tag;
+        this.labelConfidence = labelConfidence;
         this.start = begin;
         this.end = end;
     }

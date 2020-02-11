@@ -9,7 +9,6 @@ import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
-import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
@@ -18,10 +17,12 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +62,8 @@ public class FlairNerAnnotatorTest {
                 Token token = tokenIt.next();
                 assertThat(token.getEmbeddingVectors()).isNull();
             }
+            assertThat(Double.parseDouble(g.getConfidence())).isGreaterThan(0.64);
+            assertThat(g.getComponentId().equals(FlairNerAnnotator.class.getSimpleName()));
         }
         assertThat(foundGenes).containsExactly("SUB1 homolog", "HIV-1", "VSV-G", "HIV-1");
         engine.collectionProcessComplete();
@@ -70,7 +73,7 @@ public class FlairNerAnnotatorTest {
     public void testAnnotatorWithEntityWordEmbeddings() throws Exception {
         embeddingsCache.clear();
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
-        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt", FlairNerAnnotator.PARAM_COMPONENT_ID, "ATotallyDifferentComponentId");
         String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
         jCas.setDocumentText(text);
         Sentence s = new Sentence(jCas, 0, text.length());
@@ -83,6 +86,7 @@ public class FlairNerAnnotatorTest {
             Gene g = (Gene) a;
             foundGenes.add(g.getCoveredText());
             assertThat(g.getSpecificType().equals("Gene"));
+            assertThat(g.getComponentId()).isEqualTo("ATotallyDifferentComponentId");
             final Iterator<Token> tokenIt = tokenIndex.searchFuzzy(g).iterator();
             while (tokenIt.hasNext()) {
                 Token token = tokenIt.next();

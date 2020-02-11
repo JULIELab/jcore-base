@@ -1,5 +1,4 @@
 import flair
-import flair
 import json
 import sys
 import torch
@@ -54,7 +53,7 @@ while True:
             # Store sentence ID, token ID and the embedding
             if sendEmbeddings == "ENTITIES":
                 embeddings.extend([(sid, i, sentence.tokens[i-1].embedding.numpy()) for i in tokenids])
-            taggedEntities.append(sid + "\t" + e.tag + "\t" + str(tokenids[0]) + "\t" + str(tokenids[-1]))
+            taggedEntities.append(sid + "\t" + e.tag + "\t" + str(e.score) + "\t" + str(tokenids[0]) + "\t" + str(tokenids[-1]))
 
         if sendEmbeddings == "ALL":
             for i, token in enumerate(sentence.tokens):
