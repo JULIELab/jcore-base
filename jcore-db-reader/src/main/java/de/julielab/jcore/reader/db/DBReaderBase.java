@@ -22,7 +22,7 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
      * Default size of document batches fetched from the database. The default is
      * {@value #DEFAULT_BATCH_SIZE}.
      */
-    private static final String DEFAULT_BATCH_SIZE = "1000";
+    private static final String DEFAULT_BATCH_SIZE = "100";
 
     @ConfigurationParameter(name = PARAM_BATCH_SIZE, defaultValue = DEFAULT_BATCH_SIZE, mandatory = false)
     protected int batchSize;
