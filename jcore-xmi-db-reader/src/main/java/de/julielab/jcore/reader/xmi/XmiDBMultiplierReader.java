@@ -5,7 +5,6 @@ import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBMultiplierReader;
-import de.julielab.jcore.reader.db.SubsetReaderConstants;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.JulieXMLConstants;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
 @ResourceMetaData(name = "JCoRe XMI Database Multiplier Reader", description = "This is an extension of the " +
@@ -99,6 +97,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
     public void getNext(JCas jCas) throws CollectionException {
         try {
             super.getNext(jCas);
+            // The above call to super.getNext has created a RowBatch annotation which we retrieve here.
             final RowBatch rowBatch = JCasUtil.selectSingle(jCas, RowBatch.class);
             rowBatch.setReadsBaseXmiDocument(readsBaseDocument);
             if (qualifiedAnnotationColumnNames != null)

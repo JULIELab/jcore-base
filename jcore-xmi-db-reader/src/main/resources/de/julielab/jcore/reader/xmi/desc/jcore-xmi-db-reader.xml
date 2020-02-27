@@ -50,6 +50,13 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
+                <name>LogFinalXmi</name>
+                <description>For debugging purposes. If set to true, before parsing the final XMI data assembled from the annotation modules, it is printed to console.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
                 <name>Timestamp</name>
                 <description>PostgreSQL timestamp expression that is evaluated against the data table. The data table schema, which must be the active data table schema in the CoStoSys configuration as always, must specify a single timestamp field for this parameter to work. Only data rows with a timestamp value larger than the given timestamp expression will be processed. Note that when reading from a subset table, there may be subset rows indicated to be in process which are finally not read from the data table. This is an implementational shortcoming and might be addressed if respective feature requests are given through the JULIE Lab GitHub page or JCoRe issues.</description>
                 <type>String</type>
@@ -69,6 +76,27 @@
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTables</name>
+                <description>An array of table names or a string in the form of a qualified Java class, i.e. a dot-separated path. In the latter case, an existing table is searched for by converting the dots to underscores. A specific Postgres schema can be specified by prepending the Java-style path with a schema name followed by a colon, e.g. 'myschema:de.julielab.jcore.types.Token'. By default, the table names will be resolved against the active data postgres schema configured in the CoStoSys configuration file. If a name is already schema qualified, i.e. contains a dot or a colon, the active data schema will be ignored for this table. When reading documents from the document data table, the additional tables will be joined onto the data table using the primary keys of the queried documents. Using the table schema for the additional documents defined by the 'AdditionalTableSchema' parameter, the columns that are marked as 'retrieve=true' in the table schema, are returned together with the main document data. This mechanism is most prominently used to retrieve annotation table data together with the original document text in XMI format for the JeDIS system.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTableSchemas</name>
+                <description>The table schemas that corresponds to the additional tables given with the 'AdditionalTables' parameter. If only one schema name is given, that schema must apply to all additional tables.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AdditionalTablesPostgresSchema</name>
+                <description>This optional parameter specifies the Postgres schema in which the additional tables to read are searched by default. If omitted, the active data schema from the CoStoSys configuration is assumed. The default can be overwritten for individual types. For details, see the description of the 'AdditionalTables' parameter.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>BatchSize</name>
@@ -125,6 +153,12 @@
                 <name>XmiMetaTablesSchema</name>
                 <value>
                     <string>public</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>LogFinalXmi</name>
+                <value>
+                    <boolean>false</boolean>
                 </value>
             </nameValuePair>
             <nameValuePair>

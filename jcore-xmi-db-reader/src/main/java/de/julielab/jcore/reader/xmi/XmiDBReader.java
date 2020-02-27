@@ -22,7 +22,6 @@ import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBReader;
-import de.julielab.jcore.reader.db.SubsetReaderConstants;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
@@ -45,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -97,6 +95,8 @@ public class XmiDBReader extends DBReader implements Initializable {
     private int xercesAttributeBufferSize;
     @ConfigurationParameter(name = PARAM_XMI_NAMESPACES_SCHEMA, mandatory = false, defaultValue = "public", description = "Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '" + XmiSplitConstants.XMI_NS_TABLE + "' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Also, the table listing the annotation tables is stored in this Postgres schema. Defaults to 'public'.")
     private String xmiMetaSchema;
+    @ConfigurationParameter(name = PARAM_LOG_FINAL_XMI, mandatory = false, defaultValue = "false", description = "For debugging purposes. If set to true, before parsing the final XMI data assembled from the annotation modules, it is printed to console.")
+    private boolean logFinalXmi;
     private Initializer initializer;
     private CasPopulator casPopulator;
 
@@ -111,9 +111,11 @@ public class XmiDBReader extends DBReader implements Initializable {
         this.qualifiedAnnotationColumnNames = Optional.ofNullable((String[]) context.getConfigParameterValue(PARAM_ANNOTATIONS_TO_LOAD)).orElse(new String[0]);
         adaptReaderConfigurationForXmiData();
         super.initialize(context);
+        logFinalXmi = Optional.ofNullable((Boolean) context.getConfigParameterValue(PARAM_LOG_FINAL_XMI)).orElse(false);
         try (final CoStoSysConnection ignore = dbc.obtainOrReserveConnection()) {
             initializer = new Initializer(this, dbc, qualifiedAnnotationColumnNames, joinTables, useBinaryFormat);
             initializer.initialize(context);
+            initializer.setLogFinalXmi(logFinalXmi);
             casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
         }
     }
@@ -191,7 +193,7 @@ public class XmiDBReader extends DBReader implements Initializable {
     }
 
     private void checkForJeDISBinaryFormat(byte[] firstTwoBytes) {
-        short header = (short) ((firstTwoBytes[0]<<8) | (0xff & firstTwoBytes[1]));
+        short header = (short) ((firstTwoBytes[0] << 8) | (0xff & firstTwoBytes[1]));
         if (header != BinaryJeDISNodeEncoder.JEDIS_BINARY_MAGIC) {
             useBinaryFormat = false;
             log.debug("Is data encoded in JeDIS binary format: false");

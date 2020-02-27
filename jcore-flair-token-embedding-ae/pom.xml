@@ -61,7 +61,7 @@
         <url>http://www.julielab.de</url>
     </organization>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-flair-token-embedding-ae</url>
-    <description>Given a Flair compatible embedding file, computed the token embeddings of the CAS and sets them to the
+    <description>Given a Flair compatible embedding file, computs the token embeddings of the CAS and sets them to the
         embeddingVector feature of the tokens.
     </description>
 </project>
