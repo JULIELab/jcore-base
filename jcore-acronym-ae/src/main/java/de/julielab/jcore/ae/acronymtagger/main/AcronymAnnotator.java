@@ -321,6 +321,7 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 				a.setDefinedHere(true);
 				// Annotation anno = new Annotation(aJCas, ffStart, ffEnd);
 				AbbreviationLongform anno = new AbbreviationLongform(aJCas, beginSent + fullformBegin, beginSent + fullformEnd);
+				anno.setAbbreviation(a);
 				anno.setComponentId(COMPONENT_ID);
 				anno.addToIndexes();
 				a.setTextReference(anno);

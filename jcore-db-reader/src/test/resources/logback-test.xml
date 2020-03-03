@@ -9,9 +9,10 @@
         </encoder>
     </appender>
 
-    <logger name="de.julielab.xmlData.dataBase.DataBaseConnector" level="trace"/>
-    <logger name="de.julielab.xmlData.dataBase.CoStoSysConnection" level="trace"/>
+    <logger name="de.julielab.xmlData.dataBase.DataBaseConnector" level="INFO"/>
+    <logger name="de.julielab.xmlData.dataBase.CoStoSysConnection" level="INFO"/>
     <logger name="de.julielab.jcore.reader.db.DBReader" level="INFO" />
+
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
