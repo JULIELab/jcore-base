@@ -55,6 +55,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
     public static final String PARAM_SENTENCE_DELIMITER_TYPES = "SentenceDelimiterTypes";
     public static final String PARAM_CUT_AWAY_TYPES = "CutAwayTypes";
     public static final String PARAM_MAX_SENTENCE_LENGTH = "MaximumSentenceLength";
+    public static final String PARAM_ALWAYS_SPLIT_NEWLINE = "AlwaysSplitAtNewlines";
     /**
      * Logger for this class
      */
@@ -79,6 +80,8 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
     private Set<String> cutAwayTypes;
     @ConfigurationParameter(name = PARAM_MAX_SENTENCE_LENGTH, mandatory = false, description = "Optional. If given, this parameter defines the maximum length in characters any sentence will have. If the machine learning algorithm produces sentences exceeding the given maximum length, they will be split first by newline and, if necessary, also at semicoli. If there are still too large sentences then, they will be split at whitespaces to stay within the given bound. Defaults to 0 which means no maximum length.")
     private int maxSentenceLength;
+    @ConfigurationParameter(name = PARAM_ALWAYS_SPLIT_NEWLINE, mandatory = false, description = "Optional. If true, newlines are also used as sentence boundaries.")
+    private boolean alwaysSplitAtNewlines;
     private SentenceSplitter sentenceSplitter;
 
     /**
@@ -128,6 +131,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             if (null != ignoredTypesArray)
                 cutAwayTypes = Stream.of(ignoredTypesArray).collect(toSet());
             maxSentenceLength = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_MAX_SENTENCE_LENGTH)).orElse(0);
+            alwaysSplitAtNewlines = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_ALWAYS_SPLIT_NEWLINE)).orElse(false);
         } catch (ClassNotFoundException | IOException e) {
             throw new ResourceInitializationException(e);
         }
@@ -271,6 +275,16 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                         if (LOGGER.isTraceEnabled()) {
                             String docId = JCoReTools.getDocId(documentText.getCas());
                             LOGGER.trace("Adding sentence with offsets {}-{}, length {} to document {}", begin, end, end - begin, docId);
+                        }
+                        if (alwaysSplitAtNewlines) {
+                            LOGGER.debug("Splitting at newlines.");
+                            Set<Sentence> subSentences = new HashSet<>();
+                            // Split at newlines
+                            splitAtRegex(documentText, annotation, eolMatcher, subSentences);
+                            // If the set of new sentences is empty, it just means that there were no newlines
+                            if (subSentences.isEmpty())
+                                subSentences.add(annotation);
+                            subSentences.forEach(Annotation::addToIndexes);
                         }
                         if (maxSentenceLength > 0 && annotation.getEnd() - annotation.getBegin() > maxSentenceLength) {
                             Set<Sentence> subSentences = new HashSet<>();
