@@ -205,6 +205,8 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 	 * approximate matching.
 	 */
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+		if (gazetteer == null)
+			throw new IllegalStateException("The actual gazetteer object is null. Check previous log messages pointing to the error (most probably the dictionary file could not be found).");
 		String docText = aJCas.getDocumentText();
 		if (docText == null || docText.length() == 0)
 			return;

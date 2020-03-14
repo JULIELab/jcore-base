@@ -36,7 +36,7 @@ public class XMLMultiplierTest {
 
         JCasIterator jCasIterator = multiplier.processAndOutputNewCASes(jCas);
         assertTrue(jCasIterator.hasNext());
-        JCas newcas = (JCas) jCasIterator.next();
+        JCas newcas = jCasIterator.next();
         Title title = JCasUtil.selectSingle(newcas, Title.class);
         assertEquals("Hospital debt management and cost reimbursement.", title.getCoveredText());
         int i = 1;

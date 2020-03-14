@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>de.julielab.jcore.multiplier.line.LineMultiplier</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>JCoRe Line Multiplier</name>
+    <description>Splits incoming CAS document texts on line breaks and returns one CAS for each non-blank line.</description>
+    <configurationParameters/>
+    <configurationParameterSettings/>
+    <typeSystemDescription/>
+    <fsIndexCollection/>
+    <capabilities/>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+</analysisEngineDescription>
