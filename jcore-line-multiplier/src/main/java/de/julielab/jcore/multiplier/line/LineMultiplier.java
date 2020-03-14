@@ -47,8 +47,11 @@ public static final String PARAM_NUM_LINES = "NumberLinesPerCAS";
 	public AbstractCas next() {
 		JCas cas = getEmptyJCas();
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < numLinesPerCas && !lines.isEmpty(); i++)
-			sb.append(lines.removeFirst() + System.getProperty("line.separator"));
+			String ls = System.getProperty("line.separator");
+		for (int i = 0; i < numLinesPerCas && !lines.isEmpty(); i++) {
+			sb.append(lines.removeFirst() + ls);
+		}
+		sb.delete(sb.length() - ls.length(), sb.length());
 		cas.setDocumentText(sb.toString());
 		Header h = new Header(cas);
 		h.setDocId("line"+numLines++);
