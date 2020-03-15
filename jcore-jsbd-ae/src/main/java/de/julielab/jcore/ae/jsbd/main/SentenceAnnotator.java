@@ -276,16 +276,6 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                             String docId = JCoReTools.getDocId(documentText.getCas());
                             LOGGER.trace("Adding sentence with offsets {}-{}, length {} to document {}", begin, end, end - begin, docId);
                         }
-                        if (alwaysSplitAtNewlines) {
-                            LOGGER.debug("Splitting at newlines.");
-                            Set<Sentence> subSentences = new HashSet<>();
-                            // Split at newlines
-                            splitAtRegex(documentText, annotation, eolMatcher, subSentences);
-                            // If the set of new sentences is empty, it just means that there were no newlines
-                            if (subSentences.isEmpty())
-                                subSentences.add(annotation);
-                            subSentences.forEach(Annotation::addToIndexes);
-                        }
                         if (maxSentenceLength > 0 && annotation.getEnd() - annotation.getBegin() > maxSentenceLength) {
                             Set<Sentence> subSentences = new HashSet<>();
                             LOGGER.debug("Sentence length {} exceeds maximum sentence length of {}. It is split into smaller chunks.", annotation.getEnd() - annotation.getBegin(), maxSentenceLength);
@@ -328,6 +318,15 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                                 s.addToIndexes();
                             for (Sentence s : subSubSentences)
                                 s.addToIndexes();
+                        } else if (alwaysSplitAtNewlines) {
+                            LOGGER.debug("Splitting at newlines.");
+                            Set<Sentence> subSentences = new HashSet<>();
+                            // Split at newlines
+                            splitAtRegex(documentText, annotation, eolMatcher, subSentences);
+                            // If the set of new sentences is empty, it just means that there were no newlines
+                            if (subSentences.isEmpty())
+                                subSentences.add(annotation);
+                            subSentences.forEach(Annotation::addToIndexes);
                         } else {
                             annotation.addToIndexes();
                         }
@@ -392,13 +391,10 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             int subBegin = adjustBeginOffsetForWhitespaces(lastEnd, documentText);
             int subEnd = adjustEndOffsetForWhitespaces(originalOverlongSentence.getBegin() + splitMatcher.start(), documentText);
             if (subBegin < subEnd) {
-                if (subEnd < subBegin) {
-
-                    Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
-                    s.setComponentId(this.getClass().getName());
-                    subSentences.add(s);
-                    lastEnd = subEnd;
-                }
+                Sentence s = new Sentence(documentText.getCas(), subBegin, subEnd);
+                s.setComponentId(this.getClass().getName());
+                subSentences.add(s);
+                lastEnd = subEnd;
             } else {
                 LOGGER.warn("Not creating regex-segmented sub-sentence because its offsets would be invalid: {}-{}", subBegin, subEnd);
             }

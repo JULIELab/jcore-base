@@ -41,9 +41,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
-
 public class SentenceAnnotatorTest {
 
 	/**
@@ -263,6 +264,24 @@ public class SentenceAnnotatorTest {
 
 		Sentence sentence = JCasUtil.select(jCas, Sentence.class).iterator().next();
 		assertFalse(sentence.getCoveredText().endsWith("\u2029"));
+	}
+
+	@Test
+	public void testSplitAtNewlines() throws Exception {
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+
+		String ls = System.getProperty("line.separator");
+		jCas.setDocumentText("line1"+ls+"line2"+ls+"line3");
+
+		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+				"de/julielab/jcore/ae/jsbd/model/test-model.gz", SentenceAnnotator.PARAM_ALWAYS_SPLIT_NEWLINE, true);
+
+		jsbd.process(jCas.getCas());
+
+
+		Collection<String> sentences = JCasUtil.select(jCas, Sentence.class).stream().map(Annotation::getCoveredText).collect(Collectors.toList());
+		assertThat(sentences).containsExactly("line1", "line2", "line3");
 	}
 
 //
