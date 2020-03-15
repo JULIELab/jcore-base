@@ -197,7 +197,7 @@
             
     <module>jcore-flair-token-embedding-ae</module>
           
-    <module>jcore-line-multiplier-ae</module>
+    <module>jcore-line-multiplier</module>
       
   </modules>
       
