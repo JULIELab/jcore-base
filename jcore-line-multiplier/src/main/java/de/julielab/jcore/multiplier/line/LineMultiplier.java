@@ -26,6 +26,7 @@ public class LineMultiplier extends JCasMultiplier_ImplBase {
     private int numLinesPerCas;
     private Deque<String> lines = new ArrayDeque<>();
     private int numLines = 0;
+    private int numCases = 0;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
@@ -40,6 +41,7 @@ public class LineMultiplier extends JCasMultiplier_ImplBase {
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
         Arrays.stream(aJCas.getDocumentText().split(System.getProperty("line.separator"))).filter(Predicate.not(String::isBlank)).forEach(lines::add);
+        log.info("Got {} lines", lines.size());
     }
 
     @Override
@@ -49,13 +51,17 @@ public class LineMultiplier extends JCasMultiplier_ImplBase {
         String ls = System.getProperty("line.separator");
         for (int i = 0; i < numLinesPerCas && !lines.isEmpty(); i++) {
             sb.append(lines.removeFirst() + ls);
+            ++numLines;
         }
         sb.delete(sb.length() - ls.length(), sb.length());
         cas.setDocumentText(sb.toString());
         Header h = new Header(cas);
-        h.setDocId("line" + numLines++);
+        h.setDocId("line" + numCases++);
+        if (numLines % 1000 == 0)
+            log.info("Batch checkpoint: {} lines left", lines.size());
         return cas;
     }
+
 
     @Override
     public boolean hasNext() throws AnalysisEngineProcessException {

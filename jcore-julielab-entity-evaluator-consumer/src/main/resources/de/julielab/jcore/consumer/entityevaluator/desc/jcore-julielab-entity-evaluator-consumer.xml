@@ -67,6 +67,13 @@
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
+                <name>AppendThreadNameToOutputFile</name>
+                <description>For multithreaded pipelines: Appends the thread name to the output file. This avoids the issue that multiple threads override each other's output files. There will be a number of files equal to the number of pipeline processing threads.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
                 <name>MultiValueMode</name>
                 <description>This parameter comes to effect if multiple columns define a feature path that points to a multi-valued feature (array features). Possible values are 'parallel' and 'cartesian'. The first mode assumes all multi-valued arrays values to be index-wise associated to one another and outputs the pairs with the same array index. If one array has more elements then the others, the missing values are null. The cartesian mode outputs the cartesian product of the array values. Defaults to 'cartesian'.</description>
                 <type>String</type>
@@ -89,6 +96,12 @@
             </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
+            <nameValuePair>
+                <name>AppendThreadNameToOutputFile</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
             <nameValuePair>
                 <name>MultiValueMode</name>
                 <value>

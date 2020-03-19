@@ -6,10 +6,6 @@
     "descriptors": [
         {
             "category": "ae",
-            "location": "de.julielab.jcore.ae.annotationadder.desc.de.julielab.jcore.ae.annotationadder.AnnotationAdderAnnotator"
-        },
-        {
-            "category": "ae",
             "location": "de.julielab.jcore.ae.flairner.desc.jcore-flair-ner-ae"
         }
     ],

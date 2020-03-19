@@ -59,6 +59,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     public final static String PARAM_OFFSET_MODE = "OffsetMode";
     public final static String PARAM_OFFSET_SCOPE = "OffsetScope";
     public final static String PARAM_OUTPUT_FILE = "OutputFile";
+    public static final String PARAM_APPEND_THREAD_NAME_TO_OUTPUT_FILE = "AppendThreadNameToOutputFile";
     public static final String PARAM_MULTI_VALUE_MODE = "MultiValueMode";
     public static final String PARAM_NORMALIZE_SPACE = "NormalizeSpace";
     private static final Logger log = LoggerFactory.getLogger(EntityEvaluatorConsumer.class);
@@ -80,6 +81,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
             + "docId EGID begin end confidence\n"
             + "Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.")
     private String outputFilePath;
+    @ConfigurationParameter(name = PARAM_APPEND_THREAD_NAME_TO_OUTPUT_FILE, mandatory = false, defaultValue = "false", description = "For multithreaded pipelines: Appends the thread name to the output file. This avoids the issue that multiple threads override each other's output files. There will be a number of files equal to the number of pipeline processing threads.")
+    private boolean appendThreadNameToOutputFile;
     @ConfigurationParameter(name = PARAM_MULTI_VALUE_MODE, mandatory = false, description = "This parameter comes to effect if multiple columns define a feature path that points to a multi-valued feature (array features). Possible values are 'parallel' and 'cartesian'. The first mode assumes all multi-valued arrays values to be index-wise associated to one another and outputs the pairs with the same array index. If one array has more elements then the others, the missing values are null. The cartesian mode outputs the cartesian product of the array values. Defaults to 'cartesian'.", defaultValue = "CARTESIAN")
     private MultiValueMode multiValueMode;
     @ConfigurationParameter(name = PARAM_NORMALIZE_SPACE, mandatory = false, defaultValue = "true", description = "Optional. Default: true. Determines whether or not to apply space normalization to the output column values. This is most helpful in cases where covered text is output which might contain tab characters or newlines which would break the TSV format.")
@@ -251,6 +254,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
         featureFilterDefinitions = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_FEATURE_FILTERS)).orElse(new String[0]);
         outputFilePath = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_FILE);
+        appendThreadNameToOutputFile = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_APPEND_THREAD_NAME_TO_OUTPUT_FILE)).orElse(false);
         entityTypeStrings = (String[]) aContext.getConfigParameterValue(PARAM_ENTITY_TYPES);
         String offsetModeStr = (String) aContext.getConfigParameterValue(PARAM_OFFSET_MODE);
         String offsetScopeStr = (String) aContext.getConfigParameterValue(PARAM_OFFSET_SCOPE);
@@ -270,19 +274,6 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
         addRecordsWithoutEntites = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_ADD_RECORDS_WO_ENTITIES)).orElse(false);
 
-        outputFile = new File(outputFilePath);
-        if (outputFile.exists()) {
-            log.warn("File \"{}\" is overridden.", outputFile.getAbsolutePath());
-            outputFile.delete();
-        }
-        try {
-            if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists())
-                outputFile.getParentFile().mkdirs();
-            bw = FileUtilities.getWriterToFile(outputFile);
-        } catch (IOException e) {
-            throw new ResourceInitializationException(e);
-        }
-
         predefinedColumnNames.add(DOCUMENT_ID_COLUMN);
         predefinedColumnNames.add(SENTENCE_ID_COLUMN);
         predefinedColumnNames.add(OFFSETS_COLUMN);
@@ -297,7 +288,26 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     }
 
     @Override
-    public void process(JCas aJCas) {
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+
+        if (bw == null) {
+            if (appendThreadNameToOutputFile)
+                outputFilePath += "-" + Thread.currentThread().getName();
+            outputFile = new File(outputFilePath);
+            if (outputFile.exists()) {
+                log.warn("File \"{}\" is overridden.", outputFile.getAbsolutePath());
+                outputFile.delete();
+            }
+            try {
+                if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists())
+                    outputFile.getParentFile().mkdirs();
+                bw = FileUtilities.getWriterToFile(outputFile);
+            } catch (IOException e) {
+                log.error("Could not create output file {}", outputFilePath, e);
+                throw new AnalysisEngineProcessException(e);
+            }
+        }
+
         try {
             TypeSystem ts = aJCas.getTypeSystem();
             // Initialization of the columns, entity types and filters
