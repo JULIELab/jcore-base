@@ -2,6 +2,7 @@ package de.julielab.jcore.reader.cord19.jsonformat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -125,7 +126,7 @@ public class Cord19Document {
     }
 
     public List<Paragraph> getAbstr() {
-        return abstr;
+        return abstr != null ? abstr : Collections.emptyList();
     }
 
     public void setAbstr(List<Paragraph> abstr) {
@@ -133,7 +134,7 @@ public class Cord19Document {
     }
 
     public List<Paragraph> getBody() {
-        return body;
+        return body != null ? body : Collections.emptyList();
     }
 
     public void setBody(List<Paragraph> body) {

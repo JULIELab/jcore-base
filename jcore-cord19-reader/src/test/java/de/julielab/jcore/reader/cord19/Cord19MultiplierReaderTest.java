@@ -46,13 +46,13 @@ public class Cord19MultiplierReaderTest {
         while (jCasIterator.hasNext()) {
             JCas nextCas = jCasIterator.next();
             ids.add(JCoReTools.getDocId(nextCas));
-            if (docCounter == 1)
+            if (JCoReTools.getDocId(nextCas).equals("5pl5oqwf"))
                 checkSecondDocument(nextCas);
             ++docCounter;
             nextCas.release();
         }
-        assertThat(docCounter).isEqualTo(2);
-        assertThat(ids).containsExactly("5pl5oqwf", "6gow0x1v");
+        assertThat(docCounter).isEqualTo(3);
+        assertThat(ids).containsExactlyInAnyOrder("5pl5oqwf", "mrcsrwv0", "6gow0x1v");
     }
 
     private void checkSecondDocument(JCas cas) {

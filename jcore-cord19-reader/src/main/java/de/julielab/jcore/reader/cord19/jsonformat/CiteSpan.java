@@ -20,6 +20,11 @@ public class CiteSpan {
     private String text;
     @JsonProperty("ref_id")
     private String refId;
+    private String mention;
+
+    public String getMention() {
+        return mention;
+    }
 
     public int getEnd() {
         return end;

@@ -221,6 +221,10 @@ public class Cord19Reader {
                         MetadataRecord metadataRecord = new MetadataRecord(cordUid, sha, pmcid, pmid, title);
                         for (String hash : metadataRecord.hashes)
                             metadataIdMap.put(hash, metadataRecord);
+                        if (pmcid != null)
+                            metadataIdMap.put(pmcid, metadataRecord);
+                        if (pmid != null)
+                            metadataIdMap.put(pmid, metadataRecord);
                     }
                 }
             }

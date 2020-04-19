@@ -22,7 +22,7 @@ import java.util.Queue;
         "de.julielab.jcore.types.pubmed.AbstractSectionHeading",
         "de.julielab.jcore.types.Section",
         "de.julielab.jcore.types.Caption",
-        "de.julielab.jcore.types.InternalReference"})
+        "de.julielab.jcore.types.pubmed.InternalReference"})
 public class Cord19Multiplier extends JCasMultiplier_ImplBase {
 
     private Queue<JCoReURI> uris = new ArrayDeque<>();
