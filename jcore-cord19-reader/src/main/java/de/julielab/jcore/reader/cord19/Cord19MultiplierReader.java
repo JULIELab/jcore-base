@@ -75,6 +75,7 @@ public class Cord19MultiplierReader extends JCasCollectionReader_ImplBase {
                         JCoReURI uri = new JCoReURI(jCas);
                         uri.setUri(p.toUri().toString());
                         uri.addToIndexes();
+                        ++completed;
                     }
                 }
             }
@@ -87,7 +88,7 @@ public class Cord19MultiplierReader extends JCasCollectionReader_ImplBase {
 
     @Override
     public Progress[] getProgress() {
-        return new Progress[]{new ProgressImpl(completed, 0, "documents")};
+        return new Progress[]{new ProgressImpl(completed, completed, "files")};
     }
 
     @Override
@@ -96,7 +97,10 @@ public class Cord19MultiplierReader extends JCasCollectionReader_ImplBase {
             currentFileBatch = fileWalker.getFiles(50);
             currentBatchIndex = 0;
         }
-        return currentFileBatch.get(currentBatchIndex) != Cord19FileVisitor.END;
+        boolean hasNext = currentFileBatch.get(currentBatchIndex) != Cord19FileVisitor.END;
+        if (!hasNext)
+            log.info("Read {} files.", completed);
+        return hasNext;
     }
 
 }

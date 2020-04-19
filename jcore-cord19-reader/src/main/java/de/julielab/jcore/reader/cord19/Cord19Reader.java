@@ -176,8 +176,8 @@ public class Cord19Reader {
 
     private void addMetadata(JCas jCas, Cord19Document document, MetadataRecord metadataRecord) {
         Header h = new Header(jCas);
+        h.setDocId(document.getPaperId());
         if (metadataRecord != null) {
-            h.setDocId(metadataRecord.getCordUid());
             String pmcid = metadataRecord.getPmcid();
             if (pmcid != null) {
                 OtherID otherID = new OtherID(jCas);
@@ -193,11 +193,9 @@ public class Cord19Reader {
                 h.setOtherIDs(JCoReTools.addToFSArray(h.getOtherIDs(), otherID));
             }
             OtherID otherID = new OtherID(jCas);
-            otherID.setSource("CORD-19 Paper ID");
-            otherID.setId(document.getPaperId());
+            otherID.setSource("CORD19-UID");
+            otherID.setId(metadataRecord.getCordUid());
             h.setOtherIDs(JCoReTools.addToFSArray(h.getOtherIDs(), otherID));
-        } else {
-            h.setDocId(document.getPaperId());
         }
         h.addToIndexes();
     }
