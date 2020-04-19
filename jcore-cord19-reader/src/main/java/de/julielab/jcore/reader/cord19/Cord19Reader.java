@@ -39,7 +39,7 @@ public class Cord19Reader {
     private final static Logger log = LoggerFactory.getLogger(Cord19Reader.class);
     private final ObjectMapper om;
     private final String linesep;
-    private Map<String, MetadataRecord> metadataIdMap = Collections.emptyMap();
+    private Map<String, MetadataRecord> metadataIdMap;
 
     public Cord19Reader() {
         om = new ObjectMapper();
@@ -53,6 +53,7 @@ public class Cord19Reader {
             StringBuilder doctext = new StringBuilder();
             Cord19Document document = om.readValue(URI.create(uri.getUri()).toURL(), Cord19Document.class);
             MetadataRecord metadataRecord = metadataIdMap.get(document.getPaperId());
+
             addMetadata(jCas, document, metadataRecord);
             addTitle(jCas, document, metadataRecord, doctext);
             addAbstract(jCas, doctext, document);
@@ -60,7 +61,7 @@ public class Cord19Reader {
             Map<String, TabFigRef> refEntries = document.getRefEntries();
             addTabFigs(jCas, doctext, refEntries);
 
-
+            jCas.setDocumentText(doctext.toString());
         } catch (IOException e) {
             log.error("Could not read document from URI {}", uri.getUri());
             throw new AnalysisEngineProcessException(e);
@@ -76,24 +77,44 @@ public class Cord19Reader {
             caption.setCaptionType(ref.getType());
             caption.addToIndexes();
         }
+        doctext.append(linesep);
     }
 
     private void addBody(JCas jCas, StringBuilder doctext, Cord19Document document) {
+        Section currentSection = null;
+        String lastSectionName = null;
         for (Paragraph p : document.getBody()) {
-            Title sHeading = new Title(jCas, doctext.length(), doctext.length() + p.getSection().length());
-            sHeading.setTitleType("section");
-            doctext.append(p.getSection());
-            doctext.append(linesep);
+            if (lastSectionName != null && !lastSectionName.equals(p.getSection())) {
+                currentSection.setEnd(doctext.length());
+                currentSection.addToIndexes();
+                doctext.append(linesep);
+                currentSection = null;
+            }
+            if (currentSection == null) {
+                currentSection = new Section(jCas);
+                currentSection.setBegin(doctext.length());
+                Title sHeading = new Title(jCas, doctext.length(), doctext.length() + p.getSection().length());
+                sHeading.setTitleType("section");
+                doctext.append(p.getSection());
+                doctext.append(linesep);
+                currentSection.setSectionHeading(sHeading);
+            }
 
             int paragraphBegin = doctext.length();
-            Section s = new Section(jCas, paragraphBegin, doctext.length() + p.getText().length());
+            de.julielab.jcore.types.Paragraph paragraph = new de.julielab.jcore.types.Paragraph(jCas, paragraphBegin, doctext.length() + p.getText().length());
             doctext.append(p.getText());
             doctext.append(linesep);
-            s.setSectionHeading(sHeading);
             addReferences(p, Paragraph::getRefSpans, paragraphBegin, jCas);
             addReferences(p, Paragraph::getEqSpans, paragraphBegin, jCas);
             addReferences(p, Paragraph::getCiteSpans, paragraphBegin, jCas);
-            s.addToIndexes();
+            paragraph.addToIndexes();
+            lastSectionName = p.getSection();
+        }
+        // Add the very last section
+        if (currentSection != null) {
+            currentSection.setEnd(doctext.length());
+            currentSection.addToIndexes();
+            doctext.append(linesep);
         }
     }
 
@@ -118,6 +139,7 @@ public class Cord19Reader {
         abstractText.setAbstractType("main");
         abstractText.setStructuredAbstractParts(JCoReTools.addToFSArray(null, sections));
         abstractText.addToIndexes();
+        doctext.append(linesep);
     }
 
     private void addReferences(Paragraph p, Function<Paragraph, Iterable<CiteSpan>> refFunc, int paragraphBegin, JCas jCas) {
@@ -181,11 +203,13 @@ public class Cord19Reader {
     }
 
     private void readMetaData(String metadataFile) {
+        metadataIdMap = Collections.emptyMap();
         try {
             InputStream is = FileUtilities.findResource(metadataFile);
+
             if (is != null) {
                 metadataIdMap = new HashMap<>();
-                try (BufferedReader br = IOStreamUtilities.getReaderFromInputStream(is); CSVParser parser = CSVFormat.DEFAULT.parse(br)) {
+                try (BufferedReader br = IOStreamUtilities.getReaderFromInputStream(is); CSVParser parser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(br)) {
                     for (CSVRecord record : parser) {
                         // the fields are:
                         // cord_uid,sha,source_x,title,doi,pmcid,pubmed_id,license,abstract,publish_time,authors,journal,Microsoft Academic Paper ID,WHO #Covidence,has_pdf_parse,has_pmc_xml_parse,full_text_file,url
