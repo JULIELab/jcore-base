@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class Cord19FileVisitor extends SimpleFileVisitor<Path> {
     public static final Path END = Path.of("NO_MORE_FILES_JCORE_CORD19_READER");
@@ -41,9 +42,19 @@ public class Cord19FileVisitor extends SimpleFileVisitor<Path> {
      */
     public List<Path> getFiles(int maxFiles) {
         List<Path> files = new ArrayList<>(maxFiles);
-        fileQueue.drainTo(files, maxFiles);
-        if (walkFinished)
-            files.add(END);
+        try {
+            // Ensure that we do not leave without a document as long as the walk has not yet
+            // finished.
+            while (files.isEmpty() && !walkFinished) {
+                files.add(fileQueue.poll(1, TimeUnit.SECONDS));
+            }
+            fileQueue.drainTo(files, maxFiles-1);
+            if (walkFinished)
+                files.add(END);
+        } catch (InterruptedException e) {
+            log.error("Error while waiting for new documents.", e);
+            throw new RuntimeException(e);
+        }
         return files;
     }
 
