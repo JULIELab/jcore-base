@@ -1,4 +1,4 @@
-package de.julielab.reader.cord19;
+package de.julielab.jcore.reader.cord19;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class Cord19FileVisitor extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         try {
-            if (!attrs.isDirectory() && (file.endsWith(".json") || file.endsWith(".json.gz")))
+            if (!attrs.isDirectory() && (file.toString().endsWith(".json") || file.toString().endsWith(".json.gz")))
                 fileQueue.put(file);
         } catch (InterruptedException e) {
             log.error("could not add file {} to the queue", file, e);

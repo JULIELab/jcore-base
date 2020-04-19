@@ -1,9 +1,9 @@
-package de.julielab.reader.cord19;
+package de.julielab.jcore.reader.cord19;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.julielab.reader.cord19.jsonformat.Affiliation;
-import de.julielab.reader.cord19.jsonformat.Author;
-import de.julielab.reader.cord19.jsonformat.Cord19Document;
+import de.julielab.jcore.reader.cord19.jsonformat.Affiliation;
+import de.julielab.jcore.reader.cord19.jsonformat.Author;
+import de.julielab.jcore.reader.cord19.jsonformat.Cord19Document;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,5 +25,12 @@ public class JsonFormatTest {
                 .isNotNull()
                 .extracting("laboratory", "institution").containsExactly("Laboratory of Biochemistry and Molecular Biology", "University of Bari");
         assertThat(secondAuthor.getAffiliation()).extracting(Affiliation::getLocation).extracting("settlement", "country").containsExactly("Bari", "Italy");
+    }
+
+    @Test
+    public void readJsonDocument2() throws IOException {
+        ObjectMapper om = new ObjectMapper();
+        Cord19Document document = om.readValue(Path.of("src", "test", "resources", "documents", "subdir", "9692bb55e1e2eec083333ee2139137e6ddf3a4d8.json").toFile(), Cord19Document.class);
+        assertThat(document).isNotNull();
     }
 }

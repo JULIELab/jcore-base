@@ -65,10 +65,14 @@
         <featureDescription>
           <name>titleType</name>
           <description>The type of the title:
-table: title of a table
-figure: title of a figure
-caption: title of a caption
-footnote: title of a footnote</description>
+              abstract: title of an abstract or abstract part
+              table: title of a table
+              figure: title of a figure
+              caption: title of a caption
+              footnote: title of a footnote
+              document: title of the document
+              document_vernacular: the original title of the document
+            </description>
           <rangeTypeName>de.julielab.jcore.types.TitleType</rangeTypeName>
         </featureDescription>
       </features>
@@ -293,17 +297,21 @@ feature captionType is an Enumeration, stating to what type of entity the captio
   <typeDescription>
       <name>de.julielab.jcore.types.TitleType</name>
       <description>The type of a title:
-abstract: title of an abstract or abstract part
-table: title of a table
-figure: title of a figure
-caption: title of a caption
-footnote: title of a footnote
-abstract: title of an abstract or abstract part
-document: title of the document
-document_vernacular: the original title of the document
+        abstract: title of an abstract or abstract part
+        table: title of a table
+        figure: title of a figure
+        caption: title of a caption
+        footnote: title of a footnote
+        abstractSection: title of an abstract section
+        document: title of the document
+        document_vernacular: the original title of the document
       </description>
       <supertypeName>uima.cas.String</supertypeName>
       <allowedValues>
+        <value>
+            <string>abstract</string>
+            <description />
+        </value>
       	<value>
           <string>table</string>
           <description />
@@ -320,7 +328,7 @@ document_vernacular: the original title of the document
           <string>footnote</string>
           <description />
         </value>
-                <value>
+        <value>
           <string>abstractSection</string>
           <description>Denotes the heading of a section of a structured abstract</description>
         </value>

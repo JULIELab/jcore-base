@@ -1,4 +1,4 @@
-package de.julielab.reader.cord19.jsonformat;
+package de.julielab.jcore.reader.cord19.jsonformat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,6 +36,8 @@ public class BibRef {
     private String volume;
     private String issn;
     private String pages;
+    @JsonProperty("other_ids")
+    private Map<String, Object> otherIds;
 
     public String getRefId() {
         return refId;
@@ -101,14 +103,11 @@ public class BibRef {
         this.pages = pages;
     }
 
-    public Map<String, String> getOtherIds() {
+    public Map<String, Object> getOtherIds() {
         return otherIds;
     }
 
-    public void setOtherIds(Map<String, String> otherIds) {
+    public void setOtherIds(Map<String, Object> otherIds) {
         this.otherIds = otherIds;
     }
-
-    @JsonProperty("other_ids")
-    private Map<String, String> otherIds;
 }

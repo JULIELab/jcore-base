@@ -1,4 +1,4 @@
-package de.julielab.reader.cord19;
+package de.julielab.jcore.reader.cord19;
 
 import java.io.IOException;
 import java.nio.file.FileVisitOption;

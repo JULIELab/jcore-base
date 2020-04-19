@@ -17,7 +17,10 @@
             <features>
                 <featureDescription>
                     <name>abstractType</name>
-                    <description>A string specifying what kind of abstract this is.</description>
+                    <description>A string specifying what kind of abstract this is:
+                        main: the main abstract of a MEDLINE citation
+                        other: the 'other' abstract of a MEDLINE citation
+                    </description>
                     <rangeTypeName>de.julielab.jcore.types.pubmed.AbstractType</rangeTypeName>
                 </featureDescription>
             </features>

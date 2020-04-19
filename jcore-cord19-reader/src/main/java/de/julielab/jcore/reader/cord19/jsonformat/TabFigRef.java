@@ -1,4 +1,4 @@
-package de.julielab.reader.cord19.jsonformat;
+package de.julielab.jcore.reader.cord19.jsonformat;
 
 /**
  * This class represent JSON objects in the following form:
