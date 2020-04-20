@@ -83,26 +83,28 @@ public class Cord19Reader {
     private void addBody(JCas jCas, StringBuilder doctext, Cord19Document document) {
         Section currentSection = null;
         String lastSectionName = null;
+        // We use this to determine the end of the current paragraph BEFORE the newline.
+        int currentEnd = 0;
         for (Paragraph p : document.getBody()) {
             if (lastSectionName != null && !lastSectionName.equals(p.getSection())) {
-                currentSection.setEnd(doctext.length());
+                currentSection.setEnd(currentEnd);
                 currentSection.addToIndexes();
-                doctext.append(linesep);
                 currentSection = null;
             }
             if (currentSection == null) {
-                currentSection = new Section(jCas);
-                currentSection.setBegin(doctext.length());
                 Title sHeading = new Title(jCas, doctext.length(), doctext.length() + p.getSection().length());
                 sHeading.setTitleType("section");
                 doctext.append(p.getSection());
                 doctext.append(linesep);
+                currentSection = new Section(jCas);
+                currentSection.setBegin(doctext.length());
                 currentSection.setSectionHeading(sHeading);
             }
 
             int paragraphBegin = doctext.length();
             de.julielab.jcore.types.Paragraph paragraph = new de.julielab.jcore.types.Paragraph(jCas, paragraphBegin, doctext.length() + p.getText().length());
             doctext.append(p.getText());
+            currentEnd = doctext.length();
             doctext.append(linesep);
             addReferences(p, Paragraph::getRefSpans, paragraphBegin, jCas);
             addReferences(p, Paragraph::getEqSpans, paragraphBegin, jCas);
@@ -121,10 +123,13 @@ public class Cord19Reader {
     private void addAbstract(JCas jCas, StringBuilder doctext, Cord19Document document) {
         List<AbstractSection> sections = new ArrayList<>(document.getAbstr().size());
         int abstractBegin = doctext.length();
+        // Stores the end of the last paragraph before the newline
+        int lastEnd = 0;
         for (Paragraph p : document.getAbstr()) {
             int paragraphBegin = doctext.length();
             AbstractSection as = new AbstractSection(jCas, paragraphBegin, doctext.length() + p.getText().length());
             doctext.append(p.getText());
+            lastEnd = doctext.length();
             doctext.append(linesep);
             AbstractSectionHeading asHeading = new AbstractSectionHeading(jCas);
             asHeading.setTitleType("abstract");
@@ -135,7 +140,7 @@ public class Cord19Reader {
             addReferences(p, Paragraph::getEqSpans, paragraphBegin, jCas);
             addReferences(p, Paragraph::getCiteSpans, paragraphBegin, jCas);
         }
-        AbstractText abstractText = new AbstractText(jCas, abstractBegin, doctext.length());
+        AbstractText abstractText = new AbstractText(jCas, abstractBegin, lastEnd);
         abstractText.setAbstractType("main");
         abstractText.setStructuredAbstractParts(JCoReTools.addToFSArray(null, sections));
         abstractText.addToIndexes();

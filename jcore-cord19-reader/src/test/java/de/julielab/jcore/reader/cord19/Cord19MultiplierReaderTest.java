@@ -64,7 +64,7 @@ public class Cord19MultiplierReaderTest {
 
         AbstractText abstractText = JCasUtil.selectSingle(cas, AbstractText.class);
         assertThat(abstractText.getCoveredText()).startsWith("The membrane (M) protein of canine");
-        assertThat(abstractText.getCoveredText()).endsWith("antibodies to CCoV in dog sera. #"+System.getProperty("line.separator"));
+        assertThat(abstractText.getCoveredText()).endsWith("antibodies to CCoV in dog sera. #");
         assertThat(abstractText.getStructuredAbstractParts()).hasSize(1);
 
         Collection<Paragraph> paragraphs = JCasUtil.select(cas, Paragraph.class);
@@ -72,6 +72,9 @@ public class Cord19MultiplierReaderTest {
 
         Collection<Section> sections = JCasUtil.select(cas, Section.class);
         assertThat(sections).hasSize(8);
+        Section firstSection = sections.iterator().next();
+        assertThat(firstSection.getSectionHeading().getCoveredText()).isEqualTo("Introduction");
+        assertThat(firstSection.getCoveredText()).startsWith("Canine coronavirus (CCoV)").endsWith("antibodies are described.");
 
         Collection<InternalReference> references = JCasUtil.select(cas, InternalReference.class);
         assertThat(references).hasSize(6 + 7 + 1 + 2 + 3);
