@@ -140,11 +140,13 @@ public class Cord19Reader {
             addReferences(p, Paragraph::getEqSpans, paragraphBegin, jCas);
             addReferences(p, Paragraph::getCiteSpans, paragraphBegin, jCas);
         }
-        AbstractText abstractText = new AbstractText(jCas, abstractBegin, lastEnd);
-        abstractText.setAbstractType("main");
-        abstractText.setStructuredAbstractParts(JCoReTools.addToFSArray(null, sections));
-        abstractText.addToIndexes();
-        doctext.append(linesep);
+        if (lastEnd - abstractBegin > 0) {
+            AbstractText abstractText = new AbstractText(jCas, abstractBegin, lastEnd);
+            abstractText.setAbstractType("main");
+            abstractText.setStructuredAbstractParts(JCoReTools.addToFSArray(null, sections));
+            abstractText.addToIndexes();
+            doctext.append(linesep);
+        }
     }
 
     private void addReferences(Paragraph p, Function<Paragraph, Iterable<CiteSpan>> refFunc, int paragraphBegin, JCas jCas) {
