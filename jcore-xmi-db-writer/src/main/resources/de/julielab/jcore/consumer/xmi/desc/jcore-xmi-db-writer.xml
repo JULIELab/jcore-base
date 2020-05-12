@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -189,17 +189,17 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.jcore-xmi-splitter-types"/>
-                <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types"/>
-                <import name="org.apache.uima.ducc.FlowControllerTS"/>
+                <import name="de.julielab.jcore.types.jcore-xmi-splitter-types" />
+                <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types" />
+                <import name="org.apache.uima.ducc.FlowControllerTS" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
-        <capabilities/>
+        <fsIndexCollection />
+        <capabilities />
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    </analysisEngineMetaData>
+    <version>2.5.0</version></analysisEngineMetaData>
 </analysisEngineDescription>

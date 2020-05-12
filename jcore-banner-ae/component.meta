@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-banner-ae",
         "groupId": "de.julielab",
-        "version": "2.5.0-SNAPSHOT"
+        "version": "2.5.0"
     },
     "name": "JCoRe Banner"
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
@@ -23,13 +23,13 @@
         </value>
       </nameValuePair>
     </configurationParameterSettings>
-    <typeSystemDescription/>
-    <fsIndexCollection/>
-    <capabilities/>
+    <typeSystemDescription />
+    <fsIndexCollection />
+    <capabilities />
     <operationalProperties>
       <modifiesCas>true</modifiesCas>
       <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
-  </analysisEngineMetaData>
+  <version>2.5.0</version></analysisEngineMetaData>
 </analysisEngineDescription>

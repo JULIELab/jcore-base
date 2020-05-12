@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.cord19.Cord19MultiplierReader</implementationName>
     <processingResourceMetaData>
         <name>JCoRe CORD-19 Multiplier Reader</name>
         <description>This component reads file paths to JSON files and the CORD-19 (https://pages.semanticscholar.org/coronavirus-research) meta data file to send them to CAS multipliers.</description>
-        <version>2.5.0-SNAPSHOT</version>
+        <version>2.5.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
@@ -40,17 +40,17 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
+        <fsIndexCollection />
         <capabilities>
             <capability>
-                <inputs/>
+                <inputs />
                 <outputs>
                     <type>de.julielab.jcore.types.casmultiplier.JCoReURI</type>
                 </outputs>
-                <languagesSupported/>
+                <languagesSupported />
             </capability>
         </capabilities>
         <operationalProperties>

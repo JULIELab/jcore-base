@@ -2,7 +2,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>bannerTS</name>
   <description>basic typesystem started by sid</description>
-  <version>2.5.0-SNAPSHOT</version>
+  <version>2.5.0</version>
   <vendor />
   <types>
     <typeDescription>
