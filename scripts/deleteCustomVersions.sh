@@ -1,6 +1,6 @@
 #!/bin/bash
 # To executed in the project's root directory.
-# This script deleted the <version> element from all artifact's pom.xml files. Not the parent or the dependency verions,
+# This script deletes the <version> element from all artifact's pom.xml files. Not the parent or the dependency verions,
 # only the version tag of the artifact itself so that the version is inherited from the parent.
 # This script is useful when creating a clean JCoRe release where all components have the exact same version number
 # given by the jcore-base parent POM.

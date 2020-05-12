@@ -70,3 +70,7 @@ For illustration purposes we provide some pipelines that utilize our components 
 * [BioSEM Relation Extraction Pipeline; BioNLP ST11 model, English](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline) *(Java and CPE pipeine)*
 * [Biomedical Named Entity Tagger Pipeline; English](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-named-entity-pipeline) *(CPE pipeline)*
 * [Medical POS Pipeline; German](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-medical-pos-pipeline)
+
+## Create a JCoRe Base Release
+To create a new release, the following steps should be performed
+* Set the release version via `scripts/setProjectVersion.sh`. This automatically updates the meta descriptors.
