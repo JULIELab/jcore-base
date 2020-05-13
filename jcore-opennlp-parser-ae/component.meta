@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-opennlp-parser-ae",
         "groupId": "de.julielab",
-        "version": "2.4.0"
+        "version": "2.5.1-SNAPSHOT"
     },
     "name": "JCoRe OpenNLP Constituency Parser"
 }

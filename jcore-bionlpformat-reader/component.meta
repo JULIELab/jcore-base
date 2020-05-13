@@ -6,7 +6,7 @@
     "descriptors": [
         {
             "category": "reader",
-            "location": "de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-biomedical-sharedtask"
+            "location": "de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-segment"
         },
         {
             "category": "reader",
@@ -14,7 +14,7 @@
         },
         {
             "category": "reader",
-            "location": "de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-segment"
+            "location": "de.julielab.jcore.reader.bionlpformat.desc.jcore-bionlpformat-reader-biomedical-sharedtask"
         }
     ],
     "exposable": true,
@@ -22,7 +22,7 @@
     "maven-artifact": {
         "artifactId": "jcore-bionlpformat-reader",
         "groupId": "de.julielab",
-        "version": "2.4.0"
+        "version": "2.5.1-SNAPSHOT"
     },
     "name": "JCoRe BioNLP Format Reader"
 }

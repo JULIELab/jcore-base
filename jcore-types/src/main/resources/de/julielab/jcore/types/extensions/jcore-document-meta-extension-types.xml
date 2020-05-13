@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Document Meta Types</name>
   <description>The types of this type system reflect meta data about documents for rather specific use cases.</description>
-  <version>2.4.0</version>
-  <vendor />
+  <version>2.5.1-SNAPSHOT</version>
+        <vendor />
   <types>
     <typeDescription>
       <name>de.julielab.jcore.types.ext.DBProcessingMetaData</name>
@@ -19,6 +19,11 @@
           <name>subsetTable</name>
           <description>The subset table that is used to specify the set of documents to processes and to store processing status information. May be empty in the case the documents are directly read from a data table.</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>doNotMarkAsProcessed</name>
+          <description>This feature is used by the DBCheckpointAE. It allows components in the pipeline to prevent a document to be marked as being finished with processing. This can be used to indicate issues with specific documents which will require reprocessing.</description>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>

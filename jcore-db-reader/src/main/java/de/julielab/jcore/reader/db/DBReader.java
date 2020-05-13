@@ -25,12 +25,12 @@
 
 package de.julielab.jcore.reader.db;
 
+import de.julielab.costosys.cli.TableNotFoundException;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DBCIterator;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.costosys.dbconnection.util.TableSchemaMismatchException;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
-import de.julielab.xmlData.cli.TableNotFoundException;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DBCIterator;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
-import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
@@ -153,8 +153,8 @@ public abstract class DBReader extends DBSubsetReader {
         super.initialize(context);
         dataTimestamp = (String) getConfigParameterValue(PARAM_DATA_TIMESTAMP);
         if (readDataTable && hasNext) {
-            log.debug("Querying data table {} with schema {} and where condition {}", tableName, dbc.getActiveTableSchema(), whereCondition);
-            xmlBytes = dbc.queryDataTable(tableName, whereCondition);
+            log.info("Querying data table {} with schema {} and where condition {}", tableName, dbc.getActiveTableSchema(), whereCondition);
+            xmlBytes = dbc.queryDataTable(tableName, whereCondition, additionalTableNames, schemas);
         }
     }
 

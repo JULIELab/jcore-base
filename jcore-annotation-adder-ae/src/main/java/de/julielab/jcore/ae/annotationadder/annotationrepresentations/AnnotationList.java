@@ -2,7 +2,7 @@ package de.julielab.jcore.ae.annotationadder.annotationrepresentations;
 
 import java.util.ArrayList;
 
-public class AnnotationList extends ArrayList<ExternalAnnotation> implements AnnotationData {
+public class AnnotationList<T extends AnnotationData> extends ArrayList<T> implements AnnotationData {
 
     private String docId;
 

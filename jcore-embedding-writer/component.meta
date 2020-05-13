@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "consumer"
+    ],
+    "description": "This component takes as input a number of precomputed embeddings that are compatible with Flair and a UIMA type. If any annotations of the given type are found in a CAS, the embedding vectors for the words covered by the annotations are computed and written to file.",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.consumer.ew.desc.jcore-embedding-writer"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-embedding-writer",
+        "groupId": "de.julielab",
+        "version": "2.5.1-SNAPSHOT"
+    },
+    "name": "JCoRe Embedding Writer"
+}

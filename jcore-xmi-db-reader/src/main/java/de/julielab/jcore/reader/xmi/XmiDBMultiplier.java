@@ -1,13 +1,17 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.configuration.FieldConfig;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBMultiplier;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
-import de.julielab.xmlData.config.FieldConfig;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
+import de.julielab.xml.JulieXMLConstants;
+import de.julielab.xml.XmiSplitConstants;
+import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -19,24 +23,25 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 public class XmiDBMultiplier extends DBMultiplier implements Initializable {
-
+    public static final String PARAM_LOG_FINAL_XMI = Initializer.PARAM_LOG_FINAL_XMI;
     private final static Logger log = LoggerFactory.getLogger(XmiDBMultiplier.class);
-
+    @ConfigurationParameter(name = PARAM_LOG_FINAL_XMI, mandatory = false, defaultValue = "false", description = "For debugging purposes. If set to true, before parsing the final XMI data assembled from the annotation modules, it is printed to console.")
+    private boolean logFinalXmi;
     private Initializer initializer;
     private CasPopulator casPopulator;
     private String[] xmiModuleAnnotationNames;
     private boolean doGzip;
+    private boolean useBinaryFormat;
 
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         super.initialize(aContext);
+        logFinalXmi = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_LOG_FINAL_XMI)).orElse(false);
     }
 
     @Override
@@ -53,34 +58,50 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
                 throw new AnalysisEngineProcessException(e);
             }
         }
-        // The DBMultiplier is getting the IDs to read, the table names and schemas an eventually creates
-        // the documentDataIterator that we can use in next().
-        super.process(aJCas);
-        // Now all global variables, most importantly "tables" and "schemaNames" have been initialized
-        if (initializer == null) {
-            initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, getAdditionalTableNames().length > 0);
-            initializer.initialize(rowBatch);
-            casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
+        try {
+            // The DBMultiplier is getting the IDs to read, the table names and schemas an eventually creates
+            // the documentDataIterator that we can use in next().
+            super.process(aJCas);
+            // Now all global variables, most importantly "tables" and "schemaNames" have been initialized
+            if (initializer == null) {
+                log.debug("Initializing");
+                initializer = new Initializer(this, dbc, xmiModuleAnnotationNames, xmiModuleAnnotationNames.length > 0, useBinaryFormat);
+                initializer.initialize(rowBatch);
+                initializer.setLogFinalXmi(logFinalXmi);
+                casPopulator = new CasPopulator(dataTable, initializer, readDataTable, tableName);
+            }
+        } catch (Throwable t) {
+            log.error("Error when initializing: ", t);
+            throw new AnalysisEngineProcessException(t);
         }
     }
 
     @Override
     public AbstractCas next() throws AnalysisEngineProcessException {
         JCas jCas = getEmptyJCas();
-        if (documentDataIterator.hasNext()) {
-            try {
-                initializer.initializeAnnotationTableNames(jCas);
-            } catch (ResourceInitializationException e) {
-                throw new AnalysisEngineProcessException(e);
+        try {
+            if (documentDataIterator.hasNext()) {
+                log.trace("Returning next CAS");
+                try {
+                    initializer.initializeAnnotationTableNames(jCas);
+                } catch (ResourceInitializationException e) {
+                    throw new AnalysisEngineProcessException(e);
+                }
+                populateCas(jCas);
             }
-            populateCas(jCas);
+        } catch (Throwable throwable) {
+            log.error("Error while reading document from the database: ", throwable);
+            throw throwable;
         }
         return jCas;
     }
 
     private void populateCas(JCas jCas) throws AnalysisEngineProcessException {
+        if (casPopulator == null)
+            throw new AnalysisEngineProcessException(new IllegalStateException("Initialization of the component was not finished. See previous errors to learn the reason. Cannot continue."));
         try {
             final byte[][] data = documentDataIterator.next();
+            log.trace("Populating CAS with {}", casPopulator);
             if (data != null)
                 casPopulator.populateCas(data, jCas);
         } catch (CasPopulationException e) {
@@ -91,7 +112,8 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 
     @Override
     public String[] getAdditionalTableNames() {
-        return tables.length > 1 ? Arrays.copyOfRange(tables, 1, tables.length) : new String[0];
+        // The XMI multiplier doesn't use table joining
+        return new String[0];
     }
 
     @Override
@@ -120,9 +142,20 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 
                 tableName = rowBatch.getTableName();
                 dataTable = rowBatch.getTables(0);
-                determineDataInGzipFormat(dataTable);
+                determineDataFormat(dataTable);
 
-                FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, doGzip);
+                List<Map<String, String>> xmiAnnotationColumnsDefinitions = new ArrayList<>();
+                for (String qualifiedAnnotation : rowBatch.getXmiAnnotationModuleNames()) {
+                    final String columnName = qualifiedAnnotation.toLowerCase().replace('.', '_').replace(':', '$');
+                    final Map<String, String> field = FieldConfig.createField(
+                            JulieXMLConstants.NAME, columnName,
+                            JulieXMLConstants.GZIP, String.valueOf(doGzip),
+                            JulieXMLConstants.RETRIEVE, "true",
+                            JulieXMLConstants.TYPE, doGzip || useBinaryFormat ? "bytea" : "xml"
+                    );
+                    xmiAnnotationColumnsDefinitions.add(field);
+                }
+                FieldConfig xmiDocumentTableSchema = dbc.addXmiTextFieldConfiguration(primaryKeyFields, xmiAnnotationColumnsDefinitions, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentTableSchema.getName());
                 final String[] tables = rowBatch.getTables().toStringArray();
                 String[] additionalTables = Arrays.copyOfRange(tables, 1, tables.length);
@@ -134,26 +167,30 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             } else {
                 // Complete XMI reading mode
                 String table = rowBatch.getTables(0);
-                determineDataInGzipFormat(table);
+                determineDataFormat(table);
                 FieldConfig xmiDocumentFieldConfiguration = dbc.addXmiDocumentFieldConfiguration(primaryKeyFields, doGzip);
                 dbc.setActiveTableSchema(xmiDocumentFieldConfiguration.getName());
             }
         }
     }
 
-    private void determineDataInGzipFormat(String table) throws ResourceInitializationException {
+    private void determineDataFormat(String table) throws ResourceInitializationException {
         doGzip = true;
+        useBinaryFormat = true;
         dataTable = dbc.getNextOrThisDataTable(table);
         log.debug("Fetching a single row from data table {} in order to determine whether data is in GZIP format", dataTable);
-        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
-            ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT xmi FROM %s LIMIT 1", dataTable));
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+            ResultSet rs = conn.createStatement().executeQuery(String.format("SELECT %s FROM %s LIMIT 1", XmiSplitConstants.BASE_DOC_COLUMN, dataTable));
             while (rs.next()) {
-                byte[] xmiData = rs.getBytes("xmi");
+                byte[] xmiData = rs.getBytes(XmiSplitConstants.BASE_DOC_COLUMN);
                 try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(xmiData))) {
-                    gzis.read();
+                    byte[] firstTwoBytes = new byte[2];
+                    gzis.read(firstTwoBytes);
+                    checkForJeDISBinaryFormat(firstTwoBytes);
                 } catch (IOException e) {
                     log.debug("Attempt to read XMI data in GZIP format failed. Assuming non-gzipped XMI data. Expected exception:", e);
                     doGzip = false;
+                    checkForJeDISBinaryFormat(xmiData);
                 }
             }
         } catch (SQLException e) {
@@ -161,5 +198,21 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
                 log.error("An exception occurred when trying to read the xmi column of the data table \"{}\". It seems the table does not contain XMI data and this is invalid to use with this reader.", dataTable);
             throw new ResourceInitializationException(e);
         }
+    }
+
+    private void checkForJeDISBinaryFormat(byte[] firstTwoBytes) {
+        short header = (short) ((firstTwoBytes[0] << 8) | (0xff & firstTwoBytes[1]));
+        if (header != BinaryJeDISNodeEncoder.JEDIS_BINARY_MAGIC) {
+            useBinaryFormat = false;
+            log.debug("Is data encoded in JeDIS binary format: false");
+        } else {
+            log.debug("Is data encoded in JeDIS binary format: true");
+        }
+    }
+
+    @Override
+    public void collectionProcessComplete() throws AnalysisEngineProcessException {
+        log.info("Closing database connector.");
+        dbc.close();
     }
 }

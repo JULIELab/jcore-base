@@ -1,5 +1,14 @@
 language: java
 jdk: openjdk11
+addons:
+  apt:
+    update: true
+    sources:
+      - deadsnakes
+    packages:
+      - python3.6
+      - python3.6-dev
+
 env:
   global:
   - secure: J2mRdXKv5w5xjLhKELT3zZL+ieH3ul2y85tNZqqqh2gchbpVe64q86JQWcYota87Ou7xpahfY4b1x8Y/oA20OsgKKWdk2ttc5lJjPkfg8MAAfLlAlJmNH3UmkOo+xfyUh1ltrJ9ndfQGAvis75qijysk1VEGRanJUUJW7nYHI+Hy+6kW7UDDsMSg5arXNdak9pJsjb03yXIrTNbo1xMZ0h0UdFAetm0utA7SIlA7WvSNcd0RkD/W39D5DbRd4UTGGjMHJ1Q4NeAngDmXJCVTzq6jwCeGt/9qJyoCfOYOhtrW0WNVXLkyyTxcgxl5JUyjmfmEo3MaqAbnzOpjncy95YzG9A6maAqnQ36zzvg4idIQLJ6AsXF5mz3OqvMVB7SleEZVjK+JEPtMMGQg5N3TICTkjce7aop/MiqyDXdol1HUl1hAPYmD2BpUcEyCZYQbfCpCRoW8uZ1W4TBad5mDCK+m+jIdlk1AAavTYsrgspM5riGEVyQazTsFJuYm1/E/syCpecl8oDjYelchfsueve9m8DrOJccnATBDOHsqZsl+eJLyfnH8xrWTFrtCms395C3jqojaZ3taVNZTq4x/etBO+Kfgx/u0KYp3iJmVDl5LmMfFgQaL3zClbSQBPi9EPs22cP2rasIl08GGlXq8k7WBidPVMzawAuBdWTLn6Dg=
@@ -10,13 +19,29 @@ env:
   - # GPG_KEY_NAME
   - secure: pxYxmA/9xS/9DO6rUAhlbAtYQMmG633jSwG8OIVCnnoQSXS4UILJgNl7Q6dQsAuT27tk+/fin0kXTnxWqCe0URb3c3XgNQwfGAuz1JIYVPHvezoDQLLRQA6LRgqd7GuvBDsyXJvBANozGKJYJVfoeT9gqFosFuMdRZ88eQm+ltX7zVKyMiz2rqKYPoSFInNxDGMOaIQ+RZdf8ai8rLY3E11PxsMC0LgypEDbuC7d9Q+Tu89YfUeuRly0hAuxmW++RrMgeeAs/7BndmZqcHVpkrcX6Drq8nZ2cj0ev4IDJelV/Nd17Vjfg7HgfJ4/d9S+PCg4KhvOY/y9Xad8geIIzXLFD9ZgcaK7MT9+BFGYXj7ExizFSc+Ico5Q822RJA1XZWfc/EgnY+7jEZCCMz/ceHx8oSh0ce1VbPl7c+O+jMXUMQC69Gpys57XC48rdPn0bbjc4/jpSOq46Xv7YdcGuA2BcWEEeQ0WAbi9IDcevpCXiZ7kng5hHTCpfaYVhn63KAIAMKf7tu6C78wFZR63F8Gf4x/jKE37QqvHV3uOzD7ar6nTAuy/ukZK0p4zyeIYe25PnS9K4kpolT1I12i7/l/7MO9NPFdB0aOCBHUNPBEkifwceltX6RP4PDIKdtCEQ4vcqrRNvhtAhO9Vo1udkyaeFx5swbY3j11CjzcfrBE=
   - # GPG_PASSPHRASE
+  - PYTHON=/usr/bin/python3.6
 
+before_install:
+  - |
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    sudo $PYTHON get-pip.py --force-reinstall
+  - $PYTHON --version
+  - |
+    # This checks if the cache directory is empty
+    if ! find "$HOME/pip-cache" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
+      $PYTHON -m pip download --destination-directory="$HOME/pip-cache" flair
+    fi
+    sudo -H $PYTHON -m pip install --find-links="$HOME/pip-cache" flair==0.4.5
+  - #./travis-deployment/install-flair-nightly.sh
+  - export BOTO_CONFIG=/dev/null
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script: mvn -T 1C test -B
 
 cache:
   directories:
     - $HOME/.m2/repository
+    - $HOME/pip-cache
+    - $HOME/flair
 
 before_deploy: ./travis-deployment/before-deploy.sh
 deploy:
@@ -26,4 +51,4 @@ deploy:
   skip_cleanup: true
   on:
     all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^v2.4|master$
+    condition: $TRAVIS_BRANCH =~ ^v2.5|master$

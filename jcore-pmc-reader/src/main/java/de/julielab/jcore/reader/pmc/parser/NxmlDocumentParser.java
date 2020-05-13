@@ -40,8 +40,6 @@ public class NxmlDocumentParser extends NxmlParser {
     private DefaultElementParser defaultElementParser;
     private Map<String, Map<String, Object>> tagProperties;
     private Tagset tagset;
-    @Deprecated
-    private File nxmlFile;
     private URI uri;
 
     public void reset(File nxmlFile, JCas cas) throws DocumentParsingException {
@@ -89,23 +87,24 @@ public class NxmlDocumentParser extends NxmlParser {
      * @throws NavException
      * @throws DocTypeNotFoundException
      */
-    private void setTagset() throws NavException, DocTypeNotFoundException {
+    private void setTagset() throws NavException, DocTypeNotFoundException, DocTypeNotSupportedException {
         for (int i = 0; i < vn.getTokenCount(); i++) {
             if (vn.getTokenType(i) == VTDNav.TOKEN_DTD_VAL) {
                 String docType = StringUtils.normalizeSpace(vn.toString(i)).replaceAll("'", "\"");
                 if (docType.contains("JATS-archivearticle1.dtd"))
                     tagset = Tagset.JATS_1_0;
+                else if (docType.contains("JATS-archivearticle1-mathml3.dtd"))
+                    tagset = Tagset.JATS_1_2_MATH_ML_3;
                 else if (docType.contains("journalpublishing.dtd") || docType.contains("archivearticle.dtd"))
                     tagset = Tagset.NLM_2_3;
                 else if (docType.contains("journalpublishing3.dtd") || docType.contains("archivearticle3.dtd"))
                     tagset = Tagset.NLM_3_0;
                 else
-                    throw new IllegalArgumentException(
-                            "Unsupported document type in file " + nxmlFile.getAbsolutePath() + ": " + docType);
+                    throw new DocTypeNotSupportedException("Unsupported document type: "  + docType);
                 return;
             }
         }
-        throw new DocTypeNotFoundException("Could not find a doctype in file " + nxmlFile);
+        throw new DocTypeNotFoundException("Could not find a doctype.");
     }
 
     private void setupParserRegistry() {
@@ -126,10 +125,6 @@ public class NxmlDocumentParser extends NxmlParser {
 
     public VTDNav getVn() {
         return vn;
-    }
-
-    public File getNxmlFile() {
-        return nxmlFile;
     }
 
     public Tagset getTagset() {
@@ -187,16 +182,14 @@ public class NxmlDocumentParser extends NxmlParser {
      * The tagset the parsed document is modeled after. The options are very
      * similar to each other but may exhibit differences in details.
      * <p>
-     * Just for an overview, in march 2017 the distribution of doctypes on the
+     * Just for an overview, in May 2019 the distribution of doctypes on the
      * PMC OA set looked like this:
      *
      * <pre>
-     *        2 &lt;!DOCTYPE article [note: line breaks in doctype]
-     *  1355617 &lt;!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN" "JATS-archivearticle1.dtd">
-     *        2 &lt;!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN" "JATS-archivearticle1.dtd">
-     *        3 &lt;!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN" "JATS-archivearticle1.dtd">
-     *        [note: actually I can't see a difference between the last three lines, must be some minor thing]
-     *   187563 &lt;!DOCTYPE article PUBLIC "-//NLM//DTD Journal Archiving and Interchange DTD v2.3 20070202//EN" "archivearticle.dtd">
+     * 2294794 PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN" "JATS-archivearticle1.dtd">
+     *       1 PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.0 20120330//EN" "/pmc/load/converter3/dtd/niso-Z39.96/1.0/JATS-archivearticle1.dtd">
+     *     198 PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.2 20190208//EN" "JATS-archivearticle1-mathml3.dtd">
+     *  128798 PUBLIC "-//NLM//DTD Journal Archiving and Interchange DTD v2.3 20070202//EN" "archivearticle.dtd">
      * </pre>
      * <p>
      * As can be seen, the tag library v3.0 isn't used at all.
@@ -212,6 +205,12 @@ public class NxmlDocumentParser extends NxmlParser {
          * @see <url>https://jats.nlm.nih.gov/publishing/tag-library/1.0/index.html</url>
          */
         JATS_1_0,
+        /**
+         * NISO JATS Journal Publishing DTD, v. 1.2 with MathML3.
+         *
+         * @see <url>https://jats.nlm.nih.gov/publishing/tag-library/1.2/index.html</url>
+         */
+        JATS_1_2_MATH_ML_3,
         /**
          * NLM Journal Publishing DTD v. 2.3
          *

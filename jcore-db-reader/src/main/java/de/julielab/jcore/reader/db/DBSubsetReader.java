@@ -1,11 +1,10 @@
 package de.julielab.jcore.reader.db;
 
-import de.julielab.xmlData.cli.TableNotFoundException;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
-import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
-import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
-import org.apache.commons.lang.NotImplementedException;
+import de.julielab.costosys.cli.TableNotFoundException;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.costosys.dbconnection.util.CoStoSysSQLRuntimeException;
+import de.julielab.costosys.dbconnection.util.TableSchemaMismatchException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -111,16 +110,16 @@ public abstract class DBSubsetReader extends DBReaderBase {
         try {
             // Check whether a subset table name or a data table name was given.
             if (readDataTable) {
-                if (additionalTableNames != null)
-                    throw new NotImplementedException("At the moment multiple tables can only be joined"
-                            + " if the data table is referenced by a subset, for which the name has to be"
-                            + " given in the Table parameter.");
-                dbc.checkTableDefinition(tableName);
+                if (additionalTableNames != null && additionalTableNames.length > 0) {
+                    prepareTableJoin();
+                } else {
+                    tables = new String[]{tableName};
+                    schemas = new String[]{dbc.getActiveTableSchema()};
+                }
+                dbc.checkTableHasSchemaColumns(tableName, dbc.getActiveTableSchema());
                 Integer tableRows = dbc.withConnectionQueryInteger(c -> c.countRowsOfDataTable(tableName, whereCondition));
                 totalDocumentCount = limitParameter != null ? Math.min(tableRows, limitParameter) : tableRows;
                 hasNext = !dbc.withConnectionQueryBoolean(c -> c.isEmpty(tableName));
-                tables = new String[]{tableName};
-                schemas = new String[]{dbc.getActiveTableSchema()};
             } else {
                 if (batchSize == 0)
                     log.warn("Batch size of retrieved documents is set to 0. Nothing will be returned.");
@@ -137,29 +136,14 @@ public abstract class DBSubsetReader extends DBReaderBase {
                     log.debug("Checking if the subset table \"{}\" has unfetched rows. Result: {}", tableName, hasNext);
 
                     if (additionalTableNames != null && additionalTableNames.length > 0) {
-                        log.debug("Additional tables were given: {}", Arrays.toString(additionalTableNames));
-                        log.debug("Preparing for reading from multiple tables.");
-                        joinTables = true;
-
-                        dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchemas);
-                        ImmutablePair<Integer, String[]> additionalTableNumAndNames = checkAndAdjustAdditionalTables(dbc, dataTable, additionalTableNames);
-                        int numAdditionalTables = additionalTableNumAndNames.getLeft();
-                        tables = additionalTableNumAndNames.getRight();
-
-                        // Assemble the data table schema together with all additional table schemas in one array.
-                        schemas = new String[numAdditionalTables + 1];
-                        if (additionalTableSchemas.length == 1)
-                            Arrays.fill(schemas, additionalTableSchemas[0]);
-                        else
-                            System.arraycopy(additionalTableSchemas, 0, schemas, 1, additionalTableSchemas.length);
-                        schemas[0] = dbc.getActiveTableSchema();
+                        prepareTableJoin();
                     } else {
                         log.debug("No additional tables were given, reading data solely from table {}", dataTable);
                         tables = new String[]{dataTable};
                         schemas = new String[1];
                         schemas[0] = dbc.getActiveTableSchema();
                     }
-                    dbc.checkTableDefinition(dataTable, schemas[0]);
+                    dbc.checkTableHasSchemaColumns(dataTable, schemas[0]);
                 }
             }
         } catch (TableSchemaMismatchException | TableNotFoundException e) {
@@ -168,9 +152,37 @@ public abstract class DBSubsetReader extends DBReaderBase {
         logConfigurationState();
     }
 
+    /**
+     * Searches for the additional tables by potentially converting Java type names into a valid Postgres representation.
+     * Broadcasts the additional table schema into the <tt>schemas</tt> field.
+     *
+     * @throws TableSchemaMismatchException
+     */
+    private void prepareTableJoin() throws TableSchemaMismatchException {
+        log.debug("Additional tables were given: {}", Arrays.toString(additionalTableNames));
+        log.debug("Preparing for reading from multiple tables.");
+        joinTables = true;
+
+        dbc.checkTableSchemaCompatibility(dbc.getActiveTableSchema(), additionalTableSchemas);
+        ImmutablePair<Integer, String[]> additionalTableNumAndNames = checkAndAdjustAdditionalTables(dbc, dataTable, additionalTableNames);
+        int numAdditionalTables = additionalTableNumAndNames.getLeft();
+        tables = additionalTableNumAndNames.getRight();
+        if (numAdditionalTables > 0)
+            System.arraycopy(tables, 1, additionalTableNames, 0, additionalTableNames.length);
+
+        // Assemble the data table schema together with all additional table schemas in one array.
+        schemas = new String[numAdditionalTables + 1];
+        if (additionalTableSchemas.length == 1)
+            Arrays.fill(schemas, additionalTableSchemas[0]);
+        else
+            System.arraycopy(additionalTableSchemas, 0, schemas, 1, additionalTableSchemas.length);
+        schemas[0] = dbc.getActiveTableSchema();
+    }
+
 
     private void logConfigurationState() {
-        log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
+        if (!readDataTable)
+            log.info("Subset table {} will be reset upon pipeline start: {}", tableName, resetTable);
         if (log.isInfoEnabled())
             log.info("Names of additional tables to join: {}", StringUtils.join(additionalTableNames, ", "));
         log.info("TableName is: \"{}\"; referenced data table name is: \"{}\"", tableName, dataTable);

@@ -36,6 +36,14 @@ public class FrontParser extends NxmlElementParser {
 	@Override
 	protected void parseElement(ElementParsingResult frontResult) throws ElementParsingException {
 		try {
+			// Only handle the front matter of the actual article, not sub-articles
+			final String elementPath = getElementPath();
+			if (!elementPath.endsWith("/article/front")) {
+				int firstIndexAfterElement = skipElement();
+				frontResult.setLastTokenIndex(firstIndexAfterElement);
+				frontResult.setResultType(ParsingResult.ResultType.NONE);
+				return;
+			}
 
 			// title and abstract
 			parseXPath("/article/front/article-meta/title-group/article-title").ifPresent(r -> {

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.ae.flairner.FlairNerAnnotator</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Flair Named Entity Recognizer</name>
+        <description>This component starts a child process to a python interpreter and loads a Flair sequence tagging model. Sentences are taken from the CAS, sent to Flair for tagging and the results are written into the CAS. The annotation type to use can be configured. It must be a subtype of de.julielab.jcore.types.EntityMention. The tag of each entity is written to the specificType feature.</description>
+        <version>2.5.1-SNAPSHOT</version>
+        <configurationParameters>
+            <configurationParameter>
+                <name>AnnotationType</name>
+                <description>The UIMA type of which annotations should be created, e.g. de.julielab.jcore.types.EntityMention, of which the given type must be a subclass of. The tag of the entities is written to the specificType feature.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>FlairModel</name>
+                <description>Path to the Flair sequence tagger model.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>PythonExecutable</name>
+                <description>The path to the python executable. Required is a python verion &gt;=3.6. Defaults to 'python'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>StoreEmbeddings</name>
+                <description>Optional. Possible values: ALL, ENTITIES, NONE. The FLAIR SequenceTagger first computes the embeddings for each sentence and uses those as input for the actual NER algorithm. By default, the embeddings are not stored. By setting this parameter to ALL, the embeddings of all tokens of the sentence are retrieved from flair and stored in the embeddingVectors feature of each token. Setting the parameter to ENTITIES will restrict the embedding storage to those tokens which overlap with an entity recognized by FLAIR.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>GpuNumber</name>
+                <description>Specifies the GPU device number to be used for FLAIR. This setting can be overwritten by the Java system property 'flairner.device'.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ComponentId</name>
+                <description>Specifies the componentId feature value given to the created annotations. Defaults to 'FlairNerAnnotator'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>GpuNumber</name>
+                <value>
+                    <integer>0</integer>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection />
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.Sentence</type>
+                    <type>de.julielab.jcore.types.Token</type>
+                </inputs>
+                <outputs />
+                <languagesSupported />
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

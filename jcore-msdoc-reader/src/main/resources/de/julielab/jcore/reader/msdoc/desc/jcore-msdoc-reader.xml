@@ -5,8 +5,8 @@
   <processingResourceMetaData>
     <name>JCoRe MSdoc Reader</name>
     <description />
-    <version>2.4.0</version>
-    <vendor>JULIELab Jena, Germany</vendor>
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIELab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>InputDirectory</name>

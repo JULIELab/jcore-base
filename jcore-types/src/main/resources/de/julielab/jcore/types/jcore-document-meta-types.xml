@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Document Meta Types</name>
   <description>The type system contains types for the annotation of document meta information (bibliographical and content information).</description>
-  <version>2.4.0</version>
-  <vendor>JULIE Lab Jena, Germany</vendor>
+  <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
     <import location="jcore-basic-types.xml" />
   </imports>
@@ -371,6 +371,11 @@
           <description>Confidence value of the classification into this class.</description>
           <rangeTypeName>uima.cas.Double</rangeTypeName>
         </featureDescription>
+        <featureDescription>
+          <name>componentId</name>
+          <description>An ID of the system that did assign this document class.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
@@ -380,7 +385,7 @@
       <features>
         <featureDescription>
           <name>foreName</name>
-          <description>An authorâs forename,C</description>
+          <description>An author's forename,C</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
         <featureDescription>

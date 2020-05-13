@@ -1,10 +1,11 @@
 package de.julielab.jcore.consumer.xmi;
 
-import de.julielab.xmlData.cli.TableNotFoundException;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
-import de.julielab.xmlData.dataBase.util.CoStoSysSQLRuntimeException;
-import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
+import de.julielab.costosys.cli.TableNotFoundException;
+import de.julielab.costosys.configuration.FieldConfig;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.costosys.dbconnection.util.CoStoSysSQLRuntimeException;
+import de.julielab.costosys.dbconnection.util.TableSchemaMismatchException;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AnnotationTableManager {
 
@@ -21,14 +23,13 @@ public class AnnotationTableManager {
     private static final Logger log = LoggerFactory.getLogger(AnnotationTableManager.class);
     private DataBaseConnector dbc;
 
-    private String documentTableSchema;
-
-    private String annotationTableSchema;
+    private boolean binaryAnnotationColumns;
 
     private Boolean storeAll;
 
     private String dbDocumentTableName;
-    private String annotationStorageSchema;
+    private String defaultAnnotationQualifier;
+    private String xmiMetaSchema;
 
     private Boolean storeBaseDocument;
 
@@ -36,43 +37,89 @@ public class AnnotationTableManager {
 
     private List<String> annotationsToStore;
 
-    public AnnotationTableManager(DataBaseConnector dbc, String rawDocumentTableName, List<String> annotationsToStore,
-                                  String documentTableSchema, String annotationTableSchema, Boolean storeAll, Boolean storeBaseDocument, String annotationStorageSchema) throws TableSchemaMismatchException {
+    private Map<String, String> annotationPgSchemaMap = new HashMap<>();
+
+    public AnnotationTableManager(DataBaseConnector dbc, String rawDocumentTableName, List<String> qualifiedAnnotationsToStore, boolean binaryAnnotationColumns,
+                                  String documentTableSchema, Boolean storeAll, Boolean storeBaseDocument, String defaultAnnotationQualifier, String xmiMetaSchema) throws TableSchemaMismatchException {
         this.dbc = dbc;
-        this.annotationsToStore = annotationsToStore;
-        this.documentTableSchema = documentTableSchema;
-        this.annotationTableSchema = annotationTableSchema;
+        this.annotationsToStore = qualifiedAnnotationsToStore;
+        this.binaryAnnotationColumns = binaryAnnotationColumns;
         this.storeAll = storeAll;
         this.storeBaseDocument = storeBaseDocument;
         this.dbDocumentTableName = getEffectiveDocumentTableName(rawDocumentTableName);
-        this.annotationStorageSchema = annotationStorageSchema;
-        createTable(rawDocumentTableName, documentTableSchema);
-        for (String annotation : annotationsToStore)
-            createTable(annotation, annotationTableSchema);
+        this.defaultAnnotationQualifier = defaultAnnotationQualifier;
+        this.xmiMetaSchema = xmiMetaSchema;
+        createTable(rawDocumentTableName, qualifiedAnnotationsToStore, documentTableSchema);
         createAnnotationListTable();
+        for (String qualifiedAnnotation : qualifiedAnnotationsToStore) {
+            final int colonIndex = qualifiedAnnotation.indexOf(':');
+            if (colonIndex >= 0) {
+                String typeName = qualifiedAnnotation.substring(colonIndex + 1);
+                String schemaName = qualifiedAnnotation.substring(0, colonIndex);
+                annotationPgSchemaMap.put(typeName, schemaName);
+            } else if (defaultAnnotationQualifier != null && !defaultAnnotationQualifier.isBlank()) {
+                annotationPgSchemaMap.put(qualifiedAnnotation, defaultAnnotationQualifier);
+            }
+        }
     }
 
     /**
-     * Normalizes table names by replacing dots "." with underscores "_" and
-     * prepending the active data postgres schema ONLY IF the option
+     * <p>Converts potentially qualified annotation types to Postgres-valid column names.</p>
+     * <p>Examples:
+     * <samp>
+     * <pre>de.julielab.jcore.types.Token -> de_julielab_types_token</pre>
+     * <pre>experiments:de.julielab.jcore.types.Gene -> experiments$de_julielab_jcore_types_gene</pre>
+     * </samp>
+     * </p>
+     * <p>
+     * Note that this method cannot handle the case where the annotation name was originally qualified but now only the unqualified name
+     * is passed. In this case, the default qualifier will be added even if the name was meant to have another specific qualifier
+     * in the UIMA descriptor. Use {@link #convertUnqualifiedAnnotationTypetoColumnName(String, boolean)} for such cases.
+     * </p>
+     *
+     * @param qualifiedAnnotationName          The annotation name to convert, optionally with a qualification prefix.
+     * @param defaultAnnotationColumnQualifier
+     * @return The Postgres compatible column name for this annotation name.
+     * @see #convertUnqualifiedAnnotationTypetoColumnName(String, boolean)
+     */
+    public static String convertQualifiedAnnotationTypeToColumnName(String qualifiedAnnotationName, String defaultAnnotationColumnQualifier) {
+        final String[] split = qualifiedAnnotationName.split(":");
+        final boolean nameIsQualified = qualifiedAnnotationName.contains(":");
+        String annotationName = nameIsQualified ? split[1] : split[0];
+        String qualifier = nameIsQualified ? split[0] + "$" : "";
+        if (qualifier.isEmpty() && defaultAnnotationColumnQualifier != null && !defaultAnnotationColumnQualifier.isBlank())
+            qualifier = defaultAnnotationColumnQualifier + "$";
+        final String pgCompatibleAnnotationName = annotationName.toLowerCase().replace(".", "_");
+        return qualifier + pgCompatibleAnnotationName;
+    }
+
+    /**
+     * <p>
+     * Normalizes type name by replacing dots "." with underscores "_" and
+     * prepending the default annotation qualifier prefix ONLY IF the option
      * <tt>storeAll</tt> is set to FALSE. If <tt>storeAll</tt> is true, the
      * table name is returned unchanged.
+     * </p>
+     * <p>This method also works when the <tt>typeName</tt> is unqualified but was given qualified to the constructor of this class.</p>
      *
-     * @param tableNameParameter the table name to normalize
-     * @param storeAll           whether or not the complete document XMI is supposed to be
-     *                           stored
+     * @param typeName the table name to normalize
+     * @param storeAll whether or not the complete document XMI is supposed to be
+     *                 stored
      * @return The normalized table name
+     * @see #convertQualifiedAnnotationTypeToColumnName(String, String)
      */
-    public String convertAnnotationTypeToTableName(String tableNameParameter, boolean storeAll) {
-        if (storeAll || tableNameParameter.equals(dbDocumentTableName))
-            return getEffectiveDocumentTableName(tableNameParameter);
+    public String convertUnqualifiedAnnotationTypetoColumnName(String typeName, boolean storeAll) {
+        if (storeAll || typeName.equals(dbDocumentTableName))
+            return getEffectiveDocumentTableName(typeName);
         // A table cannot be created if the name contains dots. All annotation
         // tables
         // will thus have dots replaced by underline.
-        String effectiveTableName = tableNameParameter.contains(":") ? tableNameParameter.substring(tableNameParameter.indexOf(':') + 1) : tableNameParameter;
-        effectiveTableName = effectiveTableName.replace(".", "_");
-        String schema = tableNameParameter.contains(":") ? tableNameParameter.substring(0, tableNameParameter.indexOf('.')) : annotationStorageSchema;
-        return schema + "." + effectiveTableName;
+        String effectiveTableName = typeName.contains(":") ? typeName.substring(typeName.indexOf(':') + 1) : typeName;
+        effectiveTableName = effectiveTableName.replace(".", "_").toLowerCase();
+        String schema = annotationPgSchemaMap.get(typeName);
+        if (schema == null && typeName.contains(":"))
+            schema = typeName.substring(0, typeName.indexOf(':'));
+        return convertQualifiedAnnotationTypeToColumnName((schema != null ? schema + ":" : "") + effectiveTableName, defaultAnnotationQualifier);
     }
 
     /**
@@ -116,9 +163,9 @@ public class AnnotationTableManager {
         if (null == obsoleteAnnotationTables) {
             obsoleteAnnotationTables = new ArrayList<>();
             // first get the names of all annotation tables
-            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                 Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT " + TABLE_NAME + " FROM " + dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE);
+                ResultSet rs = stmt.executeQuery("SELECT " + TABLE_NAME + " FROM " + xmiMetaSchema + "." + ANNOTATION_LIST_TABLE);
                 while (rs.next()) {
                     obsoleteAnnotationTables.add(rs.getString(1));
                 }
@@ -129,7 +176,7 @@ public class AnnotationTableManager {
             // with the obsolete table names
             Set<String> annotationsToStoreTableNameSet = new HashSet<>();
             for (String annotationTypeToStore : annotationsToStore)
-                annotationsToStoreTableNameSet.add(convertAnnotationTypeToTableName(annotationTypeToStore, false));
+                annotationsToStoreTableNameSet.add(convertUnqualifiedAnnotationTypetoColumnName(annotationTypeToStore, false));
             Iterator<String> it = obsoleteAnnotationTables.iterator();
             while (it.hasNext()) {
                 String tablename = it.next();
@@ -140,14 +187,16 @@ public class AnnotationTableManager {
         return obsoleteAnnotationTables;
     }
 
-    void createTable(String tableName, String schema) throws TableSchemaMismatchException {
-        String effectiveTableName = convertAnnotationTypeToTableName(tableName, storeAll);
+    void createTable(String tableName, List<String> annotationsToStore, String schema) throws TableSchemaMismatchException {
+        String effectiveTableName = convertUnqualifiedAnnotationTypetoColumnName(tableName, storeAll);
+        List<String> annotationColumns = annotationsToStore.stream().map(annotationName -> convertUnqualifiedAnnotationTypetoColumnName(annotationName, storeAll)).collect(Collectors.toList());
         if (getEffectiveDocumentTableName(tableName).equals(dbDocumentTableName))
             effectiveTableName = dbDocumentTableName;
         try {
+            final FieldConfig fieldConfig = dbc.getFieldConfiguration(schema);
             if (!dbc.tableExists(effectiveTableName)) {
                 log.info("Creating table '{}' with schema '{}' (columns: {}).",
-                        effectiveTableName, schema, dbc.getFieldConfiguration(schema).getColumns());
+                        effectiveTableName, schema, fieldConfig.getColumns());
                 String pgSchema = getTableSchema(effectiveTableName);
                 if (!dbc.schemaExists(pgSchema))
                     dbc.createSchema(pgSchema);
@@ -155,25 +204,17 @@ public class AnnotationTableManager {
                     dbc.createTable(effectiveTableName, schema,
                             "Created by " + XMIDBWriter.class.getName() + " on " + new Date());
                 } else {
-                    if (!effectiveTableName.equals(dbDocumentTableName)) {
-                        dbc.createTable(effectiveTableName, dbDocumentTableName, schema,
-                                "Created by " + XMIDBWriter.class.getName() + " on " + new Date()
-                                        + " to store annotations of type\"" + tableName
-                                        + "\" for the documents stored in table \"" + dbDocumentTableName + "\".");
-                    } else {
-                        dbc.createTable(effectiveTableName, schema, "Created by " + XMIDBWriter.class.getName()
-                                + " on " + new Date() + " to store the base documents without"
-                                + " linguistic or semantic annotations." + " Those are stored in the tables named"
-                                + " after the annotation type they are" + " storing in this Postgres schema.");
-                    }
+                    dbc.createTable(effectiveTableName, schema, "Created by " + XMIDBWriter.class.getName()
+                            + " on " + new Date() + " to store the base documents and"
+                            + " linguistic or semantic annotations." + " The annotations are stored in the columns named"
+                            + " after the annotation type.");
                 }
             }
-            String tableSchemaNameToCheck = effectiveTableName.equals(dbDocumentTableName) ? documentTableSchema
-                    : annotationTableSchema;
-            dbc.checkTableDefinition(effectiveTableName, tableSchemaNameToCheck);
+            dbc.assureColumnsExist(effectiveTableName, annotationColumns, binaryAnnotationColumns ? "bytea" : "xml");
 
-            if (!effectiveTableName.equals(dbDocumentTableName))
-                addAnnotationTableToList(effectiveTableName);
+            dbc.checkTableHasSchemaColumns(effectiveTableName, schema);
+
+            annotationColumns.forEach(this::addAnnotationTableToList);
         } catch (CoStoSysSQLRuntimeException e) {
             log.warn(
                     "SQLException was thrown when creating tables. Possibly it is a concurrency issue and it has been " +
@@ -198,14 +239,15 @@ public class AnnotationTableManager {
      * table names.
      *
      * @param tablename
+     * @deprecated Not required any more since all stored annotations are now manifested as a table column
      */
     void addAnnotationTableToList(String tablename) {
-        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+        try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             conn.setAutoCommit(true);
             Statement stmt = conn.createStatement();
 
             String template = "INSERT INTO %s VALUES('%s')";
-            String sql = String.format(template, dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE, tablename);
+            String sql = String.format(template, xmiMetaSchema + "." + ANNOTATION_LIST_TABLE, tablename);
             stmt.execute(sql);
 
         } catch (PSQLException e) {
@@ -220,12 +262,14 @@ public class AnnotationTableManager {
     }
 
     private void createAnnotationListTable() {
-        if (!dbc.tableExists(dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE)) {
-            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()){
+        if (!dbc.tableExists(xmiMetaSchema + "." + ANNOTATION_LIST_TABLE)) {
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
                 conn.setAutoCommit(true);
+                if (!dbc.schemaExists(xmiMetaSchema))
+                    dbc.createSchema(xmiMetaSchema);
                 Statement stmt = conn.createStatement();
                 String sql = String.format("CREATE TABLE %s (%s text PRIMARY KEY)",
-                        dbc.getActiveDataPGSchema() + "." + ANNOTATION_LIST_TABLE, TABLE_NAME);
+                        xmiMetaSchema + "." + ANNOTATION_LIST_TABLE, TABLE_NAME);
                 stmt.execute(sql);
             } catch (SQLException e) {
                 e.printStackTrace();

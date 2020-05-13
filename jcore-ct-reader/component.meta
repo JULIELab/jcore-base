@@ -2,7 +2,7 @@
     "categories": [
         "reader"
     ],
-    "description": "A UIMA reader for clinical trials.",
+    "description": "A UIMA reader for clinical trials per ClinicalTrials.gov XML format.",
     "descriptors": [
         {
             "category": "reader",
@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-ct-reader",
         "groupId": "de.julielab",
-        "version": "2.4.0"
+        "version": "2.5.1-SNAPSHOT"
     },
     "name": "JCoRe Clinical Trials Reader"
 }

@@ -8,6 +8,7 @@
         <description>This multiplier expect to receive URIs to NXML documents in the form of JCoReURI feature
             structures. All JCoReURI FS in the annotation indexes are read and output as new CASes.
         </description>
+        <version>2.5.1-SNAPSHOT</version>
         <configurationParameters />
         <configurationParameterSettings />
         <typeSystemDescription>
@@ -56,5 +57,5 @@
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    <version>2.4.0</version></analysisEngineMetaData>
+    </analysisEngineMetaData>
 </analysisEngineDescription>

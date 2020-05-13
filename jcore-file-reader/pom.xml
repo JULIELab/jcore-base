@@ -1,24 +1,39 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>de.julielab</groupId>
-    <artifactId>jcore-base</artifactId>
-    <version>2.4.0</version>
-  </parent>
-  <artifactId>jcore-file-reader</artifactId>
-  <name>JCoRe File Reader</name>
-  <description>Reads simple text files; derived from UIMA example "FileSystemCollectionReader"</description>
-  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-file-reader</url>
-  <organization>
-  	<name>JULIE Lab Jena, Germany</name>
-  	<url>http://www.julielab.de</url>
-  </organization>
-  <dependencies>
-  	<dependency>
-  		<groupId>de.julielab</groupId>
-  		<artifactId>jcore-types</artifactId>
-  		<version>${jcore-types-version}</version>
-  	</dependency>
-  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
-  </project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.5.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>jcore-file-reader</artifactId>
+    <name>JCoRe File Reader</name>
+    <description>Reads simple text files; derived from UIMA example "FileSystemCollectionReader"</description>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-file-reader</url>
+    <organization>
+        <name>JULIE Lab Jena, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
+    <dependencies>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-types-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>julielab-java-utilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
+</project>

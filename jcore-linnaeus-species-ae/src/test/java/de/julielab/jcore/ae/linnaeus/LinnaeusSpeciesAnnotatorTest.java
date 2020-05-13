@@ -15,9 +15,12 @@ import de.julielab.jcore.types.ResourceEntry;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -29,8 +32,8 @@ public class LinnaeusSpeciesAnnotatorTest {
 		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
 		jCas.setDocumentText("In this text we talk about humans and mice. Because a mouse is no killifish nor a caenorhabditis elegans. Thus, c. elegans is now abbreviated as well as n. furzeri.");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(LinnaeusSpeciesAnnotator.class,
-				LinnaeusSpeciesAnnotator.PARAM_CONFIG_FILE, "internal:/linnaeus-properties-test.conf");
+		final ExternalResourceDescription testConfiguration = ExternalResourceFactory.createExternalResourceDescription("TestConfiguration", LinnaeusMatcherProviderImpl.class, "file:linnaeus-properties-test.conf");
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(LinnaeusSpeciesAnnotator.class, LinnaeusSpeciesAnnotator.RES_KEY_LINNAEUS_MATCHER, testConfiguration);
 
 		annotator.process(jCas);
 

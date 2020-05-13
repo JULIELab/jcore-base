@@ -9,7 +9,7 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>
-        <version>2.4.0</version>
+        <version>2.5.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -46,6 +46,12 @@
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
     </organization>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-bc2gm-reader</url>
     <description>This component allows to read gene annotations provided in the BioCreative II Gene Mention format.</description>
 </project>

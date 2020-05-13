@@ -107,59 +107,63 @@ public class LingscopePosAnnotator extends JCasAnnotator_ImplBase {
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
         final AnnotationIndex<Token> tokIt = aJCas.getAnnotationIndex(Token.type);
         final FSIterator<Annotation> sentIt = aJCas.getAnnotationIndex(Sentence.type).iterator();
-        while (sentIt.hasNext()) {
-            Annotation sent = sentIt.next();
-            final FSIterator<Token> subiterator = tokIt.subiterator(sent);
-            StringBuilder sb = new StringBuilder();
-            List<Token> tokens = new ArrayList<>();
-            while (subiterator.hasNext()) {
-                Token token = subiterator.next();
-                final POSTag posTag = token.getPosTag(0);
-                if (posTag == null)
-                    throw new AnalysisEngineProcessException(new IllegalArgumentException("PoS tags are required but the current token has none."));
-                sb.append(posTag.getValue()).append(" ");
-                tokens.add(token);
-            }
-            if (sb.length() > 0) {
-                // Remove the trailing whitespace
-                sb.deleteCharAt(sb.length() - 1);
+        try {
+            while (sentIt.hasNext()) {
+                Annotation sent = sentIt.next();
+                final FSIterator<Token> subiterator = tokIt.subiterator(sent);
+                StringBuilder sb = new StringBuilder();
+                List<Token> tokens = new ArrayList<>();
+                while (subiterator.hasNext()) {
+                    Token token = subiterator.next();
+                    final POSTag posTag = token.getPosTag(0);
+                    if (posTag == null)
+                        throw new AnalysisEngineProcessException(new IllegalArgumentException("PoS tags are required but the current token has none."));
+                    sb.append(posTag.getValue()).append(" ");
+                    tokens.add(token);
+                }
+                if (sb.length() > 0) {
+                    // Remove the trailing whitespace
+                    sb.deleteCharAt(sb.length() - 1);
 
-                String posSentence = sb.toString();
-                AnnotatedSentence cueTaggedSentence = null;
-                AnnotatedSentence posCueMerged = null;
-                AnnotatedSentence scopeMarkedSentence = null;
-                try {
-                    // Important step here: replace pipes through slashes. Pipes are a reserved character for the internal tag representation format.
-                    cueTaggedSentence = cueAnnotator.annotateSentence(tokens.stream().map(Annotation::getCoveredText).collect(Collectors.joining(" ")).replace("|", "/"), true);
-                    posCueMerged = CueAndPosFilesMerger.merge(cueTaggedSentence, posSentence, replaceCue);
-                    scopeMarkedSentence = scopeAnnotator.annotateSentence(posCueMerged.getSentenceText(), true);
+                    String posSentence = sb.toString();
+                    AnnotatedSentence cueTaggedSentence = null;
+                    AnnotatedSentence posCueMerged = null;
+                    AnnotatedSentence scopeMarkedSentence = null;
+                    try {
+                        // Important step here: replace pipes through slashes. Pipes are a reserved character for the internal tag representation format.
+                        cueTaggedSentence = cueAnnotator.annotateSentence(tokens.stream().map(Annotation::getCoveredText).collect(Collectors.joining(" ")).replace("|", "/"), true);
+                        posCueMerged = CueAndPosFilesMerger.merge(cueTaggedSentence, posSentence, replaceCue);
+                        scopeMarkedSentence = scopeAnnotator.annotateSentence(posCueMerged.getSentenceText(), true);
 
-                    final List<LikelihoodIndicator> likelihoodIndicators = addAnnotationToCas(tokens, cueTaggedSentence, () -> new LikelihoodIndicator(aJCas));
-                    final List<Scope> scopes = addAnnotationToCas(tokens, scopeMarkedSentence, () -> new Scope(aJCas));
+                        final List<LikelihoodIndicator> likelihoodIndicators = addAnnotationToCas(tokens, cueTaggedSentence, () -> new LikelihoodIndicator(aJCas));
+                        final List<Scope> scopes = addAnnotationToCas(tokens, scopeMarkedSentence, () -> new Scope(aJCas));
 
-                    if (likelihoodIndicators.size() == scopes.size()) {
-                        for (int i = 0; i < scopes.size(); i++) {
-                            LikelihoodIndicator indicator = likelihoodIndicators.get(i);
-                            Scope scope = scopes.get(i);
-                            scope.setCue(indicator);
+                        if (likelihoodIndicators.size() == scopes.size()) {
+                            for (int i = 0; i < scopes.size(); i++) {
+                                LikelihoodIndicator indicator = likelihoodIndicators.get(i);
+                                Scope scope = scopes.get(i);
+                                scope.setCue(indicator);
+                            }
+                        } else {
+                            log.debug("Not assigning negation or hedge cues to their scopes because the number of cues and scopes differs.");
+                            log.trace("The respective sentence is: '{}'. Cue tags: '{}', Scope tags: '{}'", sent.getCoveredText(), cueTaggedSentence.getTags(), scopeMarkedSentence.getTags());
                         }
-                    } else {
-                        log.debug("Not assigning negation or hedge cues to their scopes because the number of cues and scopes differs.");
-                        log.trace("The respective sentence is: '{}'. Cue tags: '{}', Scope tags: '{}'", sent.getCoveredText(), cueTaggedSentence.getTags(), scopeMarkedSentence.getTags());
+                    } catch (Throwable t) {
+                        log.warn("Lingscope error in sentence '{}'", sent.getCoveredText(), t);
+                        log.warn("PosCueMerged Sent Text: {}", posCueMerged != null ? posCueMerged.getSentenceText() : "<null>");
+                        log.warn("Tokens: {}", tokens.stream().map(Annotation::getCoveredText).collect(Collectors.joining(" ")));
+                        log.warn("Lemmas: {}", tokens.stream().map(Token::getLemma).map(Lemma::getValue).collect(Collectors.joining(" ")));
+                        log.warn("PoS: {}", posSentence);
+                        log.warn("Cue tags: {}", cueTaggedSentence != null ? cueTaggedSentence.getTags() : "<null>");
+                        log.warn("POS Cue merged: {}", posCueMerged != null ? posCueMerged.getTags() : "<null>");
+                        log.warn("Scope tags: {}", scopeMarkedSentence != null ? scopeMarkedSentence.getTags() : "<null>");
+                        log.warn("StackTrace:", t);
+                        throw t;
                     }
-                } catch (Throwable t) {
-                    log.error("Lingscope error in sentence '{}'", sent.getCoveredText(), t);
-                    log.error("PosCueMerged Sent Text: {}", posCueMerged != null ? posCueMerged.getSentenceText() : "<null>");
-                    log.error("Tokens: {}", tokens.stream().map(Annotation::getCoveredText).collect(Collectors.joining(" ")));
-                    log.error("Lemmas: {}", tokens.stream().map(Token::getLemma).map(Lemma::getValue).collect(Collectors.joining(" ")));
-                    log.error("PoS: {}", posSentence);
-                    log.error("Cue tags: {}", cueTaggedSentence != null ? cueTaggedSentence.getTags() : "<null>");
-                    log.error("POS Cue merged: {}", posCueMerged != null ? posCueMerged.getTags() : "<null>");
-                    log.error("Scope tags: {}", scopeMarkedSentence != null ? scopeMarkedSentence.getTags() : "<null>");
-                    log.error("StackTrace:", t);
-                    throw t;
                 }
             }
+        } catch (Throwable t) {
+            log.warn("Skipping this document for lingscope processing because of previous error.", t);
         }
     }
 

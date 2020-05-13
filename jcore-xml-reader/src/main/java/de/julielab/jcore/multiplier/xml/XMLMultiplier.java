@@ -46,7 +46,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
 
-@ResourceMetaData(name="XML Multiplier")
+@ResourceMetaData(name="JCoRe XML Multiplier")
 @OperationalProperties(outputsNewCases = true, modifiesCas = false)
 public class XMLMultiplier extends JCasMultiplier_ImplBase {
 

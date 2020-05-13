@@ -1,11 +1,12 @@
 package de.julielab.jcore.ae.checkpoint;
 
+import com.google.common.collect.Sets;
+import de.julielab.costosys.Constants;
+import de.julielab.costosys.configuration.FieldConfig;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.jcore.utility.JCoReTools;
-import de.julielab.xmlData.Constants;
-import de.julielab.xmlData.config.FieldConfig;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -22,9 +23,7 @@ import java.io.FileNotFoundException;
 import java.sql.BatchUpdateException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @ResourceMetaData(name = "JCoRe Database Checkpoint AE", description = "This component can be used when using a JCoRe database reader that reads from a CoStoSys/JeDIS subset. Enters the configured component name in the 'last component' column. Can also mark documents as being completely processed.")
 public class DBCheckpointAE extends JCasAnnotator_ImplBase {
@@ -54,9 +53,15 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             "The number of processed CASes after which the checkpoint should be written into the database. Defaults to 50.")
     private int writeBatchSize;
 
+    @ConfigurationParameter(name = DocumentReleaseCheckpoint.PARAM_JEDIS_SYNCHRONIZATION_KEY, mandatory = false, description = DocumentReleaseCheckpoint.SYNC_PARAM_DESC)
+    private String jedisSyncKey;
+
+
     private String subsetTable;
 
-    private List<DocumentId> docIds;
+    private Set<DocumentId> docIds;
+
+    private DocumentReleaseCheckpoint docReleaseCheckpoint;
 
     /**
      * This method is called a single time by the framework at component
@@ -74,7 +79,14 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             log.error("Could not initiate database connector", e);
             throw new ResourceInitializationException(e);
         }
-        docIds = new ArrayList<>();
+        docIds = new HashSet<>();
+
+        if (indicateFinished) {
+            jedisSyncKey = (String) Optional.ofNullable(aContext.getConfigParameterValue(DocumentReleaseCheckpoint.PARAM_JEDIS_SYNCHRONIZATION_KEY)).orElse(getClass().getCanonicalName() + componentDbName);
+            docReleaseCheckpoint = DocumentReleaseCheckpoint.get();
+            docReleaseCheckpoint.register(jedisSyncKey);
+        }
+
         log.info("{}: {}", PARAM_CHECKPOINT_NAME, componentDbName);
         log.info("{}: {}", PARAM_INDICATE_FINISHED, indicateFinished);
         log.info("{}: {}", PARAM_CHECKPOINT_NAME, componentDbName);
@@ -84,25 +96,36 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     @Override
     public void batchProcessComplete() throws AnalysisEngineProcessException {
         super.batchProcessComplete();
-        log.debug("BatchProcessComplete called, writing checkpoints {} to database", docIds.size());
+        log.debug("BatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
+        if (indicateFinished)
+            docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds, indicateFinished, dbc.getActiveTableFieldConfiguration());
+            setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
+        docIds.clear();
     }
 
     @Override
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
-        log.info("CollectionProcessComplete called, writing {} checkpoints to database", docIds.size());
+        log.debug("BatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
+        if (indicateFinished)
+            docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds,indicateFinished, dbc.getActiveTableFieldConfiguration());
+            setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
+        docIds.clear();
+        log.info("Closing database connector.");
+        dbc.close();
     }
 
     private void customBatchProcessingComplete() throws AnalysisEngineProcessException {
+        if (indicateFinished)
+            docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-            setLastComponent(conn, subsetTable, docIds, indicateFinished, dbc.getActiveTableFieldConfiguration());
+            setLastComponent(conn, subsetTable, indicateFinished, dbc.getActiveTableFieldConfiguration());
         }
+        docIds.clear();
     }
 
     /**
@@ -112,28 +135,29 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
         DocumentId documentId;
-        String docId;
         try {
             final DBProcessingMetaData dbProcessingMetaData = JCasUtil.selectSingle(aJCas, DBProcessingMetaData.class);
-            documentId = new DocumentId(dbProcessingMetaData);
-            if (subsetTable == null)
-                subsetTable = dbProcessingMetaData.getSubsetTable();
-            if (subsetTable == null) {
-                if (dbProcessingMetaData.getSubsetTable() == null) {
-                    log.error("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name.");
-                    throw new AnalysisEngineProcessException(new IllegalStateException("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name."));
+            if (!dbProcessingMetaData.getDoNotMarkAsProcessed()) {
+                documentId = new DocumentId(dbProcessingMetaData);
+                if (subsetTable == null)
+                    subsetTable = dbProcessingMetaData.getSubsetTable();
+                if (subsetTable == null) {
+                    if (dbProcessingMetaData.getSubsetTable() == null) {
+                        log.error("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name.");
+                        throw new AnalysisEngineProcessException(new IllegalStateException("The subset table retrieved from the DBProcessingMetaData is null. Cannot continue without the table name."));
+                    }
+                    subsetTable = dbProcessingMetaData.getSubsetTable();
                 }
-                subsetTable = dbProcessingMetaData.getSubsetTable();
-            }
-            docIds.add(documentId);
-            log.trace("Adding document ID {} for subset table {} for checkpoint marking", documentId, subsetTable);
-            if (docIds.size() >= writeBatchSize) {
-                log.debug("Cached documents have reached the configured batch size of {}, sending to database.", writeBatchSize);
-                customBatchProcessingComplete();
+                docIds.add(documentId);
+                log.trace("Adding document ID {} for subset table {} for checkpoint marking", documentId, subsetTable);
+                if (docIds.size() >= writeBatchSize) {
+                    log.debug("Cached documents have reached the configured batch size of {}, sending to database.", writeBatchSize);
+                    customBatchProcessingComplete();
+                }
             }
         } catch (IllegalArgumentException e) {
-            docId = JCoReTools.getDocId(aJCas);
-            log.error("The document with document ID {} does not have an annotation of type {}. This annotation ought to contain the name of the subset table. It should be set by the DB reader. Cannot write the checkpoint to the datbase since the target subset table or its schema is unknown.", docId, DBProcessingMetaData.class.getCanonicalName());
+            String docId = JCoReTools.getDocId(aJCas);
+            log.error("The document with document ID {} does not have an annotation of type {}. This annotation ought to contain the name of the subset table. It should be set by the DB reader. Cannot write the checkpoint to the database since the target subset table or its schema is unknown.", docId, DBProcessingMetaData.class.getCanonicalName());
             throw new AnalysisEngineProcessException(e);
         }
     }
@@ -145,9 +169,19 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      * @throws AnalysisEngineProcessException
      */
     private void setLastComponent(CoStoSysConnection conn, String
-            subsetTableName, List<DocumentId> processedDocumentIds, boolean markIsProcessed, FieldConfig annotationFieldConfig) throws AnalysisEngineProcessException {
-        if (processedDocumentIds.isEmpty() || StringUtils.isBlank(subsetTableName)) {
-            log.debug("Not setting the last component because the processed document IDs list is empty (size: {}) or the subset table name wasn't found (is: {})", processedDocumentIds.size(), subsetTableName);
+            subsetTableName, boolean markIsProcessed, FieldConfig annotationFieldConfig) throws AnalysisEngineProcessException {
+        // When we just want to set the document DB processing checkpoint we will do this for the current batch of documents no matter if they have been released by other components
+        Set<DocumentId> processedDocumentIds = Collections.emptySet();
+        if (markIsProcessed) {
+            // Add all documents released from all the different components to the current cache of released documents. The
+            // cache is a multiset, counting the number of released for each document. This is important because we only
+            // want to mark documents as being processed if all registered components are finished with it, i.e. have
+            // stored their information about the document to the database, preventing data loss.
+            processedDocumentIds = docReleaseCheckpoint.getReleasedDocumentIds();
+        }
+        Set<DocumentId> documentIdsToSetLastComponent = Sets.difference(docIds, processedDocumentIds);
+        if ((documentIdsToSetLastComponent.isEmpty() && processedDocumentIds.isEmpty()) || StringUtils.isBlank(subsetTableName)) {
+            log.debug("Not setting the last component to {} because the processed document IDs list is empty (size: {}) or the subset table name could not be retrieved (is: {})", componentDbName, documentIdsToSetLastComponent.size(), subsetTableName);
             return;
         }
 
@@ -157,18 +191,29 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         // create a string for the prepared statement in the form "pk1 = ? AND pk2 = ? ..."
         String primaryKeyPsString = StringUtils.join(annotationFieldConfig.expandPKNames("%s = ?"), " AND ");
 
-        log.debug("Marking {} documents to having been processed by component \"{}\".", processedDocumentIds.size(), componentDbName);
 
-        String sql = String.format("UPDATE %s SET %s='%s' WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, primaryKeyPsString);
+        String sqlSetLastComponent = String.format("UPDATE %s SET %s='%s' WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, primaryKeyPsString);
+        String sqlMarkIsProcessed = null;
         if (markIsProcessed)
-            sql = String.format("UPDATE %s SET %s='%s', %s=TRUE, %s=FALSE WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, Constants.IS_PROCESSED, Constants.IN_PROCESS, primaryKeyPsString);
+            sqlMarkIsProcessed = String.format("UPDATE %s SET %s='%s', %s=TRUE, %s=FALSE WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, Constants.IS_PROCESSED, Constants.IN_PROCESS, primaryKeyPsString);
 
+        if (!documentIdsToSetLastComponent.isEmpty()) {
+            log.debug("Setting the last component to {} for {} documents", componentDbName, documentIdsToSetLastComponent.size());
+            updateSubsetTable(conn, documentIdsToSetLastComponent, sqlSetLastComponent);
+        }
+        if (markIsProcessed) {
+            log.debug("Marking {} documents to having been processed by component \"{}\".", documentIdsToSetLastComponent.size(), componentDbName);
+            updateSubsetTable(conn, processedDocumentIds, sqlMarkIsProcessed);
+        }
+    }
+
+    private void updateSubsetTable(CoStoSysConnection conn, Collection<DocumentId> documentIdsToMark, String sql) throws AnalysisEngineProcessException {
         try {
             boolean tryagain;
             do {
                 tryagain = false;
                 PreparedStatement ps = conn.prepareStatement(sql);
-                for (DocumentId docId : processedDocumentIds) {
+                for (DocumentId docId : documentIdsToMark) {
                     for (int i = 0; i < docId.getId().length; i++) {
                         String pkElement = docId.getId()[i];
                         ps.setString(i + 1, pkElement);
@@ -192,8 +237,6 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             else
                 nextException.printStackTrace();
             throw new AnalysisEngineProcessException(nextException);
-        } finally {
-            processedDocumentIds.clear();
         }
     }
 

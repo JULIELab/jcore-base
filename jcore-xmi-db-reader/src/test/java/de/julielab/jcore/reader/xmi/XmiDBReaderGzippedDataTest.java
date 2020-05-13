@@ -1,10 +1,10 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionReader;
@@ -43,7 +43,7 @@ public class XmiDBReaderGzippedDataTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 1, postgres);
         new File(costosysConfig).deleteOnExit();
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, true);
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, true, false,"public");
         assertTrue(dbc.withConnectionQueryBoolean( c -> c.tableExists("_data.documents")), "The data document table exists");
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");
@@ -63,7 +63,7 @@ public class XmiDBReaderGzippedDataTest {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
-                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_ANNOTATIONS_TO_LOAD, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
                 XmiDBReader.PARAM_RESET_TABLE, true
         );

@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <name>TestTypeSystem</name>
 <description>including julie morpho-syntax and semantics</description>
-<version>2.4.0</version>
-<vendor />
+<version>2.5.1-SNAPSHOT</version>
+        <vendor />
 <imports>
 <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
 <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />

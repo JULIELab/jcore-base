@@ -1,5 +1,6 @@
 package de.julielab.jcore.consumer.xmi;
 
+import de.julielab.jcore.ae.checkpoint.DocumentId;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -18,12 +19,10 @@ import java.util.Map.Entry;
  * 
  */
 public class DocumentXmiData extends XmiData {
-	public Integer newXmiId;
 	public String serializedSofaXmiIdMap;
 
-	public DocumentXmiData(DocumentId docId, Object storedData, Integer newXmiId, Map<Integer, String> currentSofaXmiIdMap) {
-		super(docId, storedData);
-		this.newXmiId = newXmiId;
+	public DocumentXmiData(String columnName, DocumentId docId, Object storedData, Map<Integer, String> currentSofaXmiIdMap) {
+		super(columnName, docId, storedData);
 		setSofaXmiIdMap(currentSofaXmiIdMap);
 	}
 

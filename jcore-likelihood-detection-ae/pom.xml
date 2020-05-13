@@ -10,7 +10,7 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>
-        <version>2.4.0</version>
+        <version>2.5.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -54,4 +54,10 @@
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-likelihood-detection-ae</url>
     <description>Analysis Engine to detect epistemic modal expressions and assign the appropriate likelihood category.
     </description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

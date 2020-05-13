@@ -7,8 +7,8 @@
 		<name>jcore-stanford-lemmatizer-ae</name>
 		<description>This is the UIMA Wrapper for the Stanford CoreNLP
 			Lemmatizer component.</description>
-		<version>2.4.0</version>
-		<vendor />
+		<version>2.5.1-SNAPSHOT</version>
+        <vendor />
 		<configurationParameters />
 		<configurationParameterSettings />
 		<typeSystemDescription>

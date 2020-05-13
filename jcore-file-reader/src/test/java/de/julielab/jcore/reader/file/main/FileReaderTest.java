@@ -283,12 +283,4 @@ public class FileReaderTest {
 			e.printStackTrace();
 		}
 	}
-//	@AfterClass
-//	public static void tearDown() throws Exception {
-//		File artifactFile1 = new File(FILE_ARTIFACT_1);
-//		artifactFile1.delete();
-//
-//		File artifactFile2 = new File(FILE_ARTIFACT_2);
-//		artifactFile2.delete();
-//	}
 }

@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Evaluation Types</name>
   <description>This type system is an extension of the JCoRe type system to cover evaluation Annotations like missing or additional annotations for evaluation purposes.</description>
-  <version>2.4.0</version>
-  <vendor>JULIE Lab Jena, Germany</vendor>
+  <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
   <types>
     <typeDescription>
       <name>de.julielab.jcore.types.Missing</name>

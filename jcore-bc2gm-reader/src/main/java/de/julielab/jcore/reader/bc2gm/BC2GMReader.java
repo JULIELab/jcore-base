@@ -2,10 +2,10 @@ package de.julielab.jcore.reader.bc2gm;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import de.julielab.java.utilities.FileUtilities;
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Sentence;
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
@@ -18,7 +18,10 @@ import org.apache.uima.util.Progress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Collection;
@@ -108,8 +111,8 @@ private final static Logger log = LoggerFactory.getLogger(BC2GMReader.class);
     private Multimap<String, GeneAnnotation> readGeneAnnotations(String genesFile)
             throws FileNotFoundException, IOException {
         Multimap<String, GeneAnnotation> annotations = HashMultimap.create();
-        try (InputStream is = new FileInputStream(genesFile)) {
-            Iterator<String> lineIterator = IOUtils.readLines(is).iterator();
+        try (BufferedReader bw = FileUtilities.getReaderFromFile(new File(genesFile))) {
+            Iterator<String> lineIterator = bw.lines().iterator();
             while (lineIterator.hasNext()) {
                 GeneAnnotation geneAnnotation = new GeneAnnotation();
                 // the lines look like this: P11740571A0114|87 107|glutathione

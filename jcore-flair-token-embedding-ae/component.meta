@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "Given a Flair compatible embedding file, computs the token embeddings of the CAS and sets them to the embeddingVector feature of the tokens.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.fte.desc.jcore-flair-token-embedding-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-flair-token-embedding-ae",
+        "groupId": "de.julielab",
+        "version": "2.5.1-SNAPSHOT"
+    },
+    "name": "JCoRe Flair Token Embedding Annotator"
+}

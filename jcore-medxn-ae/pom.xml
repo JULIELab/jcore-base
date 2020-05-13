@@ -1,22 +1,38 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>de.julielab</groupId>
-    <artifactId>jcore-base</artifactId>
-    <version>2.4.0</version>
-  </parent>
-  <artifactId>jcore-medxn-ae</artifactId>
-  <name>JCoRe MedXN</name>
-  <dependencies>
-  	<dependency>
-  		<groupId>de.julielab</groupId>
-  		<artifactId>jcore-types</artifactId>
-  		<version>${jcore-types-version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>de.julielab</groupId>
-  		<artifactId>jcore-utilities</artifactId>
-		<version>${jcore-utilities-version}</version>
-  	</dependency>
-  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.5.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>jcore-medxn-ae</artifactId>
+    <name>JCoRe MedXN</name>
+    <dependencies>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-types-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-utilities</artifactId>
+            <version>${jcore-utilities-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

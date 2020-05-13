@@ -19,7 +19,6 @@ package de.julielab.jcore.cpe;
 
 import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.xmlData.dataBase.DataBaseConnector;
-import org.apache.commons.cli.*;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.metadata.CpeDescription;

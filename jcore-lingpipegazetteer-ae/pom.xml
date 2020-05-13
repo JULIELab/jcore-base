@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>de.julielab</groupId>
 		<artifactId>jcore-base</artifactId>
-		<version>2.4.0</version>
+		<version>2.5.1-SNAPSHOT</version>
 	</parent>
 
 
@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>de.julielab</groupId>
 			<artifactId>aliasi-lingpipe</artifactId>
-			<version>4.1.0</version>
+			<version>4.1.2-JL1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

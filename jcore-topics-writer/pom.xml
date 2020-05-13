@@ -10,7 +10,7 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>
-        <version>2.4.0</version>
+        <version>2.5.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -37,6 +37,11 @@
             <version>${jcore-types-version}</version>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
@@ -52,4 +57,10 @@
         topic ID is just the 0-based index of each number, from left to right in the written file. The first entry of
         each file is the document ID.
     </description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

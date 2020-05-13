@@ -5,8 +5,8 @@
         document meta information (bibliographical and content information),
         especially for PubMed abstracts.
     </description>
-    <version>2.4.0</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
     <imports>
         <import location="jcore-document-meta-types.xml" />
     </imports>

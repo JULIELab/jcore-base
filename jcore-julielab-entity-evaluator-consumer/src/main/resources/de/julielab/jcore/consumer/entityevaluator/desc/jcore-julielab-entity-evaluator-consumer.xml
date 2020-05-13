@@ -4,23 +4,24 @@
     <primitive>true</primitive>
     <annotatorImplementationName>de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer</annotatorImplementationName>
     <analysisEngineMetaData>
-        <name>JCoRe JULIE Lab Entity Evaluator Writer</name>
-        <description>This component allows to output annotations from the CAS into a tab separated </description>
-        <vendor>de.julielab.jcore.consumer.entityevaluator</vendor>
+        <name>JCoRe Entity Evaluator and TSV Consumer</name>
+        <description>This component was originally created to output the tab separated format used the JULIE Entity Evaluator. However, this component can be used to create a TSV file from any annotation or annotation set. The component allows to define columns by specifying the annotation type to draw feature values from and a feature path that specifies the location of the desired feature. All feature paths will be applied to each configured annotation, returning null values if an annotation does not exhibit a value for a column's feature path.</description>
+        <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
                 <name>OutputColumns</name>
-                <description>A list of column names that are either defined with the parameter ColumnDefinitions or one of 'DocumentId', 'SentenceId' or 'Offsets'. This list determines the set and the order of columns that are written into the output file in a tab-separated manner.</description>
+                <description>A list of column names that are either defined with the parameter ColumnDefinitions or one of 'DocumentId', 'SentenceId', 'Offsets' or 'DocumentTextSha256'. This list determines the set and the order of columns that are written into the output file in a tab-separated manner.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>ColumnDefinitions</name>
-                <description>Custom definitions of output columns. Predefined columns are 'DocumentId', 'SentenceId' and 'Offsets'. A column definition consists of the name of the column, the type of the annotation from which the values for this column should be derived, and a feature path pointing to the value. A single column definition may refer to multiple, different annotation types with their own feature path. Annotation types that should use the same feature path are separated by a comma. The sets of annotation types where each set shared one feature path are separated by a semicolon. Example: 'entityid:Chemical,Gene=/registryNumber;Disease=/specificType'. In this example, the column named 'entityid' will list the IDs of annotations of types 'Chemical', 'Gene' and 'Disease'. For the first two, the feature 'registryNumber' will be employed, for the latter the feature 'specificType'. The annotation type names will be resolved against the 'TypePrefix' parameter, if specified. The built-in feature path functions 'coveredText()' and 'typeName()' are available. For example, 'type:Gene=/:typeName()' (note the colon preceding the built-in function) will output the fully qualified name of the Gene type.</description>
+                <description>Custom definitions of output columns. Predefined columns are 'DocumentId', 'SentenceId', 'Offsets' and 'DocumentTextSha256'. The first two may be overwritten by a custom definition using their exact name. A column definition consists of the name of the column, the type of the annotation from which the values for this column should be derived, and a feature path pointing to the value. A single column definition may refer to multiple, different annotation types with their own feature path. Annotation types that should use the same feature path are separated by a comma. The sets of annotation types where each set shares one feature path are separated by a semicolon. Example: 'entityid:Chemical,Gene=/registryNumber;Disease=/specificType'. In this example, the column named 'entityid' will list the IDs of annotations of types 'Chemical', 'Gene' and 'Disease'. For the first two, the feature 'registryNumber' will be employed, for the latter the feature 'specificType'. The annotation type names will be resolved against the 'TypePrefix' parameter, if specified. The built-in feature path functions 'coveredText()' and 'typeName()' are available. For example, 'type:Gene=/:typeName()' (note the colon preceding the built-in function) will output the fully qualified name of the Gene type. Additionally, some output options may be specified directly preceding the feature path, e.g. 'EmbeddingVector=[concat,binary,gzip]/vector'. Valid options are 'concat', 'binary', 'gzip', 'base64' and 'hex. Concat causes array-valued results to be concatenated. When 'binary' is not specified, elements will be converted to a string and concatenated by a comma delimiter. If 'binary' is specified, the value will be converted into binary form. By default to conversion to a string is done by the base64 algorithm. Another option is given by the 'hex' option. Finally, 'gzip' causes the data to be gzipped.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>EntityTypes</name>
@@ -52,7 +53,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>FeatureFilters</name>
-                <description>Optional. Only lets those entities contribute to the output file that fulfill the given feature value. The syntax is &lt;type&gt;:&lt;feature path&gt;=&lt;value&gt;</description>
+                <description>Optional. Only lets those entities contribute to the output file that fulfill the given feature value(s). The syntax is &lt;type&gt;:&lt;feature path&gt;=&lt;value&gt;. The '&lt;type&gt;:' prefix is optional. If omitted, the filters will be applied to all entities given in the EntityTypes parameter. An arbitrary number of filter expressions may be specified. In such cases, it is important to understand the boolean structure after which the expressions are evaluated in order to omit an annotation or take it into account for the output. The filter expressions are first grouped by feature path. Within such a group, the filter values form a disjunction. Thus, if any filter in a group is satisfied, the whole group is satisfied. The different groups form a conjunction. Thus, if any group is not satisfied, the whole conjunction is unsatisfied and the respective annotation will be omitted from output.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
@@ -60,14 +61,67 @@
             <configurationParameter>
                 <name>OutputFile</name>
                 <description>Output file to which all entity information is written in the format
-docId EGID begin end confidence
-Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.</description>
+                    docId EGID begin end confidence
+                    Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>AppendThreadNameToOutputFile</name>
+                <description>For multithreaded pipelines: Appends the thread name to the output file. This avoids the issue that multiple threads override each other's output files. There will be a number of files equal to the number of pipeline processing threads.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>MultiValueMode</name>
+                <description>This parameter comes to effect if multiple columns define a feature path that points to a multi-valued feature (array features). Possible values are 'parallel' and 'cartesian'. The first mode assumes all multi-valued arrays values to be index-wise associated to one another and outputs the pairs with the same array index. If one array has more elements then the others, the missing values are null. The cartesian mode outputs the cartesian product of the array values. Defaults to 'cartesian'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>NormalizeSpace</name>
+                <description>Optional. Default: true. Determines whether or not to apply space normalization to the output column values. This is most helpful in cases where covered text is output which might contain tab characters or newlines which would break the TSV format.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AddRecordsWithoutEntities</name>
+                <description>Optional. Default: false. If set to true, records will also be output for documents not having any requested entities.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings />
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>AppendThreadNameToOutputFile</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>MultiValueMode</name>
+                <value>
+                    <string>CARTESIAN</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>NormalizeSpace</name>
+                <value>
+                    <boolean>true</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>AddRecordsWithoutEntities</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
         <typeSystemDescription />
         <fsIndexCollection />
         <capabilities />
@@ -76,5 +130,5 @@ Where the fields are separated by tab stops. If the file name ends with .gz, the
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    <version>2.4.0</version></analysisEngineMetaData>
+    </analysisEngineMetaData>
 </analysisEngineDescription>

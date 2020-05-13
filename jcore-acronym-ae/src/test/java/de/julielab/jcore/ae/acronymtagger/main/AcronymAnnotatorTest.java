@@ -197,7 +197,6 @@ public class AcronymAnnotatorTest extends TestCase {
 			Abbreviation a;
 			while (abbreIter.hasNext()) {
 				a = (Abbreviation) abbreIter.next();
-
 				// if (a.getExpan().equals(result.get(i))) {
 				if (a.getExpan().equalsIgnoreCase(result.get(i))
 						&& a.getTextReference().getBegin() == begins.get(i).intValue()

@@ -19,7 +19,6 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import de.julielab.jcore.ae.jtbd.main.TokenAnnotator;
 import de.julielab.jcore.types.Token;
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -29,11 +28,16 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -53,7 +57,9 @@ public class TokenizerTest {
 	private static final String FILENAME_ABSTRACT = "src/test/resources/testdata/test/abstract.txt";
 
 	private List<String> readLinesFromFile(final String filename) throws IOException {
-		return FileUtils.readLines(new File(filename), "utf-8");
+		try (BufferedReader br = Files.newBufferedReader(Path.of(filename), StandardCharsets.UTF_8)) {
+			return br.lines().collect(Collectors.toList());
+		}
 	}
 
 	/**

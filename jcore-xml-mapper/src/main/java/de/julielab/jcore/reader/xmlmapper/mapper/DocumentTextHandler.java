@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.fest.reflect.core.Reflection.constructor;
@@ -34,7 +36,7 @@ import static org.fest.reflect.core.Reflection.constructor;
  */
 
 public class DocumentTextHandler {
-    private static AtomicInteger numNoDocTextFound = new AtomicInteger();
+    private static Map<String, Integer> numNoDocTextFound = new ConcurrentHashMap<>();
     Logger LOGGER = LoggerFactory.getLogger(DocumentTextHandler.class);
     private DocumentTextData docTextData;
 
@@ -105,10 +107,10 @@ public class DocumentTextHandler {
         ap.selectXPath(part.getXPath());
 
         int i = ap.evalXPath();
-        if (i < 0 && numNoDocTextFound.incrementAndGet() < 10)
+        if (i < 0 && numNoDocTextFound.compute(part.getXPath(), (k, v) -> v != null ? v + 1 : 1) < 10)
             LOGGER.debug("no match for xPath " + part.getXPath()
                     + " in document with identifier " + new String(identifier));
-        else if (numNoDocTextFound.incrementAndGet() == 10)
+        else if (numNoDocTextFound.getOrDefault(part.getXPath(), 0) == 10)
             LOGGER.warn("No match for xPath " + part.getXPath()
                     + " in document with identifier " + new String(identifier) + ". This has happened 10 times " +
                     "already (logged on debug level). This message is only displayed once to avoid scrolling.");

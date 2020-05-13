@@ -1,10 +1,10 @@
 package de.julielab.jcore.ae.annotationadder.annotationformat;
 
-import de.julielab.jcore.ae.annotationadder.annotationrepresentations.ExternalAnnotation;
+import de.julielab.jcore.ae.annotationadder.annotationrepresentations.ExternalTextAnnotation;
 
-public class SimpleTSVEntityAnnotationFormat implements AnnotationFormat<ExternalAnnotation> {
+public class SimpleTSVEntityAnnotationFormat implements AnnotationFormat<ExternalTextAnnotation> {
     @Override
-    public ExternalAnnotation parse(String data) {
+    public ExternalTextAnnotation parse(String data) {
         if (data == null || data.startsWith("#"))
             return null;
         final String[] record = data.split("\t");
@@ -16,6 +16,6 @@ public class SimpleTSVEntityAnnotationFormat implements AnnotationFormat<Externa
         String type = null;
         if (record.length > 3)
             type = record[3];
-        return new ExternalAnnotation(docId, begin, end, type);
+        return new ExternalTextAnnotation(docId, begin, end, type);
     }
 }

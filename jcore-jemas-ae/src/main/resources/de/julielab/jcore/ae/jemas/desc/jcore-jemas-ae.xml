@@ -5,8 +5,8 @@
   <analysisEngineMetaData>
     <name>JCoRe JEmAS</name>
     <description>A UIMA-based implementation of the core functionality of JEmAS, the Jena Emotion Analysis System.</description>
-    <version>2.4.0</version>
-    <vendor />
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>lexiconPath</name>

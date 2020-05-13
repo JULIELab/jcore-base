@@ -6,8 +6,8 @@
   <analysisEngineMetaData>
     <name>de.julielab.jcore.medxn.ae.desc.jcore-medxn-ae-extractor-german</name>
     <description>Associate medication and the corresponding attributes</description>
-    <version>2.4.0</version>
-    <vendor />
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor />
     <configurationParameters />
     <configurationParameterSettings />
     <typeSystemDescription>

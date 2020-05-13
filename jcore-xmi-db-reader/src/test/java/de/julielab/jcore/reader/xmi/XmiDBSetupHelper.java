@@ -1,9 +1,9 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.Constants;
 import de.julielab.jcore.consumer.xmi.XMIDBWriter;
 import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.Header;
-import de.julielab.xmlData.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -16,7 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class XmiDBSetupHelper {
-    public static void processAndSplitData(String costosysConfig, boolean gzip) throws UIMAException, IOException {
+    public static void processAndSplitData(String costosysConfig, boolean gzip, boolean binaryFormat, String nsSchema) throws UIMAException, IOException {
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
                 XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
@@ -26,7 +26,9 @@ public class XmiDBSetupHelper {
                 XMIDBWriter.PARAM_DO_GZIP, gzip,
                 XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
                 XMIDBWriter.PARAM_UPDATE_MODE, true,
-                XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), Header.class.getCanonicalName()}
+                XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{MeshHeading.class.getCanonicalName(), AbstractText.class.getCanonicalName(), Title.class.getCanonicalName(), Header.class.getCanonicalName()},
+                XMIDBWriter.PARAM_XMI_META_SCHEMA, nsSchema,
+                XMIDBWriter.PARAM_USE_BINARY_FORMAT, binaryFormat
         );
         JCas jCas = getJCasWithRequiredTypes();
         jCas.setDocumentText("This is a sentence. This is another one.");
@@ -93,6 +95,7 @@ public class XmiDBSetupHelper {
                 "de.julielab.jcore.types.jcore-document-structure-pubmed-types",
                 "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types",
                 "de.julielab.jcore.types.jcore-xmi-splitter-types",
-                "de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types");
+                "de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types",
+                "de.julielab.jcore.types.jcore-semantics-biology-types");
     }
 }

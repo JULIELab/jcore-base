@@ -16,7 +16,7 @@
             embedded into the descriptor. The current parameter settings will work but may be changed. Refer to
             https://github.com/JULIELab/jcore-base/tree/master/jcore-lingpipegazetteer-ae for more information.
         </description>
-        <version>2.4.0</version>
+        <version>2.5.1-SNAPSHOT</version>
         <vendor>julielab</vendor>
         <configurationParameters>
             <configurationParameter>

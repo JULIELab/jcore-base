@@ -1,9 +1,9 @@
 package de.julielab.jcore.reader.db;
 
+import de.julielab.costosys.dbconnection.DBCIterator;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
+import de.julielab.costosys.dbconnection.util.UnobtainableConnectionException;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
-import de.julielab.xmlData.dataBase.DBCIterator;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
-import de.julielab.xmlData.dataBase.util.UnobtainableConnectionException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;

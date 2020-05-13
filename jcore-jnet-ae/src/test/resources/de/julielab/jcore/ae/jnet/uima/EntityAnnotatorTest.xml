@@ -6,8 +6,8 @@
   <analysisEngineMetaData>
     <name>EntityTaggerAnnotator</name>
     <description />
-    <version>2.4.0</version>
-    <vendor>julielab</vendor>
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor>julielab</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>ModelFilename</name>

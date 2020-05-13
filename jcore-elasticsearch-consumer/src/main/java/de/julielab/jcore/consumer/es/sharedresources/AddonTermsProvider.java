@@ -1,8 +1,8 @@
 package de.julielab.jcore.consumer.es.sharedresources;
 
 import com.google.gson.Gson;
+import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.utility.JCoReTools;
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class AddonTermsProvider implements IAddonTermsProvider {
             } catch (Exception e) {
                 throw new IOException("Could not read from " + aData.getUri() + ": Resource not found.");
             }
-            List<String> addonLines = IOUtils.readLines(inputStream, "UTF-8");
+            List<String> addonLines = IOStreamUtilities.getLinesFromInputStream(inputStream);
             for (String line : addonLines) {
                 if (line.trim().length() == 0 || line.startsWith("#"))
                     continue;

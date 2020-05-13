@@ -1,42 +1,55 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>jcore-coordination-baseline-ae</artifactId>
-  <packaging>jar</packaging>
-  <name>JCoRe Coordination Tagger Baseline</name>
-  <description>This is a baseline approach to the Coordination Resolution problem. It is used in our jcore-coordination-ae, that is only accessible on GitHub due to being in an unfinished state.</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-	<groupId>de.julielab</groupId>
-	<artifactId>jcore-base</artifactId>
-	<version>2.4.0</version>
-  </parent>	
-  <dependencies>
-      <dependency>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jcore-coordination-baseline-ae</artifactId>
+    <packaging>jar</packaging>
+    <name>JCoRe Coordination Tagger Baseline</name>
+    <description>This is a baseline approach to the Coordination Resolution problem. It is used in our
+        jcore-coordination-ae, that is only accessible on GitHub due to being in an unfinished state.
+    </description>
+
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.5.1-SNAPSHOT</version>
+    </parent>
+    <dependencies>
+        <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
             <version>${jcore-types-version}</version>
         </dependency>
-		<dependency>
-	    	<groupId>de.julielab</groupId>
-	    	<artifactId>jcore-utilities</artifactId>
-	    	<version>${jcore-utilities-version}</version>
-    	</dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-utilities</artifactId>
+            <version>${jcore-utilities-version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
-  <organization>
-  	<name>JULIE Lab Jena, Germany</name>
-  	<url>http://www.julielab.de</url>
-  </organization>
-  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-coordination-baseline-ae</url>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+    <organization>
+        <name>JULIE Lab Jena, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-coordination-baseline-ae</url>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

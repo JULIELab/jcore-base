@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>
-        <version>2.4.0</version>
+        <version>2.5.1-SNAPSHOT</version>
     </parent>
     <artifactId>jcore-xml-reader</artifactId>
     <name>JCoRe XML Reader</name>
@@ -14,7 +14,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xml-mapper</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -150,4 +150,10 @@
         This is the base component for the JCoRe PubMed and Medline readers.
     </description>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xml-reader</url>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

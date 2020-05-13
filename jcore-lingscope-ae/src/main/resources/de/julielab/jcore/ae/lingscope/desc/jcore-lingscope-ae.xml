@@ -6,6 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe Lingscope AE</name>
         <description>This component uses the Lingscope negation/hedge detection algorithm and models to annotate negation/hedge cues and the scope to which the cues apply.</description>
+        <version>2.5.1-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
                 <name>CueModel</name>
@@ -69,5 +70,5 @@
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    <version>2.4.0</version></analysisEngineMetaData>
+    </analysisEngineMetaData>
 </analysisEngineDescription>

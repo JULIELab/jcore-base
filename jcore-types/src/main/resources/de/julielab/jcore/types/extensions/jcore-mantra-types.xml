@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Mantra Types</name>
   <description>The type system contains types for working with documents in the context of the MANTRA project.</description>
-  <version>2.4.0</version>
-  <vendor>JULIE Lab Jena, Germany</vendor>
+  <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
     <import location="../jcore-document-structure-types.xml" />
     <import location="../jcore-basic-types.xml" />

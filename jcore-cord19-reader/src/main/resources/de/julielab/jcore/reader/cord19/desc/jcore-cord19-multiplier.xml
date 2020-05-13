@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.reader.cord19.Cord19Multiplier</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe CORD-19 CAS Multiplier</name>
+        <description>This component reads the CORD-19 (https://pages.semanticscholar.org/coronavirus-research) JSON format into UIMA CAS instances.</description>
+        <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <configurationParameters />
+        <configurationParameterSettings />
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection />
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.casmultiplier.JCoReURI</type>
+                </inputs>
+                <outputs>
+                    <type>de.julielab.jcore.types.pubmed.Header</type>
+                    <type>de.julielab.jcore.types.Title</type>
+                    <type>de.julielab.jcore.types.pubmed.AbstractText</type>
+                    <type>de.julielab.jcore.types.pubmed.AbstractSection</type>
+                    <type>de.julielab.jcore.types.pubmed.AbstractSectionHeading</type>
+                    <type>de.julielab.jcore.types.Section</type>
+                    <type>de.julielab.jcore.types.Caption</type>
+                    <type>de.julielab.jcore.types.InternalReference</type>
+                </outputs>
+                <languagesSupported />
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

@@ -86,7 +86,7 @@ public class IGNReader extends CollectionReader_ImplBase {
 
 	@Override
 	public void initialize() throws ResourceInitializationException {
-		LOGGER.info("initialize() - Initializing BioC Reader...");
+		LOGGER.info("Initializing IGN BioC Reader");
 
 		dirTextFiles = new File(((String) getConfigParameterValue(PARAM_INPUTDIR_TEXT)));
 		if (!dirTextFiles.exists() || !dirTextFiles.isDirectory()) {

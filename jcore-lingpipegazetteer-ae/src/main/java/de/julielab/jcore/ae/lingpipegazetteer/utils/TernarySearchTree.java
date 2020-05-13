@@ -1,17 +1,8 @@
 /** 
- * TernarySearchTree.java
- * 
- * Copyright (c) 2015, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Affero General Public License (LGPL) v3.0
- *
  *
  * Author: kampe
  * 
- * Current version: 1.0
- * Since version:   1.0
- *
- * Creation date: 01.12.2008 
+ * Creation date: 01.12.2008
  **/
 
 package de.julielab.jcore.ae.lingpipegazetteer.utils;

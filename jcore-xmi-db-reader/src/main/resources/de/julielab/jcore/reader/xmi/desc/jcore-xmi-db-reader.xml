@@ -5,11 +5,12 @@
     <processingResourceMetaData>
         <name>JCoRe XMI Database Reader</name>
         <description>A database readerthat expects serialized UIMA CAS objects in XMI format as input. The reader has the capability to read segmented annotation graphs that have been stored by the jcore-xmi-db-writer. This component is part of the Jena Document Information System, JeDIS.</description>
+        <version>2.5.1-SNAPSHOT</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
-                <name>AdditionalTables</name>
-                <description>An array of qualified UIMA type names. The provided names will be converted to database table names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, the default assumed Postgres schema for the annotation tables is the active data table as configured in the CoStoSys configuration file. This can be overwritten by appending '&lt;schema&gt;:' to a table name. The given type names will be converted to valid Postgres table names by replacing dots with underscores. From the resolved tables, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.</description>
+                <name>AnnotationsToLoad</name>
+                <description>An array of qualified UIMA type names. The provided names will be converted to database table column names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, by default the columns of the XMI table holding annotation module information are named by lowercased UIMA type name where dots are replaced by underscores.. This can be overwritten by appending '&lt;schema&gt;:' to a table name. The given type names will be converted to valid Postgres columns names by replacing dots with underscores and the colon will be converted to the dollar character. From the resolved columns, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
@@ -43,6 +44,20 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
+                <name>XmiMetaTablesSchema</name>
+                <description>Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '_xmi_namespaces' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Also, the table listing the annotation tables is stored in this Postgres schema. Defaults to 'public'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>LogFinalXmi</name>
+                <description>For debugging purposes. If set to true, before parsing the final XMI data assembled from the annotation modules, it is printed to console.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
                 <name>Timestamp</name>
                 <description>PostgreSQL timestamp expression that is evaluated against the data table. The data table schema, which must be the active data table schema in the CoStoSys configuration as always, must specify a single timestamp field for this parameter to work. Only data rows with a timestamp value larger than the given timestamp expression will be processed. Note that when reading from a subset table, there may be subset rows indicated to be in process which are finally not read from the data table. This is an implementational shortcoming and might be addressed if respective feature requests are given through the JULIE Lab GitHub page or JCoRe issues.</description>
                 <type>String</type>
@@ -62,20 +77,6 @@
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
-            </configurationParameter>
-            <configurationParameter>
-                <name>AdditionalTableSchemas</name>
-                <description>The table schemas that corresponds to the additional tables given with the 'AdditionalTables' parameter. If only one schema name is given, that schema must apply to all additional tables.</description>
-                <type>String</type>
-                <multiValued>true</multiValued>
-                <mandatory>false</mandatory>
-            </configurationParameter>
-            <configurationParameter>
-                <name>AdditionalTablesPostgresSchema</name>
-                <description>This optional parameter specifies the Postgres schema in which the additional tables to read are searched by default. If omitted, the active data schema from the CoStoSys configuration is assumed. The default can be overwritten for individual types. For details, see the description of the 'AdditionalTables' parameter.</description>
-                <type>String</type>
-                <multiValued>false</multiValued>
-                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>BatchSize</name>
@@ -129,6 +130,18 @@
         </configurationParameters>
         <configurationParameterSettings>
             <nameValuePair>
+                <name>XmiMetaTablesSchema</name>
+                <value>
+                    <string>public</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>LogFinalXmi</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
                 <name>ResetTable</name>
                 <value>
                     <boolean>false</boolean>
@@ -143,7 +156,7 @@
             <nameValuePair>
                 <name>BatchSize</name>
                 <value>
-                    <integer>50</integer>
+                    <integer>100</integer>
                 </value>
             </nameValuePair>
             <nameValuePair>
@@ -166,5 +179,5 @@
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    <version>2.4.0</version></processingResourceMetaData>
+    </processingResourceMetaData>
 </collectionReaderDescription>

@@ -5,6 +5,7 @@
     <annotatorImplementationName>de.julielab.jcore.consumer.es.ElasticSearchConsumer</annotatorImplementationName>
     <analysisEngineMetaData>
         <name>JCore ElasticSearch Consumer</name>
+        <version>2.5.1-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
                 <name>urls</name>
@@ -25,7 +26,7 @@
                 <description>The index type the generated documents should have. The types are removed from ElasticSearch with version 7 so this parameter is set to have the same value for all documents.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
-                <mandatory>true</mandatory>
+                <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>batchSize</name>
@@ -79,5 +80,5 @@
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    <version>2.4.0</version></analysisEngineMetaData>
+    </analysisEngineMetaData>
 </analysisEngineDescription>

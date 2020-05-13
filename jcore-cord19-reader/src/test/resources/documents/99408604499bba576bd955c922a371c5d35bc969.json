@@ -1,0 +1,1051 @@
+{
+    "paper_id": "99408604499bba576bd955c922a371c5d35bc969",
+    "metadata": {
+        "title": "Recombinant M protein-based ELISA test for detection of antibodies to canine coronavirus",
+        "authors": [
+            {
+                "first": "Gabriella",
+                "middle": [],
+                "last": "Elia",
+                "suffix": "",
+                "affiliation": {},
+                "email": ""
+            },
+            {
+                "first": "Giuseppe",
+                "middle": [],
+                "last": "Fiermonte",
+                "suffix": "",
+                "affiliation": {
+                    "laboratory": "Laboratory of Biochemistry and Molecular Biology",
+                    "institution": "University of Bari",
+                    "location": {
+                        "settlement": "Bari",
+                        "country": "Italy"
+                    }
+                },
+                "email": ""
+            },
+            {
+                "first": "Annamaria",
+                "middle": [],
+                "last": "Pratelli",
+                "suffix": "",
+                "affiliation": {},
+                "email": ""
+            },
+            {
+                "first": "Vito",
+                "middle": [],
+                "last": "Martella",
+                "suffix": "",
+                "affiliation": {},
+                "email": ""
+            },
+            {
+                "first": "Michele",
+                "middle": [],
+                "last": "Camero",
+                "suffix": "",
+                "affiliation": {},
+                "email": ""
+            },
+            {
+                "first": "Francesco",
+                "middle": [],
+                "last": "Cirone",
+                "suffix": "",
+                "affiliation": {},
+                "email": ""
+            },
+            {
+                "first": "Canio",
+                "middle": [],
+                "last": "Buonavoglia",
+                "suffix": "",
+                "affiliation": {},
+                "email": ""
+            }
+        ]
+    },
+    "abstract": [
+        {
+            "text": "The membrane (M) protein of canine coronavirus (CCoV) was cloned and expressed in E. coli . The purified recombinant protein was then evaluated for its antigenicity and reliability in an enzyme-linked immunosorbent assay (ELISA) for detection of CCoV antibodies in dog sera. Fifty serum samples, screened previously by whole virus ELISA and Western blotting, were tested. When the performance of the new test was compared with those of whole virus ELISA and Western blotting, an excellent correlation was found with the latter two assays. The ELISA based on recombinant M protein represents an alternative and valid test for detection of antibodies to CCoV in dog sera. #",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Abstract"
+        }
+    ],
+    "body_text": [
+        {
+            "text": "Canine coronavirus (CCoV) belongs to one of the major antigenic group of coronaviruses (Siddell et al., 1983; Spaan et al., 1988) and is related closely to transmissible gastroenteritis virus of pigs, porcine epidemic diarrhoea virus, feline coronaviruses and human coronavirus 229E (Sanchez et al., 1990; Horsburgh et al., 1992; Wesseling et al., 1994) . CCoV may cause sporadic outbreaks of vomiting and diarrhoeal disease in dogs and the feces are the primary source of infection. CCoV infection is usually asymptomatic and disease signs vary greatly, but they occur most commonly in young pups (Carmichael and Binn, 1981) .",
+            "cite_spans": [
+                {
+                    "start": 87,
+                    "end": 109,
+                    "text": "(Siddell et al., 1983;",
+                    "ref_id": "BIBREF15"
+                },
+                {
+                    "start": 110,
+                    "end": 129,
+                    "text": "Spaan et al., 1988)",
+                    "ref_id": "BIBREF16"
+                },
+                {
+                    "start": 283,
+                    "end": 305,
+                    "text": "(Sanchez et al., 1990;",
+                    "ref_id": "BIBREF13"
+                },
+                {
+                    "start": 306,
+                    "end": 329,
+                    "text": "Horsburgh et al., 1992;",
+                    "ref_id": "BIBREF6"
+                },
+                {
+                    "start": 330,
+                    "end": 353,
+                    "text": "Wesseling et al., 1994)",
+                    "ref_id": "BIBREF17"
+                },
+                {
+                    "start": 598,
+                    "end": 625,
+                    "text": "(Carmichael and Binn, 1981)",
+                    "ref_id": "BIBREF1"
+                }
+            ],
+            "ref_spans": [],
+            "section": "Introduction"
+        },
+        {
+            "text": "The coronavirus genome consists of a positive-sense, single-stranded RNA molecule that is 20\u00c1/30 kb in size (Murphy, 1996; Siddell, 1995) . Virions are enveloped, pleomorphic, 80 \u00c1/220 nm in diameter and they have club-shaped peplomers. According to the generally accepted model of coronavirus structure, viral genomic RNA is complexed with a phosphorylated nucleocapsid protein, N protein, in a helical configuration. The surrounding envelope contains three viral proteins. The trimeric spike (S) protein, the major inducer of virus-neutralizing antibodies (Gebauer et al., 1991) , forms characteristic viral peplomers which are involved in virus attachment on the cell receptors and in virus cell fusion (de Hann et al., 2000) . The small membrane protein (E), recognized recently as a structural component of the coronavirus, has been found to be important for assembly of the viral envelope (Raamsman et al., 2000) . The membrane (M) glycoprotein is the most abundant structural protein; it spans the membrane bilayer three times, leaving a short NH 2 -terminal domain outside the virus and a long COOH terminus inside the virion (Rottier, 1995) . The M protein induces antibody-dependent complement-mediated virus neutralization (Woods et al., 1987) . Although its function is not completely clear, M seems to play a key role in virus assembly and budding.",
+            "cite_spans": [
+                {
+                    "start": 108,
+                    "end": 122,
+                    "text": "(Murphy, 1996;",
+                    "ref_id": "BIBREF8"
+                },
+                {
+                    "start": 123,
+                    "end": 137,
+                    "text": "Siddell, 1995)",
+                    "ref_id": "BIBREF14"
+                },
+                {
+                    "start": 558,
+                    "end": 580,
+                    "text": "(Gebauer et al., 1991)",
+                    "ref_id": "BIBREF5"
+                },
+                {
+                    "start": 706,
+                    "end": 728,
+                    "text": "(de Hann et al., 2000)",
+                    "ref_id": "BIBREF2"
+                },
+                {
+                    "start": 895,
+                    "end": 918,
+                    "text": "(Raamsman et al., 2000)",
+                    "ref_id": "BIBREF11"
+                },
+                {
+                    "start": 1134,
+                    "end": 1149,
+                    "text": "(Rottier, 1995)",
+                    "ref_id": "BIBREF12"
+                },
+                {
+                    "start": 1234,
+                    "end": 1254,
+                    "text": "(Woods et al., 1987)",
+                    "ref_id": "BIBREF18"
+                }
+            ],
+            "ref_spans": [],
+            "section": "Introduction"
+        },
+        {
+            "text": "In this report, cloning and expression of the recombinant M protein (rMP) of CCoV in E. coli system and its use in an ELISA to detect CCoV antibodies are described.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Introduction"
+        },
+        {
+            "text": "The coding region for the M protein was amplified by 30 cycles of PCR using 10 ng of random-primed reversetranscribed RNA isolated from a CCoV strain of a dog with enteritis (Buonavoglia et al., 1994) . The sequences of the primers employed in the PCR reaction were 5?-TTCGGATCCAAGATTTTGTTAATACTAGC-3? (forward primer) and 5?-ACCAAGCTTTTATAC-CATGTGTAATAATTTTTCT-3? (reverse primer), which carried a BamHI and an HindIII restriction site, respectively. The amplified products, 0.8 kb in length, were gel purified and cloned into the pQE30 expression vector (Qiagen), and the constructs transformed into E. coli TOP10F cells (Invitrogen). Transformants selected on 2 )/TY plates containing ampicillin (100 mg/ml) were screened by direct colony PCR, and by restriction digestion of purified plasmids. The sequence of inserts was verified. The sequence data obtained were compared with the sequence of the M gene of CCoV strain Insavc (accession number D13096). The alignment performed by CUSTAL W software revealed more than 90% of nucleotide identity between the two sequences.",
+            "cite_spans": [
+                {
+                    "start": 174,
+                    "end": 200,
+                    "text": "(Buonavoglia et al., 1994)",
+                    "ref_id": "BIBREF0"
+                }
+            ],
+            "ref_spans": [],
+            "section": "Construction of the expression plasmid"
+        },
+        {
+            "text": "The encoded protein had an additional N-terminal tail of arg \u00c1/gly \u00c1/ser \u00c1/his \u00c1/his \u00c1/his \u00c1/his \u00c1/his encoded by the expression vector followed by a glycine and serine residue encoded by the BamHI restriction site sequence.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Construction of the expression plasmid"
+        },
+        {
+            "text": "The expression of M protein in the bacterial cytosol was accomplished in E. coli M15[pREP4] (Qiagen). A colony of cells of E. coli M15[pREP4] transformed recently was inoculated into 1 l of 2)/TY in presence of ampicillin, at 100 mg/ml and kanamycin, at 25 mg/ml, and culture was grown at 30 8C until the optical density of the culture at 600 nm reached 1.2. Then isopropyl-b-D-thiogalactopyranoside (IPTG) was added to a final concentration of 1.5 mM to induce the expression of rMP, and the incubation was continued for further 8 h. Control cultures containing the empty pQE30 vector were processed in parallel. The rMP accumulated in the bacteria as inclusion bodies. The cells were harvested by centrifugation and used for the preparation of inclusion bodies (Fiermonte et al., 1993) . Cells from a liter of culture were resuspended in 20 ml of a buffer containing Hepes-NaOH 10 mM and 50 mM NaCl, pH 7, disrupted in a French press and centrifuged at 4 8C at 27 000)/g for 15 min. The pellet was resuspended in the same buffer and fractionated by centrifugation at 131 000)/g for 4.5 h at 4 8C through a step gradient, 10 ml of 40%, 15 ml of 53% and 4 ml of 72% (w/v) solutions of sucrose dissolved in the buffer. The inclusion bodies gathered as a grey band at the interface between the 53 and 72% layers. They were recovered and washed with 20 ml of buffer containing 3% of Triton-X114 and centrifuged at 27 000)/g for 15 min at 4 8C. The pellet was resuspended in a further 2 ml of buffer without detergent. Inclusion bodies, membrane fractions and samples taken from cultures at various point of growth were examined by PAGE in the presence of SDS on 17.5% gels (Laemmli, 1970) . The proteins either were stained with Coomassie Blue dye or were transferred to polyvinylidene difluoride membrane (PVDF Immobilon P, pore size 0.45 mm) to determine the Nterminal sequence of the recombinant M protein. To eliminate few bacterial contaminants present in the inclusion bodies, the rMP was gel purified by electroelution.",
+            "cite_spans": [
+                {
+                    "start": 763,
+                    "end": 787,
+                    "text": "(Fiermonte et al., 1993)",
+                    "ref_id": "BIBREF4"
+                },
+                {
+                    "start": 1670,
+                    "end": 1685,
+                    "text": "(Laemmli, 1970)",
+                    "ref_id": "BIBREF7"
+                }
+            ],
+            "ref_spans": [],
+            "section": "Expression and purification of the recombinant protein"
+        },
+        {
+            "text": "Fifty canine serum samples were used in this study. The serum samples had been already determined to be as either positive (n.34) or negative (n.16) to CCoV antibodies by routine ELISA and Western blotting .",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Dog sera"
+        },
+        {
+            "text": "The immunoblotting was carried out as described previously . Briefly, purified rMP was subjected to SDS-PAGE and transferred to PVDF membranes. The membranes were blocked overnight at 4 8C using a 5% solution of non-fat dry milk (NFDM) (Blotting Grade Blocker, Biorad), then incubated for 2 h at room temperature with a monoclonal antibody directed against CCoV M protein and with both a CCoV positive and a CCoV negative dog serum. After washing in Tris Buffered Saline (TBS; Tris 25 mM, NaCl 200 mM, pH 7.4) containing 0.05% Tween 20 (TBS-TM), the membranes were incubated with peroxidase labeled goat anti-mouse IgG and with peroxidase labeled goat anti dog IgG. 3,3?-diaminobenzidine tetrahydrochloride (DAB, Sigma) was used to visualize the reaction.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Western blotting"
+        },
+        {
+            "text": "ELISA was carried out as described previously except for the antigen preparation . Initial assays were carried out to determine the optimal rMP and serum working dilutions. Plates were coated with serial dilutions of rMP (5 \u00c1/200 ng/well) and tested with 2-fold dilutions (from 1:50 to 1:400) of a positive or negative dog sera. In subsequent assays, to determine sensitivity and specificity, plates were coated with the predetermined antigen concentration and serum dilutions.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "ELISA"
+        },
+        {
+            "text": "Briefly, ELISA plates were coated at 4 8C overnight with rMP (100 ng/well) suspended in Carbonate buffer (15 mM Na 2 CO 3 , 35 mM NaHCO 3 , [pH 9.6]). Then each well of the plate was incubated with blocking solution (0.2% gelatin in Carbonate buffer) for 90 min at 37 8C. The wells were washed four times with phosphate-buffered saline (PBS) containing 0.05% Tween 20 (PBS-T). One hundred microliters of the primary antibody (dog sera) diluted 1:50 in PBS-T was added in duplicate and the plates were incubated for 90 min at 37 8C. After four washes with PBS-T, plates were then incubated with goat antidog IgG antibody labeled with peroxidase for 1 h at 37 8C. ABTS [2,2?-Azino-di-(3ethylbenzothiazoline sulfonate)] substrate (100 ml/well) was added after four washes with PBS-T and the wells were incubated for 25 min at room temperature. Fifty microliters of stop buffer (SDS 1%) was added to each well and the optical density (OD) was read at 405 nm. The cutoff value was defined as the mean OD plus three standard deviations calculated from the 16 negative samples used as control.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "ELISA"
+        },
+        {
+            "text": "The coding sequence for the M protein of CCoV was cloned in the pQE30 expression vector and the recombinant protein with a polyhistidine tag at the Nterminus was produced as inclusion bodies in the bacterial cytosol.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Results"
+        },
+        {
+            "text": "After SDS-PAGE and Coomassie blue staining, a protein band corresponding to the expected molecular mass of 30 kDa was revealed in IPTG-induced culture (Fig. 1, lane 2) and in the inclusion bodies fraction (not shown), which was not present either in the culture before the induction (Fig. 1, lanes 1) or in the control culture before and after the induction (not shown). The recombinant-tagged protein was detected by Western blotting using anti His tag monoclonal antibody. It was purified by electroelution and the purity was confirmed by single banding in SDS-PAGE (Fig. 1, lane 3) . The Nterminal sequence arg \u00c1/gly \u00c1/ser \u00c1/his \u00c1/his \u00c1/his \u00c1/his \u00c1/his \u00c1/ gly \u00c1/ser \u00c1/lys \u00c1/ile \u00c1/leu \u00c1/leu \u00c1/ile \u00c1/leu \u00c1/ala \u00c1/cys\u00c1/ala also confirmed the authenticity of the rMP.",
+            "cite_spans": [],
+            "ref_spans": [
+                {
+                    "start": 151,
+                    "end": 167,
+                    "text": "(Fig. 1, lane 2)",
+                    "ref_id": "FIGREF0"
+                },
+                {
+                    "start": 283,
+                    "end": 300,
+                    "text": "(Fig. 1, lanes 1)",
+                    "ref_id": "FIGREF0"
+                },
+                {
+                    "start": 568,
+                    "end": 584,
+                    "text": "(Fig. 1, lane 3)",
+                    "ref_id": "FIGREF0"
+                }
+            ],
+            "section": "Results"
+        },
+        {
+            "text": "In order to test the reactivity of rMP, Western blotting was carried out using a monoclonal antibody against the M protein of CCoV and both a CCoV positive and a CCoV negative dog serum. The protein band of 30 kDa showed a strong and specific reaction with the monoclonal antibody as well as with the CCoV positive serum whereas it was not recognized by the CCoV negative serum.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Results"
+        },
+        {
+            "text": "To test the use of a rMP-based ELISA test, 34 positive dog sera and 16 negative sera were used. The mean and the standard deviation obtained using 16 CCoV negative sera were 0.017 and 0.00325, respectively. Therefore, the cutoff value of ODs was determined as 0.027. Thirty-four canine sera which tested positive by whole CCoV ELISA and Western blotting were determined to be also positive by rMP ELISA. Since the results of rMP-ELISA correlated with the results of the reference tests (whole virus ELISA and Western blotting), the relative sensitivity and specificity resulted unchanged.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Results"
+        },
+        {
+            "text": "For detection of CCoV antibodies, several tests have been employed.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Discussion"
+        },
+        {
+            "text": "The neutralization test is tedious to carry out and, as reported previously , it may fail to detect antibodies in some dog sera positive to CCoV. ELISA with whole virus was found more sensitive than the neutralization test, but the antigen prepared from CCoV infected cells may yield variable results depending on the method of antigen preparation.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Discussion"
+        },
+        {
+            "text": "In this study, the rMp of CCoV was evaluated for its antigenicity and reliability in an ELISA for CCoV antibodies detection. Previous studies had demonstrated that, after CCoV infection, antibodies to the M protein are detected constantly in seropositive dogs . Based on these findings, we cloned and expressed the M protein of CCoV in E. coli . The rMP was similar antigenically to the natural protein as evidenced by its specific reactivity with both monoclonal antibody and dog positive control serum in Western blotting analysis.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Discussion"
+        },
+        {
+            "text": "An ELISA with rMP was developed and then evaluated as an alternative diagnostic method. When the performance of the new test was compared with those using whole virus ELISA and Western blotting, it was found that the rMP-based ELISA correlated very well with the other assays since both gave concordant results.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Discussion"
+        },
+        {
+            "text": "These findings indicate that the rMP may be useful as an ELISA antigen for detecting specific antibodies to CCoV in canine sera and offers several advantages over the cell-prepared CCoV antigen. High levels of M protein expression may be obtained in the E. coli system making the rMP-based ELISA easy to prepare and standardize. Also, the availability of large amounts of CCoV rMP offers an opportunity to better investigate the biological properties of the M protein during CCoV infection as well as its immunological role.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Discussion"
+        }
+    ],
+    "bib_entries": {
+        "BIBREF0": {
+            "ref_id": "b0",
+            "title": "L'infezione da coronavirus del cane: indagine sulla presenza del virus in Italia",
+            "authors": [
+                {
+                    "first": "C",
+                    "middle": [],
+                    "last": "Buonavoglia",
+                    "suffix": ""
+                },
+                {
+                    "first": "F",
+                    "middle": [],
+                    "last": "Marsilio",
+                    "suffix": ""
+                },
+                {
+                    "first": "A",
+                    "middle": [],
+                    "last": "Cavalli",
+                    "suffix": ""
+                },
+                {
+                    "first": "P",
+                    "middle": [
+                        "G"
+                    ],
+                    "last": "Tiscar",
+                    "suffix": ""
+                }
+            ],
+            "year": 1994,
+            "venue": "Not. Farm. Vet. Nr",
+            "volume": "",
+            "issn": "",
+            "pages": "",
+            "other_ids": {}
+        },
+        "BIBREF1": {
+            "ref_id": "b1",
+            "title": "New canine enteric viral infection",
+            "authors": [
+                {
+                    "first": "L",
+                    "middle": [
+                        "E"
+                    ],
+                    "last": "Carmichael",
+                    "suffix": ""
+                },
+                {
+                    "first": "L",
+                    "middle": [
+                        "N"
+                    ],
+                    "last": "Binn",
+                    "suffix": ""
+                }
+            ],
+            "year": 1981,
+            "venue": "Adv. Vet. Sci",
+            "volume": "25",
+            "issn": "",
+            "pages": "1--37",
+            "other_ids": {}
+        },
+        "BIBREF2": {
+            "ref_id": "b2",
+            "title": "Assembly of the coronavirus envelope: homotypic interactions between the M proteins",
+            "authors": [
+                {
+                    "first": "C",
+                    "middle": [
+                        "A"
+                    ],
+                    "last": "De Hann",
+                    "suffix": ""
+                },
+                {
+                    "first": "H",
+                    "middle": [],
+                    "last": "Vennema",
+                    "suffix": ""
+                },
+                {
+                    "first": "P",
+                    "middle": [
+                        "J"
+                    ],
+                    "last": "Rottier",
+                    "suffix": ""
+                }
+            ],
+            "year": 2000,
+            "venue": "J. Virol",
+            "volume": "74",
+            "issn": "",
+            "pages": "4967--4978",
+            "other_ids": {}
+        },
+        "BIBREF3": {
+            "ref_id": "b3",
+            "title": "Evaluation of antibody response to canine coronavirus infection in dogs by Western blotting analysis",
+            "authors": [
+                {
+                    "first": "G",
+                    "middle": [],
+                    "last": "Elia",
+                    "suffix": ""
+                },
+                {
+                    "first": "N",
+                    "middle": [],
+                    "last": "Decaro",
+                    "suffix": ""
+                },
+                {
+                    "first": "A",
+                    "middle": [],
+                    "last": "Tinelli",
+                    "suffix": ""
+                },
+                {
+                    "first": "V",
+                    "middle": [],
+                    "last": "Martella",
+                    "suffix": ""
+                },
+                {
+                    "first": "A",
+                    "middle": [],
+                    "last": "Pratelli",
+                    "suffix": ""
+                },
+                {
+                    "first": "C",
+                    "middle": [],
+                    "last": "Buonavoglia",
+                    "suffix": ""
+                }
+            ],
+            "year": 2002,
+            "venue": "New Microbiol",
+            "volume": "25",
+            "issn": "3",
+            "pages": "275--280",
+            "other_ids": {}
+        },
+        "BIBREF4": {
+            "ref_id": "b4",
+            "title": "Abundant bacterial expression and reconstitution of an intrinsic membrane-transport protein from bovine mitochondria",
+            "authors": [
+                {
+                    "first": "G",
+                    "middle": [],
+                    "last": "Fiermonte",
+                    "suffix": ""
+                },
+                {
+                    "first": "J",
+                    "middle": [
+                        "E"
+                    ],
+                    "last": "Walker",
+                    "suffix": ""
+                },
+                {
+                    "first": "F",
+                    "middle": [],
+                    "last": "Palmieri",
+                    "suffix": ""
+                }
+            ],
+            "year": 1993,
+            "venue": "Biochem. J",
+            "volume": "294",
+            "issn": "",
+            "pages": "293--299",
+            "other_ids": {}
+        },
+        "BIBREF5": {
+            "ref_id": "b5",
+            "title": "Residues involved in the formation of the antigenic sites of the S protein of transmissible gastroenteritis coronavirus",
+            "authors": [
+                {
+                    "first": "F",
+                    "middle": [],
+                    "last": "Gebauer",
+                    "suffix": ""
+                },
+                {
+                    "first": "W",
+                    "middle": [
+                        "A P"
+                    ],
+                    "last": "Posthumus",
+                    "suffix": ""
+                },
+                {
+                    "first": "I",
+                    "middle": [],
+                    "last": "Correa",
+                    "suffix": ""
+                },
+                {
+                    "first": "C",
+                    "middle": [],
+                    "last": "Su\u00f1 \u00c9",
+                    "suffix": ""
+                },
+                {
+                    "first": "C",
+                    "middle": [
+                        "M"
+                    ],
+                    "last": "S\u00e1nchez",
+                    "suffix": ""
+                },
+                {
+                    "first": "C",
+                    "middle": [],
+                    "last": "Smerdou",
+                    "suffix": ""
+                },
+                {
+                    "first": "J",
+                    "middle": [
+                        "A"
+                    ],
+                    "last": "Lenstra",
+                    "suffix": ""
+                },
+                {
+                    "first": "R",
+                    "middle": [],
+                    "last": "Meloen",
+                    "suffix": ""
+                },
+                {
+                    "first": "L",
+                    "middle": [],
+                    "last": "Enjuanes",
+                    "suffix": ""
+                }
+            ],
+            "year": 1991,
+            "venue": "Virology",
+            "volume": "183",
+            "issn": "",
+            "pages": "225--238",
+            "other_ids": {}
+        },
+        "BIBREF6": {
+            "ref_id": "b6",
+            "title": "Analysis of a 9.6 kb sequence from the 3? end of canine coronavirus genomic RNA",
+            "authors": [
+                {
+                    "first": "B",
+                    "middle": [
+                        "C"
+                    ],
+                    "last": "Horsburgh",
+                    "suffix": ""
+                },
+                {
+                    "first": "I",
+                    "middle": [],
+                    "last": "Brierley",
+                    "suffix": ""
+                },
+                {
+                    "first": "T",
+                    "middle": [
+                        "D K"
+                    ],
+                    "last": "Brown",
+                    "suffix": ""
+                }
+            ],
+            "year": 1992,
+            "venue": "J. Gen. Virol",
+            "volume": "73",
+            "issn": "",
+            "pages": "2849--2862",
+            "other_ids": {}
+        },
+        "BIBREF7": {
+            "ref_id": "b7",
+            "title": "Cleavage of structural proteins during the assembly of the head of bacteriophage T4",
+            "authors": [
+                {
+                    "first": "U",
+                    "middle": [
+                        "K"
+                    ],
+                    "last": "Laemmli",
+                    "suffix": ""
+                }
+            ],
+            "year": 1970,
+            "venue": "Nature",
+            "volume": "227",
+            "issn": "",
+            "pages": "680--685",
+            "other_ids": {}
+        },
+        "BIBREF8": {
+            "ref_id": "b8",
+            "title": "Virus taxonomy",
+            "authors": [
+                {
+                    "first": "F",
+                    "middle": [
+                        "A"
+                    ],
+                    "last": "Murphy",
+                    "suffix": ""
+                }
+            ],
+            "year": 1996,
+            "venue": "Fundamental Virology",
+            "volume": "1",
+            "issn": "",
+            "pages": "",
+            "other_ids": {}
+        },
+        "BIBREF10": {
+            "ref_id": "b10",
+            "title": "Prevalence of canine coronavirus antibodies by an enzyme-linked immunosorbent assay in dogs in the south of Italy",
+            "authors": [
+                {
+                    "first": "A",
+                    "middle": [],
+                    "last": "Pratelli",
+                    "suffix": ""
+                },
+                {
+                    "first": "G",
+                    "middle": [],
+                    "last": "Elia",
+                    "suffix": ""
+                },
+                {
+                    "first": "V",
+                    "middle": [],
+                    "last": "Martella",
+                    "suffix": ""
+                },
+                {
+                    "first": "A",
+                    "middle": [],
+                    "last": "Palmieri",
+                    "suffix": ""
+                },
+                {
+                    "first": "F",
+                    "middle": [],
+                    "last": "Cirone",
+                    "suffix": ""
+                },
+                {
+                    "first": "A",
+                    "middle": [],
+                    "last": "Tinelli",
+                    "suffix": ""
+                },
+                {
+                    "first": "M",
+                    "middle": [],
+                    "last": "Corrente",
+                    "suffix": ""
+                },
+                {
+                    "first": "C",
+                    "middle": [],
+                    "last": "Buonavoglia",
+                    "suffix": ""
+                }
+            ],
+            "year": 2002,
+            "venue": "J. Virol. Methods",
+            "volume": "102",
+            "issn": "",
+            "pages": "67--71",
+            "other_ids": {}
+        },
+        "BIBREF11": {
+            "ref_id": "b11",
+            "title": "Characterization of the coronavirus mouse hepatitis virus strain A59 small membrane protein",
+            "authors": [
+                {
+                    "first": "M",
+                    "middle": [
+                        "J B"
+                    ],
+                    "last": "Raamsman",
+                    "suffix": ""
+                },
+                {
+                    "first": "J",
+                    "middle": [
+                        "K"
+                    ],
+                    "last": "Locker",
+                    "suffix": ""
+                },
+                {
+                    "first": "A",
+                    "middle": [],
+                    "last": "De Hooge",
+                    "suffix": ""
+                },
+                {
+                    "first": "A",
+                    "middle": [
+                        "A F"
+                    ],
+                    "last": "De Vries",
+                    "suffix": ""
+                },
+                {
+                    "first": "G",
+                    "middle": [],
+                    "last": "Griffiths",
+                    "suffix": ""
+                },
+                {
+                    "first": "H",
+                    "middle": [],
+                    "last": "Vennema",
+                    "suffix": ""
+                },
+                {
+                    "first": "P",
+                    "middle": [
+                        "J M"
+                    ],
+                    "last": "Rottier",
+                    "suffix": ""
+                }
+            ],
+            "year": 2000,
+            "venue": "Eur. J. Virol",
+            "volume": "74",
+            "issn": "",
+            "pages": "2333--2342",
+            "other_ids": {}
+        },
+        "BIBREF12": {
+            "ref_id": "b12",
+            "title": "The coronavirus membrane protein",
+            "authors": [
+                {
+                    "first": "P",
+                    "middle": [
+                        "J M"
+                    ],
+                    "last": "Rottier",
+                    "suffix": ""
+                }
+            ],
+            "year": 1995,
+            "venue": "The Coronaviridae",
+            "volume": "",
+            "issn": "",
+            "pages": "115--139",
+            "other_ids": {}
+        },
+        "BIBREF13": {
+            "ref_id": "b13",
+            "title": "Antigenic homology among coronaviruses related to transmissible gastroenteritis virus",
+            "authors": [
+                {
+                    "first": "C",
+                    "middle": [
+                        "M"
+                    ],
+                    "last": "Sanchez",
+                    "suffix": ""
+                },
+                {
+                    "first": "G",
+                    "middle": [],
+                    "last": "Jimenez",
+                    "suffix": ""
+                },
+                {
+                    "first": "M",
+                    "middle": [
+                        "D"
+                    ],
+                    "last": "Laviada",
+                    "suffix": ""
+                },
+                {
+                    "first": "I",
+                    "middle": [],
+                    "last": "Correa",
+                    "suffix": ""
+                },
+                {
+                    "first": "C",
+                    "middle": [],
+                    "last": "Sune",
+                    "suffix": ""
+                },
+                {
+                    "first": "M",
+                    "middle": [
+                        "J"
+                    ],
+                    "last": "Bullido",
+                    "suffix": ""
+                },
+                {
+                    "first": "F",
+                    "middle": [],
+                    "last": "Gebaues",
+                    "suffix": ""
+                },
+                {
+                    "first": "C",
+                    "middle": [],
+                    "last": "Smerdou",
+                    "suffix": ""
+                },
+                {
+                    "first": "P",
+                    "middle": [],
+                    "last": "Callebaut",
+                    "suffix": ""
+                },
+                {
+                    "first": "J",
+                    "middle": [
+                        "M"
+                    ],
+                    "last": "Escribano",
+                    "suffix": ""
+                },
+                {
+                    "first": "L",
+                    "middle": [],
+                    "last": "Enjuanes",
+                    "suffix": ""
+                }
+            ],
+            "year": 1990,
+            "venue": "Virology",
+            "volume": "174",
+            "issn": "",
+            "pages": "410--417",
+            "other_ids": {}
+        },
+        "BIBREF14": {
+            "ref_id": "b14",
+            "title": "The coronaviridae, an introduction",
+            "authors": [
+                {
+                    "first": "S",
+                    "middle": [
+                        "G"
+                    ],
+                    "last": "Siddell",
+                    "suffix": ""
+                }
+            ],
+            "year": 1995,
+            "venue": "The Coronaviridae",
+            "volume": "",
+            "issn": "",
+            "pages": "1--10",
+            "other_ids": {}
+        },
+        "BIBREF15": {
+            "ref_id": "b15",
+            "title": "The biology of coronaviruses",
+            "authors": [
+                {
+                    "first": "S",
+                    "middle": [
+                        "G"
+                    ],
+                    "last": "Siddell",
+                    "suffix": ""
+                },
+                {
+                    "first": "H",
+                    "middle": [],
+                    "last": "Wege",
+                    "suffix": ""
+                },
+                {
+                    "first": "V",
+                    "middle": [],
+                    "last": "Meulen",
+                    "suffix": ""
+                }
+            ],
+            "year": 1983,
+            "venue": "J. Gen. Virol",
+            "volume": "64",
+            "issn": "",
+            "pages": "761--776",
+            "other_ids": {}
+        },
+        "BIBREF16": {
+            "ref_id": "b16",
+            "title": "Coronaviruses: structure and genome expression",
+            "authors": [
+                {
+                    "first": "W",
+                    "middle": [],
+                    "last": "Spaan",
+                    "suffix": ""
+                },
+                {
+                    "first": "D",
+                    "middle": [],
+                    "last": "Cavanagh",
+                    "suffix": ""
+                },
+                {
+                    "first": "M",
+                    "middle": [
+                        "C"
+                    ],
+                    "last": "Horzinek",
+                    "suffix": ""
+                }
+            ],
+            "year": 1988,
+            "venue": "J. Gen. Virol",
+            "volume": "69",
+            "issn": "",
+            "pages": "2939--2952",
+            "other_ids": {}
+        },
+        "BIBREF17": {
+            "ref_id": "b17",
+            "title": "Nucleotide sequence and expression of the spike (S) gene of canine coronavirus and comparison with the S proteins of feline and porcine coronaviruses",
+            "authors": [
+                {
+                    "first": "J",
+                    "middle": [
+                        "G"
+                    ],
+                    "last": "Wesseling",
+                    "suffix": ""
+                },
+                {
+                    "first": "H",
+                    "middle": [],
+                    "last": "Vennema",
+                    "suffix": ""
+                },
+                {
+                    "first": "G",
+                    "middle": [],
+                    "last": "Godeke",
+                    "suffix": ""
+                },
+                {
+                    "first": "M",
+                    "middle": [
+                        "C"
+                    ],
+                    "last": "Horzinek",
+                    "suffix": ""
+                },
+                {
+                    "first": "P",
+                    "middle": [
+                        "J M"
+                    ],
+                    "last": "Rottier",
+                    "suffix": ""
+                }
+            ],
+            "year": 1994,
+            "venue": "J. Gen. Virol",
+            "volume": "75",
+            "issn": "",
+            "pages": "1789--1794",
+            "other_ids": {}
+        },
+        "BIBREF18": {
+            "ref_id": "b18",
+            "title": "Complement-dependent neutralization of transmissible gastroenteritis virus by monoclonal antibodies",
+            "authors": [
+                {
+                    "first": "R",
+                    "middle": [
+                        "D"
+                    ],
+                    "last": "Woods",
+                    "suffix": ""
+                },
+                {
+                    "first": "R",
+                    "middle": [],
+                    "last": "Wesley",
+                    "suffix": ""
+                },
+                {
+                    "first": "P",
+                    "middle": [
+                        "A"
+                    ],
+                    "last": "Kapke",
+                    "suffix": ""
+                }
+            ],
+            "year": 1987,
+            "venue": "Adv. Exp. Med. Biol",
+            "volume": "218",
+            "issn": "",
+            "pages": "493--500",
+            "other_ids": {}
+        }
+    },
+    "ref_entries": {
+        "FIGREF0": {
+            "text": "SDS-PAGE analysis of the expression of the rM protein in E. coli . Lanes 1 and 2: crude material from the bacterial cultures containing the pQE30 expression vectors with the cDNA insert encoding the M protein, before (lane 1) and after (lane 2) the induction. Lane 3: purified electroeluted rM protein. M, markers (phosphorylase b, serum albumin, ovalbumin, carbonic anhydrase, trypsin inhibitor and lysozyme).",
+            "latex": null,
+            "type": "figure"
+        }
+    },
+    "back_matter": [
+        {
+            "text": "This study was supported by grants from CEGBA (Centro di Eccellenza di genomica in Campo Biomedico e Agrario) and from the Italian Ministry of University and Scientific and Technological Research.",
+            "cite_spans": [],
+            "ref_spans": [],
+            "section": "Acknowledgements"
+        }
+    ]
+}

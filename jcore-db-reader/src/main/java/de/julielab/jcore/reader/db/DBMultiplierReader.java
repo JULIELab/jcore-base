@@ -1,11 +1,10 @@
 package de.julielab.jcore.reader.db;
 
+import de.julielab.costosys.cli.TableNotFoundException;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DBCIterator;
+import de.julielab.costosys.dbconnection.util.TableSchemaMismatchException;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
-import de.julielab.xmlData.cli.TableNotFoundException;
-import de.julielab.xmlData.dataBase.CoStoSysConnection;
-import de.julielab.xmlData.dataBase.DBCIterator;
-import de.julielab.xmlData.dataBase.util.TableSchemaMismatchException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.ducc.Workitem;
@@ -20,10 +19,10 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ResourceMetaData(name = "JCoRe Database Multiplier Reader", description = "A collection reader that receives the IDs of documents from a database table. " +
         "Additional tables may be specified which will, together with the IDs, be sent to a CAS multiplier extending " +
@@ -40,11 +39,9 @@ public class DBMultiplierReader extends DBSubsetReader {
     public final static String PARAM_ADDITIONAL_TABLE_SCHEMAS = SubsetReaderConstants.PARAM_ADDITIONAL_TABLE_SCHEMAS;
     public final static String PARAM_FETCH_IDS_PROACTIVELY = SubsetReaderConstants.PARAM_FETCH_IDS_PROACTIVELY;
     public static final String PARAM_SEND_CAS_TO_LAST = "SendCasToLast";
-
+    private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
     @ConfigurationParameter(name = PARAM_SEND_CAS_TO_LAST, mandatory = false, defaultValue = "false", description = "UIMA DUCC relevant parameter when using a CAS multiplier. When set to true, the worker CAS from the collection reader is forwarded to the last component in the pipeline. This can be used to send information about the progress to the CAS consumer in order to have it perform batch operations. For this purpose, a feature structure of type WorkItem from the DUCC library is added to the worker CAS. This feature structure has information about the current progress.")
     private boolean sendCasToLast;
-
-    private final static Logger log = LoggerFactory.getLogger(DBMultiplierReader.class);
     // Internal state fields
     private DBMultiplierReader.RetrievingThread retriever;
     private DBCIterator<Object[]> dataTableDocumentIds;
@@ -99,20 +96,15 @@ public class DBMultiplierReader extends DBSubsetReader {
         rowbatch.addToIndexes();
 
         if (sendCasToLast) {
-            try {
-                Workitem workitem = new Workitem(jCas);
-                // Send the work item CAS also to the consumer. Normally, only the CASes emitted by the CAS multiplier
-                // will be routed to the consumer. We do this to let the consumer know that the work item has been
-                // finished.
-                workitem.setSendToLast(true);
-                workitem.setBlockindex(processedDocuments / batchSize);
-                if (!hasNext())
-                    workitem.setLastBlock(true);
-                workitem.addToIndexes();
-            } catch (IOException e) {
-                log.error("Error occurred while creating Workitem feature structure", e);
-                throw new CollectionException(e);
-            }
+            Workitem workitem = new Workitem(jCas);
+            // Send the work item CAS also to the consumer. Normally, only the CASes emitted by the CAS multiplier
+            // will be routed to the consumer. We do this to let the consumer know that the work item has been
+            // finished.
+            workitem.setSendToLast(true);
+            workitem.setBlockindex(processedDocuments / batchSize);
+            if (!hasNext())
+                workitem.setLastBlock(true);
+            workitem.addToIndexes();
         }
     }
 
@@ -122,7 +114,7 @@ public class DBMultiplierReader extends DBSubsetReader {
      *
      * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
      */
-    public boolean hasNext() throws IOException, CollectionException {
+    public boolean hasNext() {
         boolean hasNext = this.hasNext;
         if (retriever != null)
             hasNext = !retriever.getDocumentIds().isEmpty();
@@ -238,17 +230,9 @@ public class DBMultiplierReader extends DBSubsetReader {
                 try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
                     log.trace("Using connection {} to retrieveAndMark", ignored.getConnection());
                     ids = dbc.retrieveAndMark(tableName, getClass().getSimpleName(), hostName, pid, limit, selectionOrder);
-                }
-                if (log.isTraceEnabled()) {
-                    List<String> idStrings = new ArrayList<>();
-                    for (Object[] o : ids) {
-                        List<String> pkElements = new ArrayList<>();
-                        for (Object object : o) {
-                            pkElements.add(String.valueOf(object));
-                        }
-                        idStrings.add(StringUtils.join(pkElements, "-"));
+                    if (log.isTraceEnabled()) {
+                        log.trace("Retrieved the following IDs from the database: {}", ids.stream().map(Arrays::toString).collect(Collectors.joining(", ")));
                     }
-                    log.trace("Reserved the following document IDs for processing: " + idStrings);
                 }
                 numberFetchedDocIDs += ids.size();
                 log.debug("Retrieved {} document IDs to fetch from the database.", ids.size());

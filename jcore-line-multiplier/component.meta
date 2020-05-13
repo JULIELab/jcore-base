@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "multiplier"
+    ],
+    "description": "A multiplier that splits files into lines.",
+    "descriptors": [
+        {
+            "category": "multiplier",
+            "location": "de.julielab.jcore.multiplier.line.desc.jcore-line-multiplier-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-line-multiplier",
+        "groupId": "de.julielab",
+        "version": "2.5.1-SNAPSHOT"
+    },
+    "name": "JCoRe Line Multiplier"
+}

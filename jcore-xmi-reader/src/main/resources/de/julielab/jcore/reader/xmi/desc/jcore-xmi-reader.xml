@@ -6,8 +6,8 @@
     <name>XmiCollectionReader</name>
     <description>A CollectionReader which reads CAS data stored as XMI files from the file system. The reader grounds on IBM's XmiCollectionReader delivered with older versions of UIMA and has been extended by the Julie Lab team at the University of Jena.
 This XMI reader is capable of reading (g)zipped XMI files and is able to recursively search subdirectories of a delivered root directory for XMI files.</description>
-    <version>2.4.0</version>
-    <vendor />
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>InputDir</name>

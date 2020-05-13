@@ -218,7 +218,7 @@ public class Tokenizer {
 	 * @return an ArrayList of Unit objects containing the predicted label
 	 */
 	public ArrayList<Unit> predict(final String sentence) {
-		LOGGER.debug("predict() - before pedicting labelss ...");
+		LOGGER.debug("predict() - before pedicting labels ...");
 		if ((trained == false) || (model == null))
 			throw new IllegalStateException(
 					"No model available. Train or load trained model first.");

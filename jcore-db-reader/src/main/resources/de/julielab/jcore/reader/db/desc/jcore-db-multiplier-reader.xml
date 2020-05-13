@@ -10,6 +10,7 @@
             sent by this reader. The component leverages the corpus storage system (CoStoSys) for this purpose and is
             part of the Jena Document Information System, JeDIS.
         </description>
+        <version>2.5.1-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
                 <name>ResetTable</name>
@@ -183,5 +184,5 @@
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    <version>2.4.0</version></processingResourceMetaData>
+    </processingResourceMetaData>
 </collectionReaderDescription>

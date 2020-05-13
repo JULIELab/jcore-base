@@ -24,15 +24,19 @@ public class Unit {
 	public int begin; // start offset
 	public int end;  // end offset
 	public String rep; // string representation of this unit
-	public boolean isTokenInternal;
+	public boolean isTokenInternal; // whether or not this potential sentence boundary is located within a continuous string, i.e. not surrounded by whitespaces
+	public final boolean beforeWs; // whether there is a whitespace before this unit in the original text line
+	public final boolean afterWs; // whether there is a whitespace after this unit in the original text line
 	public String label;  // the predicted label
 	
 	
-	public Unit(int begin, int end, String rep, boolean isTokenInternal) {
+	public Unit(int begin, int end, String rep, boolean tokenInternal, boolean beforeWs, boolean afterWs) {
 		this.begin=begin;
 		this.end=end;
 		this.rep=rep;
-		this.isTokenInternal = isTokenInternal;
+		this.isTokenInternal = tokenInternal;
+		this.beforeWs = beforeWs;
+		this.afterWs = afterWs;
 		this.label="O";
 	}
 

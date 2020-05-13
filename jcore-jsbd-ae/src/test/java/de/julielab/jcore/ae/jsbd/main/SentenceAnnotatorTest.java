@@ -41,9 +41,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
-
 public class SentenceAnnotatorTest {
 
 	/**
@@ -264,6 +265,45 @@ public class SentenceAnnotatorTest {
 		Sentence sentence = JCasUtil.select(jCas, Sentence.class).iterator().next();
 		assertFalse(sentence.getCoveredText().endsWith("\u2029"));
 	}
+
+	@Test
+	public void testSplitAtNewlines() throws Exception {
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+
+		String ls = System.getProperty("line.separator");
+		jCas.setDocumentText("line1"+ls+"line2"+ls+"line3");
+
+		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+				"de/julielab/jcore/ae/jsbd/model/test-model.gz", SentenceAnnotator.PARAM_ALWAYS_SPLIT_NEWLINE, true);
+
+		jsbd.process(jCas.getCas());
+
+
+		Collection<String> sentences = JCasUtil.select(jCas, Sentence.class).stream().map(Annotation::getCoveredText).collect(Collectors.toList());
+		assertThat(sentences).containsExactly("line1", "line2", "line3");
+	}
+
+//
+//	@Test
+//	public void testmuh() throws Exception {
+//		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+//				"de.julielab.jcore.types.jcore-document-structure-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+//				"de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
+//
+//		XmiCasDeserializer.deserialize(new FileInputStream("/Users/faessler/uima-pipelines/jedis-doc-to-xmi/data/output-xmi/4768370.xmi"), jCas.getCas());
+//		JCasUtil.select(jCas, Sentence.class).forEach(Annotation::removeFromIndexes);
+//		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+//				"/Users/faessler/Coding/git/jcore-projects/jcore-jsbd-ae-biomedical-english/src/main/resources/de/julielab/jcore/ae/jsbd/model/jsbd-biomed-oversampled-abstracts-split-at-punctuation.mod.gz", SentenceAnnotator.PARAM_MAX_SENTENCE_LENGTH, 1000);
+//
+//		jsbd.process(jCas.getCas());
+//
+//		Set<Integer> set = new TreeSet<>();
+//		for (Sentence s : JCasUtil.select(jCas, Sentence.class)) {
+//			set.add(s.getEnd() - s.getBegin());
+//		}
+//		XmiCasSerializer.serialize(jCas.getCas(), new FileOutputStream("smallSentences.xmi"));
+//	}
 
 }
 

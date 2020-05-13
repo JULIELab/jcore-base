@@ -10,8 +10,8 @@
         base document and annotations that have been previously created and stored in separate tables. This is
         part of the Jena Document Information System, JeDIS.
     </description>
-    <version>2.4.0</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
     <types>
         <typeDescription>
             <name>de.julielab.jcore.types.casmultiplier.RowBatch</name>
@@ -75,6 +75,11 @@
                     <name>xercesAttributeBufferSize</name>
                     <description>For the XMI splitter. Allows to increase the internal buffer of the Xerces parser used for attribute values.</description>
                     <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>xmiMetaTablesPostgresSchema</name>
+                    <description>The Postgres schema which contains the table listing the XMI namespace declarations and the table listing the XMI annotation module tables.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
             </features>
         </typeDescription>

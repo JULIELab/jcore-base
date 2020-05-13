@@ -65,18 +65,37 @@ def process_directory(dirname):
                 modified = False
 
                 version_tag_name = "{http://uima.apache.org/resourceSpecifier}version"
+                desc_tag_name = "{http://uima.apache.org/resourceSpecifier}description"
 
                 if uima_file_type(root.tag):
                     parent = get_uima_version_parent(root)
                     if parent:
                         elem = parent.find(version_tag_name)
+                        descElem = parent.find(desc_tag_name)
                         if elem is not None:
                             old_version = elem.text
                             elem.text = new_version
+                            elem.tail = '\n        '
                             print("changed version", old_version, "to", new_version, "in", entry.path)
+                            versionIndex = list(parent).index(elem)
+                            if versionIndex > 2:
+                                parent.remove(elem)
+                                if descElem is not None:
+                                    descIndex = list(parent).index(descElem)
+                                    parent.insert(descIndex+1,elem)
+                                else:
+                                    parent.insert(1,elem)
                         else:
-                            elem = ET.SubElement(parent, version_tag_name)
+                            elem = ET.Element(version_tag_name)
+                            # This adds a newline after the new version element
+                            # and the indentation for the next line
+                            elem.tail = '\n        '
                             elem.text = new_version
+                            descIndex = list(parent).index(descElem)
+                            if descIndex > 0:
+                                parent.insert(descIndex+1,elem)
+                            else:
+                                parent.insert(1,elem)
                             print("added version", new_version, "in", entry.path)
                         modified = True
                     else:
@@ -87,7 +106,7 @@ def process_directory(dirname):
 
             except Exception as e:
                 print(e)
-                print("orrured in: ", entry.path)
+                print("occured in: ", entry.path)
 
 
 process_directory(path)

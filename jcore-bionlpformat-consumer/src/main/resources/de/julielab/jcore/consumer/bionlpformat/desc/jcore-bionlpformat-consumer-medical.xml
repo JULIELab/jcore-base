@@ -5,8 +5,8 @@
   <analysisEngineMetaData>
     <name>JCoRe BioNLP Format Event Consumer (Medical)</name>
     <description />
-    <version>2.4.0</version>
-    <vendor />
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>outDirectory</name>

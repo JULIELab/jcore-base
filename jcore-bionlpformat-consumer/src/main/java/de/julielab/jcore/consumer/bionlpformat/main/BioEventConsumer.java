@@ -36,7 +36,7 @@ public class BioEventConsumer extends JCasAnnotator_ImplBase {
     private File directory;
     @ConfigurationParameter(name = BIOEVENT_SERVICE_MODE_PARAM, mandatory = false)
     private boolean bioEventServiceMode;
-    @ConfigurationParameter(name = A2_FILE_PARAM, mandatory = false)
+    @ConfigurationParameter(name = A2_FILE_PARAM, mandatory = false, defaultValue = "ONLY_USED_IN_CONJUNCTION_WITH_BIOEVENTSERVICEMODE")
     private String a2FileString;
     File a2File;
     int id = 1;

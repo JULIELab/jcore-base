@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.reader.cord19.Cord19MultiplierReader</implementationName>
+    <processingResourceMetaData>
+        <name>JCoRe CORD-19 Multiplier Reader</name>
+        <description>This component reads file paths to JSON files and the CORD-19 (https://pages.semanticscholar.org/coronavirus-research) meta data file to send them to CAS multipliers.</description>
+        <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name>SearchRecursively</name>
+                <description>Whether or not to search for CORD-19 JSON files recursively in subdirectories of the input directory.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>InputDirectory</name>
+                <description>A directory that contains CORD-19 JSON files.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>MetadataFile</name>
+                <description>The path of the CORD-19 metadata file. This parameter can be omitted if the InputDirectory contains the file 'metadata.csv'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>SearchRecursively</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection />
+        <capabilities>
+            <capability>
+                <inputs />
+                <outputs>
+                    <type>de.julielab.jcore.types.casmultiplier.JCoReURI</type>
+                </outputs>
+                <languagesSupported />
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
+</collectionReaderDescription>

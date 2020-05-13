@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-@ResourceMetaData(name="JCore ElasticSearch Consumer")
+@ResourceMetaData(name = "JCore ElasticSearch Consumer")
 public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
 
     public static final String PARAM_URLS = "urls";
@@ -40,7 +40,7 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
     private String[] urls;
     @ConfigurationParameter(name = PARAM_INDEX_NAME, description = "The ElasticSearch index name to send the created documents to.")
     private String indexName;
-    @ConfigurationParameter(name = PARAM_TYPE, description = "The index type the generated documents should have. The types are removed from ElasticSearch with version 7 so this parameter is set to have the same value for all documents.")
+    @ConfigurationParameter(name = PARAM_TYPE, mandatory = false, description = "The index type the generated documents should have. The types are removed from ElasticSearch with version 7 and should omitted for ES >= 7.")
     private String type;
     @ConfigurationParameter(name = PARAM_BATCH_SIZE, mandatory = false, description = "The number of documents to be sent to ElasticSearch in a single batch. Defaults to 50.")
     private int batchSize;
@@ -129,12 +129,11 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
             throw new IllegalArgumentException("The document ID was not specified.");
         if (index == null)
             throw new IllegalArgumentException("No target index was specified for document " + docId + ".");
-        if (type == null)
-            throw new IllegalArgumentException(
-                    "No document type was specified. For single document creation from a CAS, this type must be set in the component descriptor. When using DocumentGenerators, the generators must set the document type to the documents they create.");
         Map<String, Object> indexMap = new HashMap<>();
         indexMap.put("_index", index);
-        indexMap.put("_type", type);
+        // Since ES7 there are no types. So types are now optional.
+        if (type != null)
+            indexMap.put("_type", type);
         indexMap.put("_id", docId);
         if (parentId != null && parentId.trim().length() > 0)
             indexMap.put("parent", parentId);

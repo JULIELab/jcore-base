@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jedis-parent</artifactId>
         <groupId>de.julielab</groupId>
-        <version>2.4.0</version>
+        <version>2.5.1-SNAPSHOT</version>
         <relativePath>../jedis-parent</relativePath>
     </parent>
     <artifactId>jcore-xmi-db-writer</artifactId>
@@ -33,41 +34,121 @@
             <artifactId>uima-ducc-user</artifactId>
             <version>${uima-ducc-version}</version>
             <exclusions>
-                <exclusion><groupId>org.apache.uima</groupId><artifactId>uimaj-as-activemq</artifactId></exclusion>
-                <exclusion><groupId>org.apache.activemq</groupId><artifactId>activemq-camel</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-core</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-xstream</artifactId></exclusion>
-                <exclusion><groupId>org.apache.commons</groupId><artifactId>commons-pool2</artifactId></exclusion>
-                <exclusion><groupId>org.eclipse.jetty</groupId><artifactId>jetty-server</artifactId></exclusion>
-                <exclusion><groupId>xpp3</groupId><artifactId>xpp3</artifactId></exclusion>
-                <exclusion><groupId>org.apache.httpcomponents</groupId><artifactId>httpclient</artifactId></exclusion>
-                <exclusion><groupId>xmlpull</groupId><artifactId>xmlpull</artifactId></exclusion>
-                <exclusion><groupId>org.apache.httpcomponents</groupId><artifactId>httpclient-cache</artifactId></exclusion>
-                <exclusion><groupId>org.apache.httpcomponents</groupId><artifactId>httpcore</artifactId></exclusion>
-                <exclusion><groupId>org.slf4j</groupId><artifactId>jcl-over-slf4j</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-context</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-http4</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-http</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-http-common</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-jetty-common</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-mina</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-xmlbeans</artifactId></exclusion>
-                <exclusion><groupId>org.apache.mina</groupId><artifactId>mina-core</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-servlet</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-test-spring</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-test</artifactId></exclusion>
-                <exclusion><groupId>org.apache.camel</groupId><artifactId>camel-stream</artifactId></exclusion>
+                <exclusion>
+                    <groupId>org.apache.uima</groupId>
+                    <artifactId>uimaj-as-activemq</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.activemq</groupId>
+                    <artifactId>activemq-camel</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-xstream</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-pool2</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xpp3</groupId>
+                    <artifactId>xpp3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xmlpull</groupId>
+                    <artifactId>xmlpull</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient-cache</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-http4</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-http-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-jetty-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-mina</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-xmlbeans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.mina</groupId>
+                    <artifactId>mina-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-servlet</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-test-spring</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-test</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-stream</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xmi-splitter</artifactId>
-            <version>2.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-db-checkpoint-ae</artifactId>
+            <version>2.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-db-test-utilities</artifactId>
-            <version>2.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -80,4 +161,10 @@
         </dependency>
     </dependencies>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xmi-db-writer</url>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

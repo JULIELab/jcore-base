@@ -6,8 +6,8 @@
   <analysisEngineMetaData>
     <name>JPOSAnnotator</name>
     <description />
-    <version>2.4.0</version>
-    <vendor>JULIE Lab</vendor>
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab</vendor>
    <configurationParameters>
       <configurationParameter>
         <name>ModelFilename</name>

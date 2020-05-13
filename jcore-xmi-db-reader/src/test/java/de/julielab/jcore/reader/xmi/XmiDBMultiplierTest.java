@@ -1,11 +1,11 @@
 package de.julielab.jcore.reader.xmi;
 
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
-import de.julielab.xmlData.dataBase.DataBaseConnector;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -23,7 +23,6 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,13 +36,13 @@ public class XmiDBMultiplierTest {
     private static int subsetCounter;
 
     @BeforeClass
-    public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+    public static void setup() throws UIMAException, IOException, ConfigurationException {
         postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 10, postgres);
         new File(costosysConfig).deleteOnExit();
-        XmiDBSetupHelper.processAndSplitData(costosysConfig, false);
+        XmiDBSetupHelper.processAndSplitData(costosysConfig, false, false,"public");
         assertTrue(dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")), "The data document table exists");
         dbc.close();
 
@@ -56,9 +55,12 @@ public class XmiDBMultiplierTest {
     }
 
     @Test(threadPoolSize = 3, invocationCount = 10, timeOut = 500000)
-    public void testXmiDBReader() throws Exception {
+    public void testXmiDBMultiplierReader() throws Exception {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
-        String xmisubset = "xmisubset" + subsetCounter++;
+        String xmisubset;
+        synchronized (XmiDBMultiplierDifferentNsSchemaTest.class) {
+            xmisubset = "xmisubset" + subsetCounter++;
+        }
         dbc.setActiveTableSchema("xmi_text");
         dbc.reserveConnection();
         dbc.createSubsetTable(xmisubset, "_data.documents", "Test XMI subset");
@@ -69,7 +71,7 @@ public class XmiDBMultiplierTest {
         CollectionReader xmiReader = CollectionReaderFactory.createReader(XmiDBMultiplierReader.class,
                 XmiDBReader.PARAM_COSTOSYS_CONFIG_NAME, costosysConfig,
                 XmiDBReader.PARAM_READS_BASE_DOCUMENT, true,
-                XmiDBReader.PARAM_ADDITIONAL_TABLES, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XmiDBReader.PARAM_ANNOTATIONS_TO_LOAD, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
                 XmiDBReader.PARAM_TABLE, xmisubset,
                 XmiDBReader.PARAM_RESET_TABLE, true
         );

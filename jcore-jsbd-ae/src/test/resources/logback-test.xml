@@ -10,6 +10,7 @@
 
 	<logger name="de.julielab" level="INFO" />
 	<logger name="org.dbunit" level="INFO" />
+	<logger name="de.julielab.jcore.ae.jsbd.main.SentenceAnnotator" level="DEBUG" />
 
 	<root level="DEBUG">
 		<appender-ref ref="STDOUT" />

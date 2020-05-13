@@ -5,7 +5,6 @@ import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.JCoReFeaturePath;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -21,8 +20,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @ResourceMetaData(name = "JCoRe PPD Writer", description = "This component writes CAS annotation data to the pipe-separated format. For example, writing tokens with their PoS would result in text like 'The|DET tree|NN is|VBZ green|ADJ'. The component can be configured for an arbitrary number of annotations to be added to each token.")
@@ -276,7 +275,12 @@ public class PPDWriter extends JCasAnnotator_ImplBase {
 	}
 
 	private void writePPDToFile(File outputFile) throws IOException {
-		FileUtils.writeLines(outputFile, "UTF-8", ppdSentences, System.getProperty("line.separator"), true);
+		try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile, true), StandardCharsets.UTF_8))) {
+			for (String sentence : ppdSentences) {
+				bw.write(sentence);
+				bw.newLine();
+			}
+		}
 		ppdSentences.clear();
 	}
 

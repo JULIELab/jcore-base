@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 	<name>jcore-dta-types</name>
 	<description />
-	<version>2.4.0</version>
-	<vendor />
+	<version>2.5.1-SNAPSHOT</version>
+        <vendor />
 	<types>
 			<typeDescription>
 			<name>de.julielab.jcore.types.extensions.dta.Header</name>

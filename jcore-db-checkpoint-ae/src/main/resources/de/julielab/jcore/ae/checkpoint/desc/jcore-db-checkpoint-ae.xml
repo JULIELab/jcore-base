@@ -6,6 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe Database Checkpoint AE</name>
         <description>This component can be used when using a JCoRe database reader that reads from a CoStoSys/JeDIS subset. Enters the configured component name in the 'last component' column. Can also mark documents as being completely processed.</description>
+        <version>2.5.1-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
                 <name>CheckpointName</name>
@@ -35,6 +36,13 @@
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>JedisSynchronizationKey</name>
+                <description>If set, the value of this parameter is used to synchronize the 'processed' mark in the subset table documents processed by the pipeline. This is useful when document data is sent batchwise to the database by multiple components: In the case of a crash or manual cancellation of a pipeline run without synchronization is might happen that some components have sent their data and others haven't at the time of termination. To avoid an inconsistent database state,a document will only be marked as finished processed in the JeDIS subset table if all synchronied components in the pipeline have released the document. This is done by the DBCheckpointAE which must be at the end of the pipeline and have the 'IndicateFinished' parameter set to 'true'. Synchronized components are those that disclose this parameter and have a value set to it.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
             <nameValuePair>
@@ -46,31 +54,7 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-wikipedia-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types" />
-                <import name="de.julielab.jcore.types.jcore-document-meta-types" />
-                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
                 <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types" />
-                <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
-                <import name="de.julielab.jcore.types.jcore-basic-types" />
-                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-semantics-stemnet-types" />
-                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-mmax-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-evaluation-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-dta-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-mantra-types" />
-                <import name="de.julielab.jcore.types.jcore-document-structure-types" />
-                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
-                <import name="de.julielab.jcore.types.jcore-discourse-types" />
-                <import name="de.julielab.jcore.types.jcore-semantics-concept-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-medical-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-ace-types" />
-                <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-muc7-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-semantics-bootstrep-types" />
-                <import name="de.julielab.jcore.types.extensions.jcore-semantics-ace-types" />
             </imports>
         </typeSystemDescription>
         <fsIndexCollection />
@@ -80,5 +64,5 @@
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    <version>2.4.0</version></analysisEngineMetaData>
+    </analysisEngineMetaData>
 </analysisEngineDescription>

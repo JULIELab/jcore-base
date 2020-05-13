@@ -1,20 +1,9 @@
-/** 
- * 
- * Copyright (c) 2017, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the BSD-2-Clause License
- *
- * Author: 
- * 
- * Description:
- **/
 package de.julielab.jcore.reader.xmlmapper.mapper;
 
-import com.ximpleware.VTDException;
 import com.ximpleware.VTDNav;
 import de.julielab.jcore.types.AbstractSection;
 import de.julielab.jcore.types.AbstractSectionHeading;
-import de.julielab.jcore.types.AbstractText;
+import de.julielab.jcore.types.pubmed.AbstractText;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.JulieXMLTools;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +15,7 @@ import java.util.*;
 /**
  * This class expects a MEDLINE structured abstract pointed to by the
  * {@link PartOfDocument} given to the
- * {@link #parseDocumentPart(VTDNav, PartOfDocument, JCas)} method or just plain
+ * {@link #parseDocumentPart(VTDNav, PartOfDocument, int, JCas, byte[])} method or just plain
  * text at the XPath location. It parses the abstract sections and creates the
  * text as well as abstract section annotations and the AbstractText annotation
  * itself, containing all its sections. The section titles are also created as
@@ -40,11 +29,10 @@ import java.util.*;
  */
 public class StructuredAbstractParser implements DocumentTextPartParser {
 
-	private String documentText;
-	public static final boolean newlineBetweenSections = true;
+	private static final boolean newlineBetweenSections = true;
 
 	public List<String> parseDocumentPart(VTDNav vn, PartOfDocument docTextPart, int offset, JCas jCas,
-			byte[] identifier) throws VTDException {
+			byte[] identifier)  {
 		String baseXPath = docTextPart.getXPath();
 
 		List<Map<String, String>> fields = new ArrayList<>();
@@ -124,6 +112,7 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
 				}
 			}
 			AbstractText abstractText = new AbstractText(jCas, offset, sectionOffset);
+			abstractText.setAbstractType("main");
 			if (abstractParts.size() > 0) {
 				FSArray sectionsArray = new FSArray(jCas, abstractParts.size());
 				for (int i = 0; i < abstractParts.size(); ++i)
@@ -131,13 +120,9 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
 				abstractText.setStructuredAbstractParts(sectionsArray);
 			}
 			abstractText.addToIndexes();
-			return Arrays.asList(sb.toString());
+			return Collections.singletonList(sb.toString());
 		}
 		return Collections.emptyList();
-	}
-
-	public String getDocumentText() {
-		return documentText;
 	}
 
 }
