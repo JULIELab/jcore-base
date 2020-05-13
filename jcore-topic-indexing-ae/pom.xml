@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jcore-topic-indexing-ae</artifactId>
@@ -94,7 +95,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-    <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
     <name>JCoRe-Topic-Labeling-AE</name>
     <organization>
         <name>JULIE Lab Jena, Germany</name>
@@ -104,4 +109,10 @@
     <description>Labels LDA Topics estimated from project julielab-topic-modeling to infer document topics for PubMed
         articles
     </description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

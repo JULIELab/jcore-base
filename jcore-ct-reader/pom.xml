@@ -51,5 +51,11 @@
         <url>http://www.julielab.de</url>
     </organization>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-ct-reader</url>
-    <description>A UIMA reader for clinical trials.</description>
+    <description>A UIMA reader for clinical trials per ClinicalTrials.gov XML format.</description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

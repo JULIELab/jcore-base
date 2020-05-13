@@ -162,4 +162,10 @@
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
     </organization>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

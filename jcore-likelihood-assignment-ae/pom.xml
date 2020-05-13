@@ -1,42 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>jcore-likelihood-assignment-ae</artifactId>
-	<packaging>jar</packaging>
-	<groupId>de.julielab</groupId>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jcore-likelihood-assignment-ae</artifactId>
+    <packaging>jar</packaging>
+    <groupId>de.julielab</groupId>
 
-	<parent>
-		<groupId>de.julielab</groupId>
-		<artifactId>jcore-base</artifactId>
-		<version>2.5.0</version>
-	</parent>
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.5.0</version>
+    </parent>
 
-	<dependencies>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-descriptor-creator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-types</artifactId>
-			<version>${jcore-types-version}</version>
-		</dependency>
-	<dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
-	<name>JCoRe Likelihood Assignment AE</name>
-	<organization>
-		<name>JULIE Lab Jena, Germany</name>
-		<url>http://www.julielab.de</url>
-	</organization>
-	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-likelihood-assignment-ae</url>
-	<description>Analysis Engine to assign likelihood indicators to their corresponding entities and events.</description>
+    <dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-types-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+    <name>JCoRe Likelihood Assignment AE</name>
+    <organization>
+        <name>JULIE Lab Jena, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-likelihood-assignment-ae</url>
+    <description>Analysis Engine to assign likelihood indicators to their corresponding entities and events.
+    </description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

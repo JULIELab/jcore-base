@@ -48,4 +48,10 @@
     </organization>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-line-multiplier</url>
     <description>A multiplier that splits files into lines.</description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

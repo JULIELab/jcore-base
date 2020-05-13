@@ -46,7 +46,8 @@
             <groupId>de.julielab</groupId>
             <artifactId>jcore-utilities</artifactId>
             <version>${jcore-utilities-version}</version>
-        </dependency><dependency>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
@@ -62,4 +63,10 @@
     </organization>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-cord19-reader</url>
     <description>A reader for the JSON format delivered by the CORD-19 corpus.</description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

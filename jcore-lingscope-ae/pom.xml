@@ -66,6 +66,12 @@
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
     </organization>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-archetype-ae</url>
     <description>This component marks spans of biomedical text to lie in the scope of a negation or hedge. The Lingscope
         (https://sourceforge.net/projects/lingscope/) algorithm is used to do this.

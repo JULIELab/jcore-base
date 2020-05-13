@@ -150,4 +150,10 @@
         This is the base component for the JCoRe PubMed and Medline readers.
     </description>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-xml-reader</url>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

@@ -1,10 +1,4 @@
-/**
- * Copyright (c) 2015, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Affero General Public License (LGPL) v3.0
- */
 
-/* First created by JCasGen Tue Sep 04 09:17:47 MDT 2007 */
 package de.julielab.jcore.ae.lingpipegazetteer.utils;
 
 import org.apache.uima.jcas.JCas;

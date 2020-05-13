@@ -53,4 +53,10 @@
     </organization>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-ppd-writer</url>
     <description>This component writes CAS data to the piped text annotation format.</description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

@@ -55,4 +55,10 @@
         UIMA type. If any annotations of the given type are found in a CAS, the embedding vectors for the words covered
         by the annotations are computed and written to file.
     </description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

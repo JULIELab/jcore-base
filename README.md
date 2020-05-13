@@ -50,27 +50,31 @@ The version variable `${jcore-version}` is defined in the jcore-parent pom and s
 
 ### Components with pretrained models
 For some components the "Base" version won't be sufficient if you're **not** planning on training your own model but rather want to use them out-of-the-box in a prediction pipeline. As of now all of the following components have a specialized project with pretrained models (available from the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-projects)):
-* jcore-biosem-ae
-* jcore-jnet-ae
-* jcore-jpos-ae
-* jcore-jsbd-ae
-* jcore-jtbd-ae
-* jcore-mstparser-ae
-* jcore-opennlp-chunk-ae
-* jcore-opennlp-parser-ae
-* jcore-opennlp-postag-ae
-* jcore-opennlp-sentence-ae
-* jcore-opennlp-token-ae
-* jcore-xml-reader
+*   jcore-biosem-ae
+*   jcore-jnet-ae
+*   jcore-jpos-ae
+*   jcore-jsbd-ae
+*   jcore-jtbd-ae
+*   jcore-mstparser-ae
+*   jcore-opennlp-chunk-ae
+*   jcore-opennlp-parser-ae
+*   jcore-opennlp-postag-ae
+*   jcore-opennlp-sentence-ae
+*   jcore-opennlp-token-ae
+*   jcore-xml-reader
 
 Please refer to the [JCoRe Projects Pages](https://github.com/JULIELab/jcore-projects) for information on how to use them in your pipeline.
 
 ### Prebuilt pipelines
 For illustration purposes we provide some pipelines that utilize our components and can be used as a template if you want to build your own either with a UIMA CPE or as a Java project. As of now, these pipelines exist:
-* [BioSEM Relation Extraction Pipeline; BioNLP ST11 model, English](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline) *(Java and CPE pipeine)*
-* [Biomedical Named Entity Tagger Pipeline; English](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-named-entity-pipeline) *(CPE pipeline)*
-* [Medical POS Pipeline; German](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-medical-pos-pipeline)
+*   [BioSEM Relation Extraction Pipeline; BioNLP ST11 model, English](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-relation-extraction-pipeline) *(Java and CPE pipeine)*
+*   [Biomedical Named Entity Tagger Pipeline; English](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-named-entity-pipeline) *(CPE pipeline)*
+*   [Medical POS Pipeline; German](https://github.com/JULIELab/jcore-pipelines/tree/master/jcore-medical-pos-pipeline)
 
 ## Create a JCoRe Base Release
 To create a new release, the following steps should be performed
-* Set the release version via `scripts/setProjectVersion.sh`. This automatically updates the meta descriptors.
+*   Set the release version via `scripts/setProjectVersion.sh`. This automatically updates the meta descriptors.
+*   If `jcore-dependency` modules (located in the `jcore-dependency` repository) have changed, those have to be deployed first. Install, from this repository, `jcore-types` and `jcore-utilities` locally as they are required by some of the `jcore-dependency` projects (might not actually be necessary):
+    *   Locally install `jcore-types`: `mvn install -f jcore-types`.
+    *   Locally install `jcore-utilities`:`mvn install -f jcore-utilities`.
+    *   Release the required `jcore-dependencies` modules. 

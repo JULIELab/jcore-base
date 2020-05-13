@@ -78,4 +78,10 @@
     <description>This component uses the Zalando Flair toolkit (https://github.com/zalandoresearch/flair) for named
         entity recognition. Since FLAIR is a python library, this component must use python for the actual NER part.
     </description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

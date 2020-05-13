@@ -46,4 +46,10 @@
     </dependencies>
     <name>JCoRe OpenNLP Tokenizer</name>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-opennlp-token-ae</url>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

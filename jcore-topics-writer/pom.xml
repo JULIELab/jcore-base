@@ -57,4 +57,10 @@
         topic ID is just the 0-based index of each number, from left to right in the written file. The first entry of
         each file is the document ID.
     </description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

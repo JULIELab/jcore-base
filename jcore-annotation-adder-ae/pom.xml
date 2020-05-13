@@ -60,6 +60,12 @@
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
     </organization>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
     <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-annotation-adder-ae</url>
     <description>Adds annotations from external sources, e.g. files, into the CAS.</description>
 </project>

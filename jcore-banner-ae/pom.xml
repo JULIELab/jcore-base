@@ -69,4 +69,10 @@
         <version>2.5.0</version>
         <relativePath>..</relativePath>
     </parent>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

@@ -1,27 +1,20 @@
-/** 
- * OverlappingChunk.java
- * 
- * Copyright (c) 2015, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the GNU Affero General Public License (LGPL) v3.0
- *
- * Author: tomanek
- * 
- * Current version: 1.0 	
- * Since version:   1.0
- *
- * Creation date: Jan 15, 2008 
- * 
- * An object storing all chunks (found matches) which share 
- * some span in the text, i.e. are overlapping. This is needed 
- * and used for approximate matching to resolve conflicts.
- **/
 
 package de.julielab.jcore.ae.lingpipegazetteer.chunking;
 
 import com.aliasi.chunk.Chunk;
 
 import java.util.*;
+/**
+ *
+ * Author: tomanek
+ *
+ *
+ * Creation date: Jan 15, 2008
+ *
+ * An object storing all chunks (found matches) which share
+ * some span in the text, i.e. are overlapping. This is needed
+ * and used for approximate matching to resolve conflicts.
+ **/
 
 public class OverlappingChunk {
 

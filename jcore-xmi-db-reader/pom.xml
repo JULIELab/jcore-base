@@ -13,7 +13,7 @@
     <description>Reads CAS XMI data from a relational database (Postgres). Thus, the stored CASes may then be processed
         further.
     </description>
-    
+
     <dependencies>
         <dependency>
             <groupId>de.julielab</groupId>
@@ -75,5 +75,10 @@
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
     </organization>
-
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

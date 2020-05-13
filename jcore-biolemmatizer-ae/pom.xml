@@ -46,6 +46,12 @@
       		<url>http://svn.code.sf.net/p/bionlp/code/repo</url>
     	</repository>
   	</repositories>
+	<licenses>
+		<license>
+			<name>BSD-2-Clause</name>
+			<url>https://opensource.org/licenses/BSD-2-Clause</url>
+		</license>
+	</licenses>
   	<build>
   		<plugins>
   			<plugin>

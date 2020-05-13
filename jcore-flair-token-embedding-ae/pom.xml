@@ -64,4 +64,10 @@
     <description>Given a Flair compatible embedding file, computs the token embeddings of the CAS and sets them to the
         embeddingVector feature of the tokens.
     </description>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>
