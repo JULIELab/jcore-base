@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <name>JCoRe MUC7 Type System</name>
 <description>This type system contains types covering annotations for the MUC7 data.</description>
-<version>2.5.0</version>
-<vendor>JULIE Lab Jena, Germany</vendor>
+<version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
 <imports>
 <import location="../jcore-document-meta-types.xml" />
 <import location="../jcore-semantics-mention-types.xml" />

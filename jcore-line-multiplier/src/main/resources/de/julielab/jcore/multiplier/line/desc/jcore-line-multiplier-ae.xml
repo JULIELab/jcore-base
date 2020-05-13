@@ -6,7 +6,8 @@
   <analysisEngineMetaData>
     <name>JCoRe Line Multiplier</name>
     <description>Splits incoming CAS document texts on line breaks and returns one CAS for each non-blank line.</description>
-    <configurationParameters>
+    <version>2.5.1-SNAPSHOT</version>
+        <configurationParameters>
       <configurationParameter>
         <name>NumberLinesPerCAS</name>
         <description>The number of lines that should be put into one cas. Defaults to 1.</description>
@@ -31,5 +32,5 @@
       <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
-  <version>2.5.0</version></analysisEngineMetaData>
+  </analysisEngineMetaData>
 </analysisEngineDescription>

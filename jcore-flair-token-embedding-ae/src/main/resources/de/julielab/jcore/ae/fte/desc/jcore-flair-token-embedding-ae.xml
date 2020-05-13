@@ -6,7 +6,8 @@
   <analysisEngineMetaData>
     <name>JCoRe Flair Token Embedding Annotator</name>
     <description>Adds the Flair compatible embedding vectors to the token annotations.</description>
-    <configurationParameters>
+    <version>2.5.1-SNAPSHOT</version>
+        <configurationParameters>
       <configurationParameter>
         <name>EmbeddingPath</name>
         <description>Path to a Flair compatible embedding file. Since flair supports a range of different embeddings, a type prefix is required. The syntax is 'prefix:&lt;path or built-in flair embedding name&gt;. The possible prefixes are 'word', 'char', 'bytepair', 'flair', 'bert', 'elmo'.</description>
@@ -61,5 +62,5 @@
       <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
-  <version>2.5.0</version></analysisEngineMetaData>
+  </analysisEngineMetaData>
 </analysisEngineDescription>

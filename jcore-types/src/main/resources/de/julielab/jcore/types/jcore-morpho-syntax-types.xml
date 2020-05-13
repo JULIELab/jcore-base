@@ -4,8 +4,8 @@
     <description>The type system contains types for the annotation of morpho-syntactic and syntactic analysis
         (constituncy-based and dependecy-based parsing) results.
     </description>
-    <version>2.5.0</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
     <imports>
         <import location="jcore-basic-types.xml" />
         <import location="jcore-document-structure-types.xml" />

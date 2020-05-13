@@ -9,7 +9,7 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jcore-base</artifactId>
-        <version>2.5.0</version>
+        <version>2.5.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xmi-reader</artifactId>
-            <version>2.5.0</version>
+            <version>2.5.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>

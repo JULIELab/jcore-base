@@ -6,8 +6,8 @@
   <analysisEngineMetaData>
     <name>jcore-opennlp-postag-ae</name>
     <description />
-    <version>2.5.0</version>
-    <vendor />
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor />
     <configurationParameters>
       <configurationParameter>
         <name>modelFile</name>

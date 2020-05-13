@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <name>aceComplete</name>
 <description />
-<version>2.5.0</version>
-<vendor />
+<version>2.5.1-SNAPSHOT</version>
+        <vendor />
 <imports>
         <import name="de.julielab.jcore.types.jcore-basic-types" />
         <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />

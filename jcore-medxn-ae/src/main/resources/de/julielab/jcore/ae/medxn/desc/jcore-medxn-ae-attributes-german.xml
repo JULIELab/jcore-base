@@ -6,8 +6,8 @@
   <analysisEngineMetaData>
     <name>de.julielab.jcore.medxn.ae.desc.MedAttrAE</name>
     <description>medication attribute tagger using regEx</description>
-    <version>2.5.0</version>
-    <vendor />
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor />
     <configurationParameters searchStrategy="language_fallback" />
     <configurationParameterSettings />
     <typeSystemDescription>

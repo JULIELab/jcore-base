@@ -5,6 +5,7 @@
     <processingResourceMetaData>
         <name>JCoRe Pubmed Central Multiplier Reader</name>
         <description>Reads a directory of NXML files, possibly assembled into ZIP archives. Requires the Pubmed Central Multiplier to follow in the pipeline. This reader only sends URIs referencing the NXML files to the multiplier that then does the parsing.</description>
+        <version>2.5.1-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
                 <name>SendCasToLast</name>
@@ -96,5 +97,5 @@
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    <version>2.5.0</version></processingResourceMetaData>
+    </processingResourceMetaData>
 </collectionReaderDescription>

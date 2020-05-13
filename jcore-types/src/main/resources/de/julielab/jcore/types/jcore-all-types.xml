@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <name>JCoRe All Types</name>
     <description>This is just a convenience file, assembling all JCoRe types</description>
-    <version>2.5.0</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
     <imports>
         <import location="jcore-basic-types.xml" />
         <import location="jcore-discourse-types.xml" />

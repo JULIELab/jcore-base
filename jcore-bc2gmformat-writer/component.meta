@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-bc2gmformat-writer",
         "groupId": "de.julielab",
-        "version": "2.5.0"
+        "version": "2.5.1-SNAPSHOT"
     },
     "name": "JCoRe BioCreative II Gene Mention Format Writer"
 }

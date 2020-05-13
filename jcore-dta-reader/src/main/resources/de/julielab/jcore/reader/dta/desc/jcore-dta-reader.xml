@@ -5,8 +5,8 @@
 	<processingResourceMetaData>
 		<name>JCoRe DTA Reader</name>
 		<description />
-		<version>2.5.0</version>
-		<vendor>JULIE Lab Jena, Germany</vendor>
+		<version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
 		<configurationParameters>
 			<configurationParameter>
 				<name>inputFile</name>

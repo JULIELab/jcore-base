@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Semantics StemNet Typs</name>
   <description>The type system contains types of the StemNet project.</description>
-  <version>2.5.0</version>
-  <vendor>JULIE Lab Jena, Germany</vendor>
+  <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
     <import location="../jcore-semantics-biology-types.xml" />
   </imports>

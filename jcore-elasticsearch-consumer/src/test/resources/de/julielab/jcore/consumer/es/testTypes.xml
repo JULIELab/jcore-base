@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>testTypes</name>
   <description>Some types suited for unit tests.</description>
-  <version>2.5.0</version>
-  <vendor />
+  <version>2.5.1-SNAPSHOT</version>
+        <vendor />
   <imports>
     <import name="de.julielab.jcore.types.jcore-document-meta-types" />
   </imports>

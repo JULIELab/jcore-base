@@ -5,6 +5,7 @@
     <annotatorImplementationName>de.julielab.jcore.ae.linnaeus.LinnaeusSpeciesAnnotator</annotatorImplementationName>
     <analysisEngineMetaData>
         <name>JCore LINNAEUS Species AE</name>
+        <version>2.5.1-SNAPSHOT</version>
         <configurationParameters />
         <configurationParameterSettings />
         <typeSystemDescription>
@@ -28,7 +29,7 @@
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
-    <version>2.5.0</version></analysisEngineMetaData>
+    </analysisEngineMetaData>
     <externalResourceDependencies>
         <externalResourceDependency>
             <key>LinnaeusMatcher</key>

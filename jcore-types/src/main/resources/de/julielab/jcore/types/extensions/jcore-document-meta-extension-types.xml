@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Document Meta Types</name>
   <description>The types of this type system reflect meta data about documents for rather specific use cases.</description>
-  <version>2.5.0</version>
-  <vendor />
+  <version>2.5.1-SNAPSHOT</version>
+        <vendor />
   <types>
     <typeDescription>
       <name>de.julielab.jcore.types.ext.DBProcessingMetaData</name>

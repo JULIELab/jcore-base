@@ -4,8 +4,8 @@
   <description>This is a type system for usage with a CAS multiplier. It should not be included into the
   jcore-all-types type system. This particular type system holds a single URI that points to the resource that
   should be split into CASes by the multiplier.</description>
-  <version>2.5.0</version>
-  <vendor>JULIE Lab Jena, Germany</vendor>
+  <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
   <types>
     <typeDescription>
       <name>de.julielab.jcore.types.casmultiplier.JCoReURI</name>

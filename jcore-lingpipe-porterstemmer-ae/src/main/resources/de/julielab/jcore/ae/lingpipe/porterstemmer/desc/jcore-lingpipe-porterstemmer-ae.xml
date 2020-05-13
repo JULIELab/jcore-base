@@ -5,8 +5,8 @@
   <analysisEngineMetaData>
     <name>JCoRe Lingpipe Porterstemmer AE</name>
     <description>Adds a StemmedForm to each token in the CAS. The offsets and the value feature of each StemmedForm are set to the stem as returned by the Porter stemmer algorithm as implemented by Lingpipe.</description>
-    <version>2.5.0</version>
-    <vendor>JULIE Lab, Germany</vendor>
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab, Germany</vendor>
     <configurationParameters />
     <configurationParameterSettings />
     <typeSystemDescription>

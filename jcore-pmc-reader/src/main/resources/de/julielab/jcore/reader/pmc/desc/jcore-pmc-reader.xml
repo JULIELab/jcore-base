@@ -5,6 +5,7 @@
     <processingResourceMetaData>
         <name>JCoRe Pubmed Central Reader</name>
         <description>Reads Pubmed Central documents from the NXML format</description>
+        <version>2.5.1-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
                 <name>Input</name>
@@ -100,5 +101,5 @@
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
-    <version>2.5.0</version></processingResourceMetaData>
+    </processingResourceMetaData>
 </collectionReaderDescription>

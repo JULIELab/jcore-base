@@ -6,8 +6,8 @@
   <analysisEngineMetaData>
     <name>de.julielab.jcore.medxn.ae.desc.MedNormAE</name>
     <description>make a normalized medication description based on  RxNorm standard </description>
-    <version>2.5.0</version>
-    <vendor />
+    <version>2.5.1-SNAPSHOT</version>
+        <vendor />
     <configurationParameters />
     <configurationParameterSettings />
     <typeSystemDescription>

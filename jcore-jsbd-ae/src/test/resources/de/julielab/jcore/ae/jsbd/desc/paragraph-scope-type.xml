@@ -2,8 +2,8 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>test-entity-type.xml</name>
   <description>A mini type system with one type only, used for testing consistency preservation</description>
-  <version>2.5.0</version>
-  <vendor>JULIE Lab Jena, Germany</vendor>
+  <version>2.5.1-SNAPSHOT</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
     <import name="de.julielab.jcore.types.jcore-basic-types" />
   </imports>
