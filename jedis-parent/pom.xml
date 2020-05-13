@@ -12,7 +12,6 @@
     <description>This is an intermediate parent POM between the jcore-base parent and the components belonging to the
         Jena Document Information (JeDIS) infrastructure. This POM determines the version of CoStoSys to use.
     </description>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -24,6 +23,11 @@
                 <groupId>de.julielab</groupId>
                 <artifactId>jcore-db-test-utilities</artifactId>
                 <version>2.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>de.julielab</groupId>
+                <artifactId>jcore-xmi-splitter</artifactId>
+                <version>2.3.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

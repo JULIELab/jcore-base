@@ -135,7 +135,6 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xmi-splitter</artifactId>
-            <version>2.3.3</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
