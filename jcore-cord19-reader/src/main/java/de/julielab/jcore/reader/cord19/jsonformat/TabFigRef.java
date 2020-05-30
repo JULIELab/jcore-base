@@ -19,6 +19,15 @@ public class TabFigRef {
     private String text;
     private String type;
     private String latex;
+    private String html;
+
+    public String getHtml() {
+        return html;
+    }
+
+    public void setHtml(String html) {
+        this.html = html;
+    }
 
     public String getLatex() {
         return latex;
