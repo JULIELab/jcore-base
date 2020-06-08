@@ -51,4 +51,4 @@ deploy:
   skip_cleanup: true
   on:
     all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^v2.5|master$
+    condition: $TRAVIS_BRANCH =~ ^v2.6|master$
