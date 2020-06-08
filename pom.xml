@@ -1,112 +1,221 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>de.julielab</groupId>
-        <artifactId>jcore-parent</artifactId>
-        <version>2.5.1</version>
-    </parent>
-    <artifactId>jcore-base</artifactId>
-    <packaging>pom</packaging>
-    <name>JCoRe Base</name>
-    <description>The POM for the JCoRe Base projects.</description>
-    <version>2.5.1-SNAPSHOT</version>
-    <organization>
-        <name>JULIE Lab, Germany</name>
-        <url>http://www.julielab.de</url>
-    </organization>
-    <licenses>
-        <license>
-            <name>BSD-2-Clause</name>
-            <url>https://opensource.org/licenses/BSD-2-Clause</url>
-        </license>
-    </licenses>
-    <url>https://github.com/JULIELab/jcore-base</url>
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.uima</groupId>
-            <artifactId>uimaj-core</artifactId>
-            <version>${uima-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.uima</groupId>
-            <artifactId>uimafit-core</artifactId>
-            <version>${uimafit-version}</version>
-        </dependency>
-    </dependencies>
-    <modules>
-        <module>jcore-ace-reader</module>
-        <module>jcore-acronym-ae</module>
-        <module>jcore-banner-ae</module>
-        <module>jcore-biolemmatizer-ae</module>
-        <module>jcore-bionlpformat-consumer</module>
-        <module>jcore-bionlpformat-reader</module>
-        <module>jcore-biosem-ae</module>
-        <module>jcore-conll-consumer</module>
-        <module>jcore-coordination-baseline-ae</module>
-        <module>jcore-ct-reader</module>
-        <module>jcore-descriptor-creator</module>
-        <module>jcore-dta-reader</module>
-        <module>jcore-ec-code-ae</module>
-        <module>jcore-elasticsearch-consumer</module>
-        <module>jcore-embedding-writer</module>
-        <module>jcore-event-flattener-ae</module>
-        <module>jcore-feature-value-replacement-ae</module>
-        <module>jcore-file-reader</module>
-        <module>jcore-flair-ner-ae</module>
-        <module>jcore-iexml-consumer</module>
-        <module>jcore-iexml-reader</module>
-        <module>jcore-ign-reader</module>
-        <module>jcore-iob-consumer</module>
-        <module>jcore-jnet-ae</module>
-        <module>jcore-jpos-ae</module>
-        <module>jcore-jsbd-ae</module>
-        <module>jcore-jtbd-ae</module>
-        <module>jcore-julielab-entity-evaluator-consumer</module>
-        <module>jcore-likelihood-assignment-ae</module>
-        <module>jcore-likelihood-detection-ae</module>
-        <module>jcore-lingpipegazetteer-ae</module>
-        <module>jcore-lingpipe-porterstemmer-ae</module>
-        <module>jcore-lingscope-ae</module>
-        <module>jcore-linnaeus-species-ae</module>
-        <module>jcore-mantra-xml-types</module>
-        <module>jcore-medxn-ae</module>
-        <module>jcore-msdoc-reader</module>
-        <module>jcore-mstparser-ae</module>
-        <module>jcore-muc7-reader</module>
-        <module>jcore-mutationfinder-ae</module>
-        <module>jcore-opennlp-chunk-ae</module>
-        <module>jcore-opennlp-parser-ae</module>
-        <module>jcore-opennlp-postag-ae</module>
-        <module>jcore-opennlp-sentence-ae</module>
-        <module>jcore-opennlp-token-ae</module>
-        <module>jcore-pmc-reader</module>
-        <module>jcore-pubtator-reader</module>
-        <module>jcore-stanford-lemmatizer-ae</module>
-        <module>jcore-topic-indexing-ae</module>
-        <module>jcore-topics-writer</module>
-        <module>jcore-txt-consumer</module>
-        <module>jcore-types</module>
-        <module>jcore-utilities</module>
-        <module>jcore-xml-mapper</module>
-        <module>jcore-xml-reader</module>
-        <module>jcore-xmi-reader</module>
-        <module>jcore-xmi-writer</module>
-        <module>jedis-parent</module>
-        <module>jcore-db-checkpoint-ae</module>
-        <module>jcore-ppd-writer</module>
-        <module>jcore-bc2gmformat-writer</module>
-        <module>jcore-bc2gm-reader</module>
-        <module>jcore-annotation-adder-ae</module>
-        <module>jcore-flair-token-embedding-ae</module>
-        <module>jcore-line-multiplier</module>
-        <module>jcore-cord19-reader</module>
-    </modules>
-    <scm>
-        <connection>scm:git:https://github.com/JULIELab/jcore-base
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+      
+  <modelVersion>4.0.0</modelVersion>
+      
+  <parent>
+            
+    <groupId>de.julielab</groupId>
+            
+    <artifactId>jcore-parent</artifactId>
+            
+    <version>2.5.1</version>
+        
+  </parent>
+      
+  <artifactId>jcore-base</artifactId>
+      
+  <packaging>pom</packaging>
+      
+  <name>JCoRe Base</name>
+      
+  <description>The POM for the JCoRe Base projects.</description>
+      
+  <version>2.5.1-SNAPSHOT</version>
+      
+  <organization>
+            
+    <name>JULIE Lab, Germany</name>
+            
+    <url>http://www.julielab.de</url>
+        
+  </organization>
+      
+  <licenses>
+            
+    <license>
+                  
+      <name>BSD-2-Clause</name>
+                  
+      <url>https://opensource.org/licenses/BSD-2-Clause</url>
+              
+    </license>
+        
+  </licenses>
+      
+  <url>https://github.com/JULIELab/jcore-base</url>
+      
+  <dependencies>
+            
+    <dependency>
+                  
+      <groupId>org.apache.uima</groupId>
+                  
+      <artifactId>uimaj-core</artifactId>
+                  
+      <version>${uima-version}</version>
+              
+    </dependency>
+            
+    <dependency>
+                  
+      <groupId>org.apache.uima</groupId>
+                  
+      <artifactId>uimafit-core</artifactId>
+                  
+      <version>${uimafit-version}</version>
+              
+    </dependency>
+        
+  </dependencies>
+      
+  <modules>
+            
+    <module>jcore-ace-reader</module>
+            
+    <module>jcore-acronym-ae</module>
+            
+    <module>jcore-banner-ae</module>
+            
+    <module>jcore-biolemmatizer-ae</module>
+            
+    <module>jcore-bionlpformat-consumer</module>
+            
+    <module>jcore-bionlpformat-reader</module>
+            
+    <module>jcore-biosem-ae</module>
+            
+    <module>jcore-conll-consumer</module>
+            
+    <module>jcore-coordination-baseline-ae</module>
+            
+    <module>jcore-ct-reader</module>
+            
+    <module>jcore-descriptor-creator</module>
+            
+    <module>jcore-dta-reader</module>
+            
+    <module>jcore-ec-code-ae</module>
+            
+    <module>jcore-elasticsearch-consumer</module>
+            
+    <module>jcore-embedding-writer</module>
+            
+    <module>jcore-event-flattener-ae</module>
+            
+    <module>jcore-feature-value-replacement-ae</module>
+            
+    <module>jcore-file-reader</module>
+            
+    <module>jcore-flair-ner-ae</module>
+            
+    <module>jcore-iexml-consumer</module>
+            
+    <module>jcore-iexml-reader</module>
+            
+    <module>jcore-ign-reader</module>
+            
+    <module>jcore-iob-consumer</module>
+            
+    <module>jcore-jnet-ae</module>
+            
+    <module>jcore-jpos-ae</module>
+            
+    <module>jcore-jsbd-ae</module>
+            
+    <module>jcore-jtbd-ae</module>
+            
+    <module>jcore-julielab-entity-evaluator-consumer</module>
+            
+    <module>jcore-likelihood-assignment-ae</module>
+            
+    <module>jcore-likelihood-detection-ae</module>
+            
+    <module>jcore-lingpipegazetteer-ae</module>
+            
+    <module>jcore-lingpipe-porterstemmer-ae</module>
+            
+    <module>jcore-lingscope-ae</module>
+            
+    <module>jcore-linnaeus-species-ae</module>
+            
+    <module>jcore-mantra-xml-types</module>
+            
+    <module>jcore-medxn-ae</module>
+            
+    <module>jcore-msdoc-reader</module>
+            
+    <module>jcore-mstparser-ae</module>
+            
+    <module>jcore-muc7-reader</module>
+            
+    <module>jcore-mutationfinder-ae</module>
+            
+    <module>jcore-opennlp-chunk-ae</module>
+            
+    <module>jcore-opennlp-parser-ae</module>
+            
+    <module>jcore-opennlp-postag-ae</module>
+            
+    <module>jcore-opennlp-sentence-ae</module>
+            
+    <module>jcore-opennlp-token-ae</module>
+            
+    <module>jcore-pmc-reader</module>
+            
+    <module>jcore-pubtator-reader</module>
+            
+    <module>jcore-stanford-lemmatizer-ae</module>
+            
+    <module>jcore-topic-indexing-ae</module>
+            
+    <module>jcore-topics-writer</module>
+            
+    <module>jcore-txt-consumer</module>
+            
+    <module>jcore-types</module>
+            
+    <module>jcore-utilities</module>
+            
+    <module>jcore-xml-mapper</module>
+            
+    <module>jcore-xml-reader</module>
+            
+    <module>jcore-xmi-reader</module>
+            
+    <module>jcore-xmi-writer</module>
+            
+    <module>jedis-parent</module>
+            
+    <module>jcore-db-checkpoint-ae</module>
+            
+    <module>jcore-ppd-writer</module>
+            
+    <module>jcore-bc2gmformat-writer</module>
+            
+    <module>jcore-bc2gm-reader</module>
+            
+    <module>jcore-annotation-adder-ae</module>
+            
+    <module>jcore-flair-token-embedding-ae</module>
+            
+    <module>jcore-line-multiplier</module>
+            
+    <module>jcore-cord19-reader</module>
+          
+    <module>jcore-neo4j-relations-consumer</module>
+      
+  </modules>
+      
+  <scm>
+            
+    <connection>scm:git:https://github.com/JULIELab/jcore-base
         </connection>
-        <developerConnection>scm:git:https://github.com/JULIELab/jcore-base</developerConnection>
-        <url>scm:git:https://github.com/JULIELab/jcore-base</url>
-    </scm>
+            
+    <developerConnection>scm:git:https://github.com/JULIELab/jcore-base</developerConnection>
+            
+    <url>scm:git:https://github.com/JULIELab/jcore-base</url>
+        
+  </scm>
+  
 </project>
