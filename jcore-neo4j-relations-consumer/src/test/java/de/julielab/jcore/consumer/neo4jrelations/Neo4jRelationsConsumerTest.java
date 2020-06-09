@@ -6,6 +6,7 @@ import de.julielab.jcore.types.ConceptMention;
 import de.julielab.jcore.types.EventMention;
 import de.julielab.jcore.types.ResourceEntry;
 import de.julielab.jcore.types.ext.FlattenedRelation;
+import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.neo4j.plugins.datarepresentation.ImportIERelation;
 import de.julielab.neo4j.plugins.datarepresentation.ImportIERelationArgument;
@@ -30,6 +31,9 @@ public class Neo4jRelationsConsumerTest {
     @Test
     public void insertEventMentions() throws Exception {
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+        Header h = new Header(jCas);
+        h.setDocId("testdoc");
+        h.addToIndexes();
         Neo4jRelationsConsumer engine = new Neo4jRelationsConsumer();
         engine.initialize(UimaContextFactory.createUimaContext(Neo4jRelationsConsumer.PARAM_URL, "", Neo4jRelationsConsumer.PARAM_ID_PROPERTY, "sourceIds"));
         addFlattenedRelation1ToCas(jCas);
@@ -53,6 +57,9 @@ public class Neo4jRelationsConsumerTest {
     @Test
     public void insertEventMentionsGlobalSource() throws Exception {
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+        Header h = new Header(jCas);
+        h.setDocId("testdoc");
+        h.addToIndexes();
         Neo4jRelationsConsumer engine = new Neo4jRelationsConsumer();
         engine.initialize(UimaContextFactory.createUimaContext(Neo4jRelationsConsumer.PARAM_URL, "", Neo4jRelationsConsumer.PARAM_ID_PROPERTY, "sourceIds", Neo4jRelationsConsumer.PARAM_SOURCE, "globalSource"));
         addFlattenedRelation1ToCas(jCas);
