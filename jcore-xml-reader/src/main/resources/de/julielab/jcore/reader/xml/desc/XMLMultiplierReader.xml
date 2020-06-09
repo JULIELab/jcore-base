@@ -8,7 +8,7 @@
       This reader is to be used with the JCoRe XML CAS Multiplier. The reader merely distributes the files to
       be read. The actual parsing is done by the multiplier.
     </description>
-    <version>2.5.1-SNAPSHOT</version>
+    <version>2.6.0-SNAPSHOT</version>
         <vendor />
     <configurationParameters>
       <configurationParameter>

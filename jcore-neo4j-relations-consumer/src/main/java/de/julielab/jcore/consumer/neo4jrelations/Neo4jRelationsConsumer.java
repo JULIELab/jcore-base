@@ -6,9 +6,11 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import de.julielab.jcore.types.ArgumentMention;
 import de.julielab.jcore.types.ConceptMention;
 import de.julielab.jcore.types.ResourceEntry;
 import de.julielab.jcore.types.ext.FlattenedRelation;
+import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.neo4j.plugins.datarepresentation.ImportIERelation;
 import de.julielab.neo4j.plugins.datarepresentation.ImportIERelationArgument;
 import de.julielab.neo4j.plugins.datarepresentation.ImportIERelationDocument;
@@ -85,13 +87,16 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
     private ImportIERelationDocument convertRelations(JCas aJCas) {
         Map<String, Multiset<UnificationRelation>> relationCounts = getEquivalentRelationGroups(aJCas);
         ImportIERelationDocument relDoc = new ImportIERelationDocument();
+        relDoc.setDb(false);
+        relDoc.setName(JCoReTools.getDocId(aJCas));
         ImportIETypedRelations typedRelations = new ImportIETypedRelations();
         for (String relationType : relationCounts.keySet()) {
             Multiset<UnificationRelation> unificationRelations = relationCounts.get(relationType);
             List<ImportIERelation> ieRelations4relationType = new ArrayList<>();
-            for (UnificationRelation rel : unificationRelations) {
+            for (UnificationRelation rel : unificationRelations.elementSet()) {
                 ieRelations4relationType.add(rel.toImportRelation(unificationRelations.count(rel)));
             }
+            typedRelations.put(relationType, ieRelations4relationType);
         }
         relDoc.setRelations(typedRelations);
         return relDoc;
@@ -151,7 +156,11 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
     private Map<String, Multiset<UnificationRelation>> getEquivalentRelationGroups(JCas aJCas) {
         Map<String, Multiset<UnificationRelation>> relationCounts = new HashMap<>();
         for (FlattenedRelation fr : aJCas.<FlattenedRelation>getAnnotationIndex(FlattenedRelation.type)) {
-            Iterator<ConceptMention> cmIt = StreamSupport.stream(fr.getArguments().spliterator(), false).map(ConceptMention.class::cast).iterator();
+            Iterator<ConceptMention> cmIt = StreamSupport.stream(fr.getArguments().spliterator(), false)
+                    .map(ArgumentMention.class::cast)
+                    .map(ArgumentMention::getRef)
+                    .map(ConceptMention.class::cast)
+                    .iterator();
             Set<UnificationArgument> unificationArgs = new HashSet<>();
             while (cmIt.hasNext()) {
                 ConceptMention cm = cmIt.next();
@@ -184,7 +193,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
         }
 
         public ImportIERelation toImportRelation(int count) {
-            return ImportIERelation.of(count, (Iterable<ImportIERelationArgument>) args.stream().map(UnificationArgument::toImportArgument).iterator());
+            return ImportIERelation.of(count, () -> args.stream().map(UnificationArgument::toImportArgument).iterator());
         }
 
         public String getRelationType() {

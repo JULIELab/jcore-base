@@ -1,21 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <primitive>true</primitive>
-  <annotatorImplementationName>Neo4jRelationsConsumer</annotatorImplementationName>
-  <analysisEngineMetaData>
-    <name>JCoRe Neo4j Relations Consumer</name>
-    <description/>
-    <version>2.3.0-SNAPSHOT</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
-    <configurationParameters/>
-    <configurationParameterSettings/>
-    <typeSystemDescription/>
-    <capabilities/>
-    <operationalProperties>
-      <modifiesCas>true</modifiesCas>
-      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
-      <outputsNewCASes>false</outputsNewCASes>
-    </operationalProperties>
-  </analysisEngineMetaData>
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.consumer.neo4jrelations.Neo4jRelationsConsumer</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Neo4j Relations Consumer</name>
+        <description>This component assumes that a Neo4j server with an installed julieliab-neo4j-plugins-concepts plugin installed. It then sends FlattenedRelation instances with more then one arguments to Neo4j. Note that this requires the event arguments to have a ResourceEntry list to obtain database concept IDs from.</description>
+        <version>2.6.0-SNAPSHOT</version>
+        <vendor>JULIE Lab, Germany</vendor>
+        <copyright>JULIE Lab</copyright>
+        <configurationParameters>
+            <configurationParameter>
+                <name>URL</name>
+                <description>The complete URL to the endpoint of the Neo4j server for relation insertion.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>IdProperty</name>
+                <description>The ID property to look up concept nodes in the Neo4j graph. Common options are 'id', 'sourceIds' and 'originalId'. You must know to which ID type the ResourceEntry objects of the relation arguments refer to.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ConceptSource</name>
+                <description>Optional. Sets the global source for the concept IDs taken from the ResourceEntry instances of the relation arguments. This causes the 'source' feature of the ResourceEntry objects to be omitted and to globally use the specified source instead. This causes the Neo4j database plugin to resolve the provided argument IDs against the source specified here.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-dta-types"/>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-ace-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-wikipedia-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-semantics-ace-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types"/>
+                <import name="de.julielab.jcore.types.jcore-basic-types"/>
+                <import name="de.julielab.jcore.types.jcore-discourse-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-structure-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-mantra-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-semantics-stemnet-types"/>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-concept-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-evaluation-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-mmax-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-medical-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-muc7-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
+                <import name="de.julielab.jcore.types.extensions.jcore-semantics-bootstrep-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.EventMention</type>
+                </inputs>
+                <outputs/>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
 </analysisEngineDescription>

@@ -5,7 +5,7 @@
   <analysisEngineMetaData>
     <name>PubmedXMLMultiplierDescriptor</name>
     <description />
-    <version>2.5.1-SNAPSHOT</version>
+    <version>2.6.0-SNAPSHOT</version>
         <vendor />
     <configurationParameters searchStrategy="language_fallback">
       <configurationParameter>

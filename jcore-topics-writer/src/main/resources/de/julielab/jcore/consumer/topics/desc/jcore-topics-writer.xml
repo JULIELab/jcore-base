@@ -6,7 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe Topics Writer</name>
         <description>Writes the topic weights, given the jcore-topic-indexing-ae running before, into a simple text file. Thus, the output consists of a sequency of double numbers encodes as strings, separated by tab characters. The topic ID is just the 0-based index of each number, from left to right in the written file. The first entry of each file is the document ID.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
                 <name>OutputDirectory</name>

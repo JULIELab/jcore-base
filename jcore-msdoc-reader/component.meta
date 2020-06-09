@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-msdoc-reader",
         "groupId": "de.julielab",
-        "version": "2.5.1-SNAPSHOT"
+        "version": "2.6.0-SNAPSHOT"
     },
     "name": "JCoRe MSdoc Reader"
 }
