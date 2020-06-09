@@ -73,7 +73,7 @@ public class Neo4jRelationsConsumerTest {
      * Adds a FlattenedRelation with three arguments.
      * @param jCas The CAS.
      */
-    private void addFlattenedRelation1ToCas(JCas jCas) {
+    public static void addFlattenedRelation1ToCas(JCas jCas) {
         FlattenedRelation fr = new FlattenedRelation(jCas);
         EventMention rootEm = new EventMention(jCas);
         rootEm.setSpecificType("regulation");
@@ -111,7 +111,7 @@ public class Neo4jRelationsConsumerTest {
      * Adds a FlattenedRelation with two arguments.
      * @param jCas The CAS.
      */
-    private void addFlattenedRelation2ToCas(JCas jCas) {
+    public static void addFlattenedRelation2ToCas(JCas jCas) {
         FlattenedRelation fr = new FlattenedRelation(jCas);
         EventMention rootEm = new EventMention(jCas);
         rootEm.setSpecificType("regulation");

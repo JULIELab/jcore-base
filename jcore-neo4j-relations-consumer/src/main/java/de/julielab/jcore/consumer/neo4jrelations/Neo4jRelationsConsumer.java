@@ -39,6 +39,8 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 @ResourceMetaData(name = "JCoRe Neo4j Relations Consumer", description = "This component assumes that a Neo4j server with an installed julieliab-neo4j-plugins-concepts plugin installed. It then sends FlattenedRelation instances with more then one arguments to Neo4j. Note that this requires the event arguments to have a ResourceEntry list to obtain database concept IDs from.", vendor = "JULIE Lab, Germany", copyright = "JULIE Lab", version = "2.6.0-SNAPSHOT")
 @TypeCapability(inputs = {"de.julielab.jcore.types.EventMention"})
 public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
@@ -69,6 +71,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
         om = new ObjectMapper();
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         om.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        initImportRelations();
     }
 
     private void initImportRelations() {
@@ -118,6 +121,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
         try {
             URL url = URI.create(this.url).toURL();
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.addRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestMethod(HttpMethod.POST);
             urlConnection.setDoOutput(true);
             try (OutputStream outputStream = urlConnection.getOutputStream()) {
@@ -138,7 +142,14 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
                 g.close();
             }
             try (InputStream inputStream = urlConnection.getInputStream()) {
-                log.debug("Response from Neo4j: {}", IOUtils.toString(inputStream));
+                log.debug("Response from Neo4j: {}", IOUtils.toString(inputStream, UTF_8));
+            } catch (IOException e) {
+                log.error("Exception occurred while sending relation data to Neo4j server.");
+                try (InputStream inputStream = urlConnection.getErrorStream()) {
+                    if (inputStream != null)
+                        log.error("Error from Neo4j: {}", IOUtils.toString(inputStream, UTF_8));
+                }
+                throw e;
             }
             importIERelations.clear();
         } catch (IOException e) {
