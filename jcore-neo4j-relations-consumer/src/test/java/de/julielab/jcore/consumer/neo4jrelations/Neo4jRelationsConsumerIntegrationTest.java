@@ -66,7 +66,7 @@ public class Neo4jRelationsConsumerIntegrationTest {
 
     @Test
     public void insertEventMentions() throws Exception {
-        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.extensions.jcore-document-meta-extension-types", "de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
         Header h = new Header(jCas);
         h.setDocId("testdoc");
         h.addToIndexes();

@@ -122,7 +122,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
     private static Map<String, Map<DocumentId, XmiBufferItem>> splitterResultMap;
     private static Map<String, Map<String, Pair<List<XmiBufferItem>, CountDownLatch>>> xmiBufferItemsToProcess;
-    private static ReentrantLock missingMappingsGatheringLock;
     private static CountDownLatch missingMappingsGatheringLatch = new CountDownLatch(0);
     private static ReentrantLock mappingUpdateLock;
     private DataBaseConnector dbc;

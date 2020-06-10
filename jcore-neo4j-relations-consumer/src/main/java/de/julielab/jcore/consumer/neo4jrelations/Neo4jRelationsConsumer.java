@@ -6,9 +6,12 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import de.julielab.jcore.ae.checkpoint.DocumentId;
+import de.julielab.jcore.ae.checkpoint.DocumentReleaseCheckpoint;
 import de.julielab.jcore.types.ArgumentMention;
 import de.julielab.jcore.types.ConceptMention;
 import de.julielab.jcore.types.ResourceEntry;
+import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.jcore.types.ext.FlattenedRelation;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.neo4j.plugins.datarepresentation.ImportIERelation;
@@ -16,6 +19,7 @@ import de.julielab.neo4j.plugins.datarepresentation.ImportIERelationArgument;
 import de.julielab.neo4j.plugins.datarepresentation.ImportIERelationDocument;
 import de.julielab.neo4j.plugins.datarepresentation.ImportIETypedRelations;
 import de.julielab.neo4j.plugins.datarepresentation.constants.ImportIERelations;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -23,6 +27,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -48,6 +53,8 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
     public static final String PARAM_URL = "URL";
     public static final String PARAM_ID_PROPERTY = "IdProperty";
     public static final String PARAM_SOURCE = "ConceptSource";
+    public static final String PARAM_NEO4J_USER = "Neo4jUser";
+    public static final String PARAM_NEO4J_PASSWORD = "Neo4jPassword";
     private final static Logger log = LoggerFactory.getLogger(Neo4jRelationsConsumer.class);
     @ConfigurationParameter(name = PARAM_URL, description = "The complete URL to the endpoint of the Neo4j server for relation insertion.")
     private String url;
@@ -55,9 +62,15 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
     private String idProperty;
     @ConfigurationParameter(name = PARAM_SOURCE, mandatory = false, description = "Optional. Sets the global source for the concept IDs taken from the ResourceEntry instances of the relation arguments. This causes the 'source' feature of the ResourceEntry objects to be omitted and to globally use the specified source instead. This causes the Neo4j database plugin to resolve the provided argument IDs against the source specified here.")
     private String globalSource;
+    @ConfigurationParameter(name = PARAM_NEO4J_USER, mandatory = false, description = "Optional. The Neo4j server user name.")
+    private String neo4jUser;
+    @ConfigurationParameter(name = PARAM_NEO4J_PASSWORD, mandatory = false, description = "Optional. The Neo4j server password.")
+    private String neo4jPassword;
 
     private ImportIERelations importIERelations;
     private ObjectMapper om;
+
+    private Set<DocumentId> documentIds;
 
     /**
      * This method is called a single time by the framework at component
@@ -68,10 +81,14 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
         url = (String) aContext.getConfigParameterValue(PARAM_URL);
         idProperty = (String) aContext.getConfigParameterValue(PARAM_ID_PROPERTY);
         globalSource = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_SOURCE)).orElse(null);
+        neo4jUser = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_NEO4J_USER)).orElse(null);
+        neo4jPassword = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_NEO4J_PASSWORD)).orElse(null);
         om = new ObjectMapper();
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         om.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         initImportRelations();
+        DocumentReleaseCheckpoint.get().register(Neo4jRelationsConsumer.class.getCanonicalName());
+        documentIds = new HashSet<>();
     }
 
     private void initImportRelations() {
@@ -84,14 +101,20 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(final JCas aJCas) {
-        importIERelations.addRelationDocument(convertRelations(aJCas));
+        ImportIERelationDocument document = convertRelations(aJCas);
+        if (!document.getRelations().isEmpty())
+            importIERelations.addRelationDocument(document);
+
+        Optional<DBProcessingMetaData> metaOpt = JCasUtil.select(aJCas, DBProcessingMetaData.class).stream().findAny();
+        documentIds.add(metaOpt.isPresent() ? new DocumentId(metaOpt.get()) : new DocumentId(JCoReTools.getDocId(aJCas)));
     }
 
     private ImportIERelationDocument convertRelations(JCas aJCas) {
         Map<String, Multiset<UnificationRelation>> relationCounts = getEquivalentRelationGroups(aJCas);
         ImportIERelationDocument relDoc = new ImportIERelationDocument();
         relDoc.setDb(false);
-        relDoc.setName(JCoReTools.getDocId(aJCas));
+        String docId = JCoReTools.getDocId(aJCas);
+        relDoc.setName(docId);
         ImportIETypedRelations typedRelations = new ImportIETypedRelations();
         for (String relationType : relationCounts.keySet()) {
             Multiset<UnificationRelation> unificationRelations = relationCounts.get(relationType);
@@ -115,6 +138,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
         sendRelationsToNeo4j();
+        DocumentReleaseCheckpoint.get().unregister(Neo4jRelationsConsumer.class.getCanonicalName());
     }
 
     private void sendRelationsToNeo4j() throws AnalysisEngineProcessException {
@@ -122,6 +146,11 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
             URL url = URI.create(this.url).toURL();
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.addRequestProperty("Content-Type", "application/json");
+            String authorizationToken = neo4jUser != null && neo4jPassword != null
+                    ? "Basic " + Base64.encodeBase64URLSafeString((neo4jUser + ":" + neo4jPassword).getBytes())
+                    : null;
+            if (authorizationToken != null)
+                urlConnection.setRequestProperty("Authorization", authorizationToken);
             urlConnection.setRequestMethod(HttpMethod.POST);
             urlConnection.setDoOutput(true);
             try (OutputStream outputStream = urlConnection.getOutputStream()) {
@@ -152,8 +181,11 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
                 throw e;
             }
             importIERelations.clear();
+            log.debug("Releasing {} document IDs that have successfully been sent to Neo4j", documentIds.size());
+            DocumentReleaseCheckpoint.get().release(Neo4jRelationsConsumer.class.getCanonicalName(), documentIds.stream());
+            documentIds.clear();
         } catch (IOException e) {
-            log.error("Could not send relations to Neo4j", e);
+            log.error("Could not send relations to Neo4j endpoint {}", url, e);
             throw new AnalysisEngineProcessException(e);
         }
     }
