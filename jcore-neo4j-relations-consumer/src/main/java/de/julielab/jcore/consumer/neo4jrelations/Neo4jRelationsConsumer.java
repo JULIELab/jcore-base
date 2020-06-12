@@ -177,6 +177,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
                 List<ImportIERelationDocument> documents = importIERelations.getDocuments();
                 g.writeFieldName(ImportIERelations.NAME_DOCUMENTS);
                 g.writeStartArray();
+                log.debug("Sending {} relation documents to Neo4j.", documents.size());
                 for (ImportIERelationDocument document : (Iterable<ImportIERelationDocument>) documents::iterator) {
                     g.writeObject(document);
                 }
