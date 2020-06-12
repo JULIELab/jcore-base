@@ -55,6 +55,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
     public static final String PARAM_SOURCE = "ConceptSource";
     public static final String PARAM_NEO4J_USER = "Neo4jUser";
     public static final String PARAM_NEO4J_PASSWORD = "Neo4jPassword";
+    public static final String PARAM_WRITE_BATCH_SIZE = "WriteBatchSize";
     private final static Logger log = LoggerFactory.getLogger(Neo4jRelationsConsumer.class);
     @ConfigurationParameter(name = PARAM_URL, description = "The complete URL to the endpoint of the Neo4j server for relation insertion.")
     private String url;
@@ -66,11 +67,16 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
     private String neo4jUser;
     @ConfigurationParameter(name = PARAM_NEO4J_PASSWORD, mandatory = false, description = "Optional. The Neo4j server password.")
     private String neo4jPassword;
+    @ConfigurationParameter(name = PARAM_WRITE_BATCH_SIZE, mandatory = false, defaultValue = "50", description =
+            "The number of processed CASes after which the relation data should be flushed into the database. Defaults to 50.")
+    private int writeBatchSize;
 
     private ImportIERelations importIERelations;
     private ObjectMapper om;
 
     private Set<DocumentId> documentIds;
+
+    private long docNum;
 
     /**
      * This method is called a single time by the framework at component
@@ -83,12 +89,14 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
         globalSource = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_SOURCE)).orElse(null);
         neo4jUser = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_NEO4J_USER)).orElse(null);
         neo4jPassword = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_NEO4J_PASSWORD)).orElse(null);
+        writeBatchSize = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_WRITE_BATCH_SIZE)).orElse(50);
         om = new ObjectMapper();
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         om.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         initImportRelations();
         DocumentReleaseCheckpoint.get().register(Neo4jRelationsConsumer.class.getCanonicalName());
         documentIds = new HashSet<>();
+        docNum = 0;
     }
 
     private void initImportRelations() {
@@ -100,13 +108,18 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
      * is where the actual work happens.
      */
     @Override
-    public void process(final JCas aJCas) {
+    public void process(final JCas aJCas) throws AnalysisEngineProcessException {
         ImportIERelationDocument document = convertRelations(aJCas);
         if (!document.getRelations().isEmpty())
             importIERelations.addRelationDocument(document);
 
         Optional<DBProcessingMetaData> metaOpt = JCasUtil.select(aJCas, DBProcessingMetaData.class).stream().findAny();
         documentIds.add(metaOpt.isPresent() ? new DocumentId(metaOpt.get()) : new DocumentId(JCoReTools.getDocId(aJCas)));
+
+        if (documentIds.size() % writeBatchSize == 0) {
+            log.trace("Document nr {} processed, sending batch nr {} of size {} to database.", docNum, docNum / writeBatchSize, writeBatchSize);
+            batchProcessComplete();
+        }
     }
 
     private ImportIERelationDocument convertRelations(JCas aJCas) {
@@ -137,6 +150,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
     @Override
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
+        log.info("Collection processing finished.");
         sendRelationsToNeo4j();
         DocumentReleaseCheckpoint.get().unregister(Neo4jRelationsConsumer.class.getCanonicalName());
     }

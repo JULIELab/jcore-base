@@ -45,8 +45,22 @@
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>WriteBatchSize</name>
+                <description>The number of processed CASes after which the relation data should be flushed into the database. Defaults to 50.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings/>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>WriteBatchSize</name>
+                <value>
+                    <integer>50</integer>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
