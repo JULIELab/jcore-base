@@ -177,7 +177,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
                 List<ImportIERelationDocument> documents = importIERelations.getDocuments();
                 g.writeFieldName(ImportIERelations.NAME_DOCUMENTS);
                 g.writeStartArray();
-                log.debug("Sending {} relation documents to Neo4j.", documents.size());
+                log.debug("Converting {} relation documents to JSON.", documents.size());
                 for (ImportIERelationDocument document : (Iterable<ImportIERelationDocument>) documents::iterator) {
                     g.writeObject(document);
                 }
@@ -212,6 +212,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
      * @return The grouped relations.
      */
     private Map<String, Multiset<UnificationRelation>> getEquivalentRelationGroups(JCas aJCas) {
+        // Maps relation types to the complete relations.
         Map<String, Multiset<UnificationRelation>> relationCounts = new HashMap<>();
         for (FlattenedRelation fr : aJCas.<FlattenedRelation>getAnnotationIndex(FlattenedRelation.type)) {
             Iterator<ConceptMention> cmIt = StreamSupport.stream(fr.getArguments().spliterator(), false)
@@ -220,6 +221,7 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
                     .map(ConceptMention.class::cast)
                     .iterator();
             Set<UnificationArgument> unificationArgs = new HashSet<>();
+            // Add all arguments to the relation object. So there could be 1, 2, 3 or even more arguments.
             while (cmIt.hasNext()) {
                 ConceptMention cm = cmIt.next();
                 FSArray resourceEntryList = cm.getResourceEntryList();

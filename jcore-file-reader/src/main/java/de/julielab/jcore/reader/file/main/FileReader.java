@@ -35,6 +35,9 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
 import java.io.*;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -404,26 +407,12 @@ public class FileReader extends CollectionReader_ImplBase {
         return new Progress[]{new ProgressImpl(fileIndex, files.size(), Progress.ENTITIES)};
     }
 
-    private String[] createFileListByType(File inputDirectory, final Set<String> allowedExtensions) throws IOException {
-        String[] path = new File(inputDirectory.getPath()).list();
-
-        for (int i = 0; i < path.length; i++) {
-            File file = new File(inputDirectory.getAbsolutePath() + "/" + path[i]);
-
-            if (!useSubDirs && file.isDirectory())
-                continue;
-
-            String CurrentExtension = path[i].substring(path[i].lastIndexOf('.') + 1);
-            if (allowedExtensions.isEmpty() || allowedExtensions.contains(CurrentExtension)) {
-                files.add(file);
-            }
-
-            if (useSubDirs && file.isDirectory()) {
-                createFileListByType(file, allowedExtensions);
-            }
-        }
-
-        return path;
+    private void createFileListByType(File inputDirectory, final Set<String> allowedExtensions) throws IOException {
+        Files.walk(inputDirectory.toPath(), useSubDirs ? Integer.MAX_VALUE : 1, FileVisitOption.FOLLOW_LINKS)
+                .filter(p -> { if (allowedExtensions.isEmpty()) return true; for (String ext : allowedExtensions) if (p.toString().endsWith(ext)) return true; return false;})
+                .map(Path::toFile)
+                .filter(File::isFile)
+                .forEach(files::add);
     }
 
     private String getFileName(File fi) {
