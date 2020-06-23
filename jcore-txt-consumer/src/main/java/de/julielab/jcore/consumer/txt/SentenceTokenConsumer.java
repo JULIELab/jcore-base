@@ -237,7 +237,7 @@ public class SentenceTokenConsumer extends JCasAnnotator_ImplBase {
         OutputStream os = null;
         boolean zipContentWritten = false;
         try {
-            File outputFile = new File(directory.getCanonicalPath() + File.separator + fileId + ".txt" + (gzip ? ".gz" : ""));
+            File outputFile = new File(directory.getCanonicalPath() + File.separator + fileId + (fileId.endsWith(".txt") ? "" : ".txt") + (gzip ? ".gz" : ""));
             os = zip ? currentArchive : FileUtilities.getOutputStreamToFile(outputFile);
             if (zip) {
                 // Initialize the ZIP output stream if necessary
