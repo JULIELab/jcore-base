@@ -121,31 +121,42 @@ public class Cord19Reader {
     }
 
     private void addAbstract(JCas jCas, StringBuilder doctext, Cord19Document document) {
-        List<AbstractSection> sections = new ArrayList<>(document.getAbstr().size());
-        int abstractBegin = doctext.length();
-        // Stores the end of the last paragraph before the newline
-        int lastEnd = 0;
-        for (Paragraph p : document.getAbstr()) {
-            int paragraphBegin = doctext.length();
-            AbstractSection as = new AbstractSection(jCas, paragraphBegin, doctext.length() + p.getText().length());
-            doctext.append(p.getText());
-            lastEnd = doctext.length();
-            doctext.append(linesep);
-            AbstractSectionHeading asHeading = new AbstractSectionHeading(jCas);
-            asHeading.setTitleType("abstract");
-            asHeading.setLabel(p.getSection());
-            as.setAbstractSectionHeading(asHeading);
-            sections.add(as);
-            addReferences(p, Paragraph::getRefSpans, paragraphBegin, jCas);
-            addReferences(p, Paragraph::getEqSpans, paragraphBegin, jCas);
-            addReferences(p, Paragraph::getCiteSpans, paragraphBegin, jCas);
-        }
-        if (lastEnd - abstractBegin > 0) {
-            AbstractText abstractText = new AbstractText(jCas, abstractBegin, lastEnd);
-            abstractText.setAbstractType("main");
-            abstractText.setStructuredAbstractParts(JCoReTools.addToFSArray(null, sections));
-            abstractText.addToIndexes();
-            doctext.append(linesep);
+        MetadataRecord metadataRecord = metadataIdMap.get(document.getPaperId());
+        if (metadataRecord != null) {
+            String abstractText = metadataRecord.getAbstractText();
+            if (abstractText != null && !abstractText.isBlank()) {
+                AbstractText abstractAnnotation = new AbstractText(jCas, doctext.length(),doctext.length() + abstractText.length());
+                abstractAnnotation.setAbstractType("main");
+                abstractAnnotation.addToIndexes();
+                doctext.append(abstractText);
+            }
+        } else {
+            List<AbstractSection> sections = new ArrayList<>(document.getAbstr().size());
+            int abstractBegin = doctext.length();
+            // Stores the end of the last paragraph before the newline
+            int lastEnd = 0;
+            for (Paragraph p : document.getAbstr()) {
+                int paragraphBegin = doctext.length();
+                AbstractSection as = new AbstractSection(jCas, paragraphBegin, doctext.length() + p.getText().length());
+                doctext.append(p.getText());
+                lastEnd = doctext.length();
+                doctext.append(linesep);
+                AbstractSectionHeading asHeading = new AbstractSectionHeading(jCas);
+                asHeading.setTitleType("abstract");
+                asHeading.setLabel(p.getSection());
+                as.setAbstractSectionHeading(asHeading);
+                sections.add(as);
+                addReferences(p, Paragraph::getRefSpans, paragraphBegin, jCas);
+                addReferences(p, Paragraph::getEqSpans, paragraphBegin, jCas);
+                addReferences(p, Paragraph::getCiteSpans, paragraphBegin, jCas);
+            }
+            if (lastEnd - abstractBegin > 0) {
+                AbstractText abstractText = new AbstractText(jCas, abstractBegin, lastEnd);
+                abstractText.setAbstractType("main");
+                abstractText.setStructuredAbstractParts(JCoReTools.addToFSArray(null, sections));
+                abstractText.addToIndexes();
+                doctext.append(linesep);
+            }
         }
     }
 
@@ -164,7 +175,7 @@ public class Cord19Reader {
     private void addTitle(JCas jCas, Cord19Document document, MetadataRecord metadataRecord, StringBuilder doctext) {
         if (metadataRecord != null) {
             String title = metadataRecord.getTitle();
-            if (title != null) {
+            if (title != null && !title.isBlank()) {
                 addTitle(jCas, title, doctext);
             }
         } else {
@@ -221,9 +232,10 @@ public class Cord19Reader {
                         String cordUid = record.get("cord_uid");
                         String sha = record.get("sha");
                         String title = record.get("title");
+                        String abstractText = record.get("abstract");
                         String pmcid = record.get("pmcid");
                         String pmid = record.get("pubmed_id");
-                        MetadataRecord metadataRecord = new MetadataRecord(cordUid, sha, pmcid, pmid, title);
+                        MetadataRecord metadataRecord = new MetadataRecord(cordUid, sha, pmcid, pmid, title, abstractText);
                         for (String hash : metadataRecord.hashes)
                             metadataIdMap.put(hash, metadataRecord);
                         if (pmcid != null)
@@ -244,13 +256,19 @@ public class Cord19Reader {
         private final String pmid;
         private final String[] hashes;
         private final String title;
+        private String abstractText;
 
-        public MetadataRecord(String cordUid, String sha, String pmcid, String pmid, String title) {
+        public MetadataRecord(String cordUid, String sha, String pmcid, String pmid, String title, String abstractText) {
             this.cordUid = cordUid;
             this.pmcid = pmcid;
             this.pmid = pmid;
             this.title = title;
             this.hashes = Arrays.stream(sha.split(";")).map(String::trim).toArray(String[]::new);
+            this.abstractText = abstractText;
+        }
+
+        public String getAbstractText() {
+            return abstractText;
         }
 
         public String getCordUid() {
