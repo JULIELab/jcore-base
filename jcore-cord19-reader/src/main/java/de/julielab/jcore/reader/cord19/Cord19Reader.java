@@ -122,14 +122,12 @@ public class Cord19Reader {
 
     private void addAbstract(JCas jCas, StringBuilder doctext, Cord19Document document) {
         MetadataRecord metadataRecord = metadataIdMap.get(document.getPaperId());
-        if (metadataRecord != null) {
+        if (metadataRecord != null && metadataRecord.getAbstractText() != null && !metadataRecord.getAbstractText().isBlank()) {
             String abstractText = metadataRecord.getAbstractText();
-            if (abstractText != null && !abstractText.isBlank()) {
-                AbstractText abstractAnnotation = new AbstractText(jCas, doctext.length(),doctext.length() + abstractText.length());
-                abstractAnnotation.setAbstractType("main");
-                abstractAnnotation.addToIndexes();
-                doctext.append(abstractText);
-            }
+            AbstractText abstractAnnotation = new AbstractText(jCas, doctext.length(), doctext.length() + abstractText.length());
+            abstractAnnotation.setAbstractType("main");
+            abstractAnnotation.addToIndexes();
+            doctext.append(abstractText);
         } else {
             List<AbstractSection> sections = new ArrayList<>(document.getAbstr().size());
             int abstractBegin = doctext.length();
