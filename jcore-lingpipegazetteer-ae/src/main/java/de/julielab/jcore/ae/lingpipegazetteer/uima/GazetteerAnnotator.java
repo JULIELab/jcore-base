@@ -359,8 +359,6 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
         if (provider.getNormalize()) {
             normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory,
                     transliterator);
-            System.out.println(normalizedDocText.getOffsetMap());
-            System.out.println(normalizedDocText.string);
         }
 
         IndexTermGenerator<Long> longOffsetTermGenerator = TermGenerators.longOffsetTermGenerator();

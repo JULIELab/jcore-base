@@ -241,7 +241,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine gazetteerAnnotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine gazetteerAnnotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_CHECK_ACRONYMS, false, GazetteerAnnotator.PARAM_OUTPUT_TYPE,
 				"de.julielab.jcore.types.OntClassMention", GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
@@ -285,7 +285,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 		JCas jCas = annotator.newJCas();
@@ -366,7 +366,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 		JCas jCas = annotator.newJCas();
@@ -440,7 +440,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 		JCas jCas = annotator.newJCas();
@@ -462,7 +462,7 @@ while (it.hasNext()) {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
@@ -516,7 +516,7 @@ while (it.hasNext()) {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
@@ -638,7 +638,7 @@ while (it.hasNext()) {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
