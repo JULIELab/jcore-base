@@ -49,22 +49,22 @@ public class StringNormalizerForChunkingTest {
 		text = "-aa :+bb";
 		// Outcome: "aabb";
 		ns = StringNormalizerForChunking.normalizeString(text);
-		assertEquals("The original offset is computed wrong", new Integer(0), ns.getOriginalOffset(0));
-		assertEquals("The original offset is computed wrong", new Integer(2), ns.getOriginalOffset(1));
-		assertEquals("The original offset is computed wrong", new Integer(3), ns.getOriginalOffset(2));
-		assertEquals("The original offset is computed wrong", new Integer(6), ns.getOriginalOffset(3));
-		assertEquals("The original offset is computed wrong", new Integer(7), ns.getOriginalOffset(4));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(0), ns.getOriginalOffset(0));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(2), ns.getOriginalOffset(1));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(3), ns.getOriginalOffset(2));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(6), ns.getOriginalOffset(3));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(7), ns.getOriginalOffset(4));
 		assertNull("There are more offset mappings than should be", ns.getOffsetMap().get(5));
 
 		text = "((2-n-butyl-6,7-dichloro-2-cyclopentyl-2,3-dihydro-1-oxo-1H-inden-5-yl)oxy)acetic acid";
 		// Outcome:
 		// "2nbutyl67dichloro2cyclopentyl23dihydro1oxo1Hinden5yloxyacetic acid";
 		ns = StringNormalizerForChunking.normalizeString(text);
-		assertEquals("The original offset is computed wrong", new Integer(0), ns.getOriginalOffset(0));
-		assertEquals("The original offset is computed wrong", new Integer(4), ns.getOriginalOffset(1));
-		assertEquals("The original offset is computed wrong", new Integer(6), ns.getOriginalOffset(2));
-		assertEquals("The original offset is computed wrong", new Integer(16), ns.getOriginalOffset(9));
-		assertEquals("The original offset is computed wrong", new Integer(82), ns.getOriginalOffset(62));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(0), ns.getOriginalOffset(0));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(4), ns.getOriginalOffset(1));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(6), ns.getOriginalOffset(2));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(16), ns.getOriginalOffset(9));
+		assertEquals("The original offset is computed wrong", Integer.valueOf(82), ns.getOriginalOffset(62));
 		assertNull("There are more offset mappings than should be", ns.getOffsetMap().get(66));
 	}
 
@@ -84,8 +84,8 @@ public class StringNormalizerForChunkingTest {
 		assertEquals("Transliteration wasn't done correctly",
 				"each node either a sensor or a beacon is noted as nodep, p ∈ 𝕊 ∪ 𝔹, and vector vp is used to represent the coordinate of nodep. beacons are placed onto the map with fixed coordinates vj, where j ∈ 𝔹. we assume that each beacon is aware of its own absolute location.",
 				ns.string);
-		assertEquals(new Integer(83), ns.getOriginalOffset(82));
-		assertEquals(new Integer(188), ns.getOriginalOffset(186));
+		assertEquals(Integer.valueOf(83), ns.getOriginalOffset(82));
+		assertEquals(Integer.valueOf(188), ns.getOriginalOffset(186));
 	}
 
 	@Test
@@ -114,34 +114,43 @@ public class StringNormalizerForChunkingTest {
 		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
 		assertEquals("Normalization was wrong: ",
 				"We saw Parkinson Diseas and S(H)P 1 in a sadli-form circumvent of applic.", ns.string);
-		assertEquals("Offset wrong: ", new Integer(0), ns.getOriginalOffset(new Integer(0)));
-		assertEquals("Offset wrong: ", new Integer(16), ns.getOriginalOffset(new Integer(16)));
-		assertEquals("Offset wrong: ", new Integer(19), ns.getOriginalOffset(new Integer(17)));
-		assertEquals("Offset wrong: ", new Integer(26), ns.getOriginalOffset(new Integer(23)));
-		assertEquals("Offset wrong: ", new Integer(49), ns.getOriginalOffset(new Integer(46)));
-		assertEquals("Offset wrong: ", new Integer(50), ns.getOriginalOffset(new Integer(47)));
-		assertEquals("Offset wrong: ", new Integer(56), ns.getOriginalOffset(new Integer(51)));
+		assertEquals("Offset wrong: ", Integer.valueOf(0), ns.getOriginalOffset(Integer.valueOf(0)));
+		assertEquals("Offset wrong: ", Integer.valueOf(16), ns.getOriginalOffset(Integer.valueOf(16)));
+		assertEquals("Offset wrong: ", Integer.valueOf(19), ns.getOriginalOffset(Integer.valueOf(17)));
+		assertEquals("Offset wrong: ", Integer.valueOf(26), ns.getOriginalOffset(Integer.valueOf(23)));
+		assertEquals("Offset wrong: ", Integer.valueOf(49), ns.getOriginalOffset(Integer.valueOf(46)));
+		assertEquals("Offset wrong: ", Integer.valueOf(50), ns.getOriginalOffset(Integer.valueOf(47)));
+		assertEquals("Offset wrong: ", Integer.valueOf(56), ns.getOriginalOffset(Integer.valueOf(51)));
 		str = "We go to James' to have some coffee'ses.";
 		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
 		assertEquals("Normalization was wrong: ", "We go to Jame' to have some coffe'se.", ns.string);
-		assertEquals("Offset wrong: ", new Integer(0), ns.getOriginalOffset(new Integer(0)));
-		assertEquals("Offset wrong: ", new Integer(9), ns.getOriginalOffset(new Integer(9)));
-		assertEquals("Offset wrong: ", new Integer(14), ns.getOriginalOffset(new Integer(13)));
-		assertEquals("Offset wrong: ", new Integer(35), ns.getOriginalOffset(new Integer(33)));
+		assertEquals("Offset wrong: ", Integer.valueOf(0), ns.getOriginalOffset(Integer.valueOf(0)));
+		assertEquals("Offset wrong: ", Integer.valueOf(9), ns.getOriginalOffset(Integer.valueOf(9)));
+		assertEquals("Offset wrong: ", Integer.valueOf(14), ns.getOriginalOffset(Integer.valueOf(13)));
+		assertEquals("Offset wrong: ", Integer.valueOf(35), ns.getOriginalOffset(Integer.valueOf(33)));
 		str = "We have some 'serious things' to talk about.";
 		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
 		assertEquals("Normalization was wrong: ", "We have some 'seriou thing' to talk about.", ns.string);
-		assertEquals("Offset wrong: ", new Integer(0), ns.getOriginalOffset(new Integer(0)));
-		assertEquals("Offset wrong: ", new Integer(12), ns.getOriginalOffset(new Integer(12)));
-		assertEquals("Offset wrong: ", new Integer(13), ns.getOriginalOffset(new Integer(13)));
-		assertEquals("Offset wrong: ", new Integer(28), ns.getOriginalOffset(new Integer(26)));
-		assertEquals("Offset wrong: ", new Integer(29), ns.getOriginalOffset(new Integer(27)));
-		assertEquals("Offset wrong: ", new Integer(30), ns.getOriginalOffset(new Integer(28)));
+		assertEquals("Offset wrong: ", Integer.valueOf(0), ns.getOriginalOffset(Integer.valueOf(0)));
+		assertEquals("Offset wrong: ", Integer.valueOf(12), ns.getOriginalOffset(Integer.valueOf(12)));
+		assertEquals("Offset wrong: ", Integer.valueOf(13), ns.getOriginalOffset(Integer.valueOf(13)));
+		assertEquals("Offset wrong: ", Integer.valueOf(28), ns.getOriginalOffset(Integer.valueOf(26)));
+		assertEquals("Offset wrong: ", Integer.valueOf(29), ns.getOriginalOffset(Integer.valueOf(27)));
+		assertEquals("Offset wrong: ", Integer.valueOf(30), ns.getOriginalOffset(Integer.valueOf(28)));
 
 		str = "test dosing unit KLRg1 killer cell lectin like receptor G2 Parkinson's Disease";
 		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
 		System.out.println(ns.string);
 
+	}
+
+	@Test
+	public void testNewlines() {
+		String str = "Clinical Features and Course of Patients with Peripheral Exudative Hemorrhagic Chorioretinopathy.\n" +
+				"To evaluate the clinical characteristics of patients who were followed in our clinic with the diagnosis of peripheral exudative hemorrhagic chorioretinopathy (PEHC).\n" +
+				"Medical records of 12 patients who were diagnosed with PEHC in İstanbul University İstanbul Faculty of Medicine, Department of Ophthalmology between July 2006 and June 2014 were reviewed retrospectively.";
+		NormalizedString normalizedString = StringNormalizerForChunking.normalizeString(str, new IndoEuropeanTokenizerFactory(), Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower"));
+		System.out.println(normalizedString.getOffsetMap());
 	}
 
 	@Test

@@ -18,6 +18,7 @@ package de.julielab.jcore.ae.lingpipegazetteer.uima;
 import com.aliasi.chunk.Chunk;
 import com.aliasi.chunk.ChunkFactory;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProviderImplAlt;
+import de.julielab.jcore.ae.lingpipegazetteer.chunking.ConfigurableChunkerProviderImplAlt;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
 import de.julielab.jcore.types.*;
 import junit.framework.TestCase;
@@ -49,6 +50,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 public class GazetteerAnnotatorTest extends TestCase {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GazetteerAnnotatorTest.class);
@@ -652,6 +655,39 @@ while (it.hasNext()) {
 			counter++;
 		}
 		assertEquals(1, counter);
+	}
+
+	@Test
+	public void testOffsetIssueWhenNoTransliteration() throws Exception {
+		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
+				ConfigurableChunkerProviderImplAlt.class, "file:src/test/resources/pehc.dict", ConfigurableChunkerProviderImplAlt.PARAM_CASE_SENSITIVE, false, ConfigurableChunkerProviderImplAlt.PARAM_NORMALIZE_TEXT, true, ConfigurableChunkerProviderImplAlt.PARAM_TRANSLITERATE_TEXT, false, ConfigurableChunkerProviderImplAlt.PARAM_STOPWORD_FILE, "de/julielab/jcore/ae/lingpipegazetteer/stopwords/general_english_words", ConfigurableChunkerProviderImplAlt.PARAM_USE_APPROXIMATE_MATCHING, true, ConfigurableChunkerProviderImplAlt.PARAM_MAKE_VARIANTS, false);
+		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
+				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
+
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
+				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
+				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
+
+		JCas jCas = annotator.newJCas();
+
+		jCas.setDocumentText("Clinical Features and Course of Patients with Peripheral Exudative Hemorrhagic Chorioretinopathy.\nTo evaluate the clinical characteristics of patients who were followed in our clinic with the diagnosis of peripheral exudative hemorrhagic chorioretinopathy (PEHC).\nMedical records of 12 patients who were diagnosed with PEHC in İstanbul University İstanbul Faculty of Medicine, Department of Ophthalmology between July 2006 and June 2014 were reviewed retrospectively.\nThis study included 21 eyes of 12 patients. Four (33.3%) of the patients were male and 8 (66.7%) were female and ages ranged between 73 and 89 years. Eight (66.7%) of the patients were referred to us with the diagnosis of choroidal mass. Unilateral involvement was found in 3 and bilateral involvement in 9 patients. Temporal quadrants were involved in all eyes. Fifteen eyes (71.4%) had subretinal hemorrhage and hemorrhagic/serous retinal pigment epithelial detachment, 11 (52.4%) had lipid exudation, 5 (23.8%) had chronic retinal pigment epithelium alterations, 2 (9.5%) had subretinal fibrosis and 1 (4.8%) had vitreous hemorrhage. PEHC lesions were accompanied by drusen in 11 eyes (52.4%), geographic atrophy in 2 eyes (9.5%), and choroidal neovascularization scar in 2 eyes (9.5%).");
+		annotator.process(jCas);
+
+		List<String> entityStrings = new ArrayList<>();
+		for (EntityMention g : jCas.<EntityMention>getAnnotationIndex(EntityMention.type)) {
+			entityStrings.add(g.getCoveredText());
+		}
+		assertThat(entityStrings).containsExactly("PEHC", "PEHC", "PEHC", "lesions");
+	}
+
+	@Test
+	public void testEncoding() {
+		String s1 = "İ";
+		String s2 = "i̇";
+		System.out.println(s1.getBytes(UTF_8).length);
+		System.out.println(s1.length());
+		System.out.println(s2.getBytes(UTF_8).length);
+		System.out.println(s2.length());
 	}
 
 }
