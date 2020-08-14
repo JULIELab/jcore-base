@@ -169,7 +169,7 @@
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.jcore-xmi-splitter-types" />
-                <import name="de.julielab.jcore.types.jcore-all-types" />
+<!--                <import name="de.julielab.jcore.types.jcore-all-types" />-->
             </imports>
         </typeSystemDescription>
         <fsIndexCollection />
