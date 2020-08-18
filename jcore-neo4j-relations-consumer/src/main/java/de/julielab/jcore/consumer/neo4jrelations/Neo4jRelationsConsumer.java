@@ -157,45 +157,47 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
 
     private void sendRelationsToNeo4j() throws AnalysisEngineProcessException {
         try {
-            URL url = URI.create(this.url).toURL();
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.addRequestProperty("Content-Type", "application/json");
-            String authorizationToken = neo4jUser != null && neo4jPassword != null
-                    ? "Basic " + Base64.encodeBase64URLSafeString((neo4jUser + ":" + neo4jPassword).getBytes())
-                    : null;
-            if (authorizationToken != null)
-                urlConnection.setRequestProperty("Authorization", authorizationToken);
-            urlConnection.setRequestMethod(HttpMethod.POST);
-            urlConnection.setDoOutput(true);
-            try (OutputStream outputStream = urlConnection.getOutputStream()) {
-                JsonFactory jf = new JsonFactory(om);
-                JsonGenerator g = jf.createGenerator(outputStream);
-                g.writeStartObject();
-                g.writeObjectField(ImportIERelations.NAME_ID_PROPERTY, idProperty);
-                g.writeObjectField(ImportIERelations.NAME_ID_SOURCE, globalSource);
+            if (!importIERelations.getDocuments().isEmpty()) {
+                URL url = URI.create(this.url).toURL();
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.addRequestProperty("Content-Type", "application/json");
+                String authorizationToken = neo4jUser != null && neo4jPassword != null
+                        ? "Basic " + Base64.encodeBase64URLSafeString((neo4jUser + ":" + neo4jPassword).getBytes())
+                        : null;
+                if (authorizationToken != null)
+                    urlConnection.setRequestProperty("Authorization", authorizationToken);
+                urlConnection.setRequestMethod(HttpMethod.POST);
+                urlConnection.setDoOutput(true);
+                try (OutputStream outputStream = urlConnection.getOutputStream()) {
+                    JsonFactory jf = new JsonFactory(om);
+                    JsonGenerator g = jf.createGenerator(outputStream);
+                    g.writeStartObject();
+                    g.writeObjectField(ImportIERelations.NAME_ID_PROPERTY, idProperty);
+                    g.writeObjectField(ImportIERelations.NAME_ID_SOURCE, globalSource);
 
-                List<ImportIERelationDocument> documents = importIERelations.getDocuments();
-                g.writeFieldName(ImportIERelations.NAME_DOCUMENTS);
-                g.writeStartArray();
-                log.debug("Converting {} relation documents to JSON.", documents.size());
-                for (ImportIERelationDocument document : (Iterable<ImportIERelationDocument>) documents::iterator) {
-                    g.writeObject(document);
+                    List<ImportIERelationDocument> documents = importIERelations.getDocuments();
+                    g.writeFieldName(ImportIERelations.NAME_DOCUMENTS);
+                    g.writeStartArray();
+                    log.debug("Converting {} relation documents to JSON.", documents.size());
+                    for (ImportIERelationDocument document : (Iterable<ImportIERelationDocument>) documents::iterator) {
+                        g.writeObject(document);
+                    }
+                    g.writeEndArray();
+                    g.writeEndObject();
+                    g.close();
                 }
-                g.writeEndArray();
-                g.writeEndObject();
-                g.close();
-            }
-            try (InputStream inputStream = urlConnection.getInputStream()) {
-                log.debug("Response from Neo4j: {}", IOUtils.toString(inputStream, UTF_8));
-            } catch (IOException e) {
-                log.error("Exception occurred while sending relation data to Neo4j server.");
-                try (InputStream inputStream = urlConnection.getErrorStream()) {
-                    if (inputStream != null)
-                        log.error("Error from Neo4j: {}", IOUtils.toString(inputStream, UTF_8));
+                try (InputStream inputStream = urlConnection.getInputStream()) {
+                    log.debug("Response from Neo4j: {}", IOUtils.toString(inputStream, UTF_8));
+                } catch (IOException e) {
+                    log.error("Exception occurred while sending relation data to Neo4j server.");
+                    try (InputStream inputStream = urlConnection.getErrorStream()) {
+                        if (inputStream != null)
+                            log.error("Error from Neo4j: {}", IOUtils.toString(inputStream, UTF_8));
+                    }
+                    throw e;
                 }
-                throw e;
+                importIERelations.clear();
             }
-            importIERelations.clear();
             log.debug("Releasing {} document IDs that have successfully been sent to Neo4j", documentIds.size());
             DocumentReleaseCheckpoint.get().release(Neo4jRelationsConsumer.class.getCanonicalName(), documentIds.stream());
             documentIds.clear();

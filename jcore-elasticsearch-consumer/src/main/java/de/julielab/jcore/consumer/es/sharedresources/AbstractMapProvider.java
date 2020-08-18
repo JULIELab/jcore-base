@@ -49,7 +49,7 @@ public abstract class AbstractMapProvider<K, V> implements IMapProvider<K, V> {
                     map.put(getKey(split[0]), getValue(split[1]));
             }
             log.info("Finished reading resource {}", aData.getUri());
-            log.info("Copying {} values into a fresh HashMap of the exactly correct size", map.size());
+            log.info("Copying {} values into a fresh HashMap of the exact correct size", map.size());
             HashMap<K, V> tmp = new HashMap<>(map.size(), 1f);
             tmp.putAll(map);
             map = tmp;
