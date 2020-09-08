@@ -4,7 +4,6 @@ import sys
 import torch
 from flair.data import Sentence
 from flair.models import SequenceTagger
-from flair.tokenization import SpaceTokenizer
 from struct import *
 
 
@@ -44,8 +43,14 @@ while True:
     ba = bytearray()
     for sentenceToTag in sentenceTaggingRequests:
         sid      = sentenceToTag['sid']
-        # Use the SpaceTokenizer to just use the tokenization given from UIMA
-        sentence = Sentence(sentenceToTag['text'], use_tokenizer=SpaceTokenizer())
+        # In newer flair versions we need to specify the tokenizer in order to use
+        # the exact input tokenization and avoid token offset mismatches
+        if "0.4" in flair.__version__:
+            sentence = Sentence(sentenceToTag['text'])
+        else:
+            from flair.tokenization import SpaceTokenizer
+            # Use the SpaceTokenizer to just use the tokenization given from UIMA
+            sentence = Sentence(sentenceToTag['text'], use_tokenizer=SpaceTokenizer())
         # NER tagging
         embeddingStorageMode = "none" if sendEmbeddings == "NONE" else "cpu"
         tagger.predict(sentence, embedding_storage_mode = embeddingStorageMode)
