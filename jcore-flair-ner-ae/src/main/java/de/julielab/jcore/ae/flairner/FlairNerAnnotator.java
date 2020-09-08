@@ -140,12 +140,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             for (TaggedEntity entity : taggedEntities) {
                 final Sentence sentence = sentenceMap.get(entity.getDocumentId());
                 EntityMention em = (EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, entityClass);
-                try {
-                    helper.setAnnotationOffsetsRelativeToSentence(sentence, em, entity, adderConfig);
-                } catch (AnnotationOffsetException e) {
-                    log.error("Cannot add entity {} to sentence: {}", entity, sentence.getCoveredText());
-                    throw e;
-                }
+                helper.setAnnotationOffsetsRelativeToSentence(sentence, em, entity, adderConfig);
                 em.setSpecificType(entity.getTag());
                 em.setConfidence(String.valueOf(entity.getLabelConfidence()));
                 em.setComponentId(componentId);

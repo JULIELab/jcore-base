@@ -8,6 +8,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,11 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Caches information for the current document.
  */
 public class AnnotationAdderHelper {
+    private final static Logger log = LoggerFactory.getLogger(AnnotationAdderHelper.class);
     // Required for token-offsets
     private List<Token> tokenList;
     private Map<Sentence, List<Token>> tokensBySentences;
@@ -68,8 +72,10 @@ public class AnnotationAdderHelper {
             List<Token> tokenList = tokensBySentences.get(sentence);
             int startTokenNum = a.getStart();
             int endTokenNum = a.getEnd();
-            if (startTokenNum < 1 || startTokenNum > tokenList.size())
+            if (startTokenNum < 1 || startTokenNum > tokenList.size()) {
+                log.error("Cannot create entity because of a token offset mismatch. The entity should tart at token {} and end at {}. But there are only {} tokens available: {}", startTokenNum, endTokenNum, tokenList.size(), tokenList.stream().map(Annotation::getCoveredText).collect(Collectors.joining(" ")));
                 throw new AnnotationOffsetException("The current annotation to add to the CAS starts at token " + startTokenNum + " which does not fit to the range of tokens in the sentence with ID " + sentence.getId() + " which is 1 - " + tokenList.size());
+            }
             if (endTokenNum < 1 || endTokenNum > tokenList.size())
                 throw new AnnotationOffsetException("The current annotation to add to the CAS ends at token " + endTokenNum + " which does not fit to the range of tokens in the sentence with ID " + sentence.getId() + " which is 1 - " + tokenList.size());
             if (endTokenNum < startTokenNum)

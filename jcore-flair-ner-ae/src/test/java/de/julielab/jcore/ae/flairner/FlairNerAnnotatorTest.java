@@ -240,7 +240,7 @@ public class FlairNerAnnotatorTest {
     }
 
     @Test
-    public void testAnnotatorOnOffsetIsseDocument() throws Exception {
+    public void testAnnotatorOnOffsetIssueDocument() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
 
