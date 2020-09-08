@@ -17,7 +17,7 @@
         <dependency>
             <groupId>com.pengyifan.bioc</groupId>
             <artifactId>pengyifan-bioc</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
