@@ -95,7 +95,7 @@ public class NXMLURIIterator implements Iterator<URI> {
                     while (entries.hasMoreElements()) {
                         final ZipEntry e = entries.nextElement();
                         if (!e.isDirectory() && e.getName().contains(".nxml") && isInWhitelist(new File(e.getName()))) {
-                            final String urlStr = StringEscapeUtils.unescapeXml("jar:" + directory.toURI().toString() + "!/" + e.getName());
+                            final String urlStr ="jar:" + directory.toURI().toString() + "!/" + e.getName();
                             URL url = new URL(urlStr);
                             try {
                                 final URI uri = url.toURI();
@@ -106,7 +106,21 @@ public class NXMLURIIterator implements Iterator<URI> {
                                 logFileSearch.error("Putting URI for URL {} into the queue was interrupted", url);
                                 throw new UncheckedPmcReaderException(e1);
                             } catch (URISyntaxException e1) {
-                                logFileSearch.error("Could not convert URL {} to URI.", url, e);
+                                // This exception can happen when the path contains XML escaped characters, e.g.
+                                // non_comm_use.O-Z.xml.zip!/P&#x000e4;diatrische_Gastroenterologie,_Hepatologie_und_Ern&#x000e4;hrung/PMC7498810.nxml
+                                // Try to unescape it.
+                                try {
+                                    url = new URL(StringEscapeUtils.unescapeXml(urlStr));
+                                    final URI uri = url.toURI();
+                                    logFileSearch.trace("Waiting to put URI {} into queue", uri);
+                                    uris.put(uri);
+                                    logFileSearch.trace("Successfully put URI {} into queue", uri);
+                                } catch (URISyntaxException e2) {
+                                    logFileSearch.error("Could not convert URL {} to URI.", url, e);
+                                } catch (InterruptedException e2) {
+                                    logFileSearch.error("Putting URI for URL {} into the queue was interrupted", url);
+                                    throw new UncheckedPmcReaderException(e2);
+                                }
                             }
                         }
                     }
