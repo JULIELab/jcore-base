@@ -1,5 +1,6 @@
 package de.julielab.jcore.reader.pmc;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +95,7 @@ public class NXMLURIIterator implements Iterator<URI> {
                     while (entries.hasMoreElements()) {
                         final ZipEntry e = entries.nextElement();
                         if (!e.isDirectory() && e.getName().contains(".nxml") && isInWhitelist(new File(e.getName()))) {
-                            final String urlStr = "jar:" + directory.toURI().toString() + "!/" + e.getName();
+                            final String urlStr = StringEscapeUtils.unescapeXml("jar:" + directory.toURI().toString() + "!/" + e.getName());
                             URL url = new URL(urlStr);
                             try {
                                 final URI uri = url.toURI();

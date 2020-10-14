@@ -29,9 +29,8 @@ public class CasPopulator {
                 nxmlDocumentParser.reset(currentUri, cas);
                 result = nxmlDocumentParser.parse();
             } catch (DocumentParsingException e) {
-                log.warn("Error occurred: {}. Skipping document.", e.getMessage());
-                if (nxmlIterator.hasNext())
-                    currentUri = nxmlIterator.next();
+                log.warn("Error occurred when trying to read from URI {} (ASCII string: {}): {}. Skipping document.", currentUri, currentUri.toASCIIString(), e.getMessage());
+                currentUri = nxmlIterator.next();
             }
         }
         StringBuilder sb = populateCas(result, new StringBuilder());
