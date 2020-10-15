@@ -40,16 +40,15 @@ public class NxmlDocumentParser extends NxmlParser {
     private DefaultElementParser defaultElementParser;
     private Map<String, Map<String, Object>> tagProperties;
     private Tagset tagset;
-    private URI uri;
 
     public void reset(File nxmlFile, JCas cas) throws DocumentParsingException {
         reset(nxmlFile.toURI(), cas);
     }
 
     public void reset(URI uri, JCas cas) throws DocumentParsingException {
-        this.uri = uri;
-        boolean gzipped = uri.toString().endsWith(".gz") || this.uri.toString().endsWith(".gzip");
+        boolean gzipped = uri.toString().endsWith(".gz") || uri.toString().endsWith(".gzip");
         try {
+            log.debug("Reading from URL {}", uri.toURL());
             InputStream is = uri.toURL().openStream();
             if (gzipped)
                 is = new GZIPInputStream(is);
