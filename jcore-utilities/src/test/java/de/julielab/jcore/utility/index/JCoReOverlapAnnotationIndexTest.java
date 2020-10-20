@@ -16,7 +16,6 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -39,23 +38,23 @@ public class JCoReOverlapAnnotationIndexTest {
 		t6.addToIndexes();
 
 		JCoReOverlapAnnotationIndex<Token> index = new JCoReOverlapAnnotationIndex<>(jcas, Token.type);
-		List<Token> result = index.search(t2).collect(Collectors.toList());
+		List<Token> result = index.search(t2);
 		assertTrue(result.contains(t1));
 		assertTrue(result.contains(t2));
 		assertTrue(result.contains(t3));
 		assertEquals(3, result.size());
 		
-		result = index.search(t1).collect(Collectors.toList());
+		result = index.search(t1);
 		assertTrue(result.contains(t1));
 		assertTrue(result.contains(t2));
 		assertEquals(2, result.size());
 		
-		result = index.search(t4).collect(Collectors.toList());
+		result = index.search(t4);
 		assertTrue(result.contains(t4));
 		assertTrue(result.contains(t5));
 		assertEquals(2, result.size());
 		
-		result = index.search(t6).collect(Collectors.toList());
+		result = index.search(t6);
 		assertTrue(result.contains(t6));
 		assertEquals(1, result.size());
 	}
