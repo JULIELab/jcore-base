@@ -38,7 +38,7 @@ public class FrontParserTest {
 		Annotation annotation = frontResult.getAnnotation();
 		assertTrue(annotation instanceof Header);
 		Header header = (Header) annotation;
-		assertEquals("2847692", header.getDocId());
+		assertEquals("PMC2847692", header.getDocId());
 		assertEquals("10.1007/s13280-009-0005-8", header.getDoi());
 		assertNotNull(header.getOtherIDs());
 		assertTrue(header.getOtherIDs().size() > 0);

@@ -83,7 +83,7 @@ public class PMCReaderTest {
 
             cas.reset();
         }
-        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
+        assertThat(foundDocuments).containsExactlyInAnyOrder("PMC2847692", "PMC3201365", "PMC4257438", "PMC2758189", "PMC2970367");
     }
 
     @Test
@@ -122,7 +122,7 @@ public class PMCReaderTest {
 
             cas.reset();
         }
-        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
+        assertThat(foundDocuments).containsExactlyInAnyOrder("PMC2847692", "PMC3201365", "PMC4257438", "PMC2758189", "PMC2970367");
     }
 
     @Test
@@ -146,7 +146,7 @@ public class PMCReaderTest {
             foundDocuments.add(header.getDocId());
             cas.reset();
         }
-        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "2758189");
+        assertThat(foundDocuments).containsExactlyInAnyOrder("PMC2847692", "PMC2758189");
     }
 
     @Test
@@ -176,7 +176,7 @@ public class PMCReaderTest {
         Header header = (Header) CasUtil.selectSingle(cas.getCas(),
                 CasUtil.getAnnotationType(cas.getCas(), Header.class));
         assertNotNull(header);
-        assertEquals("2847692", header.getDocId());
+        assertEquals("PMC2847692", header.getDocId());
         assertNotNull(header.getPubTypeList());
         assertTrue(header.getPubTypeList().size() > 0);
         assertEquals("Ambio", ((Journal) header.getPubTypeList(0)).getTitle());
@@ -378,7 +378,7 @@ public class PMCReaderTest {
 
             cas.reset();
         }
-        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
+        assertThat(foundDocuments).containsExactlyInAnyOrder("PMC2847692", "PMC3201365", "PMC4257438", "PMC2758189", "PMC2970367");
     }
 
     @Test
