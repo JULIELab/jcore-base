@@ -107,6 +107,7 @@ public class FrontParser extends NxmlElementParser {
 			assert volume.isPresent();
 
 			Header header = new Header(nxmlDocumentParser.cas);
+			header.setSource("PubMed Central");
 			header.setComponentId(PMCReader.class.getName());
 
 			pmcid.ifPresent(id -> header.setDocId("PMC" + id));
