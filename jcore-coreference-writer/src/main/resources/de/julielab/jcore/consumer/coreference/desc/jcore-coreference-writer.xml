@@ -2,10 +2,10 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
-    <annotatorImplementationName>de.julielab.jcore.consumer.acronyms.CoreferenceWriter</annotatorImplementationName>
+    <annotatorImplementationName>de.julielab.jcore.consumer.coreference.CoreferenceWriter</annotatorImplementationName>
     <analysisEngineMetaData>
-        <name>JCoRe Acronym Writer</name>
-        <description>Writes acronym annotation to a text file.</description>
+        <name>JCoRe Coreference Writer</name>
+        <description>Writes coreference annotation to a text file.</description>
         <version>2.6.0-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
@@ -19,7 +19,7 @@
         <configurationParameterSettings />
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+                <import name="de.julielab.jcore.types.jcore-discourse-types" />
             </imports>
         </typeSystemDescription>
         <fsIndexCollection />

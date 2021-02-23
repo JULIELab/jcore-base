@@ -54,6 +54,7 @@
     <typeSystemDescription>
       <imports>
         <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+        <import name="de.julielab.jcore.types.jcore-document-meta-types" />
         <import location="paragraph-scope-type.xml" />
       </imports>
     </typeSystemDescription>
