@@ -6,7 +6,7 @@
     "descriptors": [
         {
             "category": "consumer",
-            "location": "de.julielab.jcore.consumer.coreference.desc.jcore-acronym-writer"
+            "location": "de.julielab.jcore.consumer.coreference.desc.jcore-coreference-writer"
         }
     ],
     "exposable": true,
