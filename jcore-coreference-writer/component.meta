@@ -2,19 +2,19 @@
     "categories": [
         "consumer"
     ],
-    "description": "Writes acronyms annotations from the CAS to a text file format.",
+    "description": "Writes coreference annotations from the CAS to a text file format.",
     "descriptors": [
         {
             "category": "consumer",
-            "location": "de.julielab.jcore.consumer.acronyms.desc.jcore-acronym-writer"
+            "location": "de.julielab.jcore.consumer.coreference.desc.jcore-acronym-writer"
         }
     ],
     "exposable": true,
     "group": "general",
     "maven-artifact": {
-        "artifactId": "jcore-acronym-writer",
-        "groupId": "de.julielab.jcore.consumer.acronyms",
-        "version": "2.5.0-SNAPSHOT"
+        "artifactId": "jcore-coreference-writer",
+        "groupId": "de.julielab",
+        "version": "2.6.0-SNAPSHOT"
     },
-    "name": "JCoRe Acronym Writer"
+    "name": "JCoRe Coreference Writer"
 }
