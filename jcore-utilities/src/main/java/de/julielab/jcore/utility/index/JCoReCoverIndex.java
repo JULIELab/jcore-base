@@ -106,10 +106,8 @@ public class JCoReCoverIndex<E extends Annotation> implements JCoReAnnotationInd
 	 * indexed annotations, first {@link #freeze()} the index and then
 	 * {@link #search(int, int)} it.
 	 * 
-	 * @param jCas
-	 *            A CAS instance.
-	 * @param type
-	 *            The annotation type to index.
+	 * @param annotation
+	 *            A UIMA annotation
 	 */
 	public void index(E annotation) {
 		if (frozen)

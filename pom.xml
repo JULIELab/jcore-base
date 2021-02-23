@@ -74,6 +74,8 @@
     <module>jcore-ace-reader</module>
             
     <module>jcore-acronym-ae</module>
+
+    <module>jcore-acronym-writer</module>
             
     <module>jcore-banner-ae</module>
             
@@ -88,7 +90,9 @@
     <module>jcore-conll-consumer</module>
             
     <module>jcore-coordination-baseline-ae</module>
-            
+
+    <module>jcore-coreference-writer</module>
+
     <module>jcore-ct-reader</module>
             
     <module>jcore-descriptor-creator</module>

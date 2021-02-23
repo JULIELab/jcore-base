@@ -34,7 +34,7 @@
     </typeDescription>
     <typeDescription>
       <name>de.julielab.jcore.types.CorefExpression</name>
-      <description>A 'coreference expression' might by any span of text that is part of a set of text expressions refering to the same entity. Speaking in the anaphora framework, coreference expressions are either anaphors - mostly pronouns and definite noun phrases - or their antecedents - the original, first mention of an entity or already an anaphoric expression referring itself to a reference to the original entity mention.</description>
+      <description>A 'coreference expression' might be any span of text that is part of a set of text expressions referring to the same entity. Speaking in the anaphora framework, co-reference expressions are either anaphors - mostly pronouns and definite noun phrases - or their antecedents - the original, first mention of an entity or already an anaphoric expression referring itself to a reference to the original entity mention.</description>
       <supertypeName>de.julielab.jcore.types.Annotation</supertypeName>
       <features>
         <featureDescription>

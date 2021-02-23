@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jcore-acronym-writer</artifactId>
+    <artifactId>jcore-coreference-writer</artifactId>
     <packaging>jar</packaging>
 
     <parent>
@@ -45,7 +45,7 @@
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
-    <name>JCoRe Acronym Writer</name>
+    <name>JCoRe Coreference Writer</name>
     <organization>
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
@@ -56,6 +56,6 @@
             <url>https://opensource.org/licenses/BSD-2-Clause</url>
         </license>
     </licenses>
-    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-acronym-writer</url>
-    <description>Writes acronym annotations from the CAS to a text file format.</description>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-coreference-writer</url>
+    <description>Writes coreference annotations from the CAS to a text file format.</description>
 </project>
