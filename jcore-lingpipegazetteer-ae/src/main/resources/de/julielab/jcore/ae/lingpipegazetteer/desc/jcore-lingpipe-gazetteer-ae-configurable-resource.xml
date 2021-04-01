@@ -50,6 +50,9 @@
             </nameValuePair>
         </configurationParameterSettings>
         <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-semantics-mention-types"/>
+            </imports>
         </typeSystemDescription>
         <typePriorities />
         <fsIndexCollection />

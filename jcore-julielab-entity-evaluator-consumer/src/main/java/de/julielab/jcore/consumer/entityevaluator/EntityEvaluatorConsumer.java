@@ -249,7 +249,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         super.initialize(aContext);
 
         outputColumnNamesArray = (String[]) aContext.getConfigParameterValue(PARAM_OUTPUT_COLUMNS);
-        columnDefinitionDescriptions = (String[]) aContext.getConfigParameterValue(PARAM_COLUMN_DEFINITIONS);
+        columnDefinitionDescriptions = Optional.ofNullable((String[]) aContext.getConfigParameterValue(PARAM_COLUMN_DEFINITIONS)).orElse(new String[0]);
         typePrefix = (String) aContext.getConfigParameterValue(PARAM_TYPE_PREFIX);
 
         featureFilterDefinitions = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_FEATURE_FILTERS)).orElse(new String[0]);

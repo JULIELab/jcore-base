@@ -38,33 +38,35 @@ public class DescriptorCreator {
     private static final String DESC = "desc";
 
     public static void main(String[] args) throws Exception {
+        String basePackage = "de.julielab.jcore";
+        if (args.length > 0)
+            basePackage = args[0];
         DescriptorCreator creator = new DescriptorCreator();
-        creator.run();
+        creator.run(basePackage);
     }
 
     public static String getComponentName() {
         return new File(".").getAbsoluteFile().getParentFile().getName();
     }
 
-    public void run() throws Exception {
-        run(DEFAULT_OUTPUT_ROOT);
+    public void run(String basePackage) throws Exception {
+        run(basePackage, DEFAULT_OUTPUT_ROOT);
     }
 
-    public void run(String outputRoot) throws Exception {
-        List<Class<? extends CollectionReader>> readers;
-        List<Class<? extends AnalysisComponent>> aes;
-        readers = findSubclasses(CollectionReader.class.getCanonicalName());
-        aes = findSubclasses(AnalysisComponent.class.getCanonicalName());
+    public void run(String basePackage, String outputRoot) throws Exception {
+        List<Class<? extends CollectionReader>> readers = findSubclasses(CollectionReader.class.getCanonicalName());
+        List<Class<? extends AnalysisComponent>> aes = findSubclasses(AnalysisComponent.class.getCanonicalName());
 
-        readers = readers.stream().filter(c -> c.getPackage().getName().contains("de.julielab.jcore.reader"))
+        readers = readers.stream().filter(c -> c.getPackage().getName().startsWith(basePackage) && (c.getPackage().getName().endsWith("reader") || c.getName().toLowerCase().endsWith("reader")))
                 .collect(toList());
-        // Since consumers and also multipliers can be or are AnalysisComponents, were may list all component categories here.
+        // Since consumers and also multipliers can be or are AnalysisComponents, we may list all component categories here.
         // Also, remove abstract classes
         aes = aes.stream().filter(c -> !Modifier.isAbstract(c.getModifiers())).
-                filter(c -> c.getPackage().getName().contains("de.julielab.jcore.ae")
-                        || c.getPackage().getName().contains("de.julielab.jcore.consumer")
-                        || c.getPackage().getName().contains("de.julielab.jcore.multiplier")
-                        || c.getPackage().getName().contains("de.julielab.jcore.reader")).collect(toList());
+                filter(c -> c.getPackage().getName().startsWith(basePackage) &&
+                          (c.getPackage().getName().endsWith("ae") || c.getName().toLowerCase().endsWith("ae") || c.getName().toLowerCase().endsWith("annotator")
+                        || c.getPackage().getName().endsWith("consumer") || c.getName().toLowerCase().endsWith("consumer") || c.getName().toLowerCase().endsWith("writer")
+                        || c.getPackage().getName().endsWith("multiplier") || c.getName().toLowerCase().endsWith("multiplier"))
+                ).collect(toList());
 
         if (readers.isEmpty() && aes.isEmpty()) {
             log.warn("No JCoRe UIMA component classes were found.");
