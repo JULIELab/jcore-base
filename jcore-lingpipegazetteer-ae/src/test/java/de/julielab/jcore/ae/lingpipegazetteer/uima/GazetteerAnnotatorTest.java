@@ -378,7 +378,10 @@ public class GazetteerAnnotatorTest extends TestCase {
 		annotator.process(jCas);
 
 		Collection<EntityMention> entityMentions = JCasUtil.select(jCas, EntityMention.class);
-		assertEquals("Expected a single entity", 1, entityMentions.size());
+		assertEquals("Expected a single entity", 2, entityMentions.size());
+		Iterator<EntityMention> iterator = entityMentions.iterator();
+		assertEquals("Unexpected covered entity text", "lipoprotein", iterator.next().getCoveredText());
+		assertEquals("Unexpected covered entity text", "lipoproteins", iterator.next().getCoveredText());
 	}
 
 	@Test
