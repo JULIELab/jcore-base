@@ -30,6 +30,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -45,10 +46,8 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -357,6 +356,29 @@ public class GazetteerAnnotatorTest extends TestCase {
 		}
 		assertEquals("Wrong entity count: ", new Integer(4), counter);
 
+	}
+
+	@Test
+	public void testAnnotatorWithPluralNormalization()
+			throws ResourceInitializationException, AnalysisEngineProcessException {
+		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
+				ChunkerProviderImplAlt.class, new File("src/test/resources/normalizepluralgazetteer.properties"));
+		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
+				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
+
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
+				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
+				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
+		JCas jCas = annotator.newJCas();
+
+		jCas.setDocumentText("High-density lipoprotein (HDL) is one of the five major groups of lipoproteins.");
+		PennBioIEPOSTag tag = new PennBioIEPOSTag(jCas, 74, 86);
+		tag.setValue("NNS");
+		tag.addToIndexes();
+		annotator.process(jCas);
+
+		Collection<EntityMention> entityMentions = JCasUtil.select(jCas, EntityMention.class);
+		assertEquals("Expected a single entity", 1, entityMentions.size());
 	}
 
 	@Test
