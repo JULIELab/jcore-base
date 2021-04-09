@@ -315,7 +315,6 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
             docText = transliterator.transform(docText);
         NormalizedString normalizedDocText = null;
         if (provider.getNormalize()) {
-            boolean hasPosTags = aJCas.getAnnotationIndex(PennBioIEPOSTag.type).iterator().hasNext();
             if (provider.getNormalizePlural()) {
                 OffsetSet pluralOffsets = StreamSupport.stream(Spliterators.spliterator(aJCas.<PennBioIEPOSTag>getAnnotationIndex(PennBioIEPOSTag.type).iterator(), 0, 0), false).filter(tag -> tag.getValue().equals("NNS")).map(tag -> Range.between(tag.getBegin(), tag.getEnd())).collect(Collectors.toCollection(OffsetSet::new));
                 normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory, true, pluralOffsets, transliterator);
