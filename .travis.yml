@@ -6,8 +6,8 @@ addons:
     sources:
       - deadsnakes
     packages:
-      - python3.6
-      - python3.6-dev
+      - python3.7
+      - python3.7-dev
 
 env:
   global:
@@ -35,7 +35,7 @@ before_install:
   - #./travis-deployment/install-flair-nightly.sh
   - export BOTO_CONFIG=/dev/null
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-script: mvn test -B
+script: mvn -T 2C test -B
 
 cache:
   directories:
