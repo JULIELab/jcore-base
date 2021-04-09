@@ -35,7 +35,7 @@ before_install:
   - #./travis-deployment/install-flair-nightly.sh
   - export BOTO_CONFIG=/dev/null
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-script: mvn -T 2C test -B
+script: mvn test -B
 
 cache:
   directories:
