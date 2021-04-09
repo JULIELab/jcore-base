@@ -25,6 +25,7 @@ import com.aliasi.chunk.Chunking;
 import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
 import com.aliasi.tokenizer.TokenizerFactory;
 import com.ibm.icu.text.Transliterator;
+import de.julielab.java.utilities.spanutils.OffsetSet;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProvider;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
@@ -32,12 +33,14 @@ import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking.
 import de.julielab.jcore.types.Abbreviation;
 import de.julielab.jcore.types.AbbreviationLongform;
 import de.julielab.jcore.types.ConceptMention;
+import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.mantra.Entity;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.index.IndexTermGenerator;
 import de.julielab.jcore.utility.index.JCoReHashMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
 import de.julielab.jcore.utility.index.TermGenerators.LongOffsetIndexTermGenerator;
+import org.apache.commons.lang3.Range;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -53,6 +56,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
@@ -213,52 +218,6 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
         return overlappingChunks;
     }
 
-    // enum ParenthesesType {
-    // ROUND_CLOSED {
-    // @Override
-    // boolean isOpen() {
-    // return false;
-    // }
-    //
-    // },
-    // BRACKET_CLOSED {
-    // @Override
-    // boolean isOpen() {
-    // return false;
-    // }
-    // },
-    // CURLY_CLOSED {
-    // @Override
-    // boolean isOpen() {
-    // return false;
-    // }
-    //
-    // },
-    // ROUND_OPENED {
-    // @Override
-    // boolean isOpen() {
-    // return true;
-    // }
-    // },
-    // BRACKET_OPENED {
-    // @Override
-    // boolean isOpen() {
-    // return true;
-    // }
-    // },
-    // CURLY_OPENED {
-    // @Override
-    // boolean isOpen() {
-    // return true;
-    // }
-    // };
-    // abstract boolean isOpen();
-    //
-    // boolean isClose() {
-    // return !isOpen();
-    // };
-    // }
-
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         LOGGER.info("calls to initialize: " + initializeCount);
 
@@ -314,8 +273,7 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
                 checkAcronyms);
         // filter stop words
 
-        Boolean normalizeBoolean = provider.getNormalize();// (Boolean)
-        // aContext.getConfigParameterValue(PARAM_NORMALIZE_TEXT);
+        Boolean normalizeBoolean = provider.getNormalize();
         if (normalizeBoolean) {
             normalizationTokenFactory = new IndoEuropeanTokenizerFactory();
         }
@@ -357,8 +315,14 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
             docText = transliterator.transform(docText);
         NormalizedString normalizedDocText = null;
         if (provider.getNormalize()) {
-            normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory,
-                    transliterator);
+            boolean hasPosTags = aJCas.getAnnotationIndex(PennBioIEPOSTag.type).iterator().hasNext();
+            if (provider.getNormalizePlural()) {
+                OffsetSet pluralOffsets = StreamSupport.stream(Spliterators.spliterator(aJCas.<PennBioIEPOSTag>getAnnotationIndex(PennBioIEPOSTag.type).iterator(), 0, 0), false).filter(tag -> tag.getValue().equals("NNS")).map(tag -> Range.between(tag.getBegin(), tag.getEnd())).collect(Collectors.toCollection(OffsetSet::new));
+                normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory, true, pluralOffsets, transliterator);
+            }else {
+                normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory,
+                        transliterator);
+            }
         }
 
         IndexTermGenerator<Long> longOffsetTermGenerator = TermGenerators.longOffsetTermGenerator();

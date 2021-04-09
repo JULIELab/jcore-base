@@ -1,8 +1,11 @@
 package de.julielab.jcore.ae.lingpipegazetteer.utils;
 
+import com.aliasi.tokenizer.PorterStemmerTokenizerFactory;
 import com.aliasi.tokenizer.Tokenizer;
 import com.aliasi.tokenizer.TokenizerFactory;
 import com.ibm.icu.text.Transliterator;
+import de.julielab.java.utilities.spanutils.OffsetSet;
+import org.apache.commons.lang3.Range;
 
 import java.util.*;
 
@@ -88,10 +91,10 @@ public class StringNormalizerForChunking {
      * @param tokenizerFactory
      * @return
      */
-    public static NormalizedString normalizeString(String str, TokenizerFactory tokenizerFactory,
+    public static NormalizedString normalizeString(String str, TokenizerFactory tokenizerFactory, boolean normalizePlural, OffsetSet pluralPositions,
                                                    Transliterator transliterator) {
-        // boolean stemming = tokenizerFactory instanceof
-        // PorterStemmerTokenizerFactory;
+        boolean stemming = tokenizerFactory instanceof
+                PorterStemmerTokenizerFactory;
 
         NormalizedString ns = new NormalizedString();
 
@@ -141,8 +144,10 @@ public class StringNormalizerForChunking {
                 if (transliterator != null)
                     token = transliterator.transform(token);
                 // plural s, only when no stemming is done
-                // if (!stemming && token.endsWith("s"))
-                // token = token.substring(0, token.length() - 1);
+                // an even better normalization would be to use the lemma, of course
+                Range<Integer> tokenOffsets = Range.between(tokenizer.lastTokenStartPosition(), tokenizer.lastTokenEndPosition());
+                if (normalizePlural && !stemming && token.endsWith("s") && pluralPositions.locate(tokenOffsets).isOverlappedBy(tokenOffsets))
+                    token = token.substring(0, token.length() - 1);
                 sb.append(token);
                 int newStartOffset = sb.length() - token.length();
                 int newEndOffset = sb.length();
@@ -162,8 +167,16 @@ public class StringNormalizerForChunking {
         return sum;
     }
 
+    public static NormalizedString normalizeString(String str, TokenizerFactory tokenizerFactory, Transliterator transliterator) {
+        return normalizeString(str, tokenizerFactory, false, null, transliterator);
+    }
+
     public static NormalizedString normalizeString(String str, TokenizerFactory tokenizerFactory) {
-        return normalizeString(str, tokenizerFactory, null);
+        return normalizeString(str, tokenizerFactory, false, null, null);
+    }
+
+    public static NormalizedString normalizeString(String str, boolean normalizePlural, OffsetSet pluralPositions, TokenizerFactory tokenizerFactory) {
+        return normalizeString(str, tokenizerFactory, normalizePlural, pluralPositions, null);
     }
 
     public enum Mode {

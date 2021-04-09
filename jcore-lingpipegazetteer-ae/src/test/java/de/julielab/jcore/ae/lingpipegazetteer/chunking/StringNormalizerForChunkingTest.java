@@ -5,10 +5,13 @@ import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
 import com.aliasi.tokenizer.PorterStemmerTokenizerFactory;
 import com.aliasi.tokenizer.TokenizerFactory;
 import com.ibm.icu.text.Transliterator;
+import de.julielab.java.utilities.spanutils.OffsetSet;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking.NormalizedString;
-import org.junit.Ignore;
+import org.apache.commons.lang3.Range;
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -154,16 +157,11 @@ public class StringNormalizerForChunkingTest {
 	}
 
 	@Test
-	@Ignore
-	/**
-	 * Ignored because the plural ignore introduced too much errors on test data
-	 * so it was removed from the algorithm.
-	 */
 	public void testNormalizePlural() {
 		String str;
 		str = "glutathione transferases are evil";
 		TokenizerFactory tokenizerFactory = new IndoEuropeanTokenizerFactory();
-		NormalizedString ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
+		NormalizedString ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory, true, new OffsetSet(List.of(Range.between(12, 24))), null);
 		assertEquals("glutathione transferase are evil", ns.string);
 	}
 }

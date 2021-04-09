@@ -13,6 +13,8 @@ public interface ChunkerProvider {
 	public boolean getUseApproximateMatching();
 	
 	public boolean getNormalize();
+
+	public boolean getNormalizePlural();
 	
 	public boolean getTransliterate();
 	

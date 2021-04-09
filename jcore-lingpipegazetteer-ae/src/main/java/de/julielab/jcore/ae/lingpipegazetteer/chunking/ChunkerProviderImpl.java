@@ -429,6 +429,11 @@ public class ChunkerProviderImpl implements ChunkerProvider,
 	}
 
 	@Override
+	public boolean getNormalizePlural() {
+		return false;
+	}
+
+	@Override
 	public boolean getTransliterate() {
 		return false;
 	}

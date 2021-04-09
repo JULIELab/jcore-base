@@ -43,6 +43,12 @@ public class ChunkerProviderImplAlt implements ChunkerProvider, SharedResourceOb
 	 */
 	public final static String PARAM_NORMALIZE_TEXT = "NormalizeText";
 	/**
+	 * Only in effect when {@link #PARAM_NORMALIZE_TEXT} is set to <tt>true</tt>. If so, will normalize plurals
+	 * found in the text by removing the training 's'. Requires annotations of the type {@link de.julielab.jcore.types.PennBioIEPOSTag}
+	 * to be present in the CAS.
+	 */
+	public static final String PARAM_NORMALIZE_PLURAL = "NormalizePlural";
+	/**
 	 * Parameter to indicate whether text - dictionary entries for this class - should be transliterated, i.e. whether
 	 * accents and other character variations should be stripped. If this is switched on here, it must also be switched
 	 * on in the descriptor of the annotator itself!
@@ -54,6 +60,7 @@ public class ChunkerProviderImplAlt implements ChunkerProvider, SharedResourceOb
 	private boolean useApproximateMatching;
 	private boolean transliterate;
 	private boolean normalize;
+	private boolean normalizePlural;
 	private InputStream dictFile;
 	private InputStream stopFile;
 
@@ -69,6 +76,10 @@ public class ChunkerProviderImplAlt implements ChunkerProvider, SharedResourceOb
 
 	public Chunker getChunker() {
 		return dictChunker;
+	}
+
+	public boolean getNormalizePlural() {
+		return normalizePlural;
 	}
 
 	public void load(DataResource resource) throws ResourceInitializationException {
@@ -118,7 +129,11 @@ public class ChunkerProviderImplAlt implements ChunkerProvider, SharedResourceOb
 		normalize = false;
 		if (normalizeString != null)
 			normalize = new Boolean(normalizeString);
-		LOGGER.info("Normalize dictionary entries (i.e. completely strip dashes, parenthesis etc): {}", normalize);
+		LOGGER.info("Normalize dictionary entries and text (i.e. completely strip dashes, parenthesis etc): {}", normalize);
+
+		normalizePlural = Boolean.parseBoolean(properties.getProperty(PARAM_NORMALIZE_PLURAL, "false")) && normalize;
+		if (normalize)
+		LOGGER.info("Also normalize plural forms to singular: {}", normalizePlural);
 
 		String transliterateString = properties.getProperty(PARAM_TRANSLITERATE_TEXT);
 		transliterate = false;
