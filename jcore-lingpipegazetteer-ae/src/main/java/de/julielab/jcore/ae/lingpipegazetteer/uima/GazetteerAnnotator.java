@@ -532,8 +532,11 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
             return;
         }
 
-        int start = provider.getNormalize() ? normalizedDocText.getOriginalOffset(chunk.start()) : chunk.start();
-        int end = provider.getNormalize() ? normalizedDocText.getOriginalOffset(chunk.end()) : chunk.end();
+        // The Math.min(, Math.max(0, )) application is a security measure. I rare cases they are issues with multi
+        // byte character encodings. This security measure won't correct the underlying error but avoid errors
+        // due to invalid offsets.
+        int start = Math.min(aJCas.getDocumentText().length(), Math.max(0, provider.getNormalize() ? normalizedDocText.getOriginalOffset(chunk.start()) : chunk.start()));
+        int end = Math.min(aJCas.getDocumentText().length(), Math.max(0,provider.getNormalize() ? normalizedDocText.getOriginalOffset(chunk.end()) : chunk.end()));
 
         try {
             if (mantraMode) {

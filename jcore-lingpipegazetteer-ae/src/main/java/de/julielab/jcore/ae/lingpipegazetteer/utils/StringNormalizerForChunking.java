@@ -146,8 +146,18 @@ public class StringNormalizerForChunking {
                 // plural s, only when no stemming is done
                 // an even better normalization would be to use the lemma, of course
                 Range<Integer> tokenOffsets = Range.between(tokenizer.lastTokenStartPosition(), tokenizer.lastTokenEndPosition());
-                if (normalizePlural && !stemming && token.endsWith("s") && pluralPositions != null && !pluralPositions.isEmpty() && pluralPositions.locate(tokenOffsets).isOverlappedBy(tokenOffsets))
-                    token = token.substring(0, token.length() - 1);
+                try {
+                    if (normalizePlural && !stemming && token.endsWith("s") && pluralPositions != null && !pluralPositions.isEmpty() && Optional.ofNullable(pluralPositions.locate(tokenOffsets)).orElse(Range.between(0, 0)).isOverlappedBy(tokenOffsets))
+                        token = token.substring(0, token.length() - 1);
+                } catch (Exception e) {
+                    System.out.println("normalizePlural: " + normalizePlural);
+                    System.out.println("stemming: " + stemming);
+                    System.out.println("Token: " + token);
+                    System.out.println("PluralPositions: " + pluralPositions);
+                    System.out.println("TokenOffsets: " + tokenOffsets);
+                    System.out.println("pluralPositions.locate(tokenOffsets): " + pluralPositions.locate(tokenOffsets));
+                    e.printStackTrace();
+                }
                 sb.append(token);
                 int newStartOffset = sb.length() - token.length();
                 int newEndOffset = sb.length();
