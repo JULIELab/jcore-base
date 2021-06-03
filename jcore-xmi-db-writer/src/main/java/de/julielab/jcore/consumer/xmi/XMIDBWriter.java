@@ -115,6 +115,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_FEATURES_TO_MAP_DRYRUN = "BinaryFeaturesToMapDryRun";
     public static final String PARAM_BINARY_FEATURES_BLACKLIST = "BinaryFeaturesBlacklist";
     public static final String PARAM_ADD_SHA_HASH = "AddShaHash";
+    public static final String PARAM_SKIP_MATCHING_HASH = "SkipMatchingHash";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     // The mappings are keyed by the costosys.xml path and the table schema, see 'mappingCacheKey'.
     // The idea is to save costly database connections by sharing updating mapping across threads.
@@ -249,6 +250,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private String[] binaryFeaturesBlacklistParameter;
     @ConfigurationParameter(name = PARAM_ADD_SHA_HASH, mandatory = false, description = "Possible values: document_text. If this parameter is set to a valid value, the SHA256 hash for the given value will be calculated, base64 encoded and added to each document as a new column in the document table. The column will be named after the parameter value, suffixed by '_sha256'.")
     private String documentItemToHash;
+    @ConfigurationParameter(name =PARAM_SKIP_MATCHING_HASH, mandatory = false, description = "Only in effect, if: " + PARAM_ADD_SHA_HASH + " is active; if the target XMI table has also been read from by the XMI DB reader and the reader has been configured to read the document's current hash value. Then, compares the hash value retrieved and relied by the XMI DB reader to the  ")
     private Map<DocumentId, String> shaMap;
     private String mappingCacheKey;
     private DocumentReleaseCheckpoint docReleaseCheckpoint;

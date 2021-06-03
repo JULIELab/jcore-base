@@ -36,6 +36,9 @@
                                 <typeSystemInclude>
                                     src/main/resources/de/julielab/jcore/types/casmultiplier/jcore-dbtable-multiplier-types.xml
                                 </typeSystemInclude>
+								<typeSystemInclude>
+									src/main/resources/de/julielab/jcore/types/jcore-casflow-types.xml
+								</typeSystemInclude>
 							</typeSystemIncludes>
 
 							<!-- OPTIONAL -->

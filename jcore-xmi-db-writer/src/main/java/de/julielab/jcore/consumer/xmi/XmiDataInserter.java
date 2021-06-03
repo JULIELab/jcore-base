@@ -57,19 +57,20 @@ public class XmiDataInserter {
      * update. It will just be inserted otherwise (throwing an error if there
      * will be a primary key constraint violation, i.e. duplicates).
      *
-     * @param serializedCASes
+     * @param annotationModules
      * @param storeBaseDocument
      * @param deleteObsolete
      * @param shaMap
      * @throws XmiDataInsertionException
      * @throws AnalysisEngineProcessException
      */
-    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> serializedCASes, String subsetTableName, Boolean storeBaseDocument, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
+    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> annotationModules, String subsetTableName, Boolean storeBaseDocument, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
         if (log.isTraceEnabled()) {
-            log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
-            log.trace("Sending {} XMI data items", serializedCASes.size());
+            log.trace("Sending XMI data for {} tables to the database", annotationModules.size());
+            log.trace("Sending {} XMI data items", annotationModules.size());
         }
-        final Map<DocumentId, List<XmiData>> dataByDoc = serializedCASes.stream().collect(Collectors.groupingBy(XmiData::getDocId));
+        final Map<DocumentId, List<XmiData>> dataByDoc = annotationModules.stream().collect(Collectors.groupingBy(XmiData::getDocId));
+        // Collect all document IDs we want to add something for into the database. This can be annotations or the hash.
         final Set<DocumentId> documentIdsWithValues = shaMap != null ? Sets.union(dataByDoc.keySet(), shaMap.keySet()) : dataByDoc.keySet();
         class RowIterator implements Iterator<Map<String, Object>> {
 
@@ -163,15 +164,17 @@ public class XmiDataInserter {
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             conn.setAutoCommit(false);
 
+            // This is the private in-line defined class from above. All values are already contained in the class
+            // definition.
             RowIterator iterator = new RowIterator();
             try {
                 if (updateMode) {
                     log.debug("Updating {} XMI CAS data in database table '{}'.",
-                            serializedCASes.size(), xmiTableName);
+                            annotationModules.size(), xmiTableName);
                     dbc.updateFromRowIterator(iterator, xmiTableName, false, storeBaseDocument, schemaDocument);
                 } else {
                     log.debug("Inserting {} XMI CAS data into database table '{}'.",
-                            serializedCASes.size(), xmiTableName);
+                            annotationModules.size(), xmiTableName);
                     dbc.importFromRowIterator(iterator, xmiTableName, false, schemaDocument);
                 }
             } catch (Exception e) {
