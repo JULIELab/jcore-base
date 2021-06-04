@@ -15,7 +15,7 @@ import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -107,37 +107,4 @@ public class AnnotationDefinedFlowControllerTest {
             token.addToIndexes();
         }
     }
-
-//    public static class TestMultiplier extends JCasMultiplier_ImplBase {
-//        private List<String> idsToRead = new ArrayList<>();
-//        private int currentIndex;
-//        @Override
-//        public void process(JCas jCas) throws AnalysisEngineProcessException {
-//            RowBatch rowbatch = JCasUtil.selectSingle(jCas, RowBatch.class);
-//            idsToRead.clear();
-//            currentIndex = 0;
-//            for (int i = 0; i < rowbatch.getIdentifiers().size() && rowbatch.getIdentifiers(i) != null; i++) {
-//                // In this test, the document IDs consist only of a single element
-//                idsToRead.add(rowbatch.getIdentifiers(i).get(0));
-//            }
-//        }
-//
-//        @Override
-//        public boolean hasNext() throws AnalysisEngineProcessException {
-//            return currentIndex < idsToRead.size();
-//        }
-//
-//        @Override
-//        public AbstractCas next() throws AnalysisEngineProcessException {
-//            JCas emptyJCas = getEmptyJCas();
-//            Header header = new Header(emptyJCas);
-//            String docId = idsToRead.get(currentIndex);
-//            header.setDocId(docId);
-//            header.addToIndexes();
-//            emptyJCas.setDocumentText("ID: " + docId);
-//            ++currentIndex;
-//            return emptyJCas;
-//        }
-//    }
-
 }

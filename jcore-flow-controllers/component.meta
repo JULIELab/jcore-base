@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "flowcontroller"
+    ],
+    "description": "Flow controllers can be used to control the route a (J)CAS takes through an aggregate analysis engine. This project contains Flow Controllers developed at the JULIE Lab.",
+    "descriptors": [
+        {
+            "category": "flowcontroller",
+            "location": "de.julielab.jcore.flow.annotationdefined.desc.jcore-annotation-defined-flowcontroller"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-flow-controllers",
+        "groupId": "de.julielab",
+        "version": "2.6.0-SNAPSHOT"
+    },
+    "name": "JCoRe Flow Controllers"
+}
