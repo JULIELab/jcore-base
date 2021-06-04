@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "reader"
+    ],
+    "description": "A simple project for the automatic creation of descriptors for UIMAfit-enabled components.",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "de.julielab.jcore.reader.testreader.desc.de.julielab.jcore.reader.testreader.TestReader"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-descriptor-creator",
+        "groupId": "de.julielab",
+        "version": "2.6.0-SNAPSHOT"
+    },
+    "name": "JCoRe Descriptor Creator"
+}

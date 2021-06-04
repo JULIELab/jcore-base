@@ -70,7 +70,9 @@
   </dependencies>
       
   <modules>
-            
+
+    <module>jcore-annotation-adder-ae</module>
+
     <module>jcore-ace-reader</module>
             
     <module>jcore-acronym-ae</module>
@@ -78,7 +80,11 @@
     <module>jcore-acronym-writer</module>
             
     <module>jcore-banner-ae</module>
-            
+
+    <module>jcore-bc2gm-reader</module>
+
+    <module>jcore-bc2gmformat-writer</module>
+
     <module>jcore-biolemmatizer-ae</module>
             
     <module>jcore-bionlpformat-consumer</module>
@@ -91,12 +97,16 @@
             
     <module>jcore-coordination-baseline-ae</module>
 
+    <module>jcore-cord19-reader</module>
+
     <module>jcore-coreference-writer</module>
 
     <module>jcore-ct-reader</module>
-            
+
+    <module>jcore-db-checkpoint-ae</module>
+
     <module>jcore-descriptor-creator</module>
-            
+
     <module>jcore-dta-reader</module>
             
     <module>jcore-ec-code-ae</module>
@@ -112,6 +122,10 @@
     <module>jcore-file-reader</module>
             
     <module>jcore-flair-ner-ae</module>
+
+    <module>jcore-flair-token-embedding-ae</module>
+
+    <module>jcore-flow-controllers</module>
             
     <module>jcore-iexml-consumer</module>
             
@@ -134,7 +148,9 @@
     <module>jcore-likelihood-assignment-ae</module>
             
     <module>jcore-likelihood-detection-ae</module>
-            
+
+    <module>jcore-line-multiplier</module>
+
     <module>jcore-lingpipegazetteer-ae</module>
             
     <module>jcore-lingpipe-porterstemmer-ae</module>
@@ -154,6 +170,8 @@
     <module>jcore-muc7-reader</module>
             
     <module>jcore-mutationfinder-ae</module>
+
+    <module>jcore-neo4j-relations-consumer</module>
             
     <module>jcore-opennlp-chunk-ae</module>
             
@@ -164,7 +182,9 @@
     <module>jcore-opennlp-sentence-ae</module>
             
     <module>jcore-opennlp-token-ae</module>
-            
+
+    <module>jcore-ppd-writer</module>
+
     <module>jcore-pmc-reader</module>
             
     <module>jcore-pubtator-reader</module>
@@ -191,24 +211,6 @@
             
     <module>jedis-parent</module>
             
-    <module>jcore-db-checkpoint-ae</module>
-            
-    <module>jcore-ppd-writer</module>
-            
-    <module>jcore-bc2gmformat-writer</module>
-            
-    <module>jcore-bc2gm-reader</module>
-            
-    <module>jcore-annotation-adder-ae</module>
-            
-    <module>jcore-flair-token-embedding-ae</module>
-            
-    <module>jcore-line-multiplier</module>
-            
-    <module>jcore-cord19-reader</module>
-          
-    <module>jcore-neo4j-relations-consumer</module>
-      
   </modules>
       
   <scm>

@@ -12,15 +12,14 @@ Parameters:
 		-v: The version of the repository
 		-u: If the repository does not yet exist: If is updateable or not
 """
-import os
-import sys
-import re
-from os.path import expanduser
-import json
 import fnmatch
+import json
+import os
+import re
+import sys
 import xml.etree.ElementTree as ET
+from os.path import expanduser
 from xml.etree.ElementTree import ParseError
-from collections import Counter
 
 # For testing we define in and out names so we can create new versions and compare
 META_DESC_IN_NAME = "component.meta"
@@ -66,6 +65,8 @@ def getArtifactInfo(pomFile):
 			category = "consumer"
 		if (artifactId.endswith("writer")):
 			category = "consumer"
+		if (artifactId.endswith("flowcontroller")):
+			category = "flowcontroller"
 
 		artifact = {}
 		artifact["artifactId"]  = artifactId
@@ -111,6 +112,8 @@ def getDescriptors(projectpath):
 						category = "consumer"
 				if descriptorRoot.tag.endswith("casConsumerDescription"):
 					category = "consumer"
+				if descriptorRoot.tag.endswith("flowControllerDescription"):
+					category = "flowcontroller"
 				if category != None:
 					# From the complete file name, exclude the system dependent part. That is, make the path relative to the
 					# project directory's src/main/resources directory.

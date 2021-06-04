@@ -1,4 +1,4 @@
-package de.julielab.jcore.reader.xmi.flowcontroller;
+package de.julielab.jcore.flow.annotationdefined;
 
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.JCasFlow_ImplBase;

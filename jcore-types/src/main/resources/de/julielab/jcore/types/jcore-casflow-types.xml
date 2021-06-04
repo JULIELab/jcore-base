@@ -18,7 +18,7 @@
             <features>
                 <featureDescription>
                     <name>delegateKeys</name>
-                    <description>The keys of the delegates to visit. The keys are the names given to the delegate analysis engines in the aggregate.</description>
+                    <description>The keys of the delegates to visit. The keys are the names given to the delegate analysis engines in the aggregate. An empty or null array indicates that no component should be visited.</description>
                     <rangeTypeName>uima.cas.StringArray</rangeTypeName>
                     <elementType>uima.cas.String</elementType>
                 </featureDescription>
