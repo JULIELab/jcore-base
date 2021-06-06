@@ -35,7 +35,7 @@ The basic structure of the mapping file consists of the `<mappings>` root elemen
 ```
 
 ## Document Text
-The CAS document text is populated with the `<documentText>` mapping element. It defines an arbitrary number of `<documentPart>` elements of whose mapping values the document text will be comprised, in the order of the `<documentPart>` elements in the mapping file. Each document part is given a manually defined ID which can be referred to in order to create a UIMA annotation covering the respective document part text. The location of the actual character data in the mapped document XML files is specified via XPath.
+The CAS document text is populated with the `<documentText>` mapping element. It defines an arbitrary number of `<documentPart>` elements of whose mapping values the document text will be comprised, in the order of the `<documentPart>` elements in the mapping file. Each document part is given a mandatory, manually defined ID which can be referred to in order to create a UIMA annotation covering the respective document part text. The location of the actual character data in the mapped document XML files is specified via XPath.
 
 ```xml
 <documentText>
@@ -106,9 +106,9 @@ Finally, the `<tsFeature>` element accepts the `<offset>` child element which ca
 
 ```xml
 <offset>
-	<partOfDocumentText>
-		<id>0</id>
-	</partOfDocumentText>
+    <partOfDocumentText>
+        <id>0</id>
+    </partOfDocumentText>
 </offset>
 ```
 

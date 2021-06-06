@@ -23,16 +23,6 @@
             <version>${jcore-types-version}</version>
         </dependency>
         <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-reflect</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-util</artifactId>
-            <version>1.1.4</version>
-        </dependency>
-        <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>julie-xml-tools</artifactId>
         </dependency>
