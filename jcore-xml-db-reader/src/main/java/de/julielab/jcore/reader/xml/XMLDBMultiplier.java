@@ -17,6 +17,7 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
@@ -37,11 +38,13 @@ import java.util.stream.Collectors;
         "CAS with them via the 'RowMapping' parameter. This component is part of the Jena Document Information System, " +
         "JeDIS."
         , vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
+@TypeCapability(inputs = {"de.julielab.jcore.types.casmultiplier.RowBatch"}, outputs = {"de.julielab.jcore.types.casflow.ToVisit"})
 public class XMLDBMultiplier extends DBMultiplier {
     public static final String PARAM_ROW_MAPPING = Initializer.PARAM_ROW_MAPPING;
     public static final String PARAM_MAPPING_FILE = Initializer.PARAM_MAPPING_FILE;
     public static final String PARAM_ADD_SHA_HASH = "AddShaHash";
     public static final String PARAM_TABLE_DOCUMENT = "DocumentTable";
+    public static final String PARAM_TABLE_DOCUMENT_SCHEMA = "DocumentTableSchema";
     public static final String PARAM_TO_VISIT_KEYS = "ToVisitKeys";
 
     private final static Logger log = LoggerFactory.getLogger(XMLDBMultiplier.class);
@@ -59,6 +62,8 @@ public class XMLDBMultiplier extends DBMultiplier {
     @ConfigurationParameter(name = PARAM_TABLE_DOCUMENT, mandatory = false, description = "For use with AnnotationDefinedFlowController. String parameter indicating the name of the " +
             "table where the XMI data and, thus, the hash is stored. The name must be schema qualified. Note that in this component, only the ToVisit annotation is created that determines which components to apply to a CAS with matching (unchanged) hash. The logic to actually control the CAS flow is contained in the AnnotationDefinedFlowController.")
     private String xmiStorageDataTable;
+    @ConfigurationParameter(name= PARAM_TABLE_DOCUMENT_SCHEMA, mandatory = false, description = "For use with AnnotationDefinedFlowController. The name of the schema that the document table - given with the "+PARAM_TABLE_DOCUMENT+" parameter - adheres to. Only the primary key part is required for hash value retrieval.")
+    private String xmiStorageDataTableSchema;
     @ConfigurationParameter(name = PARAM_TO_VISIT_KEYS, mandatory = false, description = "For use with AnnotationDefinedFlowController. The delegate AE keys of the AEs this CAS should still applied on although the hash has not changed. Can be null or empty indicating that no component should be applied to the CAS. This is, however, the task of the AnnotationDefinedFlowController.")
     private String[] toVisitKeys;
 
@@ -75,6 +80,7 @@ public class XMLDBMultiplier extends DBMultiplier {
         mappingFileStr = (String) aContext.getConfigParameterValue(PARAM_MAPPING_FILE);
         rowMappingArray = (String[]) aContext.getConfigParameterValue(PARAM_ROW_MAPPING);
         xmiStorageDataTable = (String) aContext.getConfigParameterValue(PARAM_TABLE_DOCUMENT);
+        xmiStorageDataTableSchema = (String) aContext.getConfigParameterValue(PARAM_TABLE_DOCUMENT_SCHEMA);
         documentItemToHash = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ADD_SHA_HASH)).orElse("document_text");
         toVisitKeys = (String[]) aContext.getConfigParameterValue(PARAM_TO_VISIT_KEYS);
         // We don't know yet which tables to read. Thus, we leave the row mapping out.
@@ -82,6 +88,12 @@ public class XMLDBMultiplier extends DBMultiplier {
         Initializer initializer = new Initializer(mappingFileStr, null, null);
         xmlMapper = initializer.getXmlMapper();
         initialized = false;
+
+        if (!(xmiStorageDataTable == null && xmiStorageDataTableSchema == null && documentItemToHash == null) && !(xmiStorageDataTable != null && xmiStorageDataTableSchema != null && documentItemToHash != null)) {
+            String errorMsg = String.format("From the parameters '%s', '%s' and '%s' some are specified and some aren't. To activate hash value comparison in order to add aggregate component keys for CAS visit, specify all those parameters. Otherwise, specify none.", PARAM_TABLE_DOCUMENT, PARAM_TABLE_DOCUMENT_SCHEMA, PARAM_ADD_SHA_HASH);
+            log.error(errorMsg);
+            throw new ResourceInitializationException(new IllegalArgumentException(errorMsg));
+        }
     }
 
     @Override
@@ -162,7 +174,6 @@ public class XMLDBMultiplier extends DBMultiplier {
     }
 
     protected List<Map<String, Object>> getAllRetrievedColumns() {
-        List<Map<String, Object>> fields = new ArrayList<Map<String, Object>>();
         Pair<Integer, List<Map<String, String>>> numColumnsAndFields = dbc.getNumColumnsAndFields(tables.length > 1, schemaNames);
         return numColumnsAndFields.getRight().stream().map(HashMap<String, Object>::new).collect(Collectors.toList());
     }
@@ -189,20 +200,20 @@ public class XMLDBMultiplier extends DBMultiplier {
             String sql = null;
             // Query the database for the document IDs in the current RowBatch and retrieve hashes.
             try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-                FieldConfig activeTableFieldConfiguration = dbc.getActiveTableFieldConfiguration();
+                FieldConfig xmiTableSchema = dbc.getFieldConfiguration(xmiStorageDataTableSchema);
                 String idQuery = documentIds.stream()
-                        .map(key -> Arrays.stream(key).map(part -> "%s='" + part + '"').toArray(String[]::new))
-                        .map(activeTableFieldConfiguration::expandPKNames).map(expandedKeys -> String.join(" AND ", expandedKeys))
+                        .map(key -> Arrays.stream(key).map(part -> "%s='" + part + "'").toArray(String[]::new))
+                        .map(xmiTableSchema::expandPKNames).map(expandedKeys -> String.join(" AND ", expandedKeys))
                         .collect(Collectors.joining(" OR "));
-                sql = String.format("SELECT %s,%s FROM %s WHERE %s", activeTableFieldConfiguration.getPrimaryKeyString(), hashColumn, xmiStorageDataTable, idQuery);
+                sql = String.format("SELECT %s,%s FROM %s WHERE %s", xmiTableSchema.getPrimaryKeyString(), hashColumn, xmiStorageDataTable, idQuery);
                 ResultSet rs = conn.createStatement().executeQuery(sql);
                 while (rs.next()) {
                     StringBuilder pkSb = new StringBuilder();
-                    for (int i = 0; i < activeTableFieldConfiguration.getPrimaryKey().length; i++)
-                        pkSb.append(rs.getString(i)).append(',');
+                    for (int i = 0; i < xmiTableSchema.getPrimaryKey().length; i++)
+                        pkSb.append(rs.getString(i+1)).append(',');
                     // Remove training comma
-                    pkSb.deleteCharAt(pkSb.length());
-                    String hash = rs.getString(activeTableFieldConfiguration.getPrimaryKey().length);
+                    pkSb.deleteCharAt(pkSb.length()-1);
+                    String hash = rs.getString(xmiTableSchema.getPrimaryKey().length+1);
                     id2hash.put(pkSb.toString(), hash);
                 }
             } catch (SQLException e) {

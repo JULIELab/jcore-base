@@ -9,6 +9,7 @@ import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
@@ -34,6 +35,7 @@ import java.util.List;
         "populate CASes with them. This component is a part of the Jena Document Information System, JeDIS.",
         vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
 @OperationalProperties(outputsNewCases = true)
+@TypeCapability(inputs = {"de.julielab.jcore.types.casmultiplier.RowBatch"})
 public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
 
     protected DataBaseConnector dbc;
