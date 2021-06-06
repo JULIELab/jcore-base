@@ -5,7 +5,8 @@
 		</partOfDocumentText>
 		<partOfDocumentText id="1">
 			<xPath>/MedlineCitation/Article/Abstract</xPath>
-			<externalParser>de.julielab.jcore.reader.xmlmapper.mapper.StructuredAbstractParser
+			<externalParser>
+				de.julielab.jcore.reader.xmlmapper.mapper.StructuredAbstractParser
 			</externalParser>
 		</partOfDocumentText>
 		<partOfDocumentText id="2">
