@@ -62,6 +62,14 @@ public class XMLDBMultiplierTest {
         costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2016_nozip", 1, postgres);
         new File(costosysConfig).deleteOnExit();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+            // We create two tables. One is the XML table the multiplier reads from and maps the contents to the JCas.
+            // The other is a simulation of an XMI table used to serialize CAS instances via the jcore-xmi-db-writer.
+            // We need that target table to test the hash value comparison mechanism: If a document does not exist
+            // in the target table or has a non-matching hash on its document text, proceed as normal.
+            // But if the hash matches, we want to reserve the possibility to skip most part of the subsequent pipeline.
+            // For this, we could use the AnnnotationDefinedFlowController for jcore-flow-controllers. This controller
+            // looks for annotations of the ToVisit type that specify which exact components in an aggregate should
+            // be applied to the CAS carrying the ToVisit annotation.
             prepareSourceXMLTable(dbc, conn);
             prepareTargetXMITable(dbc, conn);
         }
@@ -88,7 +96,7 @@ public class XMLDBMultiplierTest {
 
     private static void prepareTargetXMITable(DataBaseConnector dbc, CoStoSysConnection conn) throws SQLException {
         // Note that the root is "xmi" and not "xml"
-        String xmlFmt = "<xmi><docid>%d</docid><text>This is document text number %d</text></xmi>";
+        String documentTextFmt = "This is document text number %d";
         dbc.createTable(TARGET_XMI_TABLE, "xmi_text", "Test table for hash comparison test.");
         dbc.assureColumnsExist(TARGET_XMI_TABLE, List.of(HASH_FIELD_NAME), "text");
         String sql = String.format("INSERT INTO %s (%s,%s,%s,%s,%s) VALUES (?,XMLPARSE(CONTENT ?),?,?,?)", TARGET_XMI_TABLE, DOCID_FIELD_NAME, BASE_DOCUMENT_FIELD_NAME, HASH_FIELD_NAME, MAX_XMI_ID_FIELD_NAME, SOFA_MAPPING_FIELD_NAME);
@@ -96,10 +104,14 @@ public class XMLDBMultiplierTest {
         // Note that we only add half of the documents compared to the source XML import. This way we test
         // if the code behaves right when the target document does not yet exist at all.
         for (int i = 0; i < 5; i++) {
-            String xml = String.format(xmlFmt, i, i);
+            String xml = String.format(documentTextFmt, i, i);
             ps.setString(1, String.valueOf(i));
             ps.setString(2, xml);
-            ps.setString(3, getHash(xml));
+            // For one document in the "target XMI" table we put in a wrong hash. Thus, this document should not trigger
+            // the "toVisit" mechanism.
+            if (i != 3)
+                ps.setString(3, getHash(xml));
+            else ps.setString(3, "someanotherhash");
             ps.setInt(4, 0);
             ps.setString(5, "dummy");
             ps.addBatch();
@@ -164,23 +176,47 @@ public class XMLDBMultiplierTest {
     @Test
     public void testHashComparison() throws Exception {
         JCas jCas = prepareCas();
-        TypeSystemDescription tsDesc = TypeSystemDescriptionFactory.createTypeSystemDescription("de.julielab.jcore.types.jcore-document-meta-types", "de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types","de.julielab.jcore.types.extensions.jcore-document-meta-extension-types", "de.julielab.jcore.types.jcore-casflow-types");
-        AnalysisEngine engine = AnalysisEngineFactory.createEngine(XMLDBMultiplier.class,tsDesc,
+        TypeSystemDescription tsDesc = TypeSystemDescriptionFactory.createTypeSystemDescription("de.julielab.jcore.types.jcore-document-meta-types", "de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types", "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types", "de.julielab.jcore.types.jcore-casflow-types");
+        AnalysisEngine engine = AnalysisEngineFactory.createEngine(XMLDBMultiplier.class, tsDesc,
                 XMLDBMultiplier.PARAM_MAPPING_FILE, Path.of("src", "test", "resources", "test-mappingfile.xml").toString(),
                 XMLDBMultiplier.PARAM_ADD_SHA_HASH, "documentText",
                 XMLDBMultiplier.PARAM_TABLE_DOCUMENT, TARGET_XMI_TABLE,
                 XMLDBMultiplier.PARAM_TABLE_DOCUMENT_SCHEMA, "xmi_text",
                 XMLDBMultiplier.PARAM_TO_VISIT_KEYS, "ThisIsTheVisitKey"
-                );
+        );
         JCasIterator jCasIterator = engine.processAndOutputNewCASes(jCas);
-        List<String> documentTexts = new ArrayList<>();
+        List<String> toVisitKeys = new ArrayList<>();
         while (jCasIterator.hasNext()) {
             JCas newCas = jCasIterator.next();
-//            System.out.println(newCas.getTypeSystem());
             Collection<ToVisit> select = JCasUtil.select(newCas, ToVisit.class);
-            System.out.println(select);
+            select.forEach(tv -> tv.getDelegateKeys().forEach(k -> toVisitKeys.add(k)));
             newCas.release();
-            break;
         }
+        // There are 4 documents in the target table with the correct hash so we expect the delegate key 5 times
+        assertThat(toVisitKeys).containsExactly("ThisIsTheVisitKey", "ThisIsTheVisitKey", "ThisIsTheVisitKey", "ThisIsTheVisitKey");
+    }
+
+    @Test
+    public void testHashComparison2() throws Exception {
+        JCas jCas = prepareCas();
+        TypeSystemDescription tsDesc = TypeSystemDescriptionFactory.createTypeSystemDescription("de.julielab.jcore.types.jcore-document-meta-types", "de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types", "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types", "de.julielab.jcore.types.jcore-casflow-types");
+        // In this test, we do not specify the keys to visit; the whole subsequent pipeline should be skipped.
+        // To indicate that, there should be ToVisit annotations but they should be null.
+        AnalysisEngine engine = AnalysisEngineFactory.createEngine(XMLDBMultiplier.class, tsDesc,
+                XMLDBMultiplier.PARAM_MAPPING_FILE, Path.of("src", "test", "resources", "test-mappingfile.xml").toString(),
+                XMLDBMultiplier.PARAM_ADD_SHA_HASH, "documentText",
+                XMLDBMultiplier.PARAM_TABLE_DOCUMENT, TARGET_XMI_TABLE,
+                XMLDBMultiplier.PARAM_TABLE_DOCUMENT_SCHEMA, "xmi_text"
+        );
+        JCasIterator jCasIterator = engine.processAndOutputNewCASes(jCas);
+        List<ToVisit> emptyToVisitAnnotation = new ArrayList<>();
+        while (jCasIterator.hasNext()) {
+            JCas newCas = jCasIterator.next();
+            Collection<ToVisit> select = JCasUtil.select(newCas, ToVisit.class);
+            select.stream().filter(tv -> tv.getDelegateKeys() == null).forEach(emptyToVisitAnnotation::add);
+            newCas.release();
+        }
+        // There are 4 documents in the target table with the correct hash so we expect the delegate key 5 times
+        assertThat(emptyToVisitAnnotation).hasSize(4);
     }
 }

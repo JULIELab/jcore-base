@@ -89,8 +89,8 @@ public class XMLDBMultiplier extends DBMultiplier {
         xmlMapper = initializer.getXmlMapper();
         initialized = false;
 
-        if (!(xmiStorageDataTable == null && xmiStorageDataTableSchema == null && documentItemToHash == null) && !(xmiStorageDataTable != null && xmiStorageDataTableSchema != null && documentItemToHash != null)) {
-            String errorMsg = String.format("From the parameters '%s', '%s' and '%s' some are specified and some aren't. To activate hash value comparison in order to add aggregate component keys for CAS visit, specify all those parameters. Otherwise, specify none.", PARAM_TABLE_DOCUMENT, PARAM_TABLE_DOCUMENT_SCHEMA, PARAM_ADD_SHA_HASH);
+        if (!(xmiStorageDataTable == null && xmiStorageDataTableSchema == null) && !(xmiStorageDataTable != null && xmiStorageDataTableSchema != null && documentItemToHash != null)) {
+            String errorMsg = String.format("From the parameters '%s' and '%s' some are specified and some aren't. To activate hash value comparison in order to add aggregate component keys for CAS visit, specify all those parameters. Otherwise, specify none.", PARAM_TABLE_DOCUMENT, PARAM_TABLE_DOCUMENT_SCHEMA);
             log.error(errorMsg);
             throw new ResourceInitializationException(new IllegalArgumentException(errorMsg));
         }
