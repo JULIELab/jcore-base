@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import de.julielab.ipc.javabridge.Options;
 import de.julielab.ipc.javabridge.ResultDecoders;
 import de.julielab.ipc.javabridge.StdioBridge;
+import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.types.EmbeddingVector;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
@@ -30,6 +31,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @ResourceMetaData(name = "JCoRe Flair Token Embedding Annotator", description = "Adds the Flair compatible embedding vectors to the token annotations.")
 @TypeCapability(inputs = {"de.julielab.jcore.types.Sentence", "de.julielab.jcore.types.Token"}, outputs = {"de.julielab.jcore.types.EmbeddingVector"})
@@ -37,7 +40,7 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_EMBEDDING_PATH = "EmbeddingPath";
     public static final String PARAM_COMPUTATION_FILTER = "ComputationFilter";
-    public static final String PARAM_EMBEDDING_SOURCE  = "EmbeddingSource";
+    public static final String PARAM_EMBEDDING_SOURCE = "EmbeddingSource";
     public static final String PARAM_PYTHON_EXECUTABLE = "PythonExecutable";
     private final static Logger log = LoggerFactory.getLogger(FlairTokenEmbeddingAnnotator.class);
     /**
@@ -48,9 +51,9 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
     private String embeddingPath;
     @ConfigurationParameter(name = PARAM_COMPUTATION_FILTER, mandatory = false, description = "This parameter may be set to a fully qualified annotation type. If given, only for documents containing at least one annotation of this type embeddings will be retrieved from the computing flair python script. However, for contextualized embeddings, all embedding vectors are computed anyway and the the I/O cost is minor in comparison to the embedding computation. Thus, setting this parameter will most probably only result in small time savings.")
     private String computationFilter;
-    @ConfigurationParameter(name=PARAM_EMBEDDING_SOURCE, mandatory =  false, description = "The value of this parameter will be set to the source feature of the EmbeddingVector annotation instance created on the tokens. If left blank, the value of the " + PARAM_EMBEDDING_PATH + " will be used.")
+    @ConfigurationParameter(name = PARAM_EMBEDDING_SOURCE, mandatory = false, description = "The value of this parameter will be set to the source feature of the EmbeddingVector annotation instance created on the tokens. If left blank, the value of the " + PARAM_EMBEDDING_PATH + " will be used.")
     private String embeddingSource;
-    @ConfigurationParameter(name=PARAM_PYTHON_EXECUTABLE, mandatory = false, description = "The path to the python executable. Required is a python verion >=3.6.")
+    @ConfigurationParameter(name = PARAM_PYTHON_EXECUTABLE, mandatory = false, description = "The path to the python executable. Required is a python version >=3.6.")
     private String pythonExecutable;
     private StdioBridge<byte[]> flairBridge;
     private Gson gson;
@@ -68,9 +71,9 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
         computationFilter = (String) aContext.getConfigParameterValue(PARAM_COMPUTATION_FILTER);
         embeddingSource = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_EMBEDDING_SOURCE)).orElse(embeddingPath);
 
-        Optional<String>  pythonExecutableOpt = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_PYTHON_EXECUTABLE));
+        Optional<String> pythonExecutableOpt = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_PYTHON_EXECUTABLE));
         if (!pythonExecutableOpt.isPresent()) {
-            log.debug("No python executable given in the component descriptor, trying to read PYTHON environment variable." );
+            log.debug("No Python executable given in the component descriptor, trying to read PYTHON environment variable.");
             final String pythonExecutableEnv = System.getenv("PYTHON");
             if (pythonExecutableEnv != null) {
                 pythonExecutable = pythonExecutableEnv;
@@ -80,9 +83,35 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
             pythonExecutable = pythonExecutableOpt.get();
             log.info("Python executable: {} (from descriptor)", pythonExecutable);
         }
+        List<String> pythonCommands = List.of("python3", "python3.6", "python36", "python3.7", "python37", "python");
+        for (int i = 0; i < pythonCommands.size() && pythonExecutable == null; i++) {
+            String currentPythonExecutable = pythonCommands.get(i);
+            log.debug("Trying Python executable: {}", currentPythonExecutable);
+            try {
+                try {
+                    Process exec = new ProcessBuilder(List.of(currentPythonExecutable, "--version")).redirectErrorStream(true).start();
+                    List<String> pythonOutput = IOStreamUtilities.getLinesFromInputStream(exec.getInputStream());
+                    int exitCode = exec.waitFor();
+                    if (exitCode == 0 && !pythonOutput.isEmpty()) {
+                        String versionLine = pythonOutput.get(0);
+                        Matcher m = Pattern.compile("3\\..*$").matcher(versionLine);
+                        if (m.find()) {
+                            pythonExecutable = currentPythonExecutable;
+                            log.info("Found Python {} with command {}.", m.group(), pythonExecutable);
+                        }
+                    }
+                } catch (IOException e) {
+                    log.trace("Python command {} does not exist. Trying the next.", currentPythonExecutable);
+                }
+            } catch (InterruptedException e) {
+                log.error("Error why trying to call python.", e);
+                throw new ResourceInitializationException(e);
+            }
+        }
         if (pythonExecutable == null) {
-            pythonExecutable = "python3.6";
-            log.info("Python executable: {} (default)", pythonExecutable);
+            String msg = String.format("Could not find Python 3.x installation. The following commands were tried: %s. Please make Python 3.x available under one of those commands or specify the Python executable explicitly in the component descriptor.", String.join(", ", pythonCommands));
+            log.error(msg);
+            throw new ResourceInitializationException(new IllegalArgumentException(msg));
         }
 
         try {
@@ -183,7 +212,7 @@ public class FlairTokenEmbeddingAnnotator extends JCasAnnotator_ImplBase {
                 }
                 ++tokenIndex;
             }
-            sentenceTextSb.deleteCharAt(sentenceTextSb.length()-1);
+            sentenceTextSb.deleteCharAt(sentenceTextSb.length() - 1);
             Map<String, Object> sentenceAndIndices = new HashMap<>();
             sentenceAndIndices.put("sentence", sentenceTextSb.toString());
             sentenceAndIndices.put("tokenIndicesToReturn", tokenIndicesToSet);

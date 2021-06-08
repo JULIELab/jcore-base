@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Unit tests for jcore-flair-token-embedding-ae.
  */
 public class FlairTokenEmbeddingAnnotatorTest {
+
     @Test
     public void testEmbeddingAnnotator() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
@@ -30,8 +31,7 @@ public class FlairTokenEmbeddingAnnotatorTest {
 
         final String embeddingPath = "flair:src/test/resources/gene_small_best_lm.pt";
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.fte.desc.jcore-flair-token-embedding-ae",
-                FlairTokenEmbeddingAnnotator.PARAM_EMBEDDING_PATH, embeddingPath,
-                FlairTokenEmbeddingAnnotator.PARAM_PYTHON_EXECUTABLE, "python");
+                FlairTokenEmbeddingAnnotator.PARAM_EMBEDDING_PATH, embeddingPath);
 
         engine.process(jCas);
 
@@ -62,8 +62,7 @@ public class FlairTokenEmbeddingAnnotatorTest {
         final String embeddingPath = "flair:src/test/resources/gene_small_best_lm.pt";
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine("de.julielab.jcore.ae.fte.desc.jcore-flair-token-embedding-ae",
                 FlairTokenEmbeddingAnnotator.PARAM_EMBEDDING_PATH, embeddingPath,
-                FlairTokenEmbeddingAnnotator.PARAM_COMPUTATION_FILTER, "de.julielab.jcore.types.Gene",
-                FlairTokenEmbeddingAnnotator.PARAM_PYTHON_EXECUTABLE, "python");
+                FlairTokenEmbeddingAnnotator.PARAM_COMPUTATION_FILTER, "de.julielab.jcore.types.Gene");
 
         engine.process(jCas);
 

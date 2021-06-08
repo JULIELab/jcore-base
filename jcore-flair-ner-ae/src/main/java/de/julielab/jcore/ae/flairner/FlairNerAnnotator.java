@@ -1,5 +1,6 @@
 package de.julielab.jcore.ae.flairner;
 
+import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderAnnotator;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderConfiguration;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderHelper;
@@ -30,6 +31,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -95,9 +98,35 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             pythonExecutable = pythonExecutableOpt.get();
             log.info("Python executable: {} (from descriptor)", pythonExecutable);
         }
+        List<String> pythonCommands = List.of("python3", "python3.6", "python36", "python3.7", "python37", "python");
+        for (int i = 0; i < pythonCommands.size() && pythonExecutable == null; i++) {
+            String currentPythonExecutable = pythonCommands.get(i);
+            log.debug("Trying Python executable: {}", currentPythonExecutable);
+            try {
+                try {
+                    Process exec = new ProcessBuilder(List.of(currentPythonExecutable, "--version")).redirectErrorStream(true).start();
+                    List<String> pythonOutput = IOStreamUtilities.getLinesFromInputStream(exec.getInputStream());
+                    int exitCode = exec.waitFor();
+                    if (exitCode == 0 && !pythonOutput.isEmpty()) {
+                        String versionLine = pythonOutput.get(0);
+                        Matcher m = Pattern.compile("3\\..*$").matcher(versionLine);
+                        if (m.find()) {
+                            pythonExecutable = currentPythonExecutable;
+                            log.info("Found Python {} with command {}.", m.group(), pythonExecutable);
+                        }
+                    }
+                } catch (IOException e) {
+                    log.trace("Python command {} does not exist. Trying the next.", currentPythonExecutable);
+                }
+            } catch (InterruptedException e) {
+                log.error("Error why trying to call python.", e);
+                throw new ResourceInitializationException(e);
+            }
+        }
         if (pythonExecutable == null) {
-            pythonExecutable = "python";
-            log.info("Python executable: {} (default)", pythonExecutable);
+            String msg = String.format("Could not find Python 3.x installation. The following commands were tried: %s. Please make Python 3.x available under one of those commands or specify the Python executable explicitly in the component descriptor.", String.join(", ", pythonCommands));
+            log.error(msg);
+            throw new ResourceInitializationException(new IllegalArgumentException(msg));
         }
         try {
             connector = new StdioPythonConnector(flairModel, pythonExecutable, storeEmbeddings, gpuNum);
