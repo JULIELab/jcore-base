@@ -12,9 +12,9 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class XmiDBReaderBinaryFormatTest {
     private static String costosysConfig;
     private static String xmisubset;
 
-    @BeforeAll
+    @BeforeClass
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
         postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
@@ -38,7 +38,7 @@ public class XmiDBReaderBinaryFormatTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 2, postgres);
         XmiDBSetupHelper.processAndSplitData(costosysConfig, false, true,"public");
-        assertTrue("The data document table exists", dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")));
+        assertTrue(dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")), "The data document table exists");
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");
         dbc.reserveConnection();
@@ -48,7 +48,7 @@ public class XmiDBReaderBinaryFormatTest {
     }
 
 
-    @AfterAll
+    @AfterClass
     public static void shutdown() {
         postgres.close();
     }
