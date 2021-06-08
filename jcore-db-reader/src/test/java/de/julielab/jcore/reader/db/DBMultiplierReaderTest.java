@@ -12,22 +12,22 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 import static de.julielab.jcore.reader.db.TableReaderConstants.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DBMultiplierReaderTest {
     @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws SQLException {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         try (final CoStoSysConnection ignore = dbc.obtainOrReserveConnection()) {

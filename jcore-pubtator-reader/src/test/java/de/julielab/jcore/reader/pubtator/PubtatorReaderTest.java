@@ -16,14 +16,14 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PubtatorReaderTest {
 	@Test
@@ -73,6 +73,6 @@ public class PubtatorReaderTest {
 			}
 			jcas.reset();
 		}
-		assertTrue("The following IDs have not been read: " + expectedDocIds, expectedDocIds.isEmpty());
+		assertTrue(expectedDocIds.isEmpty(), "The following IDs have not been read: " + expectedDocIds);
 	}
 }

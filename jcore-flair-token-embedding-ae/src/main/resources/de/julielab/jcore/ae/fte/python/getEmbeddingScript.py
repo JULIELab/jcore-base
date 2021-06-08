@@ -1,15 +1,11 @@
-import os
-from flair.models import SequenceTagger
-from flair.data import Sentence
-from typing import List
-
-from flair.embeddings import WordEmbeddings, CharacterEmbeddings, BytePairEmbeddings, FlairEmbeddings, BertEmbeddings, ELMoEmbeddings
-from flair.embeddings import StackedEmbeddings
-
-import sys
 import json
-from struct import *
+import sys
 import time
+from flair.data import Sentence
+from flair.embeddings import StackedEmbeddings
+from flair.embeddings import WordEmbeddings, CharacterEmbeddings, BytePairEmbeddings, FlairEmbeddings, BertEmbeddings, \
+    ELMoEmbeddings
+from struct import *
 
 
 def decodeString(buffer):

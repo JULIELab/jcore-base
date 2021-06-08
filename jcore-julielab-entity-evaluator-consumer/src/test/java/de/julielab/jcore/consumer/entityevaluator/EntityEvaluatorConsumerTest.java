@@ -22,7 +22,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,8 +34,8 @@ import java.util.TreeMap;
 import java.util.zip.GZIPInputStream;
 
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EntityEvaluatorConsumerTest {
 

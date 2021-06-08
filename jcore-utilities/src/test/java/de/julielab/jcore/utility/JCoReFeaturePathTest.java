@@ -19,14 +19,14 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JCoReFeaturePathTest {
 	@Test
@@ -275,12 +275,12 @@ public class JCoReFeaturePathTest {
 
 		assertEquals("originalValue", cm.getTextualRepresentation());
 		assertEquals("originalValue", fp.getValueAsString(cm));
-		assertEquals("replacementValue", fp.getValueAsString(cm, true));
+		assertEquals( fp.getValueAsString(cm,  true), "replacementValue");
 		assertEquals("replacementValue", fp.getValueAsString(cm));
 		assertEquals("replacementValue", cm.getTextualRepresentation());
 
 		// doing a replacement again should have no effect
-		assertEquals("replacementValue", fp.getValueAsString(cm, true));
+		assertEquals( fp.getValueAsString(cm,  true), "replacementValue");
 		assertEquals("replacementValue", fp.getValueAsString(cm));
 	}
 
@@ -303,11 +303,11 @@ public class JCoReFeaturePathTest {
 
 		assertEquals("originalValue", cm.getTextualRepresentation());
 		assertEquals("originalValue", fp.getValueAsString(cm));
-		assertEquals("replacementValue", fp.getValueAsString(cm, true));
+		assertEquals( fp.getValueAsString(cm,  true), "replacementValue");
 
 		assertEquals("unknownValue", cm2.getTextualRepresentation());
 		assertEquals("unknownValue", fp.getValueAsString(cm2));
-		assertEquals("not-mapped", fp.getValueAsString(cm2, true));
+		assertEquals( fp.getValueAsString(cm2,  true), "not-mapped");
 	}
 
 	@Test
@@ -328,7 +328,7 @@ public class JCoReFeaturePathTest {
 		assertEquals("unknownValue", cm.getTextualRepresentation());
 		assertEquals("unknownValue", fp.getValueAsString(cm));
 		assertEquals(null, fp.getValueAsString(cm, true));
-		assertNotSame("null", fp.getValueAsString(cm, true));
+		assertNotSame( fp.getValueAsString(cm,  true), "null");
 	}
 
 	@Test
@@ -350,7 +350,7 @@ public class JCoReFeaturePathTest {
 		fp.initialize("/semanticTypes", replacements);
 
 		assertEquals("entry1, entry2, entry3", fp.getValueAsString(ocm));
-		assertEquals("replacement1, replacement2, replacement3", fp.getValueAsString(ocm, true));
+		assertEquals( fp.getValueAsString(ocm,  true), "replacement1, replacement2, replacement3");
 	}
 
 	@Test
@@ -368,7 +368,7 @@ public class JCoReFeaturePathTest {
 		fp.initialize("/semanticTypes");
 
 		assertEquals("entry1, entry2, entry3", fp.getValueAsString(ocm));
-		assertEquals("replacement1, replacement2, replacement3", fp.getValueAsString(ocm, true));
+		assertEquals( fp.getValueAsString(ocm,  true), "replacement1, replacement2, replacement3");
 
 	}
 
@@ -391,7 +391,7 @@ public class JCoReFeaturePathTest {
 		JCoReFeaturePath fp = new JCoReFeaturePath();
 		fp.initialize("/semanticTypes[1]", replacements);
 
-		assertEquals("replacement2", fp.getValueAsString(ocm, true));
+		assertEquals( fp.getValueAsString(ocm,  true), "replacement2");
 
 		fp.initialize("/semanticTypes");
 		assertEquals("entry1, replacement2, entry3", fp.getValueAsString(ocm));
@@ -423,7 +423,7 @@ public class JCoReFeaturePathTest {
 		JCoReFeaturePath fp = new JCoReFeaturePath();
 		fp.initialize("/resourceEntryList/entryId", replacements);
 
-		assertEquals("tid1, tid2", fp.getValueAsString(gene, true));
+		assertEquals( fp.getValueAsString(gene,  true), "tid1, tid2");
 
 	}
 

@@ -9,15 +9,15 @@ package de.julielab.jcore.consumer.bionlpformat.utils;
 import de.julielab.jcore.types.EventTrigger;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Writer;
 
 import static org.easymock.classextension.EasyMock.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EventTriggerWriterTest {
 	private static final String TRIGGER_T1 = "T1	Negative_regulation 12 19	inhibit\n";
@@ -28,7 +28,7 @@ public class EventTriggerWriterTest {
 	private Writer writer;
 	private EventTrigger triggerT1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception{
 		cas = JCasFactory.createJCas("src/test/resources/types/jcore-semantics-biology-types");
 		

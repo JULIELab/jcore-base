@@ -4,9 +4,7 @@ import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.db.test.DBTestUtils;
 import de.julielab.jcore.types.*;
-import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.xml.XmiSplitConstants;
-import de.julielab.xml.XmiSplitter;
 import de.julielab.xml.binary.BinaryDecodingResult;
 import de.julielab.xml.binary.BinaryJeDISNodeDecoder;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -17,7 +15,11 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
-import org.junit.*;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.ByteArrayInputStream;
@@ -26,15 +28,15 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XmiDBWriterBinaryFormatTest {
     @ClassRule
@@ -43,7 +45,7 @@ public class XmiDBWriterBinaryFormatTest {
     private static String xmlSubsetTable;
     private static DataBaseConnector dbc;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
         dbc = DBTestUtils.getDataBaseConnector(postgres);
         dbc.reserveConnection();
@@ -52,7 +54,7 @@ public class XmiDBWriterBinaryFormatTest {
         dbc.releaseConnections();
     }
 
-    @AfterClass
+    @AfterAll
     public static void shutDown() {
         dbc.close();
     }
@@ -65,7 +67,7 @@ public class XmiDBWriterBinaryFormatTest {
                 "de.julielab.jcore.types.jcore-xmi-splitter-types");
     }
 
-    @Before
+    @BeforeEach
     public void cleanForTest() throws SQLException {
         String binaryMappingTable = "public." + MetaTableManager.BINARY_MAPPING_TABLE;
         String binaryFeaturesToMapTable = "public." + MetaTableManager.BINARY_FEATURES_TO_MAP_TABLE;

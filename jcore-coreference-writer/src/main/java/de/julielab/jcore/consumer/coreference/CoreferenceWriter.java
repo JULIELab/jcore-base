@@ -1,7 +1,6 @@
 package de.julielab.jcore.consumer.coreference;
 
 import de.julielab.java.utilities.FileUtilities;
-import de.julielab.jcore.types.Abbreviation;
 import de.julielab.jcore.types.CorefExpression;
 import de.julielab.jcore.types.CorefRelation;
 import de.julielab.jcore.utility.JCoReTools;
@@ -15,17 +14,12 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Spliterators;
 
 @ResourceMetaData(name = "JCoRe Coreference Writer", description = "Writes co-reference annotation to a text file.")
 public class CoreferenceWriter extends JCasAnnotator_ImplBase {

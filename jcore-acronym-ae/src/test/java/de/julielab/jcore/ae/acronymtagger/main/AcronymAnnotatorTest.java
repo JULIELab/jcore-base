@@ -18,7 +18,6 @@ package de.julielab.jcore.ae.acronymtagger.main;
 import de.julielab.jcore.types.Abbreviation;
 import de.julielab.jcore.types.AbbreviationLongform;
 import de.julielab.jcore.types.Sentence;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -35,7 +34,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,12 +44,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * The AcronymAnnotatorTest class
  * 
  * @author jwermter
  */
-public class AcronymAnnotatorTest extends TestCase {
+public class AcronymAnnotatorTest  {
 
 	private static final String DOCUMENT_TEXT = "[TAZ]Die Firma Kohl-kopf (FK-K) hat für die Straßenverkehrsordnung (StVO) "
 			+ "in der Bundesrepublik Deutschland(BRD)  einen hochintelligenten Manager für die Chefetage "
@@ -73,6 +74,7 @@ public class AcronymAnnotatorTest extends TestCase {
 
 	private static final String ALL_TYPES_NAME = "de.julielab.jcore.types.jcore-all-types";
 
+	@Test
 	public void testProcess() throws ResourceInitializationException, InvalidXMLException, IOException, CASException {
 
 		CAS cas = CasCreationUtils.createCas(

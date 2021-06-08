@@ -34,7 +34,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 public class SentenceAnnotatorTest {
 
 	/**
@@ -224,7 +224,7 @@ public class SentenceAnnotatorTest {
 		while (it.hasNext()) {
 			Annotation sentence = it.next();
 			Range<Integer> sentenceRange = Range.between(sentence.getBegin(), sentence.getEnd());
-			assertTrue("Range " + sentenceRange + " was not expected", expectedSpans.remove(sentenceRange));
+			assertTrue(expectedSpans.remove(sentenceRange), "Range " + sentenceRange + " was not expected");
 		}
 		assertTrue(expectedSpans.isEmpty());
 	}

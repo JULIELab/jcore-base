@@ -17,23 +17,23 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // This test's EventReaderTest.xml descriptor points to local directories of Ekaterina Buyko and as such, the test doesn't work this way. However it might, if the data is made available as proper test data.
-@Ignore
+@Disabled
 public class EventReaderTest {
 
 	private static final String DESCRIPTOR_FILE = "src/test/resources/de/julielab/jcore/reader/bionlpformat/desc/EventReaderTest.xml";
 	private CollectionReader collectionReader;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		CollectionReaderDescription readerDescription = (CollectionReaderDescription) UIMAFramework
 				.getXMLParser().parseCollectionReaderDescription(

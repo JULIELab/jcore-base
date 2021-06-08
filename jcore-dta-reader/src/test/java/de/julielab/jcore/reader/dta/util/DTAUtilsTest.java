@@ -14,14 +14,14 @@ import de.julielab.jcore.reader.dta.DTAFileReaderTest;
 import de.julielab.jcore.reader.dta.DTAFileReaderTest.Version;
 import de.julielab.jcore.types.extensions.dta.DTABelletristik;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DTAUtilsTest {
 

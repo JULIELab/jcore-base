@@ -21,7 +21,6 @@ import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProviderImplAlt;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.ConfigurableChunkerProviderImplAlt;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
 import de.julielab.jcore.types.*;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -40,7 +39,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -51,7 +50,9 @@ import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
-public class GazetteerAnnotatorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class GazetteerAnnotatorTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GazetteerAnnotatorTest.class);
 
@@ -122,6 +123,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 	 * tests whether the expected number of entities is found for both exact and
 	 * approximate matching
 	 */
+	@Test
 	public void testProcess() throws AnalysisEngineProcessException, CASException, ResourceConfigurationException,
 			InvalidXMLException, ResourceInitializationException, IOException, SAXException {
 		AnalysisEngine gazetteerAnnotator = null;
@@ -294,19 +296,19 @@ public class GazetteerAnnotatorTest extends TestCase {
 
 		FSIterator<org.apache.uima.jcas.tcas.Annotation> it = jCas.getAnnotationIndex(EntityMention.type).iterator();
 
-		assertTrue("There are no entity annotations in the CAS.", it.hasNext());
+		assertTrue(it.hasNext(), "There are no entity annotations in the CAS.");
 		EntityMention em = (EntityMention) it.next();
-		assertEquals("Start wrong: ", new Integer(0), new Integer(em.getBegin()));
-		assertEquals("End wrong: ", new Integer(5), new Integer(em.getEnd()));
-		assertEquals("Wrong type: ", "SHP-1", em.getSpecificType());
+		assertEquals( new Integer(0),  new Integer(em.getBegin()), "Start wrong: ");
+		assertEquals( new Integer(5),  new Integer(em.getEnd()), "End wrong: ");
+		assertEquals( "SHP-1",  em.getSpecificType(), "Wrong type: ");
 
-		assertTrue("The secnond entity annotations is missing.", it.hasNext());
+		assertTrue(it.hasNext(), "The secnond entity annotations is missing.");
 		em = (EntityMention) it.next();
-		assertEquals("Start wrong: ", new Integer(10), new Integer(em.getBegin()));
-		assertEquals("End wrong: ", new Integer(45), new Integer(em.getEnd()));
-		assertEquals("Wrong type: ", "KLRG2", em.getSpecificType());
+		assertEquals( new Integer(10),  new Integer(em.getBegin()), "Start wrong: ");
+		assertEquals( new Integer(45),  new Integer(em.getEnd()), "End wrong: ");
+		assertEquals( "KLRG2",  em.getSpecificType(), "Wrong type: ");
 
-		assertFalse("There are too many annotations.", it.hasNext());
+		assertFalse(it.hasNext(), "There are too many annotations.");
 
 		jCas.reset();
 		jCas.setDocumentText(
@@ -314,13 +316,13 @@ public class GazetteerAnnotatorTest extends TestCase {
 		annotator.process(jCas);
 		it = jCas.getAnnotationIndex(EntityMention.type).iterator();
 
-		assertTrue("There are no entity annotations in the CAS.", it.hasNext());
+		assertTrue(it.hasNext(), "There are no entity annotations in the CAS.");
 		em = (EntityMention) it.next();
-		assertEquals("Start wrong: ", new Integer(17), new Integer(em.getBegin()));
-		assertEquals("End wrong: ", new Integer(103), new Integer(em.getEnd()));
-		assertEquals("Wrong type: ", "CHEM", em.getSpecificType());
+		assertEquals( new Integer(17),  new Integer(em.getBegin()), "Start wrong: ");
+		assertEquals( new Integer(103),  new Integer(em.getEnd()), "End wrong: ");
+		assertEquals( "CHEM",  em.getSpecificType(), "Wrong type: ");
 
-		assertFalse("There are too many annotations.", it.hasNext());
+		assertFalse(it.hasNext(), "There are too many annotations.");
 
 		jCas.reset();
 		jCas.setDocumentText(
@@ -328,13 +330,13 @@ public class GazetteerAnnotatorTest extends TestCase {
 		annotator.process(jCas);
 		it = jCas.getAnnotationIndex(EntityMention.type).iterator();
 
-		assertTrue("There are no entity annotations in the CAS.", it.hasNext());
+		assertTrue(it.hasNext(), "There are no entity annotations in the CAS.");
 		em = (EntityMention) it.next();
-		assertEquals("Start wrong: ", new Integer(17), new Integer(em.getBegin()));
-		assertEquals("End wrong: ", new Integer(103), new Integer(em.getEnd()));
-		assertEquals("Wrong type: ", "CHEM", em.getSpecificType());
+		assertEquals( new Integer(17),  new Integer(em.getBegin()), "Start wrong: ");
+		assertEquals( new Integer(103),  new Integer(em.getEnd()), "End wrong: ");
+		assertEquals( "CHEM",  em.getSpecificType(), "Wrong type: ");
 
-		assertFalse("There are too many annotations.", it.hasNext());
+		assertFalse(it.hasNext(), "There are too many annotations.");
 
 		jCas.reset();
 		jCas.setDocumentText(
@@ -342,7 +344,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		annotator.process(jCas);
 		it = jCas.getAnnotationIndex(EntityMention.type).iterator();
 
-		assertFalse("There is an annotation in CAS although there shouldnt be.", it.hasNext());
+		assertFalse(it.hasNext(), "There is an annotation in CAS although there shouldnt be.");
 
 		jCas.reset();
 		jCas.setDocumentText("Test-dosing unit KLRg1 killer cell lectin like receptor G2 Parkinson's Disease");
@@ -354,7 +356,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 			System.out.println(it.next().getCoveredText());
 			counter++;
 		}
-		assertEquals("Wrong entity count: ", new Integer(4), counter);
+		assertEquals( new Integer(4),  counter, "Wrong entity count: ");
 
 	}
 
@@ -378,10 +380,10 @@ public class GazetteerAnnotatorTest extends TestCase {
 		annotator.process(jCas);
 
 		Collection<EntityMention> entityMentions = JCasUtil.select(jCas, EntityMention.class);
-		assertEquals("Expected a single entity", 2, entityMentions.size());
+		assertEquals( 2,  entityMentions.size(), "Expected a single entity");
 		Iterator<EntityMention> iterator = entityMentions.iterator();
-		assertEquals("Unexpected covered entity text", "lipoprotein", iterator.next().getCoveredText());
-		assertEquals("Unexpected covered entity text", "lipoproteins", iterator.next().getCoveredText());
+		assertEquals( "lipoprotein",  iterator.next().getCoveredText(), "Unexpected covered entity text");
+		assertEquals( "lipoproteins",  iterator.next().getCoveredText(), "Unexpected covered entity text");
 	}
 
 	@Test
@@ -416,7 +418,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 			it.next();
 			counter++;
 		}
-		assertEquals("Wrong entity count: ", new Integer(1), counter);
+		assertEquals( new Integer(1),  counter, "Wrong entity count: ");
 
 		jCas.reset();
 		jCas.setDocumentText(
@@ -454,7 +456,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 			}
 			assertEquals("GENE", next.getSpecificType());
 		}
-		assertEquals("Wrong entity count: ", new Integer(1), counter);
+		assertEquals( new Integer(1),  counter, "Wrong entity count: ");
 	}
 
 	@Test
@@ -599,9 +601,9 @@ while (it.hasNext()) {
 			assertEquals(1, bestChunkList.size());
 			Chunk bestChunk = bestChunkList.get(0);
 			assertFalse(
+					bestChunks.contains(bestChunk),
 					"Duplicate best chunk: " + bestChunk + " (\""
-							+ chunkedText.subSequence(bestChunk.start(), bestChunk.end()) + "\")",
-					bestChunks.contains(bestChunk));
+							+ chunkedText.subSequence(bestChunk.start(), bestChunk.end()) + "\")");
 			bestChunks.add(bestChunk);
 		}
 	}

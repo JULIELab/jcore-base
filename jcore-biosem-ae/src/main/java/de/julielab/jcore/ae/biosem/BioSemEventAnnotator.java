@@ -31,8 +31,8 @@ import relations.Word;
 import utils.BioSemException;
 import utils.DBUtils;
 
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 
 public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {

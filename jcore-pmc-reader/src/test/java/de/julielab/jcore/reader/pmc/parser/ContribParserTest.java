@@ -13,11 +13,11 @@ package de.julielab.jcore.reader.pmc.parser;
 import de.julielab.jcore.types.AuthorInfo;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ContribParserTest {
 	@Test

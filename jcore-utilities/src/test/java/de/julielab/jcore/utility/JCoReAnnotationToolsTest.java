@@ -18,7 +18,6 @@
 package de.julielab.jcore.utility;
 
 import de.julielab.jcore.types.*;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -28,27 +27,30 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XmlCasDeserializer;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // import de.julielab.jcore.types.Annotation;
 
-public class JCoReAnnotationToolsTest extends TestCase {
+public class JCoReAnnotationToolsTest {
 
 	/**
 	 * Logger for this class
 	 */
 	private static final Logger LOG = LoggerFactory.getLogger(JCoReAnnotationToolsTest.class);
 
-	JCas jcas;
-	public final String DESC_TEST_ANALYSIS_ENGINE = "src/test/resources/AETestDescriptor.xml";
+	static JCas jcas;
+	public final static String DESC_TEST_ANALYSIS_ENGINE = "src/test/resources/AETestDescriptor.xml";
 
-	protected void setUp() throws Exception {
+	@BeforeAll
+	protected static void setUp() throws Exception {
 
 		// get a CAS/JCas
 		CAS cas = CasCreationUtils.createCas(UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
@@ -78,9 +80,8 @@ public class JCoReAnnotationToolsTest extends TestCase {
 		e4.addToIndexes();
 	}
 
-	// TODO only Exception werfen
-	public void testGetAnnotationAtOffset() throws SecurityException, IllegalArgumentException, ClassNotFoundException,
-			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	@Test
+	public void testGetAnnotationAtOffset() throws Exception {
 
 		LOG.debug("testGetAnnotationAtOffset() - testing getAnnotationAtOffset(..)");
 		Annotation entity = new Annotation(jcas);
@@ -94,10 +95,8 @@ public class JCoReAnnotationToolsTest extends TestCase {
 		assertTrue(anno == null);
 	}
 
-	// TODO only Exception werfen
-	public void testGetOverlappingAnnotation() throws SecurityException, IllegalArgumentException,
-			ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
-			InvocationTargetException {
+	@Test
+	public void testGetOverlappingAnnotation() throws Exception {
 
 		LOG.debug("testGetOverlappingAnnotation() - testing getOverlappingAnnotation(..)");
 		Annotation entity = new Annotation(jcas);
@@ -119,10 +118,8 @@ public class JCoReAnnotationToolsTest extends TestCase {
 		assertTrue((anno != null) && (anno instanceof Annotation));
 	}
 
-	// TODO only Exception werfen
-	public void testGetAnnotationByClassName() throws SecurityException, IllegalArgumentException,
-			ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
-			InvocationTargetException {
+	@Test
+	public void testGetAnnotationByClassName() throws Exception {
 
 		LOG.debug("testGetAnnotationByClassName() - testing getAnnotationObject(..)");
 		Annotation entity = new Annotation(jcas);
@@ -130,6 +127,7 @@ public class JCoReAnnotationToolsTest extends TestCase {
 		assertTrue(anno instanceof Annotation);
 	}
 
+	@Test
 	public void testGetPartiallyOverlappingAnnotationOtherType() throws Exception {
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-all-types");
 		jcas.setDocumentText("wort");
@@ -242,7 +240,7 @@ public class JCoReAnnotationToolsTest extends TestCase {
 
 		List<Token> includedAnnotations = JCoReAnnotationTools.getIncludedAnnotations(jcas, em, Token.class);
 
-		assertEquals("Wrong amount of included tokens returned", 4, includedAnnotations.size());
+		assertEquals(4, includedAnnotations.size(), "Wrong amount of included tokens returned");
 
 		for (int i = 0; i < includedAnnotations.size(); i++) {
 			Token includedToken = includedAnnotations.get(i);

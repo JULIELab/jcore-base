@@ -1,23 +1,26 @@
 package edu.uchsc.ccp.nlp.ei.mutation;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /*
  * Copyright (c) 2007 Regents of the University of Colorado
  * Please refer to the licensing agreement at MUTATIONFINDER_HOME/doc/license.txt
  */
 
-public class PointMutationTest extends TestCase {
-    private PointMutation pointMutation;
+public class PointMutationTest  {
+    private static PointMutation pointMutation;
 
-    private Map<String, String> aminoAcidCodeLookup;
+    private static Map<String, String> aminoAcidCodeLookup;
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeAll
+    protected static void setUp() throws Exception {
         pointMutation = new PointMutation(42, "W", "G");
 
         aminoAcidCodeLookup = new HashMap<String, String>();
@@ -84,7 +87,6 @@ public class PointMutationTest extends TestCase {
         aminoAcidCodeLookup.put("D", "D");
         aminoAcidCodeLookup.put("E", "E");
 
-        super.setUp();
     }
 
     /**
@@ -92,6 +94,7 @@ public class PointMutationTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testConstructor() throws Exception {
         PointMutation pm = new PointMutation(42, "A", "C");
         assertEquals(42, pm.getPosition());
@@ -125,6 +128,7 @@ public class PointMutationTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testHashcode() throws Exception {
         PointMutation pm = new PointMutation(42, "W", "G");
         assertEquals((pm.getClass().getName() + pm.toString()).hashCode(), pm.hashCode());
@@ -135,6 +139,7 @@ public class PointMutationTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testInvalidInit() throws Exception {
         PointMutation pm;
         try {
@@ -178,6 +183,7 @@ public class PointMutationTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testEquals() throws Exception {
         PointMutation pm = new PointMutation(42, "W", "G");
         assertTrue(pointMutation.equals(pm));
@@ -200,6 +206,7 @@ public class PointMutationTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testNormalizationOfResidue() throws Exception {
         Set<String> residuesToNormalize = aminoAcidCodeLookup.keySet();
         for (String residue : residuesToNormalize) {
@@ -212,6 +219,7 @@ public class PointMutationTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testNormalizationOfInvalidResidue() throws Exception {
         try {
             pointMutation.normalizeResidueIdentity("");
@@ -260,6 +268,7 @@ public class PointMutationTest extends TestCase {
      * Test the static method which enables creation of a PointMutation object from a String in the wNm format
      * @throws Exception
      */
+    @Test
     public void testCreateNewPointMutationFrom_wNm() throws Exception {
         PointMutation pm = PointMutation.createPointMutationFrom_wNm("W42G");
         assertEquals(pointMutation, pm);

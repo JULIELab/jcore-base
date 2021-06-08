@@ -64,6 +64,11 @@
             <groupId>de.julielab</groupId>
             <artifactId>jcore-descriptor-creator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+        </dependency>
     </dependencies>
     <name>JCoRe Neo4j Relations Consumer</name>
     <organization>

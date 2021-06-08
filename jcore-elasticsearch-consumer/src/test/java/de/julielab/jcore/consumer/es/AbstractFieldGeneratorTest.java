@@ -367,6 +367,6 @@ public class AbstractFieldGeneratorTest extends AbstractFieldGenerator {
         builder.registerTypeAdapter(PreanalyzedFieldValue.class,
                 new PreanalyzedFieldValue.PreanalyzedFieldValueGsonAdapter());
         Gson gson = builder.create();
-        assertEquals("{\"field\":[\"eins\",\"zwei\"]}", gson.toJson(d));
+        assertEquals("{\"field\":[\"eins\",\"zwei\"]}",  gson.toJson(d));
 	}
 }

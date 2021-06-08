@@ -14,7 +14,6 @@ import de.julielab.xml.binary.BinaryDecodingResult;
 import de.julielab.xml.binary.BinaryJeDISNodeDecoder;
 import de.julielab.xml.binary.BinaryXmiBuilder;
 import org.apache.commons.lang.StringUtils;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.collection.CollectionException;

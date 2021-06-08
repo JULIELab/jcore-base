@@ -32,7 +32,7 @@ import static de.julielab.jcore.consumer.neo4jrelations.Neo4jRelationsConsumerTe
 import static de.julielab.neo4j.plugins.constants.semedico.SemanticRelationConstants.PROP_DOC_IDS;
 import static de.julielab.neo4j.plugins.datarepresentation.constants.ConceptConstants.PROP_SRC_IDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
 /**

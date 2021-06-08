@@ -11,10 +11,10 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class XmiDBWriterTest {
     private static String xmlSubsetTable;
     private static DataBaseConnector dbc;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
         dbc = DBTestUtils.getDataBaseConnector(postgres);
         dbc.reserveConnection();
@@ -43,7 +43,7 @@ public class XmiDBWriterTest {
         dbc.releaseConnections();
     }
 
-    @AfterClass
+    @AfterAll
     public static void shutDown() {
         dbc.close();
     }

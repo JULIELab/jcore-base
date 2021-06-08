@@ -21,7 +21,6 @@ import de.julielab.jcore.reader.xml.XMLMultiplierReader;
 import de.julielab.jcore.types.Journal;
 import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import de.julielab.jcore.types.pubmed.Header;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -37,6 +36,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +45,13 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Test for class XML Reader
  */
-public class XMLMultiplierReaderTest extends TestCase {
+public class XMLMultiplierReaderTest  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLMultiplierReaderTest.class);
 
@@ -80,6 +83,7 @@ public class XMLMultiplierReaderTest extends TestCase {
         }
     }
 
+    @Test
     public void testZipInput() throws UIMAException, IOException {
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types",
                 "org.apache.uima.ducc.FlowControllerTS");
@@ -97,10 +101,10 @@ public class XMLMultiplierReaderTest extends TestCase {
                 String fileName = it.next();
                 if (jCoReURI.getUri().endsWith(fileName)) {
                     found = true;
-                    assertTrue("File name " + fileName + " was already found", foundFileNames.add(fileName));
+                    assertTrue(foundFileNames.add(fileName), "File name " + fileName + " was already found");
                 }
             }
-            assertTrue("The URI " + jCoReURI.getUri()+ " was not matched by any expected file names", found);
+            assertTrue(found, "The URI " + jCoReURI.getUri()+ " was not matched by any expected file names");
             jCas.reset();
         }
         assertThat(expectedFileNames).isEqualTo(foundFileNames);
@@ -111,6 +115,7 @@ public class XMLMultiplierReaderTest extends TestCase {
      *
      * @throws ResourceInitializationException
      */
+    @Test
     public void testGetNextCas_singleFile() throws Exception {
         xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR,
                 XMLMultiplierReader.PARAM_INPUT_FILE, "src/test/resources/pubmedXML/pubmedsample18n0001.xml.gz");
@@ -125,6 +130,7 @@ public class XMLMultiplierReaderTest extends TestCase {
 
     }
 
+    @Test
     public void testGetNextCas_directory() throws Exception {
         xmlMultiplierReader = CollectionReaderFactory.createReader(DESC_XML_MULTIPLIER_READER_DIR,
                 XMLMultiplierReader.PARAM_INPUT_DIR, "src/test/resources/pubmedXML/");

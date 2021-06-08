@@ -10,8 +10,8 @@ import de.julielab.jcore.types.AbstractText;
 import de.julielab.jcore.types.Title;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -28,7 +28,7 @@ public class DocumentWriterTest {
 	private DocumentWriter documentWriter;
 	private Writer writer;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception{
 		cas = JCasFactory.createJCas("src/test/resources/types/jcore-all-types");
 		cas.setDocumentText(DOCUMENT_TITLE + "\n" + DOCUMENT_ABSTRACT);

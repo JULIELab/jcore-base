@@ -27,17 +27,17 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MSdocReaderTest {
 	/**
@@ -69,7 +69,7 @@ public class MSdocReaderTest {
 	private static final String DOC_DUMMY_NAME = "dummy.doc";
 	private static final String DOC_DUMMY_FILE = "src/test/resources/" + DOC_DUMMY_NAME;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() throws Exception {
 		/**
 		 * Create dummies of *.doc-files.
@@ -161,7 +161,7 @@ public class MSdocReaderTest {
 		}
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() throws Exception {
 		/**
 		 * Delete dummies from setUp.

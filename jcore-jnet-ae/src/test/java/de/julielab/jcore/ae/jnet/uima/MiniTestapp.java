@@ -35,8 +35,8 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -47,7 +47,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniTestapp {
 
@@ -61,7 +61,7 @@ public class MiniTestapp {
 
     private static final String ANNOTATOR_DESC = PREFIX + "EntityAnnotatorTest.xml";
 
-    @After
+    @AfterEach
     public void clean() {
         if (new File(TEST_XMI_OUT).isFile()) {
             new File(TEST_XMI_OUT).delete();

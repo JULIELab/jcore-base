@@ -21,15 +21,16 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MedAttrAnnotatorTest {
 
@@ -66,11 +67,11 @@ public class MedAttrAnnotatorTest {
 		
 		
 		Boolean lengthEqual = (goldlines.length == menCount);
-		Assert.assertTrue("Expression count differs; should be '" + 
-				Integer.toString(goldlines.length) + "' but is '" + menCount.toString() +"'.",
-				lengthEqual);
+		assertTrue(lengthEqual,
+				"Expression count differs; should be '" +
+				goldlines.length + "' but is '" + menCount.toString() +"'.");
 		Boolean arrayEqual = (goldlines.equals(actLines.toArray(new String[actLines.size()])));
-		Assert.assertTrue("Expressions differ", arrayEqual);
+		assertTrue(arrayEqual, "Expressions differ");
 	}
 	
 	private void reset() {
@@ -78,7 +79,7 @@ public class MedAttrAnnotatorTest {
 	}
 	
 	
-	@Before
+	@BeforeEach
 	public void initializeComponents() throws IOException, UIMAException {
 		if (setUpIsDone) {
 	        return;
@@ -90,7 +91,7 @@ public class MedAttrAnnotatorTest {
 		setUpIsDone = true;
 	}
 	
-	@Ignore
+	@Disabled
 	@Test
 	public void testDuration() {
 			String text;
@@ -113,7 +114,7 @@ public class MedAttrAnnotatorTest {
 			}
 	}
 	
-	@Ignore
+	@Disabled
 	@Test
 	public void testDose() {
 			String text;
@@ -136,7 +137,7 @@ public class MedAttrAnnotatorTest {
 			}
 	}
 	
-	@Ignore
+	@Disabled
 	@Test
 	public void testFrequency() {
 			String text;
@@ -159,7 +160,7 @@ public class MedAttrAnnotatorTest {
 			}
 	}
 	
-	@Ignore
+	@Disabled
 	@Test
 	public void testModus() {
 			String text;

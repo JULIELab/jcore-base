@@ -27,8 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-import static org.fest.reflect.core.Reflection.method;
-
 /**
  * In this class, the actual UIMA types are built from the templates which have
  * been filled with values by the type parsers before. The standard type builder
@@ -150,8 +148,7 @@ public class StandardTypeBuilder implements TypeBuilder {
 					// itself.
 					if (standardJavaTypesMap.get(concreteFeature.getFullClassName()) != null) {
 						featureClass = standardJavaTypesMap.get(concreteFeature.getFullClassName());
-						method(methodName).withParameterTypes(featureClass).in(type)
-								.invoke(parseValueStringToValueType(concreteFeature.getValue(), concreteFeature.getFullClassName()));
+						type.getClass().getMethod(methodName, featureClass).invoke(type, parseValueStringToValueType(concreteFeature.getValue(), concreteFeature.getFullClassName()));
 					} else if (concreteFeature.getFullClassName().equals("String") || concreteFeature.getFullClassName().equals("java.lang.String")) {
 						featureClass = Class.forName(concreteFeature.getFullClassName());
 						typeClass.getMethod(methodName, featureClass).invoke(type, concreteFeature.getValue());
@@ -163,7 +160,7 @@ public class StandardTypeBuilder implements TypeBuilder {
 									+ "\" the feature value class (e.g. String, Integer, another type...) was not defined in the mapping file.");
 						featureClass = Class.forName(featureClassName);
 						TOP top = concreteFeature.getTypeTemplate().getParser().getTypeBuilder().buildType(concreteFeature, jcas);
-						method(methodName).withParameterTypes(featureClass).in(type).invoke(top);
+						type.getClass().getMethod(methodName, featureClass).invoke(type, top);
 					}
 				} catch (Throwable e) {
 					LOGGER.error("Wrong Feature Type: " + concreteFeature.getFullClassName(), e);

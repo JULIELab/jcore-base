@@ -6,8 +6,8 @@
 
 package de.julielab.jcore.reader.xmlmapper;
 
-import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.Date;
+import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import org.apache.uima.UIMAException;
@@ -29,7 +29,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -38,10 +38,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for class MedlineReader
@@ -183,7 +183,7 @@ public class XMLReaderTest {
 				if (DEBUG_MODE) {
 					serializeCas(cas);
 				}
-				assertTrue("test documenttext", cas.getDocumentText() != null && cas.getDocumentText().length() > 0);
+				assertTrue(cas.getDocumentText() != null && cas.getDocumentText().length() > 0);
 				assertEquals(
 						"Mitigation of graft-versus-host disease in rats treated with allogeneic and xenogeneic antilymphocytic sera.\nThis is a very short test abstract.",
 						cas.getDocumentText());
@@ -191,7 +191,7 @@ public class XMLReaderTest {
 				int counter = 0;
 				String[] types = new String[] { ":::diso:2,3", ":::spe", ":::pgn" };
 				String[] texts = new String[] { "graft-versus-host disease", "rats", "sera" };
-				assertTrue("No entity mentions found in the CAS", iter.hasNext());
+				assertTrue(iter.hasNext(), "No entity mentions found in the CAS");
 				while (iter.hasNext()) {
 					EntityMention text = (EntityMention) iter.next();
 					String coveredText = text.getCoveredText();
@@ -398,8 +398,8 @@ public class XMLReaderTest {
 			medlineReader = getCollectionReader(DESC_XML_READER_MISSING_INPUT_DIR);
 			fail("Expected exception was not thrown");
 		} catch (Exception e) {
-			assertTrue("Exception should be an instance of ResourceInitializationException , but was "
-					+ e.getClass().getName(), e instanceof ResourceInitializationException);
+			assertTrue(e instanceof ResourceInitializationException, "Exception should be an instance of ResourceInitializationException , but was "
+					+ e.getClass().getName());
 		}
 	}
 
@@ -497,71 +497,71 @@ public class XMLReaderTest {
 			String pmid = getPMID(cas);
 			if (pmid.equals("11119751")) {
 				checkCount++;
-				assertTrue("Invalid keyWordList", checkKeywords(cas, EXPECTED_KEYWORDS));
-				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
-				assertTrue("Invalid DBInfoList", ckeckDBInfos(cas, EXPECTED_DB_INFO));
-				assertTrue("Invalid MeshHeading", checkMeshHeadings(cas, EXPECTED_MESH_HEADINGS));
-				assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-				assertTrue("Invalid Chemical", checkChemicals(cas, EXPECTED_CHEMICALS));
-				assertTrue("Invalid Header", checkHeader(cas, EXPECTED_HEADER));
-				assertTrue("Invalid ManualDescriptor", checkManualDescriptor(cas));
-				assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
-				assertTrue("Invalid DocumentText", checkDocumentText(cas, EXPECTED_DOCUMENT_TEXT));
-				assertTrue("Invalid AbstractText", checkAbstractText(cas, EXPECTED_ABSTRACT_TEXT));
-				assertTrue("Invalid Title", checkTitle(cas, EXPECTED_TITLE));
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(checkKeywords(cas, EXPECTED_KEYWORDS), "Invalid keyWordList");
+				assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
+				assertTrue(ckeckDBInfos(cas, EXPECTED_DB_INFO), "Invalid DBInfoList");
+				assertTrue(checkMeshHeadings(cas, EXPECTED_MESH_HEADINGS), "Invalid MeshHeading");
+				assertTrue(checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS), "Invalid GeneSymbol");
+				assertTrue(checkChemicals(cas, EXPECTED_CHEMICALS), "Invalid Chemical");
+				assertTrue(checkHeader(cas, EXPECTED_HEADER), "Invalid Header");
+				assertTrue(checkManualDescriptor(cas), "Invalid ManualDescriptor");
+				assertTrue(ckeckJournal(cas, EXPECTED_JOURNAL), "Invalid Journal");
+				assertTrue(checkDocumentText(cas, EXPECTED_DOCUMENT_TEXT), "Invalid DocumentText");
+				assertTrue(checkAbstractText(cas, EXPECTED_ABSTRACT_TEXT), "Invalid AbstractText");
+				assertTrue(checkTitle(cas, EXPECTED_TITLE), "Invalid Title");
+				assertTrue(!checkSentences(cas), "Sentences Found");
 			}
 			// check medline XML without most lists (gene, keywords,...)
 			if (pmid.equals("11119751-a")) {
 				checkCount++;
-				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
+				assertTrue(!checkSentences(cas), "Sentences Found");
 			}
 			// check medline XML with pub date: <MedlineDate>2000
 			// Spring-Summer</MedlineDate>
 			if (pmid.equals("11119751-b")) {
 				checkCount++;
-				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
-				assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-				assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
-				assertTrue("Invalid PubDate", checkPubDate(cas, EXPECTED_DATE_1));
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
+				assertTrue(checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS), "Invalid GeneSymbol");
+				assertTrue(ckeckJournal(cas, EXPECTED_JOURNAL), "Invalid Journal");
+				assertTrue(checkPubDate(cas, EXPECTED_DATE_1), "Invalid PubDate");
+				assertTrue(!checkSentences(cas), "Sentences Found");
 			}
 			// check medline XML with pub date: <MedlineDate>2000 Dec
 			// 23-30</MedlineDate>
 			if (pmid.equals("11119751-c")) {
 				checkCount++;
-				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
-				assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-				assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
-				assertTrue("Invalid PubDate", checkPubDate(cas, EXPECTED_DATE_2));
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
+				assertTrue(checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS), "Invalid GeneSymbol");
+				assertTrue(ckeckJournal(cas, EXPECTED_JOURNAL), "Invalid Journal");
+				assertTrue(checkPubDate(cas, EXPECTED_DATE_2), "Invalid PubDate");
+				assertTrue(!checkSentences(cas), "Sentences Found");
 			}
 			// check medline XML pub date: <MedlineDate>2000 Oct-2001
 			// Mar</MedlineDate>
 			if (pmid.equals("11119751-d")) {
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(!checkSentences(cas), "Sentences Found");
 				checkCount++;
-				assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
-				assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-				assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
-				assertTrue("Invalid PubDate", checkPubDate(cas, EXPECTED_DATE_3));
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
+				assertTrue(checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS), "Invalid GeneSymbol");
+				assertTrue(ckeckJournal(cas, EXPECTED_JOURNAL), "Invalid Journal");
+				assertTrue(checkPubDate(cas, EXPECTED_DATE_3), "Invalid PubDate");
+				assertTrue(!checkSentences(cas), "Sentences Found");
 			}
 			if (pmid.equals("8045680")) {
 				checkCount++;
-				assertTrue("No Sentences Found", checkSentences(cas));
+				assertTrue(checkSentences(cas), "No Sentences Found");
 				// assertTrue("Invalid Header", checkHeader(cas,
 				// EXPECTED_HEADER_OTHER_LANGUAGE));
 			}
 			if (pmid.equals("12626969")) {
 				checkCount++;
-				assertTrue("No Sentences Found", checkSentences(cas));
+				assertTrue(checkSentences(cas), "No Sentences Found");
 				// assertTrue("Invalid Header", checkHeader(cas,
 				// EXPECTED_HEADER_OTHER_LANGUAGE));
 			}
 			if (pmid.equals("11119751-e")) {
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(!checkSentences(cas), "Sentences Found");
 				checkCount++;
 				// assertTrue("Invalid Header", checkHeader(cas,
 				// EXPECTED_HEADER_OTHER_LANGUAGE));
@@ -569,25 +569,25 @@ public class XMLReaderTest {
 			// test the case that only a title is found and no abstractText
 			// (documentText should be equal to title in this case)
 			if (pmid.equals("17276851")) {
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(!checkSentences(cas), "Sentences Found");
 				checkCount++;
-				assertTrue("Invalid Document Title", checkTitle(cas, EXPECTED_TITLE_2));
-				assertTrue("Invalid Document Text", checkDocumentText(cas, EXPECTED_TITLE_2));
+				assertTrue(checkTitle(cas, EXPECTED_TITLE_2), "Invalid Document Title");
+				assertTrue(checkDocumentText(cas, EXPECTED_TITLE_2), "Invalid Document Text");
 			}
 			// PubMed has changed the XML element ForeName to FirstName, but
 			// foreName should still
 			// be supported
 			if (pmid.equals("18439884")) {
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(!checkSentences(cas), "Sentences Found");
 				checkCount++;
-				assertTrue("Invalid foreName", checkForeNames(cas, EXPECTED_FORE_NAMES));
+				assertTrue(checkForeNames(cas, EXPECTED_FORE_NAMES), "Invalid foreName");
 				checkJournalTitle(cas, EXPECTED_JOURNAL_TITLE);
 			}
 			if (pmid.equals("17306504")) {
-				assertTrue("Sentences Found", !checkSentences(cas));
+				assertTrue(!checkSentences(cas), "Sentences Found");
 				checkCount++;
-				assertTrue("Invalid pubTypeList", checkPubTypeList(cas, EXPECTED_PUBTYPES));
-				assertTrue("Invalid DOI", checkDoi(cas, EXPECTED_DOI));
+				assertTrue(checkPubTypeList(cas, EXPECTED_PUBTYPES), "Invalid pubTypeList");
+				assertTrue(checkDoi(cas, EXPECTED_DOI), "Invalid DOI");
 			}
 		}
 		assertEquals(11, checkCount);
@@ -668,7 +668,7 @@ public class XMLReaderTest {
 	 * 
 	 * @param cas
 	 *            The CAS
-	 * @param title
+	 * @param expectedTitle
 	 *            The correct title
 	 * @return true if the correct title is contained in the CAS
 	 */
@@ -1006,9 +1006,9 @@ public class XMLReaderTest {
 		int count = 0;
 		while (iter.hasNext()) {
 			Sentence s = (Sentence) iter.next();
-			assertTrue("Sentence has an ID", s.getId() != null);
-			assertTrue("Sentence has an Begin", s.getBegin() >= 0);
-			assertTrue("Sentence has an End", s.getEnd() >= 0);
+			assertTrue(s.getId() != null, "Sentence has an ID");
+			assertTrue(s.getBegin() >= 0, "Sentence has an Begin");
+			assertTrue(s.getEnd() >= 0, "Sentence has an End");
 			count++;
 		}
 		if (count == 0)
@@ -1052,7 +1052,7 @@ public class XMLReaderTest {
 	 * foreName, but both should be supported)
 	 * 
 	 * @param cas
-	 * @param foreName
+	 * @param foreNames
 	 * @return
 	 */
 	private boolean checkForeNames(CAS cas, String[] foreNames) {

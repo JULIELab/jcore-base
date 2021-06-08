@@ -18,8 +18,8 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class BEAT extends JFrame implements ActionListener, CaretListener
 {

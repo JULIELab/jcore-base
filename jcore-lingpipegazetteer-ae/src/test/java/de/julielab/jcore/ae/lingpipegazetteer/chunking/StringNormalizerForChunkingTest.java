@@ -9,11 +9,11 @@ import de.julielab.java.utilities.spanutils.OffsetSet;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking;
 import de.julielab.jcore.ae.lingpipegazetteer.utils.StringNormalizerForChunking.NormalizedString;
 import org.apache.commons.lang3.Range;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StringNormalizerForChunkingTest {
 	@Test
@@ -23,25 +23,25 @@ public class StringNormalizerForChunkingTest {
 
 		term = "\"Call\" - postponed";
 		ns = StringNormalizerForChunking.normalizeString(term);
-		assertEquals("Term normalization was not correct", "Call  postponed", ns.string);
+		assertEquals( "Call  postponed",  ns.string, "Term normalization was not correct");
 
 		term = "\"Light-for-dates\" with signs of fetal malnutrition, 1,000-1,249 grams";
 		ns = StringNormalizerForChunking.normalizeString(term);
-		assertEquals("Term normalization was not correct",
-				"Lightfordates with signs of fetal malnutrition 10001249 grams", ns.string);
+		assertEquals("Lightfordates with signs of fetal malnutrition 10001249 grams",
+				ns.string, "Term normalization was not correct");
 
 		term = "#Tarsal &/or metatarsal bones";
 		ns = StringNormalizerForChunking.normalizeString(term);
-		assertEquals("Term normalization was not correct", "Tarsal or metatarsal bones", ns.string);
+		assertEquals( "Tarsal or metatarsal bones",  ns.string, "Term normalization was not correct");
 
 		term = "% <poverty line Neighborhood PhenX";
 		ns = StringNormalizerForChunking.normalizeString(term);
-		assertEquals("Term normalization was not correct", " poverty line Neighborhood PhenX", ns.string);
+		assertEquals( " poverty line Neighborhood PhenX",  ns.string, "Term normalization was not correct");
 
 		term = "'DP-1:E2F1 complex [nucleoplasm]' positively regulates 'Transactivation of NOXA by E2F1'";
 		ns = StringNormalizerForChunking.normalizeString(term);
-		assertEquals("Term normalization was not correct",
-				"DP1E2F1 complex nucleoplasm positively regulates Transactivation of NOXA by E2F1", ns.string);
+		assertEquals("DP1E2F1 complex nucleoplasm positively regulates Transactivation of NOXA by E2F1",
+				ns.string, "Term normalization was not correct");
 	}
 
 	@Test
@@ -52,23 +52,23 @@ public class StringNormalizerForChunkingTest {
 		text = "-aa :+bb";
 		// Outcome: "aabb";
 		ns = StringNormalizerForChunking.normalizeString(text);
-		assertEquals("The original offset is computed wrong", Integer.valueOf(0), ns.getOriginalOffset(0));
-		assertEquals("The original offset is computed wrong", Integer.valueOf(2), ns.getOriginalOffset(1));
-		assertEquals("The original offset is computed wrong", Integer.valueOf(3), ns.getOriginalOffset(2));
-		assertEquals("The original offset is computed wrong", Integer.valueOf(6), ns.getOriginalOffset(3));
-		assertEquals("The original offset is computed wrong", Integer.valueOf(7), ns.getOriginalOffset(4));
-		assertNull("There are more offset mappings than should be", ns.getOffsetMap().get(5));
+		assertEquals( Integer.valueOf(0),  ns.getOriginalOffset(0), "The original offset is computed wrong");
+		assertEquals( Integer.valueOf(2),  ns.getOriginalOffset(1), "The original offset is computed wrong");
+		assertEquals( Integer.valueOf(3),  ns.getOriginalOffset(2), "The original offset is computed wrong");
+		assertEquals( Integer.valueOf(6),  ns.getOriginalOffset(3), "The original offset is computed wrong");
+		assertEquals( Integer.valueOf(7),  ns.getOriginalOffset(4), "The original offset is computed wrong");
+		assertNull(ns.getOffsetMap().get(5), "There are more offset mappings than should be");
 
 		text = "((2-n-butyl-6,7-dichloro-2-cyclopentyl-2,3-dihydro-1-oxo-1H-inden-5-yl)oxy)acetic acid";
 		// Outcome:
 		// "2nbutyl67dichloro2cyclopentyl23dihydro1oxo1Hinden5yloxyacetic acid";
 		ns = StringNormalizerForChunking.normalizeString(text);
-		assertEquals("The original offset is computed wrong", Integer.valueOf(0), ns.getOriginalOffset(0));
-		assertEquals("The original offset is computed wrong", Integer.valueOf(4), ns.getOriginalOffset(1));
-		assertEquals("The original offset is computed wrong", Integer.valueOf(6), ns.getOriginalOffset(2));
-		assertEquals("The original offset is computed wrong", Integer.valueOf(16), ns.getOriginalOffset(9));
-		assertEquals("The original offset is computed wrong", Integer.valueOf(82), ns.getOriginalOffset(62));
-		assertNull("There are more offset mappings than should be", ns.getOffsetMap().get(66));
+		assertEquals( Integer.valueOf(0),  ns.getOriginalOffset(0), "The original offset is computed wrong");
+		assertEquals( Integer.valueOf(4),  ns.getOriginalOffset(1), "The original offset is computed wrong");
+		assertEquals( Integer.valueOf(6),  ns.getOriginalOffset(2), "The original offset is computed wrong");
+		assertEquals( Integer.valueOf(16),  ns.getOriginalOffset(9), "The original offset is computed wrong");
+		assertEquals( Integer.valueOf(82),  ns.getOriginalOffset(62), "The original offset is computed wrong");
+		assertNull(ns.getOffsetMap().get(66), "There are more offset mappings than should be");
 	}
 
 	@Test
@@ -84,9 +84,9 @@ public class StringNormalizerForChunkingTest {
 		Transliterator t = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower");
 		assertTrue(t.transform(text).length() == text.length() - 2);
 		ns = StringNormalizerForChunking.normalizeString(text, new IndoEuropeanTokenizerFactory(), t);
-		assertEquals("Transliteration wasn't done correctly",
-				"each node either a sensor or a beacon is noted as nodep, p ∈ 𝕊 ∪ 𝔹, and vector vp is used to represent the coordinate of nodep. beacons are placed onto the map with fixed coordinates vj, where j ∈ 𝔹. we assume that each beacon is aware of its own absolute location.",
-				ns.string);
+		assertEquals("each node either a sensor or a beacon is noted as nodep, p ∈ 𝕊 ∪ 𝔹, and vector vp is used to represent the coordinate of nodep. beacons are placed onto the map with fixed coordinates vj, where j ∈ 𝔹. we assume that each beacon is aware of its own absolute location.",
+				ns.string,
+				"Transliteration wasn't done correctly");
 		assertEquals(Integer.valueOf(83), ns.getOriginalOffset(82));
 		assertEquals(Integer.valueOf(188), ns.getOriginalOffset(186));
 	}
@@ -104,7 +104,7 @@ public class StringNormalizerForChunkingTest {
 		// in the original string, the substring from 0 to 10 would be "b⃗1,2,
 		// res", since the first character is a two-byte character. In the
 		// (transliterated) normalized string, it is only one byte. This is why we expect to get one character more.
-		assertEquals("b⃗1,2, resp", text.substring(0, ns.getOriginalOffset(10)));
+		assertEquals( text.substring(0,  ns.getOriginalOffset(10)), "b⃗1,2, resp");
 	}
 
 	@Test
@@ -115,31 +115,31 @@ public class StringNormalizerForChunkingTest {
 		PorterStemmerTokenizerFactory tokenizerFactory = new PorterStemmerTokenizerFactory(
 				IndoEuropeanTokenizerFactory.INSTANCE);
 		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
-		assertEquals("Normalization was wrong: ",
-				"We saw Parkinson Diseas and S(H)P 1 in a sadli-form circumvent of applic.", ns.string);
-		assertEquals("Offset wrong: ", Integer.valueOf(0), ns.getOriginalOffset(Integer.valueOf(0)));
-		assertEquals("Offset wrong: ", Integer.valueOf(16), ns.getOriginalOffset(Integer.valueOf(16)));
-		assertEquals("Offset wrong: ", Integer.valueOf(19), ns.getOriginalOffset(Integer.valueOf(17)));
-		assertEquals("Offset wrong: ", Integer.valueOf(26), ns.getOriginalOffset(Integer.valueOf(23)));
-		assertEquals("Offset wrong: ", Integer.valueOf(49), ns.getOriginalOffset(Integer.valueOf(46)));
-		assertEquals("Offset wrong: ", Integer.valueOf(50), ns.getOriginalOffset(Integer.valueOf(47)));
-		assertEquals("Offset wrong: ", Integer.valueOf(56), ns.getOriginalOffset(Integer.valueOf(51)));
+		assertEquals("We saw Parkinson Diseas and S(H)P 1 in a sadli-form circumvent of applic.",
+				ns.string, "Normalization was wrong: ");
+		assertEquals( Integer.valueOf(0),  ns.getOriginalOffset(Integer.valueOf(0)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(16),  ns.getOriginalOffset(Integer.valueOf(16)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(19),  ns.getOriginalOffset(Integer.valueOf(17)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(26),  ns.getOriginalOffset(Integer.valueOf(23)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(49),  ns.getOriginalOffset(Integer.valueOf(46)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(50),  ns.getOriginalOffset(Integer.valueOf(47)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(56),  ns.getOriginalOffset(Integer.valueOf(51)), "Offset wrong: ");
 		str = "We go to James' to have some coffee'ses.";
 		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
-		assertEquals("Normalization was wrong: ", "We go to Jame' to have some coffe'se.", ns.string);
-		assertEquals("Offset wrong: ", Integer.valueOf(0), ns.getOriginalOffset(Integer.valueOf(0)));
-		assertEquals("Offset wrong: ", Integer.valueOf(9), ns.getOriginalOffset(Integer.valueOf(9)));
-		assertEquals("Offset wrong: ", Integer.valueOf(14), ns.getOriginalOffset(Integer.valueOf(13)));
-		assertEquals("Offset wrong: ", Integer.valueOf(35), ns.getOriginalOffset(Integer.valueOf(33)));
+		assertEquals( "We go to Jame' to have some coffe'se.",  ns.string, "Normalization was wrong: ");
+		assertEquals( Integer.valueOf(0),  ns.getOriginalOffset(Integer.valueOf(0)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(9),  ns.getOriginalOffset(Integer.valueOf(9)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(14),  ns.getOriginalOffset(Integer.valueOf(13)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(35),  ns.getOriginalOffset(Integer.valueOf(33)), "Offset wrong: ");
 		str = "We have some 'serious things' to talk about.";
 		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
-		assertEquals("Normalization was wrong: ", "We have some 'seriou thing' to talk about.", ns.string);
-		assertEquals("Offset wrong: ", Integer.valueOf(0), ns.getOriginalOffset(Integer.valueOf(0)));
-		assertEquals("Offset wrong: ", Integer.valueOf(12), ns.getOriginalOffset(Integer.valueOf(12)));
-		assertEquals("Offset wrong: ", Integer.valueOf(13), ns.getOriginalOffset(Integer.valueOf(13)));
-		assertEquals("Offset wrong: ", Integer.valueOf(28), ns.getOriginalOffset(Integer.valueOf(26)));
-		assertEquals("Offset wrong: ", Integer.valueOf(29), ns.getOriginalOffset(Integer.valueOf(27)));
-		assertEquals("Offset wrong: ", Integer.valueOf(30), ns.getOriginalOffset(Integer.valueOf(28)));
+		assertEquals( "We have some 'seriou thing' to talk about.",  ns.string, "Normalization was wrong: ");
+		assertEquals( Integer.valueOf(0),  ns.getOriginalOffset(Integer.valueOf(0)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(12),  ns.getOriginalOffset(Integer.valueOf(12)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(13),  ns.getOriginalOffset(Integer.valueOf(13)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(28),  ns.getOriginalOffset(Integer.valueOf(26)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(29),  ns.getOriginalOffset(Integer.valueOf(27)), "Offset wrong: ");
+		assertEquals( Integer.valueOf(30),  ns.getOriginalOffset(Integer.valueOf(28)), "Offset wrong: ");
 
 		str = "test dosing unit KLRg1 killer cell lectin like receptor G2 Parkinson's Disease";
 		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);

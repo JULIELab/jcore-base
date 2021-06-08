@@ -1,27 +1,24 @@
 package de.julielab.jcore.misc;
 
-import static java.util.stream.Collectors.joining;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.julielab.java.utilities.IOStreamUtilities;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.julielab.java.utilities.IOStreamUtilities;
-import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static java.util.stream.Collectors.joining;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DescriptorCreatorTest {
 	
-	@BeforeClass
-	@AfterClass
+	@BeforeAll
+	@AfterAll
 	public static void shutdown() throws IOException {
 		//FileUtils.deleteDirectory(new File(Arrays.asList("src", "test", "resources", "de").stream().collect(joining(File.separator))));
 	}

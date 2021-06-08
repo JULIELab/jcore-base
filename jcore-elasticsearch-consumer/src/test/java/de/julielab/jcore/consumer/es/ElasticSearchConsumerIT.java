@@ -1,17 +1,15 @@
 package de.julielab.jcore.consumer.es;
 
-import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.consumer.es.preanalyzed.Document;
 import de.julielab.jcore.consumer.es.preanalyzed.RawToken;
 import de.julielab.jcore.types.Header;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -19,12 +17,11 @@ import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ElasticSearchConsumerIT {
     public static final String TEST_INDEX = "testindex";
@@ -39,7 +36,7 @@ public class ElasticSearchConsumerIT {
             .withStartupTimeout(Duration.ofMinutes(2))
             .withEnv("cluster.name", TEST_CLUSTER);
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         Slf4jLogConsumer toStringConsumer = new Slf4jLogConsumer(log);
         es.followOutput(toStringConsumer, OutputFrame.OutputType.STDOUT);

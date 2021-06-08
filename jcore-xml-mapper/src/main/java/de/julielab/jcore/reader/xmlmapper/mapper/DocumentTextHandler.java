@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.fest.reflect.core.Reflection.constructor;
 
 /**
  * Handels to parse the DocumentText
@@ -128,16 +125,19 @@ public class DocumentTextHandler {
 
     public void setExternalParserForPartOfDocument(int id, String externalParserClassName) throws CollectionException {
         if (externalParserClassName != null) {
-            Class<?> externalParserClass;
+            Class<?> externalParserClass = null;
+            DocumentTextPartParser parser;
             try {
                 externalParserClass = Class.forName(externalParserClassName.trim());
+                parser = (DocumentTextPartParser) externalParserClass.getConstructor().newInstance();
             } catch (ClassNotFoundException e) {
                 LOGGER.error("ExternalParser " + externalParserClassName + " for document text part " + id + " returns a ClassNotFoundException", e);
                 throw new CollectionException(e);
+            } catch (Exception e) {
+                LOGGER.error("Could not create instance of {}: ", externalParserClass, e);
+                throw new CollectionException(e);
             }
-            DocumentTextPartParser parser = (DocumentTextPartParser) constructor().in(externalParserClass).newInstance();
             this.docTextData.get(id).setParser(parser);
         }
     }
-
 }

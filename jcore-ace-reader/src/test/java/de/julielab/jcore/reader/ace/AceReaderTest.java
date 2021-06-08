@@ -21,7 +21,6 @@ import de.julielab.jcore.types.Annotation;
 import de.julielab.jcore.types.ArgumentMention;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.ace.*;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
@@ -38,6 +37,8 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -50,7 +51,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class AceReaderTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class AceReaderTest  {
 	/**
 	 * Path to the MedlineReader descriptor
 	 */
@@ -65,47 +68,46 @@ public class AceReaderTest extends TestCase {
 	/**
 	 * Object to be tested
 	 */
-	private CollectionReader aceReader;
+	private static CollectionReader aceReader;
 
 	/**
 	 * Auxiliary collection reader
 	 */
-	private CollectionReader testReader;
+	private static CollectionReader testReader;
 
 	/**
 	 * CAS array list with CAS objects that where processed by the aceReader
 	 */
-	private ArrayList<CAS> casArrayList = new ArrayList<CAS>();
+	private static ArrayList<CAS> casArrayList = new ArrayList<CAS>();
 
 	/**
 	 * Auxiliary CAS objects
 	 */
-	private CAS aceReaderCas;
+	private static CAS aceReaderCas;
 
-	private CAS testReaderCas;
+	private static CAS testReaderCas;
 
-	private JCas aceReaderJCas;
+	private static JCas aceReaderJCas;
 
-	private JCas testReaderJCas;
+	private static JCas testReaderJCas;
 
-	LOC entity1_1;
+	static LOC entity1_1;
 
-	LOC entity1_2;
+	static LOC entity1_2;
 
-	GPE entity2_1;
+	static GPE entity2_1;
 
-	GPE entity2_2;
+	static GPE entity2_2;
 
-	GPE entity2_3;
+	static GPE entity2_3;
 
-	GPE entity2_4;
+	static GPE entity2_4;
 
 	/*----------------------------------------------------------------------------------------------*/
-	@Override
-	protected void setUp() throws Exception {
+	@BeforeAll
+	protected static void setUp() throws Exception {
 		aceReader = getCollectionReader(ACE_READER_DESCRIPTOR);
 		processAllCases();
-		super.setUp();
 
 		System.out.println("ALL CASes were processed");
 	} // of setUp
@@ -118,7 +120,7 @@ public class AceReaderTest extends TestCase {
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
-	private void processAllCases() throws CASException, SAXException, ParserConfigurationException {
+	private static void processAllCases() throws CASException, SAXException, ParserConfigurationException {
 
 		try {
 			while (aceReader.hasNext()) {
@@ -157,13 +159,13 @@ public class AceReaderTest extends TestCase {
 	} // of processAllCases
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void compareCASes() {
-		assertTrue("Invalid source file attributes!", checkSourceFile());
-		assertTrue("Invalid generated Jules Components!", checkGeneratedJulesComponents());
+	private static void compareCASes() {
+		assertTrue(checkSourceFile(), "Invalid source file attributes!");
+		assertTrue(checkGeneratedJulesComponents(), "Invalid generated Jules Components!");
 	} // compareCASes
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkGeneratedJulesComponents() {
+	private static boolean checkGeneratedJulesComponents() {
 		System.out.println("CALL checkGeneratedJulesComponents()");
 		boolean julesComponentsEqual = true;
 
@@ -185,7 +187,7 @@ public class AceReaderTest extends TestCase {
 	} // checkGeneratedJulesComponents
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkJulesEntities() {
+	private static boolean checkJulesEntities() {
 		System.out.println("CALL checkJulesEntities()");
 		boolean julesEntityEqual = true;
 
@@ -237,7 +239,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkJulesEntities
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkJulesRelations() {
+	private static boolean checkJulesRelations() {
 		System.out.println("CALL checkJulesRelations()");
 		boolean juleRelationEqual = true;
 
@@ -286,8 +288,8 @@ public class AceReaderTest extends TestCase {
 	} // of checkJulesRelations
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkJulesRelationArguments(de.julielab.jcore.types.RelationMention aceReaderRelation,
-			de.julielab.jcore.types.RelationMention testReaderRelation) {
+	private static boolean checkJulesRelationArguments(de.julielab.jcore.types.RelationMention aceReaderRelation,
+													   de.julielab.jcore.types.RelationMention testReaderRelation) {
 		System.out.println("CALL checkJulesRelationArguments()");
 		boolean julesRelationArgumentEqual = true;
 
@@ -449,7 +451,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkJulesEventArguments
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkSourceFile() {
+	private static boolean checkSourceFile() {
 		boolean sourceFileEqual = true;
 
 		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jcore.types.ace.SourceFile.type);
@@ -499,7 +501,7 @@ public class AceReaderTest extends TestCase {
 	} // checkSourceFile
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkDocument() {
+	private static boolean checkDocument() {
 		boolean documentEqual = true;
 
 		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jcore.types.ace.Document.type);
@@ -568,7 +570,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkDocument
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkEvents(Document aceReaderDocument, Document testReaderDocument) {
+	private static boolean checkEvents(Document aceReaderDocument, Document testReaderDocument) {
 		System.out.println("CALL checkEvents()");
 		boolean eventEqual = true;
 
@@ -641,7 +643,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkEvents
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkEventMentions(Event aceReaderEvent, Event testReaderEvent) {
+	private static boolean checkEventMentions(Event aceReaderEvent, Event testReaderEvent) {
 		boolean eventMentionEqual = true;
 
 		FSArray aceReaderEventMentionFSArray = aceReaderEvent.getMentions();
@@ -703,7 +705,7 @@ public class AceReaderTest extends TestCase {
 	} // checkEventMentions
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkEventMentionArguments(EventMention aceReaderEventMention, EventMention testReaderEventMention) {
+	private static boolean checkEventMentionArguments(EventMention aceReaderEventMention, EventMention testReaderEventMention) {
 		boolean eventMentionArgumentEqual = true;
 
 		FSArray aceReaderEventMentionArgumentFSArray = aceReaderEventMention.getArguments();
@@ -740,7 +742,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkEventMentionArguments
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkEventArguments(Event aceReaderEvent, Event testReaderEvent) {
+	private static boolean checkEventArguments(Event aceReaderEvent, Event testReaderEvent) {
 		boolean eventArgumentEqual = true;
 
 		FSArray aceReaderEventArgumentFSArray = aceReaderEvent.getArguments();
@@ -767,7 +769,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkEventArguments
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkRelations(Document aceReaderDocument, Document testReaderDocument) {
+	private static boolean checkRelations(Document aceReaderDocument, Document testReaderDocument) {
 		boolean relationEqual = true;
 
 		FSArray aceReaderRelationFSArray = aceReaderDocument.getRelations();
@@ -830,7 +832,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkRelations
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkRelationMentions(Relation aceReaderRelation, Relation testReaderRelation) {
+	private static boolean checkRelationMentions(Relation aceReaderRelation, Relation testReaderRelation) {
 		boolean relationMentionEqual = true;
 
 		FSArray aceReaderRelationMentionFSArray = aceReaderRelation.getMentions();
@@ -885,8 +887,8 @@ public class AceReaderTest extends TestCase {
 	} // checkRelationMentions
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkRelationMentionArguments(RelationMention aceReaderRelationMention,
-			RelationMention testReaderRelationMention) {
+	private static boolean checkRelationMentionArguments(RelationMention aceReaderRelationMention,
+														 RelationMention testReaderRelationMention) {
 		boolean relationMentionArgumentEqual = true;
 
 		FSArray aceReaderRelationMentionArgumentFSArray = aceReaderRelationMention.getArguments();
@@ -925,7 +927,7 @@ public class AceReaderTest extends TestCase {
 	}
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkRelationArguments(Relation aceReaderRelation, Relation testReaderRelation) {
+	private static boolean checkRelationArguments(Relation aceReaderRelation, Relation testReaderRelation) {
 		boolean relationArgumentEqual = true;
 
 		FSArray aceReaderRelationArgumentFSArray = aceReaderRelation.getArguments();
@@ -952,7 +954,7 @@ public class AceReaderTest extends TestCase {
 	} // checkRelationArguments
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkTimex2(Document aceReaderDocument, Document testReaderDocument) {
+	private static boolean checkTimex2(Document aceReaderDocument, Document testReaderDocument) {
 		boolean timex2Equal = true;
 
 		FSArray aceReaderTimex2FSArray = aceReaderDocument.getTimex2();
@@ -985,7 +987,7 @@ public class AceReaderTest extends TestCase {
 	} // checkTimex2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkTimex2Mentions(Timex2 aceReaderTimex2, Timex2 testReaderTimex2) {
+	private static boolean checkTimex2Mentions(Timex2 aceReaderTimex2, Timex2 testReaderTimex2) {
 		boolean timex2MentionEqual = true;
 
 		FSArray aceReaderTimex2MentionFSArray = aceReaderTimex2.getMentions();
@@ -1017,7 +1019,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkTimex2Mentions
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkValues(Document aceReaderDocument, Document testReaderDocument) {
+	private static boolean checkValues(Document aceReaderDocument, Document testReaderDocument) {
 		boolean valueEqual = true;
 
 		FSArray aceReaderValueFSArray = aceReaderDocument.getValues();
@@ -1060,7 +1062,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkValues
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkValueMentions(Value aceReaderValue, Value testReaderValue) {
+	private static boolean checkValueMentions(Value aceReaderValue, Value testReaderValue) {
 		boolean valueMentionEqual = true;
 
 		FSArray aceReaderValueMentionFSArray = aceReaderValue.getMentions();
@@ -1093,7 +1095,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkValueMentions
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkEntities() {
+	private static boolean checkEntities() {
 		boolean entityEqual = true;
 
 		Iterator aceReaderIterator = getTypeIterator(aceReaderCas, de.julielab.jcore.types.ace.Entity.type);
@@ -1176,7 +1178,7 @@ public class AceReaderTest extends TestCase {
 	} // checkEntities
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkEntityAttributes(Entity aceReaderEntity, Entity testReaderEntity) {
+	private static boolean checkEntityAttributes(Entity aceReaderEntity, Entity testReaderEntity) {
 		boolean entityAttributeEqual = true;
 		FSArray aceReaderEntityAttributeFSArray = aceReaderEntity.getEntity_attributes();
 		FSArray testReaderEntityAttributeFSArray = testReaderEntity.getEntity_attributes();
@@ -1208,8 +1210,8 @@ public class AceReaderTest extends TestCase {
 	} // of checkEntityAttributes
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkEntityAttributesNames(EntityAttribute aceReaderEntityAttribute,
-			EntityAttribute testReaderEntityAttribute) {
+	private static boolean checkEntityAttributesNames(EntityAttribute aceReaderEntityAttribute,
+													  EntityAttribute testReaderEntityAttribute) {
 		boolean entityAttributesNamesEqual = true;
 		FSArray aceReaderEntityAttributesNamesFSArray = aceReaderEntityAttribute.getNames();
 		FSArray testReaderEntityAttributesNamesFSArray = testReaderEntityAttribute.getNames();
@@ -1241,7 +1243,7 @@ public class AceReaderTest extends TestCase {
 	} // checkEntityAttributesNames
 
 	/*----------------------------------------------------------------------------------------------*/
-	private boolean checkEntityMentions(Entity aceReaderEntity, Entity testReaderEntity) {
+	private static boolean checkEntityMentions(Entity aceReaderEntity, Entity testReaderEntity) {
 		boolean entityMentionEqual = true;
 		FSArray aceReaderEntityMentionFSArray = aceReaderEntity.getEntity_mentions();
 		FSArray testReaderEntityMentionFSArray = testReaderEntity.getEntity_mentions();
@@ -1309,7 +1311,7 @@ public class AceReaderTest extends TestCase {
 	} // of checkEntityMentions
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildSourceFile(JCas jcas) throws SAXException, IOException, ParserConfigurationException {
+	private static void buildSourceFile(JCas jcas) throws SAXException, IOException, ParserConfigurationException {
 		de.julielab.jcore.types.ace.SourceFile sourceFile = new de.julielab.jcore.types.ace.SourceFile(jcas);
 
 		sourceFile.setUri("XIN_ENG_20030624.0085.sgm");
@@ -1329,14 +1331,14 @@ public class AceReaderTest extends TestCase {
 	} // buildSourceFile
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void setDocumentText(CAS testReaderCas2, org.w3c.dom.Document sgmDomDocument) {
+	private static void setDocumentText(CAS testReaderCas2, org.w3c.dom.Document sgmDomDocument) {
 		Node documentNode = sgmDomDocument.getDocumentElement();
 		String documentText = documentNode.getTextContent();
 		testReaderCas2.setDocumentText(documentText);
 	} // of setDocumentText
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildDocument(JCas jcas, SourceFile sourceFile) {
+	private static void buildDocument(JCas jcas, SourceFile sourceFile) {
 		de.julielab.jcore.types.ace.Document document = new de.julielab.jcore.types.ace.Document(jcas);
 		document.setDocid("XIN_ENG_20030624.0085");
 		buildEntities(jcas, document);
@@ -1401,7 +1403,7 @@ public class AceReaderTest extends TestCase {
 	} // buildJulesEventArgs
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildJulesRelations(JCas jcas, Document document) {
+	private static void buildJulesRelations(JCas jcas, Document document) {
 		System.out.println("CALL buildJulesRelations()");
 		PART_WHOLE relation1_1 = new PART_WHOLE(jcas);
 		relation1_1.setBegin(543);
@@ -1490,7 +1492,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildJulesRelations
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildJulesEntities(JCas jcas, Document document) {
+	private static void buildJulesEntities(JCas jcas, Document document) {
 		System.out.println("CALL buildJulesEntities()");
 
 		entity1_1 = new LOC(jcas);
@@ -1562,7 +1564,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildJulesEntities
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEvents(JCas jcas, Document document) {
+	private static void buildEvents(JCas jcas, Document document) {
 		de.julielab.jcore.types.ace.Event event = new de.julielab.jcore.types.ace.Event(jcas);
 
 		event.setGenericity("Specific");
@@ -1583,7 +1585,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildEvents
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEventMentions(JCas jcas, Event event) {
+	private static void buildEventMentions(JCas jcas, Event event) {
 		de.julielab.jcore.types.ace.EventMention eventMention = new de.julielab.jcore.types.ace.EventMention(jcas);
 		eventMention.setId("XIN_ENG_20030405.0080-EV2-1");
 		eventMention.setBegin(625);
@@ -1612,7 +1614,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildEventMentions
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEventMentionArguments(JCas jcas, EventMention eventMention) {
+	private static void buildEventMentionArguments(JCas jcas, EventMention eventMention) {
 		de.julielab.jcore.types.ace.EventMentionArgument eventMentionArgument1 = new de.julielab.jcore.types.ace.EventMentionArgument(
 				jcas);
 		eventMentionArgument1.setAce_role("Recipient");
@@ -1637,7 +1639,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildEventMentionArguments
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEventArguments(JCas jcas, Event event) {
+	private static void buildEventArguments(JCas jcas, Event event) {
 		de.julielab.jcore.types.ace.EventArgument eventArgument1 = new de.julielab.jcore.types.ace.EventArgument(jcas);
 		eventArgument1.setAce_role("Recipient");
 		eventArgument1.setRefid("XIN_ENG_20030405.0080-E1");
@@ -1656,7 +1658,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildEventArguments
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildRelations(JCas jcas, Document document) {
+	private static void buildRelations(JCas jcas, Document document) {
 		de.julielab.jcore.types.ace.Relation relation1 = new de.julielab.jcore.types.ace.Relation(jcas);
 		relation1.setModality("Asserted");
 		relation1.setTense("Unspecified");
@@ -1685,7 +1687,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildRelations
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildRelationMentions2(JCas jcas, Relation relation2) {
+	private static void buildRelationMentions2(JCas jcas, Relation relation2) {
 		de.julielab.jcore.types.ace.RelationMention relationMention2_1 = new de.julielab.jcore.types.ace.RelationMention(
 				jcas);
 		relationMention2_1.setLexical_condition("Preposition");
@@ -1714,7 +1716,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildRelationMentions2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildRelationMentionArgument2_2(JCas jcas, RelationMention relationMention2_2) {
+	private static void buildRelationMentionArgument2_2(JCas jcas, RelationMention relationMention2_2) {
 		de.julielab.jcore.types.ace.RelationMentionArgument argument1 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument1.setAce_role("Arg-2");
@@ -1739,7 +1741,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildRelationMentionArgument2_2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildRelationMentionArguments2_1(JCas jcas, RelationMention relationMention1) {
+	private static void buildRelationMentionArguments2_1(JCas jcas, RelationMention relationMention1) {
 		de.julielab.jcore.types.ace.RelationMentionArgument argument1 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument1.setAce_role("Arg-2");
@@ -1764,7 +1766,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildRelationMentionArguments2_1
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildRelationArguments2(JCas jcas, Relation relation2) {
+	private static void buildRelationArguments2(JCas jcas, Relation relation2) {
 		de.julielab.jcore.types.ace.RelationArgument argument1 = new de.julielab.jcore.types.ace.RelationArgument(jcas);
 		argument1.setAce_role("Arg-2");
 		argument1.setRefid("XIN_ENG_20030624.0085-E1");
@@ -1782,7 +1784,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildRelationArguments2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildRelationMentions1(JCas jcas, Relation relation) {
+	private static void buildRelationMentions1(JCas jcas, Relation relation) {
 		de.julielab.jcore.types.ace.RelationMention relationMention1 = new de.julielab.jcore.types.ace.RelationMention(
 				jcas);
 		relationMention1.setLexical_condition("Preposition");
@@ -1811,7 +1813,7 @@ public class AceReaderTest extends TestCase {
 	} // buildRelationMentions
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildRelationMentionArguments1_2(JCas jcas, RelationMention relationMention2) {
+	private static void buildRelationMentionArguments1_2(JCas jcas, RelationMention relationMention2) {
 		de.julielab.jcore.types.ace.RelationMentionArgument argument1 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument1.setAce_role("Arg-1");
@@ -1836,7 +1838,7 @@ public class AceReaderTest extends TestCase {
 	} // buildRelationMentionArguments2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildRelationMentionArguments1_1(JCas jcas, RelationMention relationMention1) {
+	private static void buildRelationMentionArguments1_1(JCas jcas, RelationMention relationMention1) {
 		de.julielab.jcore.types.ace.RelationMentionArgument argument1 = new de.julielab.jcore.types.ace.RelationMentionArgument(
 				jcas);
 		argument1.setAce_role("Arg-1");
@@ -1861,7 +1863,7 @@ public class AceReaderTest extends TestCase {
 	} // buildRelationMentionArguments1
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildRelationAgruments1(JCas jcas, Relation relation) {
+	private static void buildRelationAgruments1(JCas jcas, Relation relation) {
 		de.julielab.jcore.types.ace.RelationArgument argument1 = new de.julielab.jcore.types.ace.RelationArgument(jcas);
 		argument1.setAce_role("Arg-1");
 		argument1.setRefid("XIN_ENG_20030624.0085-E1");
@@ -1880,7 +1882,7 @@ public class AceReaderTest extends TestCase {
 	} // buildRelationAgruments
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildTimex2(JCas jcas, Document document) {
+	private static void buildTimex2(JCas jcas, Document document) {
 		de.julielab.jcore.types.ace.Timex2 timex2_1 = new de.julielab.jcore.types.ace.Timex2(jcas);
 		timex2_1.setId("XIN_ENG_20030624.0085-T4");
 		buildTimex2Mentions1(jcas, timex2_1);
@@ -1897,7 +1899,7 @@ public class AceReaderTest extends TestCase {
 	} // buildTimex2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildTimex2Mentions2(JCas jcas, Timex2 timex2_2) {
+	private static void buildTimex2Mentions2(JCas jcas, Timex2 timex2_2) {
 		de.julielab.jcore.types.ace.Timex2Mention timex2Mention = new de.julielab.jcore.types.ace.Timex2Mention(jcas);
 		timex2Mention.setId("XIN_ENG_20030624.0085-T8-1");
 		timex2Mention.setBegin(1327);
@@ -1911,7 +1913,7 @@ public class AceReaderTest extends TestCase {
 	} // buildTimex2Mentions2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildTimex2Mentions1(JCas jcas, Timex2 timex2_1) {
+	private static void buildTimex2Mentions1(JCas jcas, Timex2 timex2_1) {
 		de.julielab.jcore.types.ace.Timex2Mention timex2Mention = new de.julielab.jcore.types.ace.Timex2Mention(jcas);
 		timex2Mention.setId("XIN_ENG_20030624.0085-T4-1");
 		timex2Mention.setBegin(327);
@@ -1925,7 +1927,7 @@ public class AceReaderTest extends TestCase {
 	} // buildTimex2Mentions1
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildValues(JCas jcas, Document document) {
+	private static void buildValues(JCas jcas, Document document) {
 		de.julielab.jcore.types.ace.Value value1 = new de.julielab.jcore.types.ace.Value(jcas);
 		value1.setAce_type("Numeric");
 		value1.setAce_subtype("Money");
@@ -1948,7 +1950,7 @@ public class AceReaderTest extends TestCase {
 	} // buildValues
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildValueMentuions2(JCas jcas, Value value2) {
+	private static void buildValueMentuions2(JCas jcas, Value value2) {
 		de.julielab.jcore.types.ace.ValueMention valueMention = new de.julielab.jcore.types.ace.ValueMention(jcas);
 		valueMention.setId("XIN_ENG_20030624.0085-V3-1");
 		valueMention.setBegin(1079);
@@ -1962,7 +1964,7 @@ public class AceReaderTest extends TestCase {
 	} // buildValueMentuions2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildValueMentions1(JCas jcas, Value value1) {
+	private static void buildValueMentions1(JCas jcas, Value value1) {
 		de.julielab.jcore.types.ace.ValueMention valueMention = new de.julielab.jcore.types.ace.ValueMention(jcas);
 		valueMention.setId("XIN_ENG_20030624.0085-V2-1");
 		valueMention.setBegin(826);
@@ -1976,7 +1978,7 @@ public class AceReaderTest extends TestCase {
 	} // buildValueMentions1
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEntities(JCas jcas, de.julielab.jcore.types.ace.Document document) {
+	private static void buildEntities(JCas jcas, de.julielab.jcore.types.ace.Document document) {
 		Entity entity1 = new Entity(jcas);
 		entity1.setAce_class("USP");
 		entity1.setAce_type("LOC");
@@ -2003,14 +2005,14 @@ public class AceReaderTest extends TestCase {
 	} // of buildEntities
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEntityAttributes1(JCas jcas, Entity entity1) {
+	private static void buildEntityAttributes1(JCas jcas, Entity entity1) {
 		FSArray entityAttributeFSArray = new FSArray(jcas, 0);
 		entityAttributeFSArray.addToIndexes();
 		entity1.setEntity_attributes(entityAttributeFSArray);
 	} // buildEntityAttributes1
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEntityAttributes2(JCas jcas, Entity entity2) {
+	private static void buildEntityAttributes2(JCas jcas, Entity entity2) {
 		de.julielab.jcore.types.ace.EntityAttribute entityAttribute = new de.julielab.jcore.types.ace.EntityAttribute(
 				jcas);
 
@@ -2024,7 +2026,7 @@ public class AceReaderTest extends TestCase {
 	} // ofbuildEntityAttributes2
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEntityAttributeNames(JCas jcas, de.julielab.jcore.types.ace.EntityAttribute entityAttribute) {
+	private static void buildEntityAttributeNames(JCas jcas, de.julielab.jcore.types.ace.EntityAttribute entityAttribute) {
 		FSArray nameFSArray = new FSArray(jcas, 4);
 
 		de.julielab.jcore.types.ace.Name entityAttributeName1 = new de.julielab.jcore.types.ace.Name(jcas);
@@ -2060,7 +2062,7 @@ public class AceReaderTest extends TestCase {
 	} // buildEntityAttributeNames
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEntityMentions1(JCas jcas, Entity entity) {
+	private static void buildEntityMentions1(JCas jcas, Entity entity) {
 		de.julielab.jcore.types.ace.EntityMention entityMention1 = new de.julielab.jcore.types.ace.EntityMention(jcas);
 		entityMention1.setMention_ldctype("PTV");
 		entityMention1.setMention_type("PRO");
@@ -2101,7 +2103,7 @@ public class AceReaderTest extends TestCase {
 	} // of buildEntityMentions
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void buildEntityMentions2(JCas jcas, Entity entity2) {
+	private static void buildEntityMentions2(JCas jcas, Entity entity2) {
 		de.julielab.jcore.types.ace.EntityMention entityMention1 = new de.julielab.jcore.types.ace.EntityMention(jcas);
 		entityMention1.setLdcatr("FALSE");
 		entityMention1.setAce_role("LOC");
@@ -2180,6 +2182,7 @@ public class AceReaderTest extends TestCase {
 	/**
 	 * Test if method getNextCas() has done its job
 	 */
+	@Test
 	public void testGetNextCas() {
 		System.out.println("CALL testGetNextCas");
 		checkDocumentText();
@@ -2195,7 +2198,7 @@ public class AceReaderTest extends TestCase {
 
 		for (int i = 0; i < casArrayList.size(); i++) {
 			String text = casArrayList.get(i).getDocumentText();
-			assertTrue(((text == null) ? "null" : text), (text != null) && (!text.equals("")));
+			assertTrue((text != null) && (!text.equals("")), ((text == null) ? "null" : text));
 		} // of for
 	} // of checkDocumentText
 
@@ -2209,7 +2212,7 @@ public class AceReaderTest extends TestCase {
 	 *            the type
 	 * @return the iterator
 	 */
-	private Iterator getTypeIterator(CAS cas, int type) {
+	private static Iterator getTypeIterator(CAS cas, int type) {
 
 		Iterator iterator = null;
 		try {
@@ -2221,7 +2224,7 @@ public class AceReaderTest extends TestCase {
 	} // getTypeIterator
 
 	/*----------------------------------------------------------------------------------------------*/
-	private void writeCasToXMI(CAS cas, int docs) throws CASException, IOException, SAXException {
+	private static void writeCasToXMI(CAS cas, int docs) throws CASException, IOException, SAXException {
 
 		JFSIndexRepository indexes = cas.getJCas().getJFSIndexRepository();
 		Iterator documentIter = indexes.getAnnotationIndex(Document.type).iterator();

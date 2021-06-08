@@ -15,8 +15,8 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
 import org.assertj.core.data.Offset;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class Abstract2UnitPipeTest {
 
     protected static Pipe pipe;
 
-    @Before
+    @BeforeEach
     public void init() {
         pipe = new Abstract2UnitPipe(false);
     }

@@ -7,7 +7,6 @@
 package de.julielab.jcore.ae.coordbaseline.main;
 
 import de.julielab.jcore.types.*;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.FSIterator;
@@ -17,12 +16,15 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
-public class EllipsisAnnotatorTest extends TestCase
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class EllipsisAnnotatorTest
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EllipsisAnnotatorTest.class);
 	private static final String LOGGER_PROPERTIES = "src/test/java/log4j.properties";
@@ -30,12 +32,7 @@ public class EllipsisAnnotatorTest extends TestCase
 	private static final String ellipsis1 = "X cells, Y cells, and Z cells";
 	private static final String ellipsis2 = "simple upstream sequence elements and simple downstream sequence elements";
 	private static final String TEST_DESC = "src/test/resources/desc/EllipsisAnnotatorTest.xml";
-/*--------------------------------------------------------------------------------*/
-	protected void setUp() throws Exception 
-	{
-		super.setUp();
-	} // of setUp	
-/*--------------------------------------------------------------------------------*/
+
 	public void initCas(JCas jcas) 
 	{
 		jcas.reset();
@@ -697,6 +694,8 @@ public class EllipsisAnnotatorTest extends TestCase
 		c26.addToIndexes();
 	} // of initCas	
 /*---------------------------------------------------------------------------*/
+
+	@Test
 	public void testProcess() 
 	{
 		XMLInputSource descriptor = null; 
@@ -734,7 +733,7 @@ public class EllipsisAnnotatorTest extends TestCase
 		try
 		{
 			ae.process(jcas, null);			
-			assertTrue("Invalid JCas!", checkJCas(jcas));
+			assertTrue(checkJCas(jcas), "Invalid JCas!");
 		} // of try 
 		catch (Exception e)
 		{

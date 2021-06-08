@@ -7,11 +7,11 @@
 package de.julielab.jcore.ae.jnet.cli;
 
 import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JNETApplicationTest {
 	private static final String PREFIX = "src/test/resources/de/julielab/jcore/ae/jnet/cli/";

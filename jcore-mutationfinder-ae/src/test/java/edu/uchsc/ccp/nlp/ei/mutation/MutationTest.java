@@ -1,19 +1,23 @@
 package edu.uchsc.ccp.nlp.ei.mutation;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /*
  * Copyright (c) 2007 Regents of the University of Colorado
  * Please refer to the licensing agreement at MUTATIONFINDER_HOME/doc/license.txt
  */
 
-public class MutationTest extends TestCase {
+public class MutationTest  {
 
     /**
      * Test the the constructor works for input of both int's and String's
      * 
      * @throws Exception
      */
+    @Test
     public void testConstructor() throws Exception {
         Mutation m = new Mutation(42);
         assertEquals(42, m.getPosition());
@@ -32,6 +36,7 @@ public class MutationTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testUnsupportedMethods() throws Exception {
         Mutation m = new Mutation(42);
         try {

@@ -14,7 +14,7 @@ import de.julielab.neo4j.plugins.datarepresentation.ImportIERelationDocument;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.factory.UimaContextFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.List;

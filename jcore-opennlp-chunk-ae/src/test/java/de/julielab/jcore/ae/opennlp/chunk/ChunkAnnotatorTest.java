@@ -21,7 +21,6 @@ import de.julielab.jcore.types.Chunk;
 import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -33,6 +32,7 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +41,13 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-public class ChunkAnnotatorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class ChunkAnnotatorTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChunkAnnotatorTest.class);
 
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
 
 	String text = "A study on the Prethcamide hydroxylation system in rat hepatic microsomes .";
 
@@ -84,6 +84,7 @@ public class ChunkAnnotatorTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testProcess() {
 
 		XMLInputSource chunkerXML = null;
@@ -134,7 +135,7 @@ public class ChunkAnnotatorTest extends TestCase {
 		assertEquals(chunks, predictedChunks);
 
 	}
-
+	@Test
 	public void testProcessWithDefaultMappings() {
 
 		XMLInputSource chunkerXML = null;
@@ -185,7 +186,7 @@ public class ChunkAnnotatorTest extends TestCase {
 		assertEquals(chunks, predictedChunks);
 
 	}
-
+	@Test
 	public void testPunctuation() throws Exception {
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
 		AnalysisEngine chunker = AnalysisEngineFactory.createEngine("ChunkAnnotatorTest");

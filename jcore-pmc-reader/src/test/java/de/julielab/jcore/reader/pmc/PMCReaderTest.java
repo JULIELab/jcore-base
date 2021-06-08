@@ -19,7 +19,7 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.*;
@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PMCReaderTest {
     @Test
@@ -288,8 +288,8 @@ public class PMCReaderTest {
         Set<String> expectedKeywords = new HashSet<>(Arrays.asList("Baltic Sea Action Plan (BSAP)", "Costs", "Review",
                 "Eutrophication", "Hazardous substances"));
         IntStream.range(0, md.getKeywordList().size())
-                .forEach(i -> assertTrue("The keyword \"" + md.getKeywordList(i).getName() + "\" was not expected",
-                        expectedKeywords.remove(md.getKeywordList(i).getName())));
+                .forEach(i -> assertTrue(expectedKeywords.remove(md.getKeywordList(i).getName()),
+                        "The keyword \"" + md.getKeywordList(i).getName() + "\" was not expected"));
         assertTrue(expectedKeywords.isEmpty());
     }
 

@@ -18,7 +18,6 @@
 package de.julielab.jcore.ae.jsentsplit;
 
 import de.julielab.jcore.types.Sentence;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
@@ -26,12 +25,15 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
-public class SentenceAnnotatorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class SentenceAnnotatorTest  {
 
 	/**
 	 * Logger for this class
@@ -43,10 +45,7 @@ public class SentenceAnnotatorTest extends TestCase {
 
 	String offsets = "0-15;16-32;";
 
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-	
+	@Test
 	public void testProcess() {
 
 		XMLInputSource sentenceXML = null;

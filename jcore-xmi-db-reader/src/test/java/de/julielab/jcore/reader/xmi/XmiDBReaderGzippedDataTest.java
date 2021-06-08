@@ -12,9 +12,9 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -35,7 +35,7 @@ public class XmiDBReaderGzippedDataTest {
     private static String costosysConfig;
     private static String xmisubset;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
         postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
@@ -53,7 +53,7 @@ public class XmiDBReaderGzippedDataTest {
         dbc.close();
     }
 
-    @AfterClass
+    @AfterAll
     public static void shutdown() {
         postgres.close();
     }

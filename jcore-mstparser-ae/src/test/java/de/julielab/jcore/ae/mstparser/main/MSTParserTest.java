@@ -19,7 +19,6 @@ package de.julielab.jcore.ae.mstparser.main;
 import de.julielab.jcore.types.DependencyRelation;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -36,7 +35,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -46,12 +46,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 /**
  * This is the JUnit test for the MST Parser Annotator.
  *
  * @author Lichtenwald
  */
-public class MSTParserTest extends TestCase {
+public class MSTParserTest  {
     private static final String LOGGER_PROPERTIES = "src/test/java/log4j.properties";
 
     public static final String PARAM_MAX_NUM_TOKENS = "MaxNumTokens";
@@ -68,7 +71,7 @@ public class MSTParserTest extends TestCase {
 
     /*--------------------------------------------------------------------------------------------*/
 
-    @Ignore
+    @Disabled
 //    public void testCAS() throws Exception {
 //        // String[] heads = new String[] { "have", "Migrants", "drown", "coast", "off", "40", "40", "migrants", "have",
 //        // "have", "drowned", "Sea", "Sea", "in", "drowned", "coast", "coast", "off", "coast", "of", "drowned",
@@ -174,6 +177,7 @@ public class MSTParserTest extends TestCase {
     // jcas.reset();
     // } // of initCas
 
+    @Test
     public void testThreads() throws Exception {
         try {
             int count = 3;
@@ -188,7 +192,7 @@ public class MSTParserTest extends TestCase {
             x.run();
             Thread.sleep(5000);
         } catch (RuntimeException e) {
-            fail("Errorin Threads");
+            fail("Error in Threads");
         }
     }
 
@@ -230,6 +234,7 @@ public class MSTParserTest extends TestCase {
      * @throws AnalysisEngineProcessException
      * @throws SAXException
      */
+    @Test
     public void testProcess() throws IOException, InvalidXMLException, ResourceInitializationException, CASException,
             AnalysisEngineProcessException, SAXException {
         XMLInputSource descriptor = new XMLInputSource(DESCRIPTOR_MST_PARSER);
@@ -245,9 +250,10 @@ public class MSTParserTest extends TestCase {
         FileOutputStream fos = new FileOutputStream(OUTPUT_DIR + File.separator + "test.xmi");
         XmiCasSerializer.serialize(jcas.getCas(), fos);
 
-        assertTrue("Invalid JCas!", checkAnnotations(jcas, null));
+        assertTrue(checkAnnotations(jcas, null), "Invalid JCas!");
     } // of testProcess
 
+    @Test
     public void testProcessWithNumTokensRestriction()
             throws IOException, InvalidXMLException, ResourceInitializationException, CASException,
             AnalysisEngineProcessException, SAXException, ResourceConfigurationException {
@@ -263,7 +269,7 @@ public class MSTParserTest extends TestCase {
         ae.process(jcas);
         FileOutputStream fos = new FileOutputStream(OUTPUT_DIR + File.separator + "test.xmi");
         XmiCasSerializer.serialize(jcas.getCas(), fos);
-        assertTrue("Invalid JCas!", checkAnnotations(jcas, MAX_NUM_TOKENS));
+        assertTrue(checkAnnotations(jcas, MAX_NUM_TOKENS), "Invalid JCas!");
     }
 
     /**

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.julielab.jcore.reader.cord19.jsonformat.Affiliation;
 import de.julielab.jcore.reader.cord19.jsonformat.Author;
 import de.julielab.jcore.reader.cord19.jsonformat.Cord19Document;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;

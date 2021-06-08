@@ -11,7 +11,7 @@
 package de.julielab.jcore.reader.bionlp09event.utils;
 
 import de.julielab.jcore.reader.bionlpformat.utils.OntoFormatReader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;

@@ -5,9 +5,7 @@
 # - `<p>`: needs to be closed with `</p>`
 
 import re
-import os
 import sys
-import glob
 
 
 def close_paragraphs(line):
