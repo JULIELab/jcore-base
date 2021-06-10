@@ -115,7 +115,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_FEATURES_TO_MAP_DRYRUN = "BinaryFeaturesToMapDryRun";
     public static final String PARAM_BINARY_FEATURES_BLACKLIST = "BinaryFeaturesBlacklist";
     public static final String PARAM_ADD_SHA_HASH = "AddShaHash";
-    public static final String PARAM_SKIP_MATCHING_HASH = "SkipMatchingHash";
     private static final Logger log = LoggerFactory.getLogger(XMIDBWriter.class);
     // The mappings are keyed by the costosys.xml path and the table schema, see 'mappingCacheKey'.
     // The idea is to save costly database connections by sharing updating mapping across threads.
@@ -250,7 +249,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private String[] binaryFeaturesBlacklistParameter;
     @ConfigurationParameter(name = PARAM_ADD_SHA_HASH, mandatory = false, description = "Possible values: document_text. If this parameter is set to a valid value, the SHA256 hash for the given value will be calculated, base64 encoded and added to each document as a new column in the document table. The column will be named after the parameter value, suffixed by '_sha256'.")
     private String documentItemToHash;
-    @ConfigurationParameter(name =PARAM_SKIP_MATCHING_HASH, mandatory = false, description = "Only in effect, if: " + PARAM_ADD_SHA_HASH + " is active; if the target XMI table has also been read from by the XMI DB reader and the reader has been configured to read the document's current hash value. Then, compares the hash value retrieved and relied by the XMI DB reader to the  ")
     private Map<DocumentId, String> shaMap;
     private String mappingCacheKey;
     private DocumentReleaseCheckpoint docReleaseCheckpoint;
@@ -322,7 +320,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
 
         if (xmiMetaSchema.isBlank())
-            throw new ResourceInitializationException(new IllegalArgumentException("The XMI meta table Postgres schema must either be omitted at all or non-empty but was."));
+            throw new ResourceInitializationException(new IllegalArgumentException("The XMI meta table Postgres schema must either be omitted at all or non-empty but was '" + xmiMetaSchema + "'."));
 
         unqualifiedAnnotationNames = Collections.emptyList();
 
@@ -852,11 +850,15 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             AnnotationIndex<Annotation> headerIndex = aJCas.getAnnotationIndex(Header.type);
             FSIterator<Annotation> headerIt = headerIndex.iterator();
             if (!headerIt.hasNext()) {
-                int min = Math.min(100, aJCas.getDocumentText().length());
+                String docText = "<no text>";
+                if (aJCas.getDocumentText() != null) {
+                    int min = Math.min(100, aJCas.getDocumentText().length());
+                    docText = aJCas.getDocumentText().substring(0, min);
+                }
                 log.warn(
                         "Got document without a header and without DBProcessingMetaData; cannot obtain document ID." +
                                 " This document will not be written into the database. Document text begins with: {}",
-                        aJCas.getDocumentText().substring(0, min));
+                        docText);
                 ++headerlessDocuments;
                 return null;
             }
@@ -1044,8 +1046,9 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
         }
-        log.info("{} documents without a head occured overall. Those could not be written into the database.",
-                headerlessDocuments);
+        if (headerlessDocuments > 0)
+            log.info("{} documents without a head occured overall. Those could not be written into the database.",
+                    headerlessDocuments);
         dbc.close();
     }
 

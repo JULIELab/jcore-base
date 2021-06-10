@@ -20,6 +20,6 @@ public class AnnotationDefinedFlowController extends JCasFlowController_ImplBase
         boolean exists = JCasUtil.exists(jCas, ToVisit.class);
         ToVisit toVisit = exists ? JCasUtil.selectSingle(jCas, ToVisit.class) : null;
         // When toVisit is null, the default, fixed flow is used.
-        return new AnnotationDefinedFlow(toVisit, getContext().getAggregateMetadata().getFlowConstraints());
+        return new AnnotationDefinedFlow(toVisit, getContext().getAggregateMetadata().getFlowConstraints(), jCas);
     }
 }

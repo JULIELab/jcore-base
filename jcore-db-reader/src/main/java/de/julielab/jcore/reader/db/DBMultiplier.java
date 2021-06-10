@@ -72,6 +72,10 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
         RowBatch rowbatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
+        if (rowbatch.getIdentifiers() == null)
+            throw new AnalysisEngineProcessException(new IllegalArgumentException("The identifiers of the passed row batch are null."));
+        if (rowbatch.getIdentifiers().size() == 0)
+            throw new AnalysisEngineProcessException(new IllegalArgumentException("The identifiers of the passed row batch are empty."));
         tables = rowbatch.getTables().toStringArray();
         schemaNames = rowbatch.getTableSchemas().toStringArray();
         tableName = rowbatch.getTableName();

@@ -210,7 +210,8 @@
     <module>jcore-xmi-writer</module>
             
     <module>jedis-parent</module>
-            
+      <module>jcore-jedis-integration-tests</module>
+
   </modules>
       
   <scm>

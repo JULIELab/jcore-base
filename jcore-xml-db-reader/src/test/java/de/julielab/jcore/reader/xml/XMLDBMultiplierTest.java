@@ -49,7 +49,7 @@ public class XMLDBMultiplierTest {
     private static final String MAX_XMI_ID_FIELD_NAME = "max_xmi_id";
     private static final String SOFA_MAPPING_FIELD_NAME = "sofa_mapping";
     private static final String SUBSET_TABLE = "test_subset";
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:11.12");
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:11.12");
     private static String costosysConfig;
 
     @BeforeAll

@@ -49,6 +49,9 @@ public class DBMultiplierReader extends DBSubsetReader {
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
+        // reset the state in case of reconfigure()
+        retriever = null;
+        dataTableDocumentIds = null;
 
         // Check whether a subset table name or a data table name was given.
         if (readDataTable) {
@@ -65,6 +68,8 @@ public class DBMultiplierReader extends DBSubsetReader {
     public void getNext(JCas jCas) throws CollectionException {
         log.trace("Requesting next batch of document IDs from the database.");
         List<Object[]> idList = getNextDocumentIdBatch();
+        if (idList.isEmpty())
+            throw new CollectionException(new IllegalStateException("There are no documents to read in the database. Please call hasNext() to check if there is more data to read."));
         log.trace("Received a list of {} ID from the database.", idList.size());
         RowBatch rowbatch = new RowBatch(jCas);
         FSArray ids = new FSArray(jCas, idList.size());

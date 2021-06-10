@@ -138,7 +138,7 @@ public class XMLDBMultiplier extends DBMultiplier {
      * @param jCas The newly read JCas.
      */
     private void setToVisitAnnotation(JCas jCas) {
-        if (xmiStorageDataTable != null) {
+        if (xmiStorageDataTable != null && dbc.tableExists(xmiStorageDataTable)) {
             DBProcessingMetaData dbProcessingMetaData = JCasUtil.selectSingle(jCas, DBProcessingMetaData.class);
             StringArray pkArray = dbProcessingMetaData.getPrimaryKey();
             String pkString = String.join(",", pkArray.toArray());
@@ -146,6 +146,8 @@ public class XMLDBMultiplier extends DBMultiplier {
             if (existingHash != null) {
                 String newHash = getHash(jCas);
                 if (existingHash.equals(newHash)) {
+                    if (log.isTraceEnabled())
+                    log.trace("Document {} has a document text hash that equals the one present in the database. Creating a ToVisit annotation routing it only to the components with delegate keys {}.", pkString, toVisitKeys);
                     ToVisit toVisit = new ToVisit(jCas);
                     if (toVisitKeys != null && toVisitKeys.length != 0) {
                         StringArray keysArray = new StringArray(jCas, toVisitKeys.length);
@@ -186,7 +188,7 @@ public class XMLDBMultiplier extends DBMultiplier {
      * @throws AnalysisEngineProcessException If the SQL request fails.
      */
     private Map<String, String> fetchCurrentHashesFromDatabase(RowBatch rowBatch) throws AnalysisEngineProcessException {
-        if (xmiStorageDataTable != null) {
+        if (xmiStorageDataTable != null && dbc.tableExists(xmiStorageDataTable) && rowBatch.getIdentifiers() != null && rowBatch.getIdentifiers().size() > 0) {
             String hashColumn = documentItemToHash + "_sha256";
             // Extract the document IDs in this RowBatch. The IDs could be composite keys.
             List<String[]> documentIds = new ArrayList<>(rowBatch.getIdentifiers().size());
@@ -217,7 +219,7 @@ public class XMLDBMultiplier extends DBMultiplier {
                     id2hash.put(pkSb.toString(), hash);
                 }
             } catch (SQLException e) {
-                log.error("Could not retrieve hashes from the database. SQL query was {}:", sql, e);
+                log.error("Could not retrieve hashes from the database. SQL query was '{}':", sql, e);
                 throw new AnalysisEngineProcessException(e);
             }
             return id2hash;

@@ -69,6 +69,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      */
     @Override
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
+        super.initialize(aContext);
         componentDbName = (String) aContext.getConfigParameterValue(PARAM_CHECKPOINT_NAME);
         dbcConfigPath = (String) aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG);
         indicateFinished = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_INDICATE_FINISHED)).orElse(false);
