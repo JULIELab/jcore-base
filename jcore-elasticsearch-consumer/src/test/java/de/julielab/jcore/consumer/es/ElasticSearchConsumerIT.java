@@ -7,7 +7,6 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -15,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URL;
@@ -23,12 +24,13 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Testcontainers
 public class ElasticSearchConsumerIT {
     public static final String TEST_INDEX = "testindex";
     public static final String TEST_CLUSTER = "testcluster";
     private final static Logger log = LoggerFactory.getLogger(ElasticSearchConsumerIT.class);
     // in case we need to disable X-shield: https://stackoverflow.com/a/51172136/1314955
-    @ClassRule
+    @Container
     public static GenericContainer es = new GenericContainer("docker.elastic.co/elasticsearch/elasticsearch:7.0.1")
             .withEnv("xpack.security.enabled", "false")
             .withEnv("discovery.type", "single-node")
@@ -57,8 +59,8 @@ public class ElasticSearchConsumerIT {
         consumer.collectionProcessComplete();
         final URL url = new URL("http://localhost:" + es.getMappedPort(9200) + "/" + TEST_INDEX + "/_doc/987");
         final ObjectMapper om = new ObjectMapper();
-        final Map<?,?> map = om.readValue(url.openStream(), Map.class);
-        assertEquals(jCas.getDocumentText(), ((Map)map.get("_source")).get("text"));
+        final Map<?, ?> map = om.readValue(url.openStream(), Map.class);
+        assertEquals(jCas.getDocumentText(), ((Map) map.get("_source")).get("text"));
     }
 
     /**

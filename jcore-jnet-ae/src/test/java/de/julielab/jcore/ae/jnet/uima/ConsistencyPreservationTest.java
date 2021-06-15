@@ -18,7 +18,6 @@
 package de.julielab.jcore.ae.jnet.uima;
 
 import de.julielab.jcore.types.*;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -28,12 +27,15 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Please note that in the original test there were "GoodEntityMentions" and
@@ -45,7 +47,7 @@ import java.util.TreeSet;
  * @author faessler
  * 
  */
-public class ConsistencyPreservationTest extends TestCase {
+public class ConsistencyPreservationTest  {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyPreservationTest.class);
 
@@ -133,12 +135,14 @@ public class ConsistencyPreservationTest extends TestCase {
 		e5.addToIndexes();
 	}
 
+	@Test
 	public void testConsistencyPreservation() throws Exception {
 		final String modeString = ConsistencyPreservation.MODE_STRING + "," + ConsistencyPreservation.MODE_ACRO2FULL
 				+ "," + ConsistencyPreservation.MODE_FULL2ACRO;
 		new ConsistencyPreservation(modeString);
 	}
 
+	@Test
 	public void testAcroMatch() throws Exception {
 		final String modeString = ConsistencyPreservation.MODE_FULL2ACRO + "," + ConsistencyPreservation.MODE_ACRO2FULL;
 
@@ -186,6 +190,7 @@ public class ConsistencyPreservationTest extends TestCase {
 
 	}
 
+	@Test
 	public void testStringMatch() throws Exception {
 		LOGGER.info("testStringMatch() -  starting...");
 		final CAS cas = CasCreationUtils.createCas(
@@ -229,6 +234,7 @@ public class ConsistencyPreservationTest extends TestCase {
 		assertTrue(allOK);
 	}
 
+	@Test
 	public void testStringMatch2() throws Exception {
 		// This test checks whether the consistence preservation algorithm
 		// correctly detects already existing annotations even when there are
@@ -269,6 +275,7 @@ public class ConsistencyPreservationTest extends TestCase {
 		assertEquals(3, count);
 	}
 
+	@Test
 	public void testStringMatch3() throws Exception {
 		// This test checks whether the consistence preservation algorithm
 		// correctly detects already existing annotations even when there are
@@ -309,6 +316,7 @@ public class ConsistencyPreservationTest extends TestCase {
 		assertEquals(5, count);
 	}
 
+	@Test
 	public void testStringMatchTokenBoundaries() throws Exception {
 		// This test checks whether the consistency preservation algorithm
 		// sticks to token boundaries if the respective mode is on
@@ -350,6 +358,7 @@ public class ConsistencyPreservationTest extends TestCase {
 		assertEquals(1, count);
 	}
 
+	@Test
 	public void testStringMatchTokenBoundaries2() throws Exception {
 		// Test for multi token entities
 		String text = "This is BCA alpha. But we haven't annotated BCA alpha in all cases. Also not some other BCA.";
@@ -430,7 +439,8 @@ public class ConsistencyPreservationTest extends TestCase {
 		}
 		assertEquals(2, oCount);
 	}
-	
+
+	@Test
 	public void testStringMatchTokenBoundaries3() throws Exception {
 		// Test for multi token entities with correct prefix but wrong ending
 		String text = "Group 1. And Group B.";

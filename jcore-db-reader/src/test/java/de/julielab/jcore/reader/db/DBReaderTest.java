@@ -12,12 +12,13 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,10 +28,10 @@ import java.sql.SQLException;
 import static de.julielab.jcore.reader.db.TableReaderConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@Testcontainers
 public class DBReaderTest {
-    @ClassRule
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    @Container
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:11.12");
 
     @BeforeAll
     public static void setup() throws SQLException {

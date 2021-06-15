@@ -17,19 +17,22 @@
 
 package de.julielab.jcore.ae.jtbd;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
-public class Sentence2TokenPipeTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class Sentence2TokenPipeTest  {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(Sentence2TokenPipeTest.class);
 
 	private static final String TEST_SENTENCE = "this is   a \t junit -test";
 
+	@Test
 	public void testMakeLabel() {
 		final ArrayList<String> expectedLabels = new ArrayList<String>();
 		expectedLabels.add("P");
@@ -55,6 +58,7 @@ public class Sentence2TokenPipeTest extends TestCase {
 		assertTrue(allOK);
 	}
 
+	@Test
 	public void testMakeUnits() {
 		final ArrayList<String> expectedUnits = new ArrayList<String>();
 		expectedUnits.add("this");

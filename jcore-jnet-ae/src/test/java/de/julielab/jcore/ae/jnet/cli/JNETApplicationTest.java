@@ -6,7 +6,7 @@
 
 package de.julielab.jcore.ae.jnet.cli;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -32,7 +32,7 @@ public class JNETApplicationTest {
 	
 
 	
-    @After 
+    @AfterEach
     public void deleteModel() {
     	File modelFile = new File(UNITTEST_MODEL_GZ);
 		if (modelFile.exists())
