@@ -18,6 +18,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.*;
 import java.util.Map.Entry;
 
+@TypeCapability(inputs = {"de.julielab.jcore.types.Gene"}, outputs = {"de.julielab.jcore.types.EventTrigger", "de.julielab.jcore.types.EventMention"})
 public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 
 	private final static Logger log = LoggerFactory.getLogger(BioSemEventAnnotator.class);
@@ -45,7 +47,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 
 	private DBUtils trainedDb;
 
-	@ExternalResource(key = RESOURCE_TRAINED_DB, mandatory = true)
+	@ExternalResource(key = RESOURCE_TRAINED_DB)
 	private DBUtilsProvider dbUtilsProvider;
 
 	private EventExtraction xtr;
