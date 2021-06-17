@@ -31,7 +31,7 @@ import static org.testng.Assert.assertTrue;
 
 
 public class XmiDBMultiplierTest {
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:11.12");
     private static String costosysConfig;
     private static int subsetCounter;
 

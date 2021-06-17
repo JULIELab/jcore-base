@@ -162,11 +162,19 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
                 sentence.setId("s" + i++);
             sentenceMap.put(sentence.getId(), sentence);
         }
+        if ( log.isDebugEnabled()) {
+            if (sentenceMap.isEmpty())
+                log.debug("Document {} does not have any sentences.", JCoReTools.getDocId(aJCas));
+            if (!aJCas.getAnnotationIndex(Token.class).iterator().hasNext())
+                log.debug("Document {} does not have any tokens", JCoReTools.getDocId(aJCas));
+        }
         try {
             final AnnotationAdderHelper helper = new AnnotationAdderHelper();
+            log.trace("Sending document sentences to flair for entity tagging.");
             final NerTaggingResponse taggingResponse = connector.tagSentences(StreamSupport.stream(sentIndex.spliterator(), false));
             final List<TaggedEntity> taggedEntities = taggingResponse.getTaggedEntities();
             for (TaggedEntity entity : taggedEntities) {
+                log.trace("Adding flair-tagged entity to the CAS: {}", entity);
                 final Sentence sentence = sentenceMap.get(entity.getDocumentId());
                 EntityMention em = (EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, entityClass);
                 helper.setAnnotationOffsetsRelativeToSentence(sentence, em, entity, adderConfig);

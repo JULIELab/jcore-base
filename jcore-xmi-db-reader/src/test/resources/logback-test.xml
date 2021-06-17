@@ -9,8 +9,8 @@
         </encoder>
     </appender>
     <logger name="de.julielab.jcore.reader.xmi" level="INFO"/>
-    <logger name="de.julielab.xml.binary.BinaryJeDISNodeDecoder" level="DEBUG"/>
-    <logger name="de.julielab.jcore.reader.xmi.flowcontroller" level="TRACE"/>
+    <logger name="de.julielab.xml.binary.BinaryJeDISNodeDecoder" level="INFO"/>
+    <logger name="de.julielab.jcore.reader.xmi.CasPopulator" level="TRACE"/>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>

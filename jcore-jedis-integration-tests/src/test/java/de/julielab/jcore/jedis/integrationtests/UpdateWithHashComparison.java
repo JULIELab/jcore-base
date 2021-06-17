@@ -9,6 +9,7 @@ import de.julielab.jcore.flow.annotationdefined.AnnotationDefinedFlowController;
 import de.julielab.jcore.reader.db.DBMultiplierReader;
 import de.julielab.jcore.reader.xml.XMLDBMultiplier;
 import de.julielab.jcore.types.Annotation;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -30,9 +31,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,6 +57,7 @@ public class UpdateWithHashComparison {
     private static JCas cas;
     private static DataBaseConnector dbc;
     private static List<String> namesOfRunComponents = new ArrayList<>();
+    private static Set<String> idsOfProcessedDocuments = new LinkedHashSet<>();
 
     @BeforeAll
     public static void setup() throws Exception {
@@ -182,6 +182,11 @@ public class UpdateWithHashComparison {
         // Check that all rows have been processed in the XML source subset table.
         assertThat(status.isProcessed).isEqualTo(3);
         assertThat(status.inProcess).isEqualTo(0);
+
+        assertThat(idsOfProcessedDocuments).hasSize(3);
+        // Check that there are actual IDs, not null string or something like that
+        for (String id : idsOfProcessedDocuments)
+            assertThat(id).matches("[0-9]+");
     }
 
     /**
@@ -199,7 +204,9 @@ public class UpdateWithHashComparison {
 
         @Override
         public void process(JCas jCas) {
+            assertThat(jCas.getDocumentText()).isNotBlank();
             namesOfRunComponents.add(name);
+            idsOfProcessedDocuments.add(JCoReTools.getDocId(jCas));
             new Annotation(jCas).addToIndexes();
         }
     }

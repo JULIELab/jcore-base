@@ -29,7 +29,6 @@
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types" />
-<!--                <import name="de.julielab.jcore.types.jcore-all-types" />-->
             </imports>
         </typeSystemDescription>
         <fsIndexCollection />

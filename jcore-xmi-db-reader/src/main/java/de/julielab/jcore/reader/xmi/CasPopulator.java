@@ -40,10 +40,8 @@ public class CasPopulator {
     private final static Logger log = LoggerFactory.getLogger(CasPopulator.class);
     private final DataBaseConnector dbc;
     private final boolean readsBaseDocument;
-    private final int numAdditionalTables;
     private final int numDataRetrievedDataFields;
-    private final String dataTable;
-    private final String[] additionalTableNames;
+    private final String[] unqualifiedAnnotationModuleNames;
     private final XmiBuilder builder;
     private final Boolean logFinalXmi;
     private final int xercesAttributeBufferSize;
@@ -72,10 +70,8 @@ public class CasPopulator {
         this.tableName = tableName;
         this.readsBaseDocument = initializer.getReadsBaseDocument();
         this.joinTables = initializer.isJoinTables();
-        this.numAdditionalTables = initializer.getNumAdditionalTables();
         this.numDataRetrievedDataFields = initializer.getNumDataRetrievedDataFields();
-        this.dataTable = dataTable;
-        this.additionalTableNames = initializer.getUnqualifiedAnnotationModuleNames();
+        this.unqualifiedAnnotationModuleNames = initializer.getUnqualifiedAnnotationModuleNames();
         this.builder = initializer.getXmiBuilder();
         binaryBuilder = initializer.getBinaryBuilder();
         useBinaryFormat = initializer.isUseBinaryFormat();
@@ -85,7 +81,7 @@ public class CasPopulator {
         reverseBinaryMapping = initializer.getReverseBinaryMapping();
         featuresToMapBinary = initializer.getFeaturesToMapBinary();
         if (useBinaryFormat) {
-            binaryJeDISNodeDecoder = new BinaryJeDISNodeDecoder(Stream.of(additionalTableNames).collect(Collectors.toSet()), true);
+            binaryJeDISNodeDecoder = new BinaryJeDISNodeDecoder(Stream.of(unqualifiedAnnotationModuleNames).collect(Collectors.toSet()), true);
         } else
             binaryJeDISNodeDecoder = null;
     }
