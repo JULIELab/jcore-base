@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DBMultiplierTest {
     private final static Logger log = LoggerFactory.getLogger(DBMultiplierTest.class);
     @Container
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:11.12");
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
 
     @BeforeAll
     public static void setup() throws SQLException, IOException {

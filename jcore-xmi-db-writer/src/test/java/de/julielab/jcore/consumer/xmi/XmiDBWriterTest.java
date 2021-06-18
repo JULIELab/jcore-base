@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 @Testcontainers
 public class XmiDBWriterTest {
     @Container
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
     private static String xmlSubsetTable;
     private static DataBaseConnector dbc;

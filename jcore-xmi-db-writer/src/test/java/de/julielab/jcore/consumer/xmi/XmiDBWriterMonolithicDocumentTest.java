@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers
 public class XmiDBWriterMonolithicDocumentTest {
     @Container
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
     private static DataBaseConnector dbc;
 

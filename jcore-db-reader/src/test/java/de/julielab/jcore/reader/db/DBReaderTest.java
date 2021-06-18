@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 public class DBReaderTest {
     @Container
-    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:11.12");
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
 
     @BeforeAll
     public static void setup() throws SQLException {
@@ -43,7 +43,7 @@ public class DBReaderTest {
 
     @Test
     public void testDBReader() throws UIMAException, IOException, ConfigurationException {
-        String costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
+        String costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 2, postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBReaderTestImpl.class,
                 PARAM_BATCH_SIZE, 5,
                 PARAM_TABLE, "testsubset",

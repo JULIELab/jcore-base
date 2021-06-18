@@ -28,7 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 
 public class XmiDBReaderMonolithicDocumentsTest {
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
     private static String xmisubset;
 
@@ -38,7 +38,7 @@ public class XmiDBReaderMonolithicDocumentsTest {
         XmiDBSetupHelper.createDbcConfig(postgres);
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
-        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_complete_cas", 1, postgres);
+        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_complete_cas", 2, postgres);
         new File(costosysConfig).deleteOnExit();
         XmiDBSetupHelper.processAndStoreCompleteXMIData(costosysConfig, true);
         dbc.reserveConnection();

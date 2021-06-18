@@ -42,14 +42,14 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
     public static final String PARAM_ANNOTATIONS_TO_LOAD = Initializer.PARAM_ANNOTATIONS_TO_LOAD;
     public static final String PARAM_XMI_META_SCHEMA = "XmiMetaTablesSchema";
     private final static Logger log = LoggerFactory.getLogger(XmiDBMultiplierReader.class);
+    @ConfigurationParameter(name = PARAM_ANNOTATIONS_TO_LOAD, mandatory = false, description = "An array of qualified UIMA type names. The provided names will be converted to database table column names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, by default the columns of the XMI table holding annotation module information are named by lowercased UIMA type name where dots are replaced by underscores.. This can be overwritten by appending '<schema>:' to a table name. The given type names will be converted to valid Postgres columns names by replacing dots with underscores and the colon will be converted to the dollar character. From the resolved columns, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.")
+    protected String[] qualifiedAnnotationColumnNames;
     @ConfigurationParameter(name = PARAM_READS_BASE_DOCUMENT, description = "Indicates if this reader reads segmented " +
             "annotation data. If set to false, the XMI data is expected to represent complete annotated documents. " +
             "If it is set to true, a segmented annotation graph is expected and the table given with the 'Table' parameter " +
             "will contain the document text together with some basic annotations. What exactly is stored in which manner " +
             "is determined by the jcore-xmi-db-consumer used to write the data into the database.")
     private Boolean readsBaseDocument;
-    @ConfigurationParameter(name = PARAM_ANNOTATIONS_TO_LOAD, mandatory = false, description = "An array of qualified UIMA type names. The provided names will be converted to database table column names in an equivalent manner as the XMIDBWriter does when storing the annotations. Thus, by default the columns of the XMI table holding annotation module information are named by lowercased UIMA type name where dots are replaced by underscores.. This can be overwritten by appending '<schema>:' to a table name. The given type names will be converted to valid Postgres columns names by replacing dots with underscores and the colon will be converted to the dollar character. From the resolved columns, annotation modules in segmented XMI format are read where an annotation module contains all annotation instances of a specific type in a specific document. All annotation modules read this way are merged with the base document, resulting in valid XMI data which is then deserialized into the CAS.")
-    protected String[] qualifiedAnnotationColumnNames;
     @ConfigurationParameter(name = PARAM_STORE_XMI_ID, mandatory = false, description = "This parameter is required " +
             "to be set to true, if this reader is contained in a pipeline that also contains a jcore-xmi-db-writer and" +
             "the writer will segment the CAS annotation graph and store only parts of it. Then, it is important to " +
@@ -68,7 +68,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
             "(j)visualvm, the hot spots of work can be identified. If one of those is the XML attribute buffer " +
             "resizing, this parameter should be set to a size that makes buffer resizing unnecessary.")
     private int xercesAttributeBufferSize;
-    @ConfigurationParameter(name = PARAM_XMI_META_SCHEMA, mandatory = false, defaultValue = "public", description = "Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '" +XmiSplitConstants.XMI_NS_TABLE + "' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Also, the table listing the annotation tables is stored in this Postgres schema. Defaults to 'public'.")
+    @ConfigurationParameter(name = PARAM_XMI_META_SCHEMA, mandatory = false, defaultValue = "public", description = "Each XMI file defines a number of XML namespaces according to the types used in the document. Those namespaces are stored in a table named '" + XmiSplitConstants.XMI_NS_TABLE + "' when splitting annotations in annotation modules by the XMI DB writer. This parameter allows to specify in which Postgres schema this table should be looked for. Also, the table listing the annotation tables is stored in this Postgres schema. Defaults to 'public'.")
     private String xmiMetaSchema;
     private boolean doGzip;
     private String[] additionalTableNames;
@@ -107,7 +107,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
             rowBatch.setXercesAttributeBufferSize(xercesAttributeBufferSize);
             rowBatch.setXmiMetaTablesPostgresSchema(xmiMetaSchema);
         } catch (Throwable throwable) {
-            log.error("Exception ocurred while trying to get the next document", throwable);
+            log.error("Exception occurred while trying to get the next document", throwable);
             throw throwable;
         }
     }
@@ -122,6 +122,8 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
         costosysConfig = (String) getConfigParameterValue(PARAM_COSTOSYS_CONFIG_NAME);
         try {
             dbc = new DataBaseConnector(costosysConfig);
+            if (dbc.getMaxConnections() < 3)
+                dbc.setMaxConnections(3);
         } catch (FileNotFoundException e) {
             throw new ResourceInitializationException(e);
         }
@@ -185,7 +187,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
     }
 
     private void checkForJeDISBinaryFormat(byte[] firstTwoBytes) {
-        short header = (short) ((firstTwoBytes[0]<<8) | (0xff & firstTwoBytes[1]));
+        short header = (short) ((firstTwoBytes[0] << 8) | (0xff & firstTwoBytes[1]));
         if (header != BinaryJeDISNodeEncoder.JEDIS_BINARY_MAGIC) {
             useBinaryFormat = false;
             log.debug("Is data encoded in JeDIS binary format: false");

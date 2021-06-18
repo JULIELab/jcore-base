@@ -49,7 +49,7 @@ public class XMLDBMultiplierTest {
     private static final String MAX_XMI_ID_FIELD_NAME = "max_xmi_id";
     private static final String SOFA_MAPPING_FIELD_NAME = "sofa_mapping";
     private static final String SUBSET_TABLE = "test_subset";
-    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:11.12");
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
 
     @BeforeAll
@@ -59,7 +59,7 @@ public class XMLDBMultiplierTest {
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         dbc.setActiveTableSchema("medline_2016_nozip");
-        costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2016_nozip", 1, postgres);
+        costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2016_nozip", 2, postgres);
         new File(costosysConfig).deleteOnExit();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
             // We create two tables. One is the XML table the multiplier reads from and maps the contents to the JCas.

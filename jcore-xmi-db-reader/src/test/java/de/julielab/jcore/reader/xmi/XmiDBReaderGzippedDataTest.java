@@ -31,7 +31,7 @@ import static org.testng.Assert.assertTrue;
  * The exact same test as {@link XmiDBReaderTest} but here, the data is gzipped.
  */
 public class XmiDBReaderGzippedDataTest {
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
     private static String xmisubset;
 
@@ -41,7 +41,7 @@ public class XmiDBReaderGzippedDataTest {
         XmiDBSetupHelper.createDbcConfig(postgres);
 
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
-        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 1, postgres);
+        costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 2, postgres);
         new File(costosysConfig).deleteOnExit();
         XmiDBSetupHelper.processAndSplitData(costosysConfig, true, false,"public");
         assertTrue(dbc.withConnectionQueryBoolean( c -> c.tableExists("_data.documents")), "The data document table exists");

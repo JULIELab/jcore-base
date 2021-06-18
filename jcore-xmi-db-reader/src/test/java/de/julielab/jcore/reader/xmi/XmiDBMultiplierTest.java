@@ -31,7 +31,7 @@ import static org.testng.Assert.assertTrue;
 
 
 public class XmiDBMultiplierTest {
-    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:11.12");
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
     private static int subsetCounter;
 
@@ -40,6 +40,7 @@ public class XmiDBMultiplierTest {
         postgres.start();
         XmiDBSetupHelper.createDbcConfig(postgres);
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
+        dbc.setMaxConnections(3);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 10, postgres);
         new File(costosysConfig).deleteOnExit();
         XmiDBSetupHelper.processAndSplitData(costosysConfig, false, false,"public");
@@ -57,6 +58,7 @@ public class XmiDBMultiplierTest {
     @Test(threadPoolSize = 3, invocationCount = 10, timeOut = 500000)
     public void testXmiDBMultiplierReader() throws Exception {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
+        dbc.setMaxConnections(5);
         String xmisubset;
         synchronized (XmiDBMultiplierDifferentNsSchemaTest.class) {
             xmisubset = "xmisubset" + subsetCounter++;

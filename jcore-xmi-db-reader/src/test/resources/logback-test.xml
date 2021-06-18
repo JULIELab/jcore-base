@@ -10,7 +10,8 @@
     </appender>
     <logger name="de.julielab.jcore.reader.xmi" level="INFO"/>
     <logger name="de.julielab.xml.binary.BinaryJeDISNodeDecoder" level="INFO"/>
-    <logger name="de.julielab.jcore.reader.xmi.CasPopulator" level="TRACE"/>
+    <logger name="de.julielab.jcore.reader.xmi.CasPopulator" level="INFO"/>
+    <logger name="de.julielab.costosys.dbconnection.DataBaseConnector" level="INFO"/>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
