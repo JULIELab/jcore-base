@@ -19,6 +19,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,6 @@ public class XmiDBWriterTest {
     @Container
     public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
-    private static String xmlSubsetTable;
     private static DataBaseConnector dbc;
 
     @BeforeAll
@@ -41,8 +41,8 @@ public class XmiDBWriterTest {
         dbc = DBTestUtils.getDataBaseConnector(postgres);
         dbc.reserveConnection();
         costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
-        xmlSubsetTable = DBTestUtils.setupDatabase(dbc, "src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 177, postgres);
         dbc.releaseConnections();
+        DBTestUtils.createAndSetHiddenConfig("src/test/resources/hiddenConfig.txt", postgres);
     }
 
     @AfterAll
@@ -183,6 +183,42 @@ public class XmiDBWriterTest {
             final String tokenColumn = "testschema$de_julielab_jcore_types_token";
             final String sentenceColumn = "testschema$de_julielab_jcore_types_sentence";
             assertThat(columnNames).contains(tokenColumn, sentenceColumn);
+        }
+    }
+
+    @Test
+    public void testXmiSubtypeStorage() throws Exception {
+
+        AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.xmi.desc.jcore-xmi-db-writer",
+                XMIDBWriter.PARAM_ANNOS_TO_STORE, new String[]{Token.class.getCanonicalName(), Sentence.class.getCanonicalName()},
+                XMIDBWriter.PARAM_COSTOSYS_CONFIG, costosysConfig,
+                XMIDBWriter.PARAM_STORE_ALL, false,
+                XMIDBWriter.PARAM_STORE_BASE_DOCUMENT, true,
+                XMIDBWriter.PARAM_TABLE_DOCUMENT, "_data.documents3",
+                XMIDBWriter.PARAM_DO_GZIP, false,
+                XMIDBWriter.PARAM_STORE_RECURSIVELY, true,
+                XMIDBWriter.PARAM_UPDATE_MODE, true,
+                XMIDBWriter.PARAM_BASE_DOCUMENT_ANNOTATION_TYPES, new String[]{InternalReference.class.getCanonicalName()}
+        );
+        JCas jCas = getJCasWithRequiredTypes();
+        final Header header = new Header(jCas);
+        header.setDocId("789");
+        header.addToIndexes();
+        jCas.setDocumentText("This is a sentence.1,2");
+        new de.julielab.jcore.types.pubmed.InternalReference(jCas, 19, 20).addToIndexes();
+        new de.julielab.jcore.types.pubmed.InternalReference(jCas, 21, 22).addToIndexes();
+        assertThatCode(() -> xmiWriter.process(jCas)).doesNotThrowAnyException();
+        jCas.reset();
+        xmiWriter.collectionProcessComplete();
+
+        dbc = DBTestUtils.getDataBaseConnector(postgres);
+        try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
+            assertThat(dbc.tableExists("_data.documents3")).isTrue();
+            ResultSet rs = ignored.createStatement().executeQuery("SELECT " + XmiSplitConstants.BASE_DOC_COLUMN + " FROM " + "_data.documents3");
+            assertThat(rs.next()).isTrue();
+            String documentString = rs.getString(1);
+            System.out.println(documentString);
+
         }
     }
 }

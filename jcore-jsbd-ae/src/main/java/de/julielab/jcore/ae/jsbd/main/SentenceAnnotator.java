@@ -146,77 +146,91 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
      * @throws AnalysisEngineProcessException
      */
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-        if (StringUtils.isBlank(aJCas.getDocumentText())) {
-            final String docId = JCoReTools.getDocId(aJCas);
-            LOGGER.warn("The document text of document {} is empty.", docId);
-            return;
-        }
-        JCoReCondensedDocumentText documentText;
         try {
-            // If there are no cut-away types, the document text will remain unchanged.
-            documentText = new JCoReCondensedDocumentText(aJCas, cutAwayTypes);
-        } catch (ClassNotFoundException e1) {
-            throw new AnalysisEngineProcessException(e1);
-        }
-
-        if (sentenceDelimiterTypes != null) {
+            if (StringUtils.isBlank(aJCas.getDocumentText())) {
+                final String docId = JCoReTools.getDocId(aJCas);
+                LOGGER.warn("The document text of document {} is empty.", docId);
+                return;
+            }
+            JCoReCondensedDocumentText documentText;
             try {
-                // the index merger gives us access to all delimiter type
-                // indexes in one
-                JCoReAnnotationIndexMerger indexMerger = new JCoReAnnotationIndexMerger(sentenceDelimiterTypes, false,
-                        null, aJCas);
-
-                // the idea: collect all start and end offsets of sentence
-                // delimiter annotations (sections, titles, captions, ...) in a
-                // list and sort ascending; then, perform sentence segmentation
-                // between every two adjacent offsets. This way, no sentence can
-                // cross any delimiter annotation border
-                List<Integer> borders = new ArrayList<>();
-                borders.add(0);
-                borders.add(aJCas.getDocumentText().length());
-                while (indexMerger.incrementAnnotation()) {
-                    Annotation a = (Annotation) indexMerger.getAnnotation();
-                    // Here we convert the original offsets to the condensed offsets. If there are
-                    // no cut-away types, the offsets will just remain unchanged. Otherwise we now
-                    // have the borders of the condensed text passages associated with the sentence
-                    // delimiter annotation.
-                    borders.add(documentText.getCondensedOffsetForOriginalOffset(a.getBegin()));
-                    borders.add(documentText.getCondensedOffsetForOriginalOffset(a.getEnd()));
-                }
-                borders.sort(null);
-
-                // now do sentence segmentation between annotation borders
-                for (int i = 1; i < borders.size(); ++i) {
-                    int start = borders.get(i - 1);
-                    int end = borders.get(i);
-
-                    // skip leading whites spaces
-                    while (start < end && Character.isWhitespace(aJCas.getDocumentText().charAt(start)))
-                        ++start;
-
-                    // get the string between the current annotation borders and recognize sentences
-                    String textSpan = documentText.getCodensedText().substring(start, end);
-                    if (!StringUtils.isBlank(textSpan))
-                        doSegmentation(documentText, textSpan, start);
-                }
-
-            } catch (ClassNotFoundException e) {
-                throw new AnalysisEngineProcessException(e);
+                // If there are no cut-away types, the document text will remain unchanged.
+                documentText = new JCoReCondensedDocumentText(aJCas, cutAwayTypes);
+            } catch (ClassNotFoundException e1) {
+                LOGGER.error("Could not create the text without annotations to be cut away in document {}", JCoReTools.getDocId(aJCas), e1);
+                throw new AnalysisEngineProcessException(e1);
             }
-        } else {
-            // if no processingScope set -> use documentText
-            if (aJCas.getDocumentText() != null && aJCas.getDocumentText().length() > 0) {
-                doSegmentation(documentText, documentText.getCodensedText(), 0);
+
+            if (sentenceDelimiterTypes != null) {
+                try {
+                    // the index merger gives us access to all delimiter type
+                    // indexes in one
+                    JCoReAnnotationIndexMerger indexMerger = new JCoReAnnotationIndexMerger(sentenceDelimiterTypes, false,
+                            null, aJCas);
+
+                    // the idea: collect all start and end offsets of sentence
+                    // delimiter annotations (sections, titles, captions, ...) in a
+                    // list and sort ascending; then, perform sentence segmentation
+                    // between every two adjacent offsets. This way, no sentence can
+                    // cross any delimiter annotation border
+                    List<Integer> borders = new ArrayList<>();
+                    borders.add(0);
+                    borders.add(aJCas.getDocumentText().length());
+                    while (indexMerger.incrementAnnotation()) {
+                        Annotation a = (Annotation) indexMerger.getAnnotation();
+                        System.out.println(a.getCoveredText());
+                        System.out.println("--");
+                        System.out.println(documentText.getCodensedText().substring(documentText.getCondensedOffsetForOriginalOffset(a.getBegin()), documentText.getOriginalOffsetForCondensedOffset(a.getEnd())));
+                        System.out.println(a.getBegin() + " - " + a.getEnd() + ", " + documentText.getCondensedOffsetForOriginalOffset(a.getBegin()) + " - " + documentText.getOriginalOffsetForCondensedOffset(a.getEnd()));
+                        System.out.println();
+                        // Here we convert the original offsets to the condensed offsets. If there are
+                        // no cut-away types, the offsets will just remain unchanged. Otherwise we now
+                        // have the borders of the condensed text passages associated with the sentence
+                        // delimiter annotation.
+                        borders.add(documentText.getCondensedOffsetForOriginalOffset(a.getBegin()));
+                        assert borders.get(borders.size() - 1) < documentText.getCodensedText().length();
+                        borders.add(documentText.getCondensedOffsetForOriginalOffset(a.getEnd()));
+                        assert borders.get(borders.size() - 1) < documentText.getCodensedText().length() : "Original offset "+a.getEnd()+" is mapped to condensed offset " + documentText.getCondensedOffsetForOriginalOffset(a.getEnd());
+                    }
+                    borders.sort(null);
+
+                    // now do sentence segmentation between annotation borders
+                    for (int i = 1; i < borders.size(); ++i) {
+                        int start = borders.get(i - 1);
+                        int end = borders.get(i);
+
+                        // skip leading whites spaces
+                        while (start < end && Character.isWhitespace(aJCas.getDocumentText().charAt(start)))
+                            ++start;
+
+                        // get the string between the current annotation borders and recognized sentences
+                        String textSpan = documentText.getCodensedText().substring(start, end);
+                        if (!StringUtils.isBlank(textSpan))
+                            doSegmentation(documentText, textSpan, start);
+                    }
+
+                } catch (ClassNotFoundException e) {
+                    throw new AnalysisEngineProcessException(e);
+                }
             } else {
-                if (numEmptyCases.get() < 10) {
-                    LOGGER.debug("document text empty. Skipping this document.");
-                    numEmptyCases.incrementAndGet();
-                } else if (numEmptyCases.get() == 10) {
-                    LOGGER.warn("Encountered 10 documents with an empty text body. This message will not appear again " +
-                            "to avoid scrolling in cases where this is expected.");
-                }
+                // sentence delimiter types are not given
+                // if no processingScope set -> use documentText
+                if (aJCas.getDocumentText() != null && aJCas.getDocumentText().length() > 0) {
+                    doSegmentation(documentText, documentText.getCodensedText(), 0);
+                } else {
+                    if (numEmptyCases.get() < 10) {
+                        LOGGER.debug("document text empty. Skipping this document.");
+                        numEmptyCases.incrementAndGet();
+                    } else if (numEmptyCases.get() == 10) {
+                        LOGGER.warn("Encountered 10 documents with an empty text body. This message will not appear again " +
+                                "to avoid scrolling in cases where this is expected.");
+                    }
 
+                }
             }
+        } catch (Throwable t) {
+            LOGGER.error("Could not perform sentence splitting of document {}", JCoReTools.getDocId(aJCas), t);
+            throw t;
         }
     }
 

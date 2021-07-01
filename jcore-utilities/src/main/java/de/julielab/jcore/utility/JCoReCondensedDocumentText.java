@@ -22,18 +22,18 @@ public class JCoReCondensedDocumentText {
 	private NavigableMap<Integer, Integer> originalPos2SumCutMap;
 	private String condensedText;
 	private JCas cas;
+	private Set<Character> cutAwayFillCharacters;
 
 	public JCas getCas() {
 		return cas;
 	}
-
 	/**
 	 * <p>
 	 * Cuts away the covered text of annotations of a type in <tt>cutAwayTypes</tt>
 	 * from the <tt>cas</tt> document text. If <tt>cutAwayTypes</tt> is null or
 	 * empty, this class' methods will return the original CAS data.
 	 * </p>
-	 * 
+	 *
 	 * @param cas
 	 *            The CAS for which the document text should be cut.
 	 * @param cutAwayTypes
@@ -42,7 +42,30 @@ public class JCoReCondensedDocumentText {
 	 *             If <tt>cutAwayTypes</tt> contains non-existing type names.
 	 */
 	public JCoReCondensedDocumentText(JCas cas, Set<String> cutAwayTypes) throws ClassNotFoundException {
+		this(cas, cutAwayTypes, null);
+	}
+
+	/**
+	 * <p>
+	 * Cuts away the covered text of annotations of a type in <tt>cutAwayTypes</tt>
+	 * from the <tt>cas</tt> document text. If <tt>cutAwayTypes</tt> is null or
+	 * empty, this class' methods will return the original CAS data.
+	 * </p>
+	 * <p>The <tt>cutAwayFillCharacters</tt> set may provide characters that, when being the only character between
+	 * to cut-away annotations, will add to the span of text being cut away. This way, enumerations of references
+	 * (e.g. "4,6,8") can be completely removed, for example.</p>
+	 * 
+	 * @param cas
+	 *            The CAS for which the document text should be cut.
+	 * @param cutAwayTypes
+	 *            The types for cutting. May be null.
+	 * @param cutAwayFillCharacters Characters that, when being the only separator between two cut away annotations, are also cut away.
+	 * @throws ClassNotFoundException
+	 *             If <tt>cutAwayTypes</tt> contains non-existing type names.
+	 */
+	public JCoReCondensedDocumentText(JCas cas, Set<String> cutAwayTypes, Set<Character> cutAwayFillCharacters) throws ClassNotFoundException {
 		this.cas = cas;
+		this.cutAwayFillCharacters = cutAwayFillCharacters;
 		buildMap(cas, cutAwayTypes);
 	}
 
@@ -80,24 +103,26 @@ public class JCoReCondensedDocumentText {
 		int lastBegin = 0;
 		int lastEnd = -1;
 		// For each ignored annotation, there could be following annotations overlapping
-		// with the first, effectively enlargeing the ignored span. Thus, we iterate
-		// until we find an ignored annotation the has a positive (not 0) distance to a
+		// with the first, effectively enlarging the ignored span. Thus, we iterate
+		// until we find an ignored annotation that has a positive (not 0) distance to a
 		// previous one. Then, we store the length of the span of cut-away annotations
 		// for the largest end of the previous annotations.
 		while (merger.incrementAnnotation()) {
 			int end = merger.getCurrentEnd();
 			int begin = merger.getCurrentBegin();
 
-			if (lastEnd > 0 && begin > lastEnd) {
+			boolean moreThanOneCharacterDistance = begin - lastEnd > 2;
+			boolean previousCharacterIsCutAwayDelimiter = cutAwayFillCharacters == null || cutAwayFillCharacters.isEmpty() || (begin - lastEnd == 2 && cutAwayFillCharacters.contains(cas.getDocumentText().charAt(begin - 1)));
+			if (lastEnd > 0 && begin > lastEnd && (previousCharacterIsCutAwayDelimiter || moreThanOneCharacterDistance)) {
 				cutSum += lastEnd - lastBegin;
 				int condensedPosition = lastEnd - cutSum + 1;
 				condensedPos2SumCutMap.put(condensedPosition, cutSum);
 				originalPos2SumCutMap.put(lastEnd, cutSum);
 				lastBegin = begin;
-				sb.append(cas.getDocumentText().substring(lastEnd, begin));
+				sb.append(cas.getDocumentText(), lastEnd, begin);
 			} else if (lastEnd < 0) {
 				lastBegin = begin;
-				sb.append(cas.getDocumentText().substring(0, begin));
+				sb.append(cas.getDocumentText(), 0, begin);
 			}
 			lastEnd = end;
 		}
@@ -110,11 +135,11 @@ public class JCoReCondensedDocumentText {
 			condensedPos2SumCutMap.put(condensedPosition, cutSum);
 			originalPos2SumCutMap.put(lastEnd, cutSum);
 		}
-		// If lastEnd is still -1 one, we just did not find any of the cut away annotations. Thus, we just copy the whole text.
+		// If lastEnd is still -1, we just did not find any of the cut away annotations. Thus, we just copy the whole text.
 		if (lastEnd == -1)
 		    lastEnd = 0;
 		if (lastEnd < cas.getDocumentText().length())
-			sb.append(cas.getDocumentText().substring(lastEnd, cas.getDocumentText().length()));
+			sb.append(cas.getDocumentText().substring(lastEnd));
 		condensedText = sb.toString();
 	}
 

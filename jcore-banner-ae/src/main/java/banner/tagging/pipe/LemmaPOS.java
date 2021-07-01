@@ -43,14 +43,16 @@ public class LemmaPOS extends Pipe {
     public void setLemmatiser(Lemmatiser lemmatiser) {
         initResourcesMap();
         getResources().lemmatiser = lemmatiser;
+        System.out.println("Setting lemmatiser to " + Thread.currentThread());
     }
 
     public void setPosTagger(Tagger posTagger) {
         initResourcesMap();
         getResources().posTagger = posTagger;
+        System.out.println("Setting PoS Tagger to " + Thread.currentThread());
     }
 
-    private void initResourcesMap() {
+    synchronized private void initResourcesMap() {
         if (resourcesByThread == null)
             resourcesByThread = new HashMap<>();
     }
@@ -67,7 +69,7 @@ public class LemmaPOS extends Pipe {
     @Override
     public Instance pipe(Instance carrier) {
         if (expectLemmatiser != (getResources().lemmatiser != null))
-            throw new IllegalStateException("Model was trained with lemmatiser; not present in current config");
+            throw new IllegalStateException("Model was trained with lemmatiser; not present in current config; resource map: " + resourcesByThread + ", current thread: " + Thread.currentThread());
         if (expectPOSTagger != (getResources().posTagger != null))
             throw new IllegalStateException("Model was trained with POS tagger; not present in current config");
         // TODO Add prefix ability
@@ -112,5 +114,13 @@ public class LemmaPOS extends Pipe {
     private class Resources {
         public Lemmatiser lemmatiser;
         public Tagger posTagger;
+
+        @Override
+        public String toString() {
+            return "Resources{" +
+                    "lemmatiser=" + lemmatiser +
+                    ", posTagger=" + posTagger +
+                    '}';
+        }
     }
 }

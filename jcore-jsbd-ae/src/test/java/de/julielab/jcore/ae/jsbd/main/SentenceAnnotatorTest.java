@@ -25,6 +25,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
@@ -39,7 +40,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -284,26 +287,31 @@ public class SentenceAnnotatorTest {
 		assertThat(sentences).containsExactly("line1", "line2", "line3");
 	}
 
-//
-//	@Test
-//	public void testmuh() throws Exception {
-//		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
-//				"de.julielab.jcore.types.jcore-document-structure-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types",
-//				"de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
-//
-//		XmiCasDeserializer.deserialize(new FileInputStream("/Users/faessler/uima-pipelines/jedis-doc-to-xmi/data/output-xmi/4768370.xmi"), jCas.getCas());
-//		JCasUtil.select(jCas, Sentence.class).forEach(Annotation::removeFromIndexes);
-//		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
-//				"/Users/faessler/Coding/git/jcore-projects/jcore-jsbd-ae-biomedical-english/src/main/resources/de/julielab/jcore/ae/jsbd/model/jsbd-biomed-oversampled-abstracts-split-at-punctuation.mod.gz", SentenceAnnotator.PARAM_MAX_SENTENCE_LENGTH, 1000);
-//
-//		jsbd.process(jCas.getCas());
-//
-//		Set<Integer> set = new TreeSet<>();
-//		for (Sentence s : JCasUtil.select(jCas, Sentence.class)) {
-//			set.add(s.getEnd() - s.getBegin());
-//		}
-//		XmiCasSerializer.serialize(jCas.getCas(), new FileOutputStream("smallSentences.xmi"));
-//	}
+
+	@Test
+	public void testErrordoc() throws Exception {
+		// The XMI document uses here is from PMC and is an example of a source of error the previously occurred.
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
+
+		XmiCasDeserializer.deserialize(new FileInputStream(Path.of("src", "test", "resources", "errordocs", "PMC5478802.xmi").toFile()), jCas.getCas());
+		JCasUtil.select(jCas, Sentence.class).forEach(Annotation::removeFromIndexes);
+		AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+				"/Users/faessler/Coding/git/jcore-projects/jcore-jsbd-ae-biomedical-english/src/main/resources/de/julielab/jcore/ae/jsbd/model/jsbd-biomed-oversampled-abstracts-split-at-punctuation.mod.gz",
+				SentenceAnnotator.PARAM_MAX_SENTENCE_LENGTH, 1000,
+				SentenceAnnotator.PARAM_SENTENCE_DELIMITER_TYPES, new String[]{
+						"de.julielab.jcore.types.Title", "de.julielab.jcore.types.AbstractText", "de.julielab.jcore.types.AbstractSectionHeading", "de.julielab.jcore.types.AbstractSection", "de.julielab.jcore.types.Section", "de.julielab.jcore.types.Paragraph", "de.julielab.jcore.types.Zone", "de.julielab.jcore.types.Caption", "de.julielab.jcore.types.Figure", "de.julielab.jcore.types.Table"},
+				SentenceAnnotator.PARAM_CUT_AWAY_TYPES, new String[]{de.julielab.jcore.types.pubmed.InternalReference.class.getCanonicalName()}
+		);
+
+		jsbd.process(jCas.getCas());
+		for (var s : JCasUtil.select(jCas, Sentence.class)) {
+			System.out.println(s.getCoveredText());
+			System.out.println("--");
+		}
+
+	}
 
 }
 
