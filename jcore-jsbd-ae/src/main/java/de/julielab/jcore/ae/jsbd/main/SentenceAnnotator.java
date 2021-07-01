@@ -155,7 +155,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             JCoReCondensedDocumentText documentText;
             try {
                 // If there are no cut-away types, the document text will remain unchanged.
-                documentText = new JCoReCondensedDocumentText(aJCas, cutAwayTypes);
+                documentText = new JCoReCondensedDocumentText(aJCas, cutAwayTypes, Set.of(','));
             } catch (ClassNotFoundException e1) {
                 LOGGER.error("Could not create the text without annotations to be cut away in document {}", JCoReTools.getDocId(aJCas), e1);
                 throw new AnalysisEngineProcessException(e1);
@@ -175,22 +175,15 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                     // cross any delimiter annotation border
                     List<Integer> borders = new ArrayList<>();
                     borders.add(0);
-                    borders.add(aJCas.getDocumentText().length());
+                    borders.add(documentText.getCondensedOffsetForOriginalOffset(aJCas.getDocumentText().length()));
                     while (indexMerger.incrementAnnotation()) {
                         Annotation a = (Annotation) indexMerger.getAnnotation();
-                        System.out.println(a.getCoveredText());
-                        System.out.println("--");
-                        System.out.println(documentText.getCodensedText().substring(documentText.getCondensedOffsetForOriginalOffset(a.getBegin()), documentText.getOriginalOffsetForCondensedOffset(a.getEnd())));
-                        System.out.println(a.getBegin() + " - " + a.getEnd() + ", " + documentText.getCondensedOffsetForOriginalOffset(a.getBegin()) + " - " + documentText.getOriginalOffsetForCondensedOffset(a.getEnd()));
-                        System.out.println();
                         // Here we convert the original offsets to the condensed offsets. If there are
                         // no cut-away types, the offsets will just remain unchanged. Otherwise we now
                         // have the borders of the condensed text passages associated with the sentence
                         // delimiter annotation.
                         borders.add(documentText.getCondensedOffsetForOriginalOffset(a.getBegin()));
-                        assert borders.get(borders.size() - 1) < documentText.getCodensedText().length();
                         borders.add(documentText.getCondensedOffsetForOriginalOffset(a.getEnd()));
-                        assert borders.get(borders.size() - 1) < documentText.getCodensedText().length() : "Original offset "+a.getEnd()+" is mapped to condensed offset " + documentText.getCondensedOffsetForOriginalOffset(a.getEnd());
                     }
                     borders.sort(null);
 

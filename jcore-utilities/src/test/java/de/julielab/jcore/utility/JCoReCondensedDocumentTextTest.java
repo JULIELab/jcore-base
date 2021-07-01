@@ -71,7 +71,7 @@ public class JCoReCondensedDocumentTextTest {
 		// references completely.
 		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
 				"de.julielab.jcore.types.jcore-document-structure-types");
-		jcas.setDocumentText("This sentence has multiple references.2,5,42 This is a second sentence.7,8");
+		jcas.setDocumentText("This sentence has multiple references.2,5;42 This is a second sentence.7,8");
 		InternalReference ref1 = new InternalReference(jcas, 38, 39);
 		ref1.addToIndexes();
 		InternalReference ref2 = new InternalReference(jcas, 40, 41);
@@ -84,7 +84,7 @@ public class JCoReCondensedDocumentTextTest {
 		ref5.addToIndexes();
 
 		JCoReCondensedDocumentText condensedText = new JCoReCondensedDocumentText(jcas,
-				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())), Set.of(','));
+				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())), Set.of(',', ';'));
 		assertEquals("This sentence has multiple references. This is a second sentence.", condensedText.getCodensedText());
 	}
 
@@ -96,9 +96,9 @@ public class JCoReCondensedDocumentTextTest {
 				"de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
 
 		XmiCasDeserializer.deserialize(new FileInputStream(Path.of("src", "test", "resources", "PMC5478802.xmi").toFile()), jCas.getCas());
-		JCoReCondensedDocumentText text = new JCoReCondensedDocumentText(jCas, Set.of(de.julielab.jcore.types.pubmed.InternalReference.class.getCanonicalName()));
-//		Set<String> sentenceBoundaryTypes = Set.of("de.julielab.jcore.types.Title", "de.julielab.jcore.types.AbstractText", "de.julielab.jcore.types.AbstractSectionHeading", "de.julielab.jcore.types.AbstractSection", "de.julielab.jcore.types.Section", "de.julielab.jcore.types.Paragraph", "de.julielab.jcore.types.Zone", "de.julielab.jcore.types.Caption", "de.julielab.jcore.types.Figure", "de.julielab.jcore.types.Table");
-		Set<String> sentenceBoundaryTypes = Set.of("de.julielab.jcore.types.Section");
+		JCoReCondensedDocumentText text = new JCoReCondensedDocumentText(jCas, Set.of(de.julielab.jcore.types.pubmed.InternalReference.class.getCanonicalName()), Set.of(','));
+		Set<String> sentenceBoundaryTypes = Set.of("de.julielab.jcore.types.Title", "de.julielab.jcore.types.AbstractText", "de.julielab.jcore.types.AbstractSectionHeading", "de.julielab.jcore.types.AbstractSection", "de.julielab.jcore.types.Section", "de.julielab.jcore.types.Paragraph", "de.julielab.jcore.types.Zone", "de.julielab.jcore.types.Caption", "de.julielab.jcore.types.Figure", "de.julielab.jcore.types.Table");
+//		Set<String> sentenceBoundaryTypes = Set.of("de.julielab.jcore.types.Section");
 		JCoReAnnotationIndexMerger indexMerger = new JCoReAnnotationIndexMerger(sentenceBoundaryTypes, false,
 				null, jCas);
 
@@ -106,12 +106,14 @@ public class JCoReCondensedDocumentTextTest {
 			Annotation a = (Annotation) indexMerger.getAnnotation();
 			System.out.println(a.getCoveredText());
 			System.out.println("--");
-			int condensedBegin = text.getCondensedOffsetForOriginalOffset(a.getBegin());
-			int condensedEnd = text.getOriginalOffsetForCondensedOffset(a.getEnd());
+			int begin = a.getBegin();
+			int condensedBegin = text.getCondensedOffsetForOriginalOffset(begin);
+			int end = a.getEnd();
+			int condensedEnd = text.getCondensedOffsetForOriginalOffset(end);
 			if (condensedEnd > text.getCodensedText().length())
 				System.out.println();
 			System.out.println(text.getCodensedText().substring(condensedBegin, condensedEnd));
-			System.out.println(a.getBegin() + " - " + a.getEnd() + ", " + condensedBegin + " - " + condensedEnd);
+			System.out.println(begin + " - " + end + ", " + condensedBegin + " - " + condensedEnd);
 			System.out.println();
 		}
 	}
