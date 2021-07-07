@@ -310,5 +310,27 @@ public class SentenceAnnotatorTest {
         assertThatCode(() -> jsbd.process(jCas.getCas())).doesNotThrowAnyException();
     }
 
+    @Test
+    public void testErrordoc2() throws Exception {
+        // This XMI file has larger cut away types where an original offset request actually lies inside of a
+        // cut away annotation. This case led to errors prior to a respective bug fix in the
+        // JCoReCondensedDocumentText
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
+
+        XmiCasDeserializer.deserialize(new FileInputStream(Path.of("src", "test", "resources", "errordocs", "PMC8205280.xmi").toFile()), jCas.getCas());
+        JCasUtil.select(jCas, Sentence.class).forEach(Annotation::removeFromIndexes);
+        AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+                "/Users/faessler/Coding/git/jcore-projects/jcore-jsbd-ae-biomedical-english/src/main/resources/de/julielab/jcore/ae/jsbd/model/jsbd-biomed-oversampled-abstracts-split-at-punctuation.mod.gz",
+                SentenceAnnotator.PARAM_MAX_SENTENCE_LENGTH, 1000,
+                SentenceAnnotator.PARAM_SENTENCE_DELIMITER_TYPES, new String[]{
+                        "de.julielab.jcore.types.Title", "de.julielab.jcore.types.AbstractText", "de.julielab.jcore.types.AbstractSectionHeading", "de.julielab.jcore.types.AbstractSection", "de.julielab.jcore.types.Section", "de.julielab.jcore.types.Paragraph", "de.julielab.jcore.types.Zone", "de.julielab.jcore.types.Caption", "de.julielab.jcore.types.Figure", "de.julielab.jcore.types.Table"},
+                SentenceAnnotator.PARAM_CUT_AWAY_TYPES, new String[]{de.julielab.jcore.types.pubmed.InternalReference.class.getCanonicalName()}
+        );
+
+        assertThatCode(() -> jsbd.process(jCas.getCas())).doesNotThrowAnyException();
+    }
+
 }
 
