@@ -524,7 +524,7 @@ class Sentence2TokenPipe extends Pipe {
 
 			// check whether superunit might be a chemical
 			// therefor we check the number typical special characters contained
-			if ((superUnitRep.length() > 6)
+			if ((superUnitRep.length() > 6 && superUnitRep.length() < 200)
 					&& superUnitRep.matches("(.*[\\W].*){5,}")
 					&& !superUnitRep.contains("-->"))
 				token.setFeatureValue("SU_isChemical", 1);
