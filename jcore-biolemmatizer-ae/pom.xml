@@ -49,6 +49,12 @@
       		<id>BioNLP Repository</id>
       		<url>https://svn.code.sf.net/p/bionlp/code/repo</url>
     	</repository>
+		<!-- This repo makes available the MorphAdorner dependency -->
+		<repository>
+			<id>maven.aksw.internal</id>
+			<name>AKSW Internal Release Repository</name>
+			<url>https://maven.aksw.org/repository/internal</url>
+		</repository>
   	</repositories>
 	<licenses>
 		<license>
