@@ -15,6 +15,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flair==0.6.1
       - uses: actions/checkout@v2
       - name: Set up JDK 11
         uses: actions/setup-java@v2
@@ -22,4 +30,4 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B package --file pom.xml --settings .github/maven-settings.xml
