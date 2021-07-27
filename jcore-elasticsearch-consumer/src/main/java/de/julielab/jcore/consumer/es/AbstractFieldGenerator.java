@@ -499,8 +499,8 @@ public abstract class AbstractFieldGenerator {
 	 * featurePaths and reset once per featurePath.
 	 * 
 	 * @param a
-	 * @param featurePath
-	 * @param f
+	 * @param featurePaths
+	 * @param filters
 	 * @return
 	 * @throws CASException
 	 */
