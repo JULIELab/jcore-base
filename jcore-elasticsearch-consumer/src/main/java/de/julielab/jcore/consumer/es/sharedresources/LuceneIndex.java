@@ -11,6 +11,7 @@ import org.apache.lucene.store.NIOFSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -24,14 +25,19 @@ public class LuceneIndex implements StringIndex {
     public LuceneIndex(String indexDirectory) {
         try {
             Path lucene = Path.of(indexDirectory);
+            File directoryFile = lucene.toFile();
+            boolean indexExists = directoryFile.exists() && directoryFile.isDirectory() && directoryFile.list().length != 0;
             directory = NIOFSDirectory.open(lucene);
             // Do not open a writer to an existing index. This causes locking issues when starting multiple
             // pipelines in parallel.
             // Of course, the first pipeline still needs to create the index, so this must be a one-time effort
             // that has to be completed before the other pipelines are started.
-            if (!lucene.toFile().exists()) {
+            if (!indexExists) {
+                log.debug("Creating index writer for index directory {}.", indexDirectory);
                 IndexWriterConfig iwc = new IndexWriterConfig();
                 iw = new IndexWriter(directory, iwc);
+            } else {
+                log.debug("Index directory {} already");
             }
         } catch (IOException e) {
             log.error("could not initialize Lucene index", e);
