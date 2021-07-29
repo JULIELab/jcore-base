@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class XmiDataInserter {
 
@@ -65,16 +66,16 @@ public class XmiDataInserter {
      * @throws AnalysisEngineProcessException
      */
     public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> annotationModules, String subsetTableName, Boolean storeBaseDocument, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
-        if (log.isTraceEnabled()) {
-            log.trace("Sending XMI data for {} tables to the database", annotationModules.size());
-            log.trace("Sending {} XMI data items", annotationModules.size());
-        }
+        log.trace("Sending {} XMI data items", annotationModules.size());
         final Map<DocumentId, List<XmiData>> dataByDoc = annotationModules.stream().collect(Collectors.groupingBy(XmiData::getDocId));
         // Collect all document IDs we want to add something for into the database. This can be annotations or the hash.
-        final Set<DocumentId> documentIdsWithValues = shaMap != null ? Sets.union(dataByDoc.keySet(), shaMap.keySet()) : dataByDoc.keySet();
+         final Set<DocumentId> documentIdsWithData = shaMap != null ? Sets.union(dataByDoc.keySet(), shaMap.keySet()) : dataByDoc.keySet();
+        log.trace("There are {} documents with values to be updated in the database.", documentIdsWithData.size());
         class RowIterator implements Iterator<Map<String, Object>> {
 
-            private Iterator<DocumentId> docIdIterator = documentIdsWithValues.iterator();
+            // Add documents that have been processed but no data. We need to do this to override potentially existing
+            // annotation values with null to remove them.
+            private Iterator<DocumentId> docIdIterator = Stream.concat(documentIdsWithData.stream(), processedDocumentIds.stream()).distinct().iterator();
             private FieldConfig fieldConfig = dbc.getFieldConfiguration(schemaDocument);
             private List<Map<String, String>> fields = fieldConfig.getFields();
 
@@ -141,7 +142,9 @@ public class XmiDataInserter {
                 // Set columns without a value to null to delete a potentially existing value.
                 if (updateMode) {
                     Set<String> annotationColumnsWithValues = dataList.stream().map(XmiData::getColumnName).collect(Collectors.toSet());
+                    log.trace("Annotation columns with values: {}", annotationColumnsWithValues);
                     final Sets.SetView<String> columnsWithoutValues = Sets.difference(annotationModuleColumnNames, annotationColumnsWithValues);
+                    log.trace("Annotation columns without values: {}", columnsWithoutValues);
                     columnsWithoutValues.forEach(col -> {
                         row.put(col, null);
                         log.trace("{}=null", col);

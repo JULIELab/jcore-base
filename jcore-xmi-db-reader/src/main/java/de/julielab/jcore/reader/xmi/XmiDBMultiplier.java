@@ -90,8 +90,9 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
                 populateCas(jCas);
             }
         } catch (Throwable throwable) {
-            log.error("Error while reading document from the database: ", throwable);
-            throw throwable;
+            log.error("Error while reading document from the database. Releasing the CAS. ", throwable);
+            jCas.release();
+            throw new AnalysisEngineProcessException(throwable);
         }
         return jCas;
     }

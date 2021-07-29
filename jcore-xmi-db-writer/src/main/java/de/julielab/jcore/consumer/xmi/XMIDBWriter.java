@@ -737,7 +737,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 // adapt the map keys to table names (currently, the keys are the
                 // Java type names)
                 splitXmiData = convertModuleLabelsToColumnNames(splitXmiData);
-
+                log.trace("The following columns have XMI data: {}", splitXmiData.keySet());
 
                 for (String columnName : splitXmiData.keySet()) {
                     boolean isBaseDocumentColumn = columnName.equals(XmiSplitConstants.BASE_DOC_COLUMN);
