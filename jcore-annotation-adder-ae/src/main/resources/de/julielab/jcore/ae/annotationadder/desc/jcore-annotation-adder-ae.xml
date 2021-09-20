@@ -79,6 +79,13 @@
                                 <multiValued>false</multiValued>
                                 <mandatory>false</mandatory>
                             </configurationParameter>
+                            <configurationParameter>
+                                <name>WithHeader</name>
+                                <description>Indicates whether the the input TSV file has a header line.</description>
+                                <type>Boolean</type>
+                                <multiValued>false</multiValued>
+                                <mandatory>false</mandatory>
+                            </configurationParameter>
                         </configurationParameters>
                         <configurationParameterSettings>
                             <nameValuePair>
