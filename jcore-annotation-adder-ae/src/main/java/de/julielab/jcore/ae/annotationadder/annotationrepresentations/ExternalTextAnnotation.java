@@ -1,5 +1,7 @@
 package de.julielab.jcore.ae.annotationadder.annotationrepresentations;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,5 +60,9 @@ public class ExternalTextAnnotation implements TextAnnotation {
 
     public Object getPayload(String key) {
         return payload != null ? payload.get(key) : null;
+    }
+
+    public Collection<String> getPayloadKeys() {
+        return payload != null ? payload.keySet() : Collections.emptySet();
     }
 }

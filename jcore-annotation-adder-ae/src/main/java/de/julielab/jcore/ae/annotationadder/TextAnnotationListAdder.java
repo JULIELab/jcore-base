@@ -43,7 +43,7 @@ public class TextAnnotationListAdder implements AnnotationAdder {
                 throw new IllegalArgumentException("The entity annotation type " + uimaType + " does not exist in the type system.");
             try {
                 // The sha check is supposed to compare the document text on which the annotation was made with the
-                // document text the current CAS has. If the differ, the annotations will most likely have
+                // document text the current CAS has. If they differ, the annotations will most likely have
                 // offset discrepancies which is why they won't be added and a warning will be issued.
                 final String shaFromAnnotation = (String) a.getPayload("sha");
                 boolean shaMatches = true;
@@ -60,6 +60,7 @@ public class TextAnnotationListAdder implements AnnotationAdder {
                     if (a.getStart() >= 0) {
                         final Annotation annotation = JCoReAnnotationTools.getAnnotationByClassName(jCas, uimaType);
                         helper.setAnnotationOffsetsRelativeToDocument(annotation, a, configuration);
+                        helper.setAnnotationPayloadsToFeatures(annotation, a);
                         annotation.addToIndexes();
                     } else {
                         log.trace("ExternalAnnotation for document {} has no entity offsets or offsets < 0, not adding anything to the CAS.", a.getDocumentId());

@@ -1,8 +1,10 @@
 package de.julielab.jcore.ae.annotationadder;
 
+import de.julielab.jcore.ae.annotationadder.annotationrepresentations.ExternalTextAnnotation;
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.TextAnnotation;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.util.JCasUtil;
@@ -11,10 +13,9 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -29,7 +30,10 @@ public class AnnotationAdderHelper {
     private Map<Sentence, List<Token>> tokensBySentences;
     private Matcher wsFinder = Pattern.compile("\\s").matcher("");
     private Matcher nonWsMatcher = Pattern.compile("[^\\s]+").matcher("");
-
+    /**
+     * Caches methods for feature
+     */
+    private Map<String, Method> featureSetters;
 
     public void setAnnotationOffsetsRelativeToDocument(Annotation annotation, TextAnnotation a, AnnotationAdderConfiguration configuration) throws CASException, AnnotationOffsetException {
         if (configuration.getOffsetMode() == AnnotationAdderAnnotator.OffsetMode.CHARACTER) {
@@ -139,5 +143,24 @@ public class AnnotationAdderHelper {
             }
         }
         return tokenList;
+    }
+
+    public void setAnnotationPayloadsToFeatures(Annotation annotation, ExternalTextAnnotation a) {
+        Collection<String> keys = a.getPayloadKeys();
+        if (!keys.isEmpty())
+            featureSetters = new HashMap<>();
+        try {
+            for (String key : keys) {
+                Object value = a.getPayload(key);
+                Method setter = featureSetters.get(key);
+                if (setter == null) {
+                    setter = annotation.getClass().getMethod("set" + StringUtils.capitalize(key), value.getClass());
+                    featureSetters.put(key, setter);
+                }
+                setter.invoke(annotation, value);
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FileAnnotationSource<T extends AnnotationData> implements AnnotationSource<AnnotationList<T>> {
@@ -25,7 +26,7 @@ public class FileAnnotationSource<T extends AnnotationData> implements Annotatio
 
     public void loadAnnotations(File annotationfile) {
         try (BufferedReader br = FileUtilities.getReaderFromFile(annotationfile)) {
-            entitiesByDocId = br.lines().map(format::parse).collect(Collectors.groupingBy(AnnotationData::getDocumentId, Collectors.toCollection(AnnotationList::new)));
+            entitiesByDocId = br.lines().map(format::parse).filter(Objects::nonNull).collect(Collectors.groupingBy(AnnotationData::getDocumentId, Collectors.toCollection(AnnotationList::new)));
         } catch (IOException e) {
             e.printStackTrace();
         }

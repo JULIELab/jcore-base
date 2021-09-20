@@ -15,6 +15,7 @@ import java.util.Optional;
 
 public class InMemoryFileTextAnnotationProvider implements AnnotationProvider<AnnotationList> {
     public static final String PARAM_ANNOTATION_FORMAT = "AnnotationFormatClass";
+    public static final String PARAM_WITH_HEADER = "WithHeader";
     private final static Logger log = LoggerFactory.getLogger(InMemoryFileTextAnnotationProvider.class);
     private AnnotationSource<AnnotationList> annotationSource;
 
@@ -27,9 +28,11 @@ public class InMemoryFileTextAnnotationProvider implements AnnotationProvider<An
     public void load(DataResource dataResource) throws ResourceInitializationException {
         final ConfigurationParameterSettings parameterSettings = dataResource.getMetaData().getConfigurationParameterSettings();
         final String formatClassName = (String) Optional.ofNullable(parameterSettings.getParameterValue(PARAM_ANNOTATION_FORMAT)).orElse(SimpleTSVEntityAnnotationFormat.class.getCanonicalName());
+        final boolean withHeader = (boolean) Optional.ofNullable(parameterSettings.getParameterValue(PARAM_WITH_HEADER)).orElse(false);
         AnnotationFormat<ExternalTextAnnotation> format;
         try {
             format = (AnnotationFormat<ExternalTextAnnotation>) Class.forName(formatClassName).getDeclaredConstructor().newInstance();
+            format.withHeader(withHeader);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             log.error("Could not instantiate class {}", formatClassName);
             throw new ResourceInitializationException(e);

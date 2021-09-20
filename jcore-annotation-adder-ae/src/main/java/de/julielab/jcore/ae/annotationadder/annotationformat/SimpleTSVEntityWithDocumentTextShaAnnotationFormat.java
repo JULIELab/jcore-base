@@ -21,4 +21,9 @@ public class SimpleTSVEntityWithDocumentTextShaAnnotationFormat implements Annot
         externalTextAnnotation.addPayload("sha", sha);
         return externalTextAnnotation;
     }
+
+    @Override
+    public void withHeader(boolean withHeader) {
+        // does nothing
+    }
 }

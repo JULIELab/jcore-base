@@ -4,4 +4,6 @@ import de.julielab.jcore.ae.annotationadder.annotationrepresentations.Annotation
 
 public interface AnnotationFormat<T extends AnnotationData> {
     T parse(String data);
+
+    void withHeader(boolean withHeader);
 }

@@ -28,7 +28,7 @@ For document class annotations, no offset mode is required, obviously. Whether t
 
 **3. External Resource Dependencies**
 
-This component requires an external resource given with the `AnnotationSource` key. This dependency definition is present in the provided default descriptor.
+This component requires an external resource given with the `AnnotationSource` key. This dependency definition is pre-configured in the provided default descriptor and must be added to point to the correct annotation source.
 
 The external dependency may currently be a file which is read completely into an in-memory map by the `de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileTextAnnotationProvider` class for textual annotations with offsets or by the `de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileDocumentClassAnnotationProvider` class for document classes. Both provider classes implement the required external resource interface `de.julielab.jcore.ae.annotationadder.annotationsources.AnnotationProvider`.
 

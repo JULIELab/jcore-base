@@ -17,4 +17,9 @@ public class DocumentClassAnnotationFormat implements AnnotationFormat<ExternalD
         String type = null;
         return new ExternalDocumentClassAnnotation(docId, documentClass, confidence, componentId);
     }
+
+    @Override
+    public void withHeader(boolean withHeader) {
+        // does nothing
+    }
 }
