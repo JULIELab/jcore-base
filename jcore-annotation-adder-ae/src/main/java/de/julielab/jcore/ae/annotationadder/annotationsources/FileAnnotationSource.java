@@ -1,6 +1,6 @@
 package de.julielab.jcore.ae.annotationadder.annotationsources;
 
-import de.julielab.java.utilities.FileUtilities;
+import de.julielab.java.utilities.UriUtilities;
 import de.julielab.jcore.ae.annotationadder.annotationformat.AnnotationFormat;
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.AnnotationData;
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.AnnotationList;
@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,8 +24,8 @@ public class FileAnnotationSource<T extends AnnotationData> implements Annotatio
         this.format = format;
     }
 
-    public void loadAnnotations(File annotationfile) {
-        try (BufferedReader br = FileUtilities.getReaderFromFile(annotationfile)) {
+    private void loadAnnotations(URI annotationUri) {
+        try (BufferedReader br = UriUtilities.getReaderFromUri(annotationUri)) {
             entitiesByDocId = br.lines().map(format::parse).filter(Objects::nonNull).collect(Collectors.groupingBy(AnnotationData::getDocumentId, Collectors.toCollection(AnnotationList::new)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -35,7 +35,7 @@ public class FileAnnotationSource<T extends AnnotationData> implements Annotatio
     @Override
     public void initialize(DataResource dataResource) {
         log.info("Loading entity annotations from {}", dataResource.getUri());
-        loadAnnotations(new File(dataResource.getUri()));
+        loadAnnotations(dataResource.getUri());
     }
 
     @Override

@@ -88,7 +88,7 @@
                             </configurationParameter>
                             <configurationParameter>
                                 <name>ColumnNames</name>
-                                <description>For column formats without a header. Required when the columns should be mapped to annotation type features. Then, the headers but correspond to the feature names and are case sensitive. When specified, the number of elements for this parameter must equal the number of columns in the input file. Then, the i-th parameter value will be set as the name of the i-th column.</description>
+                                <description>For column formats without a header. Required when the columns should be mapped to annotation type features. Then, the headers must correspond to the feature names and are case sensitive. When specified, the number of elements for this parameter must equal the number of columns in the input file. Then, the i-th parameter value will be set as the name of the i-th column.</description>
                                 <type>String</type>
                                 <multiValued>true</multiValued>
                                 <mandatory>false</mandatory>

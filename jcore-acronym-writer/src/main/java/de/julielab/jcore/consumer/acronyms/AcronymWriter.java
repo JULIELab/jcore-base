@@ -15,6 +15,8 @@ import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +26,7 @@ import java.util.Map;
 
 @ResourceMetaData(name = "JCoRe Acronym Writer", description = "Writes acronym annotation to a text file.")
 public class AcronymWriter extends JCasAnnotator_ImplBase {
-
+private final static Logger log = LoggerFactory.getLogger(AcronymWriter.class);
 	public static final String PARAM_OUTPUTFILE = "OutputFile";
 
 	@ConfigurationParameter(name = PARAM_OUTPUTFILE)
@@ -38,6 +40,7 @@ public class AcronymWriter extends JCasAnnotator_ImplBase {
 		try {
 			os = FileUtilities.getOutputStreamToFile(new File(outputFile));
 		} catch (IOException e) {
+			log.error("Could not initialize acronym writer", e);
 			throw new ResourceInitializationException(e);
 		}
 	}
@@ -70,7 +73,10 @@ public class AcronymWriter extends JCasAnnotator_ImplBase {
 				++abbrCount;
 			}
 		} catch (CASRuntimeException | IOException e) {
+			log.error("Exception while writing acronyms", e);
 			throw new AnalysisEngineProcessException(e);
+		} catch (Throwable t) {
+			log.error("Exception while writing acronyms", t);
 		}
 	}
 
