@@ -11,7 +11,7 @@ class SimpleTSVEntityAnnotationFormatTest {
     @Test
     void parse() {
         SimpleTSVEntityAnnotationFormat format = new SimpleTSVEntityAnnotationFormat();
-        format.withHeader(true);
+        format.hasHeader(true);
         // should be ignored
         assertNull(format.parse("# comment"));
         // should be stored as header but not return something

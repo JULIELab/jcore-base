@@ -19,7 +19,12 @@ public class DocumentClassAnnotationFormat implements AnnotationFormat<ExternalD
     }
 
     @Override
-    public void withHeader(boolean withHeader) {
-        // does nothing
+    public void hasHeader(boolean withHeader) {
+        // does nothing right now
+    }
+
+    @Override
+    public void setColumnNames(String[] header) {
+        // does nothing right now
     }
 }

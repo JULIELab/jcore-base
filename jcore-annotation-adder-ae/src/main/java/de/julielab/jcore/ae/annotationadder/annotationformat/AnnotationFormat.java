@@ -5,5 +5,7 @@ import de.julielab.jcore.ae.annotationadder.annotationrepresentations.Annotation
 public interface AnnotationFormat<T extends AnnotationData> {
     T parse(String data);
 
-    void withHeader(boolean withHeader);
+    void hasHeader(boolean withHeader);
+
+    void setColumnNames(String[] header);
 }

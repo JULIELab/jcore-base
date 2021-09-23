@@ -71,7 +71,7 @@ public class AnnotationAdderAnnotatorTest{
     @Test
     public void testPayload() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
-        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/geneannotations_character_offsets_payload.tsv"), InMemoryFileTextAnnotationProvider.PARAM_WITH_HEADER, true);
+        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/geneannotations_character_offsets_payload.tsv"), InMemoryFileTextAnnotationProvider.PARAM_INPUT_HAS_HEADER, true);
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(AnnotationAdderAnnotator.class, AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, externalResourceDescription);
         // Test doc1 (two gene annotations)
         jCas.setDocumentText("BRCA PRKII are the genes of this sentence.");
@@ -112,6 +112,55 @@ public class AnnotationAdderAnnotatorTest{
         assertThat(gene.getBegin()).isEqualTo(0);
         assertThat(gene.getEnd()).isEqualTo(6);
         assertThat(gene.getComponentId()).isEqualTo("GoldData");
+    }
+
+    @Test
+    public void testHeaderParameter() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
+        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/geneannotations_character_offsets.tsv"), InMemoryFileTextAnnotationProvider.PARAM_COLUMN_NAMES, new String[]{"docId", "begin", "end", "uimaType", "specificType", "componentId"});
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(AnnotationAdderAnnotator.class, AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, externalResourceDescription);
+        // Test doc1 (two gene annotations)
+        jCas.setDocumentText("BRCA PRKII are the genes of this sentence.");
+        final Header h = new Header(jCas);
+        h.setDocId("doc1");
+        h.addToIndexes();
+
+        engine.process(jCas);
+
+        final List<Gene> genes = new ArrayList<>(JCasUtil.select(jCas, Gene.class));
+        assertThat(genes).hasSize(2);
+
+        assertThat(genes.get(0).getBegin()).isEqualTo(0);
+        assertThat(genes.get(0).getEnd()).isEqualTo(4);
+        assertThat(genes.get(0).getSpecificType()).isEqualTo("additionalColumn1");
+        assertThat(genes.get(0).getComponentId()).isEqualTo("additionalColumn2");
+
+        assertThat(genes.get(1).getBegin()).isEqualTo(5);
+        assertThat(genes.get(1).getEnd()).isEqualTo(10);
+        assertThat(genes.get(1).getSpecificType()).isEqualTo("additionalColumn1");
+        assertThat(genes.get(1).getComponentId()).isEqualTo("additionalColumn2");
+
+        // Test doc2 (no gene annotations, there will be a warning on DEBUG level)
+        jCas.reset();
+        jCas.setDocumentText("There are no gene mentions in here");
+        Header h2 = new Header(jCas);
+        h2.setDocId("doc2");
+        h2.addToIndexes();
+        engine.process(jCas);
+        assertThat(JCasUtil.exists(jCas, Gene.class)).isFalse();
+
+        // Test doc3 (one gene annotation)
+        jCas.reset();
+        jCas.setDocumentText("PRKAVI does not exist, I think. But this is just a test so it doesn't matter.");
+        Header h3 = new Header(jCas);
+        h3.setDocId("doc3");
+        h3.addToIndexes();
+        engine.process(jCas);
+        final Gene gene = JCasUtil.selectSingle(jCas, Gene.class);
+        assertThat(gene.getBegin()).isEqualTo(0);
+        assertThat(gene.getEnd()).isEqualTo(6);
+        assertThat(gene.getSpecificType()).isEqualTo("additionalColumn1");
+        assertThat(gene.getComponentId()).isEqualTo("additionalColumn2");
     }
 
     @Test

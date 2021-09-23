@@ -39,6 +39,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	@ConfigurationParameter(name = PARAM_PREVENT_PROCESSED_MARK, mandatory = false, description = "This setting is only in effect if an input format is used that contains document text SHA256 digests while also writing the annotation results into a JeDIS database. If then a CAS document text, to which annotations should be added, does not match the digest given by an annotation, this CAS will not marked as being finished processing by DBCheckpointAE that may follow in the pipeline. The idea is that the mismatched documents require a reprocessing of the original annotation creation algorithm because their text has been changed relative to the annotation on file. By not setting the document as being finished processed, it is straightforward to process only those documents again that failed to add one or multiple annotations.")
     private boolean preventProcessedOnDigestMismatch;
 
+
     private List<AnnotationAdder> annotationAdders = Arrays.asList(new TextAnnotationListAdder(), new DocumentClassAnnotationAdder());
 
     /**
@@ -49,6 +50,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	public void initialize(final UimaContext aContext) throws ResourceInitializationException {
         offsetMode = OffsetMode.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_OFFSET_MODE)).orElse(OffsetMode.CHARACTER.name()));
         defaultUimaType = (String) aContext.getConfigParameterValue(PARAM_DEFAULT_UIMA_TYPE);
+        preventProcessedOnDigestMismatch = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_PREVENT_PROCESSED_MARK)).orElse(false);
         try {
             annotationProvider = (AnnotationProvider<? extends AnnotationData>) aContext.getResourceObject(KEY_ANNOTATION_SOURCE);
         } catch (ResourceAccessException e) {

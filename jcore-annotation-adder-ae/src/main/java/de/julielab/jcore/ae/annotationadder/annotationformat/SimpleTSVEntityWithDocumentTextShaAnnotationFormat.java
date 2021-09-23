@@ -23,7 +23,12 @@ public class SimpleTSVEntityWithDocumentTextShaAnnotationFormat implements Annot
     }
 
     @Override
-    public void withHeader(boolean withHeader) {
-        // does nothing
+    public void hasHeader(boolean withHeader) {
+        // does nothing right now
+    }
+
+    @Override
+    public void setColumnNames(String[] header) {
+        // does nothing right now
     }
 }

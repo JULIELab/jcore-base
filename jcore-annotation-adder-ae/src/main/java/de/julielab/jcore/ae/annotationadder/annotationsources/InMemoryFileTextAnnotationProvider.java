@@ -15,9 +15,11 @@ import java.util.Optional;
 
 public class InMemoryFileTextAnnotationProvider implements AnnotationProvider<AnnotationList> {
     public static final String PARAM_ANNOTATION_FORMAT = "AnnotationFormatClass";
-    public static final String PARAM_WITH_HEADER = "WithHeader";
+    public static final String PARAM_INPUT_HAS_HEADER = "InputHasHeader";
+    public static final String PARAM_COLUMN_NAMES = "ColumnNames";
     private final static Logger log = LoggerFactory.getLogger(InMemoryFileTextAnnotationProvider.class);
     private AnnotationSource<AnnotationList> annotationSource;
+    private AnnotationFormat<ExternalTextAnnotation> format;
 
     @Override
     public AnnotationList<ExternalTextAnnotation> getAnnotations(String id) {
@@ -28,11 +30,12 @@ public class InMemoryFileTextAnnotationProvider implements AnnotationProvider<An
     public void load(DataResource dataResource) throws ResourceInitializationException {
         final ConfigurationParameterSettings parameterSettings = dataResource.getMetaData().getConfigurationParameterSettings();
         final String formatClassName = (String) Optional.ofNullable(parameterSettings.getParameterValue(PARAM_ANNOTATION_FORMAT)).orElse(SimpleTSVEntityAnnotationFormat.class.getCanonicalName());
-        final boolean withHeader = (boolean) Optional.ofNullable(parameterSettings.getParameterValue(PARAM_WITH_HEADER)).orElse(false);
-        AnnotationFormat<ExternalTextAnnotation> format;
+        final boolean hasHeader = (boolean) Optional.ofNullable(parameterSettings.getParameterValue(PARAM_INPUT_HAS_HEADER)).orElse(false);
+        final String[] columnNames = (String[])parameterSettings.getParameterValue(PARAM_COLUMN_NAMES);
         try {
             format = (AnnotationFormat<ExternalTextAnnotation>) Class.forName(formatClassName).getDeclaredConstructor().newInstance();
-            format.withHeader(withHeader);
+            format.hasHeader(hasHeader);
+            format.setColumnNames(columnNames);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             log.error("Could not instantiate class {}", formatClassName);
             throw new ResourceInitializationException(e);

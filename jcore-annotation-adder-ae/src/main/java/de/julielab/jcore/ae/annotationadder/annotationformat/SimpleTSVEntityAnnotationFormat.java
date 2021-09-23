@@ -8,7 +8,7 @@ public class SimpleTSVEntityAnnotationFormat implements AnnotationFormat<Externa
 
     @Override
     public ExternalTextAnnotation parse(String data) {
-        if (data == null || data.startsWith("#"))
+            if (data == null || data.startsWith("#"))
             return null;
         final String[] record = data.split("\t");
         if (record.length < 3)
@@ -25,16 +25,21 @@ public class SimpleTSVEntityAnnotationFormat implements AnnotationFormat<Externa
             type = record[3];
         ExternalTextAnnotation externalTextAnnotation = new ExternalTextAnnotation(docId, begin, end, type);
         if (record.length > 4) {
-            if (header == null)
-                throw new IllegalStateException("There are columns exceeding the default 4-column format but no header was given to deliver their names.");
-            for (int i = 4; i < record.length; i++)
-                externalTextAnnotation.addPayload(header[i], record[i]);
+            if (header != null) {
+                for (int i = 4; i < record.length; i++)
+                    externalTextAnnotation.addPayload(header[i], record[i]);
+            }
         }
         return externalTextAnnotation;
     }
 
     @Override
-    public void withHeader(boolean withHeader) {
+    public void hasHeader(boolean withHeader) {
         this.withHeader = withHeader;
+    }
+
+    @Override
+    public void setColumnNames(String[] header) {
+        this.header = header;
     }
 }
