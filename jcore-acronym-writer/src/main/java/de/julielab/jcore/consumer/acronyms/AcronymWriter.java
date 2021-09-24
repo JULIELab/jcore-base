@@ -43,10 +43,12 @@ private final static Logger log = LoggerFactory.getLogger(AcronymWriter.class);
 			log.error("Could not initialize acronym writer", e);
 			throw new ResourceInitializationException(e);
 		}
+		log.trace("AcronymWriter successfully initialized.");
 	}
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		log.trace("Processing with AcronymWriter");
 		try {
 			String pubmedId = JCoReTools.getDocId(jcas);
 			FSIterator<Annotation> it = jcas.getAnnotationIndex(Abbreviation.type).iterator();

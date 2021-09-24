@@ -234,7 +234,7 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 				annotate(sentenceText, aJCas, sentence.getBegin());
 			}
 
-			// if extra annotation is whished, do so :-)
+			// if extra annotation is wished, do so :-)
 			if (consistencyAnno) {
 				ConsistencyAnnotator ca = new ConsistencyAnnotator();
 				ca.consistencyAnnotate(aJCas);
