@@ -86,6 +86,8 @@ public class FileReader extends CollectionReader_ImplBase {
      */
     public static final String ORIG_FILES_EXT = "OriginalFileExt";
 
+    public static final String REMOVE_FILE_NAME_EXTENSION_FOR_DOC_ID = "RemoveFileNameExtensionForDocId";
+
     private ArrayList<File> files;
 
     private int fileIndex;
@@ -110,6 +112,8 @@ public class FileReader extends CollectionReader_ImplBase {
     private File origFolder;
     @ConfigurationParameter(name = ORIG_FILES_EXT, mandatory = false)
     private String origFileExt;
+    @ConfigurationParameter(name = REMOVE_FILE_NAME_EXTENSION_FOR_DOC_ID, mandatory = false, defaultValue = "true")
+    private boolean removeFileNameExtensionForDocId;
 
     /**
      * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -149,6 +153,7 @@ public class FileReader extends CollectionReader_ImplBase {
         } else {
             useFilenameAsDocId = filenameAsDocId;
         }
+        removeFileNameExtensionForDocId = Optional.ofNullable((Boolean) getConfigParameterValue(REMOVE_FILE_NAME_EXTENSION_FOR_DOC_ID)).orElse(true);
 
         allowedExtensionsArray = (String[]) getConfigParameterValue(ALLOWED_FILE_EXTENSIONS);
         final Set<String> allowedExtensions = new HashSet<>();
@@ -225,7 +230,7 @@ public class FileReader extends CollectionReader_ImplBase {
 
         String origText = null;
         if (origFolder != null) {
-            File origFile = new File(origFolder, getFileName(file) + "." + origFileExt);
+            File origFile = new File(origFolder, getFileName(file, true) + "." + origFileExt);
             origText = IOStreamUtilities.getStringFromInputStream(FileUtilities.getInputStreamFromFile(origFile));
         }
 
@@ -329,7 +334,7 @@ public class FileReader extends CollectionReader_ImplBase {
 
         if (useFilenameAsDocId) {
 
-            String filename = getFileName(file);
+            String filename = getFileName(file, removeFileNameExtensionForDocId);
 
             Header header = new Header(jcas);
 
@@ -415,7 +420,7 @@ public class FileReader extends CollectionReader_ImplBase {
                 .forEach(files::add);
     }
 
-    private String getFileName(File fi) {
+    private String getFileName(File fi, boolean removeExtension) {
         String filename = fi.getName();
         int extDotIndex = filename.lastIndexOf('.');
         if (extDotIndex > 0) {

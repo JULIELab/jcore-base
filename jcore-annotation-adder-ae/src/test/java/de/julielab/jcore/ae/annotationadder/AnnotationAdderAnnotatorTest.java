@@ -69,6 +69,25 @@ public class AnnotationAdderAnnotatorTest{
     }
 
     @Test
+    public void testCharacterOffsets2() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
+        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/test.txt"));
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(AnnotationAdderAnnotator.class, AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, externalResourceDescription);
+        // Test doc1 (two gene annotations)
+        jCas.setDocumentText("BRCA PRKII are the genes of this sentence.");
+        final Header h = new Header(jCas);
+        h.setDocId("10022127.txt");
+        h.addToIndexes();
+
+        engine.process(jCas);
+
+        final List<Gene> genes = new ArrayList<>(JCasUtil.select(jCas, Gene.class));
+        for (Gene g : genes) {
+            System.out.println(g);
+        }
+    }
+
+    @Test
     public void testPayload() throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
         final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/geneannotations_character_offsets_payload.tsv"), InMemoryFileTextAnnotationProvider.PARAM_INPUT_HAS_HEADER, true);
