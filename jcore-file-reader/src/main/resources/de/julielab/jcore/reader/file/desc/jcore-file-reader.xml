@@ -74,6 +74,12 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
+      <configurationParameter>
+          <name>RemoveFileNameExtensionForDocId</name>
+          <type>Boolean</type>
+          <multiValued>false</multiValued>
+          <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -118,11 +124,17 @@
           <string>txt</string>
         </value>
       </nameValuePair>
+      <nameValuePair>
+          <name>RemoveFileNameExtensionForDocId</name>
+          <value>
+              <boolean>true</boolean>
+          </value>
+      </nameValuePair>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
         <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
-      <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
       </imports>
     </typeSystemDescription>
     <typePriorities />
