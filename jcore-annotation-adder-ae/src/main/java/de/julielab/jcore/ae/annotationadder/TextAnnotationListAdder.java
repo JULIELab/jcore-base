@@ -36,8 +36,12 @@ public class TextAnnotationListAdder implements AnnotationAdder {
         String jCasDocTextSha = null;
         boolean shaMismatchWasReported = false;
         for (ExternalTextAnnotation a : annotationList) {
-            String uimaType = a.getUimaType() == null ? configuration.getDefaultUimaType() : a.getUimaType();
-            if (uimaType == null)
+            String uimaType;
+            if (a.getUimaType() != null && jCas.getTypeSystem().getType(a.getUimaType()) != null)
+                uimaType = a.getUimaType();
+            else if (configuration.getDefaultUimaType() != null)
+                uimaType = configuration.getDefaultUimaType();
+            else
                 throw new IllegalArgumentException("Missing annotation type: Neither the annotation of document " + a.getDocumentId() + " with offsets " + a.getStart() + "-" + a.getEnd() + " provides a type nor is the default type set.");
             if (jCas.getTypeSystem().getType(uimaType) == null)
                 throw new IllegalArgumentException("The entity annotation type " + uimaType + " does not exist in the type system.");
