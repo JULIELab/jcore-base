@@ -62,6 +62,8 @@ public class TextAnnotationListAdder implements AnnotationAdder {
                     // that the SHA was the same as it was at time of the original entity tagging.
                     if (a.getStart() >= 0) {
                         final Annotation annotation = JCoReAnnotationTools.getAnnotationByClassName(jCas, uimaType);
+                        if (annotation instanceof de.julielab.jcore.types.Annotation)
+                            ((de.julielab.jcore.types.Annotation)annotation).setComponentId(AnnotationAdderAnnotator.class.getSimpleName());
                         helper.setAnnotationOffsetsRelativeToDocument(annotation, a, configuration);
                         helper.setAnnotationPayloadsToFeatures(annotation, a);
                         log.trace("Adding annotation of type {} with offsets {}-{} to document with ID {}", uimaType, annotation.getBegin(), annotation.getEnd(), annotationList.getDocId());
