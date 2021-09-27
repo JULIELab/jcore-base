@@ -76,6 +76,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
             final AnnotationData annotations = annotationProvider.getAnnotations(docId);
             final AnnotationAdderHelper helper = new AnnotationAdderHelper();
             if (annotations != null) {
+                log.trace("Found annotations for document ID {}.", docId);
                 boolean success = false;
                 int adderNum = 0;
                 // We are now iterating through the available annotation adders for the one that handles the obtained annotation data

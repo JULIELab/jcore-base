@@ -5,7 +5,6 @@ import de.julielab.jcore.ae.annotationadder.annotationrepresentations.Annotation
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.ExternalTextAnnotation;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
-import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.uima.cas.CASException;
@@ -65,14 +64,14 @@ public class TextAnnotationListAdder implements AnnotationAdder {
                         final Annotation annotation = JCoReAnnotationTools.getAnnotationByClassName(jCas, uimaType);
                         helper.setAnnotationOffsetsRelativeToDocument(annotation, a, configuration);
                         helper.setAnnotationPayloadsToFeatures(annotation, a);
+                        log.trace("Adding annotation of type {} with offsets {}-{} to document with ID {}", uimaType, annotation.getBegin(), annotation.getEnd(), annotationList.getDocId());
                         annotation.addToIndexes();
                     } else {
                         log.trace("ExternalAnnotation for document {} has no entity offsets or offsets < 0, not adding anything to the CAS.", a.getDocumentId());
                     }
                 } else {
                     if (!shaMismatchWasReported) {
-                        final String docId = JCoReTools.getDocId(jCas);
-                        log.warn("The document with ID '{}' has a differing document text hash from a given annotation. The annotation will not be added to the document. Annotation hash: {}, current document text hash: {}", docId, shaFromAnnotation, jCasDocTextSha);
+                        log.warn("The document with ID '{}' has a differing document text hash from a given annotation. The annotation will not be added to the document. Annotation hash: {}, current document text hash: {}", annotationList.getDocId(), shaFromAnnotation, jCasDocTextSha);
                         shaMismatchWasReported = true;
                         if (preventProcessedOnDigestMismatch) {
                             try {

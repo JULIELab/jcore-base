@@ -6,6 +6,8 @@ import de.julielab.jcore.ae.annotationadder.annotationrepresentations.ExternalDo
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import java.io.IOException;
+
 public class InMemoryFileDocumentClassAnnotationProvider implements AnnotationProvider<AnnotationList> {
     private AnnotationSource<AnnotationList<ExternalDocumentClassAnnotation>> annotationSource;
 
@@ -18,7 +20,11 @@ public class InMemoryFileDocumentClassAnnotationProvider implements AnnotationPr
     public void load(DataResource dataResource) throws ResourceInitializationException {
         // This logic could be made configurable if required so in the future.
         annotationSource = new FileAnnotationSource(new DocumentClassAnnotationFormat());
-        annotationSource.initialize(dataResource);
+        try {
+            annotationSource.initialize(dataResource);
+        } catch (IOException e) {
+            throw new ResourceInitializationException(e);
+        }
     }
 
 

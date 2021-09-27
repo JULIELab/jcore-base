@@ -10,6 +10,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
@@ -41,7 +42,11 @@ public class InMemoryFileTextAnnotationProvider implements AnnotationProvider<An
             throw new ResourceInitializationException(e);
         }
         annotationSource = new FileAnnotationSource(format);
-        annotationSource.initialize(dataResource);
+        try {
+            annotationSource.initialize(dataResource);
+        } catch (IOException e) {
+            throw new ResourceInitializationException(e);
+        }
     }
 
 

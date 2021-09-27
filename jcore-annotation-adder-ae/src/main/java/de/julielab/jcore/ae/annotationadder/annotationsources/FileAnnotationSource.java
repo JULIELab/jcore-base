@@ -24,16 +24,17 @@ public class FileAnnotationSource<T extends AnnotationData> implements Annotatio
         this.format = format;
     }
 
-    private void loadAnnotations(URI annotationUri) {
+    @Override
+    public void loadAnnotations(URI annotationUri) throws IOException {
         try (BufferedReader br = UriUtilities.getReaderFromUri(annotationUri)) {
             entitiesByDocId = br.lines().map(format::parse).filter(Objects::nonNull).collect(Collectors.groupingBy(AnnotationData::getDocumentId, Collectors.toCollection(AnnotationList::new)));
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        if (log.isTraceEnabled())
+            log.trace("Loaded {} entity annotations for {} document IDs.", entitiesByDocId.values().stream().flatMap(AnnotationList::stream).count(), entitiesByDocId.size());
     }
 
     @Override
-    public void initialize(DataResource dataResource) {
+    public void initialize(DataResource dataResource) throws IOException {
         log.info("Loading entity annotations from {}", dataResource.getUri());
         loadAnnotations(dataResource.getUri());
     }
