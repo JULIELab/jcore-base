@@ -94,6 +94,8 @@ public class NxmlDocumentParser extends NxmlParser {
                     tagset = Tagset.JATS_1_0;
                 else if (docType.contains("JATS-archivearticle1-mathml3.dtd"))
                     tagset = Tagset.JATS_1_2_MATH_ML_3;
+                else if (docType.contains("JATS-archivearticle1-3-mathml3.dtd"))
+                    tagset = Tagset.JATS_1_3;
                 else if (docType.contains("journalpublishing.dtd") || docType.contains("archivearticle.dtd"))
                     tagset = Tagset.NLM_2_3;
                 else if (docType.contains("journalpublishing3.dtd") || docType.contains("archivearticle3.dtd"))
@@ -210,6 +212,12 @@ public class NxmlDocumentParser extends NxmlParser {
          * @see <url>https://jats.nlm.nih.gov/publishing/tag-library/1.2/index.html</url>
          */
         JATS_1_2_MATH_ML_3,
+        /**
+         * NISO JATS Version 1.3 (ANSI/NISO Z39.96-2021)
+         *
+         * @see <url>https://jats.nlm.nih.gov/publishing/tag-library/1.3/index.html</url>
+         */
+        JATS_1_3,
         /**
          * NLM Journal Publishing DTD v. 2.3
          *

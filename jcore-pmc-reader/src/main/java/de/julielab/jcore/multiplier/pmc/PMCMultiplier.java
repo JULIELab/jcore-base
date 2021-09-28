@@ -1,6 +1,7 @@
 package de.julielab.jcore.multiplier.pmc;
 
 import de.julielab.jcore.reader.pmc.CasPopulator;
+import de.julielab.jcore.reader.pmc.NoDataAvailableException;
 import de.julielab.jcore.reader.pmc.parser.ElementParsingException;
 import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
@@ -37,7 +38,7 @@ public class PMCMultiplier extends JCasMultiplier_ImplBase {
         try {
             casPopulator = new CasPopulator(currentUriBatch);
         } catch (IOException e) {
-            log.error("Exception occurred when trying to inizialize the NXML parser", e);
+            log.error("Exception occurred when trying to initialize the NXML parser", e);
             throw new AnalysisEngineProcessException(e);
         }
     }
@@ -60,6 +61,8 @@ public class PMCMultiplier extends JCasMultiplier_ImplBase {
                 return cas;
             } catch (ElementParsingException e) {
                 log.error("Exception occurred why trying to parse {}", next, e);
+            } catch (NoDataAvailableException e) {
+                log.error("Could not populate the CAS due to preceding error. Returning null.");
             }
         }
         return null;

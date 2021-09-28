@@ -54,10 +54,12 @@ public class PMCReader extends PMCReaderBase {
             next = pmcFiles.next();
             casPopulator.populateCas(next, cas);
             if (extractIdFromFilename)
-                ((Header)cas.getAnnotationIndex(Header.type).iterator().next()).setDocId(getIdFromFilename(next));
+                ((Header) cas.getAnnotationIndex(Header.type).iterator().next()).setDocId(getIdFromFilename(next));
         } catch (ElementParsingException e) {
             log.error("Exception occurred when trying to parse {}", next, e);
             throw new CollectionException(e);
+        } catch (NoDataAvailableException e) {
+            log.error("Could not populate CAS due to preceding error.");
         }
         completed++;
     }

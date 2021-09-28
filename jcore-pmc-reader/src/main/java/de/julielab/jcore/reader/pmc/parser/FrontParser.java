@@ -84,7 +84,7 @@ public class FrontParser extends NxmlElementParser {
 					: getXPathValue("/article/front/journal-meta/journal-title-group/journal-title");
 			// there actually might be several abbreviated titles but here, we
 			// only use the first; our type system currently cannot represent
-			// more anyway. One could try decide for an preferred one since the
+			// more anyway. One could try to decide for a preferred one since the
 			// abbrev-type attribute disposes the source of the abbreviated
 			// title (e.g. publisher or nlm-ta).
 			Optional<String> abbrevJournalTitle = nxmlDocumentParser.getTagset() == Tagset.NLM_2_3
