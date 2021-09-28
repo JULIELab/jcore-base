@@ -79,7 +79,7 @@ public class FrontParser extends NxmlElementParser {
 			Optional<String> year = getXPathValue(String.format("/article/front/article-meta/pub-date[@pub-type='%s']/year", pubType));
 			Optional<String> month = getXPathValue(String.format("/article/front/article-meta/pub-date[@pub-type='%s']/month", pubType));
 			Optional<String> day = getXPathValue(String.format("/article/front/article-meta/pub-date[@pub-type='%s']/day", pubType));
-			Optional<String> journalTitle = nxmlDocumentParser.getTagset() == Tagset.NLM_2_3
+			Optional<String> journalTitle = nxmlDocumentParser.getTagset() == Tagset.NLM_2_3 || nxmlDocumentParser.getTagset() == Tagset.NLM_3_0
 					? getXPathValue("/article/front/journal-meta/journal-title")
 					: getXPathValue("/article/front/journal-meta/journal-title-group/journal-title");
 			// there actually might be several abbreviated titles but here, we
@@ -87,7 +87,7 @@ public class FrontParser extends NxmlElementParser {
 			// more anyway. One could try to decide for a preferred one since the
 			// abbrev-type attribute disposes the source of the abbreviated
 			// title (e.g. publisher or nlm-ta).
-			Optional<String> abbrevJournalTitle = nxmlDocumentParser.getTagset() == Tagset.NLM_2_3
+			Optional<String> abbrevJournalTitle = nxmlDocumentParser.getTagset() == Tagset.NLM_2_3 || nxmlDocumentParser.getTagset() == Tagset.NLM_3_0
 					? getXPathValue("/article/front/journal-meta/abbrev-journal-title")
 					: getXPathValue("/article/front/journal-meta/journal-title-group/abbrev-journal-title");
 			Optional<String> volume = getXPathValue("/article/front/article-meta/volume");

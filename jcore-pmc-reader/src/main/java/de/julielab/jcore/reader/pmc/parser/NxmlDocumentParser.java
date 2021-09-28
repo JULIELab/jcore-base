@@ -100,8 +100,13 @@ public class NxmlDocumentParser extends NxmlParser {
                     tagset = Tagset.NLM_2_3;
                 else if (docType.contains("journalpublishing3.dtd") || docType.contains("archivearticle3.dtd"))
                     tagset = Tagset.NLM_3_0;
-                else
-                    throw new DocTypeNotSupportedException("Unsupported document type: "  + docType);
+                else if (docType.contains("JATS")) {
+                    log.warn("Unknown document type: {}. Assigning the latest JATS tagset in assumption of backward compatibility.", docType);
+                    tagset = Tagset.JATS_1_3;
+                } else if (docType.contains("journalpublishing") || docType.contains("archivearticle")) {
+                    log.warn("Unknown document type: {}. Assigning the latest NLM tagset in assumption of backward compatibility.", docType);
+                    tagset = Tagset.NLM_3_0;
+                }
                 return;
             }
         }
