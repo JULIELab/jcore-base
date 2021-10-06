@@ -87,6 +87,11 @@
             <version>${jcore-types-version}</version>
         </dependency>
         <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-utilities</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>cc.mallet</groupId>
             <artifactId>mallet</artifactId>
             <version>2.0.8</version>

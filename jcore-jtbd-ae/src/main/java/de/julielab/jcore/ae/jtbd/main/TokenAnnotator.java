@@ -26,6 +26,7 @@ import de.julielab.jcore.ae.jtbd.Tokenizer;
 import de.julielab.jcore.ae.jtbd.Unit;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -153,8 +154,12 @@ public class TokenAnnotator extends JCasAnnotator_ImplBase {
 				int length = sentence.getEnd() - sentence
 						.getBegin();
 				LOGGER.debug("going to next sentence having length: " + length);
-                if (length > 1000)
-                    LOGGER.warn("Current sentence has length {}.", length);
+                if (length > 1000) {
+                    if (LOGGER.isWarnEnabled()) {
+                        String docId = JCoReTools.getDocId(aJCas);
+                        LOGGER.warn("Current sentence has length {} (document ID {}).", length, docId);
+                    }
+                }
                 final String text = sentence.getCoveredText();
                 writeTokensToCAS(text, sentence.getBegin(), aJCas);
             }

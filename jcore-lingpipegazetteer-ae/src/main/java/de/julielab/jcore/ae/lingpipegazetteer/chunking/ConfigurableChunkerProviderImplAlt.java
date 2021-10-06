@@ -333,7 +333,7 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
 
     }
 
-    private InputStream readStreamFromFileSystemOrClassPath(String filePath) {
+    private InputStream readStreamFromFileSystemOrClassPath(String filePath) throws FileNotFoundException {
         InputStream is = null;
         File file = new File(filePath);
         if (file.exists()) {
@@ -351,6 +351,8 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        if (is == null)
+            throw new FileNotFoundException("Could not read contents from " + filePath);
         return is;
     }
 }
