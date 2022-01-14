@@ -3,6 +3,7 @@ package de.julielab.jcore.consumer.es.sharedresources;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.uima.resource.DataResource;
@@ -125,13 +126,15 @@ abstract public class PersistentStringIndexMapProvider extends AbstractMapProvid
             indexFile = new File("es-consumer-cache", resourceFileName);
             if (resourceFile.exists() && indexFile.exists() && resourceFile.lastModified() > indexFile.lastModified()) {
                 log.info("Resource file {} is newer than the existing cached index at {}. Creating new index.", resourceFile, indexFile);
-                indexFile.delete();
+                if (indexFile.isDirectory())
+                    FileUtils.deleteQuietly(indexFile);
+                else
+                    indexFile.delete();
             } else {
                 boolean indexFileExisted = indexFile.exists();
                 if (!indexFileExisted) {
                     log.info("Creating persistent cache for resource {} at {}.", uri, indexFile);
-                }
-                else {
+                } else {
                     log.info("Using existing persistent cache {} for resource {}.", indexFile, uri);
                     loadData = false;
                 }

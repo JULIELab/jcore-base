@@ -37,7 +37,7 @@ public class LuceneIndex implements StringIndex {
                 IndexWriterConfig iwc = new IndexWriterConfig();
                 iw = new IndexWriter(directory, iwc);
             } else {
-                log.debug("Index directory {} already");
+                log.debug("Index directory {} already exists.", indexDirectory);
             }
         } catch (IOException e) {
             log.error("could not initialize Lucene index", e);
