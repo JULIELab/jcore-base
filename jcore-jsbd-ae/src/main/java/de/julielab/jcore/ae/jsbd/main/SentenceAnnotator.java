@@ -193,7 +193,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                         int end = borders.get(i);
 
                         // skip leading whites spaces
-                        while (start < end && Character.isWhitespace(aJCas.getDocumentText().charAt(start)))
+                        while (start < end && (Character.isWhitespace(documentText.getCodensedText().charAt(start))))
                             ++start;
 
                         // get the string between the current annotation borders and recognized sentences

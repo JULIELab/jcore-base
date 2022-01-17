@@ -109,21 +109,26 @@ public class JCoReCondensedDocumentText {
                 // Adapt offsets to remove superfluous white spaces from the condensed text
                 boolean precedingCharacterIsWS = lastBegin == 0 || Character.isWhitespace(cas.getDocumentText().charAt(lastBegin - 1));
                 boolean succeedingCharacterIsWS = lastEnd < cas.getDocumentText().length() && Character.isWhitespace(cas.getDocumentText().charAt(lastEnd));
-                if (precedingCharacterIsWS && succeedingCharacterIsWS)
+                boolean extendLastEnd = precedingCharacterIsWS && succeedingCharacterIsWS;
+                if (extendLastEnd)
                     ++lastEnd;
                 if (precedingCharacterIsWS && end >= cas.getDocumentText().length())
                     --begin;
                 // The current cut away annotation begins after the previous cut away annotation, thus there is no
                 // overlap and we can add the current state to the maps.
                 cutSum += lastEnd - lastBegin;
-                int condensedPosition = lastEnd - cutSum + 1;
-                condensedPos2SumCutMap.put(condensedPosition, cutSum);
+                int condensedPosition = lastEnd - cutSum;
+                if (condensedPosition == lastBegin && !extendLastEnd)
+                    ++condensedPosition;
                 // For original offsets we need to be able to know where the begin and the end of
                 // the cut away annotation was. This is exploited in getCondensedOffsetForOriginalOffset()
                 originalPos2SumCutMap.put(lastBegin, lastCutSum);
                 originalPos2SumCutMap.put(lastEnd, cutSum);
                 lastBegin = begin;
                 lastCutSum = cutSum;
+                if (condensedPosition + cutSum >= cas.getDocumentText().length())
+                    cutSum = cas.getDocumentText().length() -1 - condensedPosition;
+                condensedPos2SumCutMap.put(condensedPosition, cutSum);
                 sb.append(cas.getDocumentText(), lastEnd, begin);
             } else if (lastEnd < 0) {
                 // This is the first annotation
@@ -146,10 +151,16 @@ public class JCoReCondensedDocumentText {
             if (precedingCharacterIsWS && (succeedingCharacterIsWS || lastEnd >= cas.getDocumentText().length()))
                 ++lastEnd;
             cutSum += lastEnd - lastBegin;
-            int condensedPosition = lastEnd - cutSum + 1;
-            condensedPos2SumCutMap.put(condensedPosition, cutSum);
+            int condensedPosition = lastEnd - cutSum;
             originalPos2SumCutMap.put(lastBegin, lastCutSum);
             originalPos2SumCutMap.put(lastEnd, cutSum);
+            // Avoid the situation where the computed original position includes the last cut away annotation.
+            // This can happen when a cut away annotation appears at the very end of the text. Then, the cutSum
+            // accounts for this last annotation at the end of the condensed text which would result in an original
+            // position _after_ the cut away annotation.
+            if (condensedPosition + cutSum >= cas.getDocumentText().length())
+                cutSum = cas.getDocumentText().length() -1 - condensedPosition;
+            condensedPos2SumCutMap.put(condensedPosition, cutSum);
         }
         // If lastEnd is still -1, we just did not find any of the cut away annotations. Thus, we just copy the whole text.
         if (lastEnd == -1)

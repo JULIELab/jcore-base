@@ -30,7 +30,7 @@ public class JCoReCondensedDocumentTextTest {
 		assertEquals(13, condensedText.getOriginalOffsetForCondensedOffset(13));
 		assertEquals(15, condensedText.getOriginalOffsetForCondensedOffset(14));
 		assertEquals(30, condensedText.getOriginalOffsetForCondensedOffset(29));
-		
+
 		assertEquals(0, condensedText.getCondensedOffsetForOriginalOffset(0));
 		assertEquals(13, condensedText.getCondensedOffsetForOriginalOffset(13));
 		assertEquals(14, condensedText.getCondensedOffsetForOriginalOffset(15));
@@ -54,7 +54,7 @@ public class JCoReCondensedDocumentTextTest {
 		assertEquals(13, condensedText.getOriginalOffsetForCondensedOffset(13));
 		assertEquals(15, condensedText.getOriginalOffsetForCondensedOffset(14));
 		assertEquals(31, condensedText.getOriginalOffsetForCondensedOffset(29));
-		
+
 		assertEquals(0, condensedText.getCondensedOffsetForOriginalOffset(0));
 		assertEquals(13, condensedText.getCondensedOffsetForOriginalOffset(13));
 		assertEquals(14, condensedText.getCondensedOffsetForOriginalOffset(15));
@@ -84,6 +84,49 @@ public class JCoReCondensedDocumentTextTest {
 				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())), Set.of(',', ';'));
 		assertEquals("This sentence has multiple references. This is a second sentence.", condensedText.getCodensedText());
 	}
+
+	@Test
+	public void testReduce4() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+		jcas.setDocumentText("This sentence\n1\nhas references.");
+		InternalReference ref1 = new InternalReference(jcas, 14, 15);
+		ref1.addToIndexes();
+
+		JCoReCondensedDocumentText condensedText = new JCoReCondensedDocumentText(jcas,
+				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())));
+		assertEquals("This sentence\nhas references.", condensedText.getCodensedText());
+		assertEquals(0, condensedText.getOriginalOffsetForCondensedOffset(0));
+		assertEquals(16, condensedText.getOriginalOffsetForCondensedOffset(14));
+	}
+
+	@Test
+	public void testReduce5() throws Exception {
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+		jcas.setDocumentText("Leptin is an adipose-derived protein secreted by adipocytes and is expressed in adipose tissue.\n" +
+				"1\n" +
+				"It has the role of being a key regulator of several physiological pathways including body weight and regulation of food intake, inflammation, endocrine function, energy homeostasis, bone metabolism and immunity.\n" +
+				"2\n" +
+				"3\n" +
+				"Results from various studies indicate that leptin may play a significant role in bone physiology, independent of the central nervous system.\n");
+		InternalReference ref1 = new InternalReference(jcas, 96, 97);
+		ref1.addToIndexes();
+		InternalReference ref2 = new InternalReference(jcas, 310, 311);
+		ref2.addToIndexes();
+		InternalReference ref3 = new InternalReference(jcas, 312, 313);
+		ref3.addToIndexes();
+
+		JCoReCondensedDocumentText condensedText = new JCoReCondensedDocumentText(jcas,
+				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())));
+		System.out.println(condensedText.getCodensedText());
+		assertEquals("Leptin is an adipose-derived protein secreted by adipocytes and is expressed in adipose tissue.\n" +
+				"It has the role of being a key regulator of several physiological pathways including body weight and regulation of food intake, inflammation, endocrine function, energy homeostasis, bone metabolism and immunity.\n" +
+				"Results from various studies indicate that leptin may play a significant role in bone physiology, independent of the central nervous system.\n", condensedText.getCodensedText());
+		assertEquals(98, condensedText.getOriginalOffsetForCondensedOffset(96));
+		assertEquals(314, condensedText.getOriginalOffsetForCondensedOffset(308));
+	}
+
 
 	@Test
 	public void testCondensedOffsetsWithinCutawayAnnotations() throws Exception {
