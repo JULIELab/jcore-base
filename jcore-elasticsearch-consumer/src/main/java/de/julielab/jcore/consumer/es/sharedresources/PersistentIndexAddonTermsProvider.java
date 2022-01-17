@@ -3,6 +3,7 @@ package de.julielab.jcore.consumer.es.sharedresources;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.uima.resource.DataResource;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.Duration;
@@ -115,7 +117,7 @@ abstract public class PersistentIndexAddonTermsProvider extends AddonTermsProvid
     public void load(DataResource aData) throws ResourceInitializationException {
         // prepare the persistent index
         URI uri = aData.getUri();
-        File indexFile;
+        File indexFile = null;
         boolean loadData = true;
         try {
             File resourceFile = new File(uri);
@@ -123,7 +125,13 @@ abstract public class PersistentIndexAddonTermsProvider extends AddonTermsProvid
             indexFile = new File("es-consumer-cache", resourceFileName);
             if (resourceFile.exists() && indexFile.exists() && resourceFile.lastModified() > indexFile.lastModified()) {
                 log.info("Resource file {} is newer than the existing cached index at {}. Creating new index.", resourceFile, indexFile);
-                indexFile.delete();
+                if (indexFile.isDirectory()) {
+                    log.info("Deleting index directory {}", indexFile);
+                    FileUtils.deleteDirectory(indexFile);
+                } else {
+                    log.info("Deleting index file {}", indexFile);
+                    indexFile.delete();
+                }
             } else {
                 boolean indexFileExisted = indexFile.exists();
                 if (!indexFileExisted) {
@@ -138,6 +146,9 @@ abstract public class PersistentIndexAddonTermsProvider extends AddonTermsProvid
         } catch (MalformedURLException e) {
             log.error("Could obtain file name from resource URI '{}'", uri, e);
             throw new IllegalStateException(e);
+        } catch (IOException e) {
+            log.error("Could not delete index file {}", indexFile, e);
+            throw new ResourceInitializationException(e);
         }
         if (loadData) {
             super.load(aData);

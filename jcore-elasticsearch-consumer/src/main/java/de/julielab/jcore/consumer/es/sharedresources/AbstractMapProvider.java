@@ -42,12 +42,14 @@ public abstract class AbstractMapProvider<K, V> implements IMapProvider<K, V> {
                 throw new IOException("Resource " + aData.getUri() + " not found");
             }
             br = new BufferedReader(is);
-            map = new HashMap<>();
+//            map = new HashMap<>();
             String line;
             String splitExpression = "\t";
+            int numEntries = 0;
             while ((line = br.readLine()) != null) {
                 if (line.trim().length() == 0 || line.startsWith("#"))
                     continue;
+                ++numEntries;
                 String[] split = line.split(splitExpression);
                 if (split.length != 2) {
                     splitExpression = "\\s+";
@@ -61,7 +63,7 @@ public abstract class AbstractMapProvider<K, V> implements IMapProvider<K, V> {
                 else
                     put(getKey(split[0]), getValue(split[1]));
             }
-            log.info("Finished reading resource {} and got {} elements.", aData.getUri(), map.size());
+            log.info("Finished reading resource {} and got {} entries.", aData.getUri(), numEntries);
         } catch (IOException e) {
             throw new ResourceInitializationException(e);
         } finally {
