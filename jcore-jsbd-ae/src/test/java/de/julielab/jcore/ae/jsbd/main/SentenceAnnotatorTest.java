@@ -300,7 +300,7 @@ public class SentenceAnnotatorTest {
         XmiCasDeserializer.deserialize(new FileInputStream(Path.of("src", "test", "resources", "errordocs", "PMC5478802.xmi").toFile()), jCas.getCas());
         JCasUtil.select(jCas, Sentence.class).forEach(Annotation::removeFromIndexes);
         AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
-                "/Users/faessler/Coding/git/jcore-projects/jcore-jsbd-ae-biomedical-english/src/main/resources/de/julielab/jcore/ae/jsbd/model/jsbd-biomed-oversampled-abstracts-split-at-punctuation.mod.gz",
+                "de/julielab/jcore/ae/jsbd/model/test-model.gz",
                 SentenceAnnotator.PARAM_MAX_SENTENCE_LENGTH, 1000,
                 SentenceAnnotator.PARAM_SENTENCE_DELIMITER_TYPES, new String[]{
                         "de.julielab.jcore.types.Title", "de.julielab.jcore.types.AbstractText", "de.julielab.jcore.types.AbstractSectionHeading", "de.julielab.jcore.types.AbstractSection", "de.julielab.jcore.types.Section", "de.julielab.jcore.types.Paragraph", "de.julielab.jcore.types.Zone", "de.julielab.jcore.types.Caption", "de.julielab.jcore.types.Figure", "de.julielab.jcore.types.Table"},
@@ -322,7 +322,7 @@ public class SentenceAnnotatorTest {
         XmiCasDeserializer.deserialize(new FileInputStream(Path.of("src", "test", "resources", "errordocs", "PMC8205280.xmi").toFile()), jCas.getCas());
         JCasUtil.select(jCas, Sentence.class).forEach(Annotation::removeFromIndexes);
         AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
-                "/Users/faessler/Coding/git/jcore-projects/jcore-jsbd-ae-biomedical-english/src/main/resources/de/julielab/jcore/ae/jsbd/model/jsbd-biomed-oversampled-abstracts-split-at-punctuation.mod.gz",
+                "de/julielab/jcore/ae/jsbd/model/test-model.gz",
                 SentenceAnnotator.PARAM_MAX_SENTENCE_LENGTH, 1000,
                 SentenceAnnotator.PARAM_SENTENCE_DELIMITER_TYPES, new String[]{
                         "de.julielab.jcore.types.Title", "de.julielab.jcore.types.AbstractText", "de.julielab.jcore.types.AbstractSectionHeading", "de.julielab.jcore.types.AbstractSection", "de.julielab.jcore.types.Section", "de.julielab.jcore.types.Paragraph", "de.julielab.jcore.types.Zone", "de.julielab.jcore.types.Caption", "de.julielab.jcore.types.Figure", "de.julielab.jcore.types.Table"},
