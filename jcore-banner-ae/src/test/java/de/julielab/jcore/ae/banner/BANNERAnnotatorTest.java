@@ -113,7 +113,8 @@ public class BANNERAnnotatorTest {
         // just tag a single sentence with a test model that actually used that sentence as training data.
         JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
                 "de.julielab.jcore.types.jcore-document-meta-types",
-                "de.julielab.jcore.types.jcore-semantics-biology-types");
+                "de.julielab.jcore.types.jcore-semantics-biology-types",
+				"de.julielab.jcore.types.jcore-document-structure-pubmed-types");
         // this is sentence P00055040A0000 from the test BC2GM train data
         jcas.setDocumentText(
                 "Maintenance of skeletal muscle mass is regulated by the balance between anabolic and catabolic processes. Mammalian target of rapamycin (mTOR) is an evolutionarily conserved serine/threonine kinase, and is known to play vital roles in protein synthesis. Recent findings have continued to refine our understanding of the function of mTOR in maintaining skeletal muscle mass. mTOR controls the anabolic and catabolic signaling of skeletal muscle mass, resulting in the modulation of muscle hypertrophy and muscle wastage. This review will highlight the fundamental role of mTOR in skeletal muscle growth by summarizing the phenotype of skeletal-specific mTOR deficiency. In addition, the evidence that mTOR is a dual regulator of anabolism and catabolism in skeletal muscle mass will be discussed. A full understanding of mTOR signaling in the maintenance of skeletal muscle mass could help to develop mTOR-targeted therapeutics to prevent muscle wasting.");

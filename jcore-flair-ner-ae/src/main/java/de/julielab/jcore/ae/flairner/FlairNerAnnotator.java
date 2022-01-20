@@ -9,9 +9,11 @@ import de.julielab.jcore.types.EmbeddingVector;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.pubmed.InternalReference;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.jcore.utility.index.Comparators;
+import de.julielab.jcore.utility.index.JCoReOverlapAnnotationIndex;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.uima.UimaContext;
@@ -24,6 +26,7 @@ import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,6 +172,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
                 log.debug("Document {} does not have any tokens", JCoReTools.getDocId(aJCas));
         }
         try {
+            JCoReOverlapAnnotationIndex<InternalReference> intRefIndex = new JCoReOverlapAnnotationIndex<>(aJCas, InternalReference.type);
             final AnnotationAdderHelper helper = new AnnotationAdderHelper();
             log.trace("Sending document sentences to flair for entity tagging.");
             final NerTaggingResponse taggingResponse = connector.tagSentences(StreamSupport.stream(sentIndex.spliterator(), false));
@@ -178,6 +182,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
                 final Sentence sentence = sentenceMap.get(entity.getDocumentId());
                 EntityMention em = (EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, entityClass);
                 helper.setAnnotationOffsetsRelativeToSentence(sentence, em, entity, adderConfig);
+                excludeReferenceAnnotationSpans(em, intRefIndex);
                 em.setSpecificType(entity.getTag());
                 em.setConfidence(String.valueOf(entity.getLabelConfidence()));
                 em.setComponentId(componentId);
@@ -247,6 +252,24 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             embeddingVector.setSource(flairModel);
             embeddingVector.setComponentId(componentId);
             token.setEmbeddingVectors(JCoReTools.addToFSArray(token.getEmbeddingVectors(), embeddingVector));
+        }
+    }
+
+    /**
+     * Internal references can actually look like a part of a gene, e.g. "filament19" where "19" is a reference.
+     * Exclude those spans from the gene mentions.
+     * @param a The gene annotation.
+     * @param intRefIndex The reference index.
+     */
+    private void excludeReferenceAnnotationSpans(Annotation a, JCoReOverlapAnnotationIndex<? extends Annotation> intRefIndex) {
+        List<? extends Annotation> annotationsInGene = intRefIndex.search(a);
+        for (Annotation overlappingAnnotation : annotationsInGene) {
+            if (overlappingAnnotation.getBegin() == a.getBegin()) {
+                a.setBegin(overlappingAnnotation.getEnd());
+            }
+            if (overlappingAnnotation.getEnd() == a.getEnd()) {
+                a.setEnd(overlappingAnnotation.getBegin());
+            }
         }
     }
 
