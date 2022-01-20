@@ -1,11 +1,15 @@
 package de.julielab.jcore.utility;
 
+import de.julielab.jcore.types.InternalReference;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class is helpful when some parts of the CAS document text should be cut
@@ -22,6 +26,11 @@ public class JCoReCondensedDocumentText {
     private String condensedText;
     private JCas cas;
     private Set<Character> cutAwayFillCharacters;
+    private boolean skipInternalReferencesWithLetters;
+
+    public boolean isSkipInternalReferencesWithLetters() {
+        return skipInternalReferencesWithLetters;
+    }
 
     /**
      * <p>
@@ -35,7 +44,22 @@ public class JCoReCondensedDocumentText {
      * @throws ClassNotFoundException If <tt>cutAwayTypes</tt> contains non-existing type names.
      */
     public JCoReCondensedDocumentText(JCas cas, Set<String> cutAwayTypes) throws ClassNotFoundException {
-        this(cas, cutAwayTypes, null);
+        this(cas, cutAwayTypes, false);
+    }
+
+    /**
+     * <p>
+     * Cuts away the covered text of annotations of a type in <tt>cutAwayTypes</tt>
+     * from the <tt>cas</tt> document text. If <tt>cutAwayTypes</tt> is null or
+     * empty, this class' methods will return the original CAS data.
+     * </p>
+     *
+     * @param cas          The CAS for which the document text should be cut.
+     * @param cutAwayTypes The types for cutting. May be null.
+     * @throws ClassNotFoundException If <tt>cutAwayTypes</tt> contains non-existing type names.
+     */
+    public JCoReCondensedDocumentText(JCas cas, Set<String> cutAwayTypes, boolean skipInternalReferencesWithLetters) throws ClassNotFoundException {
+        this(cas, cutAwayTypes, null, skipInternalReferencesWithLetters);
     }
 
     /**
@@ -53,9 +77,29 @@ public class JCoReCondensedDocumentText {
      * @param cutAwayFillCharacters Characters that, when being the only separator between two cut away annotations, are also cut away.
      * @throws ClassNotFoundException If <tt>cutAwayTypes</tt> contains non-existing type names.
      */
-    public JCoReCondensedDocumentText(JCas cas, Set<String> cutAwayTypes, Set<Character> cutAwayFillCharacters) throws ClassNotFoundException {
+    public JCoReCondensedDocumentText(JCas cas, Set<String> cutAwayTypes, Set<Character> cutAwayFillCharacters) throws ClassNotFoundException{
+        this(cas, cutAwayTypes, cutAwayFillCharacters, false);
+    }
+
+    /**
+     * <p>
+     * Cuts away the covered text of annotations of a type in <tt>cutAwayTypes</tt>
+     * from the <tt>cas</tt> document text. If <tt>cutAwayTypes</tt> is null or
+     * empty, this class' methods will return the original CAS data.
+     * </p>
+     * <p>The <tt>cutAwayFillCharacters</tt> set may provide characters that, when being the only character between
+     * to cut-away annotations, will add to the span of text being cut away. This way, enumerations of references
+     * (e.g. "4,6,8") can be completely removed, for example.</p>
+     *
+     * @param cas                   The CAS for which the document text should be cut.
+     * @param cutAwayTypes          The types for cutting. May be null.
+     * @param cutAwayFillCharacters Characters that, when being the only separator between two cut away annotations, are also cut away.
+     * @throws ClassNotFoundException If <tt>cutAwayTypes</tt> contains non-existing type names.
+     */
+    public JCoReCondensedDocumentText(JCas cas, Set<String> cutAwayTypes, Set<Character> cutAwayFillCharacters, boolean skipInternalReferencesWithLetters) throws ClassNotFoundException {
         this.cas = cas;
         this.cutAwayFillCharacters = cutAwayFillCharacters;
+        this.skipInternalReferencesWithLetters = skipInternalReferencesWithLetters;
         buildMap(cas, cutAwayTypes);
     }
 
@@ -84,6 +128,7 @@ public class JCoReCondensedDocumentText {
     public void buildMap(JCas cas, Set<String> cutAwayTypes) throws ClassNotFoundException {
         if (cutAwayTypes == null || cutAwayTypes.isEmpty())
             return;
+        Pattern letterP = Pattern.compile("[a-zA-Z]");
         StringBuilder sb = new StringBuilder();
         condensedPos2SumCutMap = new TreeMap<>();
         condensedPos2SumCutMap.put(0, 0);
@@ -102,6 +147,17 @@ public class JCoReCondensedDocumentText {
         while (merger.incrementAnnotation()) {
             int begin = merger.getCurrentBegin();
             int end = merger.getCurrentEnd();
+
+            // Only remove InternalReferences without letters. Those are just numbers in
+            // PMC and often lead to errors because they are not really part of the sentence. Table and figure
+            // references, on the other hand, are embedded in the text. Rule of thumb: Remove references
+            // that don't have a letter.
+            if (skipInternalReferencesWithLetters && (merger.getAnnotation() instanceof InternalReference || merger.getAnnotation() instanceof de.julielab.jcore.types.pubmed.InternalReference)) {
+                String coveredText = ((Annotation)merger.getAnnotation()).getCoveredText();
+                Matcher letterM = letterP.matcher(coveredText);
+                if (letterM.find())
+                    continue;
+            }
 
             boolean moreThanOneCharacterDistance = begin - lastEnd > 2;
             boolean previousCharacterIsCutAwayDelimiter = cutAwayFillCharacters == null || cutAwayFillCharacters.isEmpty() || (begin - lastEnd == 2 && cutAwayFillCharacters.contains(cas.getDocumentText().charAt(begin - 1)));

@@ -119,12 +119,35 @@ public class JCoReCondensedDocumentTextTest {
 
 		JCoReCondensedDocumentText condensedText = new JCoReCondensedDocumentText(jcas,
 				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())));
-		System.out.println(condensedText.getCodensedText());
 		assertEquals("Leptin is an adipose-derived protein secreted by adipocytes and is expressed in adipose tissue.\n" +
 				"It has the role of being a key regulator of several physiological pathways including body weight and regulation of food intake, inflammation, endocrine function, energy homeostasis, bone metabolism and immunity.\n" +
 				"Results from various studies indicate that leptin may play a significant role in bone physiology, independent of the central nervous system.\n", condensedText.getCodensedText());
 		assertEquals(98, condensedText.getOriginalOffsetForCondensedOffset(96));
 		assertEquals(314, condensedText.getOriginalOffsetForCondensedOffset(308));
+	}
+
+	@Test
+	public void testReduce6() throws Exception {
+		// Test the option to skip internal references that have letters from omission from the condensed text.
+		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+		jcas.setDocumentText("Andreeva et al.19 and Xiao et al.20 studied the way of binding of a myosin head to an actin filament by using tryptic digestion of myofibrils and measuring optical polarization and dichroism. They concluded that in the rigor rabbit psoas muscle each myosin head binds to two actin monomers in a thin filament20, suggesting the possibility that the myosin head may first bind to one and then to two monomers in the actin filament19.\n" +
+				"Figure 2 shows an example of possible mechanism of how such binding change occurs.");
+		InternalReference ref1 = new InternalReference(jcas, 15, 17);
+		ref1.addToIndexes();
+		InternalReference ref2 = new InternalReference(jcas, 33, 35);
+		ref2.addToIndexes();
+		InternalReference ref3 = new InternalReference(jcas, 308, 310);
+		ref3.addToIndexes();
+		InternalReference ref4 = new InternalReference(jcas, 428, 430);
+		ref4.addToIndexes();
+		InternalReference ref5 = new InternalReference(jcas, 432, 440);
+		ref5.addToIndexes();
+
+		JCoReCondensedDocumentText condensedText = new JCoReCondensedDocumentText(jcas,
+				new HashSet<>(Arrays.asList(InternalReference.class.getCanonicalName())), true);
+		assertEquals("Andreeva et al. and Xiao et al. studied the way of binding of a myosin head to an actin filament by using tryptic digestion of myofibrils and measuring optical polarization and dichroism. They concluded that in the rigor rabbit psoas muscle each myosin head binds to two actin monomers in a thin filament, suggesting the possibility that the myosin head may first bind to one and then to two monomers in the actin filament.\n" +
+				"Figure 2 shows an example of possible mechanism of how such binding change occurs.", condensedText.getCodensedText());
 	}
 
 

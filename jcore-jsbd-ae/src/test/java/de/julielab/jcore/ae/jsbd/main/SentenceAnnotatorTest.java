@@ -332,5 +332,33 @@ public class SentenceAnnotatorTest {
         assertThatCode(() -> jsbd.process(jCas.getCas())).doesNotThrowAnyException();
     }
 
+    @Test
+    public void testErrordoc3() throws Exception {
+        // This document has multiple sentences that begin with a Figure reference mention ("Figure 2 shows...").
+        // By cutting away all the internal reference annotation spans for sentence tagging, the "Figure 2" was
+        // ultimately appended to the previous sentence, causing errors. Thus, the option to omit internal references
+        // with letters was added to the condensed document text. This is a test that everything is working as intended.
+        JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types");
+
+        XmiCasDeserializer.deserialize(new FileInputStream(Path.of("src", "test", "resources", "errordocs", "PMC5070457.xmi").toFile()), jCas.getCas());
+        JCasUtil.select(jCas, Sentence.class).forEach(Annotation::removeFromIndexes);
+        AnalysisEngine jsbd = AnalysisEngineFactory.createEngine(SentenceAnnotator.class, SentenceAnnotator.PARAM_MODEL_FILE,
+                "de/julielab/jcore/ae/jsbd/model/test-model.gz",
+                SentenceAnnotator.PARAM_MAX_SENTENCE_LENGTH, 1000,
+                SentenceAnnotator.PARAM_SENTENCE_DELIMITER_TYPES, new String[]{
+                        "de.julielab.jcore.types.Title", "de.julielab.jcore.types.AbstractText", "de.julielab.jcore.types.AbstractSectionHeading", "de.julielab.jcore.types.AbstractSection", "de.julielab.jcore.types.Section", "de.julielab.jcore.types.Paragraph", "de.julielab.jcore.types.Zone", "de.julielab.jcore.types.Caption", "de.julielab.jcore.types.Figure", "de.julielab.jcore.types.Table"},
+                SentenceAnnotator.PARAM_CUT_AWAY_TYPES, new String[]{de.julielab.jcore.types.pubmed.InternalReference.class.getCanonicalName()}
+        );
+        assertThatCode(() -> jsbd.process(jCas.getCas())).doesNotThrowAnyException();
+        Collection<Sentence> sentences = JCasUtil.select(jCas, Sentence.class);
+        for (var s : sentences) {
+            String coveredText = s.getCoveredText();
+            if (coveredText.contains("They concluded"))
+                assertThat(coveredText).endsWith("filament19.");
+        }
+    }
+
 }
 

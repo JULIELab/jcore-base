@@ -155,7 +155,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             JCoReCondensedDocumentText documentText;
             try {
                 // If there are no cut-away types, the document text will remain unchanged.
-                documentText = new JCoReCondensedDocumentText(aJCas, cutAwayTypes, Set.of(','));
+                documentText = new JCoReCondensedDocumentText(aJCas, cutAwayTypes, Set.of(','), true);
             } catch (ClassNotFoundException e1) {
                 LOGGER.error("Could not create the text without annotations to be cut away in document {}", JCoReTools.getDocId(aJCas), e1);
                 throw new AnalysisEngineProcessException(e1);
