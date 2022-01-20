@@ -29,6 +29,7 @@
         <import name="de.julielab.jcore.types.jcore-document-structure-types" />
         <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
         <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
       </imports>
     </typeSystemDescription>
     <typePriorities />

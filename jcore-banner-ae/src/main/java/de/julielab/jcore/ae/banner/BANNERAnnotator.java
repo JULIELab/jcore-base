@@ -9,8 +9,10 @@ import banner.types.EntityType;
 import banner.types.Mention;
 import banner.types.Sentence;
 import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.pubmed.InternalReference;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.JCoReTools;
+import de.julielab.jcore.utility.index.JCoReOverlapAnnotationIndex;
 import dragon.nlp.tool.Tagger;
 import dragon.nlp.tool.lemmatiser.EngLemmatiser;
 import org.apache.commons.configuration.ConfigurationException;
@@ -34,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -145,6 +148,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
         String docId = "<unknown>";
         try {
             docId = JCoReTools.getDocId(jcas);
+            JCoReOverlapAnnotationIndex<InternalReference> intRefIndex = new JCoReOverlapAnnotationIndex<>(jcas, InternalReference.type);
             FSIterator<Annotation> sentIt = jcas.getAnnotationIndex(de.julielab.jcore.types.Sentence.type).iterator();
             int geneCount = 0;
             int sentCount = 0;
@@ -164,8 +168,15 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
                     String typeName = typeMap.getOrDefault(entityType.getText(),
                             EntityMention.class.getCanonicalName());
                     Annotation a = JCoReAnnotationTools.getAnnotationByClassName(jcas, typeName);
-                    a.setBegin(sentenceBegin + mention.getStartChar());
-                    a.setEnd(sentenceBegin + mention.getEndChar());
+                    int originalBegin = sentenceBegin + mention.getStartChar();
+                    int originalEnd = sentenceBegin + mention.getEndChar();
+                    a.setBegin(originalBegin);
+                    a.setEnd(originalEnd);
+                    excludeReferenceAnnotationSpans(a, intRefIndex);
+                    if (a.getEnd() <= a.getBegin()) {
+                        log.error("After removing internal reference spans from the gene, it has no positive span any more. The original text was {} with offsets {}-{}. The new offsets are {}-{}.", jcas.getDocumentText().substring(originalBegin, originalEnd), originalBegin, originalEnd, a.getBegin(), a.getEnd());
+                        continue;
+                    }
                     if (a instanceof de.julielab.jcore.types.Annotation) {
                         de.julielab.jcore.types.Annotation jcoreA = (de.julielab.jcore.types.Annotation) a;
                         jcoreA.setId("BANNER, " + docId + ": " + geneCount++);
@@ -182,6 +193,24 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
         } catch (Exception e) {
             log.error("Exception occurred while running the BANNER annotator on document {}.", docId, e);
             throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    /**
+     * Internal references can actually look like a part of a gene, e.g. "filament19" where "19" is a reference.
+     * Exclude those spans from the gene mentions.
+     * @param a The gene annotation.
+     * @param intRefIndex The reference index.
+     */
+    private void excludeReferenceAnnotationSpans(Annotation a, JCoReOverlapAnnotationIndex<? extends Annotation> intRefIndex) {
+        List<? extends Annotation> annotationsInGene = intRefIndex.search(a);
+        for (Annotation overlappingAnnotation : annotationsInGene) {
+            if (overlappingAnnotation.getBegin() == a.getBegin()) {
+                a.setBegin(overlappingAnnotation.getEnd());
+            }
+            if (overlappingAnnotation.getEnd() == a.getEnd()) {
+                a.setEnd(overlappingAnnotation.getBegin());
+            }
         }
     }
 }
