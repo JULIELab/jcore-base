@@ -15,10 +15,11 @@ public class CasPopulator {
     private NxmlDocumentParser nxmlDocumentParser;
     private Iterator<URI> nxmlIterator;
 
-    public CasPopulator(Iterator<URI> nxmlIterator) throws IOException {
+    public CasPopulator(Iterator<URI> nxmlIterator, Boolean omitBibReferences) throws IOException {
         this.nxmlIterator = nxmlIterator;
         nxmlDocumentParser = new NxmlDocumentParser();
-        nxmlDocumentParser.loadElementPropertyFile("/de/julielab/jcore/reader/pmc/resources/elementproperties.yml");
+        String settings = omitBibReferences ? "/de/julielab/jcore/reader/pmc/resources/elementproperties-no-bib-refs.yml" : "/de/julielab/jcore/reader/pmc/resources/elementproperties.yml";
+        nxmlDocumentParser.loadElementPropertyFile(settings);
     }
 
     public void populateCas(URI nxmlUri, JCas cas) throws ElementParsingException, NoDataAvailableException {

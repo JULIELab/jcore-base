@@ -54,7 +54,7 @@ public class DefaultElementParser extends NxmlElementParser {
 
 	@Override
 	protected void beforeParseElement() throws ElementParsingException {
-		// since this parser does not know the element is is used upon, set
+		// since this parser does not know the element it is used upon, set
 		// it first for the parsing result creation
 		try {
 			elementName = vn.toString(vn.getCurrentIndex());
@@ -138,12 +138,6 @@ public class DefaultElementParser extends NxmlElementParser {
 		if (typeName.equals(ElementProperties.TYPE_NONE))
 			return;
 
-		// @SuppressWarnings("unchecked")
-		// Map<String, Object> defaultFeatureValues = (Map<String, Object>)
-		// nxmlDocumentParser
-		// .getTagProperties(elementName)
-		// .getOrDefault(ElementProperties.DEFAULT_FEATURE_VALUES,
-		// Collections.emptyMap());
 		@SuppressWarnings("unchecked")
 		Map<String, Object> defaultFeatureValues = (Map<String, Object>) getApplicableProperties()
 				.orElse(Collections.emptyMap())
@@ -276,8 +270,6 @@ public class DefaultElementParser extends NxmlElementParser {
 				String attributeValue = attributesOfElement.get(attribute.get(ElementProperties.NAME));
 				if (attributeValue != null && attributeValue.equals(attribute.get(ElementProperties.VALUE))
 						&& attribute.containsKey(ElementProperties.OMIT_ELEMENT)) {
-					// omitElement = (boolean)
-					// attribute.get(ElementProperties.OMIT_ELEMENT);
 					applicableProperties = Optional.of(attribute);
 				}
 			}

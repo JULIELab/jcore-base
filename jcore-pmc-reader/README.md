@@ -102,7 +102,9 @@ The following properties are currently supported:
 | paths                  | list of objects | Allows to specify a relative or absolute XPath like sequence of element names in the form `abstract/sec/title` and properties that should be applied to elements matching this path. |
 | type                   | string          | The UIMA type that should be used to annotate the text contents of the element |
 
-The `attribute` and `path` properties define criteria where the base properties are overwritten by the properties specified in association with the given attribute-value combination or path. For example, it is possible to include a certain element for document text but omit it if has a specific element as parent or some attribute value.
+The `attribute` and `path` properties define criteria where the base properties are overwritten by the properties specified in association with the given attribute-value combination or path. Attributes are addressed by specifying `name` and `value` keys. The `name` is the name of the attribute to test and `value` is the value the attribute must have for the property override to take effect. Paths require the `path` key followed by a slash-separated sequence of element names that ends with the name of the XML element for which the rule should hold. The path does not need to start from the root, it should just be long enough to identify the element distinctively.
+
+For example, it is possible to include a certain element for document text but omit it if it has a specific element as parent or some attribute value.
 
 Here is an example taken directly from the `elementproperties.yml` file:
 ```yml

@@ -86,7 +86,7 @@ public class NxmlDocumentParser extends NxmlParser {
      * @throws NavException
      * @throws DocTypeNotFoundException
      */
-    private void setTagset() throws NavException, DocTypeNotFoundException, DocTypeNotSupportedException {
+    private void setTagset() throws NavException, DocTypeNotFoundException {
         for (int i = 0; i < vn.getTokenCount(); i++) {
             if (vn.getTokenType(i) == VTDNav.TOKEN_DTD_VAL) {
                 String docType = StringUtils.normalizeSpace(vn.toString(i)).replaceAll("'", "\"");

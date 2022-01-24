@@ -1,6 +1,7 @@
 package de.julielab.jcore.reader.pmc;
 
 import de.julielab.jcore.types.casmultiplier.JCoReURI;
+import de.julielab.jcore.types.casmultiplier.MultiplierConfigParameters;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.ducc.Workitem;
@@ -8,6 +9,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ public class PMCMultiplierReader extends PMCReaderBase {
     public static final String PARAM_WHITELIST = PMCReaderBase.PARAM_WHITELIST;
     public static final String PARAM_SEND_CAS_TO_LAST = "SendCasToLast";
     public static final String PARAM_BATCH_SIZE = "BatchSize";
+    public static final String PARAM_OMIT_BIB_REFERENCES = PMCReaderBase.PARAM_OMIT_BIB_REFERENCES;
     private final static Logger log = LoggerFactory.getLogger(PMCMultiplierReader.class);
     @ConfigurationParameter(name = PARAM_SEND_CAS_TO_LAST, mandatory = false, defaultValue = "false", description = "UIMA DUCC relevant parameter when using a CAS multiplier. When set to true, the worker CAS from the collection reader is forwarded to the last component in the pipeline. This can be used to send information about the progress to the CAS consumer in order to have it perform batch operations. For this purpose, a feature structure of type WorkItem from the DUCC library is added to the worker CAS. This feature structure has information about the current progress.")
     private boolean sendCasToLast;
@@ -51,8 +54,15 @@ public class PMCMultiplierReader extends PMCReaderBase {
                 log.error("Exception with URI: " + uri.toString(), e);
                 throw new CollectionException(e);
             }
-
             completed++;
+        }
+        // Send configuration parameters to the multiplier if necessary
+        if (omitBibReferences) {
+            MultiplierConfigParameters parameters = new MultiplierConfigParameters(jCas);
+            StringArray paramArray = new StringArray(jCas, 1);
+            paramArray.set(0, PMCReaderBase.PARAM_OMIT_BIB_REFERENCES+"="+omitBibReferences);
+            parameters.setParameters(paramArray);
+            parameters.addToIndexes();
         }
         if (sendCasToLast) {
             Workitem workitem = new Workitem(jCas);

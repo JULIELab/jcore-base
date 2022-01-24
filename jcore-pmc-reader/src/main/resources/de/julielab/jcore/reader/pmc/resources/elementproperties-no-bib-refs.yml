@@ -56,3 +56,8 @@ floats-group:
     omit-element: true
 array:
     omit-element: true
+xref:
+    attributes:
+        - name: ref-type
+          value: bibr
+          omit-element: true

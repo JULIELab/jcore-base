@@ -19,5 +19,18 @@
         </featureDescription>
       </features>
     </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.casmultiplier.MultiplierConfigParameters</name>
+      <description>A list of strings in properties format to specify parameters and their values. The format is &lt;key&gt;=&lt;value&gt;. May be used to transfer configuration properties from the multiplier reader to the multiplier.
+      Normally in UIMA, the multiplier would just have the configuration parameters itself. However, it can be confusing that the basic reader - without a successive multiplier - has some parameters that the multiplier reader does not exhibit because they must be set on the multiplier. Using this annotation, parameter settings can be sent to the multiplier which then does not need further configuration on its own.</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>parameters</name>
+          <description>An array of string holding key - value pairs in the format &lt;key&gt;=&lt;value&gt;.</description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
   </types>
 </typeSystemDescription>

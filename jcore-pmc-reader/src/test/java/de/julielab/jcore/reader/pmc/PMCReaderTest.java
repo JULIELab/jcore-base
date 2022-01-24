@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -357,6 +359,53 @@ public class PMCReaderTest {
         List<InternalReference> figRefs = refs.stream().filter(r -> r.getReftype().equalsIgnoreCase("figure")).collect(Collectors.toList());
         assertThat(figRefs).hasSize(2);
         assertThat(figRefs).extracting("refid").containsExactly("Fig1", "Fig2");
+    }
+
+    @Test
+    public void testBibliographyReferencesAnnotated() throws Exception {
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-recursive/PMC2847692.nxml.gz");
+        reader.getNext(cas.getCas());
+        Collection<InternalReference> refs = JCasUtil.select(cas, InternalReference.class);
+        // Without a filter on bibliographic references, there should 76 references to bibliography
+        List<InternalReference> bibliography = refs.stream().filter(r -> r.getReftype().equalsIgnoreCase("bibliography")).collect(Collectors.toList());
+        assertThat(bibliography).hasSize(76);
+
+        // RegEx for something like "2004a"
+        Matcher yearReferenceMatcher = Pattern.compile("[0-9]{4}[ab]?").matcher(cas.getDocumentText());
+        int numReferencePatternsInText = 0;
+        while (yearReferenceMatcher.find()) {
+            ++numReferencePatternsInText;
+        }
+        // Some found patterns are no references, thus the number is higher than that of the references.
+        assertThat(numReferencePatternsInText).isEqualTo(84);
+    }
+
+    @Test
+    public void testBibliographyReferencesOmitted() throws Exception {
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-recursive/PMC2847692.nxml.gz",
+                PMCMultiplierReader.PARAM_OMIT_BIB_REFERENCES, true);
+        reader.getNext(cas.getCas());
+        Collection<InternalReference> refs = JCasUtil.select(cas, InternalReference.class);
+        // Since we set the omission parameter to true, there should be no bibliographic references
+        List<InternalReference> bibliography = refs.stream().filter(r -> r.getReftype().equalsIgnoreCase("bibliography")).collect(Collectors.toList());
+        assertThat(bibliography).isEmpty();
+
+        // RegEx for something like "2004a"
+        Matcher yearReferenceMatcher = Pattern.compile("[0-9]{4}[ab]?").matcher(cas.getDocumentText());
+        int numReferencePatternsInText = 0;
+        while (yearReferenceMatcher.find()) {
+            ++numReferencePatternsInText;
+        }
+        // In the test above, where we have the same document but with bib. references, there were 84 occurrences
+        // of the pattern. 76 of those were actual references. Thus, after removing the references, 8 pattern
+        // occurrences should remain.
+        assertThat(numReferencePatternsInText).isEqualTo(8);
     }
 
     @Test

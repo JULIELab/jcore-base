@@ -28,6 +28,7 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
     public static final String PARAM_SEARCH_ZIP = "SearchInZipFiles";
     public static final String PARAM_WHITELIST = "WhitelistFile";
     public static final String PARAM_EXTRACT_ID_FROM_FILENAME = "ExtractIdFromFilename";
+    public static final String PARAM_OMIT_BIB_REFERENCES = "OmitBibliographyReferences";
     private final static Logger log = LoggerFactory.getLogger(PMCReaderBase.class);
     @ConfigurationParameter(name = PARAM_INPUT, description = "The path to an NXML file or a directory with NXML files and possibly subdirectories holding more NXML files.")
     protected File input;
@@ -43,6 +44,9 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
 
     @ConfigurationParameter(name = PARAM_EXTRACT_ID_FROM_FILENAME, mandatory = false, description = "Used for NXML documents that carry their ID in the file name but not in the document itself. Extracts the string after the last path separator and the first dot after the separator and sets it to the docId feature of the Header annotation.")
     protected boolean extractIdFromFilename;
+
+    @ConfigurationParameter(name = PARAM_OMIT_BIB_REFERENCES, mandatory = false, defaultValue = "false", description = "If set to true, references to the bibliography are omitted from the CAS text.")
+    protected boolean omitBibReferences;
 
     protected Iterator<URI> pmcFiles;
 
@@ -60,6 +64,7 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
         searchRecursively = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_RECURSIVELY)).orElse(false);
         searchZip = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_SEARCH_ZIP)).orElse(false);
         whitelistFile = Optional.ofNullable((String) getConfigParameterValue(PARAM_WHITELIST)).map(File::new).orElse(null);
+        omitBibReferences = Optional.ofNullable((Boolean) getConfigParameterValue(PARAM_OMIT_BIB_REFERENCES)).orElse(false);
         log.info("Reading PubmedCentral NXML file(s) from {}", input);
         try {
             Set<String> whitelist = readWhitelist(whitelistFile);
