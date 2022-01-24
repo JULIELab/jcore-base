@@ -183,6 +183,10 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
                 EntityMention em = (EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, entityClass);
                 helper.setAnnotationOffsetsRelativeToSentence(sentence, em, entity, adderConfig);
                 excludeReferenceAnnotationSpans(em, intRefIndex);
+                if (em.getEnd() <= em.getBegin()) {
+                    // It seems there was nothing left of a gene mention outside the internal reference; skip
+                    continue;
+                }
                 em.setSpecificType(entity.getTag());
                 em.setConfidence(String.valueOf(entity.getLabelConfidence()));
                 em.setComponentId(componentId);
@@ -269,6 +273,13 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             }
             if (overlappingAnnotation.getEnd() == a.getEnd()) {
                 a.setEnd(overlappingAnnotation.getBegin());
+            }
+            // Set zero-character spans on genes that are completely enclosed by a reference. Those are cases
+            // like, for instance, "Supplementary Figs. S12 and S13, Tables S2 and S3" where S12, S13 and even
+            // Tables S2 are annotated as genes.
+            if (overlappingAnnotation.getBegin() <= a.getBegin() && overlappingAnnotation.getEnd() >= a.getEnd()) {
+                a.setBegin(0);
+                a.setEnd(0);
             }
         }
     }

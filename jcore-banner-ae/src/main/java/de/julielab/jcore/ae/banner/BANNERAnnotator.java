@@ -174,7 +174,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
                     a.setEnd(originalEnd);
                     excludeReferenceAnnotationSpans(a, intRefIndex);
                     if (a.getEnd() <= a.getBegin()) {
-                        log.error("After removing internal reference spans from the gene, it has no positive span any more. The original text was {} with offsets {}-{}. The new offsets are {}-{}.", jcas.getDocumentText().substring(originalBegin, originalEnd), originalBegin, originalEnd, a.getBegin(), a.getEnd());
+                        // It seems there was nothing left of a gene mention outside the internal reference; skip
                         continue;
                     }
                     if (a instanceof de.julielab.jcore.types.Annotation) {
@@ -210,6 +210,13 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
             }
             if (overlappingAnnotation.getEnd() == a.getEnd()) {
                 a.setEnd(overlappingAnnotation.getBegin());
+            }
+            // Set zero-character spans on genes that are completely enclosed by a reference. Those are cases
+            // like, for instance, "Supplementary Figs. S12 and S13, Tables S2 and S3" where S12, S13 and even
+            // Tables S2 are annotated as genes.
+            if (overlappingAnnotation.getBegin() <= a.getBegin() && overlappingAnnotation.getEnd() >= a.getEnd()) {
+                a.setBegin(0);
+                a.setEnd(0);
             }
         }
     }
