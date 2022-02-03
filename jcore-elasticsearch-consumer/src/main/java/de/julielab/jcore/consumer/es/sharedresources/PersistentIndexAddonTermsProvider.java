@@ -120,7 +120,13 @@ abstract public class PersistentIndexAddonTermsProvider extends AddonTermsProvid
         File indexFile = null;
         boolean loadData = true;
         try {
-            File resourceFile = new File(uri);
+            File resourceFile;
+            try {
+                resourceFile = new File(uri);
+            } catch (IllegalArgumentException e) {
+                // to support relative file paths like file:resources/somefile.txt
+                resourceFile = new File(uri.getSchemeSpecificPart());
+            }
             String resourceFileName = FilenameUtils.getName(uri.toURL().getPath());
             indexFile = new File("es-consumer-cache", resourceFileName);
             if (resourceFile.exists() && indexFile.exists() && resourceFile.lastModified() > indexFile.lastModified()) {
