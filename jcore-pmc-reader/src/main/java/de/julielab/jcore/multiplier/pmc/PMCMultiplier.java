@@ -52,7 +52,7 @@ public class PMCMultiplier extends JCasMultiplier_ImplBase {
             MultiplierConfigParameters multiplierConfigParameters = JCasUtil.selectSingle(aJCas, MultiplierConfigParameters.class);
             StringArray parameters = multiplierConfigParameters.getParameters();
             for (int i = 0; i < parameters.size(); ++i) {
-                String[] paramPair = parameters.get(i).split("\\s+=\\s+");
+                String[] paramPair = parameters.get(i).split("\\s*=\\s*");
                 if (paramPair.length != 2) {
                     String msg = "Error while parsing multiplier configuration parameters passed from the multiplier reader. The parameter array contains the entry \"" + parameters.get(i) + "\". The expected format is <key>=<value>.";
                     log.error(msg);
