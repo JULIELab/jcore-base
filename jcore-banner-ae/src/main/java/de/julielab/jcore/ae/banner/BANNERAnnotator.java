@@ -173,7 +173,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
                     a.setBegin(originalBegin);
                     a.setEnd(originalEnd);
                     excludeReferenceAnnotationSpans(a, intRefIndex);
-                    if (a.getEnd() <= a.getBegin()) {
+                    if (a.getEnd() <= a.getBegin() || a.getCoveredText().isBlank()) {
                         // It seems there was nothing left of a gene mention outside the internal reference; skip
                         continue;
                     }

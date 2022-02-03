@@ -183,7 +183,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
                 EntityMention em = (EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, entityClass);
                 helper.setAnnotationOffsetsRelativeToSentence(sentence, em, entity, adderConfig);
                 excludeReferenceAnnotationSpans(em, intRefIndex);
-                if (em.getEnd() <= em.getBegin()) {
+                if (em.getEnd() <= em.getBegin() || em.getCoveredText().isBlank()) {
                     // It seems there was nothing left of a gene mention outside the internal reference; skip
                     continue;
                 }
