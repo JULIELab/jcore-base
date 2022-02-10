@@ -30,7 +30,7 @@ public class FigParser extends NxmlElementParser {
 	@Override
 	protected void parseElement(ElementParsingResult figResult) throws ElementParsingException {
 		try {
-			Optional<String> tableWrapId = getXPathValue("@id");
+			Optional<String> figureId = getXPathValue("@id");
 			Optional<ParsingResult> labelResult = parseXPath("label");
 			Optional<String> labelString = getXPathValue("label");
 			Optional<ParsingResult> captionResult = parseXPath("caption");
@@ -38,7 +38,7 @@ public class FigParser extends NxmlElementParser {
 			captionResult.ifPresent(r -> {
 				ElementParsingResult result = (ElementParsingResult) r;
 				Caption caption = (Caption) result.getAnnotation();
-				caption.setCaptionType("table");
+				caption.setCaptionType("figure");
 				figResult.addSubResult(r);
 			});
 			labelResult.ifPresent(figResult::addSubResult);
@@ -52,7 +52,7 @@ public class FigParser extends NxmlElementParser {
 			labelString.ifPresent(figure::setObjectLabel);
 			captionResult.map(r -> (Caption) ((ElementParsingResult) r).getAnnotation())
 					.ifPresent(figure::setObjectCaption);
-			tableWrapId.ifPresent(figure::setObjectId);
+			figureId.ifPresent(figure::setObjectId);
 
 			figResult.setAnnotation(figure);
 		} catch (NavException | XPathParseException | XPathEvalException e) {
