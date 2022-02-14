@@ -22,6 +22,11 @@ import java.util.zip.ZipFile;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * Searches over directories and, optionally, the contents of ZIP archives for files with an (n)xml extension.
+ * Returns URIs that either point to single files or to entries into ZIP archives. Both can equally be accessed via
+ * "uri.toURL().openStream()" which is done in the NxmlDocumentParser.
+ */
 public class NXMLURIIterator implements Iterator<URI> {
     private final static Logger log = LoggerFactory.getLogger(NXMLURIIterator.class);
     private final static Logger logFileSearch = LoggerFactory.getLogger(NXMLURIIterator.class.getCanonicalName() + ".FileSearch");
@@ -48,7 +53,7 @@ public class NXMLURIIterator implements Iterator<URI> {
             // The beginning: The currentDirectory is null and we start at
             // the given path (which actually might be a single file to
             // read).
-            log.debug("Starting background thread to search for PMC (.nxml) files at {}", basePath);
+            log.debug("Starting background thread to search for PMC (.xml) files at {}", basePath);
             CompletableFuture.runAsync(() -> setFilesAndSubDirectories(basePath, false));
             fileSearchRunning = true;
         }
@@ -78,7 +83,7 @@ public class NXMLURIIterator implements Iterator<URI> {
             if ((searchRecursively || directory.equals(basePath)) && !isZipFile(directory)) {
                 logFileSearch.debug("Identified {} as a directory, reading files and subdirectories", directory);
                 // set the files in the directory
-                for (File file : directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml") && !isZipFile(f) && isInWhitelist(f))) {
+                for (File file : directory.listFiles(f -> f.isFile() && f.getName().endsWith("xml") && !isZipFile(f) && isInWhitelist(f))) {
                     URI toURI = file.toURI();
                     try {
                         uris.put(toURI);
@@ -101,7 +106,7 @@ public class NXMLURIIterator implements Iterator<URI> {
                     while (entries.hasMoreElements()) {
                         final ZipEntry e = entries.nextElement();
                         if (!e.isDirectory() && e.getName().contains(".nxml") && isInWhitelist(new File(e.getName()))) {
-                            final String urlStr = "jar:" + directory.toURI().toString() + "!/" + e.getName();
+                            final String urlStr = "jar:" + directory.toURI() + "!/" + e.getName();
                             int exclamationIndex = urlStr.indexOf('!');
                             final String urlEncodedStr = urlStr.substring(0, exclamationIndex + 2) + Stream.of(urlStr.substring(exclamationIndex + 2).split("/")).map(x -> URLEncoder.encode(x, UTF_8)).collect(Collectors.joining("/"));
                             URL url = new URL(urlEncodedStr);

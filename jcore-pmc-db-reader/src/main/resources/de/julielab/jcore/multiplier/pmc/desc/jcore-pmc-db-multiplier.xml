@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.multiplier.pmc.PMCDBMultiplier</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe Abstract Database Multiplier</name>
+        <description>A multiplier that receives document IDs to read from a database table from the DBMultiplierReader. The reader also delivers the path to the corpus storage system (CoStoSys) configuration and additional tables for joining with the main data table. This multiplier class is abstract and cannot be used directly.Extending classes must implement the next() method to actually read documents from the database and populate CASes with them. This component is a part of the Jena Document Information System, JeDIS.</description>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <copyright>JULIE Lab Jena, Germany</copyright>
+        <configurationParameters>
+            <configurationParameter>
+                <name>OmitBibliographyReferences</name>
+                <description>If set to true, references to the bibliography are omitted from the CAS text.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AddShaHash</name>
+                <description>For use with AnnotationDefinedFlowController. Possible values: document_text, defaults to 'document_text' and thus doesn't need to be specified manually at the moment. This parameter needs to match the value for the same parameter given to the XMIDBWriter in this pipeline. Then, a comparison between the existing hash in the database and the new hash of the CAS read in this pipeline can be made. In case the hashes match, the CAS skips all component except the DBCheckpointAE to mark the document as processed.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DocumentTable</name>
+                <description>For use with AnnotationDefinedFlowController. String parameter indicating the name of the table where the XMI data and, thus, the hash is stored. The name must be schema qualified. Note that in this component, only the ToVisit annotation is created that determines which components to apply to a CAS with matching (unchanged) hash. The logic to actually control the CAS flow is contained in the AnnotationDefinedFlowController.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DocumentTableSchema</name>
+                <description>For use with AnnotationDefinedFlowController. The name of the schema that the document table - given with the DocumentTable parameter - adheres to. Only the primary key part is required for hash value retrieval.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ToVisitKeys</name>
+                <description>For use with AnnotationDefinedFlowController. The delegate AE keys of the AEs this CAS should still applied on although the hash has not changed. Can be null or empty indicating that no component should be applied to the CAS. This is, however, the task of the AnnotationDefinedFlowController.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>OmitBibliographyReferences</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types" />
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

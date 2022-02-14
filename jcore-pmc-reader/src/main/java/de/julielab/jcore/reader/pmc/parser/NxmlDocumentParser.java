@@ -110,7 +110,7 @@ public class NxmlDocumentParser extends NxmlParser {
                 return;
             }
         }
-        throw new DocTypeNotFoundException("Could not find a doctype.");
+        throw new DocTypeNotFoundException("Could not find a known doctype.");
     }
 
     private void setupParserRegistry() {

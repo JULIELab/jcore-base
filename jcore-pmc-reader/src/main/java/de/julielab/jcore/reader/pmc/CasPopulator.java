@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Iterator;
 
@@ -20,6 +21,10 @@ public class CasPopulator {
         nxmlDocumentParser = new NxmlDocumentParser();
         String settings = omitBibReferences ? "/de/julielab/jcore/reader/pmc/resources/elementproperties-no-bib-refs.yml" : "/de/julielab/jcore/reader/pmc/resources/elementproperties.yml";
         nxmlDocumentParser.loadElementPropertyFile(settings);
+    }
+
+    public CasPopulator(Boolean omitBibReferences) throws IOException {
+        this(null, omitBibReferences);
     }
 
     public void populateCas(URI nxmlUri, JCas cas) throws ElementParsingException, NoDataAvailableException {
@@ -39,6 +44,18 @@ public class CasPopulator {
                     throw new NoDataAvailableException(msg);
                 }
             }
+        }
+        StringBuilder sb = populateCas(result, new StringBuilder());
+        cas.setDocumentText(sb.toString());
+    }
+
+    public void populateCas(InputStream is, JCas cas) throws ElementParsingException, NoDataAvailableException {
+        ElementParsingResult result;
+        try {
+            nxmlDocumentParser.reset(is, cas);
+            result = nxmlDocumentParser.parse();
+        } catch (DocumentParsingException e) {
+            throw new NoDataAvailableException(e);
         }
         StringBuilder sb = populateCas(result, new StringBuilder());
         cas.setDocumentText(sb.toString());
