@@ -63,9 +63,9 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     private String pythonExecutable;
     @ConfigurationParameter(name = PARAM_STORE_EMBEDDINGS, mandatory = false, description = "Optional. Possible values: ALL, ENTITIES, NONE. The FLAIR SequenceTagger first computes the embeddings for each sentence and uses those as input for the actual NER algorithm. By default, the embeddings are not stored. By setting this parameter to ALL, the embeddings of all tokens of the sentence are retrieved from flair and stored in the embeddingVectors feature of each token. Setting the parameter to ENTITIES will restrict the embedding storage to those tokens which overlap with an entity recognized by FLAIR.")
     private StoreEmbeddings storeEmbeddings;
-    @ConfigurationParameter(name = PARAM_GPU_NUM, mandatory = false, defaultValue="0", description = "Specifies the GPU device number to be used for FLAIR. This setting can be overwritten by the Java system property 'flairner.device'.")
+    @ConfigurationParameter(name = PARAM_GPU_NUM, mandatory = false, defaultValue = "0", description = "Specifies the GPU device number to be used for FLAIR. This setting can be overwritten by the Java system property 'flairner.device'.")
     private int gpuNum;
-    @ConfigurationParameter(name=PARAM_COMPONENT_ID, mandatory = false, description = "Specifies the componentId feature value given to the created annotations. Defaults to 'FlairNerAnnotator'.")
+    @ConfigurationParameter(name = PARAM_COMPONENT_ID, mandatory = false, description = "Specifies the componentId feature value given to the created annotations. Defaults to 'FlairNerAnnotator'.")
     private String componentId;
     private AnnotationAdderConfiguration adderConfig;
 
@@ -78,7 +78,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         entityClass = (String) aContext.getConfigParameterValue(PARAM_ANNOTATION_TYPE);
         flairModel = (String) aContext.getConfigParameterValue(PARAM_FLAIR_MODEL);
         storeEmbeddings = StoreEmbeddings.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_STORE_EMBEDDINGS)).orElse(StoreEmbeddings.NONE.name()));
-        gpuNum = Optional.ofNullable((Integer)aContext.getConfigParameterValue(PARAM_GPU_NUM)).orElse(0);
+        gpuNum = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_GPU_NUM)).orElse(0);
         componentId = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_ID)).orElse(getClass().getSimpleName());
         if (System.getProperty(GPU_NUM_SYS_PROP) != null) {
             try {
@@ -157,21 +157,21 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
-        int i = 0;
-        final AnnotationIndex<Sentence> sentIndex = aJCas.getAnnotationIndex(Sentence.class);
-        Map<String, Sentence> sentenceMap = new HashMap<>();
-        for (Sentence sentence : sentIndex) {
-            if (sentence.getId() == null)
-                sentence.setId("s" + i++);
-            sentenceMap.put(sentence.getId(), sentence);
-        }
-        if ( log.isDebugEnabled()) {
-            if (sentenceMap.isEmpty())
-                log.debug("Document {} does not have any sentences.", JCoReTools.getDocId(aJCas));
-            if (!aJCas.getAnnotationIndex(Token.class).iterator().hasNext())
-                log.debug("Document {} does not have any tokens", JCoReTools.getDocId(aJCas));
-        }
         try {
+            int i = 0;
+            final AnnotationIndex<Sentence> sentIndex = aJCas.getAnnotationIndex(Sentence.class);
+            Map<String, Sentence> sentenceMap = new HashMap<>();
+            for (Sentence sentence : sentIndex) {
+                if (sentence.getId() == null)
+                    sentence.setId("s" + i++);
+                sentenceMap.put(sentence.getId(), sentence);
+            }
+            if (log.isDebugEnabled()) {
+                if (sentenceMap.isEmpty())
+                    log.debug("Document {} does not have any sentences.", JCoReTools.getDocId(aJCas));
+                if (!aJCas.getAnnotationIndex(Token.class).iterator().hasNext())
+                    log.debug("Document {} does not have any tokens", JCoReTools.getDocId(aJCas));
+            }
             JCoReOverlapAnnotationIndex<InternalReference> intRefIndex = new JCoReOverlapAnnotationIndex<>(aJCas, InternalReference.type);
             final AnnotationAdderHelper helper = new AnnotationAdderHelper();
             log.trace("Sending document sentences to flair for entity tagging.");
@@ -206,6 +206,9 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             final String docId = JCoReTools.getDocId(aJCas);
             log.error("Could not set the offsets of an annotation in document {}", docId);
             throw new AnalysisEngineProcessException(e);
+        } catch (Throwable t) {
+            log.error("Error in {}", this.getClass().getSimpleName(), t);
+            throw new AnalysisEngineProcessException(t);
         }
     }
 
@@ -213,7 +216,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         final List<TokenEmbedding> tokenEmbeddings = taggingResponse.getTokenEmbeddings();
         JCoReTreeMapAnnotationIndex<Long, Token> tokenIndex = null;
         if (!tokenEmbeddings.isEmpty())
-            tokenIndex = new JCoReTreeMapAnnotationIndex<>(Comparators.longOverlapComparator(),TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), aJCas, Token.type);
+            tokenIndex = new JCoReTreeMapAnnotationIndex<>(Comparators.longOverlapComparator(), TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), aJCas, Token.type);
         Map<Token, List<double[]>> originalTokenEmbeddings = new HashMap<>();
         for (TokenEmbedding tokenEmbedding : tokenEmbeddings) {
             final Sentence sentence = sentenceMap.get(tokenEmbedding.getSentenceId());
@@ -262,7 +265,8 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     /**
      * Internal references can actually look like a part of a gene, e.g. "filament19" where "19" is a reference.
      * Exclude those spans from the gene mentions.
-     * @param a The gene annotation.
+     *
+     * @param a           The gene annotation.
      * @param intRefIndex The reference index.
      */
     private void excludeReferenceAnnotationSpans(Annotation a, JCoReOverlapAnnotationIndex<? extends Annotation> intRefIndex) {
