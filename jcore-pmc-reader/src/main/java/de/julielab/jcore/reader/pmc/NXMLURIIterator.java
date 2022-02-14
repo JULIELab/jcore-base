@@ -83,7 +83,7 @@ public class NXMLURIIterator implements Iterator<URI> {
             if ((searchRecursively || directory.equals(basePath)) && !isZipFile(directory)) {
                 logFileSearch.debug("Identified {} as a directory, reading files and subdirectories", directory);
                 // set the files in the directory
-                for (File file : directory.listFiles(f -> f.isFile() && f.getName().endsWith("xml") && !isZipFile(f) && isInWhitelist(f))) {
+                for (File file : directory.listFiles(f -> f.isFile() && (f.getName().contains(".xml") || f.getName().contains(".nxml")) && !isZipFile(f) && isInWhitelist(f))) {
                     URI toURI = file.toURI();
                     try {
                         uris.put(toURI);
@@ -105,7 +105,7 @@ public class NXMLURIIterator implements Iterator<URI> {
                     int numEntries = 0;
                     while (entries.hasMoreElements()) {
                         final ZipEntry e = entries.nextElement();
-                        if (!e.isDirectory() && e.getName().contains(".nxml") && isInWhitelist(new File(e.getName()))) {
+                        if (!e.isDirectory() && (e.getName().contains(".xml") || e.getName().contains(".nxml")) && isInWhitelist(new File(e.getName()))) {
                             final String urlStr = "jar:" + directory.toURI() + "!/" + e.getName();
                             int exclamationIndex = urlStr.indexOf('!');
                             final String urlEncodedStr = urlStr.substring(0, exclamationIndex + 2) + Stream.of(urlStr.substring(exclamationIndex + 2).split("/")).map(x -> URLEncoder.encode(x, UTF_8)).collect(Collectors.joining("/"));
