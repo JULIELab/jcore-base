@@ -1,13 +1,17 @@
 {
     "categories": [
-        "multiplier",
-        "reader"
+        "reader",
+        "multiplier"
     ],
     "description": "JeDIS database reader for PMC base documents.",
     "descriptors": [
         {
             "category": "multiplier",
             "location": "de.julielab.jcore.multiplier.pmc.desc.jcore-pmc-db-multiplier"
+        },
+        {
+            "category": "reader",
+            "location": "de.julielab.jcore.multiplier.pmc.desc.jcore-pmc-db-multiplier-reader"
         }
     ],
     "exposable": true,

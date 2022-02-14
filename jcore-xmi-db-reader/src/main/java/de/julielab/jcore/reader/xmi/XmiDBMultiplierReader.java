@@ -94,7 +94,7 @@ public class XmiDBMultiplierReader extends DBMultiplierReader {
     }
 
     @Override
-    public void getNext(JCas jCas) throws CollectionException {
+    public void getNext(JCas jCas) throws CollectionException, IOException {
         try {
             super.getNext(jCas);
             // The above call to super.getNext has created a RowBatch annotation which we retrieve here.
