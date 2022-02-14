@@ -4,7 +4,7 @@
     <implementationName>de.julielab.jcore.flow.annotationdefined.AnnotationDefinedFlowController</implementationName>
     <processingResourceMetaData>
         <name>JCoRe Annotation Defined Flow Controller</name>
-        <description>This flow controller relies on an annotation of type ToVisit to be present in the CAS. If there is no such annotation, the default fixed flow of the aggregate engine using this flow controller is used. Otherwise, die names of the components to pass the CAS to are taken from the annotation. If the annotation exists but defines to components to be visited by the CAS, no components are visited at all.</description>
+        <description>This flow controller relies on an annotation of type ToVisit to be present in the CAS. If there is no such annotation, the default fixed flow of the aggregate engine using this flow controller is used. Otherwise, the names of the components to pass the CAS to are taken from the annotation. If the annotation exists but defines to components to be visited by the CAS, no components are visited at all.</description>
         <version>placeholder</version>
         <vendor>JULIE Lab, Germany</vendor>
         <configurationParameters/>

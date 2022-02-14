@@ -10,10 +10,10 @@ import org.apache.uima.jcas.JCas;
 
 /**
  * <p>Routes CASes through an aggregate analysis engine according to the {@link ToVisit} annotation present in the CAS.</p>
- * <p>If there is not <tt>ToVisit</tt> annotation, the default (fixed) flow will be used. Thus, the fixed flow constraint
+ * <p>If there is no <tt>ToVisit</tt> annotation, the default (fixed) flow will be used. Thus, the fixed flow constraint
  * must be set on the aggregate engine.</p>
  */
-@ResourceMetaData(name = "JCoRe Annotation Defined Flow Controller", description = "This flow controller relies on an annotation of type ToVisit to be present in the CAS. If there is no such annotation, the default fixed flow of the aggregate engine using this flow controller is used. Otherwise, die names of the components to pass the CAS to are taken from the annotation. If the annotation exists but defines to components to be visited by the CAS, no components are visited at all.", vendor = "JULIE Lab, Germany", version = "placeholder")
+@ResourceMetaData(name = "JCoRe Annotation Defined Flow Controller", description = "This flow controller relies on an annotation of type ToVisit to be present in the CAS. If there is no such annotation, the default fixed flow of the aggregate engine using this flow controller is used. Otherwise, the names of the components to pass the CAS to are taken from the annotation. If the annotation exists but defines to components to be visited by the CAS, no components are visited at all.", vendor = "JULIE Lab, Germany", version = "placeholder")
 public class AnnotationDefinedFlowController extends JCasFlowController_ImplBase {
     @Override
     public Flow computeFlow(JCas jCas) throws AnalysisEngineProcessException {
