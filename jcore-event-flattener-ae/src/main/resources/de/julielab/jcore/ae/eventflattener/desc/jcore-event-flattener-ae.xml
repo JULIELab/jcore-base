@@ -12,7 +12,7 @@
         <configurationParameterSettings />
         <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+        <import name="de.julielab.jcore.types.jcore-semdantics-biology-types" />
           <import name="de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types" />
       </imports>
     </typeSystemDescription>
