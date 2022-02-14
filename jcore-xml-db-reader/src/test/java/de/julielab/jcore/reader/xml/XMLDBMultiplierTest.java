@@ -95,7 +95,6 @@ public class XMLDBMultiplierTest {
     }
 
     private static void prepareTargetXMITable(DataBaseConnector dbc, CoStoSysConnection conn) throws SQLException {
-        // Note that the root is "xmi" and not "xml"
         String documentTextFmt = "This is document text number %d";
         dbc.createTable(TARGET_XMI_TABLE, "xmi_text", "Test table for hash comparison test.");
         dbc.assureColumnsExist(TARGET_XMI_TABLE, List.of(HASH_FIELD_NAME), "text");
@@ -138,7 +137,6 @@ public class XMLDBMultiplierTest {
         while (jCasIterator.hasNext()) {
             JCas newCas = jCasIterator.next();
             documentTexts.add(newCas.getDocumentText());
-            System.out.println(newCas.getDocumentText());
             newCas.release();
         }
         assertThat(documentTexts).containsExactly("This is document text number 0", "This is document text number 1", "This is document text number 2", "This is document text number 3", "This is document text number 4", "This is document text number 5", "This is document text number 6", "This is document text number 7", "This is document text number 8", "This is document text number 9");

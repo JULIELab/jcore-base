@@ -62,7 +62,7 @@ public class XMLDBMultiplier extends DBMultiplier {
     @ConfigurationParameter(name = PARAM_TABLE_DOCUMENT, mandatory = false, description = "For use with AnnotationDefinedFlowController. String parameter indicating the name of the " +
             "table where the XMI data and, thus, the hash is stored. The name must be schema qualified. Note that in this component, only the ToVisit annotation is created that determines which components to apply to a CAS with matching (unchanged) hash. The logic to actually control the CAS flow is contained in the AnnotationDefinedFlowController.")
     private String xmiStorageDataTable;
-    @ConfigurationParameter(name= PARAM_TABLE_DOCUMENT_SCHEMA, mandatory = false, description = "For use with AnnotationDefinedFlowController. The name of the schema that the document table - given with the "+PARAM_TABLE_DOCUMENT+" parameter - adheres to. Only the primary key part is required for hash value retrieval.")
+    @ConfigurationParameter(name = PARAM_TABLE_DOCUMENT_SCHEMA, mandatory = false, description = "For use with AnnotationDefinedFlowController. The name of the schema that the document table - given with the " + PARAM_TABLE_DOCUMENT + " parameter - adheres to. Only the primary key part is required for hash value retrieval.")
     private String xmiStorageDataTableSchema;
     @ConfigurationParameter(name = PARAM_TO_VISIT_KEYS, mandatory = false, description = "For use with AnnotationDefinedFlowController. The delegate AE keys of the AEs this CAS should still applied on although the hash has not changed. Can be null or empty indicating that no component should be applied to the CAS. This is, however, the task of the AnnotationDefinedFlowController.")
     private String[] toVisitKeys;
@@ -147,7 +147,7 @@ public class XMLDBMultiplier extends DBMultiplier {
                 String newHash = getHash(jCas);
                 if (existingHash.equals(newHash)) {
                     if (log.isTraceEnabled())
-                    log.trace("Document {} has a document text hash that equals the one present in the database. Creating a ToVisit annotation routing it only to the components with delegate keys {}.", pkString, toVisitKeys);
+                        log.trace("Document {} has a document text hash that equals the one present in the database. Creating a ToVisit annotation routing it only to the components with delegate keys {}.", pkString, toVisitKeys);
                     ToVisit toVisit = new ToVisit(jCas);
                     if (toVisitKeys != null && toVisitKeys.length != 0) {
                         StringArray keysArray = new StringArray(jCas, toVisitKeys.length);
@@ -156,6 +156,8 @@ public class XMLDBMultiplier extends DBMultiplier {
                     }
                     toVisit.addToIndexes();
                 }
+            } else {
+                log.trace("No existing hash was found for document {}", pkString);
             }
         }
     }
@@ -212,10 +214,10 @@ public class XMLDBMultiplier extends DBMultiplier {
                 while (rs.next()) {
                     StringBuilder pkSb = new StringBuilder();
                     for (int i = 0; i < xmiTableSchema.getPrimaryKey().length; i++)
-                        pkSb.append(rs.getString(i+1)).append(',');
-                    // Remove training comma
-                    pkSb.deleteCharAt(pkSb.length()-1);
-                    String hash = rs.getString(xmiTableSchema.getPrimaryKey().length+1);
+                        pkSb.append(rs.getString(i + 1)).append(',');
+                    // Remove trailing comma
+                    pkSb.deleteCharAt(pkSb.length() - 1);
+                    String hash = rs.getString(xmiTableSchema.getPrimaryKey().length + 1);
                     id2hash.put(pkSb.toString(), hash);
                 }
             } catch (SQLException e) {
