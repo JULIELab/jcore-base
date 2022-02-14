@@ -19,6 +19,7 @@ import org.apache.uima.util.ProgressImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +66,7 @@ public class DBMultiplierReader extends DBSubsetReader {
     }
 
     @Override
-    public void getNext(JCas jCas) throws CollectionException {
+    public void getNext(JCas jCas) throws CollectionException, IOException {
         log.trace("Requesting next batch of document IDs from the database.");
         List<Object[]> idList = getNextDocumentIdBatch();
         if (idList.isEmpty())
@@ -119,7 +120,7 @@ public class DBMultiplierReader extends DBSubsetReader {
      *
      * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
      */
-    public boolean hasNext() {
+    public boolean hasNext() throws IOException, CollectionException {
         boolean hasNext = this.hasNext;
         if (retriever != null)
             hasNext = !retriever.getDocumentIds().isEmpty();
@@ -187,7 +188,7 @@ public class DBMultiplierReader extends DBSubsetReader {
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException {
         if (dbc != null)
             dbc.close();
         dbc = null;

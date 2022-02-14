@@ -118,17 +118,20 @@ public abstract class DBReader extends DBSubsetReader {
     private DBCIterator<byte[][]> xmlBytes;
 
     public static String setDBProcessingMetaData(DataBaseConnector dbc, boolean readDataTable, String tableName, byte[][] data, JCas cas) {
-        String pkString = null;
         // remove previously added dbMetaData
         JCasUtil.select(cas, DBProcessingMetaData.class).forEach(x -> x.removeFromIndexes());
 
         DBProcessingMetaData dbMetaData = new DBProcessingMetaData(cas);
         List<Integer> pkIndices = dbc.getPrimaryKeyIndices();
         StringArray pkArray = new StringArray(cas, pkIndices.size());
+        StringBuilder pkBuilder = new StringBuilder();
         for (int i = 0; i < pkIndices.size(); ++i) {
             Integer index = pkIndices.get(i);
             String pkElementValue = new String(data[index], Charset.forName("UTF-8"));
             pkArray.set(i, pkElementValue);
+            pkBuilder.append(pkElementValue);
+            if (i < pkIndices.size() - 1)
+                pkBuilder.append(",");
         }
         if (log.isDebugEnabled())
             log.trace("Setting primary key for DBProcessingMetaData to {}", Arrays.toString(pkArray.toArray()));
@@ -142,10 +145,9 @@ public abstract class DBReader extends DBSubsetReader {
         } else {
             log.trace("Not setting the subset to DBProcessingMetaData because reading the data table is set to {}", readDataTable);
         }
-
-
         dbMetaData.addToIndexes();
-        return pkString;
+
+        return pkBuilder.toString();
     }
 
     @Override
@@ -257,6 +259,7 @@ public abstract class DBReader extends DBSubsetReader {
      * pipeline status field
      */
     protected abstract String getReaderComponentName();
+
     /**
      * <p>
      * This class is charged with retrieving batches of document IDs and documents while previously fetched documents
