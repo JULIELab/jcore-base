@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -57,7 +56,7 @@ public class PMCDBMultiplierHashComparisonTest {
     private static String costosysConfig;
 
     @BeforeAll
-    public static void setup() throws SQLException, UIMAException, IOException, ConfigurationException {
+    public static void setup() throws SQLException, ConfigurationException {
         postgres.start();
         DBTestUtils.createAndSetHiddenConfig(Path.of("src", "test", "resources", "hiddenConfig").toString(), postgres);
 
