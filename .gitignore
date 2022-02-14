@@ -11,3 +11,4 @@ target
 **/*.iml
 /julie-xml-tools.jar
 
+/jcore-pmc-db-reader/src/test/resources/hiddenConfig
