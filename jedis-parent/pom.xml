@@ -36,6 +36,7 @@
         <module>../jcore-xml-db-reader</module>
         <module>../jcore-xmi-db-reader</module>
         <module>../jcore-xmi-db-writer</module>
+        <module>../jcore-pmc-db-reader</module>
     </modules>
     <licenses>
         <license>
