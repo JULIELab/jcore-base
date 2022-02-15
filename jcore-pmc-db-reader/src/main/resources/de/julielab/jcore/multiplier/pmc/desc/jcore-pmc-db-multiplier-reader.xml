@@ -3,7 +3,7 @@
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.db.DBMultiplierReader</implementationName>
     <processingResourceMetaData>
-        <name>JCoRe Database PMC Multiplier Reader</name>
+        <name>JCoRe PMC Database Multiplier Reader</name>
         <description>A collection reader that receives the IDs of documents from a database table. Additional tables may
             be specified which will, together with the IDs, be sent to a CAS multiplier extending the DBMultiplierReader.
             The multiplier will read documents and the joined additional tables according to the list of document IDs
