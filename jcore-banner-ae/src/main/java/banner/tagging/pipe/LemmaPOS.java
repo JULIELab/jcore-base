@@ -43,11 +43,13 @@ public class LemmaPOS extends Pipe {
     public void setLemmatiser(Lemmatiser lemmatiser) {
         initResourcesMap();
         getResources().lemmatiser = lemmatiser;
+//        System.out.println("Setting lemmatiser to " + Thread.currentThread());
     }
 
     public void setPosTagger(Tagger posTagger) {
         initResourcesMap();
         getResources().posTagger = posTagger;
+//        System.out.println("Setting PoS Tagger to " + Thread.currentThread());
     }
 
     synchronized private void initResourcesMap() {
@@ -56,12 +58,16 @@ public class LemmaPOS extends Pipe {
     }
 
     private Resources getResources() {
-        return resourcesByThread.compute(Thread.currentThread(), (t, r) -> {
-            Resources ret = r;
-            if (ret == null)
-                ret = new Resources();
-            return ret;
-        });
+        Thread currentThread = Thread.currentThread();
+        Resources resources = resourcesByThread.get(currentThread);
+        if (resources == null) {
+            resources = new Resources();
+            synchronized (resourcesByThread) {
+//                System.out.println("Creating resources for thread " + currentThread);
+                resourcesByThread.put(currentThread, resources);
+            }
+        }
+        return resources;
     }
 
     @Override
@@ -118,6 +124,7 @@ public class LemmaPOS extends Pipe {
             return "Resources{" +
                     "lemmatiser=" + lemmatiser +
                     ", posTagger=" + posTagger +
+                    ", idHashCode= " + System.identityHashCode(this) +
                     '}';
         }
     }
