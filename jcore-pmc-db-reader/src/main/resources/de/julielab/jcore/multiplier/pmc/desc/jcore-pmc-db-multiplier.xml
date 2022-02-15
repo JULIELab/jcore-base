@@ -4,7 +4,7 @@
     <primitive>true</primitive>
     <annotatorImplementationName>de.julielab.jcore.multiplier.pmc.PMCDBMultiplier</annotatorImplementationName>
     <analysisEngineMetaData>
-        <name>JCoRe Abstract Database Multiplier</name>
+        <name>JCoRe PMC Database Multiplier</name>
         <description>A multiplier that receives document IDs to read from a database table from the DBMultiplierReader. The reader also delivers the path to the corpus storage system (CoStoSys) configuration and additional tables for joining with the main data table. This multiplier class is abstract and cannot be used directly.Extending classes must implement the next() method to actually read documents from the database and populate CASes with them. This component is a part of the Jena Document Information System, JeDIS.</description>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <copyright>JULIE Lab Jena, Germany</copyright>

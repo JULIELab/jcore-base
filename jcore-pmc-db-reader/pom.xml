@@ -61,7 +61,7 @@
             <version>${jcore-utilities-version}</version>
         </dependency>
     </dependencies>
-    <name>JCoRe Pubmed Central DB Reader</name>
+    <name>JCoRe PubMed Central DB Reader</name>
     <organization>
         <name>JULIE Lab Jena, Germany</name>
         <url>http://www.julielab.de</url>
