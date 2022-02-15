@@ -9,6 +9,11 @@
         <vendor>JULIE Lab, Germany</vendor>
         <configurationParameters/>
         <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-casflow-types" />
+            </imports>
+        </typeSystemDescription>
         <capabilities/>
         <operationalProperties>
             <modifiesCas>false</modifiesCas>
