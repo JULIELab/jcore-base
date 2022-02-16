@@ -13,7 +13,7 @@ import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Date;
 
 @ResourceMetaData(name = "JCoRe GNormPlus BioC Writer", description = "Writes CAS documents into the BioC XML format used by the gene tagger and normalizer GNormPlus.", vendor = "JULIE Lab Jena, Germany")
@@ -46,7 +46,7 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
         baseDirectory = (String) aContext.getConfigParameterValue(PARAM_BASE_DIR);
 
         bioCDocumentPopulator = new BioCDocumentPopulator();
-        bioCCollectionWriter = new BioCCollectionWriter(numDocsPerDir, new File(baseDirectory));
+        bioCCollectionWriter = new BioCCollectionWriter(numDocsPerDir, Path.of(baseDirectory));
 
         currentCollection = new BioCCollection("UTF-8", "1.0", new Date().toString(), true, "JCoRe GNormPlus BioC Writer", "PubTator.key");
     }

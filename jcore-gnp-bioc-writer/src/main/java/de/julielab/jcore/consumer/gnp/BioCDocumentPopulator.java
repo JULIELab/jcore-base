@@ -22,6 +22,8 @@ public class BioCDocumentPopulator {
             if (z instanceof Title) {
                 Title t = (Title) z;
                 String titleType;
+                if (t.getTitleType() == null)
+                    throw new IllegalArgumentException("The titleType feature was not set for " + t);
                 switch (t.getTitleType()) {
                     case "document":
                         titleType = "title";
@@ -54,8 +56,13 @@ public class BioCDocumentPopulator {
                 BioCPassage p = getPassageForAnnotation(pa);
                 p.putInfon("type", "paragraph");
                 doc.addPassage(p);
-            } else {
-                log.debug("Unhandled Zone: {}", z);
+            } else if (z instanceof Caption) {
+                Caption c = (Caption) z;
+                BioCPassage p = getPassageForAnnotation(c);
+                if (c.getCaptionType() == null)
+                    throw new IllegalArgumentException("The captionType feature is null for " + c);
+                p.putInfon("type", c.getCaptionType());
+                doc.addPassage(p);
             }
         }
         return doc;
