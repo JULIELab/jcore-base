@@ -10,7 +10,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +40,7 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
      * creation. Here, descriptor parameters are read and initial setup is done.
      */
     @Override
-    public void initialize(final UimaContext aContext) throws ResourceInitializationException {
+    public void initialize(final UimaContext aContext) {
         numDocsPerFile = (int) aContext.getConfigParameterValue(PARAM_NUM_DOCS_PER_FILE);
         numDocsPerDir = (int) aContext.getConfigParameterValue(PARAM_NUM_FILES_PER_DIR);
         baseDirectory = (String) aContext.getConfigParameterValue(PARAM_BASE_DIR);
@@ -68,6 +67,18 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
             }
         } catch (Exception e) {
             log.error("Exception was raised for document {}", JCoReTools.getDocId(jCas));
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    @Override
+    public void collectionProcessComplete() throws AnalysisEngineProcessException {
+        super.collectionProcessComplete();
+        try {
+            if (currentCollection.getDocmentCount() != 0)
+                bioCCollectionWriter.writeBioCCollection(currentCollection);
+        } catch (Exception e) {
+            log.error("Could not write final batch of BioCDocuments.", e);
             throw new AnalysisEngineProcessException(e);
         }
     }
