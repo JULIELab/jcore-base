@@ -406,8 +406,7 @@
     <module>jcore-jedis-integration-tests</module>
             
     
-    <module>jcore-gnp-bioc-writer</module>
-      
+
   </modules>
           
   
