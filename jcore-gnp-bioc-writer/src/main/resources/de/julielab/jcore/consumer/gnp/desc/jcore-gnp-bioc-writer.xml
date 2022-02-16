@@ -1,21 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <primitive>true</primitive>
-  <annotatorImplementationName>GNormPlusFormatWriter</annotatorImplementationName>
-  <analysisEngineMetaData>
-    <name>JCoRe GNormPlus BioC Writer</name>
-    <description/>
-    <version>2.3.0-SNAPSHOT</version>
-    <vendor>JULIE Lab Jena, Germany</vendor>
-    <configurationParameters/>
-    <configurationParameterSettings/>
-    <typeSystemDescription/>
-    <capabilities/>
-    <operationalProperties>
-      <modifiesCas>true</modifiesCas>
-      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
-      <outputsNewCASes>false</outputsNewCASes>
-    </operationalProperties>
-  </analysisEngineMetaData>
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.consumer.gnp.GNormPlusFormatWriter</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe GNormPlus BioC Writer</name>
+        <description>Writes CAS documents into the BioC XML format used by the gene tagger and normalizer GNormPlus.</description>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name>NumDocsPerFile</name>
+                <description>The number of documents (i.e. CASes) that should be written into a single BioC XML file.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>NumFilesPerDir</name>
+                <description>The number of files that should be put in a directory before a new one is created.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>BaseDirectory</name>
+                <description>The base directory into which to create new directories that contain the actual BioC collection files.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs/>
+                <outputs/>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
 </analysisEngineDescription>

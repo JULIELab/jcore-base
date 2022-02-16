@@ -46,6 +46,10 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
     </dependencies>
     <name>JCoRe GNormPlus BioC Writer</name>
     <organization>
