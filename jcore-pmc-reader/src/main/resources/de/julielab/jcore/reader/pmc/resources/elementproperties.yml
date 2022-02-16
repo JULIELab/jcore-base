@@ -7,6 +7,9 @@ title:
     default-feature-values:
         titleType: other
     paths:
+        - path: abstract/title
+          default-feature-values:
+            titleType: abstract
         - path: sec/title
           type: de.julielab.jcore.types.SectionTitle
           default-feature-values:
