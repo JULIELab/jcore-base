@@ -19,6 +19,8 @@ public class BioCDocumentPopulator {
         BioCDocument doc = new BioCDocument(JCoReTools.getDocId(jCas));
         AnnotationIndex<Zone> zoneIndex = jCas.getAnnotationIndex(Zone.type);
         for (Zone z : zoneIndex) {
+            if (z.getEnd() - z.getBegin() <= 0)
+                continue;
             if (z instanceof Title) {
                 Title t = (Title) z;
                 String titleType;
@@ -46,11 +48,27 @@ public class BioCDocumentPopulator {
                 p.putInfon("type", titleType);
                 doc.addPassage(p);
             } else if (z instanceof AbstractText) {
-                // don't check for structured parts; for GNormPlus the only important thing is title, abstract, body
                 AbstractText at = (AbstractText) z;
-                BioCPassage p = getPassageForAnnotation(at);
-                p.putInfon("type", "abstract");
-                doc.addPassage(p);
+                if (at.getStructuredAbstractParts() != null && at.getStructuredAbstractParts().size() > 0) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < at.getStructuredAbstractParts().size() && at.getStructuredAbstractParts(i) != null; ++i) {
+                        AbstractSection abstractPart = at.getStructuredAbstractParts(i);
+                        String sectionLabel = ((AbstractSectionHeading) abstractPart.getAbstractSectionHeading()).getLabel();
+                        sb.append(sectionLabel).append(": ");
+                        sb.append(abstractPart.getCoveredText());
+                        if (i < at.getStructuredAbstractParts().size() - 1 && at.getStructuredAbstractParts(i+1) != null)
+                            sb.append(" ");
+                    }
+                    BioCPassage p = new BioCPassage();
+                    p.setOffset(at.getBegin());
+                    p.setText(sb.toString());
+                    p.putInfon("type", "abstract");
+                    doc.addPassage(p);
+                } else {
+                    BioCPassage p = getPassageForAnnotation(at);
+                    p.putInfon("type", "abstract");
+                    doc.addPassage(p);
+                }
             } else if (z instanceof Paragraph) {
                 Paragraph pa = (Paragraph) z;
                 BioCPassage p = getPassageForAnnotation(pa);

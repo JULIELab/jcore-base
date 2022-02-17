@@ -26,7 +26,7 @@ public class BioCCollectionWriter {
     }
 
     public void writeBioCCollection(BioCCollection collection) throws XMLStreamException, IOException {
-        Path collectionFile = null;
+        Path collectionFile;
         synchronized (BioCCollectionWriter.class) {
             // currentDir is either null at the very beginning or after a batch of documents have been written
             if (currentDir == null) {

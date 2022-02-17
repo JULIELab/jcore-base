@@ -28,7 +28,7 @@ class BioCDocumentPopulatorTest {
         assertThat(resultXml).containsOnlyOnce("<text>This is the title of document 1.</text>");
         assertThat(resultXml).containsOnlyOnce("<infon key=\"type\">title</infon>");
         // The abstract should be one single string
-        assertThat(resultXml).containsOnlyOnce("<text>BACKGROUND This abstract section belongs to document 1.\nRESULTS There are certainly some results reported by document 1.</text>");
+        assertThat(resultXml).containsOnlyOnce("<text>BACKGROUND: This abstract section belongs to document 1. RESULTS: There are certainly some results reported by document 1.</text>");
         assertThat(resultXml).containsOnlyOnce("INTRODUCTION");
         assertThat(resultXml).containsOnlyOnce("<infon key=\"type\">section_title</infon>");
         assertThat(resultXml).contains("<infon key=\"type\">paragraph</infon>");
