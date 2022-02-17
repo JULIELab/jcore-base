@@ -25,6 +25,11 @@
           <description>This feature is used by the DBCheckpointAE. It allows components in the pipeline to prevent a document to be marked as being finished with processing. This can be used to indicate issues with specific documents which will require reprocessing.</description>
           <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
+        <featureDescription>
+          <name>isDocumentHashUnchanged</name>
+          <description>For use by the XMIDBWriter. Used to prohibit that mirror subsets reset to 'not processed' for this document when there was no change in the document text. That allows to update the base document without indicating that a reprocessing is required. This is useful when the document is updated by the distributor (e.g. PubMed) but the text contents have not changed.</description>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

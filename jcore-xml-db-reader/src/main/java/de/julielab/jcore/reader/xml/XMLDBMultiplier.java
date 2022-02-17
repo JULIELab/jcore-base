@@ -57,7 +57,7 @@ public class XMLDBMultiplier extends DBMultiplier {
     protected String[] rowMappingArray;
     @ConfigurationParameter(name = PARAM_MAPPING_FILE, description = XMLDBReader.DESC_MAPPING_FILE)
     protected String mappingFileStr;
-    @ConfigurationParameter(name = PARAM_ADD_SHA_HASH, mandatory = false, description = "For use with AnnotationDefinedFlowController. Possible values: document_text, defaults to 'document_text' and thus doesn't need to be specified manually at the moment. This parameter needs to match the value for the same parameter given to the XMIDBWriter in this pipeline. Then, a comparison between the existing hash in the database and the new hash of the CAS read in this pipeline can be made. In case the hashes match, the CAS is directly routed to the components specified in the " + PARAM_TO_VISIT_KEYS + " parameter, skipping all other components. Note that this only works with AAEs where the first component is an 'AnnotationControlledFlow'.")
+    @ConfigurationParameter(name = PARAM_ADD_SHA_HASH, mandatory = false, description = "For use with AnnotationDefinedFlowController and XMIDBWriter. Possible values: document_text, defaults to 'document_text' and thus doesn't need to be specified manually at the moment. This parameter needs to match the value for the same parameter given to the XMIDBWriter in this pipeline. Then, a comparison between the existing hash in the database and the new hash of the CAS read in this pipeline can be made. In case the hashes match, the CAS is directly routed to the components specified in the " + PARAM_TO_VISIT_KEYS + " parameter, skipping all other components. Note that this only works with AAEs where the first component is an 'AnnotationControlledFlow'. Additionally, the DBProcessingMetaData#hasDocumentHashChanged is set. This can be used by the XMIDBWriter to omit the reset of mirror subsets when updating the base document when the actual CAS text stayed the same.")
     private String documentItemToHash;
     @ConfigurationParameter(name = PARAM_TABLE_DOCUMENT, mandatory = false, description = "For use with AnnotationDefinedFlowController. String parameter indicating the name of the " +
             "table where the XMI data and, thus, the hash is stored. The name must be schema qualified. Note that in this component, only the ToVisit annotation is created that determines which components to apply to a CAS with matching (unchanged) hash. The logic to actually control the CAS flow is contained in the AnnotationDefinedFlowController.")
@@ -148,6 +148,7 @@ public class XMLDBMultiplier extends DBMultiplier {
                 if (existingHash.equals(newHash)) {
                     if (log.isTraceEnabled())
                         log.trace("Document {} has a document text hash that equals the one present in the database. Creating a ToVisit annotation routing it only to the components with delegate keys {}.", pkString, toVisitKeys);
+                    dbProcessingMetaData.setIsDocumentHashUnchanged(true);
                     ToVisit toVisit = new ToVisit(jCas);
                     if (toVisitKeys != null && toVisitKeys.length != 0) {
                         StringArray keysArray = new StringArray(jCas, toVisitKeys.length);

@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,23 +60,33 @@ public class XmiDataInserter {
      * will be a primary key constraint violation, i.e. duplicates).
      *
      * @param annotationModules
-     * @param storeBaseDocument
+     * @param mirrorResetIds
      * @param deleteObsolete
      * @param shaMap
      * @throws XmiDataInsertionException
      * @throws AnalysisEngineProcessException
      */
-    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> annotationModules, String subsetTableName, Boolean storeBaseDocument, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
+    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> annotationModules, String subsetTableName, Set<DocumentId> mirrorResetIds, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
         log.trace("Sending {} XMI data items", annotationModules.size());
         final Map<DocumentId, List<XmiData>> dataByDoc = annotationModules.stream().collect(Collectors.groupingBy(XmiData::getDocId));
         // Collect all document IDs we want to add something for into the database. This can be annotations or the hash.
          final Set<DocumentId> documentIdsWithData = shaMap != null ? Sets.union(dataByDoc.keySet(), shaMap.keySet()) : dataByDoc.keySet();
         log.trace("There are {} documents with values to be updated in the database.", documentIdsWithData.size());
         class RowIterator implements Iterator<Map<String, Object>> {
+            /**
+             * An iterator that always returns only rows for a subset of document IDs. Either the ones that need mirror subsets to be reset or those for which mirror subsets should not be reset.
+             * @param returnDocumentsWithMirrorReset
+             */
+            public RowIterator(boolean returnDocumentsWithMirrorReset) {
+                Predicate<DocumentId> mirrorResetFilterPredicate = docId -> mirrorResetIds.contains(docId);
+                if (!returnDocumentsWithMirrorReset)
+                    mirrorResetFilterPredicate = Predicate.not(mirrorResetFilterPredicate);
+                docIdIterator = Stream.concat(documentIdsWithData.stream(), processedDocumentIds.stream()).filter(mirrorResetFilterPredicate).distinct().iterator();
+            }
 
             // Add documents that have been processed but no data. We need to do this to override potentially existing
             // annotation values with null to remove them.
-            private Iterator<DocumentId> docIdIterator = Stream.concat(documentIdsWithData.stream(), processedDocumentIds.stream()).distinct().iterator();
+            private Iterator<DocumentId> docIdIterator;
             private FieldConfig fieldConfig = dbc.getFieldConfiguration(schemaDocument);
             private List<Map<String, String>> fields = fieldConfig.getFields();
 
@@ -169,12 +180,15 @@ public class XmiDataInserter {
 
             // This is the private in-line defined class from above. All values are already contained in the class
             // definition.
-            RowIterator iterator = new RowIterator();
+            RowIterator iterator = new RowIterator(true);
             try {
                 if (updateMode) {
-                    log.debug("Updating {} XMI CAS data in database table '{}'.",
-                            annotationModules.size(), xmiTableName);
-                    dbc.updateFromRowIterator(iterator, xmiTableName, false, storeBaseDocument, schemaDocument);
+                    log.debug("Updating {} XMI CAS data in database table '{}' for documents with mirror subset resets.",
+                            mirrorResetIds.size(), xmiTableName);
+                    dbc.updateFromRowIterator(iterator, xmiTableName, false, true, schemaDocument);
+                    log.debug("Updating {} XMI CAS data in database table '{}' for documents without mirror subset resets.",
+                            annotationModules.size()-mirrorResetIds.size(), xmiTableName);
+                    dbc.updateFromRowIterator(new RowIterator(false), xmiTableName, false, false, schemaDocument);
                 } else {
                     log.debug("Inserting {} XMI CAS data into database table '{}'.",
                             annotationModules.size(), xmiTableName);
