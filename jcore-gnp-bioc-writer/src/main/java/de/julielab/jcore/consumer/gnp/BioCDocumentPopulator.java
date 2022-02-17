@@ -49,26 +49,9 @@ public class BioCDocumentPopulator {
                 doc.addPassage(p);
             } else if (z instanceof AbstractText) {
                 AbstractText at = (AbstractText) z;
-                if (at.getStructuredAbstractParts() != null && at.getStructuredAbstractParts().size() > 0) {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < at.getStructuredAbstractParts().size() && at.getStructuredAbstractParts(i) != null; ++i) {
-                        AbstractSection abstractPart = at.getStructuredAbstractParts(i);
-                        String sectionLabel = ((AbstractSectionHeading) abstractPart.getAbstractSectionHeading()).getLabel();
-                        sb.append(sectionLabel).append(": ");
-                        sb.append(abstractPart.getCoveredText());
-                        if (i < at.getStructuredAbstractParts().size() - 1 && at.getStructuredAbstractParts(i+1) != null)
-                            sb.append(" ");
-                    }
-                    BioCPassage p = new BioCPassage();
-                    p.setOffset(at.getBegin());
-                    p.setText(sb.toString());
-                    p.putInfon("type", "abstract");
-                    doc.addPassage(p);
-                } else {
-                    BioCPassage p = getPassageForAnnotation(at);
-                    p.putInfon("type", "abstract");
-                    doc.addPassage(p);
-                }
+                BioCPassage p = getPassageForAnnotation(at);
+                p.putInfon("type", "abstract");
+                doc.addPassage(p);
             } else if (z instanceof Paragraph) {
                 Paragraph pa = (Paragraph) z;
                 BioCPassage p = getPassageForAnnotation(pa);
@@ -95,7 +78,7 @@ public class BioCDocumentPopulator {
     private BioCPassage getPassageForAnnotation(Annotation a) {
         BioCPassage p = new BioCPassage();
         p.setOffset(a.getBegin());
-        p.setText(a.getCoveredText());
+        p.setText(a.getCoveredText().replaceAll("\n", " "));
         return p;
     }
 }
