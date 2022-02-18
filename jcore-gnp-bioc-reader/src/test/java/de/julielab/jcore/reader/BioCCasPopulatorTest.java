@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BioCCasPopulatorTest {
 
     private JCas getJCas() throws Exception {
-        return JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-structure-pubmed-types", "de.julielab.jcore.types.jcore-semantics-biology-types");
+        return JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-structure-pubmed-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
     }
 
     @Test

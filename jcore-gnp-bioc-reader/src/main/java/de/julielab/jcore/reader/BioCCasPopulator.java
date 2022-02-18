@@ -34,6 +34,7 @@ public class BioCCasPopulator {
 
     public void populateWithNextDocument(JCas jCas) throws XMLStreamException, IOException {
         BioCDocument document = bioCCollection.getDocument(pos++);
+        setDocumentId(jCas, document);
         setDocumentText(jCas, document);
         Iterator<BioCAnnotation> allAnnotations = Stream.concat(document.getAnnotations().stream(), document.getPassages().stream().map(BioCPassage::getAnnotations).flatMap(Collection::stream)).iterator();
         for (BioCAnnotation annotation : (Iterable<BioCAnnotation>)() ->allAnnotations) {
@@ -53,6 +54,12 @@ public class BioCCasPopulator {
                 throw new IllegalArgumentException("BioCDocument " + document.getID() + " has an annotation issue; see cause exception.", e);
             }
         }
+    }
+
+    private void setDocumentId(JCas jCas, BioCDocument document) {
+        Header h = new Header(jCas);
+        h.setDocId(document.getID());
+        h.addToIndexes();
     }
 
     private void setDocumentText(JCas jCas, BioCDocument document) {
