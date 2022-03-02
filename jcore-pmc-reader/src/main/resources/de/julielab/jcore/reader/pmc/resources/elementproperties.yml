@@ -24,6 +24,8 @@ abstract:
 label:
     block-element: true
     type: de.julielab.jcore.types.Title
+    default-feature-values:
+        titleType: other
     paths:
         - path: list-item/label
           omit-element: true
@@ -33,6 +35,10 @@ sec:
     paths:
         - path: abstract/sec
           type: de.julielab.jcore.types.AbstractSection
+    attributes:
+      - name: sec-type
+        value: supplementary-material
+        omit-element: true
 p:
     block-element: true
     type: de.julielab.jcore.types.Paragraph

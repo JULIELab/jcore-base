@@ -40,9 +40,15 @@ public class NxmlDocumentParser extends NxmlParser {
     private DefaultElementParser defaultElementParser;
     private Map<String, Map<String, Object>> tagProperties;
     private Tagset tagset;
+    private Object currentSource;
 
     public void reset(File nxmlFile, JCas cas) throws DocumentParsingException {
         reset(nxmlFile.toURI(), cas);
+        currentSource = nxmlFile;
+    }
+
+    public Object getCurrentSource() {
+        return currentSource;
     }
 
     public void reset(URI uri, JCas cas) throws DocumentParsingException {
@@ -53,6 +59,7 @@ public class NxmlDocumentParser extends NxmlParser {
             if (gzipped)
                 is = new GZIPInputStream(is);
             reset(is, cas);
+            currentSource = uri;
         } catch (IOException e) {
             throw new DocumentParsingException(e);
         }
@@ -73,6 +80,7 @@ public class NxmlDocumentParser extends NxmlParser {
             vn = vg.getNav();
             setTagset();
             setupParserRegistry();
+            currentSource = "<input stream>";
         } catch (IOException | VTDException e) {
             throw new DocumentParsingException(e);
         }
@@ -152,9 +160,14 @@ public class NxmlDocumentParser extends NxmlParser {
     }
 
     public ElementParsingResult parse() throws ElementParsingException, DocumentParsingException {
-        String startingElement = moveToNextStartingTag();
-        assert startingElement.equals("article") : "Did not encounter an article element as first start element";
-        return getParser(startingElement).parse();
+        try {
+            String startingElement = moveToNextStartingTag();
+            assert startingElement.equals("article") : "Did not encounter an article element as first start element";
+            return getParser(startingElement).parse();
+        } catch (Exception e) {
+            log.error("Exception while parsing document from source {}", currentSource);
+            throw e;
+        }
     }
 
     public NxmlElementParser getParser(String tagName) {
