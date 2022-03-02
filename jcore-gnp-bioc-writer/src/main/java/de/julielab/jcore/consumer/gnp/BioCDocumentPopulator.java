@@ -39,14 +39,20 @@ public class BioCDocumentPopulator {
                     case "table":
                         titleType = "table_title";
                         break;
+                    case "abstractSection":
+                        // abstract sections are part of the AbstractText which is handled below
+                        titleType = "null";
+                        break;
                     default:
                         log.debug("Unhandled title type {}", t.getTitleType());
                         titleType = "other_title";
                         break;
                 }
-                BioCPassage p = getPassageForAnnotation(t);
-                p.putInfon("type", titleType);
-                doc.addPassage(p);
+                if (titleType != null) {
+                    BioCPassage p = getPassageForAnnotation(t);
+                    p.putInfon("type", titleType);
+                    doc.addPassage(p);
+                }
             } else if (z instanceof AbstractText) {
                 AbstractText at = (AbstractText) z;
                 BioCPassage p = getPassageForAnnotation(at);
@@ -69,6 +75,18 @@ public class BioCDocumentPopulator {
         return doc;
     }
 
+//    private BioCPassage getPassageForAbstract(AbstractText at) {
+//        FSArray structuredAbstractParts = at.getStructuredAbstractParts();
+//        boolean foundAbstractParts = false;
+//        if (structuredAbstractParts != null) {
+//            for (int i = 0; i < structuredAbstractParts.size(); ++i) {
+//                AbstractSection as = (AbstractSection) structuredAbstractParts.get(i);
+//
+//            }
+//        }
+//        return null;
+//    }
+
     /**
      * Creates a BioCPassage with offset and text corresponding to the passed annotation <tt>a</tt>.
      *
@@ -78,6 +96,8 @@ public class BioCDocumentPopulator {
     private BioCPassage getPassageForAnnotation(Annotation a) {
         BioCPassage p = new BioCPassage();
         p.setOffset(a.getBegin());
+        // GNormPlus doesn't seem to handle newlines well. It resulted in missing annotations when testing if the
+        // output format is handled well by GNormPlus.
         p.setText(a.getCoveredText().replaceAll("\n", " "));
         return p;
     }

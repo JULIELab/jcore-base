@@ -19,6 +19,7 @@ public class BioCCollectionWriter {
     private Path baseDir;
     private Path currentDir;
     private int numWrittenIntoCurrentDir;
+    private int currentDirNum;
 
     public BioCCollectionWriter(int numFilesPerDir, Path baseDir) {
         this.numFilesPerDir = numFilesPerDir;
@@ -32,12 +33,13 @@ public class BioCCollectionWriter {
             if (currentDir == null) {
                 int i = 0;
                 do {
-                    currentDir = Path.of(baseDir.toString(), "bioc_collections_" + i++);
+                    currentDirNum = i++;
+                    currentDir = Path.of(baseDir.toString(), "bioc_collections_" + currentDirNum);
                 } while (Files.exists(currentDir));
             }
             int i = 0;
             do {
-                collectionFile = Path.of(currentDir.toString(), "bioc_collection_" + i++ + ".xml");
+                collectionFile = Path.of(currentDir.toString(), "bioc_collection_" + currentDirNum + "_" + i++ + ".xml");
             } while (Files.exists(collectionFile));
             if (!Files.exists(collectionFile.getParent())) {
                 log.debug("Creating base BioC collection directory {}", baseDir);

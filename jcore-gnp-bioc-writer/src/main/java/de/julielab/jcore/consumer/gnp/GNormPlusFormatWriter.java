@@ -59,7 +59,8 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
     public void process(final JCas jCas) throws AnalysisEngineProcessException {
         try {
             BioCDocument doc = bioCDocumentPopulator.populate(jCas);
-            currentCollection.addDocument(doc);
+            if (doc.getPassageCount() > 0)
+                currentCollection.addDocument(doc);
             if (currentCollection.getDocmentCount() >= numDocsPerFile) {
                 bioCCollectionWriter.writeBioCCollection(currentCollection);
                 currentCollection.clearDocuments();
@@ -75,7 +76,7 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
         try {
-            if (currentCollection.getDocmentCount() != 0)
+//            if (currentCollection.getDocmentCount() != 0)
                 bioCCollectionWriter.writeBioCCollection(currentCollection);
         } catch (Exception e) {
             log.error("Could not write final batch of BioCDocuments.", e);
