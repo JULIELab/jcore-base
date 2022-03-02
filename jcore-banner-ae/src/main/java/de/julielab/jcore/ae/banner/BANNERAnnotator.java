@@ -139,7 +139,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
                 // model is deserialized multiple times, the FeatureSet#pipe field seems to be always the
                 // exact same instance, containing a single instance of LemmaPOS (again, despite reading the model
                 // file and deserializing it multiple times). This is why the Thread -> resources map was added.
-//                System.out.println("Initializing BANNER: " + Thread.currentThread() + " with lemmatiser " + lemmatiser + " and POS tagger " + posTagger);
+                System.out.println("Initializing BANNER: " + Thread.currentThread() + " with lemmatiser " + lemmatiser + " and POS tagger " + posTagger);
                 synchronized (BANNERAnnotator.class) {
                     tagger = CRFTagger.load(modelIs, lemmatiser, posTagger, dictionary);
                 }

@@ -43,13 +43,13 @@ public class LemmaPOS extends Pipe {
     public void setLemmatiser(Lemmatiser lemmatiser) {
         initResourcesMap();
         getResources().lemmatiser = lemmatiser;
-//        System.out.println("Setting lemmatiser to " + Thread.currentThread());
+        System.out.println("Setting lemmatiser to " + Thread.currentThread() + " in object " + this);
     }
 
     public void setPosTagger(Tagger posTagger) {
         initResourcesMap();
         getResources().posTagger = posTagger;
-//        System.out.println("Setting PoS Tagger to " + Thread.currentThread());
+        System.out.println("Setting PoS Tagger to " + Thread.currentThread() + " in object " + this);
     }
 
     synchronized private void initResourcesMap() {
