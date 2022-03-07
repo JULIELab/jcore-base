@@ -7,6 +7,7 @@ import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.types.*;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.StringArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -27,6 +29,7 @@ public class BioCCasPopulator {
     private final static Logger log = LoggerFactory.getLogger(BioCCasPopulator.class);
     private final BioCCollection bioCCollection;
     private Map<String, Integer> maxXmiIdMap;
+    private Map<String, String> sofaMaps;
     private int pos;
 
     public BioCCasPopulator(Path biocCollectionPath, Path costosysConfiguration, String documentsTable) throws XMLStreamException, IOException, SQLException {
@@ -35,22 +38,23 @@ public class BioCCasPopulator {
         }
         if (costosysConfiguration != null) {
             maxXmiIdMap = new HashMap<>();
+            sofaMaps = new HashMap<>();
             DataBaseConnector dbc = new DataBaseConnector(costosysConfiguration.toString());
             try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
-                retrieveMaxXmiIds(documentsTable, dbc, conn);
+                retrieveXmiMetaData(documentsTable, dbc, conn);
             }
         }
         pos = 0;
     }
 
-    private void retrieveMaxXmiIds(String documentsTable, DataBaseConnector dbc, CoStoSysConnection conn) throws SQLException {
+    private void retrieveXmiMetaData(String documentsTable, DataBaseConnector dbc, CoStoSysConnection conn) throws SQLException {
         log.debug("Retrieving the max XMI IDs for the current BioC collection of size {} from the database.", bioCCollection.getDocmentCount());
         Statement stmt = conn.createStatement();
         StringBuilder maxIdQueryBuilder = new StringBuilder();
         if (dbc.getActiveTableFieldConfiguration().getPrimaryKey().length > 1)
             throw new IllegalArgumentException("The primary key of the active field schema '" + dbc.getActiveTableFieldConfiguration().getName() + "' is a compound key. Compound primary keys are currently not supported in this component.");
         String pkString = dbc.getActiveTableFieldConfiguration().getPrimaryKeyString();
-        maxIdQueryBuilder.append("SELECT ").append(pkString).append(",max_xmi_id FROM ").append(documentsTable).append(" WHERE ").append(pkString).append(" in ").append("(");
+        maxIdQueryBuilder.append("SELECT ").append(pkString).append(",max_xmi_id,sofa_mapping FROM ").append(documentsTable).append(" WHERE ").append(pkString).append(" in ").append("(");
         for (BioCDocument document : bioCCollection.getDocuments()) {
             String docId = document.getID();
             maxIdQueryBuilder.append("'").append(docId).append("'").append(",");
@@ -62,6 +66,10 @@ public class BioCCasPopulator {
         ResultSet rs = stmt.executeQuery(maxIdQuery);
         while (rs.next()) {
             maxXmiIdMap.put(rs.getString(1), rs.getInt(2));
+            sofaMaps.put(rs.getString(1), rs.getString(3));
+        }
+        if (log.isTraceEnabled()) {
+            log.trace("XMI ID map sample: {}", maxXmiIdMap.entrySet().stream().limit(10).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
         log.debug("Obtained {} max XMI IDs.", maxXmiIdMap.size());
     }
@@ -94,10 +102,23 @@ public class BioCCasPopulator {
     private void setMaxXmiId(JCas jCas, BioCDocument document) {
         if (maxXmiIdMap != null) {
             Integer maxXmiId = maxXmiIdMap.get(document.getID());
+            String mappingString = sofaMaps.get(document.getID());
             if (maxXmiId == null)
                 throw new IllegalStateException("No max XMI ID was obtained for the document with ID " + document.getID() + ". This means that this document is not already part of the database documents table. When adding annotations to existing database documents, make sure that all documents exist in the database already.");
             XmiMetaData xmiMetaData = new XmiMetaData(jCas);
             xmiMetaData.setMaxXmiId(maxXmiId);
+            String[] mappings = mappingString != null ? mappingString.split("\\|") : null;
+            StringArray mappingsArray = null;
+            if (mappings != null) {
+                mappingsArray = new StringArray(jCas, mappings.length);
+                for (int i = 0; i < mappings.length; i++) {
+                    String mapping = mappings[i];
+                    mappingsArray.set(i, mapping);
+                    log.trace("Retrieved sofa_id_mapping {} for document {}.", mappingsArray.get(i), document.getID());
+                }
+            }
+            if (mappingsArray != null)
+                xmiMetaData.setSofaIdMappings(mappingsArray);
             xmiMetaData.addToIndexes();
         }
     }
