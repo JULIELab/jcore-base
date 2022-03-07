@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jcore-bnp-bioc-reader</artifactId>
+    <artifactId>jcore-gnp-bioc-reader</artifactId>
     <packaging>jar</packaging>
     <groupId>de.julielab</groupId>
 
@@ -50,6 +50,11 @@
             <artifactId>jcore-utilities</artifactId>
             <version>${jcore-utilities-version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>costosys</artifactId>
+            <version>[1.6.0, )</version>
         </dependency>
     </dependencies>
     <name>JCoRe GNormPlus BioC Reader</name>

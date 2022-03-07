@@ -13,6 +13,7 @@
                 <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
                 <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
                 <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+                <import name="de.julielab.jcore.types.jcore-xmi-splitter-types"/>
             </imports>
         </typeSystemDescription>
         <fsIndexCollection/>

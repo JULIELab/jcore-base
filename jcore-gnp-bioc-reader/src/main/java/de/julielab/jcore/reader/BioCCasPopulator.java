@@ -2,6 +2,8 @@ package de.julielab.jcore.reader;
 
 import com.pengyifan.bioc.*;
 import com.pengyifan.bioc.io.BioCCollectionReader;
+import de.julielab.costosys.dbconnection.CoStoSysConnection;
+import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.types.*;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
@@ -11,9 +13,10 @@ import org.slf4j.LoggerFactory;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Optional;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -23,19 +26,51 @@ public class BioCCasPopulator {
 
     private final static Logger log = LoggerFactory.getLogger(BioCCasPopulator.class);
     private final BioCCollection bioCCollection;
+    private Map<String, Integer> maxXmiIdMap;
     private int pos;
 
-    public BioCCasPopulator(Path biocCollectionPath) throws XMLStreamException, IOException {
+    public BioCCasPopulator(Path biocCollectionPath, Path costosysConfiguration, String documentsTable) throws XMLStreamException, IOException, SQLException {
         try (BioCCollectionReader bioCCollectionReader = new BioCCollectionReader(biocCollectionPath)) {
             bioCCollection = bioCCollectionReader.readCollection();
+        }
+        if (costosysConfiguration != null) {
+            maxXmiIdMap = new HashMap<>();
+            DataBaseConnector dbc = new DataBaseConnector(costosysConfiguration.toString());
+            try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+                retrieveMaxXmiIds(documentsTable, dbc, conn);
+            }
         }
         pos = 0;
     }
 
-    public void populateWithNextDocument(JCas jCas) throws XMLStreamException, IOException {
+    private void retrieveMaxXmiIds(String documentsTable, DataBaseConnector dbc, CoStoSysConnection conn) throws SQLException {
+        log.debug("Retrieving the max XMI IDs for the current BioC collection of size {} from the database.", bioCCollection.getDocmentCount());
+        Statement stmt = conn.createStatement();
+        StringBuilder maxIdQueryBuilder = new StringBuilder();
+        if (dbc.getActiveTableFieldConfiguration().getPrimaryKey().length > 1)
+            throw new IllegalArgumentException("The primary key of the active field schema '" + dbc.getActiveTableFieldConfiguration().getName() + "' is a compound key. Compound primary keys are currently not supported in this component.");
+        String pkString = dbc.getActiveTableFieldConfiguration().getPrimaryKeyString();
+        maxIdQueryBuilder.append("SELECT ").append(pkString).append(",max_xmi_id FROM ").append(documentsTable).append(" WHERE ").append(pkString).append(" in ").append("(");
+        for (BioCDocument document : bioCCollection.getDocuments()) {
+            String docId = document.getID();
+            maxIdQueryBuilder.append("'").append(docId).append("'").append(",");
+        }
+        // remove trailing comma
+        maxIdQueryBuilder.deleteCharAt(maxIdQueryBuilder.length() - 1);
+        maxIdQueryBuilder.append(")");
+        String maxIdQuery = maxIdQueryBuilder.toString();
+        ResultSet rs = stmt.executeQuery(maxIdQuery);
+        while (rs.next()) {
+            maxXmiIdMap.put(rs.getString(1), rs.getInt(2));
+        }
+        log.debug("Obtained {} max XMI IDs.", maxXmiIdMap.size());
+    }
+
+    public void populateWithNextDocument(JCas jCas) {
         BioCDocument document = bioCCollection.getDocument(pos++);
         setDocumentId(jCas, document);
         setDocumentText(jCas, document);
+        setMaxXmiId(jCas, document);
         Iterator<BioCAnnotation> allAnnotations = Stream.concat(document.getAnnotations().stream(), document.getPassages().stream().map(BioCPassage::getAnnotations).flatMap(Collection::stream)).iterator();
         for (BioCAnnotation annotation : (Iterable<BioCAnnotation>)() ->allAnnotations) {
             Optional<String> type = annotation.getInfon("type");
@@ -53,6 +88,17 @@ public class BioCCasPopulator {
             } catch (MissingInfonException e) {
                 throw new IllegalArgumentException("BioCDocument " + document.getID() + " has an annotation issue; see cause exception.", e);
             }
+        }
+    }
+
+    private void setMaxXmiId(JCas jCas, BioCDocument document) {
+        if (maxXmiIdMap != null) {
+            Integer maxXmiId = maxXmiIdMap.get(document.getID());
+            if (maxXmiId == null)
+                throw new IllegalStateException("No max XMI ID was obtained for the document with ID " + document.getID() + ". This means that this document is not already part of the database documents table. When adding annotations to existing database documents, make sure that all documents exist in the database already.");
+            XmiMetaData xmiMetaData = new XmiMetaData(jCas);
+            xmiMetaData.setMaxXmiId(maxXmiId);
+            xmiMetaData.addToIndexes();
         }
     }
 

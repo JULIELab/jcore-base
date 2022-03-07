@@ -20,7 +20,7 @@ class BioCCasPopulatorTest {
 
     @Test
     public void populateWithNextDocument() throws Exception {
-        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "test-input-path", "bioc_collection_3.xml"));
+        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "test-input-path", "bioc_collection_3.xml"), null, null);
         assertThat(bioCCasPopulator.documentsLeftInCollection()).isEqualTo(2);
         JCas jCas = getJCas();
         bioCCasPopulator.populateWithNextDocument(jCas);
