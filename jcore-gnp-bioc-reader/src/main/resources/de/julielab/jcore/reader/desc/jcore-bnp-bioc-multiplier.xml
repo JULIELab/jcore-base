@@ -29,6 +29,7 @@
                 <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
                 <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
                 <import name="de.julielab.jcore.types.jcore-xmi-splitter-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
             </imports>
         </typeSystemDescription>
         <fsIndexCollection/>

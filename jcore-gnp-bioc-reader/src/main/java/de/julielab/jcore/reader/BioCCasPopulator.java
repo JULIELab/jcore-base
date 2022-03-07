@@ -69,7 +69,8 @@ public class BioCCasPopulator {
             sofaMaps.put(rs.getString(1), rs.getString(3));
         }
         if (log.isTraceEnabled()) {
-            log.trace("XMI ID map sample: {}", maxXmiIdMap.entrySet().stream().limit(10).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+            log.trace("XMI ID sample: {}", maxXmiIdMap.entrySet().stream().limit(10).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+            log.trace("Sofa map sample: {}", sofaMaps.entrySet().stream().limit(10).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
         log.debug("Obtained {} max XMI IDs.", maxXmiIdMap.size());
     }
@@ -114,7 +115,6 @@ public class BioCCasPopulator {
                 for (int i = 0; i < mappings.length; i++) {
                     String mapping = mappings[i];
                     mappingsArray.set(i, mapping);
-                    log.trace("Retrieved sofa_id_mapping {} for document {}.", mappingsArray.get(i), document.getID());
                 }
             }
             if (mappingsArray != null)
