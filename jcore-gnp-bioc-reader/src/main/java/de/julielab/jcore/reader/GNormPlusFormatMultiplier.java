@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
 
-@ResourceMetaData(name="GNormPlusFormatMultiplier", description = "Multiplier for GNormPlusFormatMultiplierReader. Takes URIs pointing to BioC collection files that contain annotations created by GNormPlus. For each such file, reads all documents and returns CASes for them until all documents in all collections have been read into a CAS.")
+@ResourceMetaData(name="JCoRe GNormPlus BioC Format Multiplier", description = "Multiplier for GNormPlusFormatMultiplierReader. Takes URIs pointing to BioC collection files that contain annotations created by GNormPlus. For each such file, reads all documents and returns CASes for them until all documents in all collections have been read into a CAS.")
 public class GNormPlusFormatMultiplier extends JCasMultiplier_ImplBase {
     private final static Logger log = LoggerFactory.getLogger(GNormPlusFormatMultiplier.class);
     public static final String PARAM_COSTOSYS_CONFIG = "CostosysConfigFile";

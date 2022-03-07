@@ -1,12 +1,12 @@
 {
     "categories": [
         "reader",
-        "multiplier"
+        "ae"
     ],
     "description": "A reader for the BioC format used by GNormPlus. Reads the text and the annotations, both species and genes.",
     "descriptors": [
         {
-            "category": "multiplier",
+            "category": "ae",
             "location": "de.julielab.jcore.reader.desc.jcore-bnp-bioc-multiplier"
         },
         {
@@ -17,7 +17,7 @@
     "exposable": true,
     "group": "general",
     "maven-artifact": {
-        "artifactId": "jcore-bnp-bioc-reader",
+        "artifactId": "jcore-gnp-bioc-reader",
         "groupId": "de.julielab",
         "version": "2.6.0-SNAPSHOT"
     },
