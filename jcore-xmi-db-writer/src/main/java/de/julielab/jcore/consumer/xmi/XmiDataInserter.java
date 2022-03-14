@@ -168,7 +168,6 @@ public class XmiDataInserter {
                     row.put(hashColumnName, hash);
                     log.trace("{}={}", hashColumnName, hash);
                 }
-                System.out.println("XmiInserter: " + row);
                 return row;
             }
 
