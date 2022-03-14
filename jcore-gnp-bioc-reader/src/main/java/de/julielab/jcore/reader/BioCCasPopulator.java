@@ -162,6 +162,10 @@ public class BioCCasPopulator {
                             passageAnnotation = new Title(jCas, offset, passageEnd);
                             ((Title) passageAnnotation).setTitleType("table");
                             break;
+                        case "other_title":
+                            passageAnnotation = new Title(jCas, offset, passageEnd);
+                            ((Title) passageAnnotation).setTitleType("other");
+                            break;
                         case "abstract":
                             passageAnnotation = new AbstractText(jCas, offset, passageEnd);
                             break;
@@ -223,5 +227,13 @@ public class BioCCasPopulator {
 
     public int documentsLeftInCollection() {
         return bioCCollection.getDocmentCount() - pos;
+    }
+
+    public long getCollectionTextLength() {
+        return bioCCollection.getDocuments().stream().map(BioCDocument::getPassages).flatMap(Collection::stream).mapToInt(passage -> passage.getText().orElse("").length()).sum();
+    }
+
+    public int getNumDocumentsInCollection() {
+        return bioCCollection.getDocmentCount();
     }
 }

@@ -77,6 +77,9 @@ public class GNormPlusFormatMultiplierReader extends JCasCollectionReader_ImplBa
                 throw new CollectionException(e);
             }
             completed++;
+            if (completed % 10 == 0) {
+                log.debug("{} input files read", completed);
+            }
         }
     }
 

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.BatchUpdateException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -34,6 +35,7 @@ public class XmiDataInserter {
     private Map<DocumentId, Integer> maxXmiIdMap;
     private String componentDbName;
     private String hashColumnName;
+    private DecimalFormat df = new DecimalFormat();
 
     private List<DocumentId> processedDocumentIds;
 
@@ -97,7 +99,7 @@ public class XmiDataInserter {
 
             @Override
             public Map<String, Object> next() {
-                Map<String, Object> row = new HashMap<String, Object>();
+                Map<String, Object> row = new HashMap<>();
                 final DocumentId docId = docIdIterator.next();
                 // There might actually be no data when we only write the SHA hashes
                 final List<XmiData> dataList = dataByDoc.getOrDefault(docId, Collections.emptyList());
@@ -166,6 +168,7 @@ public class XmiDataInserter {
                     row.put(hashColumnName, hash);
                     log.trace("{}={}", hashColumnName, hash);
                 }
+                System.out.println("XmiInserter: " + row);
                 return row;
             }
 
@@ -175,7 +178,9 @@ public class XmiDataInserter {
             }
         }
 
+        long time = System.currentTimeMillis();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+            log.debug("Obtained connection after {}ms", System.currentTimeMillis()-time);
             conn.setAutoCommit(false);
 
             // This is the private in-line defined class from above. All values are already contained in the class
@@ -199,6 +204,7 @@ public class XmiDataInserter {
                 throw new XmiDataInsertionException(e);
             }
             setLastComponent(conn, subsetTableName);
+            processedDocumentIds.clear();
             log.debug("Committing XMI data to database.");
             conn.commit();
             maxXmiIdMap.clear();
@@ -208,6 +214,10 @@ public class XmiDataInserter {
             SQLException ne = e.getNextException();
             if (null != ne)
                 ne.printStackTrace();
+        }
+        if (log.isDebugEnabled()) {
+            time = System.currentTimeMillis() - time;
+            log.debug("Database import of {} XMI documents took {}ms ({}ms per document)", documentIdsWithData.size(), time, df.format((double) time / documentIdsWithData.size()));
         }
     }
 
@@ -261,8 +271,6 @@ public class XmiDataInserter {
             else
                 nextException.printStackTrace();
             throw new XmiDataInsertionException(nextException);
-        } finally {
-            processedDocumentIds.clear();
         }
     }
 

@@ -24,6 +24,7 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -174,7 +175,8 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             }
             JCoReOverlapAnnotationIndex<InternalReference> intRefIndex = new JCoReOverlapAnnotationIndex<>(aJCas, InternalReference.type);
             final AnnotationAdderHelper helper = new AnnotationAdderHelper();
-            log.trace("Sending document sentences to flair for entity tagging.");
+            if (log.isTraceEnabled())
+            log.trace("Sending document sentences to flair for entity tagging: {}", JCasUtil.select(aJCas, Sentence.class).stream().map(Sentence::getCoveredText).collect(Collectors.toList()));
             final NerTaggingResponse taggingResponse = connector.tagSentences(StreamSupport.stream(sentIndex.spliterator(), false));
             final List<TaggedEntity> taggedEntities = taggingResponse.getTaggedEntities();
             for (TaggedEntity entity : taggedEntities) {

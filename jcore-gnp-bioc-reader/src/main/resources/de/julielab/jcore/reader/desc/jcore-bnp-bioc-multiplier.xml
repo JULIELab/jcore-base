@@ -33,11 +33,20 @@
             </imports>
         </typeSystemDescription>
         <fsIndexCollection/>
-        <capabilities/>
+        <capabilities>
+            <capability>
+                <inputs/>
+                <outputs>
+                    <type>de.julielab.jcore.types.Gene</type>
+                    <type>de.julielab.jcore.types.Organism</type>
+                </outputs>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
-            <outputsNewCASes>true</outputsNewCASes>
+            <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
     </analysisEngineMetaData>
 </analysisEngineDescription>
