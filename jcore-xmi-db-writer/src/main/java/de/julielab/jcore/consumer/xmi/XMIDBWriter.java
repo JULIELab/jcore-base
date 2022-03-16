@@ -252,6 +252,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private String documentItemToHash;
     private Map<DocumentId, String> shaMap;
     private Set<DocumentId> mirrorResetIds;
+    private Set<DocumentId> unchangedDocuments;
     private String mappingCacheKey;
     private DocumentReleaseCheckpoint docReleaseCheckpoint;
     private List<DocumentId> currentDocumentIdBatch;
@@ -426,6 +427,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             this.binaryEncoder = new BinaryJeDISNodeEncoder();
         }
         mirrorResetIds = new HashSet<>();
+        unchangedDocuments = new HashSet<>();
 
         log.info(XMIDBWriter.class.getName() + " initialized.");
         log.info("Effective document table name: {}", effectiveDocTableName);
@@ -519,6 +521,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             Optional<DBProcessingMetaData> metaData = metaDatas.stream().findAny();
             DocumentId docId = getDocumentId(aJCas, metaData);
             setMirrorResetStateForDocId(docId, metaData);
+            if (metaData.isPresent() && metaData.get().getIsDocumentHashUnchanged())
+                unchangedDocuments.add(docId);
             if (docId == null) {
                 log.warn("The current document does not have a document ID. It is omitted from database import.");
                 return;
@@ -571,8 +575,10 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private void setMirrorResetStateForDocId(DocumentId docId, Optional<DBProcessingMetaData> metaData) {
         if (metaData.isPresent()) {
             // mirror subset reset is only necessary if we store the base document in any way;
-            // additionally, we check if the document text hash key is reported to by different to its already
-            // existing database entry. Only then the mirror subsets should be reset for this document.
+            // additionally, we check if the document text hash key is reported to be different to its already
+            // existing database entry. Only then the mirror subsets should be reset for this document because only
+            // then a re-processing of the document makes sense.
+            // The isDocumentHashUnchanged feature is set by the XMLDBMultiplier.
             if (storeBaseDocument && !metaData.get().getIsDocumentHashUnchanged())
                 mirrorResetIds.add(docId);
         } else {
@@ -1022,7 +1028,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             final boolean readyToSendData = processXmiBuffer();
             if (readyToSendData) {
                 if (!(featuresToMapDryRun && useBinaryFormat))
-                    annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, mirrorResetIds, deleteObsolete, shaMap);
+                    annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, mirrorResetIds, unchangedDocuments, deleteObsolete, shaMap);
                 else
                     log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
                 log.trace("Clearing {} annotation modules", annotationModules.size());
@@ -1033,6 +1039,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                     docReleaseCheckpoint.release(jedisSyncKey, currentDocumentIdBatch.stream());
                 currentDocumentIdBatch.clear();
                 mirrorResetIds.clear();
+                unchangedDocuments.clear();
             }
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
@@ -1052,7 +1059,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         try {
             processXmiBuffer();
             if (!(featuresToMapDryRun && useBinaryFormat))
-                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, mirrorResetIds, deleteObsolete, shaMap);
+                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, mirrorResetIds, unchangedDocuments, deleteObsolete, shaMap);
             else
                 log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
             annotationModules.clear();
@@ -1062,6 +1069,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 docReleaseCheckpoint.release(jedisSyncKey, currentDocumentIdBatch.stream());
             currentDocumentIdBatch.clear();
             mirrorResetIds.clear();
+            unchangedDocuments.clear();
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
         }

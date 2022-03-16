@@ -17,7 +17,9 @@ import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
@@ -36,11 +38,13 @@ import java.util.List;
 import java.util.*;
 import java.util.Map.Entry;
 
+@ResourceMetaData(name="JCoRe BioSem Event Annotator", description = "Adds annotations for event triggers and events according to the BioNLP Shared Task event definition.")
 @TypeCapability(inputs = {"de.julielab.jcore.types.Gene"}, outputs = {"de.julielab.jcore.types.EventTrigger", "de.julielab.jcore.types.EventMention"})
 public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 
 	private final static Logger log = LoggerFactory.getLogger(BioSemEventAnnotator.class);
 
+	public static final String PARAM_COMPONENT_ID = "ComponentId";
 	public final static String RESOURCE_TRAINED_DB = "TrainedDB";
 
 	private DataLoader loader;
@@ -49,6 +53,8 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 
 	@ExternalResource(key = RESOURCE_TRAINED_DB)
 	private DBUtilsProvider dbUtilsProvider;
+	@ConfigurationParameter(name=PARAM_COMPONENT_ID, mandatory = false, defaultValue = "BioSemEventAnnotator", description = "Optional. If set, the 'componentId' feature of the created annotations will be set to the value of this parameter.")
+	private String componentId;
 
 	private EventExtraction xtr;
 
@@ -66,6 +72,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	public void initialize(UimaContext aContext) throws ResourceInitializationException {
 		super.initialize(aContext);
 		try {
+			componentId = (String) aContext.getConfigParameterValue(PARAM_COMPONENT_ID);
 			dbUtilsProvider = (DBUtilsProvider) aContext.getResourceObject(RESOURCE_TRAINED_DB);
 			trainedDb = dbUtilsProvider.getTrainedDatabase();
 		} catch (ResourceAccessException e) {
@@ -200,6 +207,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			PData eventArg1 = event.getPdata1();
 			PData eventArg2 = event.getPdata2();
 			uimaEvent = new EventMention(aJCas, begin, end);
+			uimaEvent.setComponentId(componentId);
 			uimaEvent.setId(event.PID);
 			uimaEvent.setSpecificType(uimaTrigger.getSpecificType());
 			uimaEvent.setTrigger(uimaTrigger);
@@ -281,6 +289,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			// if we don't want to use the writer).
 			protein.setSpecificType("protein");
 			uimaArg = new ArgumentMention(aJCas, protein.getBegin(), protein.getEnd());
+			uimaArg.setComponentId(componentId);
 			uimaArg.setRef(protein);
 			uimaArg.setRole(determineArgumentRole(uimaEvent, uimaArg, argPos));
 		} else if (bioSemArg instanceof PData) {
@@ -295,9 +304,10 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			}
 			if (null == uimaEventArg) {
 				throw new IllegalStateException("Creating UIMA EventMention annotation for BioSem event \""
-						+ eventArg.toString() + "\" failed, the UIMA EventMention is null.");
+						+ eventArg + "\" failed, the UIMA EventMention is null.");
 			}
 			uimaArg = new ArgumentMention(aJCas, uimaEventArg.getBegin(), uimaEventArg.getEnd());
+			uimaArg.setComponentId(componentId);
 			uimaArg.setRef(uimaEventArg);
 			uimaArg.setRole(determineArgumentRole(uimaEvent, uimaArg, argPos));
 		} else {
@@ -361,6 +371,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 		int end = trg.locs[1];
 		String type = trg.type;
 		EventTrigger uimaTrigger = new EventTrigger(aJCas, begin, end);
+		uimaTrigger.setComponentId(componentId);
 		uimaTrigger.setId(id);
 		uimaTrigger.setSpecificType(type);
 		return uimaTrigger;
