@@ -29,12 +29,27 @@
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>AddGenes</name>
+                <description>false</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings/>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>AddGenes</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
                 <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
             </imports>
         </typeSystemDescription>
         <fsIndexCollection/>
