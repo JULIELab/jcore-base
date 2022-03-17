@@ -3,6 +3,7 @@ package de.julielab.jcore.consumer.gnp;
 import com.pengyifan.bioc.BioCCollection;
 import com.pengyifan.bioc.BioCDocument;
 import com.pengyifan.bioc.io.BioCCollectionWriter;
+import de.julielab.jcore.types.Gene;
 import org.apache.uima.jcas.JCas;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BioCDocumentPopulatorTest {
     @Test
     public void populate() throws Exception {
-        BioCDocumentPopulator populator = new BioCDocumentPopulator();
+        BioCDocumentPopulator populator = new BioCDocumentPopulator(false);
         JCas jCas = TestDocumentGenerator.prepareCas(1);
         BioCDocument biocDoc = populator.populate(jCas);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -37,5 +38,69 @@ class BioCDocumentPopulatorTest {
         assertThat(resultXml).containsOnlyOnce("<infon key=\"type\">table_title</infon>");
         assertThat(resultXml).containsOnlyOnce("Tab1.");
         assertThat(resultXml).containsOnlyOnce("This is the table1 caption.");
+    }
+
+    @Test
+    public void populateWithGenes() throws Exception {
+        BioCDocumentPopulator populator = new BioCDocumentPopulator(true);
+        JCas jCas = TestDocumentGenerator.prepareCas(1);
+        new Gene(jCas, 0, 4).addToIndexes();
+        new Gene(jCas, 87, 96).addToIndexes();
+        BioCDocument biocDoc = populator.populate(jCas);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        BioCCollection collection = new BioCCollection("UTF-8", "1.0", (new Date()).toString(), true, "jUnit Test", "PubTator.key");
+        collection.addDocument(biocDoc);
+        BioCCollectionWriter collectionWriter = new BioCCollectionWriter(baos);
+        collectionWriter.writeCollection(collection);
+        String resultXml = baos.toString(StandardCharsets.UTF_8);
+        assertThat(resultXml).containsOnlyOnce("<annotation id=\"0\">");
+        assertThat(resultXml).contains("<infon key=\"type\">Gene</infon>");
+        assertThat(resultXml).containsOnlyOnce("<location offset=\"0\" length=\"4\"/>");
+        assertThat(resultXml).containsOnlyOnce("<text>This</text>");
+
+        assertThat(resultXml).contains("<annotation id=\"1\">");
+        assertThat(resultXml).contains("<infon key=\"type\">Gene</infon>");
+        assertThat(resultXml).containsOnlyOnce("<location offset=\"87\" length=\"9\"/>");
+        assertThat(resultXml).containsOnlyOnce("<text>certainly</text>");
+    }
+
+    @Test
+    public void populateWithGeneFamilies() throws Exception {
+        BioCDocumentPopulator populator = new BioCDocumentPopulator(true);
+        JCas jCas = TestDocumentGenerator.prepareCas(1);
+        Gene gene = new Gene(jCas, 0, 4);
+        gene.setSpecificType("protein_familiy_or_group");
+        gene.addToIndexes();
+        BioCDocument biocDoc = populator.populate(jCas);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        BioCCollection collection = new BioCCollection("UTF-8", "1.0", (new Date()).toString(), true, "jUnit Test", "PubTator.key");
+        collection.addDocument(biocDoc);
+        BioCCollectionWriter collectionWriter = new BioCCollectionWriter(baos);
+        collectionWriter.writeCollection(collection);
+        String resultXml = baos.toString(StandardCharsets.UTF_8);
+        assertThat(resultXml).containsOnlyOnce("<annotation id=\"0\">");
+        assertThat(resultXml).contains("<infon key=\"type\">FamilyName</infon>");
+        assertThat(resultXml).containsOnlyOnce("<location offset=\"0\" length=\"4\"/>");
+        assertThat(resultXml).containsOnlyOnce("<text>This</text>");
+    }
+
+    @Test
+    public void populateWithGeneFamilies2() throws Exception {
+        BioCDocumentPopulator populator = new BioCDocumentPopulator(true);
+        JCas jCas = TestDocumentGenerator.prepareCas(1);
+        Gene gene = new Gene(jCas, 0, 4);
+        gene.setSpecificType("FamilyName");
+        gene.addToIndexes();
+        BioCDocument biocDoc = populator.populate(jCas);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        BioCCollection collection = new BioCCollection("UTF-8", "1.0", (new Date()).toString(), true, "jUnit Test", "PubTator.key");
+        collection.addDocument(biocDoc);
+        BioCCollectionWriter collectionWriter = new BioCCollectionWriter(baos);
+        collectionWriter.writeCollection(collection);
+        String resultXml = baos.toString(StandardCharsets.UTF_8);
+        assertThat(resultXml).containsOnlyOnce("<annotation id=\"0\">");
+        assertThat(resultXml).contains("<infon key=\"type\">FamilyName</infon>");
+        assertThat(resultXml).containsOnlyOnce("<location offset=\"0\" length=\"4\"/>");
+        assertThat(resultXml).containsOnlyOnce("<text>This</text>");
     }
 }

@@ -180,7 +180,8 @@ public class XMLDBMultiplierTest {
                 XMLDBMultiplier.PARAM_ADD_SHA_HASH, "documentText",
                 XMLDBMultiplier.PARAM_TABLE_DOCUMENT, TARGET_XMI_TABLE,
                 XMLDBMultiplier.PARAM_TABLE_DOCUMENT_SCHEMA, "xmi_text",
-                XMLDBMultiplier.PARAM_TO_VISIT_KEYS, "ThisIsTheVisitKey"
+                XMLDBMultiplier.PARAM_TO_VISIT_KEYS, "ThisIsTheVisitKey",
+                XMLDBMultiplier.PARAM_ADD_TO_VISIT_KEYS, true
         );
         JCasIterator jCasIterator = engine.processAndOutputNewCASes(jCas);
         List<String> toVisitKeys = new ArrayList<>();
@@ -204,7 +205,8 @@ public class XMLDBMultiplierTest {
                 XMLDBMultiplier.PARAM_MAPPING_FILE, Path.of("src", "test", "resources", "test-mappingfile.xml").toString(),
                 XMLDBMultiplier.PARAM_ADD_SHA_HASH, "documentText",
                 XMLDBMultiplier.PARAM_TABLE_DOCUMENT, TARGET_XMI_TABLE,
-                XMLDBMultiplier.PARAM_TABLE_DOCUMENT_SCHEMA, "xmi_text"
+                XMLDBMultiplier.PARAM_TABLE_DOCUMENT_SCHEMA, "xmi_text",
+                XMLDBMultiplier.PARAM_ADD_TO_VISIT_KEYS, true
         );
         JCasIterator jCasIterator = engine.processAndOutputNewCASes(jCas);
         List<ToVisit> emptyToVisitAnnotation = new ArrayList<>();

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.Optional;
 
 @ResourceMetaData(name = "JCoRe GNormPlus BioC Writer", description = "Writes CAS documents into the BioC XML format used by the gene tagger and normalizer GNormPlus.", vendor = "JULIE Lab Jena, Germany")
 @TypeCapability(inputs = {}, outputs = {})
@@ -23,6 +24,7 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
     public static final String PARAM_NUM_DOCS_PER_FILE = "NumDocsPerFile";
     public static final String PARAM_NUM_FILES_PER_DIR = "NumFilesPerDir";
     public static final String PARAM_BASE_DIR = "BaseDirectory";
+    public static final String PARAM_ADD_GENES = "AddGenes";
     private final static Logger log = LoggerFactory.getLogger(GNormPlusFormatWriter.class);
     @ConfigurationParameter(name = PARAM_NUM_DOCS_PER_FILE, description = "The number of documents (i.e. CASes) that should be written into a single BioC XML file.")
     private int numDocsPerFile;
@@ -30,6 +32,8 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
     private int numDocsPerDir;
     @ConfigurationParameter(name = PARAM_BASE_DIR, description = "The base directory into which to create new directories that contain the actual BioC collection files.")
     private String baseDirectory;
+    @ConfigurationParameter(name=PARAM_ADD_GENES, mandatory = false, description = "false", defaultValue = "If set to true, all Gene annotations in the CAS will be added to the BioC documents.")
+    private boolean addGenes;
 
     private BioCDocumentPopulator bioCDocumentPopulator;
     private BioCCollectionWriter bioCCollectionWriter;
@@ -44,8 +48,9 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
         numDocsPerFile = (int) aContext.getConfigParameterValue(PARAM_NUM_DOCS_PER_FILE);
         numDocsPerDir = (int) aContext.getConfigParameterValue(PARAM_NUM_FILES_PER_DIR);
         baseDirectory = (String) aContext.getConfigParameterValue(PARAM_BASE_DIR);
+        addGenes = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ADD_GENES)).orElse(false);
 
-        bioCDocumentPopulator = new BioCDocumentPopulator();
+        bioCDocumentPopulator = new BioCDocumentPopulator(addGenes);
         bioCCollectionWriter = new BioCCollectionWriter(numDocsPerDir, Path.of(baseDirectory));
 
         currentCollection = new BioCCollection("UTF-8", "1.0", new Date().toString(), true, "JCoRe GNormPlus BioC Writer", "PubTator.key");
@@ -76,7 +81,6 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
         try {
-//            if (currentCollection.getDocmentCount() != 0)
                 bioCCollectionWriter.writeBioCCollection(currentCollection);
         } catch (Exception e) {
             log.error("Could not write final batch of BioCDocuments.", e);

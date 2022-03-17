@@ -1,10 +1,13 @@
 package de.julielab.jcore.consumer.gnp;
 
+import com.pengyifan.bioc.BioCAnnotation;
 import com.pengyifan.bioc.BioCDocument;
+import com.pengyifan.bioc.BioCLocation;
 import com.pengyifan.bioc.BioCPassage;
 import de.julielab.jcore.types.*;
 import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +17,20 @@ import org.slf4j.LoggerFactory;
  */
 public class BioCDocumentPopulator {
     private final static Logger log = LoggerFactory.getLogger(BioCDocumentPopulator.class);
+    private boolean addGenes;
+
+    public BioCDocumentPopulator(boolean addGenes) {
+        this.addGenes = addGenes;
+    }
 
     public BioCDocument populate(JCas jCas) {
         BioCDocument doc = new BioCDocument(JCoReTools.getDocId(jCas));
         AnnotationIndex<Zone> zoneIndex = jCas.getAnnotationIndex(Zone.type);
+        int annotationId = 0;
         for (Zone z : zoneIndex) {
             if (z.getEnd() - z.getBegin() <= 0)
                 continue;
+            BioCPassage p = null;
             if (z instanceof Title) {
                 Title t = (Title) z;
                 String titleType;
@@ -49,43 +59,53 @@ public class BioCDocumentPopulator {
                         break;
                 }
                 if (titleType != null) {
-                    BioCPassage p = getPassageForAnnotation(t);
+                    p = getPassageForAnnotation(t);
                     p.putInfon("type", titleType);
                     doc.addPassage(p);
                 }
             } else if (z instanceof AbstractText) {
                 AbstractText at = (AbstractText) z;
-                BioCPassage p = getPassageForAnnotation(at);
+                p = getPassageForAnnotation(at);
                 p.putInfon("type", "abstract");
                 doc.addPassage(p);
             } else if (z instanceof Paragraph) {
                 Paragraph pa = (Paragraph) z;
-                BioCPassage p = getPassageForAnnotation(pa);
+                p = getPassageForAnnotation(pa);
                 p.putInfon("type", "paragraph");
                 doc.addPassage(p);
             } else if (z instanceof Caption) {
                 Caption c = (Caption) z;
-                BioCPassage p = getPassageForAnnotation(c);
+                p = getPassageForAnnotation(c);
                 if (c.getCaptionType() == null)
                     throw new IllegalArgumentException("The captionType feature is null for " + c);
                 p.putInfon("type", c.getCaptionType());
                 doc.addPassage(p);
             }
+            if (addGenes) {
+                annotationId = addGenesToPassage(jCas, z, p, annotationId);
+            }
         }
         return doc;
     }
 
-//    private BioCPassage getPassageForAbstract(AbstractText at) {
-//        FSArray structuredAbstractParts = at.getStructuredAbstractParts();
-//        boolean foundAbstractParts = false;
-//        if (structuredAbstractParts != null) {
-//            for (int i = 0; i < structuredAbstractParts.size(); ++i) {
-//                AbstractSection as = (AbstractSection) structuredAbstractParts.get(i);
-//
-//            }
-//        }
-//        return null;
-//    }
+    private int addGenesToPassage(JCas jCas, Zone z, BioCPassage p, int annotationId) {
+        if (p != null) {
+            Iterable<Gene> geneIt = JCasUtil.subiterate(jCas, Gene.class, z, false, true);
+            for (Gene g : geneIt) {
+                BioCAnnotation annotation = new BioCAnnotation(String.valueOf(annotationId++));
+                annotation.setText(g.getCoveredText());
+                String type = "Gene";
+                String specificType = g.getSpecificType().toLowerCase();
+                // 'familiy' is an entity name typo in the ProGene corpus
+                if (specificType != null && (specificType.contains("familiy") || specificType.contains("family") || specificType.contains("complex")))
+                    type = "FamilyName";
+                annotation.putInfon("type", type);
+                annotation.addLocation(new BioCLocation(g.getBegin(), g.getEnd() - g.getBegin()));
+                p.addAnnotation(annotation);
+            }
+        }
+        return annotationId;
+    }
 
     /**
      * Creates a BioCPassage with offset and text corresponding to the passed annotation <tt>a</tt>.

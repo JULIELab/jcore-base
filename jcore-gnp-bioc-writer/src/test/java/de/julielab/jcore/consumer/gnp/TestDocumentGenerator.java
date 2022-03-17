@@ -9,7 +9,7 @@ import org.apache.uima.jcas.JCas;
 public class TestDocumentGenerator {
 
     public static JCas createTestJCas() throws UIMAException {
-        return JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        return JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types", "de.julielab.jcore.types.jcore-semantics-biology-types");
     }
 
     public static JCas prepareCas(int docId) throws UIMAException {

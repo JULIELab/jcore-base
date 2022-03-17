@@ -46,6 +46,8 @@ public class XMLDBMultiplier extends DBMultiplier {
     public static final String PARAM_TABLE_DOCUMENT = "DocumentTable";
     public static final String PARAM_TABLE_DOCUMENT_SCHEMA = "DocumentTableSchema";
     public static final String PARAM_TO_VISIT_KEYS = "ToVisitKeys";
+    public static final String PARAM_ADD_TO_VISIT_KEYS = "AddToVisitKeys";
+    public static final String PARAM_ADD_UNCHANGED_DOCUMENT_TEXT_FLAG = "AddUnchangedDocumentTextFlag";
 
     private final static Logger log = LoggerFactory.getLogger(XMLDBMultiplier.class);
     /**
@@ -64,8 +66,12 @@ public class XMLDBMultiplier extends DBMultiplier {
     private String xmiStorageDataTable;
     @ConfigurationParameter(name = PARAM_TABLE_DOCUMENT_SCHEMA, mandatory = false, description = "For use with AnnotationDefinedFlowController. The name of the schema that the document table - given with the " + PARAM_TABLE_DOCUMENT + " parameter - adheres to. Only the primary key part is required for hash value retrieval.")
     private String xmiStorageDataTableSchema;
-    @ConfigurationParameter(name = PARAM_TO_VISIT_KEYS, mandatory = false, description = "For use with AnnotationDefinedFlowController. The delegate AE keys of the AEs this CAS should still applied on although the hash has not changed. Can be null or empty indicating that no component should be applied to the CAS. This is, however, the task of the AnnotationDefinedFlowController.")
+    @ConfigurationParameter(name = PARAM_TO_VISIT_KEYS, mandatory = false, description = "For use with AnnotationDefinedFlowController. Specifies the delegate AE keys of the AEs this CAS should still applied on although the hash has not changed. Can be null or empty indicating that no component should be applied to the CAS. The task of the AnnotationDefinedFlowController is then to read those annotations and route the CAS accordingly.")
     private String[] toVisitKeys;
+    @ConfigurationParameter(name = PARAM_ADD_TO_VISIT_KEYS, mandatory = false, description = "Toggles the creation of annotations for the AnnotationDefinedFlowController. Only needed when such a flow controller is used in the pipeline. For details, see the description of " + PARAM_TO_VISIT_KEYS + ".")
+    private boolean addToVisitKeys;
+    @ConfigurationParameter(name = PARAM_ADD_UNCHANGED_DOCUMENT_TEXT_FLAG, mandatory = false, description = "Toggles the addition of the 'document text is unchanged' flag. The value of this flag is determined via a SHA256 hash of the CAS document text. When " + PARAM_TABLE_DOCUMENT + " and " + PARAM_TABLE_DOCUMENT_SCHEMA + " are specified, the hash value of the document in storage is retrieved and compared to the current value. The flag is then set with respect to the comparison result.")
+    private boolean addUnchangedDocumentTextFlag;
 
 
     private Row2CasMapper row2CasMapper;
@@ -83,16 +89,20 @@ public class XMLDBMultiplier extends DBMultiplier {
         xmiStorageDataTableSchema = (String) aContext.getConfigParameterValue(PARAM_TABLE_DOCUMENT_SCHEMA);
         documentItemToHash = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ADD_SHA_HASH)).orElse("document_text");
         toVisitKeys = (String[]) aContext.getConfigParameterValue(PARAM_TO_VISIT_KEYS);
+        addToVisitKeys = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ADD_TO_VISIT_KEYS)).orElse(false);
+        addUnchangedDocumentTextFlag = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ADD_UNCHANGED_DOCUMENT_TEXT_FLAG)).orElse(false);
         // We don't know yet which tables to read. Thus, we leave the row mapping out.
         // We will now once the DBMultiplier#process(JCas) will have been run.
         Initializer initializer = new Initializer(mappingFileStr, null, null);
         xmlMapper = initializer.getXmlMapper();
         initialized = false;
 
-        if (!(xmiStorageDataTable == null && xmiStorageDataTableSchema == null) && !(xmiStorageDataTable != null && xmiStorageDataTableSchema != null && documentItemToHash != null)) {
-            String errorMsg = String.format("From the parameters '%s' and '%s' some are specified and some aren't. To activate hash value comparison in order to add aggregate component keys for CAS visit, specify all those parameters. Otherwise, specify none.", PARAM_TABLE_DOCUMENT, PARAM_TABLE_DOCUMENT_SCHEMA);
-            log.error(errorMsg);
-            throw new ResourceInitializationException(new IllegalArgumentException(errorMsg));
+        if ((addToVisitKeys || addUnchangedDocumentTextFlag)) {
+            if (!(xmiStorageDataTable == null && xmiStorageDataTableSchema == null) && !(xmiStorageDataTable != null && xmiStorageDataTableSchema != null && documentItemToHash != null)) {
+                String errorMsg = String.format("From the parameters '%s' and '%s' some are specified and some aren't. To activate hash value comparison in order to add aggregate component keys for CAS visit, specify all those parameters. Otherwise, specify none.", PARAM_TABLE_DOCUMENT, PARAM_TABLE_DOCUMENT_SCHEMA);
+                log.error(errorMsg);
+                throw new ResourceInitializationException(new IllegalArgumentException(errorMsg));
+            }
         }
     }
 
@@ -115,6 +125,8 @@ public class XMLDBMultiplier extends DBMultiplier {
                     }
                     // The DBC is initialized in the super class in the process() method. Thus, at this point
                     // the DBC should be set.
+                    if (xmiStorageDataTable != null && !dbc.withConnectionQueryBoolean(d -> d.tableExists(xmiStorageDataTable)))
+                        throw new AnalysisEngineProcessException(new IllegalArgumentException("The data table" + xmiStorageDataTable + " to retrieve hash values from for document text change detection does not exist in the database: " + dbc.getDbURL()));
                     casPopulator = new CasPopulator(dbc, xmlMapper, row2CasMapper, rowMappingArray);
                     initialized = true;
                 }
@@ -138,7 +150,7 @@ public class XMLDBMultiplier extends DBMultiplier {
      * @param jCas The newly read JCas.
      */
     private void setToVisitAnnotation(JCas jCas) {
-        if (xmiStorageDataTable != null && dbc.tableExists(xmiStorageDataTable)) {
+        if (addToVisitKeys || addUnchangedDocumentTextFlag) {
             DBProcessingMetaData dbProcessingMetaData = JCasUtil.selectSingle(jCas, DBProcessingMetaData.class);
             StringArray pkArray = dbProcessingMetaData.getPrimaryKey();
             String pkString = String.join(",", pkArray.toArray());
@@ -148,14 +160,17 @@ public class XMLDBMultiplier extends DBMultiplier {
                 if (existingHash.equals(newHash)) {
                     if (log.isTraceEnabled())
                         log.trace("Document {} has a document text hash that equals the one present in the database. Creating a ToVisit annotation routing it only to the components with delegate keys {}.", pkString, toVisitKeys);
-                    dbProcessingMetaData.setIsDocumentHashUnchanged(true);
-                    ToVisit toVisit = new ToVisit(jCas);
-                    if (toVisitKeys != null && toVisitKeys.length != 0) {
-                        StringArray keysArray = new StringArray(jCas, toVisitKeys.length);
-                        keysArray.copyFromArray(toVisitKeys, 0, 0, toVisitKeys.length);
-                        toVisit.setDelegateKeys(keysArray);
+                    if (addUnchangedDocumentTextFlag)
+                        dbProcessingMetaData.setIsDocumentHashUnchanged(true);
+                    if (addToVisitKeys) {
+                        ToVisit toVisit = new ToVisit(jCas);
+                        if (toVisitKeys != null && toVisitKeys.length != 0) {
+                            StringArray keysArray = new StringArray(jCas, toVisitKeys.length);
+                            keysArray.copyFromArray(toVisitKeys, 0, 0, toVisitKeys.length);
+                            toVisit.setDelegateKeys(keysArray);
+                        }
+                        toVisit.addToIndexes();
                     }
-                    toVisit.addToIndexes();
                 }
             } else {
                 log.trace("No existing hash was found for document {}", pkString);
@@ -191,7 +206,7 @@ public class XMLDBMultiplier extends DBMultiplier {
      * @throws AnalysisEngineProcessException If the SQL request fails.
      */
     private Map<String, String> fetchCurrentHashesFromDatabase(RowBatch rowBatch) throws AnalysisEngineProcessException {
-        if (xmiStorageDataTable != null && dbc.tableExists(xmiStorageDataTable) && rowBatch.getIdentifiers() != null && rowBatch.getIdentifiers().size() > 0) {
+        if ((addToVisitKeys || addUnchangedDocumentTextFlag) && rowBatch.getIdentifiers() != null && rowBatch.getIdentifiers().size() > 0) {
             String hashColumn = documentItemToHash + "_sha256";
             // Extract the document IDs in this RowBatch. The IDs could be composite keys.
             List<String[]> documentIds = new ArrayList<>(rowBatch.getIdentifiers().size());
