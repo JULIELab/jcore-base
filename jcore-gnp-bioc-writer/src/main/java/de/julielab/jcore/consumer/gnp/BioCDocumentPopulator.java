@@ -95,10 +95,12 @@ public class BioCDocumentPopulator {
                 BioCAnnotation annotation = new BioCAnnotation(String.valueOf(annotationId++));
                 annotation.setText(g.getCoveredText());
                 String type = "Gene";
-                String specificType = g.getSpecificType().toLowerCase();
+                String specificType = g.getSpecificType() != null ? g.getSpecificType().toLowerCase() : null;
                 // 'familiy' is an entity name typo in the ProGene corpus
                 if (specificType != null && (specificType.contains("familiy") || specificType.contains("family") || specificType.contains("complex")))
                     type = "FamilyName";
+                else if (specificType != null && specificType.contains("domain"))
+                    type = "DomainMotif";
                 annotation.putInfon("type", type);
                 annotation.addLocation(new BioCLocation(g.getBegin(), g.getEnd() - g.getBegin()));
                 p.addAnnotation(annotation);
