@@ -84,8 +84,8 @@ public class PMCDBMultiplier extends DBMultiplier {
 
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-        super.process(aJCas);
         docId2HashMap = fetchCurrentHashesFromDatabase(JCasUtil.selectSingle(aJCas, RowBatch.class));
+        super.process(aJCas);
     }
 
     @Override
@@ -143,6 +143,8 @@ public class PMCDBMultiplier extends DBMultiplier {
      * @throws AnalysisEngineProcessException If the SQL request fails.
      */
     private Map<String, String> fetchCurrentHashesFromDatabase(RowBatch rowBatch) throws AnalysisEngineProcessException {
+        if (dbc == null)
+            dbc = getDataBaseConnector(rowBatch.getCostosysConfiguration());
         if (xmiStorageDataTable != null && dbc.tableExists(xmiStorageDataTable) && rowBatch.getIdentifiers() != null && rowBatch.getIdentifiers().size() > 0) {
             String hashColumn = documentItemToHash + "_sha256";
             // Extract the document IDs in this RowBatch. The IDs could be composite keys.
@@ -188,11 +190,11 @@ public class PMCDBMultiplier extends DBMultiplier {
      * database, if present. If there was a hash in the database and the hash values are equal, creates the <tt>ToVisit</tt>
      * annotation and adds the toVisitKeys passed in the configuration of this component.</p>
      *
-     * @param jCas The newly read JCas.
+     * @param jCas     The newly read JCas.
      * @param pkString
      */
     private void setToVisitAnnotation(JCas jCas, String pkString) {
-        if (xmiStorageDataTable != null && dbc.tableExists(xmiStorageDataTable)) {
+        if (xmiStorageDataTable != null && xmiStorageDataTable != null) {
             String existingHash = docId2HashMap.get(pkString);
             if (existingHash != null) {
                 String newHash = getHash(jCas);

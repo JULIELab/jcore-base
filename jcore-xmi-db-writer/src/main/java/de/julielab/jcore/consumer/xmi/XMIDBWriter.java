@@ -541,7 +541,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
                             Map<String, Boolean> mirrorSubsetNames = dbc.getMirrorSubsetNames(costoConn, effectiveDocTableName);
                             if (mirrorSubsetNames.keySet().contains(subsetTable.replace("^[^.]\\.", "")))
-                                throw new AnalysisEngineProcessException(new IllegalArgumentException("The read subset table " + subsetTable + " is a mirror subset its document table " + effectiveDocTableName + " and the base document should be stored. This base document storage would cause all its subset to reset the updated documents. Thus, the subset " + subsetTable + " would be partially reset while processing, reading the same documents over and over again. This is therefore illegal."));
+                                throw new AnalysisEngineProcessException(new IllegalArgumentException("The read subset table " + subsetTable + " is a mirror subset of the target document table " + effectiveDocTableName + " and the base document should be stored. This base document storage would cause all its subset to reset the updated documents. Thus, the subset " + subsetTable + " would be partially reset while processing, reading the same documents over and over again. This is therefore illegal."));
                         }
                     }
                 }

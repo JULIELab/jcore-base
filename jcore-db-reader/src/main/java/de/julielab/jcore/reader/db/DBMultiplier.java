@@ -58,7 +58,7 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
         initialized = false;
     }
 
-    private DataBaseConnector getDataBaseConnector(String costosysConfig) throws AnalysisEngineProcessException {
+    protected DataBaseConnector getDataBaseConnector(String costosysConfig) throws AnalysisEngineProcessException {
         DataBaseConnector dbc;
         try {
             dbc = new DataBaseConnector(costosysConfig);
