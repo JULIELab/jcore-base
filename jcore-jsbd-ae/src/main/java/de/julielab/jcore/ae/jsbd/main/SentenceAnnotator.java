@@ -366,7 +366,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                     lastEnd = s.getEnd();
                     currentSentenceLength = 0;
                 } else {
-                    LOGGER.warn("Not creating whitespace-segmented sub-sentence because its offsets would be invalid: {}-{}", subBegin, subEnd);
+                    LOGGER.debug("Not creating whitespace-segmented sub-sentence because its offsets would be invalid: {}-{}", subBegin, subEnd);
                 }
             }
             currentSentenceLength += wsMatcher.end();
@@ -379,7 +379,7 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             s.setComponentId(this.getClass().getName());
             subSentences.add(s);
         } else {
-            LOGGER.warn("Not creating whitespace-segmented sub-sentence because its offsets would be invalid: {}-{}", subBegin, subEnd);
+            LOGGER.debug("Not creating whitespace-segmented sub-sentence because its offsets would be invalid: {}-{}", subBegin, subEnd);
         }
     }
 
