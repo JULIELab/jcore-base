@@ -13,6 +13,7 @@ import de.julielab.jcore.types.casmultiplier.RowBatch;
 import de.julielab.jcore.types.pubmed.Header;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
@@ -129,7 +130,7 @@ public class PMCDBMultiplier extends DBMultiplier {
         // It actually happens that some PMC XML documents do not contain their own ID. We can use the ID obtained
         // via the database primary key, which in turn might be derived from the original file name or some meta file.
         Header header = JCasUtil.selectSingle(jCas, Header.class);
-        if (header.getDocId().isBlank()) {
+        if (StringUtils.isBlank(header.getDocId())) {
             log.debug("Document has no docId set. Derived the ID {} from the primary key and setting it as the Header#docId feature.", pkString);
             header.setDocId(pkString);
         }

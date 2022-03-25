@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseConnectorConfiguration>
+    <DBSchemaInformation>
+        <activePostgresSchema>public</activePostgresSchema>
+        <activeTableSchema>pmc_bulk_gzip</activeTableSchema>
+        <tableSchemas>
+            <tableSchema name="xmi_anno_view" forEach=".">
+                <field name="pmcid" type="text" xpath="PMID" primaryKey="true" retrieve="true"/>
+                <field name="xmi" type="bytea" xpath="." returnXMLFragment="true" retrieve="true" gzip="true"/>
+            </tableSchema>
+            <tableSchema name="xmi_pmc_annotation_gzip_retrieve" forEach=".">
+                <field name="pmcid" type="text" xpath="PMID" primaryKey="true" retrieve="true"/>
+                <field name="xmi" type="bytea" xpath="." returnXMLFragment="true" retrieve="true" gzip="true"/>
+            </tableSchema>
+        </tableSchemas>
+    </DBSchemaInformation>
+    <DBConnectionInformation>
+        <activeDBConnection>pmc_xml</activeDBConnection>
+        <maxActiveDBConnections>5</maxActiveDBConnections>
+        <DBConnections>
+            <DBConnection name="pmc_xml" url="jdbc:postgresql://localhost:5432/pmc_xml"/>
+        </DBConnections>
+    </DBConnectionInformation>
+</databaseConnectorConfiguration>

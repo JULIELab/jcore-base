@@ -111,8 +111,14 @@ public class FrontParser extends NxmlElementParser {
             header.setComponentId(PMCReader.class.getName());
 
             pmcid.ifPresentOrElse(id -> header.setDocId(id.startsWith("PMC") ? id : "PMC" + id), () -> {
-                String filenameId = nxmlDocumentParser.getCurrentSource().toString().substring(nxmlDocumentParser.getCurrentSource().toString().lastIndexOf(File.separatorChar)+1, nxmlDocumentParser.getCurrentSource().toString().lastIndexOf('.'));
-                header.setDocId(filenameId.startsWith("PMC") ? filenameId : "PMC" + filenameId);
+                // try to extract the PMCID from the file name
+                // For now, let the dot indicate that this is, indeed, a file name; the source also be an InputStream,
+                // then we don't have access to the file name
+                int dotIndex = nxmlDocumentParser.getCurrentSource().toString().lastIndexOf('.');
+                if (dotIndex > 0) {
+                    String filenameId = nxmlDocumentParser.getCurrentSource().toString().substring(nxmlDocumentParser.getCurrentSource().toString().lastIndexOf(File.separatorChar) + 1, dotIndex);
+                    header.setDocId(filenameId.startsWith("PMC") ? filenameId : "PMC" + filenameId);
+                }
             });
             pmid.ifPresent(p -> {
                 OtherID otherID = new OtherID(nxmlDocumentParser.cas);
