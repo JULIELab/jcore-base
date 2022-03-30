@@ -90,6 +90,9 @@ public class BioCCasPopulator {
                     case "Gene":
                         addGeneAnnotation(annotation, jCas);
                         break;
+                    case "FamilyName":
+                        addFamilyAnnotation(annotation, jCas);
+                        break;
                     case "Species":
                         addSpeciesAnnotation(annotation, jCas);
                         break;
@@ -99,6 +102,7 @@ public class BioCCasPopulator {
             }
         }
     }
+
 
     private void setMaxXmiId(JCas jCas, BioCDocument document) {
         if (maxXmiIdMap != null) {
@@ -215,6 +219,7 @@ public class BioCCasPopulator {
         // for GNormPlus, there are no discontinuing annotations anyway
         BioCLocation location = annotation.getTotalLocation();
         Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
+        gene.setSpecificType("Gene");
         ResourceEntry resourceEntry = new ResourceEntry(jCas, gene.getBegin(), gene.getEnd());
         resourceEntry.setSource("NCBI Gene");
         resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
@@ -222,6 +227,23 @@ public class BioCCasPopulator {
         FSArray resourceEntryList = new FSArray(jCas, 1);
         resourceEntryList.set(0, resourceEntry);
         gene.setResourceEntryList(resourceEntryList);
+        gene.addToIndexes();
+    }
+
+    private void addFamilyAnnotation(BioCAnnotation annotation, JCas jCas) {
+        // the "total location" is the span from the minimum location value to the maximum location value;
+        // for GNormPlus, there are no discontinuing annotations anyway
+        BioCLocation location = annotation.getTotalLocation();
+        Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
+        gene.setSpecificType("FamilyName");
+        // e.g.  <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
+        Optional<String> focusSpecies = annotation.getInfon("FocusSpecies");
+        if (!focusSpecies.isPresent())
+            throw new IllegalStateException("A FamilyName annotation does not specify its species: " + annotation);
+        String taxId = focusSpecies.get().substring(15);
+        StringArray speciesArray = new StringArray(jCas, 1);
+        speciesArray.set(0, taxId);
+        gene.setSpecies(speciesArray);
         gene.addToIndexes();
     }
 

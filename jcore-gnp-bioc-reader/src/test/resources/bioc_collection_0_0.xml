@@ -1,0 +1,261 @@
+<?xml version="1.0" ?>
+<!DOCTYPE collection
+  SYSTEM 'BioC.dtd'>
+<collection>
+    <source>JCoRe GNormPlus BioC Writer</source>
+    <date>Wed Mar 02 14:58:28 CET 2022</date>
+    <key>PubTator.key</key>
+    <document>
+        <id>10885490</id>
+        <passage>
+            <infon key="type">title</infon>
+            <offset>0</offset>
+            <text>Decreased plasma cholesterol esterification and cholesteryl ester transfer in hypopituitary patients on glucocorticoid replacement therapy.</text>
+            <annotation id="0">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="92"/>
+                <text>patients</text>
+            </annotation>
+        </passage>
+        <passage>
+            <infon key="type">abstract</infon>
+            <offset>140</offset>
+            <text>Cardiovascular risk is increased in hypopituitary patients. No data are available with respect to the effect of glucocorticoid replacement therapy on high density lipoproteins (HDL) metabolism in such patients. Plasma lecithin:cholesterol acyl transferase (LCAT), cholesteryl ester transfer protein (CETP) and phospholipid transfer protein (PLTP) are important determinants of HDL remodelling. The possible influence of conventional glucocorticoid replacement on plasma lipids, plasma LCAT, CETP and PLTP activity levels, as well as on plasma cholesterol esterification (EST) and cholesteryl ester transfer (CET) was evaluated in 24 consecutive hypopituitary patients (12 men and 12 women) with untreated growth hormone deficiency of whom 17 had adrenal insufficiency and were treated with cortisone acetate, 25 to 37.5 mg daily. Twenty-three patients were on stable levothyroxin therapy and 22 patients used sex steroids. Urinary excretion of cortisol and cortisone metabolites was higher (p&lt;0.001) in glucocorticoid-treated patients. Body mass index (p&lt;0.08) and fat mass (p&lt;0.12) were not significantly different in patients receiving and not receiving glucocorticoids. Fasting blood glucose, plasma insulin and insulin resistance were similar in the groups. Plasma total (p&lt;0.05) and very low+low density lipoprotein cholesterol (p&lt;0.01) were lower in patients receiving glucocorticoids, whereas HDL cholesterol and plasma triglycerides were not different between patients treated and not treated with glucocorticoids. Plasma LCAT activity was 45% lower (p&lt;0.02) and CETP activity was 34% lower (p&lt;0.05) in patients on glucocorticoid treatment. Multiple regression analysis showed that these effects were independent of gender and fat mass. In glucocorticoid-receiving patients, plasma EST and CET were decreased by 80% (p&lt;0.01) and by 58% (p&lt;0.05), respectively. These changes were at least partly attributable to lower LCAT and CETP activity levels. In contrast, plasma PLTP activity was not different between patients with and without glucocorticoid treatment, suggesting that exogenous glucocorticoids exert a different regulatory effect on plasma CETP compared to PLTP. In conclusion, this preliminary study suggests that conventional glucocorticoid replacement in hypopituitary patients is associated with a decrease in plasma cholesterol esterification and cholesteryl ester transfer, indicating that these steps in HDL metabolism are impaired. Such abnormalities in HDL metabolism could be involved in increased cardiovascular risk in glucocorticoid-treated hypopituitary patients, despite a lack of deterioration in plasma lipids.</text>
+            <annotation id="1">
+                <infon key="NCBI Gene">3931</infon>
+                <infon key="type">Gene</infon>
+                <location length="37" offset="358"/>
+                <text>lecithin:cholesterol acyl transferase</text>
+            </annotation>
+            <annotation id="2">
+                <infon key="NCBI Gene">3931</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="397"/>
+                <text>LCAT</text>
+            </annotation>
+            <annotation id="3">
+                <infon key="NCBI Gene">1071</infon>
+                <infon key="type">Gene</infon>
+                <location length="34" offset="404"/>
+                <text>cholesteryl ester transfer protein</text>
+            </annotation>
+            <annotation id="4">
+                <infon key="NCBI Gene">1071</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="440"/>
+                <text>CETP</text>
+            </annotation>
+            <annotation id="5">
+                <infon key="NCBI Gene">5360</infon>
+                <infon key="type">Gene</infon>
+                <location length="29" offset="450"/>
+                <text>phospholipid transfer protein</text>
+            </annotation>
+            <annotation id="6">
+                <infon key="NCBI Gene">5360</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="481"/>
+                <text>PLTP</text>
+            </annotation>
+            <annotation id="7">
+                <infon key="NCBI Gene">3931</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="625"/>
+                <text>LCAT</text>
+            </annotation>
+            <annotation id="8">
+                <infon key="NCBI Gene">1071</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="631"/>
+                <text>CETP</text>
+            </annotation>
+            <annotation id="9">
+                <infon key="NCBI Gene">5360</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="640"/>
+                <text>PLTP</text>
+            </annotation>
+            <annotation id="10">
+                <infon key="NCBI Gene">3630</infon>
+                <infon key="type">Gene</infon>
+                <location length="7" offset="1343"/>
+                <text>insulin</text>
+            </annotation>
+            <annotation id="11">
+                <infon key="NCBI Gene">3630</infon>
+                <infon key="type">Gene</infon>
+                <location length="7" offset="1355"/>
+                <text>insulin</text>
+            </annotation>
+            <annotation id="12">
+                <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
+                <infon key="type">FamilyName</infon>
+                <location length="3" offset="1540"/>
+                <text>HDL</text>
+            </annotation>
+            <annotation id="13">
+                <infon key="NCBI Gene">3931</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="1670"/>
+                <text>LCAT</text>
+            </annotation>
+            <annotation id="14">
+                <infon key="NCBI Gene">1071</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="1711"/>
+                <text>CETP</text>
+            </annotation>
+            <annotation id="15">
+                <infon key="NCBI Gene">3931</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="2065"/>
+                <text>LCAT</text>
+            </annotation>
+            <annotation id="16">
+                <infon key="NCBI Gene">1071</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="2074"/>
+                <text>CETP</text>
+            </annotation>
+            <annotation id="17">
+                <infon key="NCBI Gene">5360</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="2116"/>
+                <text>PLTP</text>
+            </annotation>
+            <annotation id="18">
+                <infon key="NCBI Gene">1071</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="2296"/>
+                <text>CETP</text>
+            </annotation>
+            <annotation id="19">
+                <infon key="NCBI Gene">5360</infon>
+                <infon key="type">Gene</infon>
+                <location length="4" offset="2313"/>
+                <text>PLTP</text>
+            </annotation>
+            <annotation id="20">
+                <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
+                <infon key="type">FamilyName</infon>
+                <location length="3" offset="2618"/>
+                <text>HDL</text>
+            </annotation>
+            <annotation id="21">
+                <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
+                <infon key="type">FamilyName</infon>
+                <location length="3" offset="2567"/>
+                <text>HDL</text>
+            </annotation>
+            <annotation id="22">
+                <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
+                <infon key="type">FamilyName</infon>
+                <location length="3" offset="517"/>
+                <text>HDL</text>
+            </annotation>
+            <annotation id="23">
+                <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
+                <infon key="type">FamilyName</infon>
+                <location length="3" offset="317"/>
+                <text>HDL</text>
+            </annotation>
+            <annotation id="24">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="190"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="25">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="341"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="26">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="799"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="27">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="3" offset="812"/>
+                <text>men</text>
+            </annotation>
+            <annotation id="28">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="5" offset="823"/>
+                <text>women</text>
+            </annotation>
+            <annotation id="29">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="983"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="30">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="1035"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="31">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="1166"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="32">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="1259"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="33">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="1496"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="34">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="1608"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="35">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="1751"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="36">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="1913"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="37">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="2156"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="38">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="2428"/>
+                <text>patients</text>
+            </annotation>
+            <annotation id="39">
+                <infon key="NCBI Taxonomy">9606</infon>
+                <infon key="type">Species</infon>
+                <location length="8" offset="2724"/>
+                <text>patients</text>
+            </annotation>
+        </passage>
+    </document>
+</collection>

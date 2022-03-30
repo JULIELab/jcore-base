@@ -59,4 +59,20 @@ class BioCCasPopulatorTest {
         }
         assertThat(organisms).extracting(Organism::getCoveredText).contains("human", "patients", "rat", "retrovirus", "ZR-75-1");
     }
+
+    @Test
+    public void addFamilyNames() throws Exception {
+        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources","bioc_collection_0_0.xml"), null, null);
+        JCas jCas = getJCas();
+        bioCCasPopulator.populateWithNextDocument(jCas);
+
+        Collection<Gene> genes = JCasUtil.select(jCas, Gene.class);
+        assertThat(genes).hasSize(23);
+        assertThat(genes).filteredOn(Gene::getSpecificType, "FamilyName").hasSize(5);
+        for (Gene o : genes) {
+            if (o.getSpecificType().equals("FamilyName")) {
+                assertThat(o.getSpecies(0)).isEqualTo("9606");
+            }
+        }
+    }
 }
