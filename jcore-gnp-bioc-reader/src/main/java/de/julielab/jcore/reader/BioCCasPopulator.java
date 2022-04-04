@@ -97,7 +97,7 @@ public class BioCCasPopulator {
                         addSpeciesAnnotation(annotation, jCas);
                         break;
                 }
-            } catch (MissingInfonException e) {
+            } catch (MissingInfonException | IllegalArgumentException e) {
                 throw new IllegalArgumentException("BioCDocument " + document.getID() + " has an annotation issue; see cause exception.", e);
             }
         }
@@ -233,7 +233,15 @@ public class BioCCasPopulator {
     private void addFamilyAnnotation(BioCAnnotation annotation, JCas jCas) {
         // the "total location" is the span from the minimum location value to the maximum location value;
         // for GNormPlus, there are no discontinuing annotations anyway
-        BioCLocation location = annotation.getTotalLocation();
+        BioCLocation location;
+        try {
+            location = annotation.getTotalLocation();
+        } catch (Exception e) {
+            // This handles a legacy issue: We modified GNormPlus to output FamilyName annotations. For some reason,
+            // FamilyNames can have zero length. This has been fixed but there is still old output that would
+            // cause an error at this point. Thus, when the offsets are invalid, skip the annotation.
+            return;
+        }
         Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
         gene.setSpecificType("FamilyName");
         // e.g.  <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>

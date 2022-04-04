@@ -34,9 +34,10 @@ public class BioCDocumentPopulator {
             if (z instanceof Title) {
                 Title t = (Title) z;
                 String titleType;
-                if (t.getTitleType() == null)
-                    throw new IllegalArgumentException("The titleType feature was not set for " + t);
-                switch (t.getTitleType()) {
+                String titleTypeString = t.getTitleType();
+                if (titleTypeString == null)
+                    titleTypeString = "other";
+                switch (titleTypeString) {
                     case "document":
                         titleType = "title";
                         break;
@@ -54,7 +55,7 @@ public class BioCDocumentPopulator {
                         titleType = "null";
                         break;
                     default:
-                        log.debug("Unhandled title type {}", t.getTitleType());
+                        log.debug("Unhandled title type {}", titleTypeString);
                         titleType = "other_title";
                         break;
                 }
