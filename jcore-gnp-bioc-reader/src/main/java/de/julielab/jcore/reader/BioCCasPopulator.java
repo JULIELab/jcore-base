@@ -220,6 +220,9 @@ public class BioCCasPopulator {
         BioCLocation location = annotation.getTotalLocation();
         Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
         gene.setSpecificType("Gene");
+        // 9999 ist the GeNo score for exact matches; GNP only recognized exact dictionary matches and transfers
+        // their IDs to other forms under certain circumstances (abbreviations, for example)
+        gene.setConfidence("9999");
         ResourceEntry resourceEntry = new ResourceEntry(jCas, gene.getBegin(), gene.getEnd());
         resourceEntry.setSource("NCBI Gene");
         resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
@@ -244,6 +247,7 @@ public class BioCCasPopulator {
         }
         Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
         gene.setSpecificType("FamilyName");
+        gene.setConfidence("9999");
         // e.g.  <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
         Optional<String> focusSpecies = annotation.getInfon("FocusSpecies");
         if (!focusSpecies.isPresent())
