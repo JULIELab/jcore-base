@@ -1,11 +1,11 @@
-/** 
- * 
+/**
+ *
  * Copyright (c) 2017, JULIE Lab.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the BSD-2-Clause License
  *
- * Author: 
- * 
+ * Author:
+ *
  * Description:
  **/
 package de.julielab.jcore.ae.biosem;
@@ -237,7 +237,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param uimaEvent
 	 *            The UIMA event annotation to add a new argument to
 	 * @param bioSemArg
@@ -342,7 +342,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param uimaEvent
 	 * @param uimaArg
 	 * @param argPos
@@ -383,7 +383,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	 * ID&lt;tab&gt;Entity-Type[Protein]&lt;tab&gt;start&lt;tab&gt;end&lt;tab&gt;Mention name
 	 * </code> <br/>
 	 * Example: <samp> T3 Protein 166 174 TGF-beta </samp>
-	 * 
+	 *
 	 * @return
 	 */
 	private List<String> getProteinLines(Map<String, Gene> proteins, String docId) throws AnnotatorProcessException {
@@ -405,7 +405,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 	/**
 	 * Assigns an ID of the form <tt>Ti</tt> to each gene in the CAS, <tt>i</tt>
 	 * being an enumeration number beginning at 0.
-	 * 
+	 *
 	 * @param aJCas
 	 * @return
 	 */
@@ -421,9 +421,7 @@ public class BioSemEventAnnotator extends JCasAnnotator_ImplBase {
 			Gene gene = (Gene) geneIt.next();
 			if (gene.getBegin() < lastEnd)
 				continue;
-			String id = gene.getId();
-			// if (StringUtils.isBlank(id))
-			id = "T" + i++;
+			String id = "T" + i++;
 			gene.setId(id);
 			proteins.put(id, gene);
 			lastEnd = gene.getEnd();
