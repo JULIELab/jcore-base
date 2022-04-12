@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.ae.checkpoint.DocumentId;
 import de.julielab.jcore.ae.checkpoint.DocumentReleaseCheckpoint;
 import de.julielab.jcore.types.ArgumentMention;
@@ -20,7 +21,6 @@ import de.julielab.neo4j.plugins.datarepresentation.ImportIERelationDocument;
 import de.julielab.neo4j.plugins.datarepresentation.ImportIETypedRelations;
 import de.julielab.neo4j.plugins.datarepresentation.constants.ImportIERelations;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -43,8 +43,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.StreamSupport;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @ResourceMetaData(name = "JCoRe Neo4j Relations Consumer", description = "This component assumes that a Neo4j server with an installed julieliab-neo4j-plugins-concepts plugin installed. It then sends FlattenedRelation instances with more then one arguments to Neo4j. Note that this requires the event arguments to have a ResourceEntry list to obtain database concept IDs from.", vendor = "JULIE Lab, Germany", copyright = "JULIE Lab", version = "2.6.0-SNAPSHOT")
 @TypeCapability(inputs = {"de.julielab.jcore.types.EventMention"})
@@ -84,19 +82,24 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
      */
     @Override
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
-        url = (String) aContext.getConfigParameterValue(PARAM_URL);
-        idProperty = (String) aContext.getConfigParameterValue(PARAM_ID_PROPERTY);
-        globalSource = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_SOURCE)).orElse(null);
-        neo4jUser = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_NEO4J_USER)).orElse(null);
-        neo4jPassword = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_NEO4J_PASSWORD)).orElse(null);
-        writeBatchSize = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_WRITE_BATCH_SIZE)).orElse(50);
-        om = new ObjectMapper();
-        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        om.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-        initImportRelations();
-        DocumentReleaseCheckpoint.get().register(Neo4jRelationsConsumer.class.getCanonicalName());
-        documentIds = new HashSet<>();
-        docNum = 0;
+        try {
+            url = (String) aContext.getConfigParameterValue(PARAM_URL);
+            idProperty = (String) aContext.getConfigParameterValue(PARAM_ID_PROPERTY);
+            globalSource = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_SOURCE)).orElse(null);
+            neo4jUser = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_NEO4J_USER)).orElse(null);
+            neo4jPassword = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_NEO4J_PASSWORD)).orElse(null);
+            writeBatchSize = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_WRITE_BATCH_SIZE)).orElse(50);
+            om = new ObjectMapper();
+            om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            om.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+            initImportRelations();
+            DocumentReleaseCheckpoint.get().register(Neo4jRelationsConsumer.class.getCanonicalName());
+            documentIds = new HashSet<>();
+            docNum = 0;
+        } catch (Throwable e) {
+            log.error("Could not initialize", e);
+            throw new ResourceInitializationException(e);
+        }
     }
 
     private void initImportRelations() {
@@ -109,16 +112,23 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
-        ImportIERelationDocument document = convertRelations(aJCas);
-        if (!document.getRelations().isEmpty())
-            importIERelations.addRelationDocument(document);
+        try {
+            ImportIERelationDocument document = convertRelations(aJCas);
+            if (!document.getRelations().isEmpty())
+                importIERelations.addRelationDocument(document);
 
-        Optional<DBProcessingMetaData> metaOpt = JCasUtil.select(aJCas, DBProcessingMetaData.class).stream().findAny();
-        documentIds.add(metaOpt.isPresent() ? new DocumentId(metaOpt.get()) : new DocumentId(JCoReTools.getDocId(aJCas)));
+            Optional<DBProcessingMetaData> metaOpt = JCasUtil.select(aJCas, DBProcessingMetaData.class).stream().findAny();
+            documentIds.add(metaOpt.isPresent() ? new DocumentId(metaOpt.get()) : new DocumentId(JCoReTools.getDocId(aJCas)));
 
-        if (documentIds.size() % writeBatchSize == 0) {
-            log.trace("Document nr {} processed, sending batch nr {} of size {} to database.", docNum, docNum / writeBatchSize, writeBatchSize);
-            batchProcessComplete();
+            if (documentIds.size() % writeBatchSize == 0) {
+                log.trace("Document nr {} processed, sending batch nr {} of size {} to database.", docNum, docNum / writeBatchSize, writeBatchSize);
+                batchProcessComplete();
+            }
+        } catch (Throwable e) {
+            log.error("Exception occurred in document {}", JCoReTools.getDocId(aJCas), e);
+            if (!(e instanceof AnalysisEngineProcessException))
+                throw new AnalysisEngineProcessException(e);
+            throw e;
         }
     }
 
@@ -187,12 +197,12 @@ public class Neo4jRelationsConsumer extends JCasAnnotator_ImplBase {
                     g.close();
                 }
                 try (InputStream inputStream = urlConnection.getInputStream()) {
-                    log.debug("Response from Neo4j: {}", IOUtils.toString(inputStream, UTF_8));
+                    log.debug("Response from Neo4j: {}", IOStreamUtilities.getStringFromInputStream(inputStream));
                 } catch (IOException e) {
                     log.error("Exception occurred while sending relation data to Neo4j server.");
                     try (InputStream inputStream = urlConnection.getErrorStream()) {
                         if (inputStream != null)
-                            log.error("Error from Neo4j: {}", IOUtils.toString(inputStream, UTF_8));
+                            log.error("Error from Neo4j: {}", IOStreamUtilities.getStringFromInputStream(inputStream));
                     }
                     throw e;
                 }
