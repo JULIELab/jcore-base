@@ -220,15 +220,19 @@ public class BioCCasPopulator {
         BioCLocation location = annotation.getTotalLocation();
         Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
         gene.setSpecificType("Gene");
-        // 9999 ist the GeNo score for exact matches; GNP only recognized exact dictionary matches and transfers
-        // their IDs to other forms under certain circumstances (abbreviations, for example)
-        gene.setConfidence("9999");
-        ResourceEntry resourceEntry = new ResourceEntry(jCas, gene.getBegin(), gene.getEnd());
-        resourceEntry.setSource("NCBI Gene");
-        resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
-        resourceEntry.setEntryId(geneId.get());
-        FSArray resourceEntryList = new FSArray(jCas, 1);
-        resourceEntryList.set(0, resourceEntry);
+        // one gene mention might have multiple IDs when there are ranges or enumerations, e.g. "IL2-5", "B7-1 and B7-2" or "B7-1/2"
+        String[] geneIds = geneId.get().split(";");
+        FSArray resourceEntryList = new FSArray(jCas, geneIds.length);
+        for (int i = 0; i < geneIds.length; i++) {
+            ResourceEntry resourceEntry = new ResourceEntry(jCas, gene.getBegin(), gene.getEnd());
+            // 9999 ist the GeNo score for exact matches; GNP only recognized exact dictionary matches and transfers
+            // their IDs to other forms under certain circumstances (abbreviations, for example)
+            resourceEntry.setConfidence("9999");
+            resourceEntry.setSource("NCBI Gene");
+            resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
+            resourceEntry.setEntryId(geneIds[i]);
+            resourceEntryList.set(i, resourceEntry);
+        }
         gene.setResourceEntryList(resourceEntryList);
         gene.addToIndexes();
     }
@@ -247,7 +251,6 @@ public class BioCCasPopulator {
         }
         Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
         gene.setSpecificType("FamilyName");
-        gene.setConfidence("9999");
         // e.g.  <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
         Optional<String> focusSpecies = annotation.getInfon("FocusSpecies");
         if (!focusSpecies.isPresent())
