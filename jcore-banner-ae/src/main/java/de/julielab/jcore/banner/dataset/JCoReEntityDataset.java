@@ -65,6 +65,8 @@ public class JCoReEntityDataset extends Dataset {
 			mentReader.lines().forEach(ml -> {
 				String[] split = ml.split("\\t");
 				Sentence sentence = sentences.get(split[0]);
+				if (sentence == null)
+					throw new IllegalStateException("The gene mention '" + ml + "' is associated with sentence ID '" + split[0] + "' but such a sentence ID was not found in " + sentenceFile.getAbsolutePath());
 				int begin = Integer.parseInt(split[1]);
 				int end = Integer.parseInt(split[2]);
 				EntityType label = EntityType.getType(split[3]);
