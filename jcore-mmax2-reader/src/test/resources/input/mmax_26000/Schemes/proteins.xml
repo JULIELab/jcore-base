@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<annotationscheme>
+
+  <attribute id="proteins" name="proteins" text="" type="nominal_button">
+
+<value id="protein_familiy_or_group" name="protein_familiy_or_group"/>
+    <value id="protein_complex" name="protein_complex"/>
+    <value id="protein_enum" name="protein_enum"/>
+    <value id="protein" name="protein"/>
+   <value id="protein_variant" name="protein_variant"/>
+
+   </attribute>
+
+
+
+</annotationscheme>

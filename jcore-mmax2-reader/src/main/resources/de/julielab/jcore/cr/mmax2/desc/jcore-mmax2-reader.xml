@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jcore.cr.mmax2.MMAX2Reader</implementationName>
+  <processingResourceMetaData>
+    <name>JCoRe MMAX2 reader.</name>
+    <description>Collection reader for MMAX2 annotation projects.</description>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>InputDir</name>
+        <description>Should point to the directory of which the MMAX2 projects are sub directories of.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>AnnotationLevels</name>
+        <description>The names of the MMAX2 annotation levels to create annotations for.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>UimaAnnotationTypes</name>
+        <description>The fully qualified names of the UIMA annotation types to be used for the representation of the input annotation level. Must match the indices of AnnotationLevels, i.e. the ith level will be added to the CAS as the ith type.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>OriginalTextFiles</name>
+        <description>The MMAX2 base data consists of tokenized text and does not keep track of the original text. This parameter should point to a directory containing the original text files. The file names should match the MMAX2 project IDs.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+      </imports>
+    </typeSystemDescription>
+    <fsIndexCollection/>
+    <capabilities/>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+</collectionReaderDescription>
