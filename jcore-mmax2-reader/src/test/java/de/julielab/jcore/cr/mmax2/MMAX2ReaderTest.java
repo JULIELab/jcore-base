@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Unit tests for jcore-mmax2-reader.
  *
@@ -51,7 +52,7 @@ public class MMAX2ReaderTest {
 
         Collection<Token> tokens = JCasUtil.select(jCas, Token.class);
         // check a small sample of tokens that should have been created
-       assertThat(tokens).map(Token::getCoveredText).contains("Characterization", "IFNAR-1", ":", "(", "subunits", "recognition", ".", "HuIFNAR-1");
+        assertThat(tokens).map(Token::getCoveredText).contains("Characterization", "IFNAR-1", ":", "(", "subunits", "recognition", ".", "HuIFNAR-1");
     }
 
     @Test
@@ -85,14 +86,30 @@ public class MMAX2ReaderTest {
         reader.getNext(jCas.getCas());
 
         Header h = JCasUtil.selectSingle(jCas, Header.class);
-        assertThat(h.getDocId()).isEqualTo("10471746");
+        assertThat(h.getDocId()).isEqualTo("14731280");
 
         Collection<Protein> proteins = JCasUtil.select(jCas, Protein.class);
-        for (var p : proteins) {
-            System.out.println(p.getCoveredText() + ": " + p.getBegin() + "-"+p.getEnd());
-        }
-        Collection<Sentence> sentences = JCasUtil.select(jCas, Sentence.class);
-        for (var s : sentences)
-            System.out.println(s.getBegin() + " - " + s.getEnd());
+        // there is this one protein seemingly annotated double; while this is more of an error than the real case
+        // to handle, it was responsible for errors and works for a simple test
+        long overlappingProteinCount = proteins.stream().filter(p -> p.getBegin() == 95 && p.getEnd() == 99).count();
+        assertThat(overlappingProteinCount).isEqualTo(2);
+
+        // now activate the parameter to avoid overlapping annotations
+        jCas.reset();
+        reader = CollectionReaderFactory.createReader("de.julielab.jcore.cr.mmax2.desc.jcore-mmax2-reader",
+                MMAX2Reader.PARAM_INPUT_DIR, Path.of("src", "test", "resources", "input2").toString(),
+                MMAX2Reader.PARAM_ANNOTATION_LEVELS, new String[]{"proteins", "sentence"},
+                MMAX2Reader.PARAM_UIMA_ANNOTATION_TYPES, new String[]{"de.julielab.jcore.types.Protein", "de.julielab.jcore.types.Sentence"},
+                MMAX2Reader.PARAM_REMOVE_OVERLAPPING_SHORTER_ANNOTATIONS, true);
+        assertThat(reader.hasNext()).isTrue();
+        reader.getNext(jCas.getCas());
+
+
+        proteins = JCasUtil.select(jCas, Protein.class);
+        // there shouldn't be an overlap any more
+        overlappingProteinCount = proteins.stream().filter(p -> p.getBegin() == 95 && p.getEnd() == 99).count();
+        assertThat(overlappingProteinCount).isEqualTo(1);
     }
+
+
 }

@@ -35,7 +35,10 @@ public class MMAX2Reader extends JCasCollectionReader_ImplBase {
     public static final String PARAM_ANNOTATION_LEVELS = "AnnotationLevels";
     public static final String PARAM_ORIGINAL_TEXT_FILES = "OriginalTextFiles";
     public static final String PARAM_UIMA_ANNOTATION_TYPES = "UimaAnnotationTypes";
+    public static final String PARAM_REMOVE_OVERLAPPING_SHORTER_ANNOTATIONS = "RemoveOverlappingShorterAnnotations";
     private final static Logger log = LoggerFactory.getLogger(MMAX2Reader.class);
+    @ConfigurationParameter(name = PARAM_REMOVE_OVERLAPPING_SHORTER_ANNOTATIONS, mandatory = false, defaultValue = "false", description = "If set to true, for all overlapping annotations only the longest is kept.")
+    boolean removeOverlappingShorterAnnotations;
     @ConfigurationParameter(name = PARAM_INPUT_DIR, description = "Should point to the directory of which the MMAX2 projects are sub directories of.")
     private String inputDir;
     @ConfigurationParameter(name = PARAM_ANNOTATION_LEVELS, description = "The names of the MMAX2 annotation levels to create annotations for.")
@@ -44,7 +47,6 @@ public class MMAX2Reader extends JCasCollectionReader_ImplBase {
     private String[] uimaTypeNames;
     @ConfigurationParameter(name = PARAM_ORIGINAL_TEXT_FILES, mandatory = false, description = "The MMAX2 base data consists of tokenized text and does not keep track of the original text. This parameter should point to a directory containing the original text files. The file names should match the MMAX2 project IDs.")
     private String originalTextFilesDir;
-
     private LinkedList<File> folderList;
     private String actualPath;
     private HashMap<String, String> levels2uimaNames;
@@ -62,6 +64,7 @@ public class MMAX2Reader extends JCasCollectionReader_ImplBase {
         annotationLevels = (String[]) context.getConfigParameterValue(PARAM_ANNOTATION_LEVELS);
         uimaTypeNames = (String[]) getUimaContext().getConfigParameterValue(PARAM_UIMA_ANNOTATION_TYPES);
         originalTextFilesDir = (String) context.getConfigParameterValue(PARAM_ORIGINAL_TEXT_FILES);
+        removeOverlappingShorterAnnotations = Optional.ofNullable((Boolean) context.getConfigParameterValue(PARAM_REMOVE_OVERLAPPING_SHORTER_ANNOTATIONS)).orElse(false);
         actualPath = null;
         if (annotationLevels.length != uimaTypeNames.length)
             throw new IllegalArgumentException("The number of annotation levels and the number of UIMA type names must match. But the given annotation levels are '" + Arrays.toString(annotationLevels) + "' and the UIMA types names are '" + Arrays.toString(uimaTypeNames) + "'.");
@@ -208,8 +211,9 @@ public class MMAX2Reader extends JCasCollectionReader_ImplBase {
                 outPlain.append(" ");
             }
         }
+        Set<Markable> ignoredMarkables = getIgnoredMarkables(discourse);
         for (int i = 0; i < annotationLevels.length; ++i) {
-            Iterator<Markable> iterator = discourse.getMarkableLevelByName(annotationLevels[i], false).getMarkables().stream().map(Markable.class::cast).filter(Predicate.not(Markable::isDiscontinuous)).iterator();
+            Iterator<Markable> iterator = discourse.getMarkableLevelByName(annotationLevels[i], false).getMarkables().stream().map(Markable.class::cast).filter(Predicate.not(ignoredMarkables::contains)).filter(Predicate.not(Markable::isDiscontinuous)).iterator();
             int id = 0;
             while (iterator.hasNext()) {
                 Markable markable = iterator.next();
@@ -228,7 +232,7 @@ public class MMAX2Reader extends JCasCollectionReader_ImplBase {
                 if (a instanceof ConceptMention)
                     ((ConceptMention) a).setSpecificType(markable.getAttributeValue(markable.getMarkableLevelName()));
                 else if (a instanceof Sentence)
-                    ((Sentence)a).setId(String.valueOf(id));
+                    ((Sentence) a).setId(String.valueOf(id));
                 a.addToIndexes();
                 ++id;
             }
@@ -251,6 +255,41 @@ public class MMAX2Reader extends JCasCollectionReader_ImplBase {
         Header h = new Header(jCas);
         h.setDocId(pmid);
         h.addToIndexes();
+    }
+
+    private Set<Markable> getIgnoredMarkables(MMAX2Discourse discourse) {
+        if (!removeOverlappingShorterAnnotations)
+            return Collections.emptySet();
+        Set<Markable> toIgnore = new HashSet<>();
+        for (int i = 0; i < annotationLevels.length; ++i) {
+        Map<Integer, Set<Markable>> markablesByPos = new HashMap<>();
+            Iterator<Markable> iterator = discourse.getMarkableLevelByName(annotationLevels[i], false).getMarkables().stream().map(Markable.class::cast).filter(Predicate.not(Markable::isDiscontinuous)).iterator();
+            while (iterator.hasNext()) {
+                Markable markable = iterator.next();
+                // associate the markable with all the word indices it covers
+                IntStream.rangeClosed(markable.getLeftmostDiscoursePosition(), markable.getRightmostDiscoursePosition()).forEach(j -> markablesByPos.compute(j, (k, v) -> v != null ? v : new HashSet<>()).add(markable));
+            }
+            // now, for each word index, keep only the longest markable
+            for (Integer pos : markablesByPos.keySet()) {
+                Set<Markable> markables = markablesByPos.get(pos);
+                if (markables.size() > 1) {
+                    int maxSize = 0;
+                    Markable longestMarkable = null;
+                    for (Markable markable : markables) {
+                        // first, we just add all markables to ignore
+                        toIgnore.add(markable);
+                        int markableLength = markable.getRightmostDiscoursePosition() - markable.getLeftmostDiscoursePosition() + 1;
+                        if (markableLength > maxSize) {
+                            maxSize = markableLength;
+                            longestMarkable = markable;
+                        }
+                    }
+                    // now remove only the longest markable - that we want to keep - from the set of ignores markables
+                    toIgnore.remove(longestMarkable);
+                }
+            }
+        }
+        return toIgnore;
     }
 
     private void handleOriginalTextInformation(String pmid, WordInformation[] words) throws CollectionException {
