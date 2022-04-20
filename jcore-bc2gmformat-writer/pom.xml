@@ -38,6 +38,10 @@
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
+            <artifactId>julielab-java-utilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
             <artifactId>jcore-descriptor-creator</artifactId>
         </dependency>
     </dependencies>
