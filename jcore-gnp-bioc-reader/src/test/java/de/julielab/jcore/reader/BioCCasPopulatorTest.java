@@ -4,6 +4,7 @@ import de.julielab.jcore.types.*;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +63,7 @@ class BioCCasPopulatorTest {
 
     @Test
     public void addFamilyNames() throws Exception {
-        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources","bioc_collection_0_0.xml"), null, null);
+        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "bioc_collection_0_0.xml"), null, null);
         JCas jCas = getJCas();
         bioCCasPopulator.populateWithNextDocument(jCas);
 
@@ -74,5 +75,26 @@ class BioCCasPopulatorTest {
                 assertThat(o.getSpecies(0)).isEqualTo("9606");
             }
         }
+    }
+
+    @Test
+    public void multipleGeneIds() throws Exception {
+        // Check that gene mentions with multiple IDs (enumerations, alternatives, ranges...) result in multiple ResourceEntries in a Gene annotation
+        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "multipleGeneIdsDocument.xml"), null, null);
+        JCas jCas = getJCas();
+        bioCCasPopulator.populateWithNextDocument(jCas);
+
+        Collection<Gene> genes = JCasUtil.select(jCas, Gene.class);
+        boolean multipleIdGeneFound = false;
+        for (Gene o : genes) {
+            if (o.getBegin() == 805) {
+                multipleIdGeneFound = true;
+                FSArray resourceEntryList = o.getResourceEntryList();
+                assertThat(resourceEntryList).hasSize(2);
+                assertThat(o.getResourceEntryList(0).getEntryId()).isEqualTo("12519");
+                assertThat(o.getResourceEntryList(1).getEntryId()).isEqualTo("12524");
+            }
+        }
+        assertThat(multipleIdGeneFound).isTrue();
     }
 }
