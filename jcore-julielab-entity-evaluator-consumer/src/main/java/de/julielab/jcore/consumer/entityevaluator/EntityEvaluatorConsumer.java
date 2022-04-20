@@ -263,7 +263,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
 
         offsetMode = null == offsetModeStr ? OffsetMode.CharacterSpan : OffsetMode.valueOf(offsetModeStr);
         if (null == offsetScopeStr) {
-            offsetScope = outputColumnNames.contains(SENTENCE_ID_COLUMN) ? OffsetScope.Sentence : OffsetScope.Document;
+            offsetScope = OffsetScope.Document;
         } else {
             offsetScope = OffsetScope.valueOf(offsetScopeStr);
         }
