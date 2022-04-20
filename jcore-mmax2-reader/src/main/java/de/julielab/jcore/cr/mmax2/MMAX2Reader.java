@@ -1,9 +1,6 @@
 package de.julielab.jcore.cr.mmax2;
 
-import de.julielab.jcore.types.ConceptMention;
-import de.julielab.jcore.types.Gene;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.*;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jules.mmax.MarkableContainer;
 import de.julielab.jules.mmax.Statistics;
@@ -25,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.List;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -249,6 +247,10 @@ public class MMAX2Reader extends JCasCollectionReader_ImplBase {
         }
         String textPlain = outPlain.toString();
         jCas.setDocumentText(textPlain);
+
+        Header h = new Header(jCas);
+        h.setDocId(pmid);
+        h.addToIndexes();
     }
 
     private void handleOriginalTextInformation(String pmid, WordInformation[] words) throws CollectionException {
