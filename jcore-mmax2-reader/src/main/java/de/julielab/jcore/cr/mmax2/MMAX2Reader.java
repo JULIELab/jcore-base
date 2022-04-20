@@ -2,6 +2,7 @@ package de.julielab.jcore.cr.mmax2;
 
 import de.julielab.jcore.types.ConceptMention;
 import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jules.mmax.MarkableContainer;
@@ -29,7 +30,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@ResourceMetaData(name = "JCoRe MMAX2 reader.", description = "Collection reader for MMAX2 annotation projects.", vendor = "JULIE Lab Jena, Germany")
+@ResourceMetaData(name = "JCoRe MMAX2 reader", description = "Collection reader for MMAX2 annotation projects.", vendor = "JULIE Lab Jena, Germany")
 public class MMAX2Reader extends JCasCollectionReader_ImplBase {
 
     public static final String PARAM_INPUT_DIR = "InputDir";
@@ -211,6 +212,7 @@ public class MMAX2Reader extends JCasCollectionReader_ImplBase {
         }
         for (int i = 0; i < annotationLevels.length; ++i) {
             Iterator<Markable> iterator = discourse.getMarkableLevelByName(annotationLevels[i], false).getMarkables().stream().map(Markable.class::cast).filter(Predicate.not(Markable::isDiscontinuous)).iterator();
+            int id = 0;
             while (iterator.hasNext()) {
                 Markable markable = iterator.next();
                 int beginPosition = markable.getLeftmostDiscoursePosition();
@@ -227,7 +229,10 @@ public class MMAX2Reader extends JCasCollectionReader_ImplBase {
                 a.setEnd(endOffset);
                 if (a instanceof ConceptMention)
                     ((ConceptMention) a).setSpecificType(markable.getAttributeValue(markable.getMarkableLevelName()));
+                else if (a instanceof Sentence)
+                    ((Sentence)a).setId(String.valueOf(id));
                 a.addToIndexes();
+                ++id;
             }
         }
         for (WordInformation word : words) {

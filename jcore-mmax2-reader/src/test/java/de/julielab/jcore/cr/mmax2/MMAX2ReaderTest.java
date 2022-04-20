@@ -30,13 +30,20 @@ public class MMAX2ReaderTest {
                 MMAX2Reader.PARAM_UIMA_ANNOTATION_TYPES, new String[]{"de.julielab.jcore.types.Protein", "de.julielab.jcore.types.Sentence"});
         assertThat(reader.hasNext()).isTrue();
         reader.getNext(jCas.getCas());
+
         // the text should be tokenized because we did not provide the original text
         assertThat(jCas.getDocumentText()).startsWith("Characterization of antihuman IFNAR-1 monoclonal antibodies : epitope localization and functional analysis .");
         Collection<Protein> proteins = JCasUtil.select(jCas, Protein.class);
         assertThat(proteins).hasSize(16);
+
         assertThat(proteins).map(Protein::getCoveredText).contains("IFNAR-1", "type I interferon receptor", "HuIFNAR-1", "Stat");
         Collection<Sentence> sentences = JCasUtil.select(jCas, Sentence.class);
         assertThat(sentences).hasSize(10);
+
+        assertThat(proteins).extracting(Protein::getSpecificType).filteredOn(type -> type.equals("protein")).hasSize(13);
+        assertThat(proteins).extracting(Protein::getSpecificType).filteredOn(type -> type.equals("protein_complex")).hasSize(2);
+        assertThat(proteins).extracting(Protein::getSpecificType).filteredOn(type -> type.equals("protein_familiy_or_group")).hasSize(1);
+
         Collection<Token> tokens = JCasUtil.select(jCas, Token.class);
         // check a small sample of tokens that should have been created
        assertThat(tokens).map(Token::getCoveredText).contains("Characterization", "IFNAR-1", ":", "(", "subunits", "recognition", ".", "HuIFNAR-1");
