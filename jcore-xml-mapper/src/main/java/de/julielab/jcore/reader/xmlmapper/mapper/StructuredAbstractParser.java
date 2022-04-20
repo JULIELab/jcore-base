@@ -70,8 +70,8 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
                 }
             }
             // comment in to add the structured abstract section labels to the text, e.g. "AIMS: ...", "BACKGROUND: ..."
-            if (null != label && !"unlabelled".equalsIgnoreCase(label))
-                sb.append(label).append(": ");
+//            if (null != label && !"unlabelled".equalsIgnoreCase(label))
+//                sb.append(label).append(": ");
             sb.append(abstractSectionText);
 
             // if label and nlmCategory are null, there is no section heading;
