@@ -157,13 +157,11 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     }
 
     private void addDocumentIdColumn(JCas aJCas) throws CASException {
-        if (outputColumnNames.contains(DOCUMENT_ID_COLUMN)) {
-            Column c = columns.get(DOCUMENT_ID_COLUMN);
-            if (c == null)
-                c = new Column(DOCUMENT_ID_COLUMN + ":" + Header.class.getCanonicalName() + "=/docId", null, aJCas.getTypeSystem());
-            c = new DocumentIdColumn(c);
-            columns.put(DOCUMENT_ID_COLUMN, c);
-        }
+        Column c = columns.get(DOCUMENT_ID_COLUMN);
+        if (c == null)
+            c = new Column(DOCUMENT_ID_COLUMN + ":" + Header.class.getCanonicalName() + "=/docId", null, aJCas.getTypeSystem());
+        c = new DocumentIdColumn(c);
+        columns.put(DOCUMENT_ID_COLUMN, c);
     }
 
     private void addDocumentTextSha256Column() {
@@ -183,7 +181,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
             Column docIdColumn = columns.get(DOCUMENT_ID_COLUMN);
             String documentId = null;
             if (docIdColumn != null)
-                documentId = docIdColumn.getValue(aJCas.getDocumentAnnotationFs(), aJCas).getFirst();
+                documentId = docIdColumn.getValue(null, aJCas).getFirst();
             Type sentenceType = c.getSingleType();
             // put all sentences into an index with an
             // overlap-comparator - this way the index can be
