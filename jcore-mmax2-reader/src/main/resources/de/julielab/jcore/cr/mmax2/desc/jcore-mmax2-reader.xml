@@ -3,10 +3,17 @@
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.cr.mmax2.MMAX2Reader</implementationName>
   <processingResourceMetaData>
-    <name>JCoRe MMAX2 reader.</name>
+    <name>JCoRe MMAX2 reader</name>
     <description>Collection reader for MMAX2 annotation projects.</description>
     <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
+      <configurationParameter>
+        <name>RemoveOverlappingShorterAnnotations</name>
+        <description>If set to true, for all overlapping annotations only the longest is kept.</description>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
       <configurationParameter>
         <name>InputDir</name>
         <description>Should point to the directory of which the MMAX2 projects are sub directories of.</description>
@@ -36,7 +43,14 @@
         <mandatory>false</mandatory>
       </configurationParameter>
     </configurationParameters>
-    <configurationParameterSettings/>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>RemoveOverlappingShorterAnnotations</name>
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
         <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
