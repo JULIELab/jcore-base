@@ -28,7 +28,8 @@ public class BioCDocumentPopulator {
         AnnotationIndex<Zone> zoneIndex = jCas.getAnnotationIndex(Zone.type);
         int annotationId = 0;
         for (Zone z : zoneIndex) {
-            if (z.getEnd() - z.getBegin() <= 0)
+            // skip empty zones
+            if (z.getCoveredText().isBlank())
                 continue;
             BioCPassage p = null;
             if (z instanceof Title) {
