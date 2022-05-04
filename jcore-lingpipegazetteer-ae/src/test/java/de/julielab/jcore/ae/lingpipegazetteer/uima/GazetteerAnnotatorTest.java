@@ -456,34 +456,13 @@ public class GazetteerAnnotatorTest {
 			}
 			assertEquals("GENE", next.getSpecificType());
 		}
-		assertEquals( new Integer(1),  counter, "Wrong entity count: ");
+		assertEquals( Integer.valueOf(1),  counter, "Wrong entity count: ");
 	}
 
-	@Test
-	public void testAnnotatorWithTextNormalizationMuh()
-			throws ResourceInitializationException, AnalysisEngineProcessException {
-		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
-				ChunkerProviderImplAlt.class, new File("src/test/resources/normalizegazetteer.properties"));
-		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
-				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
-				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
-				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
-		JCas jCas = annotator.newJCas();
-
-		jCas.setDocumentText("We shall now describe our system setup followed by our proposed solution, which is a fully distributed and absolute localization solution specifically designed for both one-hop and multi-hop WSNs. Our considered WSN consists of Ns number of sensors randomly placed onto a map of predefined size with Nb number of beacons. Let 𝕊 and 𝔹 be the sets describing all sensors and beacons respectively, where each sensor is noted as Sensori, i ∈ 𝕊 and each beacon is noted as Beaconj, j ∈ 𝔹. Each node either a sensor or a beacon is noted as Nodep, p ∈ 𝕊 ∪ 𝔹, and vector V⃗p is used to represent the coordinate of Nodep. Beacons are placed onto the map with fixed coordinates V⃗j, where j ∈ 𝔹. We assume that each beacon is aware of its own absolute location. Whereas each sensor is unaware of its own location, and is configured with an initial guess of location unrelated to its actual deployed location. The two-dimensional (2-D) localization problem is the estimation of Ns unknown-location coordinates V⃗i, where i ∈ 𝕊.\n");
-		annotator.process(jCas);
-
-		FSIterator<org.apache.uima.jcas.tcas.Annotation> it = jCas.getAnnotationIndex(EntityMention.type).iterator();
-while (it.hasNext()) {
-	Annotation annotation = (Annotation) it.next();
-	System.out.println(annotation.getCoveredText());
-}
-	}
 
 	@Test
-	public void testSontesthalt() throws Exception {
+	public void testGeneRecognition() throws Exception {
 		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
 				ChunkerProviderImplAlt.class, new File("src/test/resources/normalizegazetteer.eg.testdict.properties"));
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
@@ -534,6 +513,38 @@ while (it.hasNext()) {
 		it = jCas.getAnnotationIndex(EntityMention.type).iterator();
 		assertTrue(it.hasNext());
 		assertEquals("Yak1", it.next().getCoveredText());
+	}
+
+	@Test
+	public void testStopwords() throws Exception {
+		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
+				ChunkerProviderImplAlt.class, new File("src/test/resources/normalizegazetteer.eg.testdict.teststopwords.properties"));
+		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
+				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
+
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
+				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
+				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
+
+		JCas jCas = annotator.newJCas();
+
+		// Warning: This text does not make sense ;-)
+		jCas.setDocumentText(
+				"Identification of cDNAs encoding two human alpha class microsomal glutathione and the heterologous expression of glutathione S-transferase alpha-4.");
+
+		annotator.process(jCas);
+
+		Set<String> extractedGenes = new HashSet<>();
+		for (var e : JCasUtil.select(jCas, EntityMention.class)) {
+			extractedGenes.add(e.getCoveredText());
+		}
+		// The stop word list contains the term "glutathione"
+		// The current algorithm in GazetteerAnnotator#filterStopwords(String) computes the fraction that the
+		// stop word has on the whole entity and only rejects it if it exceeds some threshold. For this reason,
+		// the shorter mention is excluded while the longer is retained.
+		assertThat(extractedGenes).doesNotContain("microsomal glutathione");
+		// The whole "glutathione S-transferase alpha-4" is on the stop word list.
+		assertThat(extractedGenes).contains("glutathione S-transferase alpha-4");
 	}
 
 	@Test
