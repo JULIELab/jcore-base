@@ -253,12 +253,12 @@ public class BioCCasPopulator {
         gene.setSpecificType("FamilyName");
         // e.g.  <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
         Optional<String> focusSpecies = annotation.getInfon("FocusSpecies");
-        if (!focusSpecies.isPresent())
-            throw new IllegalStateException("A FamilyName annotation does not specify its species: " + annotation);
-        String taxId = focusSpecies.get().substring(15);
-        StringArray speciesArray = new StringArray(jCas, 1);
-        speciesArray.set(0, taxId);
-        gene.setSpecies(speciesArray);
+        if (focusSpecies.isPresent()) {
+            String taxId = focusSpecies.get().substring(15);
+            StringArray speciesArray = new StringArray(jCas, 1);
+            speciesArray.set(0, taxId);
+            gene.setSpecies(speciesArray);
+        }
         gene.addToIndexes();
     }
 
