@@ -219,6 +219,7 @@ public class BioCCasPopulator {
         // for GNormPlus, there are no discontinuing annotations anyway
         BioCLocation location = annotation.getTotalLocation();
         Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
+        gene.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
         gene.setSpecificType("Gene");
         // one gene mention might have multiple IDs when there are ranges or enumerations, e.g. "IL2-5", "B7-1 and B7-2" or "B7-1/2"
         String[] geneIds = geneId.get().split(";");
