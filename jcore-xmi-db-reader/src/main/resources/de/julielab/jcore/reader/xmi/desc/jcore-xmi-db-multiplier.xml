@@ -28,6 +28,7 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
                 <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types" />
                 <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types" />
             </imports>
