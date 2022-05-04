@@ -50,6 +50,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_CONFIG_FILE = "ConfigFile";
     public static final String PARAM_TYPE_MAPPING = "TypeMapping";
+    public static final String PARAM_COMPONENT_ID = "ComponentId";
     private final static Logger log = LoggerFactory.getLogger(BANNERAnnotator.class);
     private Tokenizer tokenizer;
     private DictionaryTagger dictionary;
@@ -64,6 +65,8 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
     private String configFilePath;
     @ConfigurationParameter(name = PARAM_TYPE_MAPPING, mandatory = false, description = "A list of mappings from entity labels to UIMA types in the form <label>=<fully qualified type name>. If not given, all entities will be realized as EntityMention instances.")
     private String[] typeMappings;
+    @ConfigurationParameter(name = PARAM_COMPONENT_ID, mandatory = false, description = "Specifies the value of the 'componentId' feature for created entity annotations. Defaults to the fully qualified name of this class.")
+    private String componentId;
 
     private Map<String, String> typeMap;
     private InputStream modelIs;
@@ -77,6 +80,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
             configFilePath = (String) aContext.getConfigParameterValue(PARAM_CONFIG_FILE);
             typeMappings = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_TYPE_MAPPING))
                     .orElse(new String[0]);
+            componentId = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_COMPONENT_ID)).orElse(BANNERAnnotator.class.getCanonicalName());
             File configFile = new File(configFilePath);
             if (configFile.exists()) {
                 log.debug("Found configuration file {}", configFile);
@@ -183,7 +187,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
                     if (a instanceof de.julielab.jcore.types.Annotation) {
                         de.julielab.jcore.types.Annotation jcoreA = (de.julielab.jcore.types.Annotation) a;
                         jcoreA.setId("BANNER, " + docId + ": " + geneCount++);
-                        jcoreA.setComponentId(BANNERAnnotator.class.getCanonicalName());
+                        jcoreA.setComponentId(componentId);
                         jcoreA.setConfidence(String.valueOf(mention.getProbability()));
                     }
                     if (a instanceof EntityMention) {
