@@ -15,11 +15,13 @@ import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class OffsetsColumn extends Column {
-
+private final static Logger log = LoggerFactory.getLogger(OffsetsColumn.class);
     private OffsetMode offsetMode;
     private JCoReTreeMapAnnotationIndex<Long, ? extends Annotation> sentenceIndex;
     private OffsetScope offsetScope;
@@ -61,9 +63,14 @@ public class OffsetsColumn extends Column {
 
             if (offsetScope == OffsetScope.Sentence) {
                 Annotation s = sentenceIndex.get(an);
-                if (this.offsetMode == OffsetMode.NonWsCharacters)
-                    numWsMap = getNumWsMapForSentence(s);
-                annotationOffset = s.getBegin();
+                if (s != null) {
+                    if (this.offsetMode == OffsetMode.NonWsCharacters)
+                        numWsMap = getNumWsMapForSentence(s);
+                    annotationOffset = s.getBegin();
+                } else {
+                    log.warn("There was no sentence for annotation {}, returning begin offset as -1.", an);
+                    annotationOffset = -1;
+                }
             }
 
             final String offsets = getOffsets(an, numWsMap, annotationOffset);
