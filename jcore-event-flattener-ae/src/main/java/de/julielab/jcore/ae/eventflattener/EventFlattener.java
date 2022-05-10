@@ -40,7 +40,7 @@ import java.util.Set;
  * roles for arguments of those event types. For more information, please refer
  * to http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/detail.shtml#event.
  * 
- * @see http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/detail.shtml#event
+ * @see <url>http://www.nactem.ac.uk/tsujii/GENIA/SharedTask/detail.shtml#event</url>
  *      </p>
  * 
  * @author faessler
@@ -59,9 +59,9 @@ public class EventFlattener extends JCasAnnotator_ImplBase {
 			List<EventMention> topEvents = determineTopEvents(aJCas);
 			for (EventMention topEvent : topEvents) {
 				List<EventMention> events = collectEventsInTree(topEvent,
-						new ArrayList<EventMention>());
+						new ArrayList<>());
 				List<ArgumentMention> arguments = collectPrimitiveArguments(
-						topEvent, new ArrayList<ArgumentMention>());
+						topEvent, new ArrayList<>());
 				List<ArgumentMention> agentArguments = null;
 				List<ArgumentMention> patientArguments = null;
 				switch (topEvent.getSpecificType()) {
@@ -69,9 +69,9 @@ public class EventFlattener extends JCasAnnotator_ImplBase {
 				case "Positive_regulation":
 				case "Negative_regulation":
 					agentArguments = collectAgentArguments(topEvent,
-							new ArrayList<ArgumentMention>());
+							new ArrayList<>());
 					patientArguments = collectPatientArguments(topEvent,
-							new ArrayList<ArgumentMention>());
+							new ArrayList<>());
 					break;
 				default:
 					break;
@@ -98,7 +98,7 @@ public class EventFlattener extends JCasAnnotator_ImplBase {
 		} catch (Exception e) {
 			Header header = (Header) aJCas.getAnnotationIndex(Header.type)
 					.iterator().next();
-			log.error("Exception occurred in document {}: {}",
+			log.error("Exception occurred in document {}:",
 					header.getDocId(), e);
 			throw new AnalysisEngineProcessException(e);
 		}
@@ -178,7 +178,7 @@ public class EventFlattener extends JCasAnnotator_ImplBase {
 	 * Returns the <tt>EventMention</tt>s in the CAS that are not the argument
 	 * of another event.
 	 * 
-	 * @param events
+	 * @param aJCas
 	 * @return
 	 */
 	private List<EventMention> determineTopEvents(JCas aJCas) {
