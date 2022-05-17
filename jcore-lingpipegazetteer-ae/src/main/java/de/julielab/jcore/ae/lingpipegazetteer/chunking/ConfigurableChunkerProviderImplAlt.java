@@ -239,6 +239,8 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
             if (normalize)
                 tokenizerFactory = new IndoEuropeanTokenizerFactory();
             while ((line = bf.readLine()) != null) {
+                if (line.startsWith("#"))
+                    continue;
                 String[] values = line.split("\t");
                 if (values.length != 2) {
                     LOGGER.error("readDictionary() - wrong format of line: " + line);
