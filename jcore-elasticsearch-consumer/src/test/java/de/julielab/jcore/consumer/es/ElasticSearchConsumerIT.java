@@ -1,8 +1,10 @@
 package de.julielab.jcore.consumer.es;
 
+import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.consumer.es.preanalyzed.Document;
 import de.julielab.jcore.consumer.es.preanalyzed.RawToken;
 import de.julielab.jcore.types.Header;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -18,9 +20,13 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,7 +37,7 @@ public class ElasticSearchConsumerIT {
     private final static Logger log = LoggerFactory.getLogger(ElasticSearchConsumerIT.class);
     // in case we need to disable X-shield: https://stackoverflow.com/a/51172136/1314955
     @Container
-    public static GenericContainer es = new GenericContainer("docker.elastic.co/elasticsearch/elasticsearch:7.0.1")
+    public static GenericContainer es = new GenericContainer("docker.elastic.co/elasticsearch/elasticsearch:7.17.0")
             .withEnv("xpack.security.enabled", "false")
             .withEnv("discovery.type", "single-node")
             .withExposedPorts(9200)
@@ -63,6 +69,41 @@ public class ElasticSearchConsumerIT {
         assertEquals(jCas.getDocumentText(), ((Map) map.get("_source")).get("text"));
     }
 
+    @Test
+    public void testDeleteDocumentsBeforeIndexing() throws Exception {
+        final Random r = new Random();
+        final URL countUrl = new URL("http://localhost:" + es.getMappedPort(9200) + "/" + TEST_INDEX + "/_count");
+        final HttpURLConnection urlConnection = (HttpURLConnection) countUrl.openConnection();
+        urlConnection.setRequestMethod("POST");
+        urlConnection.setDoOutput(true);
+        urlConnection.setRequestProperty("Content-Type", "application/json");
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-types");
+        final AnalysisEngine consumer = AnalysisEngineFactory.createEngine(ElasticSearchConsumer.class,
+                ElasticSearchConsumer.PARAM_INDEX_NAME, TEST_INDEX,
+                ElasticSearchConsumer.PARAM_URLS, "http://localhost:" + es.getMappedPort(9200),
+                ElasticSearchConsumer.PARAM_FIELD_GENERATORS, new String[]{"de.julielab.jcore.consumer.es.ElasticSearchConsumerIT$TestFieldGenerator"});
+        for (int i = 0; i < 10; i++) {
+            jCas.setDocumentText("Some text.");
+            final Header header = new Header(jCas);
+            // get some random ID; this allows documents to exist multiple times in the index
+            header.setDocId(String.valueOf(r.nextInt()));
+            header.addToIndexes();
+            consumer.process(jCas);
+            jCas.reset();
+        }
+        consumer.collectionProcessComplete();
+        Thread.sleep(3000);
+        try(BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()))){
+            bw.write("{\"query\":{\"match_all\":{}}}");
+        }
+        System.out.println(IOStreamUtilities.getStringFromInputStream(urlConnection.getInputStream()));
+
+        final URL url = new URL("http://localhost:" + es.getMappedPort(9200) + "/" + TEST_INDEX + "/_doc/987");
+        final ObjectMapper om = new ObjectMapper();
+        final Map<?, ?> map = om.readValue(url.openStream(), Map.class);
+        assertEquals(jCas.getDocumentText(), ((Map) map.get("_source")).get("text"));
+    }
+
     /**
      * This class is passed by name as parameter to the test consumer AE.
      */
@@ -74,6 +115,7 @@ public class ElasticSearchConsumerIT {
         @Override
         public Document addFields(JCas aJCas, Document doc) {
             doc.addField("text", new RawToken(aJCas.getDocumentText()));
+            doc.addField("docId", new RawToken(JCoReTools.getDocId(aJCas)));
             return doc;
         }
     }
