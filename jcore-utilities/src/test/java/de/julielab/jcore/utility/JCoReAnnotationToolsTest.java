@@ -18,6 +18,7 @@
 package de.julielab.jcore.utility;
 
 import de.julielab.jcore.types.*;
+import de.julielab.jcore.utility.index.JCoReOverlapAnnotationIndex;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -469,5 +471,32 @@ public class JCoReAnnotationToolsTest {
 
 		Token result = JCoReAnnotationTools.getLastOverlappingAnnotation(jcas, em, Token.class);
 		assertEquals(t4, result);
+	}
+
+	@Test
+	public void testGetAnnotationsBetween() throws Exception{
+		final JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types");
+		// create some token sequence; omit white spaces for simplicity
+		List<Token> tokenList = new ArrayList<>();
+		JCoReOverlapAnnotationIndex<Token> tokenIndex = new JCoReOverlapAnnotationIndex<>();
+		for (int i = 0; i < 100; i++) {
+			final Token token = new Token(jcas, i * 5, i * 5 + 5);
+			tokenList.add(token);
+			tokenIndex.index(token);
+		}
+		tokenIndex.freeze();
+		final List<Token> between1 = JCoReAnnotationTools.getAnnotationsBetween(new Annotation(jcas, 0, 2), new Annotation(jcas, 497, 500), tokenIndex);
+		assertEquals(98, between1.size());
+		// the same setup as above but with switched annotations
+		final List<Token> between2 = JCoReAnnotationTools.getAnnotationsBetween(new Annotation(jcas, 497, 500), new Annotation(jcas, 0, 2), tokenIndex);
+		assertEquals(98, between2.size());
+		// the input annotations overlap, there should be no output
+		final List<Token> between3 = JCoReAnnotationTools.getAnnotationsBetween(new Annotation(jcas, 1, 10), new Annotation(jcas, 0, 2), tokenIndex);
+		assertEquals(0, between3.size());
+		final List<Token> between4 = JCoReAnnotationTools.getAnnotationsBetween(new Annotation(jcas, 255, 260), new Annotation(jcas, 235, 240), tokenIndex);
+		assertEquals(3, between4.size());
+		// the annotations are out of the token span
+		final List<Token> between5 = JCoReAnnotationTools.getAnnotationsBetween(new Annotation(jcas, 1000, 1005), new Annotation(jcas, 600, 6005), tokenIndex);
+		assertEquals(0, between5.size());
 	}
 }
