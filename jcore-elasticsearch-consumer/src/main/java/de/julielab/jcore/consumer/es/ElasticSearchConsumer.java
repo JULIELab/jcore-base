@@ -73,6 +73,9 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
         deleteDocsBeforeIndexing = (boolean) Optional.ofNullable(getContext().getConfigParameterValue(PARAM_DELETE_DOCS_BEFORE_INDEXING)).orElse(false);
         docIdField = (String) getContext().getConfigParameterValue(PARAM_DOC_ID_FIELD);
 
+        if (deleteDocsBeforeIndexing && docIdField == null)
+            throw new ResourceInitializationException(new IllegalArgumentException(PARAM_DELETE_DOCS_BEFORE_INDEXING + " is true but no " + PARAM_DOC_ID_FIELD + " was specified."));
+
         httpclient = HttpClientBuilder.create().build();
         if (urls != null) {
             indexPosts = new HttpPost[urls.length];
@@ -90,9 +93,11 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
             for (int i = 0; i < urls.length; i++) {
                 String url = urls[i];
                 if (null != url && url.endsWith("/_bulk"))
-                    url = url.replace("/_bulk/?", "") + "/" + indexName + "/" + "_delete_by_query";
+                    url = url.replace("/_bulk/?", "");
+                url += "/" + indexName + "/" + "_delete_by_query";
                 indexDeletes[i] = new HttpPost(url);
                 indexDeletes[i].addHeader("Content-Type", "application/x-ndjson");
+
             }
             docIdsToDelete = new ArrayList<>();
         }
@@ -206,11 +211,11 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
                 int lastIndex = 0;
                 List<String> subList;
                 do {
-                    subList = docIdsToDelete.subList(lastIndex, Math.min(bulkCommand.size(), lastIndex + 1000));
+                    subList = docIdsToDelete.subList(lastIndex, Math.min(docIdsToDelete.size(), lastIndex + 1000));
                     if (subList.isEmpty())
                         continue;
                     lastIndex += subList.size();
-                    log.debug("Delete {} documents in index {}.", subList.size() / 2, indexName);
+                    log.debug("Delete {} documents in index {}.", subList.size(), indexName);
                     long time = System.currentTimeMillis();
                     StringBuilder deleteQuery = new StringBuilder();
                     deleteQuery.append("{\"query\":{\"terms\":{\"").append(docIdField).append("\":[");
@@ -241,10 +246,8 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
                 throw new AnalysisEngineProcessException(e);
             } finally {
                 indexDelete.reset();
-                bulkCommand.clear();
+                docIdsToDelete.clear();
             }
-
-            docIdsToDelete.clear();
         }
     }
 
@@ -262,7 +265,7 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
                 if (subList.isEmpty())
                     continue;
                 lastIndex += subList.size();
-                log.debug("Sending {} documents to index {}.", subList.size() / 2, indexName);
+                log.debug("Sending {} documents to index {}.", subList.size(), indexName);
                 long time = System.currentTimeMillis();
                 // The bulk format requires us to have a newline also after the
                 // last
