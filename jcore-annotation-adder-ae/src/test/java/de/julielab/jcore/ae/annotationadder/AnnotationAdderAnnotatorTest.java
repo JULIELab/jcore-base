@@ -1,9 +1,12 @@
 
 package de.julielab.jcore.ae.annotationadder;
 
+import de.julielab.jcore.ae.annotationadder.annotationsources.H2TextAnnotationProvider;
 import de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileDocumentClassAnnotationProvider;
 import de.julielab.jcore.ae.annotationadder.annotationsources.InMemoryFileTextAnnotationProvider;
+import de.julielab.jcore.ae.annotationadder.annotationsources.TextAnnotationProvider;
 import de.julielab.jcore.types.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -12,10 +15,13 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.SharedResourceObject;
 import org.assertj.core.data.Offset;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +31,27 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  */
 public class AnnotationAdderAnnotatorTest{
+
+    @AfterEach
+    public void cleanup() {
+        Path h2DbPath = Path.of("src", "test", "resources", "geneannotations_character_offsets.tsv.h2.mv.db");
+        FileUtils.deleteQuietly(h2DbPath.toFile());
+    }
+
     @Test
-    public void testCharacterOffsets() throws Exception {
+    public void testCharacterOffsetsInMemory() throws Exception {
+        testCharacterOffsets(InMemoryFileTextAnnotationProvider.class);
+    }
+
+    @Test
+    public void testCharacterOffsetsH2DB() throws Exception {
+        testCharacterOffsets(H2TextAnnotationProvider.class);
+    }
+
+
+    public void testCharacterOffsets(Class<? extends SharedResourceObject> annotationProviderClass) throws Exception {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
-        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(InMemoryFileTextAnnotationProvider.class, new File("src/test/resources/geneannotations_character_offsets.tsv"));
+        final ExternalResourceDescription externalResourceDescription = ExternalResourceFactory.createExternalResourceDescription(annotationProviderClass, new File("src/test/resources/geneannotations_character_offsets.tsv"), TextAnnotationProvider.PARAM_COLUMN_NAMES, new String[]{"docId", "begin", "end", "uimaType", "confidence", "specificType"});
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(AnnotationAdderAnnotator.class, AnnotationAdderAnnotator.KEY_ANNOTATION_SOURCE, externalResourceDescription);
         // Test doc1 (two gene annotations)
         jCas.setDocumentText("BRCA PRKII are the genes of this sentence.");
@@ -132,12 +155,12 @@ public class AnnotationAdderAnnotatorTest{
 
         assertThat(genes.get(0).getBegin()).isEqualTo(0);
         assertThat(genes.get(0).getEnd()).isEqualTo(4);
-        assertThat(genes.get(0).getSpecificType()).isEqualTo("additionalColumn1");
+        assertThat(genes.get(0).getSpecificType()).isEqualTo("0.1234");
         assertThat(genes.get(0).getComponentId()).isEqualTo("additionalColumn2");
 
         assertThat(genes.get(1).getBegin()).isEqualTo(5);
         assertThat(genes.get(1).getEnd()).isEqualTo(10);
-        assertThat(genes.get(1).getSpecificType()).isEqualTo("additionalColumn1");
+        assertThat(genes.get(1).getSpecificType()).isEqualTo("0.1234");
         assertThat(genes.get(1).getComponentId()).isEqualTo("additionalColumn2");
 
         // Test doc2 (no gene annotations, there will be a warning on DEBUG level)
@@ -159,7 +182,7 @@ public class AnnotationAdderAnnotatorTest{
         final Gene gene = JCasUtil.selectSingle(jCas, Gene.class);
         assertThat(gene.getBegin()).isEqualTo(0);
         assertThat(gene.getEnd()).isEqualTo(6);
-        assertThat(gene.getSpecificType()).isEqualTo("additionalColumn1");
+        assertThat(gene.getSpecificType()).isEqualTo("0.1234");
         assertThat(gene.getComponentId()).isEqualTo("additionalColumn2");
     }
 

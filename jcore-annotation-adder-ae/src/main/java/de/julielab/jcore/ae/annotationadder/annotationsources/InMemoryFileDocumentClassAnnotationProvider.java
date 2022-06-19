@@ -19,7 +19,7 @@ public class InMemoryFileDocumentClassAnnotationProvider implements AnnotationPr
     @Override
     public void load(DataResource dataResource) throws ResourceInitializationException {
         // This logic could be made configurable if required so in the future.
-        annotationSource = new FileAnnotationSource(new DocumentClassAnnotationFormat());
+        annotationSource = new InMemoryAnnotationSource(new DocumentClassAnnotationFormat());
         try {
             annotationSource.initialize(dataResource);
         } catch (IOException e) {

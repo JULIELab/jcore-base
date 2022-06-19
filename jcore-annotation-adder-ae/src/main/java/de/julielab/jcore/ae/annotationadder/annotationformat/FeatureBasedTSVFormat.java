@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.julielab.jcore.ae.annotationadder.annotationsources.TextAnnotationProvider.COL_UIMA_TYPE;
+
 public class FeatureBasedTSVFormat implements AnnotationFormat<ExternalTextAnnotation> {
     private final static Logger log = LoggerFactory.getLogger(FeatureBasedTSVFormat.class);
     private String[] header;
@@ -30,7 +32,7 @@ public class FeatureBasedTSVFormat implements AnnotationFormat<ExternalTextAnnot
         if (uimaTypeIndex == null) {
             uimaTypeIndex = -1;
             for (int i = 0; i < header.length; i++) {
-                if (header[i].equals("uima_type"))
+                if (header[i].equals(COL_UIMA_TYPE))
                     uimaTypeIndex = i;
             }
             if (uimaTypeIndex == 0)
@@ -45,7 +47,7 @@ public class FeatureBasedTSVFormat implements AnnotationFormat<ExternalTextAnnot
         for (int i = 1; i < Math.min(header.length, record.length); i++) {
             String featureName = header[i];
             String columnValue = record[i];
-            if (!featureName.equals("uima_type"))
+            if (!featureName.equals(COL_UIMA_TYPE))
                 externalTextAnnotation.addPayload(featureName, convertValueToFieldDataType(columnValue, i));
         }
 
@@ -66,29 +68,12 @@ public class FeatureBasedTSVFormat implements AnnotationFormat<ExternalTextAnnot
     private void determineColumnDataTypes(String[] record) {
         for (int i = 0; i < record.length; i++) {
             String value = record[i];
-            try {
-                Integer.parseInt(value);
-                columnDataTypes.add(Integer.class);
-                continue;
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-            try {
-                Double.parseDouble(value);
-                columnDataTypes.add(Double.class);
-                continue;
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-            if (value.equalsIgnoreCase("false") || value.equalsIgnoreCase("true")) {
-                columnDataTypes.add(Boolean.class);
-                continue;
-            }
-            // no other type detected, this seems to be an actual String
-            columnDataTypes.add(String.class);
+            Class<?> dataType = determineDataType(value);
+            columnDataTypes.add(dataType);
         }
         log.info("Identified the data types of columns {} as {}", header, columnDataTypes);
     }
+
 
     @Override
     public void hasHeader(boolean withHeader) {
@@ -96,7 +81,24 @@ public class FeatureBasedTSVFormat implements AnnotationFormat<ExternalTextAnnot
     }
 
     @Override
+    public String[] getHeader() {
+        return header;
+    }
+
+    @Override
+    public List<Class<?>> getColumnDataTypes() {
+        if (columnDataTypes == null)
+            throw new IllegalStateException("The column data types are not yet set. This call must come after the first line of data has been read.");
+        return columnDataTypes;
+    }
+
+    @Override
     public void setColumnNames(String[] header) {
         this.header = header;
+    }
+
+    @Override
+    public int getDocumentIdColumnIndex() {
+        return 0;
     }
 }

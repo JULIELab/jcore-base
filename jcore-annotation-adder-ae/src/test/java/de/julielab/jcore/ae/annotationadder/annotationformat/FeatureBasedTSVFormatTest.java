@@ -15,7 +15,7 @@ class FeatureBasedTSVFormatTest {
         // should be ignored
         assertNull(format.parse("# comment"));
         // should be stored as header but not return something
-        assertNull(format.parse("docId\tbegin\tend\tcomponentId\tuima_type\tspecificType"));
+        assertNull(format.parse("docId\tbegin\tend\tcomponentId\tuimaType\tspecificType"));
         ExternalTextAnnotation extAnnotation = format.parse("123\t0\t5\tGoldAnnotation\tde.julielab.jcore.types.Gene\tprotein");
         assertEquals("123", extAnnotation.getDocumentId());
         assertEquals(0, extAnnotation.getStart());

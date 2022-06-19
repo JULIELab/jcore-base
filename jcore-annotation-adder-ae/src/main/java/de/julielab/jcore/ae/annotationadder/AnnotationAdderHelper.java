@@ -7,6 +7,8 @@ import de.julielab.jcore.types.Token;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -146,6 +148,7 @@ public class AnnotationAdderHelper {
     }
 
     public void setAnnotationPayloadsToFeatures(Annotation annotation, ExternalTextAnnotation a) {
+        final TypeSystem ts = annotation.getCAS().getTypeSystem();
         Collection<String> keys = a.getPayloadKeys();
         if (!keys.isEmpty())
             featureSetters = new HashMap<>();
@@ -154,13 +157,36 @@ public class AnnotationAdderHelper {
                 Object value = a.getPayload(key);
                 Method setter = featureSetters.get(key);
                 if (setter == null) {
-                    setter = annotation.getClass().getMethod("set" + StringUtils.capitalize(key), value.getClass());
+                    Class<?> valueClass = convertUimaTypeToJavaType(ts.getType(annotation.getClass().getCanonicalName()).getFeatureByBaseName(key).getRange());
+                    setter = annotation.getClass().getMethod("set" + StringUtils.capitalize(key), valueClass);
                     featureSetters.put(key, setter);
                 }
+                // We do this because it is possible a string feature could have values there are actually numbers.
+                // The automatic type detection of some formats will read those as numbers so we might need to
+                // convert here.
+                if (setter.getParameterTypes()[0].equals(String.class))
+                    value = String.valueOf(value);
                 setter.invoke(annotation, value);
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
+        }
+    }
+
+    private Class<?> convertUimaTypeToJavaType(Type type) {
+        switch (type.getName()) {
+            case "uima.cas.String":
+                return String.class;
+            case "uima.cas.Integer":
+                return int.class;
+            case "uima.cas.Double":
+                return double.class;
+            case "uima.cas.Boolean":
+                return boolean.class;
+            case "uima.cas.Long":
+                return long.class;
+            default:
+                throw new IllegalArgumentException("Unsupported type for arbitrary feature-based input columns: " + type);
         }
     }
 }

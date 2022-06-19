@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static de.julielab.jcore.ae.annotationadder.annotationsources.TextAnnotationProvider.*;
+
 public class ExternalTextAnnotation implements TextAnnotation {
     private String documentId;
     private int start;
@@ -57,6 +59,17 @@ public class ExternalTextAnnotation implements TextAnnotation {
         if (payload == null)
             payload = new HashMap<>();
         payload.put(key, value);
+    }
+
+    public Map<String, Object> getAllFieldValuesAsMap() {
+        final Map<String, Object> values = new HashMap<>();
+        values.put(COL_BEGIN, start);
+        values.put(COL_END, end);
+        values.put(COL_UIMA_TYPE, uimaType);
+        values.put(COL_DOC_ID, documentId);
+        if (payload != null)
+            values.putAll(payload);
+        return values;
     }
 
     public Object getPayload(String key) {

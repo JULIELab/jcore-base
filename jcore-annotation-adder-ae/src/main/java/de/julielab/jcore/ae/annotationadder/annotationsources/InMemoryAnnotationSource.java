@@ -15,12 +15,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class FileAnnotationSource<T extends AnnotationData> implements AnnotationSource<AnnotationList<T>> {
-    private final static Logger log = LoggerFactory.getLogger(FileAnnotationSource.class);
+public class InMemoryAnnotationSource<T extends AnnotationData> implements AnnotationSource<AnnotationList<T>> {
+    private final static Logger log = LoggerFactory.getLogger(InMemoryAnnotationSource.class);
     private AnnotationFormat<T> format;
     private Map<String, AnnotationList<T>> entitiesByDocId;
 
-    public FileAnnotationSource(AnnotationFormat<T> format) {
+    public InMemoryAnnotationSource(AnnotationFormat<T> format) {
         this.format = format;
     }
 
