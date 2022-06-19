@@ -10,6 +10,7 @@ public class ExternalTextAnnotation implements TextAnnotation {
     private int start;
     private int end;
     private String uimaType;
+    private boolean payloadFeatureValues;
     private Map<String, Object> payload;
 
     public ExternalTextAnnotation(String documentId, int start, int end, String uimaType) {
@@ -64,5 +65,13 @@ public class ExternalTextAnnotation implements TextAnnotation {
 
     public Collection<String> getPayloadKeys() {
         return payload != null ? payload.keySet() : Collections.emptySet();
+    }
+
+    public boolean isPayloadFeatureValues() {
+        return payloadFeatureValues;
+    }
+
+    public void setPayloadFeatureValues(boolean payloadFeatureValues) {
+        this.payloadFeatureValues = payloadFeatureValues;
     }
 }
