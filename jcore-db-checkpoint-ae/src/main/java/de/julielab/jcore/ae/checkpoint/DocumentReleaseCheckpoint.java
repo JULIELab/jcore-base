@@ -111,6 +111,7 @@ public class DocumentReleaseCheckpoint {
             log.trace("The following {} components are registered for document release: {}", getNumberOfRegisteredComponents(), registeredComponents);
             log.trace("Released document counts: {}", this.releasedDocuments);
             returnedIds = this.releasedDocuments.keySet().stream().filter(k -> this.releasedDocuments.get(k).containsAll(this.registeredComponents)).collect(Collectors.toSet());
+            log.trace("Final Document IDs to release: {}", returnedIds);
             // Remove the completely released documents from the pool of potentially not yet completely released documents.
             returnedIds.forEach(id -> this.releasedDocuments.remove(id));
         }

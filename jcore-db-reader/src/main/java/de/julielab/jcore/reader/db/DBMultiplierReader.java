@@ -67,10 +67,11 @@ public class DBMultiplierReader extends DBSubsetReader {
 
     @Override
     public void getNext(JCas jCas) throws CollectionException, IOException {
+        log.trace("jCas instance: " + jCas);
         log.trace("Requesting next batch of document IDs from the database.");
         List<Object[]> idList = getNextDocumentIdBatch();
         if (idList.isEmpty())
-            throw new CollectionException(new IllegalStateException("There are no documents to read in the database. Please call hasNext() to check if there is more data to read."));
+            throw new CollectionException(new IllegalStateException("There are no documents to read in the database. Please call hasNext() to check if there is more data to read. Retriever: " + retriever));
         log.trace("Received a list of {} ID from the database.", idList.size());
         RowBatch rowbatch = new RowBatch(jCas);
         FSArray ids = new FSArray(jCas, idList.size());
@@ -171,7 +172,7 @@ public class DBMultiplierReader extends DBSubsetReader {
 
         // When this method is called for the first time, no retriever thread
         // will yet exist. Initialize it.
-        if (retriever == null) {
+        if (retriever == null || !fetchIdsProactively) {
             retriever = new DBMultiplierReader.RetrievingThread();
         }
         idList = retriever.getDocumentIds();
@@ -213,14 +214,18 @@ public class DBMultiplierReader extends DBSubsetReader {
      */
     protected class RetrievingThread extends Thread {
         private List<Object[]> ids;
+        private long timestamp = System.currentTimeMillis();
 
         public RetrievingThread() {
             // Only fetch ID batches in advance when the parameter is set to
             // true.
             if (fetchIdsProactively) {
-                log.debug("Fetching ID batches in a background thread.");
+                log.debug("[{}] Fetching ID batches in a background thread.", timestamp);
                 setName(DBMultiplierReader.class.getSimpleName() + " RetrievingThread (" + getName() + ")");
                 start();
+            } else {
+                log.debug("[{}] Fetching new documents (without employing a background thread).", timestamp);
+                run();
             }
         }
 
@@ -234,14 +239,14 @@ public class DBMultiplierReader extends DBSubsetReader {
             int limit = Math.min(batchSize, totalDocumentCount - numberFetchedDocIDs);
             try {
                 try (CoStoSysConnection ignored = dbc.obtainOrReserveConnection()) {
-                    log.trace("Using connection {} to retrieveAndMark", ignored.getConnection());
+                    log.trace("[{}] Using connection {} to retrieveAndMark", timestamp, ignored.getConnection());
                     ids = dbc.retrieveAndMark(tableName, getClass().getSimpleName(), hostName, pid, limit, selectionOrder);
                     if (log.isTraceEnabled()) {
-                        log.trace("Retrieved the following IDs from the database: {}", ids.stream().map(Arrays::toString).collect(Collectors.joining(", ")));
+                        log.trace("[{}] Retrieved the following IDs from the database: {}", timestamp, ids.stream().map(Arrays::toString).collect(Collectors.joining(", ")));
                     }
                 }
                 numberFetchedDocIDs += ids.size();
-                log.debug("Retrieved {} document IDs to fetch from the database.", ids.size());
+                log.debug("[{}] Retrieved {} document IDs to fetch from the database.", timestamp, ids.size());
             } catch (TableSchemaMismatchException e) {
                 log.error("Table schema mismatch: The active table schema {} specified in the CoStoSys configuration" +
                                 " file {} does not match the columns in the subset table {}: {}", dbc.getActiveTableSchema(),
@@ -254,18 +259,13 @@ public class DBMultiplierReader extends DBSubsetReader {
         }
 
         public List<Object[]> getDocumentIds() {
-            // If we don't use this as a background thread, we have to get the
-            // IDs now in a sequential manner.
-            if (!fetchIdsProactively) {
-                // Use run as we don't have a use for real threads anyway.
-                log.debug("Fetching new documents (without employing a background thread).");
-                run();
-            }
             try {
-                // If this is a background thread started with start(): Wait for
-                // the IDs to be retrieved, i.e. that run() ends.
-                log.debug("Waiting for the background thread to finish fetching documents to return them.");
-                join();
+                if (fetchIdsProactively) {// If this is a background thread started with start(): Wait for
+                    // the IDs to be retrieved, i.e. that run() ends.
+                    log.debug("[{}] Waiting for the background thread to finish fetching documents to return them.", timestamp);
+                    join();
+                }
+                log.debug("[{}] Delivering {} document IDs", timestamp, ids.size());
                 return ids;
             } catch (InterruptedException e) {
                 log.error("Background ID fetching thread was interrupted", e);

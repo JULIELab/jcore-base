@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -45,8 +46,8 @@ public class H2AnnotationSource<T extends AnnotationData> implements AnnotationS
 
     @Override
     public void loadAnnotations(URI annotationUri) throws IOException {
-        final Path annotationFilePath = Path.of(annotationUri);
-        h2DbPath = Path.of(annotationFilePath + ".h2");
+        final Path annotationFilePath = annotationUri.toString().contains("file:"+File.separator) ? Path.of(annotationUri) : Path.of(annotationUri.toString().replace("file:", ""));
+        h2DbPath = annotationFilePath.isAbsolute() ? Path.of(annotationFilePath + ".h2") : Path.of("."+ File.separator+annotationFilePath+".h2");
         if (!Files.exists(h2DbPath) || Files.getLastModifiedTime(annotationFilePath).toMillis() < Files.getLastModifiedTime(h2DbPath).toMillis()) {
             log.info("Source annotation file {} is newer than database file {}. Creating a new database.", annotationFilePath, h2DbPath);
             Files.list(h2DbPath.getParent()).filter(p -> p.toString().startsWith(h2DbPath.toString())).forEach(p -> FileUtils.deleteQuietly(p.toFile()));
@@ -59,7 +60,9 @@ public class H2AnnotationSource<T extends AnnotationData> implements AnnotationS
                     final Iterator<T> iterator = br.lines().map(format::parse).filter(Objects::nonNull).iterator();
                     boolean firstDataItem = true;
                     int psSize = 0;
+                    int linesRead = 0;
                     while (iterator.hasNext()) {
+                        ++linesRead;
                         T annotationData = iterator.next();
                         // We need to create the table after the retrieval of the first annotation item because the
                         // format parser derive the data types from the data
@@ -86,9 +89,16 @@ public class H2AnnotationSource<T extends AnnotationData> implements AnnotationS
                         }
                         ps.addBatch();
                         ++psSize;
-                        if (psSize == 50) {
+                        if (psSize % 50 == 0) {
                             ps.executeBatch();
-                            psSize = 0;
+                        }
+                        if (psSize % 10000 == 0 && log.isTraceEnabled()) {
+                            int numRows = getCount(conn, "SELECT count(*) FROM annotations");
+                            int numDocIds = getCount(conn, "SELECT count(DISTINCT docId) FROM annotations");
+                            log.trace("Loaded {} entity annotations for {} document IDs.", numRows, numDocIds);
+                        }
+                        if (linesRead % 10000 == 0 && log.isTraceEnabled()) {
+                            log.trace("Read {} lines from input {}", linesRead, annotationUri);
                         }
                     }
                     if (psSize > 0)

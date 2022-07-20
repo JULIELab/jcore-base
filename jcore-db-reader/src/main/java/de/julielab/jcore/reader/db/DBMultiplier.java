@@ -15,10 +15,14 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A multiplier retrieving feature structures of type of {@link RowBatch} in its {@link #process(JCas)} method.
@@ -37,7 +41,7 @@ import java.util.List;
 @OperationalProperties(outputsNewCases = true)
 @TypeCapability(inputs = {"de.julielab.jcore.types.casmultiplier.RowBatch"})
 public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
-
+private final static Logger log = LoggerFactory.getLogger(DBMultiplier.class);
     protected DataBaseConnector dbc;
     protected DBCIterator<byte[][]> documentDataIterator;
     protected String[] tables;
@@ -103,6 +107,9 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
         for (int i = 0; i < identifiers.size(); i++) {
             StringArray primaryKey = (StringArray) identifiers.get(i);
             documentIdsForQuery.add(primaryKey.toArray());
+        }
+        if (log.isTraceEnabled()) {
+            log.trace("Received document IDs: {}", documentIdsForQuery.stream().map(o -> Arrays.stream(o).map(Object::toString).collect(Collectors.joining(","))).collect(Collectors.joining(" ; ")));
         }
         documentDataIterator = dbc.retrieveColumnsByTableSchema(documentIdsForQuery,
                 tables,

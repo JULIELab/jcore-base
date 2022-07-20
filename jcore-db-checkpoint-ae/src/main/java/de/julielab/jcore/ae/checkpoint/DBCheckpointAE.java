@@ -136,6 +136,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
+        log.trace("Processing jCas instance " + aJCas);
         DocumentId documentId;
         try {
             final DBProcessingMetaData dbProcessingMetaData = JCasUtil.selectSingle(aJCas, DBProcessingMetaData.class);
@@ -206,6 +207,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
         if (markIsProcessed) {
             log.debug("Marking {} documents to having been processed by component \"{}\".", processedDocumentIds.size(), componentDbName);
             log.debug("SQL: {}", sqlMarkIsProcessed);
+            log.trace("Marking the following document IDS as having been processed: {}", processedDocumentIds);
             updateSubsetTable(conn, processedDocumentIds, sqlMarkIsProcessed);
         }
         try {

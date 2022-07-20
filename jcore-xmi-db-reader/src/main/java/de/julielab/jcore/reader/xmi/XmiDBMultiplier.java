@@ -46,6 +46,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
+        log.trace("Incoming jCas instance: " + aJCas);
         boolean initDone = super.initialized;
         RowBatch rowBatch = null;
         if (!initDone) {
@@ -94,6 +95,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             jCas.release();
             throw new AnalysisEngineProcessException(throwable);
         }
+        log.trace("Outgoing multiplier jCas instance: " + jCas);
         return jCas;
     }
 
@@ -102,7 +104,17 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             throw new AnalysisEngineProcessException(new IllegalStateException("Initialization of the component was not finished. See previous errors to learn the reason. Cannot continue."));
         try {
             final byte[][] data = documentDataIterator.next();
-            log.trace("Populating CAS with {}", casPopulator);
+            if (log.isTraceEnabled()) {
+                List<String> l = new ArrayList<>();
+                for (int i = 1; i < data.length; i++) {
+                    if (data[i] ==  null)
+                        continue;
+                    int length = data[i].length;
+                    double lengthInMb = (length/1024d)/1024d;
+                    l.add("col"+i+":"+lengthInMb + "MB");
+                }
+                log.trace("Populating CAS for document ID {} with column data of sizes {}", new String(data[0]), String.join(",", l));
+            }
             if (data != null)
                 casPopulator.populateCas(data, jCas);
         } catch (CasPopulationException e) {
