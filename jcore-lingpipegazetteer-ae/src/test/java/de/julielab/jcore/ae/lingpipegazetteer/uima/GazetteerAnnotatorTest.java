@@ -727,30 +727,4 @@ public class GazetteerAnnotatorTest {
 		System.out.println(s2.getBytes(UTF_8).length);
 		System.out.println(s2.length());
 	}
-
-	@Test
-	public void testpolar() throws Exception {
-		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
-				ChunkerProviderImplAlt.class, new File("src/test/resources/polartest.properties"));
-		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
-				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
-
-		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
-				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
-				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
-
-		JCas jCas = annotator.newJCas();
-
-		// Warning: This text does not make sense ;-)
-		jCas.setDocumentText(
-				"Der allgemeinchirurgische Operationsplan sah für den heutigen Mittwoch im Operationssaal 4 insgesamt drei laparoskopische Cholezystektomien vor. Anästhesist Dr. Sven dachte sich: »Das übliche Programm.« Als Ausbildungsassistent im 2. Jahr war Dr. Sven häufiger im Laparoskopiesaal eingeteilt. Hier fühlte er sich sicher, denn er war mit dem Ablauf und den anästhesiologischen und chirurgischen Besonderheiten dieser Eingriffe vertraut. Er kannte inzwischen auch die einzelnen Operateure und ihre speziellen Vorlieben. »Zum Glück operiert heute nicht Oberarzt Dr. Harald«, schwirrte ihm durch den Kopf. Dr. Harald war ein äußerst versierter und schnell operierender Chirurg, dem aber die Wechselzeiten der Anästhesie nie kurz genug waren und der die Anästhesie deshalb stets unter Druck setzte. Heute war Dr. Veikko eingeteilt, ein junger chirurgischer Kollege, der erst vor kurzem seine Facharztprüfung bestanden hatte. Dr. Sven kannte ihn aus der Zeit seines eigenen chirurgischen PJ-Tertials. Einmal pro Woche spielten die beiden außerdem zusammen Fußball in einer Hobbymannschaft. Der erste Eingriff des Tages verlief problemlos. Nachdem Dr. Sven den Patienten im Aufwachraum abgegeben hatte, kehrte er in die Einleitung vom OP 4 zurück. Hier begrüßte er Frau Tränkner, eine 41 Jahre alte, übergewichtige Patientin. Dr. Sven kannte sie von seiner gestrigen präoperativen Visite. Er sah nochmals in ihre Akte und auf das Anästhesieprotokoll. Frau Tränkner wog 96 kg bei 169 cm Körpergröße (BMI 33,6 kg/m2). Sie hatte vor ca. 2 Wochen eine akute Cholezystitis gehabt, war aber jetzt beschwerdefrei. Als Begleiterkrankung hatte Frau Tränkner einen arteriellen Hypertonus, der mit Lisinopril und Metoprolol behandelt wurde, und eine Epilepsie. Seit einem Jahr nahm sie Carbamazepin und war jetzt anfallsfrei. Die Beurteilung des Atemweges erbrachte einen Mallampati-Score von 3 und einen Arné-Score von 13. Alle bestimmten Laborparameter waren unauffällig.");
-
-		annotator.process(jCas);
-
-		Set<String> extractedGenes = new HashSet<>();
-		for (var e : JCasUtil.select(jCas, EntityMention.class)) {
-			System.out.println(e.getCoveredText() + "\t" + e.getSpecificType());
-		}
-	}
-
 }
