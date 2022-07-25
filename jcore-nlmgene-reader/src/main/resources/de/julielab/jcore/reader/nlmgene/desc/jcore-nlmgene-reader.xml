@@ -14,6 +14,13 @@
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
+      <configurationParameter>
+        <name>IdList</name>
+        <description>Path to a file with a list of IDs to restrict the read files to. This will typically be the list with IDs for the training or for the test set of the corpus. When no list is specified, the whole corpus is read.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings/>
     <typeSystemDescription>

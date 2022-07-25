@@ -28,17 +28,23 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @ResourceMetaData(name = "JCoRe NLM-Gene Reader", description = "Collection reader for the BioC format of the NLM-Gene corpus.", vendor = "JULIE Lab Jena, Germany")
 @TypeCapability(inputs = {}, outputs = {"de.julielab.jcore.types.Gene", "de.julielab.jcore.types.ResourceEntry"})
 public class NLMGeneReader extends JCasCollectionReader_ImplBase {
 
     public static final String PARAM_INPUT_DIR = "InputDirectory";
+    public static final String PARAM_ID_LIST_PATH = "IdList";
     private final static Logger log = LoggerFactory.getLogger(NLMGeneReader.class);
     @ConfigurationParameter(name = PARAM_INPUT_DIR, description = "Path to the directory that contains the BioC XML files of the NLM-Gene corpus.")
     private String inputDir;
+    @ConfigurationParameter(name = PARAM_ID_LIST_PATH, mandatory = false, description = "Path to a file with a list of IDs to restrict the read files to. This will typically be the list with IDs for the training or for the test set of the corpus. When no list is specified, the whole corpus is read.")
+    private String idList;
     private Iterator<Path> corpusFileIterator;
     private int numRead;
 
@@ -50,8 +56,9 @@ public class NLMGeneReader extends JCasCollectionReader_ImplBase {
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
         inputDir = (String) context.getConfigParameterValue(PARAM_INPUT_DIR);
+        idList = (String) context.getConfigParameterValue(PARAM_ID_LIST_PATH);
         try {
-            corpusFileIterator = readInputFiles(inputDir);
+            corpusFileIterator = readInputFiles(inputDir, idList);
         } catch (IOException e) {
             log.error("Could not read NLM-Gene corpus input files.", e);
             throw new ResourceInitializationException(e);
@@ -59,9 +66,14 @@ public class NLMGeneReader extends JCasCollectionReader_ImplBase {
         numRead = 0;
     }
 
-    private Iterator<Path> readInputFiles(String inputDir) throws IOException {
+    private Iterator<Path> readInputFiles(String inputDir, String idList) throws IOException {
         Path inputPath = Path.of(inputDir);
-        return Files.list(inputPath).filter(p -> p.toString().toLowerCase().endsWith(".xml") || p.toString().toLowerCase().endsWith(".xml.gz")).iterator();
+        Path idListPath = idList != null ? Path.of(idList) : null;
+        Set<String> ids = idListPath != null && Files.exists(idListPath)  ? Files.readAllLines(idListPath).stream().collect(Collectors.toSet()) : Collections.emptySet();
+        return Files.list(inputPath)
+                .filter(p -> p.toString().toLowerCase().endsWith(".xml") || p.toString().toLowerCase().endsWith(".xml.gz"))
+                .filter(p -> ids.isEmpty() ? true : ids.contains(p.getFileName().toString().replaceAll("(?i)\\.bioc\\.xml(\\.gz)?", "")))
+                .iterator();
     }
 
     /**

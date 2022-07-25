@@ -6,6 +6,7 @@ import de.julielab.jcore.types.ResourceEntry;
 import de.julielab.jcore.types.Title;
 import de.julielab.jcore.types.pubmed.AbstractText;
 import de.julielab.jcore.types.pubmed.Header;
+import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -31,7 +32,7 @@ public class NLMGeneReaderTest{
 
     @Test
     public void testReader() throws Exception {
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types", "de.julielab.jcore.types.jcore-semantics-biology-types");
+        final JCas jCas = getJCas();
         final CollectionReader reader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.nlmgene.desc.jcore-nlmgene-reader", NLMGeneReader.PARAM_INPUT_DIR, Path.of("src", "test", "resources", "input").toString());
         assertThat(reader.hasNext()).isTrue();
         reader.getNext(jCas.getCas());
@@ -52,5 +53,23 @@ public class NLMGeneReaderTest{
         final Gene secondGene = genes.get(9);
         assertThat(secondGene).extracting(Gene::getCoveredText).isEqualTo("CD11c");
         assertThat(secondGene.getResourceEntryList(0)).extracting(ResourceEntry::getEntryId).isEqualTo("16411");
+    }
+
+    private JCas getJCas() throws UIMAException {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types", "de.julielab.jcore.types.jcore-semantics-biology-types");
+        return jCas;
+    }
+
+    @Test
+    public void testReadFilesOnList() throws Exception{
+        final CollectionReader reader = CollectionReaderFactory.createReader("de.julielab.jcore.reader.nlmgene.desc.jcore-nlmgene-reader",
+                NLMGeneReader.PARAM_INPUT_DIR, Path.of("src", "test", "resources", "input").toString(),
+                NLMGeneReader.PARAM_ID_LIST_PATH, Path.of("src", "test", "resources", "input", "listWithTestDoc.txt").toString());
+        assertThat(reader.hasNext()).isTrue();
+
+        final CollectionReader reader2 = CollectionReaderFactory.createReader("de.julielab.jcore.reader.nlmgene.desc.jcore-nlmgene-reader",
+                NLMGeneReader.PARAM_INPUT_DIR, Path.of("src", "test", "resources", "input").toString(),
+                NLMGeneReader.PARAM_ID_LIST_PATH, Path.of("src", "test", "resources", "input", "listWithoutTestDoc.txt").toString());
+        assertThat(reader2.hasNext()).isFalse();
     }
 }
