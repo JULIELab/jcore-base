@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>de.julielab.jcore.reader.nlmgene.NLMGeneReader</implementationName>
+  <processingResourceMetaData>
+    <name>JCoRe NLM-Gene Reader</name>
+    <description>Collection reader for the BioC format of the NLM-Gene corpus.</description>
+    <vendor>JULIE Lab Jena, Germany</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>InputDirectory</name>
+        <description>Path to the directory that contains the BioC XML files of the NLM-Gene corpus.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <imports>
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+      </imports>
+    </typeSystemDescription>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type>de.julielab.jcore.types.Gene</type>
+          <type>de.julielab.jcore.types.ResourceEntry</type>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+</collectionReaderDescription>
