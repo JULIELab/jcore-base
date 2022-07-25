@@ -88,7 +88,6 @@ public class NLMGeneReader extends JCasCollectionReader_ImplBase {
                 textBuilder.append(System.getProperty("line.separator"));
             }
 
-
             jCas.setDocumentText(textBuilder.toString());
         } catch (XMLStreamException | IOException e) {
             log.error("Could not read NLM-Gene corpus file {}", nextFile, e);
