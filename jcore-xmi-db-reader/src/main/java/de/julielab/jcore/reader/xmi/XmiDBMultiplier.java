@@ -5,6 +5,7 @@ import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBMultiplier;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
+import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.XmiSplitConstants;
 import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
@@ -95,7 +96,10 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             jCas.release();
             throw new AnalysisEngineProcessException(throwable);
         }
-        log.trace("Outgoing multiplier jCas instance: " + jCas);
+        if (log.isTraceEnabled()) {
+            log.trace("Outgoing multiplier jCas instance: {}", jCas);
+            log.trace("Returning CAS containing document {}", JCoReTools.getDocId(jCas));
+        }
         return jCas;
     }
 

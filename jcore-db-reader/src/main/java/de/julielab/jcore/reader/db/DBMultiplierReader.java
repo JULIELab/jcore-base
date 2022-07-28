@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,6 +128,7 @@ public class DBMultiplierReader extends DBSubsetReader {
             hasNext = !retriever.getDocumentIds().isEmpty();
         if (!hasNext)
             close();
+        log.trace("hasNext returns {}", hasNext);
         return hasNext;
     }
 
@@ -266,7 +268,9 @@ public class DBMultiplierReader extends DBSubsetReader {
                     join();
                 }
                 log.debug("[{}] Delivering {} document IDs", timestamp, ids.size());
-                return ids;
+                List<Object[]> ret = ids;
+                ids = Collections.emptyList();
+                return ret;
             } catch (InterruptedException e) {
                 log.error("Background ID fetching thread was interrupted", e);
             }
