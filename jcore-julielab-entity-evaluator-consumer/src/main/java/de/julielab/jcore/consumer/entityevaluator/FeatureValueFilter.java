@@ -17,6 +17,7 @@ import org.apache.uima.jcas.cas.TOP;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -27,10 +28,12 @@ public class FeatureValueFilter {
     protected Set<Type> types;
     protected PathValuePair pathValuePair;
     private Matcher mfull;
+    private BiFunction<String, String, Boolean> featureValueMatchTest;
 
-    public FeatureValueFilter(String columnDefinition, String typePrefix, TypeSystem ts) {
+    public FeatureValueFilter(String columnDefinition, String typePrefix, TypeSystem ts, boolean allowRegexForFilters) {
         this();
         parseAndAddDefinition(columnDefinition, typePrefix, ts);
+        featureValueMatchTest = allowRegexForFilters ? String::matches : String::equals;
     }
 
     public FeatureValueFilter() {
@@ -60,7 +63,7 @@ public class FeatureValueFilter {
             return false;
         String fpValue = pathValuePair.fp.getValueAsString(a);
         if (fpValue != null)
-            return pathValuePair.targetValue == null || !fpValue.equals(pathValuePair.targetValue);
+            return pathValuePair.targetValue == null || !featureValueMatchTest.apply(fpValue, pathValuePair.targetValue);
         return pathValuePair.targetValue != null;
     }
 

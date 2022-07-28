@@ -56,6 +56,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     public static final String PARAM_TYPE_PREFIX = "TypePrefix";
     public final static String PARAM_ENTITY_TYPES = "EntityTypes";
     public static final String PARAM_FEATURE_FILTERS = "FeatureFilters";
+    public static final String PARAM_ALLOW_REGEX_FOR_FILTERS = "AllowRegexForFilters";
     public final static String PARAM_OFFSET_MODE = "OffsetMode";
     public final static String PARAM_OFFSET_SCOPE = "OffsetScope";
     public final static String PARAM_OUTPUT_FILE = "OutputFile";
@@ -77,6 +78,8 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
     private String typePrefix;
     @ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = false, description = "Optional. Only lets those entities contribute to the output file that fulfill the given feature value(s). The syntax is <type>:<feature path>=<value>. The '<type>:' prefix is optional. If omitted, the filters will be applied to all entities given in the " + PARAM_ENTITY_TYPES + " parameter. An arbitrary number of filter expressions may be specified. In such cases, it is important to understand the boolean structure after which the expressions are evaluated in order to omit an annotation or take it into account for the output. The filter expressions are first grouped by feature path. Within such a group, the filter values form a disjunction. Thus, if any filter in a group is satisfied, the whole group is satisfied. The different groups form a conjunction. Thus, if any group is not satisfied, the whole conjunction is unsatisfied and the respective annotation will be omitted from output.")
     private String[] featureFilterDefinitions;
+    @ConfigurationParameter(name = PARAM_ALLOW_REGEX_FOR_FILTERS, mandatory = false, description = "Optional. If set to true, the filter values specified with the " + PARAM_FEATURE_FILTERS + " parameter are interpreted as regular expressions. The actual feature values are than matched by regular expression resolution instead of testing string equality.")
+    boolean allowRegexForFilters;
     @ConfigurationParameter(name = PARAM_OUTPUT_FILE, description = "Output file to which all entity information is written in the format\n"
             + "docId EGID begin end confidence\n"
             + "Where the fields are separated by tab stops. If the file name ends with .gz, the output file will automatically be gzipped.")
@@ -251,6 +254,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         typePrefix = (String) aContext.getConfigParameterValue(PARAM_TYPE_PREFIX);
 
         featureFilterDefinitions = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_FEATURE_FILTERS)).orElse(new String[0]);
+        allowRegexForFilters = (Boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ALLOW_REGEX_FOR_FILTERS)).orElse(false);
         outputFilePath = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_FILE);
         appendThreadNameToOutputFile = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_APPEND_THREAD_NAME_TO_OUTPUT_FILE)).orElse(false);
         entityTypeStrings = (String[]) aContext.getConfigParameterValue(PARAM_ENTITY_TYPES);
@@ -279,6 +283,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
         log.info("{}: {}", PARAM_OUTPUT_COLUMNS, outputColumnNames);
         log.info("{}: {}", PARAM_COLUMN_DEFINITIONS, columnDefinitionDescriptions);
         log.info("{}: {}", PARAM_FEATURE_FILTERS, featureFilterDefinitions);
+        log.info("{}: {}", PARAM_ALLOW_REGEX_FOR_FILTERS, allowRegexForFilters);
         log.info("{}: {}", PARAM_ENTITY_TYPES, entityTypeStrings);
         log.info("{}: {}", PARAM_TYPE_PREFIX, typePrefix);
         log.info("{}: {}", PARAM_OUTPUT_FILE, outputFilePath);
@@ -327,7 +332,7 @@ public class EntityEvaluatorConsumer extends JCasAnnotator_ImplBase {
                     throw new IllegalArgumentException("No entity names are given, neither by the " + PARAM_ENTITY_TYPES + " parameter nor in the " + PARAM_COLUMN_DEFINITIONS + " parameter.");
                 removeSubsumedTypes(entityTypes, ts);
 
-                featureFilters = Stream.of(featureFilterDefinitions).map(d -> new FeatureValueFilter(d, typePrefix, ts)).collect(Collectors.groupingBy(filter -> filter.getPathValuePair().fp.getFeaturePath()));
+                featureFilters = Stream.of(featureFilterDefinitions).map(d -> new FeatureValueFilter(d, typePrefix, ts, allowRegexForFilters)).collect(Collectors.groupingBy(filter -> filter.getPathValuePair().fp.getFeaturePath()));
 
                 addDocumentIdColumn(aJCas);
                 addDocumentTextSha256Column();
