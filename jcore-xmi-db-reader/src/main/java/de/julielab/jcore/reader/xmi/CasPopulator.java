@@ -185,7 +185,7 @@ public class CasPopulator {
                 }
             }
             log.trace("Setting max XMI ID to the CAS.");
-            storeMaxXmiIdAndSofaMappings(jCas, data);
+            storeMaxXmiIdAndSofaMappings(jCas, data, storeMaxXmiId);
             log.trace("Setting meta data to: Reads data table: {}, table name: {}", readsDataTable, tableName);
             DBReader.setDBProcessingMetaData(dbc, readsDataTable, tableName, data, jCas);
         } catch (Exception e) {
@@ -238,7 +238,7 @@ public class CasPopulator {
         return sb.toString();
     }
 
-    private void storeMaxXmiIdAndSofaMappings(JCas aCAS, byte[][] data) {
+    public static void storeMaxXmiIdAndSofaMappings(JCas aCAS, byte[][] data, Boolean storeMaxXmiId) {
         if (storeMaxXmiId && data.length > 2) {
             String docId = JCoReTools.getDocId(aCAS);
             byte[] maxXmiIdBytes = data[2];

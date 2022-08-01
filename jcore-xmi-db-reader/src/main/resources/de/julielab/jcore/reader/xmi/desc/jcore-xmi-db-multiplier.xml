@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -6,7 +6,6 @@
     <analysisEngineMetaData>
         <name>JCoRe XMI Database Multiplier</name>
         <description>A multiplier that receives document IDs to read from a database table from the DBMultiplierReader. The reader also delivers the path to the corpus storage system (CoStoSys) configuration and additional tables for joining with the main data table. This multiplier class is abstract and cannot be used directly.Extending classes must implement the next() method to actually read documents from the database and populate CASes with them. This component is a part of the Jena Document Information System, JeDIS.</description>
-        <version>2.6.0-SNAPSHOT</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <copyright>JULIE Lab Jena, Germany</copyright>
         <configurationParameters>
@@ -14,6 +13,13 @@
                 <name>LogFinalXmi</name>
                 <description>For debugging purposes. If set to true, before parsing the final XMI data assembled from the annotation modules, it is printed to console.</description>
                 <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>TruncateAtSize</name>
+                <description>Specify size in bytes of the XMI sofa string, i.e. the document text. If the text surpasses that size, the document is not populated from XMI but given some placeholder information. This can be necessary when large documents cannot be handled by subsequent components in the pipeline.</description>
+                <type>Integer</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
@@ -33,8 +39,8 @@
                 <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection />
-        <capabilities />
+        <fsIndexCollection/>
+        <capabilities/>
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>

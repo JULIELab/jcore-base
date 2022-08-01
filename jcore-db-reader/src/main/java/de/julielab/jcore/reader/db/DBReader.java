@@ -179,7 +179,7 @@ public abstract class DBReader extends DBSubsetReader {
     public byte[][] getNextArtifactData() throws CollectionException {
         log.trace("Fetching next document from the current database batch");
 
-        byte[][] next = null;
+        byte[][] next;
         if (readDataTable)
             next = getNextFromDataTable();
         else

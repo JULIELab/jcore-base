@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -124,8 +123,11 @@ public class DBMultiplierReader extends DBSubsetReader {
      */
     public boolean hasNext() throws IOException, CollectionException {
         boolean hasNext = this.hasNext;
-        if (retriever != null)
+        if (retriever != null) {
+            if (retriever.isConsumed())
+                retriever.run();
             hasNext = !retriever.getDocumentIds().isEmpty();
+        }
         if (!hasNext)
             close();
         log.trace("hasNext returns {}", hasNext);
@@ -174,10 +176,11 @@ public class DBMultiplierReader extends DBSubsetReader {
 
         // When this method is called for the first time, no retriever thread
         // will yet exist. Initialize it.
-        if (retriever == null || !fetchIdsProactively) {
+        if (retriever == null) {
             retriever = new DBMultiplierReader.RetrievingThread();
         }
         idList = retriever.getDocumentIds();
+        retriever.setConsumed(true);
         // While returning the current set of IDs, already fetch the next batch
         if (fetchIdsProactively)
             retriever = new DBMultiplierReader.RetrievingThread();
@@ -217,6 +220,7 @@ public class DBMultiplierReader extends DBSubsetReader {
     protected class RetrievingThread extends Thread {
         private List<Object[]> ids;
         private long timestamp = System.currentTimeMillis();
+        private boolean consumed;
 
         public RetrievingThread() {
             // Only fetch ID batches in advance when the parameter is set to
@@ -226,12 +230,21 @@ public class DBMultiplierReader extends DBSubsetReader {
                 setName(DBMultiplierReader.class.getSimpleName() + " RetrievingThread (" + getName() + ")");
                 start();
             } else {
-                log.debug("[{}] Fetching new documents (without employing a background thread).", timestamp);
+                log.debug("[{}] Fetching ID batches without a background thread.", timestamp);
                 run();
             }
         }
 
+        public boolean isConsumed() {
+            return consumed;
+        }
+
+        public void setConsumed(boolean consumed) {
+            this.consumed = consumed;
+        }
+
         public void run() {
+            consumed = false;
             // Remember: If the Limit parameter is set, totalDocumentCount is
             // that limit (or the remaining number of documents, if that's
             // lower).
@@ -261,20 +274,37 @@ public class DBMultiplierReader extends DBSubsetReader {
         }
 
         public List<Object[]> getDocumentIds() {
+            // If we don't use this as a background thread, we have to get the
+            // IDs now in a classic sequential manner.
+            if (!fetchIdsProactively) {
+                // Use run as we don't have a use for real threads anyway.
+                log.debug("Fetching new documents (without employing a background thread).");
+            }
             try {
-                if (fetchIdsProactively) {// If this is a background thread started with start(): Wait for
-                    // the IDs to be retrieved, i.e. that run() ends.
-                    log.debug("[{}] Waiting for the background thread to finish fetching documents to return them.", timestamp);
-                    join();
-                }
+                // If this is a background thread started with start(): Wait for
+                // the IDs to be retrieved, i.e. that run() ends.
+                log.debug("Waiting for the background thread to finish fetching documents to return them.");
+                join();
                 log.debug("[{}] Delivering {} document IDs", timestamp, ids.size());
-                List<Object[]> ret = ids;
-                ids = Collections.emptyList();
-                return ret;
+                return ids;
             } catch (InterruptedException e) {
-                log.error("Background ID fetching thread was interrupted", e);
+                e.printStackTrace();
             }
             return null;
+//            try {
+//                if (fetchIdsProactively) {// If this is a background thread started with start(): Wait for
+//                    // the IDs to be retrieved, i.e. that run() ends.
+//                    log.debug("[{}] Waiting for the background thread to finish fetching documents to return them.", timestamp);
+//                    join();
+//                }
+//                log.debug("[{}] Delivering {} document IDs", timestamp, ids.size());
+//                List<Object[]> ret = ids;
+//                ids = Collections.emptyList();
+//                return ret;
+//            } catch (InterruptedException e) {
+//                log.error("Background ID fetching thread was interrupted", e);
+//            }
+//            return null;
         }
     }
 

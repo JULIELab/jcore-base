@@ -4,7 +4,9 @@ import de.julielab.costosys.configuration.FieldConfig;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.db.DBMultiplier;
+import de.julielab.jcore.reader.db.DBReader;
 import de.julielab.jcore.types.casmultiplier.RowBatch;
+import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.JulieXMLConstants;
 import de.julielab.xml.XmiSplitConstants;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -30,9 +33,12 @@ import java.util.zip.GZIPInputStream;
 
 public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     public static final String PARAM_LOG_FINAL_XMI = Initializer.PARAM_LOG_FINAL_XMI;
+    public static final String PARAM_TRUNCATE_AT_SIZE = "TruncateAtSize";
     private final static Logger log = LoggerFactory.getLogger(XmiDBMultiplier.class);
     @ConfigurationParameter(name = PARAM_LOG_FINAL_XMI, mandatory = false, defaultValue = "false", description = "For debugging purposes. If set to true, before parsing the final XMI data assembled from the annotation modules, it is printed to console.")
     private boolean logFinalXmi;
+    @ConfigurationParameter(name = PARAM_TRUNCATE_AT_SIZE, mandatory = false, description = "Specify size in bytes of the XMI sofa string, i.e. the document text. If the text surpasses that size, the document is not populated from XMI but given some placeholder information. This can be necessary when large documents cannot be handled by subsequent components in the pipeline.")
+    private int truncationSize;
     private Initializer initializer;
     private CasPopulator casPopulator;
     private String[] xmiModuleAnnotationNames;
@@ -43,6 +49,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         super.initialize(aContext);
         logFinalXmi = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_LOG_FINAL_XMI)).orElse(false);
+        truncationSize = Optional.ofNullable((Integer)aContext.getConfigParameterValue(PARAM_TRUNCATE_AT_SIZE)).orElse(0);
     }
 
     @Override
@@ -108,19 +115,40 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             throw new AnalysisEngineProcessException(new IllegalStateException("Initialization of the component was not finished. See previous errors to learn the reason. Cannot continue."));
         try {
             final byte[][] data = documentDataIterator.next();
+            final int pkSize = (int) dbc.getActiveTableFieldConfiguration().getPrimaryKeyFields().count();
             if (log.isTraceEnabled()) {
                 List<String> l = new ArrayList<>();
-                for (int i = 1; i < data.length; i++) {
-                    if (data[i] ==  null)
+                for (int i = pkSize; i < data.length; i++) {
+                    if (data[i] == null)
                         continue;
                     int length = data[i].length;
-                    double lengthInMb = (length/1024d)/1024d;
-                    l.add("col"+i+":"+lengthInMb + "MB");
+                    double lengthInMb = (length / 1024d) / 1024d;
+                    l.add("col" + i + ":" + lengthInMb + "MB");
                 }
                 log.trace("Populating CAS for document ID {} with column data of sizes {}", new String(data[0]), String.join(",", l));
             }
-            if (data != null)
+            boolean truncate = false;
+            if (truncationSize > 0) {
+                if(data[pkSize].length > truncationSize)
+                    truncate = true;
+            }
+            if (data != null && !truncate)
                 casPopulator.populateCas(data, jCas);
+            else if (truncate) {
+                // This document is too long. Set the document ID and some placeholder document text.
+                jCas.setDocumentText("This document was truncated due to exceedingly long text contents.");
+                List<String> pkElements = new ArrayList<>();
+                for (int i = 0; i < pkSize; i++) {
+                    pkElements.add(new String(data[i], StandardCharsets.UTF_8));
+                }
+                final Header header = new Header(jCas);
+                header.setDocId(pkElements.stream().collect(Collectors.joining(",")));
+                header.addToIndexes();
+
+                CasPopulator.storeMaxXmiIdAndSofaMappings(jCas, data, initializer.getStoreMaxXmiId());
+                DBReader.setDBProcessingMetaData(dbc, readDataTable, tableName, data, jCas);
+                log.debug("Truncating document with ID {} due to its text size of {} bytes which is greater than the given threshold of {} bytes.", pkElements, data[pkSize].length, truncationSize);
+            }
         } catch (CasPopulationException e) {
             throw new AnalysisEngineProcessException(e);
         }

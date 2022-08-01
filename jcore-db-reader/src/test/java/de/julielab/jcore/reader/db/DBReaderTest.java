@@ -20,7 +20,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -38,7 +37,6 @@ public class DBReaderTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         dbc.reserveConnection();
         DBTestUtils.setupDatabase("src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 20, postgres);
-        dbc.close();
     }
 
     @Test
@@ -73,7 +71,9 @@ public class DBReaderTest {
         int docCount = 0;
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
                 "de.julielab.jcore.types.jcore-document-structure-types");
+        int i = 0;
         while (reader.hasNext()) {
+            System.out.println(++i);
             reader.getNext(jCas.getCas());
             assertNotNull(JCoReTools.getDocId(jCas));
             ++docCount;
@@ -95,7 +95,7 @@ public class DBReaderTest {
             byte[][] artifactData = getNextArtifactData();
 
             log.trace("Getting next document from database");
-            XMLMapper xmlMapper = new XMLMapper(new FileInputStream(new File("src/test/resources/medline2016MappingFile.xml")));
+            XMLMapper xmlMapper = new XMLMapper(new FileInputStream("src/test/resources/medline2016MappingFile.xml"));
             xmlMapper.parse(artifactData[1], artifactData[0], jCas);
         }
     }
