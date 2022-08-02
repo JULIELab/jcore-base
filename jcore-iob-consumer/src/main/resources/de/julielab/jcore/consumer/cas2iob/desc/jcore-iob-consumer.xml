@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -6,7 +6,6 @@
     <analysisEngineMetaData>
         <name>JCoRe IOB Writer</name>
         <description>This component help to write CAS entity or chunk annotations into a text file in IOB format.</description>
-        <version>2.6.0-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
                 <name>outFolder</name>
@@ -17,7 +16,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>typePath</name>
-                <description>The path of the UIMA types, e.g. "de.julielab.jcore." (with terminating "."!). It is prepended to the class names in labelNameMethods. This parameter may be null which is equivalent to the empty String "".</description>
+                <description>The path of the UIMA types, e.g. "de.julielab.jcore.types." (with terminating "."!). It is prepended to the class names in labelNameMethods. This parameter may be null which is equivalent to the empty String "".</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -38,14 +37,14 @@
             </configurationParameter>
             <configurationParameter>
                 <name>labelNameMethods</name>
-                <description>This is the primary parameter to define from which types IOB labels should be derived. The parameter expects pairs of UIMA-annotation-type-names and their corresponding method for extracting the annotation label. Format: &amp;lt;annotationNAme&amp;gt;[\s=/\\|]&amp;lt;method Name&amp;gt;. The annotation name is fully qualified name of the UIMA type. For abbreviation purposes, the "typePath" parameter can be used to define a type prefix that will then be prepended to all UIMA type names given in this parameter. So, for example, the prefix "de.julielab.jcore.types." will allow to use the "specificType" feature of the "de.julielab.jcore.types.Gene" type by providing "Gene=getSpecificType".  If the name of the annotation class itself is to be being used as label, only the class name is expected: &amp;lt;annotationName&amp;gt; (here, again, applies the use of the "typePath" parameter). You also may specify a mix of pairs and single class names. If you give the name extracting method for a class and have also specified its superclass as a single class name, the given method is used rather than the superclass name.</description>
+                <description>This is the primary parameter to define from which types IOB labels should be derived. The parameter expects pairs of UIMA-annotation-type-names and their corresponding method for extracting the annotation label. Format: &lt;annotationName&gt;[\s=/\\|]&lt;method Name&gt;. The annotation name is fully qualified name of the UIMA type. For abbreviation purposes, the "typePath" parameter can be used to define a type prefix that will then be prepended to all UIMA type names given in this parameter. So, for example, the prefix "de.julielab.jcore.types." will allow to use the "specificType" feature of the "de.julielab.jcore.types.Gene" type by providing "Gene=getSpecificType".  If the name of the annotation class itself is to be being used as label, only the class name is expected: &lt;annotationName&gt; (here, again, applies the use of the "typePath" parameter). You also may specify a mix of pairs and single class names. If you give the name extracting method for a class and have also specified its superclass as a single class name, the given method is used rather than the superclass name.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
             <configurationParameter>
                 <name>iobLabelNames</name>
-                <description>Pairs of label names in UIMA (aquired by the methods given in labelNameMethods) and the name the label is supposed to get in the outcoming IOB file. Format: &amp;lt;UIMA label name&amp;gt;[\s=/\\|]&amp;lt;IOB label name&amp;gt;</description>
+                <description>Pairs of label names in UIMA (aquired by the methods given in labelNameMethods) and the name the label is supposed to get in the outcoming IOB file. Format: &lt;UIMA label name&gt;[\s=/\\|]&amp;lt;IOB label name&amp;gt;</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
@@ -93,8 +92,8 @@
                 <import name="de.julielab.jcore.types.jcore-document-structure-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection />
-        <capabilities />
+        <fsIndexCollection/>
+        <capabilities/>
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
