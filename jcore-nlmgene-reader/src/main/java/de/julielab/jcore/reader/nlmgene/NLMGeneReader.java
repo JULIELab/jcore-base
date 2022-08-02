@@ -118,6 +118,7 @@ public class NLMGeneReader extends JCasCollectionReader_ImplBase {
     private void handleAnnotation(JCas jCas, BioCDocument document, BioCPassage p, StringBuilder textBuilder) {
         for (BioCAnnotation a : p.getAnnotations()) {
             final Gene g = new Gene(jCas, a.getTotalLocation().getOffset(), a.getTotalLocation().getOffset() + a.getTotalLocation().getLength());
+            g.setComponentId(getClass().getSimpleName());
             final Optional<String> typeInfon = a.getInfon("type");
             final Optional<String> codeInfon = a.getInfon("code");
             handleErrors(document, p, a, g, typeInfon, textBuilder);
@@ -134,12 +135,12 @@ public class NLMGeneReader extends JCasCollectionReader_ImplBase {
     }
 
     private void handleErrors(BioCDocument document, BioCPassage p, BioCAnnotation a, Gene g, Optional<String> typeInfon, StringBuilder textBuilder) {
-        if (typeInfon.isPresent() && !(typeInfon.get().equals("Gene") || typeInfon.get().equals("GENERIF")))
-            throw new IllegalStateException("The annotation " + a.getID() + " of passage " + p.getInfon("type").get() + " of document " + document.getID() + " was neither of type Gene nor GENERIF.");
+//        if (typeInfon.isPresent() && !(typeInfon.get().equals("Gene") || typeInfon.get().equals("GENERIF")))
+//            throw new IllegalStateException("The annotation " + a.getID() + " of passage " + p.getInfon("type").get() + " of document " + document.getID() + " was neither of type Gene nor GENERIF. but '" + typeInfon.get() + "'");
         if (!typeInfon.isPresent())
             throw new IllegalStateException("The annotation " + a.getID() + " of passage " + p.getInfon("type").get() + " of document " + document.getID() + " does not specify a type.");
-        if (!textBuilder.substring(g.getBegin(), g.getEnd()).equals(a.getText().get()))
-            throw new IllegalStateException("The annotation " + a.getID() + " of passage " + p.getInfon("type").get() + " of document " + document.getID() + " has the covered text " + textBuilder.substring(g.getBegin(), g.getEnd()) + " but should have the text " + a.getText().get() + " according to the BioC XML information.");
+//        if (!textBuilder.substring(g.getBegin(), g.getEnd()).equals(a.getText().get()))
+//            throw new IllegalStateException("The annotation " + a.getID() + " of passage " + p.getInfon("type").get() + " of document " + document.getID() + " has the covered text " + textBuilder.substring(g.getBegin(), g.getEnd()) + " but should have the text " + a.getText().get() + " according to the BioC XML information.");
     }
 
     private void handleGeneId(JCas jCas, BioCAnnotation a, Gene g) {
@@ -147,6 +148,11 @@ public class NLMGeneReader extends JCasCollectionReader_ImplBase {
         if (ncbiGeneId.isPresent()) {
             final ResourceEntry re = new ResourceEntry(jCas, g.getBegin(), g.getEnd());
             re.setEntryId(ncbiGeneId.get());
+            // for a few cases, the ID looks like this: 8074|10771 (gene name FGF23)
+            // it seems that the first number is the NCBI Gene ID and the second is the homologene ID. We omit the
+            // homologene ID for know, we don't use it
+            if (ncbiGeneId.get().contains("|"))
+                re.setEntryId(ncbiGeneId.get().split("\\|")[0]);
             re.setComponentId(getClass().getSimpleName());
             final FSArray resourceEntryList = new FSArray(jCas, 1);
             resourceEntryList.set(0, re);
