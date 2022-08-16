@@ -47,14 +47,20 @@ public class ToIOBConsumerTest {
         final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-morpho-syntax-types",
                 "de.julielab.jcore.types.jcore-semantics-biology-types"
                 , "de.julielab.jcore.types.jcore-document-meta-types");
-        jCas.setDocumentText("BRCA influences cancer.");
+        jCas.setDocumentText("BRCA influences cancer. Our data suggest this.");
 
-        new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
+        new Sentence(jCas, 0, 23).addToIndexes();
+        new Sentence(jCas, 24, jCas.getDocumentText().length()).addToIndexes();
         new Gene(jCas, 0, 4).addToIndexes();
         new Token(jCas, 0, 4).addToIndexes();
         new Token(jCas, 5, 15).addToIndexes();
         new Token(jCas, 16, 22).addToIndexes();
         new Token(jCas, 22, 23).addToIndexes();
+        new Token(jCas, 24, 27).addToIndexes();
+        new Token(jCas, 28, 32).addToIndexes();
+        new Token(jCas, 33, 40).addToIndexes();
+        new Token(jCas, 41, 45).addToIndexes();
+        new Token(jCas, 45, 46).addToIndexes();
 
         final String outputDir = "src/test/resources/iob-output";
         final AnalysisEngine iobwriter = AnalysisEngineFactory.createEngine("de.julielab.jcore.consumer.cas2iob.desc.jcore-iob-consumer",
@@ -68,7 +74,14 @@ public class ToIOBConsumerTest {
         assertThat(IOUtils.readLines(new FileInputStream(file), "UTF-8")).containsExactly("BRCA	B_Gene",
                 "influences	O",
                 "cancer	O",
-                ".	O");
+                ".	O",
+                "",
+                "Our	O",
+                "data	O",
+                "suggest	O",
+                "this	O",
+                ".	O",
+                "");
     }
 
     @Test
@@ -115,7 +128,8 @@ public class ToIOBConsumerTest {
         assertThat(IOUtils.readLines(new FileInputStream(file), "UTF-8")).containsExactly("BRCA	NN	B-Gene",
                 "influences	VBZ	O",
                 "cancer	NN	O",
-                ".	.	O");
+                ".	.	O",
+                "");
 
     }
 }

@@ -181,7 +181,6 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                     bw.newLine();
                 } else if (token.getText().equals("") || token.getText().equals(PARAGRAPH_END_MARK)) {
                     bw.newLine();
-                    bw.newLine();
                 } else {
                     final Stream.Builder<String> sb = Stream.builder();
                     sb.accept(token.getText());
@@ -192,7 +191,8 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                     bw.newLine();
                 }
             }
-
+            // newline at the very end; this makes it easy to concatenate multiple output IOB files into one larger file
+            bw.newLine();
             if (bw != null) {
                 bw.close();
             }
@@ -284,7 +284,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                     // if we are at the first token, we need to add a sentence break mark which is
                     // later replaced by an empty line
                     if (i == 0 && overallSentCount > 0) {
-                        IOToken ioToken = null;
+                        IOToken ioToken;
                         //if (sentCount == 0) {
                         if (currentParagraph != lastPara) {
                             // add paragraph end before this sentence
@@ -384,6 +384,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         }
 
     }
+
 
     /**
      * @param ioTokenMap
