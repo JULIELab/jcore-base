@@ -18,9 +18,11 @@ import org.slf4j.LoggerFactory;
 public class BioCDocumentPopulator {
     private final static Logger log = LoggerFactory.getLogger(BioCDocumentPopulator.class);
     private boolean addGenes;
+    private Class<? extends ConceptMention> geneTypeClass;
 
-    public BioCDocumentPopulator(boolean addGenes) {
+    public BioCDocumentPopulator(boolean addGenes, String geneTypeName) throws ClassNotFoundException {
         this.addGenes = addGenes;
+        geneTypeClass = (Class<? extends ConceptMention>) Class.forName(geneTypeName);
     }
 
     public BioCDocument populate(JCas jCas) {
@@ -92,8 +94,8 @@ public class BioCDocumentPopulator {
 
     private int addGenesToPassage(JCas jCas, Zone z, BioCPassage p, int annotationId) {
         if (p != null) {
-            Iterable<Gene> geneIt = JCasUtil.subiterate(jCas, Gene.class, z, false, true);
-            for (Gene g : geneIt) {
+            Iterable<? extends ConceptMention> geneIt = JCasUtil.subiterate(jCas, geneTypeClass, z, false, true);
+            for (ConceptMention g : geneIt) {
                 BioCAnnotation annotation = new BioCAnnotation(String.valueOf(annotationId++));
                 annotation.setText(g.getCoveredText());
                 String type = "Gene";

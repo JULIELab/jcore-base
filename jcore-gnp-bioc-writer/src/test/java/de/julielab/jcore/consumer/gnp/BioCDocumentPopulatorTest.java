@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BioCDocumentPopulatorTest {
     @Test
     public void populate() throws Exception {
-        BioCDocumentPopulator populator = new BioCDocumentPopulator(false);
+        BioCDocumentPopulator populator = new BioCDocumentPopulator(false, Gene.class.getCanonicalName());
         JCas jCas = TestDocumentGenerator.prepareCas(1);
         BioCDocument biocDoc = populator.populate(jCas);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -42,7 +42,7 @@ class BioCDocumentPopulatorTest {
 
     @Test
     public void populateWithGenes() throws Exception {
-        BioCDocumentPopulator populator = new BioCDocumentPopulator(true);
+        BioCDocumentPopulator populator = new BioCDocumentPopulator(true, Gene.class.getCanonicalName());
         JCas jCas = TestDocumentGenerator.prepareCas(1);
         new Gene(jCas, 0, 4).addToIndexes();
         new Gene(jCas, 87, 96).addToIndexes();
@@ -66,7 +66,7 @@ class BioCDocumentPopulatorTest {
 
     @Test
     public void populateWithGeneFamilies() throws Exception {
-        BioCDocumentPopulator populator = new BioCDocumentPopulator(true);
+        BioCDocumentPopulator populator = new BioCDocumentPopulator(true, Gene.class.getCanonicalName());
         JCas jCas = TestDocumentGenerator.prepareCas(1);
         Gene gene = new Gene(jCas, 0, 4);
         gene.setSpecificType("protein_familiy_or_group");
@@ -86,7 +86,7 @@ class BioCDocumentPopulatorTest {
 
     @Test
     public void populateWithGeneFamilies2() throws Exception {
-        BioCDocumentPopulator populator = new BioCDocumentPopulator(true);
+        BioCDocumentPopulator populator = new BioCDocumentPopulator(true, Gene.class.getCanonicalName());
         JCas jCas = TestDocumentGenerator.prepareCas(1);
         Gene gene = new Gene(jCas, 0, 4);
         gene.setSpecificType("FamilyName");

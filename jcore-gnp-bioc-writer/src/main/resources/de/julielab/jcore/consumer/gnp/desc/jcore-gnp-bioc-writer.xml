@@ -31,8 +31,15 @@
             </configurationParameter>
             <configurationParameter>
                 <name>AddGenes</name>
-                <description>false</description>
+                <description>If set to true, all Gene annotations in the CAS will be added to the BioC documents. The default type used is de.julielab.jcore.types.Gene. This can be changed with the GeneTypeName parameter.</description>
                 <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>GeneTypeName</name>
+                <description>The UIMA type denoting gene annotations that should be written into the BioC format when the AddGenes parameter is set to true.</description>
+                <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
@@ -42,6 +49,12 @@
                 <name>AddGenes</name>
                 <value>
                     <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>GeneTypeName</name>
+                <value>
+                    <string>de.julielab.jcore.types.Gene</string>
                 </value>
             </nameValuePair>
         </configurationParameterSettings>
