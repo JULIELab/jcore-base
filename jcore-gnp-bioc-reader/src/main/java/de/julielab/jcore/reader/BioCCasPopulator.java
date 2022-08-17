@@ -186,6 +186,7 @@ public class BioCCasPopulator {
                             passageAnnotation = new Zone(jCas, offset, passageEnd);
                             break;
                     }
+                    passageAnnotation.setComponentId(GNormPlusFormatMultiplier.class.getCanonicalName());
                     passageAnnotation.addToIndexes();
                 }
             }
