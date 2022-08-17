@@ -7,13 +7,14 @@ import de.julielab.jcore.types.Title;
 import de.julielab.jcore.types.pubmed.Header;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -28,7 +29,7 @@ public class GNormPlusFormatWriterTest {
 
     private static final Path BASEDIR = Path.of("src", "test", "resources", "testoutput");
 
-    @AfterAll
+//    @AfterAll
     public static void cleanFinally() {
         FileUtils.deleteQuietly(BASEDIR.toFile());
     }
@@ -118,6 +119,14 @@ public class GNormPlusFormatWriterTest {
         writer.process(jCas);
         // assert that no empty documents were written into the collection
         assertThat(Path.of(BASEDIR.toString(), "bioc_collections_0", "bioc_collection_0_0.xml")).doesNotExist();
+    }
+
+    @Test
+    public void muh() throws Exception {
+        final JCas jCas = TestDocumentGenerator.createTestJCas();
+        XmiCasDeserializer.deserialize(new FileInputStream("12486105.xmi"),  jCas.getCas());
+        final AnalysisEngine writer = getWriterInstance(1, 1);
+        writer.process(jCas);
     }
 
 }

@@ -125,6 +125,7 @@ public class BioCDocumentPopulator {
         // GNormPlus doesn't seem to handle newlines well. It resulted in missing annotations when testing if the
         // output format is handled well by GNormPlus.
         p.setText(a.getCoveredText().replaceAll("\n", " "));
+        p.putInfon("uimatype", a.getClass().getCanonicalName());
         return p;
     }
 }
