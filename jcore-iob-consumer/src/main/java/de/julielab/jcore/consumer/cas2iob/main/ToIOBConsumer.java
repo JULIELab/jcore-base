@@ -117,7 +117,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         addPos = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_ADD_POS)).orElse(false);
 
         separator = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COLUMN_SEPARATOR)).orElse("\t");
-        separator = separator.replaceAll("\\\\t", 	"\t");
+        separator = separator.replaceAll("\\\\t", "\t");
 
         iobMarkSeparator = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_IOB_MARK_SEPARATOR)).orElse("_");
 
@@ -236,8 +236,8 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         while (paragraphIter.hasNext()) {
             paragraphs.add((Paragraph) paragraphIter.next());
         }
+        Paragraph dParagraph = null;
         if (paragraphs.isEmpty()) {
-            Paragraph dParagraph = null;
             try {
                 dParagraph = (Paragraph) JCoReAnnotationTools.getAnnotationByClassName(jcas, Paragraph.class.getName());
             } catch (ClassNotFoundException | SecurityException
@@ -249,6 +249,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
             }
             dParagraph.setBegin(0);
             dParagraph.setEnd(jcas.getDocumentText().length());
+            dParagraph.setComponentId(ToIOBConsumer.class.getCanonicalName());
             dParagraph.addToIndexes(jcas);
 
             paragraphs.add(dParagraph);
@@ -330,6 +331,10 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                 ret[i] = iobToken.toXIoToken();
             }
         }
+
+        // remove helper paragraph annotation
+        if (dParagraph != null)
+            dParagraph.removeFromIndexes();
 
         return ret;
     }
