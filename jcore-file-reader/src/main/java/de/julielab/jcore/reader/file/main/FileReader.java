@@ -20,8 +20,7 @@ package de.julielab.jcore.reader.file.main;
 import de.julielab.java.utilities.FileUtilities;
 import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.types.Date;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.analysis_engine.annotator.AnnotatorConfigurationException;
 import org.apache.uima.cas.CAS;
@@ -39,6 +38,7 @@ import java.io.*;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,6 +85,7 @@ public class FileReader extends CollectionReader_ImplBase {
      *
      */
     public static final String ORIG_FILES_EXT = "OriginalFileExt";
+    public static final String TITLE_ABSTRACT_SPLIT = "MakeTitleAbstractSplit";
     public static final String REMOVE_FILE_NAME_EXTENSION_FOR_DOC_ID = "RemoveFileNameExtensionForDocId";
     private final static Logger log = LoggerFactory.getLogger(FileReader.class);
     private ArrayList<File> files;
@@ -113,6 +114,8 @@ public class FileReader extends CollectionReader_ImplBase {
     private String origFileExt;
     @ConfigurationParameter(name = REMOVE_FILE_NAME_EXTENSION_FOR_DOC_ID, mandatory = false, defaultValue = "true")
     private boolean removeFileNameExtensionForDocId;
+    @ConfigurationParameter(name = TITLE_ABSTRACT_SPLIT, mandatory = false, defaultValue = "false", description = "Use the first input line as the title with a Title annotation and mark the rest with the AbstractText annotation. Defaults to false.")
+    private boolean titleAbstractSplit;
 
     /**
      * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -189,6 +192,8 @@ public class FileReader extends CollectionReader_ImplBase {
 
         if (!inputDirectory.exists())
             throw new ResourceInitializationException(AnnotatorConfigurationException.RESOURCE_NOT_FOUND, new Object[]{inputDirectory.getAbsolutePath()});
+
+        titleAbstractSplit = (boolean) Optional.ofNullable(getConfigParameterValue(TITLE_ABSTRACT_SPLIT)).orElse(false);
 
         fileIndex = 0;
         files = new ArrayList<File>();
@@ -330,6 +335,22 @@ public class FileReader extends CollectionReader_ImplBase {
                 jcas.setDocumentText(origText);
             } else {
                 jcas.setDocumentText(text);
+            }
+
+            if (titleAbstractSplit) {
+                String docText = jcas.getDocumentText();
+                final int firstNewlineIndex = docText.indexOf("\n");
+                if (firstNewlineIndex > 0) {
+                    final Title title = new Title(jcas, 0, firstNewlineIndex);
+                    title.setTitleType("document");
+                    title.setComponentId(getClass().getCanonicalName());
+                    title.addToIndexes();
+                }
+                if (firstNewlineIndex + 1 < docText.length()) {
+                    final AbstractText abstractText = new AbstractText(jcas, firstNewlineIndex + 1, docText.length());
+                    abstractText.setComponentId(getClass().getCanonicalName());
+                    abstractText.addToIndexes();
+                }
             }
 
             if (useFilenameAsDocId) {

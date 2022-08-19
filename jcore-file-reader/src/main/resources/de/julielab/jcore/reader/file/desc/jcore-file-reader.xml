@@ -1,159 +1,171 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>de.julielab.jcore.reader.file.main.FileReader</implementationName>
-  <processingResourceMetaData>
-    <name>JCoRe File Reader</name>
-    <description />
-    <version>2.6.0-SNAPSHOT</version>
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.reader.file.main.FileReader</implementationName>
+    <processingResourceMetaData>
+        <name>JCoRe File Reader</name>
+        <description/>
+        <version>2.6.0-SNAPSHOT</version>
         <vendor>JULIELab Jena, Germany</vendor>
-    <configurationParameters>
-      <configurationParameter>
-        <name>InputDirectory</name>
-        <description>The directory where the text files reside.</description>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>true</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>UseFilenameAsDocId</name>
-        <description>If set to true, the filename is used as document ID (without extension).</description>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    <configurationParameter>
-        <name>PublicatonDatesFile</name>
-        <description>The file that maps each article id (e.g. pubmed id) of the files in the input directory to the corresponding publication date (can be created using julielab/jules/ae/genemapper/utils/PubMedID2PublicationDate)</description>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    <configurationParameter>
-        <name>AllowedFileExtensions</name>
-        <description>A list of file name extensions to restrict the read files in the InputDirectory. All files will be read if this parameter is left blank.</description>
-        <type>String</type>
-        <multiValued>true</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    <configurationParameter>
-        <name>SentencePerLine</name>
-        <description>Whether the files are preprocessed and have only one sentence per line.</description>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>FileNameSplitUnderscore</name>
-        <description>Whether the filenames are splitted on underscore as well as.</description>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>ReadSubDirs</name>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    <configurationParameter>
-        <name>TokenByToken</name>
-        <type>Boolean</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-    <configurationParameter>
-        <name>OriginalFolder</name>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>OriginalFileExt</name>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-          <name>RemoveFileNameExtensionForDocId</name>
-          <type>Boolean</type>
-          <multiValued>false</multiValued>
-          <mandatory>false</mandatory>
-      </configurationParameter>
-    </configurationParameters>
-    <configurationParameterSettings>
-      <nameValuePair>
-        <name>UseFilenameAsDocId</name>
-        <value>
-          <boolean>false</boolean>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>InputDirectory</name>
-        <value>
-          <string>data/files</string>
-        </value>
-      </nameValuePair>
-    <nameValuePair>
-        <name>SentencePerLine</name>
-        <value>
-          <boolean>false</boolean>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>FileNameSplitUnderscore</name>
-        <value>
-          <boolean>false</boolean>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>ReadSubDirs</name>
-        <value>
-          <boolean>false</boolean>
-        </value>
-      </nameValuePair>
-    <nameValuePair>
-        <name>TokenByToken</name>
-        <value>
-          <boolean>false</boolean>
-        </value>
-      </nameValuePair>
-    <nameValuePair>
-        <name>OriginalFileExt</name>
-        <value>
-          <string>txt</string>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-          <name>RemoveFileNameExtensionForDocId</name>
-          <value>
-              <boolean>true</boolean>
-          </value>
-      </nameValuePair>
-    </configurationParameterSettings>
-    <typeSystemDescription>
-      <imports>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
-        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
-      </imports>
-    </typeSystemDescription>
-    <typePriorities />
-    <fsIndexCollection />
-    <capabilities>
-      <capability>
-        <inputs />
-        <outputs>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
-          <type allAnnotatorFeatures="true">de.julielab.jcore.types.Date</type>
-        </outputs>
-        <languagesSupported />
-      </capability>
-    </capabilities>
-    <operationalProperties>
-      <modifiesCas>true</modifiesCas>
-      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
-      <outputsNewCASes>true</outputsNewCASes>
-    </operationalProperties>
-  </processingResourceMetaData>
-  <resourceManagerConfiguration />
+        <configurationParameters>
+            <configurationParameter>
+                <name>InputDirectory</name>
+                <description>The directory where the text files reside.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>UseFilenameAsDocId</name>
+                <description>If set to true, the filename is used as document ID (without extension).</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>PublicatonDatesFile</name>
+                <description>The file that maps each article id (e.g. pubmed id) of the files in the input directory to
+                    the corresponding publication date (can be created using
+                    julielab/jules/ae/genemapper/utils/PubMedID2PublicationDate)
+                </description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AllowedFileExtensions</name>
+                <description>A list of file name extensions to restrict the read files in the InputDirectory. All files
+                    will be read if this parameter is left blank.
+                </description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SentencePerLine</name>
+                <description>Whether the files are preprocessed and have only one sentence per line.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>FileNameSplitUnderscore</name>
+                <description>Whether the filenames are splitted on underscore as well as.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ReadSubDirs</name>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>TokenByToken</name>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OriginalFolder</name>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OriginalFileExt</name>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>RemoveFileNameExtensionForDocId</name>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>MakeTitleAbstractSplit</name>
+                <description>Use the first input line as the title with a Title annotation and mark the rest with the AbstractText annotation. Defaults to false.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>UseFilenameAsDocId</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>InputDirectory</name>
+                <value>
+                    <string>data/files</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>SentencePerLine</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>FileNameSplitUnderscore</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>ReadSubDirs</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>TokenByToken</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>OriginalFileExt</name>
+                <value>
+                    <string>txt</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>RemoveFileNameExtensionForDocId</name>
+                <value>
+                    <boolean>true</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+            </imports>
+        </typeSystemDescription>
+        <typePriorities/>
+        <fsIndexCollection/>
+        <capabilities>
+            <capability>
+                <inputs/>
+                <outputs>
+                    <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
+                    <type allAnnotatorFeatures="true">de.julielab.jcore.types.Date</type>
+                </outputs>
+                <languagesSupported/>
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
+    <resourceManagerConfiguration/>
 </collectionReaderDescription>
