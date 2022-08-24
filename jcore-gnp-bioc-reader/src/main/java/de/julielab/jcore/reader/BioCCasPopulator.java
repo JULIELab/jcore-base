@@ -32,10 +32,19 @@ public class BioCCasPopulator {
     private Map<String, String> sofaMaps;
     private int pos;
 
+    /**
+     * This constructor is used when the GNormPlusMultiplier/Reader is used to read files that directly correspond to
+     * JeDIS database documents and should be written back into the database. Then we need some information about
+     * the database and the state of the document.
+     * @param biocCollectionPath The BioC documents to read that have equivalents in the JeDIS database.
+     * @param costosysConfiguration The CoStoSys configuration to connect to the JeDIS database.
+     * @param documentsTable The name of the database table that stores the documents.
+     * @throws XMLStreamException
+     * @throws IOException
+     * @throws SQLException
+     */
     public BioCCasPopulator(Path biocCollectionPath, Path costosysConfiguration, String documentsTable) throws XMLStreamException, IOException, SQLException {
-        try (BioCCollectionReader bioCCollectionReader = new BioCCollectionReader(biocCollectionPath)) {
-            bioCCollection = bioCCollectionReader.readCollection();
-        }
+        this(biocCollectionPath);
         if (costosysConfiguration != null) {
             maxXmiIdMap = new HashMap<>();
             sofaMaps = new HashMap<>();
@@ -45,6 +54,18 @@ public class BioCCasPopulator {
             }
         }
         pos = 0;
+    }
+
+    /**
+     * This constructor is used when GNormPlus BioC files - or only the contained annotatoins - should be read into a CAS without the need to synchronize to a JeDIS database.
+     * @param biocCollectionPath The BioC documents to read that have equivalents in the JeDIS database.
+     * @throws XMLStreamException
+     * @throws IOException
+     */
+    public BioCCasPopulator(Path biocCollectionPath) throws XMLStreamException, IOException {
+        try (BioCCollectionReader bioCCollectionReader = new BioCCollectionReader(biocCollectionPath)) {
+            bioCCollection = bioCCollectionReader.readCollection();
+        }
     }
 
     private void retrieveXmiMetaData(String documentsTable, DataBaseConnector dbc, CoStoSysConnection conn) throws SQLException {
@@ -76,12 +97,23 @@ public class BioCCasPopulator {
     }
 
     public void populateWithNextDocument(JCas jCas) {
+        populateWithNextDocument(jCas, false);
+    }
+
+    /**
+     * Populate the given CAS either with the complete contents of the next BioC document or only with its annotations.
+     * @param jCas The CAS to add data to. Can be empty when it should be populated with the BioC document text or it already may have a text when it only should be filled with the annotations of the BioC document.
+     * @param onlyAddAnnotations Whether to add only annotations from the next BioC document instead of its whole textual contents.
+     */
+    public void populateWithNextDocument(JCas jCas, boolean onlyAddAnnotations) {
         BioCDocument document = bioCCollection.getDocument(pos++);
-        setDocumentId(jCas, document);
-        setDocumentText(jCas, document);
-        setMaxXmiId(jCas, document);
+        if (!onlyAddAnnotations) {
+            setDocumentId(jCas, document);
+            setDocumentText(jCas, document);
+            setMaxXmiId(jCas, document);
+        }
         Iterator<BioCAnnotation> allAnnotations = Stream.concat(document.getAnnotations().stream(), document.getPassages().stream().map(BioCPassage::getAnnotations).flatMap(Collection::stream)).iterator();
-        for (BioCAnnotation annotation : (Iterable<BioCAnnotation>)() ->allAnnotations) {
+        for (BioCAnnotation annotation : (Iterable<BioCAnnotation>) () -> allAnnotations) {
             Optional<String> type = annotation.getInfon("type");
             if (!type.isPresent())
                 throw new IllegalArgumentException("BioCDocument " + document.getID() + " has an annotation that does not specify its type: " + annotation);

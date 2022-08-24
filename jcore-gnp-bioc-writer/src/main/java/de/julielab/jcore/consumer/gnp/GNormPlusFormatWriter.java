@@ -92,8 +92,9 @@ public class GNormPlusFormatWriter extends JCasAnnotator_ImplBase {
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
         try {
+            System.out.println("CollectionProcessComplete: Writing BioC collection of size " + currentCollection.getDocmentCount());
                 bioCCollectionWriter.writeBioCCollection(currentCollection);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Could not write final batch of BioCDocuments.", e);
             throw new AnalysisEngineProcessException(e);
         }

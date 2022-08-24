@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "Wrapper for the JULIE Lab variant of the GNormPlus gene ID mapper.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.gnormplus.desc.jcore-gnormplus-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-gnormplus-ae",
+        "groupId": "de.julielab",
+        "version": "2.6.0-SNAPSHOT"
+    },
+    "name": "JCoRe GNormPlus Annotator"
+}
