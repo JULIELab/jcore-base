@@ -58,18 +58,22 @@ public class GNormPlusAnnotator extends JCasAnnotator_ImplBase {
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
         addGenes = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ADD_GENES)).orElse(false);
         geneTypeName = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_GENE_TYPE_NAME)).orElse(Gene.class.getCanonicalName());
-        setupFile = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_GNP_SETUP_FILE)).orElse("/de/julielab/jcore/ae/gnormplus/config/setup_default.txt");
+        setupFile = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_GNP_SETUP_FILE)).orElse("/de/julielab/jcore/ae/gnormplus/config/setup_do_ner.txt");
         focusSpecies = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_FOCUS_SPECIES)).orElse("");
         outputDirectory = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_OUTPUT_DIR)).orElse("");
 
         synchronized (GNormPlus.class) {
-            try {
-                final InputStream setupFileStream = FileUtilities.findResource(setupFile);
-                GNormPlus.loadConfiguration(setupFileStream, focusSpecies);
-                GNormPlus.loadResources(focusSpecies, System.currentTimeMillis());
-            } catch (IOException e) {
-                log.error("Could not find resource {}", setupFile);
-                throw new ResourceInitializationException(e);
+            if (!GNormPlus.initialized) {
+                try {
+                    final InputStream setupFileStream = FileUtilities.findResource(setupFile);
+                    if (setupFileStream == null)
+                        throw new IOException("Could not find resource as file or classpath resource " + setupFile);
+                    GNormPlus.loadConfiguration(setupFileStream, focusSpecies);
+                    GNormPlus.loadResources(focusSpecies, System.currentTimeMillis());
+                } catch (IOException e) {
+                    log.error("Could not find resource {}", setupFile);
+                    throw new ResourceInitializationException(e);
+                }
             }
         }
         try {
@@ -122,14 +126,14 @@ public class GNormPlusAnnotator extends JCasAnnotator_ImplBase {
             log.error("Could not read GNormPlus output file {}");
             throw new AnalysisEngineProcessException(e);
         }
+//        try {
+//            Files.delete(filePath);
+//        } catch (IOException e) {
+//            log.error("Could not delete temporary file {}", filePath);
+//            throw new AnalysisEngineProcessException(e);
+//        }
         try {
-            Files.delete(filePath);
-        } catch (IOException e) {
-            log.error("Could not delete temporary file {}", filePath);
-            throw new AnalysisEngineProcessException(e);
-        }
-        try {
-            if (!outputDirectory.isBlank())
+            if (outputDirectory.isBlank() && Files.exists(outputFilePath))
                 Files.delete(outputFilePath);
         } catch (IOException e) {
             log.error("Could not delete temporary file {}", outputFilePath);

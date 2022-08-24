@@ -55,7 +55,7 @@ public class GNormPlusFormatMultiplierReader extends JCasCollectionReader_ImplBa
                 pathStream = Files.walk(inputPath, FileVisitOption.FOLLOW_LINKS);
             else
                 pathStream = Files.list(inputPath);
-            pathStream = pathStream.filter(p -> p.toString().endsWith(".xml"));
+            pathStream = pathStream.filter(p -> p.toString().toLowerCase().endsWith(".xml"));
             fileIterator = pathStream.iterator();
         } catch (IOException e) {
             log.error("Could not read the files of inputPath {}", inputPathString, e);
