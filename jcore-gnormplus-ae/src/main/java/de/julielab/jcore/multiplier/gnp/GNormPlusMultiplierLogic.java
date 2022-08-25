@@ -19,6 +19,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,15 +57,17 @@ public class GNormPlusMultiplierLogic {
 
     public AbstractCas next() throws AnalysisEngineProcessException {
         if (bioCCasPopulator == null || bioCCasPopulator.documentsLeftInCollection() == 0) {
+            currentCollectionIndex = 0;
+            cachedCasData.clear();
             final BioCCollection gnormPlusInputCollection = GNormPlusProcessing.createEmptyJulieLabBioCCollection();
             while (baseMultiplierHasNext.get()) {
                 final JCas jCas = baseMultiplierNext.get();
                 final BioCDocument bioCDocument = bioCDocumentPopulator.populate(jCas);
                 gnormPlusInputCollection.addDocument(bioCDocument);
-                try {
-                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    final GZIPOutputStream os = new GZIPOutputStream(baos);
-                    XmiCasSerializer.serialize(jCas.getCas(), os);
+                try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    try (final GZIPOutputStream os = new GZIPOutputStream(baos)) {
+                        XmiCasSerializer.serialize(jCas.getCas(), os);
+                    }
                     cachedCasData.add(baos.toByteArray());
                     jCas.release();
                 } catch (IOException | SAXException e) {
@@ -72,7 +75,6 @@ public class GNormPlusMultiplierLogic {
                     throw new AnalysisEngineProcessException(e);
                 }
             }
-            currentCollectionIndex = 0;
             final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(gnormPlusInputCollection, outputDirectory);
             try {
                 bioCCasPopulator = new BioCCasPopulator(outputFilePath);
@@ -83,8 +85,8 @@ public class GNormPlusMultiplierLogic {
         }
         byte[] currentCasData = cachedCasData.get(currentCollectionIndex);
         final JCas jCas = multiplierGetEmptyCas.get();
-        try {
-            XmiCasDeserializer.deserialize(new GZIPInputStream(new ByteArrayInputStream(currentCasData)), jCas.getCas());
+        try (InputStream is = new GZIPInputStream(new ByteArrayInputStream(currentCasData))) {
+            XmiCasDeserializer.deserialize(is, jCas.getCas());
         } catch (SAXException | IOException e) {
             log.error("Could not deserialize cached CAS data");
             throw new AnalysisEngineProcessException(e);

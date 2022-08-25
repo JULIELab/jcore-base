@@ -50,6 +50,8 @@ public class GNormPlusProcessing {
         try {
             if (!Files.exists(filePath.getParent()))
                 Files.createDirectory(filePath.getParent());
+            if (!Files.exists(outputFilePath.getParent()))
+                Files.createDirectories(outputFilePath.getParent());
             try (BioCCollectionWriter w = new BioCCollectionWriter(filePath)) {
                 w.writeCollection(bioCCollection);
             }
