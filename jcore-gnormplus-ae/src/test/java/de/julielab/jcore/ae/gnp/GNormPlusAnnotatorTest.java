@@ -1,5 +1,5 @@
 
-package de.julielab.jcore.ae.gnormplus;
+package de.julielab.jcore.ae.gnp;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

@@ -2,7 +2,7 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
-  <annotatorImplementationName>de.julielab.jcore.ae.gnormplus.GNormPlusAnnotator</annotatorImplementationName>
+  <annotatorImplementationName>de.julielab.jcore.ae.gnp.GNormPlusAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>JCoRe GNormPlus Annotator</name>
     <description>Wrapper for the JULIE Lab variant of the GNormPlus gene ID mapper.</description>
@@ -69,7 +69,10 @@
     <capabilities>
       <capability>
         <inputs/>
-        <outputs/>
+        <outputs>
+          <type>de.julielab.jcore.types.ConceptMention</type>
+          <type>de.julielab.jcore.types.Organism</type>
+        </outputs>
         <languagesSupported/>
       </capability>
     </capabilities>

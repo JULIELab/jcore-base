@@ -307,4 +307,8 @@ public class BioCCasPopulator {
     public int getNumDocumentsInCollection() {
         return bioCCollection.getDocmentCount();
     }
+
+    public void clearDocument(int index) {
+        bioCCollection.getDocuments().set(index, null);
+    }
 }

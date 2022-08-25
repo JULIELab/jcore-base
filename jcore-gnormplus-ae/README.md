@@ -2,7 +2,7 @@
 
 **Descriptor Path**:
 ```
-de.julielab.jcore.ae.gnormplus.desc.jcore-gnormplus-ae
+de.julielab.jcore.ae.gnp.desc.jcore-gnormplus-ae
 ```
 
 Wrapper for the JULIE Lab variant of the GNormPlus gene ID mapper.
