@@ -150,6 +150,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
                 log.debug("Truncating document with ID {} due to its text size of {} bytes which is greater than the given threshold of {} bytes.", pkElements, data[pkSize].length, truncationSize);
             }
         } catch (CasPopulationException e) {
+            log.error("Exception while populating CAS", e);
             throw new AnalysisEngineProcessException(e);
         }
     }

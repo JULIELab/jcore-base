@@ -1,6 +1,7 @@
 package de.julielab.jcore.reader.pmc;
 
 import de.julielab.jcore.reader.pmc.parser.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
@@ -110,7 +111,13 @@ public class CasPopulator {
                 break;
             case TEXT:
                 TextParsingResult textParsingResult = (TextParsingResult) result;
-                sb.append(textParsingResult.getText());
+                final String text = textParsingResult.getText();
+                // some special handling for documents that contain formatting tabs, newlines or no-break-spaces in the text
+                boolean textBeginsWithWhitespace = text.isEmpty() ? false : Character.isWhitespace(text.charAt(0));
+                boolean sbEndsWithWhitespace = sb.length() == 0 ? false : Character.isWhitespace(sb.charAt(sb.length()-1));
+                if (textBeginsWithWhitespace && !sbEndsWithWhitespace)
+                    sb.append(" ");
+                sb.append(StringUtils.normalizeSpace(text));
                 break;
             case NONE:
                 // do nothing
