@@ -20,10 +20,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -56,50 +58,82 @@ public class GNormPlusMultiplierLogic {
     }
 
     public AbstractCas next() throws AnalysisEngineProcessException {
-        if (bioCCasPopulator == null || bioCCasPopulator.documentsLeftInCollection() == 0) {
-            currentCollectionIndex = 0;
-            cachedCasData.clear();
-            final BioCCollection gnormPlusInputCollection = GNormPlusProcessing.createEmptyJulieLabBioCCollection();
-            while (baseMultiplierHasNext.get()) {
-                final JCas jCas = baseMultiplierNext.get();
-                final BioCDocument bioCDocument = bioCDocumentPopulator.populate(jCas);
-                gnormPlusInputCollection.addDocument(bioCDocument);
-                try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                    try (final GZIPOutputStream os = new GZIPOutputStream(baos)) {
-                        XmiCasSerializer.serialize(jCas.getCas(), os);
+        try {
+            // Process the incoming documents batch-wise (this is why we use a multiplier here so we have access
+            // to whole batches). This checks if we still have processed documents or if we need to process the next
+            // batch.
+            if (bioCCasPopulator == null || bioCCasPopulator.documentsLeftInCollection() == 0) {
+                System.out.println("Memory before batch processing:");
+                final Runtime rt = Runtime.getRuntime();
+                final long totalMemory = rt.totalMemory();
+                final long freeMemory = rt.freeMemory();
+                final long maxMemory = rt.maxMemory();
+                Function<Long, Double> b2g = bytes -> bytes / 1000000000d;
+                System.out.println("[GNPMultiplierLogic] Free memory: " + freeMemory + "bytes (" + b2g.apply(freeMemory) + "GB), max memory: " + maxMemory + "bytes ("+b2g.apply(maxMemory) + "GB), total memory: " + totalMemory + "bytes ("+b2g.apply(totalMemory) + "GB)");
+                currentCollectionIndex = 0;
+                final BioCCollection gnormPlusInputCollection = GNormPlusProcessing.createEmptyJulieLabBioCCollection();
+                // We first retrieve the whole current batch from the super multiplier and serialize the CASes
+                // to XMI. We do that because we only have one CAS at a time and, thus, must store the data
+                // of the whole batch. We can then later deserialize the documents and add the GNP annotations to it.
+                // This allows batch-processing within GNP which reduces file writes and reads (GNP internally
+                // writes a lot of temporary files that contain all the documents given to it in one single batch file).
+                cachedCasData.clear();
+                while (baseMultiplierHasNext.get()) {
+                    final JCas jCas = baseMultiplierNext.get();
+                    final BioCDocument bioCDocument = bioCDocumentPopulator.populate(jCas);
+                    gnormPlusInputCollection.addDocument(bioCDocument);
+                    try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                        try (final GZIPOutputStream os = new GZIPOutputStream(baos)) {
+                            XmiCasSerializer.serialize(jCas.getCas(), os);
+                        }
+                        cachedCasData.add(baos.toByteArray());
+                        jCas.release();
+                    } catch (IOException | SAXException e) {
+                        log.error("Error when serializing CAS data for caching purposes.");
+                        throw new AnalysisEngineProcessException(e);
                     }
-                    cachedCasData.add(baos.toByteArray());
-                    jCas.release();
-                } catch (IOException | SAXException e) {
-                    log.error("Error when serializing CAS data for caching purposes.");
+                }
+                // now process the whole batch with GNP
+                final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(gnormPlusInputCollection, outputDirectory);
+                try {
+                    bioCCasPopulator = new BioCCasPopulator(outputFilePath);
+                    // delete the GNP output if we don't want to keep it
+                    if(outputDirectory.isBlank()) {
+                        Files.delete(outputFilePath);
+                    }
+                } catch (XMLStreamException | IOException e) {
+                    log.error("Could not read GNormPlus output from {}", outputFilePath);
                     throw new AnalysisEngineProcessException(e);
                 }
             }
-            final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(gnormPlusInputCollection, outputDirectory);
-            try {
-                bioCCasPopulator = new BioCCasPopulator(outputFilePath);
-            } catch (XMLStreamException | IOException e) {
-                log.error("Could not read GNormPlus output from {}", outputFilePath);
+            // Now we have a batch of documents processed with GNP. Get the next document from the cache and
+            // add the GNP annotations to it.
+            byte[] currentCasData = cachedCasData.get(currentCollectionIndex);
+            final JCas jCas = multiplierGetEmptyCas.get();
+            try (InputStream is = new GZIPInputStream(new ByteArrayInputStream(currentCasData))) {
+                XmiCasDeserializer.deserialize(is, jCas.getCas());
+            } catch (SAXException | IOException e) {
+                log.error("Could not deserialize cached CAS data");
                 throw new AnalysisEngineProcessException(e);
             }
-        }
-        byte[] currentCasData = cachedCasData.get(currentCollectionIndex);
-        final JCas jCas = multiplierGetEmptyCas.get();
-        try (InputStream is = new GZIPInputStream(new ByteArrayInputStream(currentCasData))) {
-            XmiCasDeserializer.deserialize(is, jCas.getCas());
-        } catch (SAXException | IOException e) {
-            log.error("Could not deserialize cached CAS data");
-            throw new AnalysisEngineProcessException(e);
-        }
-        bioCCasPopulator.populateWithNextDocument(jCas, true);
-        bioCCasPopulator.clearDocument(currentCollectionIndex);
-        cachedCasData.set(currentCollectionIndex, null);
-        ++currentCollectionIndex;
+            bioCCasPopulator.populateWithNextDocument(jCas, true);
+            bioCCasPopulator.clearDocument(currentCollectionIndex);
+            cachedCasData.set(currentCollectionIndex, null);
+            ++currentCollectionIndex;
 
-        return jCas;
+            return jCas;
+        } catch (AnalysisEngineProcessException e) {
+            log.error("Error while retrieving or processing data for/with GNormPlus", e);
+            throw e;
+        }
     }
 
     public boolean hasNext() {
-        return bioCCasPopulator != null && bioCCasPopulator.documentsLeftInCollection() > 0 || baseMultiplierHasNext.get();
+        try {
+            return bioCCasPopulator != null && bioCCasPopulator.documentsLeftInCollection() > 0 || baseMultiplierHasNext.get();
+        } catch (Throwable t) {
+            log.error("Could not determine hasNext()", t);
+            throw t;
+        }
     }
 }

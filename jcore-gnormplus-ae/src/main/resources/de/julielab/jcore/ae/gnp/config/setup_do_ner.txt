@@ -19,13 +19,14 @@
 	DictionaryFolder = Dictionary
 	GNRModel = Dictionary/GNR.Model
 	SCModel = Dictionary/SimConcept.Model
-	GeneIDMatch = True
-	HomologeneID = False
 [Modules]
-	GeneSpeciesRecognitionOnly = False
-	SpeciesAssignmentOnly = False
-	GeneNormalizationOnly = False
+	SpeciesRecognition = True
+	GeneRecognition = True
+	SpeciesAssignment = True
+	GeneNormalization = True
 [Others]
+	GeneIDMatch = False
+	HomologeneID = False
 	Normalization2Protein = False
 	ShowUnNormalizedMention = False
 	DeleteTmp = True

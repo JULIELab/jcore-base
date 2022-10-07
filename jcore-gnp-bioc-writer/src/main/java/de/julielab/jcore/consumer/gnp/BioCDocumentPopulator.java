@@ -57,6 +57,8 @@ public class BioCDocumentPopulator {
                         // abstract sections are part of the AbstractText which is handled below
                         titleType = "null";
                         break;
+                    case "other":
+                        titleType = "other_title";
                     default:
                         log.debug("Unhandled title type {}", titleTypeString);
                         titleType = "other_title";

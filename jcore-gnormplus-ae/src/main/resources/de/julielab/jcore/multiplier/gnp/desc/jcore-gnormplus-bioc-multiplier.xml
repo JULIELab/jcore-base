@@ -37,6 +37,13 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
+                <name>FocusSpecies</name>
+                <description>If given, all gene mentions are assigned to this NCBI taxonomy ID, i.e. species recognition is omitted.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
                 <name>CostosysConfigFile</name>
                 <description>Path to the CoStoSys configuration file that is used by the XMI DB writer in the same pipeline, if any. The XMI DB writer requires information about the XMI documents that are already in the database and should be updated with new annotations. The current highest XMI ID must be known to avoid ID collisions. To obtain the ID, it must be received from the database beforehand. This allows to retrieve the information batch wise instead of one-by-one which would be much slower.</description>
                 <type>String</type>

@@ -37,6 +37,13 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
+                <name>FocusSpecies</name>
+                <description>If given, all gene mentions are assigned to this NCBI taxonomy ID, i.e. species recognition is omitted.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
                 <name>LogFinalXmi</name>
                 <description>For debugging purposes. If set to true, before parsing the final XMI data assembled from the annotation modules, it is printed to console.</description>
                 <type>Boolean</type>

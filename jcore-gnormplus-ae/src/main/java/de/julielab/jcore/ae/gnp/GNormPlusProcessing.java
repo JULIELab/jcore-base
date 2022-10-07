@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
@@ -45,17 +46,22 @@ public class GNormPlusProcessing {
      */
     public static Path processWithGNormPlus(BioCCollection bioCCollection, String outputDirectory) throws AnalysisEngineProcessException {
         String collectionId = "collection_including_" + bioCCollection.getDocument(0).getID();
-        final Path filePath = Path.of("tmp", collectionId + ".xml");
+        final Path filePath = Path.of("jcore-gnp-tmp", collectionId + ".xml");
         final Path outputFilePath = Path.of(outputDirectory.isBlank() ? "tmp" : outputDirectory, collectionId + "processed.xml");
         try {
-            if (!Files.exists(filePath.getParent()))
-                Files.createDirectory(filePath.getParent());
+            try {
+                if (!Files.exists(filePath.getParent()))
+                    Files.createDirectory(filePath.getParent());
+            } catch (FileAlreadyExistsException e) {
+                // OK, so another process created it, not a big deal.
+            }
             if (!Files.exists(outputFilePath.getParent()))
                 Files.createDirectories(outputFilePath.getParent());
             try (BioCCollectionWriter w = new BioCCollectionWriter(filePath)) {
                 w.writeCollection(bioCCollection);
             }
             GNormPlus.processFile(filePath.toString(), filePath.getFileName().toString(), outputFilePath.toString(), System.currentTimeMillis(), "Test");
+            Files.delete(filePath);
         } catch (IOException | XMLStreamException e) {
             log.error("Could not process document {}", collectionId);
             throw new AnalysisEngineProcessException(e);

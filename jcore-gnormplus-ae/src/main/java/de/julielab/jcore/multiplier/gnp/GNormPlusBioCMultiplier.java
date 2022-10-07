@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Optional;
 
+import static de.julielab.jcore.ae.gnp.GNormPlusAnnotator.DESC_FOCUS_SPECIES;
+
 @ResourceMetaData(name = "JCoRe GNormPlus BioC Multiplier", description = "A CAS multiplier to be used with the GNormPlus BioC Format multiplier reader. It wraps the JULIE Lab variant of the GNormPlus gene ID mapper. It is a multiplier because this enables batch-processing of documents with GNormPlus which makes the processing more efficient.", vendor = "JULIE Lab Jena, Germany")
 @TypeCapability(inputs = {}, outputs = {"de.julielab.jcore.types.ConceptMention", "de.julielab.jcore.types.Organism"})
 public class GNormPlusBioCMultiplier extends GNormPlusFormatMultiplier {
@@ -25,6 +27,7 @@ public class GNormPlusBioCMultiplier extends GNormPlusFormatMultiplier {
     public static final String PARAM_GENE_TYPE_NAME = GNormPlusAnnotator.PARAM_GENE_TYPE_NAME;
     public static final String PARAM_OUTPUT_DIR = GNormPlusAnnotator.PARAM_OUTPUT_DIR;
     public static final String PARAM_GNP_SETUP_FILE = GNormPlusAnnotator.PARAM_GNP_SETUP_FILE;
+    public static final String PARAM_FOCUS_SPECIES = GNormPlusAnnotator.PARAM_FOCUS_SPECIES;
     private final static Logger log = LoggerFactory.getLogger(GNormPlusDBMultiplier.class);
     @ConfigurationParameter(name = PARAM_ADD_GENES, mandatory = false, defaultValue = "false", description = GNormPlusAnnotator.DESC_ADD_GENES)
     private boolean addGenes;
@@ -34,6 +37,8 @@ public class GNormPlusBioCMultiplier extends GNormPlusFormatMultiplier {
     private String geneTypeName;
     @ConfigurationParameter(name = PARAM_OUTPUT_DIR, mandatory = false, description = GNormPlusAnnotator.DESC_OUTPUT_DIR)
     private String outputDirectory;
+    @ConfigurationParameter(name = PARAM_FOCUS_SPECIES, mandatory = false, description = DESC_FOCUS_SPECIES)
+    private String focusSpecies;
 
     private BioCDocumentPopulator bioCDocumentPopulator;
 
@@ -49,6 +54,9 @@ public class GNormPlusBioCMultiplier extends GNormPlusFormatMultiplier {
         } catch (ClassNotFoundException e) {
             log.error("Gene annotation class {} could not be found.", geneTypeName, e);
             throw new ResourceInitializationException(e);
+        } catch (Throwable t) {
+            log.error("Could not create BioCDocumentPopulator instance", t);
+            throw new ResourceInitializationException(t);
         }
         try {
             multiplierLogic = new GNormPlusMultiplierLogic(aContext, bioCDocumentPopulator, () -> {

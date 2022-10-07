@@ -213,6 +213,7 @@ public class BioCCasPopulator {
                             // for figures and tables we have actually no means to distinguish between captions and the actual object; mainly because the actual objects have so far not been part of the CAS documents; thus, this can only be a caption until the objects themselves are added
                             passageAnnotation = new Caption(jCas, offset, passageEnd);
                             ((Caption) passageAnnotation).setCaptionType(type.get());
+                            break;
                         default:
                             log.debug("Unhandled passage type {}", type.get());
                             passageAnnotation = new Zone(jCas, offset, passageEnd);
@@ -228,46 +229,49 @@ public class BioCCasPopulator {
 
     private void addSpeciesAnnotation(BioCAnnotation annotation, JCas jCas) throws MissingInfonException {
         Optional<String> taxId = annotation.getInfon("NCBI Taxonomy");
-        if (!taxId.isPresent())
-            throw new MissingInfonException("Species annotation does not specify its taxonomy ID: " + annotation);
+//        if (!taxId.isPresent())
+//            throw new MissingInfonException("Species annotation does not specify its taxonomy ID: " + annotation);
         // the "total location" is the span from the minimum location value to the maximum location value;
         // for GNormPlus, there are no discontinuing annotations anyway
         BioCLocation location = annotation.getTotalLocation();
         Organism organism = new Organism(jCas, location.getOffset(), location.getOffset() + location.getLength());
-        ResourceEntry resourceEntry = new ResourceEntry(jCas, organism.getBegin(), organism.getEnd());
-        resourceEntry.setSource("NCBI Taxonomy");
-        resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
-        resourceEntry.setEntryId(taxId.get());
-        FSArray resourceEntryList = new FSArray(jCas, 1);
-        resourceEntryList.set(0, resourceEntry);
-        organism.setResourceEntryList(resourceEntryList);
+        if (taxId.isPresent()) {
+            ResourceEntry resourceEntry = new ResourceEntry(jCas, organism.getBegin(), organism.getEnd());
+            resourceEntry.setSource("NCBI Taxonomy");
+            resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
+            resourceEntry.setEntryId(taxId.get());
+            FSArray resourceEntryList = new FSArray(jCas, 1);
+            resourceEntryList.set(0, resourceEntry);
+            organism.setResourceEntryList(resourceEntryList);
+        }
         organism.addToIndexes();
     }
 
     private void addGeneAnnotation(BioCAnnotation annotation, JCas jCas) throws MissingInfonException {
         Optional<String> geneId = annotation.getInfon("NCBI Gene");
-        if (!geneId.isPresent())
-            throw new MissingInfonException("Gene annotation does not specify its gene ID: " + annotation);
+//        if (!geneId.isPresent())
+//            throw new MissingInfonException("Gene annotation does not specify its gene ID: " + annotation);
         // the "total location" is the span from the minimum location value to the maximum location value;
         // for GNormPlus, there are no discontinuing annotations anyway
         BioCLocation location = annotation.getTotalLocation();
         Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
         gene.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
         gene.setSpecificType("Gene");
-        // one gene mention might have multiple IDs when there are ranges or enumerations, e.g. "IL2-5", "B7-1 and B7-2" or "B7-1/2"
-        String[] geneIds = geneId.get().split(";");
-        FSArray resourceEntryList = new FSArray(jCas, geneIds.length);
-        for (int i = 0; i < geneIds.length; i++) {
-            ResourceEntry resourceEntry = new ResourceEntry(jCas, gene.getBegin(), gene.getEnd());
-            // 9999 ist the GeNo score for exact matches; GNP only recognized exact dictionary matches and transfers
-            // their IDs to other forms under certain circumstances (abbreviations, for example)
-            resourceEntry.setConfidence("9999");
-            resourceEntry.setSource("NCBI Gene");
-            resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
-            resourceEntry.setEntryId(geneIds[i]);
-            resourceEntryList.set(i, resourceEntry);
+        if (geneId.isPresent()) { // one gene mention might have multiple IDs when there are ranges or enumerations, e.g. "IL2-5", "B7-1 and B7-2" or "B7-1/2"
+            String[] geneIds = geneId.get().split(";");
+            FSArray resourceEntryList = new FSArray(jCas, geneIds.length);
+            for (int i = 0; i < geneIds.length; i++) {
+                ResourceEntry resourceEntry = new ResourceEntry(jCas, gene.getBegin(), gene.getEnd());
+                // 9999 ist the GeNo score for exact matches; GNP only recognized exact dictionary matches and transfers
+                // their IDs to other forms under certain circumstances (abbreviations, for example)
+                resourceEntry.setConfidence("9999");
+                resourceEntry.setSource("NCBI Gene");
+                resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
+                resourceEntry.setEntryId(geneIds[i]);
+                resourceEntryList.set(i, resourceEntry);
+            }
+            gene.setResourceEntryList(resourceEntryList);
         }
-        gene.setResourceEntryList(resourceEntryList);
         gene.addToIndexes();
     }
 
