@@ -16,6 +16,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StringNormalizerForChunkingTest {
+
+	private Transliterator transliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC");
 	@Test
 	public void testTextNormalization() {
 		String term;
@@ -114,7 +116,7 @@ public class StringNormalizerForChunkingTest {
 		str = "We saw Parkinson's Disease and S(H)P 1 in a sadly-formed circumvention of applicance.";
 		PorterStemmerTokenizerFactory tokenizerFactory = new PorterStemmerTokenizerFactory(
 				IndoEuropeanTokenizerFactory.INSTANCE);
-		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
+		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory, transliterator);
 		assertEquals("We saw Parkinson Diseas and S(H)P 1 in a sadli-form circumvent of applic.",
 				ns.string, "Normalization was wrong: ");
 		assertEquals( Integer.valueOf(0),  ns.getOriginalOffset(Integer.valueOf(0)), "Offset wrong: ");
@@ -125,14 +127,14 @@ public class StringNormalizerForChunkingTest {
 		assertEquals( Integer.valueOf(50),  ns.getOriginalOffset(Integer.valueOf(47)), "Offset wrong: ");
 		assertEquals( Integer.valueOf(56),  ns.getOriginalOffset(Integer.valueOf(51)), "Offset wrong: ");
 		str = "We go to James' to have some coffee'ses.";
-		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
+		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory, transliterator);
 		assertEquals( "We go to Jame' to have some coffe'se.",  ns.string, "Normalization was wrong: ");
 		assertEquals( Integer.valueOf(0),  ns.getOriginalOffset(Integer.valueOf(0)), "Offset wrong: ");
 		assertEquals( Integer.valueOf(9),  ns.getOriginalOffset(Integer.valueOf(9)), "Offset wrong: ");
 		assertEquals( Integer.valueOf(14),  ns.getOriginalOffset(Integer.valueOf(13)), "Offset wrong: ");
 		assertEquals( Integer.valueOf(35),  ns.getOriginalOffset(Integer.valueOf(33)), "Offset wrong: ");
 		str = "We have some 'serious things' to talk about.";
-		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
+		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory, transliterator);
 		assertEquals( "We have some 'seriou thing' to talk about.",  ns.string, "Normalization was wrong: ");
 		assertEquals( Integer.valueOf(0),  ns.getOriginalOffset(Integer.valueOf(0)), "Offset wrong: ");
 		assertEquals( Integer.valueOf(12),  ns.getOriginalOffset(Integer.valueOf(12)), "Offset wrong: ");
@@ -142,7 +144,7 @@ public class StringNormalizerForChunkingTest {
 		assertEquals( Integer.valueOf(30),  ns.getOriginalOffset(Integer.valueOf(28)), "Offset wrong: ");
 
 		str = "test dosing unit KLRg1 killer cell lectin like receptor G2 Parkinson's Disease";
-		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory);
+		ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory, transliterator);
 		System.out.println(ns.string);
 
 	}
@@ -161,7 +163,7 @@ public class StringNormalizerForChunkingTest {
 		String str;
 		str = "glutathione transferases are evil";
 		TokenizerFactory tokenizerFactory = new IndoEuropeanTokenizerFactory();
-		NormalizedString ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory, true, new OffsetSet(List.of(Range.between(12, 24))), null);
+		NormalizedString ns = StringNormalizerForChunking.normalizeString(str, tokenizerFactory, true, new OffsetSet(List.of(Range.between(12, 24))), transliterator);
 		assertEquals("glutathione transferase are evil", ns.string);
 	}
 }

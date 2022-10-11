@@ -227,7 +227,7 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
         try {
             provider = (ChunkerProvider) getContext().getResourceObject(CHUNKER_RESOURCE_NAME);
             gazetteer = provider.getChunker();
-			stopWords = provider.getStopWords();
+            stopWords = provider.getStopWords();
 //            String[] stopwordArray = {"a", "about", "above", "across", "after", "afterwards", "again", "against",
 //                    "all", "almost", "alone", "along", "already", "also", "although", "always", "am", "among",
 //                    "amongst", "amoungst", "amount", "an", "and", "another", "any", "anyhow", "anyone", "anything",
@@ -281,9 +281,10 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
 
         Boolean transliterateBoolean = provider.getTransliterate();// (Boolean)
         // aContext.getConfigParameterValue(PARAM_TRANSLITERATE_TEXT);
-        if (transliterateBoolean || !provider.getCaseSensitive()) {
-            transliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower");
-        }
+//        if (transliterateBoolean) {
+//            transliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower");
+        transliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC");
+//        }
         LOGGER.info("Transliterate CAS document text (i.e. transform accented characters to their base forms): {}",
                 provider.getTransliterate());
 
@@ -309,19 +310,24 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
         String docText = aJCas.getDocumentText();
         if (docText == null || docText.length() == 0)
             return;
-        if (provider.getUseApproximateMatching() && !provider.getTransliterate() && !provider.getCaseSensitive())
-            // We use the transliterator because it does lowercasing and also solves issues that could arise due
-            // to the normal docText.toLowerCase() call which would break special characters sometimes
+        // normalization includes transliteration
+        if (provider.getTransliterate() && !provider.getNormalize())
             docText = transliterator.transform(docText);
         NormalizedString normalizedDocText = null;
         if (provider.getNormalize()) {
             if (provider.getNormalizePlural()) {
                 OffsetSet pluralOffsets = StreamSupport.stream(Spliterators.spliterator(aJCas.<PennBioIEPOSTag>getAnnotationIndex(PennBioIEPOSTag.type).iterator(), 0, 0), false).filter(tag -> tag.getValue().equals("NNS")).map(tag -> Range.between(tag.getBegin(), tag.getEnd())).collect(Collectors.toCollection(OffsetSet::new));
                 normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory, true, pluralOffsets, transliterator);
-            }else {
-                normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory,
-                        transliterator);
+            } else {
+                normalizedDocText = StringNormalizerForChunking.normalizeString(docText, normalizationTokenFactory, transliterator);
             }
+        }
+        // exact matching has a switch for case sensitivity, so we can save the work here
+        if (!provider.getCaseSensitive() && provider.getUseApproximateMatching()) {
+            if (provider.getNormalize())
+                normalizedDocText.string = normalizedDocText.string.toLowerCase();
+            else
+                docText = docText.toLowerCase();
         }
 
         IndexTermGenerator<Long> longOffsetTermGenerator = TermGenerators.longOffsetTermGenerator();
@@ -536,7 +542,7 @@ public class GazetteerAnnotator extends JCasAnnotator_ImplBase {
         // byte character encodings. This security measure won't correct the underlying error but avoid errors
         // due to invalid offsets.
         int start = Math.min(aJCas.getDocumentText().length(), Math.max(0, provider.getNormalize() ? normalizedDocText.getOriginalOffset(chunk.start()) : chunk.start()));
-        int end = Math.min(aJCas.getDocumentText().length(), Math.max(0,provider.getNormalize() ? normalizedDocText.getOriginalOffset(chunk.end()) : chunk.end()));
+        int end = Math.min(aJCas.getDocumentText().length(), Math.max(0, provider.getNormalize() ? normalizedDocText.getOriginalOffset(chunk.end()) : chunk.end()));
 
         try {
             if (mantraMode) {

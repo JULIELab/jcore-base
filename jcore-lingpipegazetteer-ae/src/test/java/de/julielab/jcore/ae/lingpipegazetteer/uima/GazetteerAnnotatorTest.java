@@ -48,7 +48,6 @@ import java.io.*;
 import java.util.List;
 import java.util.*;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -708,23 +707,14 @@ public class GazetteerAnnotatorTest {
 
 		JCas jCas = annotator.newJCas();
 
-		jCas.setDocumentText("Clinical Features and Course of Patients with Peripheral Exudative Hemorrhagic Chorioretinopathy.\nTo evaluate the clinical characteristics of patients who were followed in our clinic with the diagnosis of peripheral exudative hemorrhagic chorioretinopathy (PEHC).\nMedical records of 12 patients who were diagnosed with PEHC in İstanbul University İstanbul Faculty of Medicine, Department of Ophthalmology between July 2006 and June 2014 were reviewed retrospectively.\nThis study included 21 eyes of 12 patients. Four (33.3%) of the patients were male and 8 (66.7%) were female and ages ranged between 73 and 89 years. Eight (66.7%) of the patients were referred to us with the diagnosis of choroidal mass. Unilateral involvement was found in 3 and bilateral involvement in 9 patients. Temporal quadrants were involved in all eyes. Fifteen eyes (71.4%) had subretinal hemorrhage and hemorrhagic/serous retinal pigment epithelial detachment, 11 (52.4%) had lipid exudation, 5 (23.8%) had chronic retinal pigment epithelium alterations, 2 (9.5%) had subretinal fibrosis and 1 (4.8%) had vitreous hemorrhage. PEHC lesions were accompanied by drusen in 11 eyes (52.4%), geographic atrophy in 2 eyes (9.5%), and choroidal neovascularization scar in 2 eyes (9.5%).");
+//		jCas.setDocumentText("Clinical Features and Course of Patients with Peripheral Exudative Hemorrhagic Chorioretinopathy.\nTo evaluate the clinical characteristics of patients who were followed in our clinic with the diagnosis of peripheral exudative hemorrhagic chorioretinopathy (PEHC).\nMedical records of 12 patients who were diagnosed with PEHC in İstanbul University İstanbul Faculty of Medicine, Department of Ophthalmology between July 2006 and June 2014 were reviewed retrospectively.\nThis study included 21 eyes of 12 patients. Four (33.3%) of the patients were male and 8 (66.7%) were female and ages ranged between 73 and 89 years. Eight (66.7%) of the patients were referred to us with the diagnosis of choroidal mass. Unilateral involvement was found in 3 and bilateral involvement in 9 patients. Temporal quadrants were involved in all eyes. Fifteen eyes (71.4%) had subretinal hemorrhage and hemorrhagic/serous retinal pigment epithelial detachment, 11 (52.4%) had lipid exudation, 5 (23.8%) had chronic retinal pigment epithelium alterations, 2 (9.5%) had subretinal fibrosis and 1 (4.8%) had vitreous hemorrhage. PEHC lesions were accompanied by drusen in 11 eyes (52.4%), geographic atrophy in 2 eyes (9.5%), and choroidal neovascularization scar in 2 eyes (9.5%).");
+		jCas.setDocumentText("[...] diagnosed with PEHC in İstanbul University İstanbul Faculty of Medicine, Department of Ophthalmology [...].\n[...] PEHC lesions were accompanied by drusen [...].");
 		annotator.process(jCas);
 
 		List<String> entityStrings = new ArrayList<>();
 		for (EntityMention g : jCas.<EntityMention>getAnnotationIndex(EntityMention.type)) {
 			entityStrings.add(g.getCoveredText());
 		}
-		assertThat(entityStrings).containsExactly("PEHC", "PEHC", "PEHC", "lesions");
-	}
-
-	@Test
-	public void testEncoding() {
-		String s1 = "İ";
-		String s2 = "i̇";
-		System.out.println(s1.getBytes(UTF_8).length);
-		System.out.println(s1.length());
-		System.out.println(s2.getBytes(UTF_8).length);
-		System.out.println(s2.length());
+		assertThat(entityStrings).containsExactly("PEHC", "İstanbul", "İstanbul", "PEHC", "lesions");
 	}
 }

@@ -232,8 +232,8 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
             String line = "";
 
             Transliterator transliterator = null;
-            if (transliterate)
-                transliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower");
+//                transliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower");
+            transliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC");
 
             TokenizerFactory tokenizerFactory = null;
             if (normalize)
@@ -253,11 +253,12 @@ public class ConfigurableChunkerProviderImplAlt implements ChunkerProvider, Shar
                     continue;
 
                 if (normalize) {
-                    term = StringNormalizerForChunking.normalizeString(term, tokenizerFactory).string;
+                    term = StringNormalizerForChunking.normalizeString(term, tokenizerFactory, transliterator).string;
                 }
                 if (transliterate)
                     term = transliterator.transform(term);
-                if (useApproximateMatching && !caseSensitive && !transliterate)
+                // the exact matcher takes the caseSensitive switch as a parameter, we don't need to do it ourselves
+                if (useApproximateMatching && !caseSensitive)
                     term = term.toLowerCase();
 
                 String label = values[1].trim();

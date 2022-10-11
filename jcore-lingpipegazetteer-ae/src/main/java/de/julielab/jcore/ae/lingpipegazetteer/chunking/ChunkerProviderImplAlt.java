@@ -271,9 +271,7 @@ public class ChunkerProviderImplAlt implements ChunkerProvider, SharedResourceOb
 			bf = new BufferedReader(new InputStreamReader(dictFileStream));
 			String line = "";
 
-			Transliterator transliterator = null;
-			if (transliterate)
-				transliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC; Lower");
+			Transliterator transliterator  = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC");
 
 			TokenizerFactory tokenizerFactory = null;
 			if (normalize)
@@ -293,11 +291,11 @@ public class ChunkerProviderImplAlt implements ChunkerProvider, SharedResourceOb
 					continue;
 
 				if (normalize) {
-					term = StringNormalizerForChunking.normalizeString(term, tokenizerFactory).string;
+					term = StringNormalizerForChunking.normalizeString(term, tokenizerFactory, transliterator).string;
 				}
 				if (transliterate)
 					term = transliterator.transform(term);
-				if (useApproximateMatching && !caseSensitive && !transliterate)
+				if (useApproximateMatching && !caseSensitive)
 					term = term.toLowerCase();
 
 				String label = values[1].trim();
