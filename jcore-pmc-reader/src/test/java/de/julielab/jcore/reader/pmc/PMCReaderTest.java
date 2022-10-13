@@ -35,19 +35,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PMCReaderTest {
 
     @Test
-    public void testErrordoc() throws Exception {
-        // read a single file, parse it and right it to XMI for manual review
-        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
-                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
-        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
-                "errordoc.xml");
-        while (reader.hasNext()) {
-            reader.getNext(cas.getCas());
-            System.out.println(cas.getDocumentText());
-        }
-    }
-
-    @Test
     public void testPmcReader1() throws Exception {
         // read a single file, parse it and right it to XMI for manual review
         JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",

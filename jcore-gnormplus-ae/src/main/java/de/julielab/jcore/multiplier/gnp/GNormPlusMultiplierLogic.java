@@ -5,11 +5,13 @@ import com.pengyifan.bioc.BioCDocument;
 import de.julielab.jcore.ae.gnp.GNormPlusProcessing;
 import de.julielab.jcore.consumer.gnp.BioCDocumentPopulator;
 import de.julielab.jcore.reader.BioCCasPopulator;
+import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +42,12 @@ public class GNormPlusMultiplierLogic {
     private Supplier<JCas> baseMultiplierNext;
     private Supplier<JCas> multiplierGetEmptyCas;
     private int currentCollectionIndex;
+    private int currentBiocResultCollectionIndex;
     private List<byte[]> cachedCasData;
+    private boolean skipUnchangedDocuments;
 
-    public GNormPlusMultiplierLogic(UimaContext aContext, BioCDocumentPopulator bioCDocumentPopulator, Supplier<Boolean> baseMultiplierHasNext, Supplier<JCas> baseMultiplierNext, Supplier<JCas> multiplierGetEmptyCas) throws IOException {
+    public GNormPlusMultiplierLogic(UimaContext aContext, BioCDocumentPopulator bioCDocumentPopulator, Supplier<Boolean> baseMultiplierHasNext, Supplier<JCas> baseMultiplierNext, Supplier<JCas> multiplierGetEmptyCas, boolean skipUnchangedDocuments) throws IOException {
+        this.skipUnchangedDocuments = skipUnchangedDocuments;
         String setupFile = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_GNP_SETUP_FILE)).orElse("/de/julielab/jcore/ae/gnp/config/setup_do_ner.txt");
         String focusSpecies = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_FOCUS_SPECIES)).orElse("");
         outputDirectory = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_OUTPUT_DIR)).orElse("");
@@ -52,6 +57,7 @@ public class GNormPlusMultiplierLogic {
         this.multiplierGetEmptyCas = multiplierGetEmptyCas;
         cachedCasData = new ArrayList<>();
         currentCollectionIndex = 0;
+        currentBiocResultCollectionIndex = 0;
 
         GNormPlusProcessing.initializeGNormPlus(setupFile, focusSpecies);
     }
@@ -72,8 +78,12 @@ public class GNormPlusMultiplierLogic {
                 cachedCasData.clear();
                 while (baseMultiplierHasNext.get()) {
                     final JCas jCas = baseMultiplierNext.get();
-                    final BioCDocument bioCDocument = bioCDocumentPopulator.populate(jCas);
-                    gnormPlusInputCollection.addDocument(bioCDocument);
+                    final boolean isDocumentHashUnchanged = JCasUtil.selectSingle(jCas, DBProcessingMetaData.class).getIsDocumentHashUnchanged();
+                    // skip document if it is unchanged and skipping is enabled
+                    if (!(isDocumentHashUnchanged && skipUnchangedDocuments)) {
+                        final BioCDocument bioCDocument = bioCDocumentPopulator.populate(jCas);
+                        gnormPlusInputCollection.addDocument(bioCDocument);
+                    }
                     try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                         try (final GZIPOutputStream os = new GZIPOutputStream(baos)) {
                             XmiCasSerializer.serialize(jCas.getCas(), os);
@@ -86,16 +96,18 @@ public class GNormPlusMultiplierLogic {
                     }
                 }
                 // now process the whole batch with GNP
-                final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(gnormPlusInputCollection, outputDirectory);
-                try {
-                    bioCCasPopulator = new BioCCasPopulator(outputFilePath);
-                    // delete the GNP output if we don't want to keep it
-                    if(outputDirectory.isBlank()) {
-                        Files.delete(outputFilePath);
+                if (gnormPlusInputCollection.getDocmentCount() > 0) {
+                    final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(gnormPlusInputCollection, outputDirectory);
+                    try {
+                        bioCCasPopulator = new BioCCasPopulator(outputFilePath);
+                        // delete the GNP output if we don't want to keep it
+                        if (outputDirectory.isBlank()) {
+                            Files.delete(outputFilePath);
+                        }
+                    } catch (XMLStreamException | IOException e) {
+                        log.error("Could not read GNormPlus output from {}", outputFilePath);
+                        throw new AnalysisEngineProcessException(e);
                     }
-                } catch (XMLStreamException | IOException e) {
-                    log.error("Could not read GNormPlus output from {}", outputFilePath);
-                    throw new AnalysisEngineProcessException(e);
                 }
             }
             // Now we have a batch of documents processed with GNP. Get the next document from the cache and
@@ -108,8 +120,13 @@ public class GNormPlusMultiplierLogic {
                 log.error("Could not deserialize cached CAS data");
                 throw new AnalysisEngineProcessException(e);
             }
-            bioCCasPopulator.populateWithNextDocument(jCas, true);
-            bioCCasPopulator.clearDocument(currentCollectionIndex);
+            final boolean isDocumentHashUnchanged = JCasUtil.selectSingle(jCas, DBProcessingMetaData.class).getIsDocumentHashUnchanged();
+            // If the document is unchanged and we skip unchanged documents, we do not have a GNormPlus result for this
+            // document, skip.
+            if (!(isDocumentHashUnchanged && skipUnchangedDocuments)) {
+                bioCCasPopulator.populateWithNextDocument(jCas, true);
+                bioCCasPopulator.clearDocument(currentBiocResultCollectionIndex++);
+            }
             cachedCasData.set(currentCollectionIndex, null);
             ++currentCollectionIndex;
 

@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -150,6 +151,11 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
             if (StringUtils.isBlank(aJCas.getDocumentText())) {
                 final String docId = JCoReTools.getDocId(aJCas);
                 LOGGER.warn("The document text of document {} is empty.", docId);
+                final AnnotationIndex<Annotation> annotationIndex = aJCas.getAnnotationIndex();
+                LOGGER.warn("All annotations in CAS:");
+                for (Annotation a : annotationIndex) {
+                    System.out.println(a);
+                }
                 return;
             }
             JCoReCondensedDocumentText documentText;

@@ -44,6 +44,13 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>
+                <name>SkipUnchangedDocuments</name>
+                <description>Whether to omit GNormPlus processing on documents that already exist in the XMI database table and whose document text has not changed.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
                 <name>RowMapping</name>
                 <description>In case that the CoStoSys active table schema specified more than two columns to be retrieved, the other columns need a mapping into the CAS.A mapping item has the following form: &lt;column index&gt;=&lt;uima type&gt;#&lt;type feature&gt;:&lt;feature datatype&gt;:defaultValue where the defaultValue is optional. Example: 2=de.julielab.jules.types.max_xmi_id#id:int:0 maps the content of the third (index 2, zero-based) retrieved column (may also belong to an additional table!) to feature "id" of the type "d.j.j.t.max_xmi_id" which is an int. In case there is no value returned from the database for a document, use a 0 as default.</description>
                 <type>String</type>

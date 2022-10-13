@@ -62,7 +62,8 @@ public class GNormPlusXmiDBMultiplier extends XmiDBMultiplier {
                     log.error("Error when calling next() of the base multiplier.");
                     throw new RuntimeException(e);
                 }
-            }, () -> getEmptyJCas());
+            }, () -> getEmptyJCas(),
+                    false);
         } catch (IOException e) {
             log.error("Could not initialize GNormPlus", e);
             throw new ResourceInitializationException(e);

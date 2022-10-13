@@ -27,7 +27,7 @@
         </featureDescription>
         <featureDescription>
           <name>isDocumentHashUnchanged</name>
-          <description>For use by the XMIDBWriter. Used to prohibit that mirror subsets reset to 'not processed' for this document when there was no change in the document text. That allows to update the base document without indicating that a reprocessing is required. This is useful when the document is updated by the distributor (e.g. PubMed) but the text contents have not changed.</description>
+          <description>To be set by the XML DB reader/multiplier and to be used (among others) by the XMIDBWriter. Used to prohibit that mirror subsets reset to 'not processed' for this document when there was no change in the document text. That allows to update the base document without indicating that a reprocessing is required. This is useful when the document is updated by the distributor (e.g. PubMed) but the text contents have not changed.</description>
           <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
       </features>

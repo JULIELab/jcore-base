@@ -28,6 +28,7 @@ public class GNormPlusXMLDBMultiplier extends XMLDBMultiplier {
     public static final String PARAM_OUTPUT_DIR = GNormPlusAnnotator.PARAM_OUTPUT_DIR;
     public static final String PARAM_GNP_SETUP_FILE = GNormPlusAnnotator.PARAM_GNP_SETUP_FILE;
     public static final String PARAM_FOCUS_SPECIES = GNormPlusAnnotator.PARAM_FOCUS_SPECIES;
+    public static final String PARAM_SKIP_UNCHANGED_DOCUMENTS = "SkipUnchangedDocuments";
     private final static Logger log = LoggerFactory.getLogger(GNormPlusXMLDBMultiplier.class);
     private static boolean shutdownHookInstalled = false;
     @ConfigurationParameter(name = PARAM_ADD_GENES, mandatory = false, defaultValue = "false", description = GNormPlusAnnotator.DESC_ADD_GENES)
@@ -40,6 +41,8 @@ public class GNormPlusXMLDBMultiplier extends XMLDBMultiplier {
     private String outputDirectory;
     @ConfigurationParameter(name = PARAM_FOCUS_SPECIES, mandatory = false, description = DESC_FOCUS_SPECIES)
     private String focusSpecies;
+    @ConfigurationParameter(name = PARAM_SKIP_UNCHANGED_DOCUMENTS, mandatory = false, description = "Whether to omit GNormPlus processing on documents that already exist in the XMI database table and whose document text has not changed.")
+    private boolean skipUnchangedDocuments;
     private BioCDocumentPopulator bioCDocumentPopulator;
     private GNormPlusMultiplierLogic multiplierLogic;
 
@@ -48,6 +51,7 @@ public class GNormPlusXMLDBMultiplier extends XMLDBMultiplier {
         super.initialize(aContext);
         addGenes = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ADD_GENES)).orElse(false);
         geneTypeName = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_GENE_TYPE_NAME)).orElse(Gene.class.getCanonicalName());
+        skipUnchangedDocuments = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_SKIP_UNCHANGED_DOCUMENTS)).orElse(false);
         try {
             bioCDocumentPopulator = new BioCDocumentPopulator(addGenes, geneTypeName);
         } catch (ClassNotFoundException e) {
@@ -62,7 +66,8 @@ public class GNormPlusXMLDBMultiplier extends XMLDBMultiplier {
                     log.error("Error when calling next() of the base multiplier.");
                     throw new RuntimeException(e);
                 }
-            }, () -> getEmptyJCas());
+            }, () -> getEmptyJCas(),
+                skipUnchangedDocuments);
         } catch (IOException e) {
             log.error("Could not initialize GNormPlus", e);
             throw new ResourceInitializationException(e);
