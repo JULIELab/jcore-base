@@ -25,7 +25,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -63,13 +62,6 @@ public class GNormPlusMultiplierLogic {
             // to whole batches). This checks if we still have processed documents or if we need to process the next
             // batch.
             if (bioCCasPopulator == null || bioCCasPopulator.documentsLeftInCollection() == 0) {
-                System.out.println("Memory before batch processing:");
-                final Runtime rt = Runtime.getRuntime();
-                final long totalMemory = rt.totalMemory();
-                final long freeMemory = rt.freeMemory();
-                final long maxMemory = rt.maxMemory();
-                Function<Long, Double> b2g = bytes -> bytes / 1000000000d;
-                System.out.println("[GNPMultiplierLogic] Free memory: " + freeMemory + "bytes (" + b2g.apply(freeMemory) + "GB), max memory: " + maxMemory + "bytes ("+b2g.apply(maxMemory) + "GB), total memory: " + totalMemory + "bytes ("+b2g.apply(totalMemory) + "GB)");
                 currentCollectionIndex = 0;
                 final BioCCollection gnormPlusInputCollection = GNormPlusProcessing.createEmptyJulieLabBioCCollection();
                 // We first retrieve the whole current batch from the super multiplier and serialize the CASes

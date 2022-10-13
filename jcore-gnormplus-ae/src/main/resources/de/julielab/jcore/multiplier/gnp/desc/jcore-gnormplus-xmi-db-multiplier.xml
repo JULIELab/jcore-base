@@ -2,9 +2,9 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
-    <annotatorImplementationName>de.julielab.jcore.multiplier.gnp.GNormPlusDBMultiplier</annotatorImplementationName>
+    <annotatorImplementationName>de.julielab.jcore.multiplier.gnp.GNormPlusXmiDBMultiplier</annotatorImplementationName>
     <analysisEngineMetaData>
-        <name>JCoRe GNormPlus Database Multiplier</name>
+        <name>JCoRe GNormPlus XMI Database Multiplier</name>
         <description>A CAS multiplier to be used with the DB XMI multiplier reader. It wraps the JULIE Lab variant of the GNormPlus gene ID mapper. It is a multiplier because this enables batch-processing of documents with GNormPlus which makes the processing more efficient.</description>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>

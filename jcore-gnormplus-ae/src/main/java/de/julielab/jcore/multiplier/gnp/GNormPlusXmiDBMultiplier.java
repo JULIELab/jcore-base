@@ -1,6 +1,5 @@
 package de.julielab.jcore.multiplier.gnp;
 
-import com.pengyifan.bioc.BioCCollection;
 import de.julielab.jcore.ae.gnp.GNormPlusAnnotator;
 import de.julielab.jcore.consumer.gnp.BioCDocumentPopulator;
 import de.julielab.jcore.reader.xmi.XmiDBMultiplier;
@@ -18,19 +17,19 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static de.julielab.jcore.ae.gnp.GNormPlusAnnotator.DESC_FOCUS_SPECIES;
 
-@ResourceMetaData(name = "JCoRe GNormPlus Database Multiplier", description = "A CAS multiplier to be used with the DB XMI multiplier reader. It wraps the JULIE Lab variant of the GNormPlus gene ID mapper. It is a multiplier because this enables batch-processing of documents with GNormPlus which makes the processing more efficient.", vendor = "JULIE Lab Jena, Germany")
+@ResourceMetaData(name = "JCoRe GNormPlus XMI Database Multiplier", description = "A CAS multiplier to be used with the DB XMI multiplier reader in place of the DB XMI multiplier. It wraps the JULIE Lab variant of the GNormPlus gene ID mapper. It is a multiplier because this enables batch-processing of documents with GNormPlus which makes the processing more efficient.", vendor = "JULIE Lab Jena, Germany")
 @TypeCapability(inputs = {}, outputs = {"de.julielab.jcore.types.ConceptMention", "de.julielab.jcore.types.Organism"})
-public class GNormPlusDBMultiplier extends XmiDBMultiplier {
+public class GNormPlusXmiDBMultiplier extends XmiDBMultiplier {
     public static final String PARAM_ADD_GENES = GNormPlusAnnotator.PARAM_ADD_GENES;
     public static final String PARAM_GENE_TYPE_NAME = GNormPlusAnnotator.PARAM_GENE_TYPE_NAME;
     public static final String PARAM_OUTPUT_DIR = GNormPlusAnnotator.PARAM_OUTPUT_DIR;
     public static final String PARAM_GNP_SETUP_FILE = GNormPlusAnnotator.PARAM_GNP_SETUP_FILE;
     public static final String PARAM_FOCUS_SPECIES = GNormPlusAnnotator.PARAM_FOCUS_SPECIES;
-    private final static Logger log = LoggerFactory.getLogger(GNormPlusDBMultiplier.class);
+    private final static Logger log = LoggerFactory.getLogger(GNormPlusXmiDBMultiplier.class);
+    private static boolean shutdownHookInstalled = false;
     @ConfigurationParameter(name = PARAM_ADD_GENES, mandatory = false, defaultValue = "false", description = GNormPlusAnnotator.DESC_ADD_GENES)
     private boolean addGenes;
     @ConfigurationParameter(name = PARAM_GNP_SETUP_FILE, mandatory = false, description = GNormPlusAnnotator.DESC_GNP_SETUP_FILE)
@@ -41,16 +40,9 @@ public class GNormPlusDBMultiplier extends XmiDBMultiplier {
     private String outputDirectory;
     @ConfigurationParameter(name = PARAM_FOCUS_SPECIES, mandatory = false, description = DESC_FOCUS_SPECIES)
     private String focusSpecies;
-
     private BioCDocumentPopulator bioCDocumentPopulator;
-//    private BioCCasPopulator bioCCasPopulator;
-
-    private BioCCollection currentGNormPlusProcessedCollection;
-//    private int currentCollectionIndex;
-//    private List<byte[]> cachedCasData;
-
     private GNormPlusMultiplierLogic multiplierLogic;
-private static boolean shutdownHookInstalled = false;
+
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         super.initialize(aContext);
@@ -74,20 +66,6 @@ private static boolean shutdownHookInstalled = false;
         } catch (IOException e) {
             log.error("Could not initialize GNormPlus", e);
             throw new ResourceInitializationException(e);
-        }
-        synchronized (GNormPlusDBMultiplier.class) {
-            final Runtime rt = Runtime.getRuntime();
-            rt.addShutdownHook(new Thread() {
-                @Override
-                public void run() {
-                    super.run();
-                    final long totalMemory = rt.totalMemory();
-                    final long freeMemory = rt.freeMemory();
-                    final long maxMemory = rt.maxMemory();
-                    Function<Long, Double> b2g = bytes -> bytes / 1000000000d;
-                    System.out.println("[Shutdow hook] Free memory: " + freeMemory + "bytes (" + b2g.apply(freeMemory) + "GB), max memory: " + maxMemory + "bytes ("+b2g.apply(maxMemory) + "GB), total memory: " + totalMemory + "bytes ("+b2g.apply(totalMemory) + "GB)");
-                }
-            });
         }
     }
 

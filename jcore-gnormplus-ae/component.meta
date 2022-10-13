@@ -1,7 +1,7 @@
 {
     "categories": [
-        "ae",
-        "multiplier"
+        "multiplier",
+        "ae"
     ],
     "description": "Wrapper for the JULIE Lab variant of the GNormPlus gene ID mapper.",
     "descriptors": [
@@ -11,7 +11,11 @@
         },
         {
             "category": "multiplier",
-            "location": "de.julielab.jcore.multiplier.gnp.desc.jcore-gnormplus-db-multiplier"
+            "location": "de.julielab.jcore.multiplier.gnp.desc.jcore-gnormplus-xmi-db-multiplier"
+        },
+        {
+            "category": "multiplier",
+            "location": "de.julielab.jcore.multiplier.gnp.desc.jcore-gnormplus-xml-db-multiplier"
         },
         {
             "category": "ae",
