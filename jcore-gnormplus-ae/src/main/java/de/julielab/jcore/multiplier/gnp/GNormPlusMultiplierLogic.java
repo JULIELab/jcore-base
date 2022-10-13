@@ -69,6 +69,7 @@ public class GNormPlusMultiplierLogic {
             // batch.
             if (bioCCasPopulator == null || bioCCasPopulator.documentsLeftInCollection() == 0) {
                 currentCollectionIndex = 0;
+                currentBiocResultCollectionIndex = 0;
                 final BioCCollection gnormPlusInputCollection = GNormPlusProcessing.createEmptyJulieLabBioCCollection();
                 // We first retrieve the whole current batch from the super multiplier and serialize the CASes
                 // to XMI. We do that because we only have one CAS at a time and, thus, must store the data
