@@ -60,7 +60,7 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
             Map<String, Object> abstractSectionData = rowIterator.next();
             String label = (String) abstractSectionData.get("Label");
             String nlmCategory = (String) abstractSectionData.get("NlmCategory");
-            String abstractSectionText = (String) abstractSectionData.get("AbstractText");
+            String abstractSectionText = ((String) abstractSectionData.get("AbstractText"));
             if (newlineBetweenSections) {
                 // in case the last section was empty, we delete the trailing
                 // newline

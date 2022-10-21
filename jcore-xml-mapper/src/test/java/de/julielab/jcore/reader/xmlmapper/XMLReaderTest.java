@@ -174,6 +174,7 @@ public class XMLReaderTest {
 
 	@Test
 	public void testSingleEntityData() throws Throwable {
+		//
 		medlineReader = createCollectionReader("src/test/resources/XMLReaderDescriptor_medline_singleFile2.xml");
 		try {
 			assertTrue(medlineReader.hasNext());
@@ -1185,5 +1186,16 @@ public class XMLReaderTest {
 		// there possibly are no structured parts in the abstract (there still
 		// exists both).
         // EF March 2018: Haven't I done this already? Structured abstracts are handled
+	}
+
+	@Test
+	public void testNewlines() throws UIMAException, IOException {
+		JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+				"de.julielab.jcore.types.jcore-document-structure-types");
+		CollectionReader reader = CollectionReaderFactory.createReader(XMLReader.class, XMLReader.PARAM_INPUT_FILE,
+				"src/test/resources/doc_medline_mathml_newlines.xml", XMLReader.RESOURCE_MAPPING_FILE,
+				"src/test/resources/newMappingFile.xml");
+		reader.getNext(jCas.getCas());
+		System.out.printf(jCas.getDocumentText());
 	}
 }

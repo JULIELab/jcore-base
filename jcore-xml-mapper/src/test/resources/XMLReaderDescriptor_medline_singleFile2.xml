@@ -28,6 +28,12 @@
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
+      <configurationParameter>
+        <name>IgnoreTrivialWS</name>
+        <type>Boolean</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
@@ -40,6 +46,12 @@
         <name>InputFile</name>
         <value>
           <string>src/test/resources/pubmedDocumentTag/testfile.xml</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>IgnoreTrivialWS</name>
+        <value>
+          <boolean>false</boolean>
         </value>
       </nameValuePair>
     </configurationParameterSettings>

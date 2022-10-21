@@ -49,6 +49,23 @@ public class XMLMapper {
 
 	private DocumentTextHandler documentTextHandler;
 
+	private boolean ignoreTrivialWhitespaces;
+
+	/**
+	 * <p>
+	 * Whether or not to ignore trivial XML whitespaces and newlines according to {@link VTDGen#enableIgnoredWhiteSpace(boolean)}.
+	 * </p>
+	 * <p>
+	 * Activating this will ignore whitespaces that exist between XML tags and have no other character data.
+	 * This is not always desired behavior. Inline-annotated text may contain whitespaces between two tags that
+	 * should actually retained in the document text.
+	 * </p>
+	 * @param ignoreTrivialWhitespaces
+	 */
+	public void setIgnoreTrivialWhitespaces(boolean ignoreTrivialWhitespaces) {
+		this.ignoreTrivialWhitespaces = ignoreTrivialWhitespaces;
+	}
+
 	/**
 	 * Creates an new instacne of the XMLMapper
 	 * 
@@ -80,7 +97,7 @@ public class XMLMapper {
 			// needed for extraction of mixed-content-XML
 			// when there is a whitespace only between two
 			// tags, e.g. ...</s> <s id=".">...
-			vg.enableIgnoredWhiteSpace(true);
+			vg.enableIgnoredWhiteSpace(!ignoreTrivialWhitespaces);
 			vg.setDoc(data);
 			vg.parse(true);
 			VTDNav vn = vg.getNav();
