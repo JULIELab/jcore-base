@@ -6,6 +6,7 @@ import de.julielab.jcore.ae.gnp.GNormPlusProcessing;
 import de.julielab.jcore.consumer.gnp.BioCDocumentPopulator;
 import de.julielab.jcore.reader.BioCCasPopulator;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
@@ -83,7 +84,17 @@ public class GNormPlusMultiplierLogic {
                     // skip document if it is unchanged and skipping is enabled
                     if (!(isDocumentHashUnchanged && skipUnchangedDocuments)) {
                         final BioCDocument bioCDocument = bioCDocumentPopulator.populate(jCas);
+//                        try {
+//                            log.info("Checking bioC Document ID: {}", bioCDocument.getID());
+//                        } catch (NullPointerException e) {
+//                            log.error("BioCDocument populated with CAS of document {} does not have an ID. All annotations of that CAS:", JCoReTools.getDocId(jCas));
+//                            for (var a : jCas.getAnnotationIndex()) {
+//                                log.error("{}", a);
+//                            }
+//                        }
                         gnormPlusInputCollection.addDocument(bioCDocument);
+                    } else {
+                        log.trace("Document with ID {} already exists in the XMI database table with unchanged text contents, skipping GNormPlus processing.", JCoReTools.getDocId(jCas));
                     }
                     try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                         try (final GZIPOutputStream os = new GZIPOutputStream(baos)) {
@@ -98,6 +109,7 @@ public class GNormPlusMultiplierLogic {
                 }
                 // now process the whole batch with GNP
                 if (gnormPlusInputCollection.getDocmentCount() > 0) {
+                    log.trace("Processing {} documents with GNormPlus.", gnormPlusInputCollection.getDocmentCount());
                     final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(gnormPlusInputCollection, outputDirectory);
                     try {
                         bioCCasPopulator = new BioCCasPopulator(outputFilePath);
