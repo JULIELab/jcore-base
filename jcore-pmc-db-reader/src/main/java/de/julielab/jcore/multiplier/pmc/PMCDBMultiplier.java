@@ -39,7 +39,6 @@ public class PMCDBMultiplier extends DBMultiplier {
     public static final String PARAM_TABLE_DOCUMENT = "DocumentTable";
     public static final String PARAM_TABLE_DOCUMENT_SCHEMA = "DocumentTableSchema";
     public static final String PARAM_TO_VISIT_KEYS = "ToVisitKeys";
-    protected static final byte[] comma = ",".getBytes();
     private final static Logger log = LoggerFactory.getLogger(PMCDBMultiplier.class);
     @ConfigurationParameter(name = PARAM_OMIT_BIB_REFERENCES, mandatory = false, defaultValue = "false", description = "If set to true, references to the bibliography are omitted from the CAS text.")
     protected boolean omitBibReferences;
