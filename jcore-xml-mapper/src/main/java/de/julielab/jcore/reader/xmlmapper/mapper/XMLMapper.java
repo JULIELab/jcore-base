@@ -49,7 +49,7 @@ public class XMLMapper {
 
 	private DocumentTextHandler documentTextHandler;
 
-	private boolean ignoreTrivialWhitespaces;
+	private boolean ignoreTrivialWhitespaces = true;
 
 	/**
 	 * <p>
