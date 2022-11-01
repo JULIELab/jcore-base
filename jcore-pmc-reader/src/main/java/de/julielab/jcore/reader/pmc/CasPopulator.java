@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class CasPopulator {
     private final static Logger log = LoggerFactory.getLogger(CasPopulator.class);
@@ -57,8 +59,21 @@ public class CasPopulator {
             }
         }
         StringBuilder sb = populateCas(result, new StringBuilder());
-        final String documentText = sb.toString();
-        cas.setDocumentText(truncateText(documentText));
+       truncateTextAndAnnotations(sb.toString(), cas);
+    }
+
+    private void truncateTextAndAnnotations(String documentText, JCas cas) {
+        String text = documentText.length() > truncationSize ? documentText.substring(0, truncationSize) : documentText;
+        cas.setDocumentText(text);
+        // if truncation happened, we need to remove annotations exceeding the valid text span
+        List<Annotation> toRemove = new ArrayList<>();
+        if (text.length() < documentText.length()) {
+            for (Annotation a : cas.getAnnotationIndex()) {
+                if (a.getEnd() > text.length())
+                    toRemove.add(a);
+            }
+        }
+        toRemove.forEach(Annotation::removeFromIndexes);
     }
 
     private String truncateText(String documentText) {
@@ -75,7 +90,7 @@ public class CasPopulator {
             throw new NoDataAvailableException(e);
         }
         String documentText = populateCas(result, new StringBuilder()).toString();
-        cas.setDocumentText(truncateText(documentText));
+        truncateTextAndAnnotations(documentText, cas);
     }
 
     /**
