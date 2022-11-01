@@ -16,16 +16,26 @@ public class CasPopulator {
     private final static Logger log = LoggerFactory.getLogger(CasPopulator.class);
     private NxmlDocumentParser nxmlDocumentParser;
     private Iterator<URI> nxmlIterator;
+    private int truncationSize;
 
-    public CasPopulator(Iterator<URI> nxmlIterator, Boolean omitBibReferences) throws IOException {
+    public CasPopulator(Iterator<URI> nxmlIterator, Boolean omitBibReferences, int truncationSize) throws IOException {
         this.nxmlIterator = nxmlIterator;
+        this.truncationSize = truncationSize;
         nxmlDocumentParser = new NxmlDocumentParser();
         String settings = omitBibReferences ? "/de/julielab/jcore/reader/pmc/resources/elementproperties-no-bib-refs.yml" : "/de/julielab/jcore/reader/pmc/resources/elementproperties.yml";
         nxmlDocumentParser.loadElementPropertyFile(settings);
     }
 
+    public CasPopulator(Boolean omitBibReferences, int truncationSize) throws IOException {
+        this(null, omitBibReferences, truncationSize);
+    }
+
     public CasPopulator(Boolean omitBibReferences) throws IOException {
-        this(null, omitBibReferences);
+        this(null, omitBibReferences, Integer.MAX_VALUE);
+    }
+
+    public CasPopulator(Iterator<URI> pmcFiles, boolean omitBibReferences) throws IOException {
+        this(pmcFiles, omitBibReferences, Integer.MAX_VALUE);
     }
 
     public void populateCas(URI nxmlUri, JCas cas) throws ElementParsingException, NoDataAvailableException {
@@ -47,7 +57,13 @@ public class CasPopulator {
             }
         }
         StringBuilder sb = populateCas(result, new StringBuilder());
-        cas.setDocumentText(sb.toString());
+        final String documentText = sb.toString();
+        cas.setDocumentText(truncateText(documentText));
+    }
+
+    private String truncateText(String documentText) {
+        // Truncate the document text to the given length
+        return documentText.length() > truncationSize ? documentText.substring(0, truncationSize) : documentText;
     }
 
     public void populateCas(InputStream is, JCas cas) throws ElementParsingException, NoDataAvailableException {
@@ -58,8 +74,8 @@ public class CasPopulator {
         } catch (DocumentParsingException e) {
             throw new NoDataAvailableException(e);
         }
-        StringBuilder sb = populateCas(result, new StringBuilder());
-        cas.setDocumentText(sb.toString());
+        String documentText = populateCas(result, new StringBuilder()).toString();
+        cas.setDocumentText(truncateText(documentText));
     }
 
     /**
@@ -113,7 +129,7 @@ public class CasPopulator {
                 TextParsingResult textParsingResult = (TextParsingResult) result;
                 final String text = textParsingResult.getText();
                 // some special handling for documents that contain formatting tabs, newlines or no-break-spaces in the text
-                boolean textBeginsWithWhitespace = text.isEmpty() ? false : Character.isWhitespace(text.charAt(0));
+                boolean textBeginsWithWhitespace = text.isBlank() ? false : Character.isWhitespace(text.charAt(0));
                 boolean sbEndsWithWhitespace = sb.length() == 0 ? false : Character.isWhitespace(sb.charAt(sb.length()-1));
                 if (textBeginsWithWhitespace && !sbEndsWithWhitespace)
                     sb.append(" ");

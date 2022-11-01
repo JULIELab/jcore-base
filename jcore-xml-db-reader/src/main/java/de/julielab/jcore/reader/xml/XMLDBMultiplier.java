@@ -48,6 +48,7 @@ public class XMLDBMultiplier extends DBMultiplier {
     public static final String PARAM_TO_VISIT_KEYS = "ToVisitKeys";
     public static final String PARAM_ADD_TO_VISIT_KEYS = "AddToVisitKeys";
     public static final String PARAM_ADD_UNCHANGED_DOCUMENT_TEXT_FLAG = "AddUnchangedDocumentTextFlag";
+    public static final String PARAM_TRUNCATE_AT_SIZE = "TruncateAtSize";
 
     private final static Logger log = LoggerFactory.getLogger(XMLDBMultiplier.class);
     /**
@@ -72,6 +73,8 @@ public class XMLDBMultiplier extends DBMultiplier {
     private boolean addToVisitKeys;
     @ConfigurationParameter(name = PARAM_ADD_UNCHANGED_DOCUMENT_TEXT_FLAG, mandatory = false, description = "Toggles the addition of the 'document text is unchanged' flag. The value of this flag is determined via a SHA256 hash of the CAS document text. When " + PARAM_TABLE_DOCUMENT + " and " + PARAM_TABLE_DOCUMENT_SCHEMA + " are specified, the hash value of the document in storage is retrieved and compared to the current value. The flag is then set with respect to the comparison result.")
     private boolean addUnchangedDocumentTextFlag;
+    @ConfigurationParameter(name = PARAM_TRUNCATE_AT_SIZE, mandatory = false, description = "Specify size in bytes of the XML document size. If the document surpasses that size, it is not populated from XMI but given some placeholder information. This can be necessary when large documents cannot be handled by subsequent components in the pipeline.")
+    private int truncationSize;
 
 
     private Row2CasMapper row2CasMapper;
@@ -91,6 +94,7 @@ public class XMLDBMultiplier extends DBMultiplier {
         toVisitKeys = (String[]) aContext.getConfigParameterValue(PARAM_TO_VISIT_KEYS);
         addToVisitKeys = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ADD_TO_VISIT_KEYS)).orElse(false);
         addUnchangedDocumentTextFlag = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ADD_UNCHANGED_DOCUMENT_TEXT_FLAG)).orElse(false);
+        truncationSize = Optional.ofNullable((Integer)aContext.getConfigParameterValue(PARAM_TRUNCATE_AT_SIZE)).orElse(Integer.MAX_VALUE);
         // We don't know yet which tables to read. Thus, we leave the row mapping out.
         // We will now once the DBMultiplier#process(JCas) will have been run.
         Initializer initializer = new Initializer(mappingFileStr, null, null);
@@ -127,7 +131,7 @@ public class XMLDBMultiplier extends DBMultiplier {
                     // the DBC should be set.
                     if (xmiStorageDataTable != null && !dbc.withConnectionQueryBoolean(d -> d.tableExists(xmiStorageDataTable)))
                         throw new AnalysisEngineProcessException(new IllegalArgumentException("The data table" + xmiStorageDataTable + " to retrieve hash values from for document text change detection does not exist in the database: " + dbc.getDbURL()));
-                    casPopulator = new CasPopulator(dbc, xmlMapper, row2CasMapper, rowMappingArray);
+                    casPopulator = new CasPopulator(dbc, xmlMapper, row2CasMapper, rowMappingArray, truncationSize);
                     initialized = true;
                 }
                 byte[][] documentData = documentDataIterator.next();

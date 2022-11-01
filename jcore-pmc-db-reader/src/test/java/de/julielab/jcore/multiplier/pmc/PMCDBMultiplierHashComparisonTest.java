@@ -103,7 +103,7 @@ public class PMCDBMultiplierHashComparisonTest {
     private static void prepareTargetXMITable(DataBaseConnector dbc, CoStoSysConnection conn) throws SQLException {
         // The PMC parser tries to format blocks of content using newlines which makes the test a bit awkward.
         // The test might break if this formatting is changed.
-        String documentTextFmt = "\nThis is text nr %d.\n\n";
+        String documentTextFmt = "This is text nr %d.\n";
         dbc.createTable(TARGET_XMI_TABLE, "xmi_text", "Test table for hash comparison test.");
         dbc.assureColumnsExist(TARGET_XMI_TABLE, List.of(HASH_FIELD_NAME), "text");
         String sql = String.format("INSERT INTO %s (%s,%s,%s,%s,%s) VALUES (?,XMLPARSE(CONTENT ?),?,?,?)", TARGET_XMI_TABLE, DOCID_FIELD_NAME, BASE_DOCUMENT_FIELD_NAME, HASH_FIELD_NAME, MAX_XMI_ID_FIELD_NAME, SOFA_MAPPING_FIELD_NAME);
@@ -111,7 +111,7 @@ public class PMCDBMultiplierHashComparisonTest {
         // Note that we only add half of the documents compared to the source XML import. This way we test
         // if the code behaves right when the target document does not yet exist at all.
         for (int i = 0; i < 5; i++) {
-            String xml = String.format(documentTextFmt, i, i);
+            String xml = String.format(documentTextFmt, i);
             ps.setString(1, String.valueOf(i));
             ps.setString(2, xml);
             // For one document in the "target XMI" table we put in a wrong hash. Thus, this document should not trigger
@@ -167,6 +167,8 @@ public class PMCDBMultiplierHashComparisonTest {
 
     @Test
     public void testHashComparison() throws Exception {
+        // This simulates the PMC DB reader output: a cas that lists the primary keys of the 10 source XML documents,
+        // the names of the source XML table, the XMI target table etc.
         JCas jCas = prepareCas();
         TypeSystemDescription tsDesc = TypeSystemDescriptionFactory.createTypeSystemDescription("de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.jcore-document-structure-types", "de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types", "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types", "de.julielab.jcore.types.jcore-casflow-types");
         AnalysisEngine engine = AnalysisEngineFactory.createEngine(PMCDBMultiplier.class, tsDesc,
@@ -179,11 +181,14 @@ public class PMCDBMultiplierHashComparisonTest {
         List<String> toVisitKeys = new ArrayList<>();
         while (jCasIterator.hasNext()) {
             JCas newCas = jCasIterator.next();
+            // Collect the ToVisitKeys from each CAS. We expect four CASes to have one, i.e. that the document text
+            // has is the same as already existing in the target XMI document table, we added 5 XMI documents
+            // to the target table and for one we changed the hash code.
             Collection<ToVisit> select = JCasUtil.select(newCas, ToVisit.class);
             select.forEach(tv -> tv.getDelegateKeys().forEach(k -> toVisitKeys.add(k)));
             newCas.release();
         }
-        // There are 4 documents in the target table with the correct hash so we expect the delegate key 4 times
+        // There are 4 documents in the target table with the correct hash, so we expect the delegate key 4 times
         assertThat(toVisitKeys).containsExactly("ThisIsTheVisitKey", "ThisIsTheVisitKey", "ThisIsTheVisitKey", "ThisIsTheVisitKey");
     }
 

@@ -39,6 +39,7 @@ public class PMCDBMultiplier extends DBMultiplier {
     public static final String PARAM_TABLE_DOCUMENT = "DocumentTable";
     public static final String PARAM_TABLE_DOCUMENT_SCHEMA = "DocumentTableSchema";
     public static final String PARAM_TO_VISIT_KEYS = "ToVisitKeys";
+    public static final String PARAM_TRUNCATE_AT_SIZE = "TruncateAtSize";
     private final static Logger log = LoggerFactory.getLogger(PMCDBMultiplier.class);
     @ConfigurationParameter(name = PARAM_OMIT_BIB_REFERENCES, mandatory = false, defaultValue = "false", description = "If set to true, references to the bibliography are omitted from the CAS text.")
     protected boolean omitBibReferences;
@@ -51,6 +52,8 @@ public class PMCDBMultiplier extends DBMultiplier {
     private String xmiStorageDataTableSchema;
     @ConfigurationParameter(name = PARAM_TO_VISIT_KEYS, mandatory = false, description = "For use with AnnotationDefinedFlowController. The delegate AE keys of the AEs this CAS should still applied on although the hash has not changed. Can be null or empty indicating that no component should be applied to the CAS. This is, however, the task of the AnnotationDefinedFlowController.")
     private String[] toVisitKeys;
+    @ConfigurationParameter(name = PARAM_TRUNCATE_AT_SIZE, mandatory = false, description = "The maximum number of characters allowed in the document text. Characters exceeding this size are discarded. This can be necessary when large documents cannot be handled by subsequent components in the pipeline. Defaults to Integer.MAX_VALUE.")
+    private int truncationSize;
 
     private CasPopulator casPopulator;
     private Map<String, String> docId2HashMap;
@@ -63,6 +66,7 @@ public class PMCDBMultiplier extends DBMultiplier {
         documentItemToHash = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_ADD_SHA_HASH)).orElse("document_text");
         toVisitKeys = (String[]) aContext.getConfigParameterValue(PARAM_TO_VISIT_KEYS);
         omitBibReferences = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_OMIT_BIB_REFERENCES)).orElse(false);
+        truncationSize = Optional.ofNullable((Integer)aContext.getConfigParameterValue(PARAM_TRUNCATE_AT_SIZE)).orElse(Integer.MAX_VALUE);
         // We don't know yet which tables to read. Thus, we leave the row mapping out.
         // We will now once the DBMultiplier#process(JCas) will have been run.
         initialized = false;
@@ -74,7 +78,7 @@ public class PMCDBMultiplier extends DBMultiplier {
         }
 
         try {
-            casPopulator = new CasPopulator(omitBibReferences);
+            casPopulator = new CasPopulator(omitBibReferences, truncationSize);
         } catch (IOException e) {
             String errorMsg = "Could not initialize the PMC CasPopulator.";
             log.error(errorMsg);

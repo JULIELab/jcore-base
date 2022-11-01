@@ -85,6 +85,13 @@
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>TruncateAtSize</name>
+                <description>The maximum number of characters allowed in the document text. Characters exceeding this size are discarded. This can be necessary when large documents cannot be handled by subsequent components in the pipeline. Defaults to Integer.MAX_VALUE.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings>
             <nameValuePair>

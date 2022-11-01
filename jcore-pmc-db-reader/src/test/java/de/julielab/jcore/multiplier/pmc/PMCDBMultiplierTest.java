@@ -71,6 +71,24 @@ class PMCDBMultiplierTest {
         assertThat(docIds).containsExactlyInAnyOrder("PMC6949206", "PMC7511315");
     }
 
+    @Test
+    public void truncateText() throws Exception {
+        AnalysisEngine engine = AnalysisEngineFactory.createEngine(PMCDBMultiplier.class, PMCDBMultiplier.PARAM_TRUNCATE_AT_SIZE, 20);
+        JCasIterator jCasIterator = engine.processAndOutputNewCASes(prepareCas());
+        List<String> documentTexts = new ArrayList<>();
+        List<String> docIds = new ArrayList<>();
+        while (jCasIterator.hasNext()) {
+            JCas newCas = jCasIterator.next();
+            documentTexts.add(newCas.getDocumentText());
+            final String docId = JCasUtil.selectSingle(newCas, Header.class).getDocId();
+            docIds.add(docId);
+            newCas.release();
+        }
+        assertThat(documentTexts).containsExactlyInAnyOrder("pmc\n" +
+                "Rescue of premat", "pmc\n" +
+                "Transcriptomic p");
+    }
+
     /**
      * Creates a JCas and adds a RowBatch for the test documents in the source XML table as well as the data table and subset table and schema names.
      *
