@@ -1,6 +1,7 @@
 package de.julielab.jcore.reader.pmc;
 
 import de.julielab.jcore.reader.pmc.parser.*;
+import de.julielab.jcore.types.Header;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -59,7 +60,7 @@ public class CasPopulator {
             }
         }
         StringBuilder sb = populateCas(result, new StringBuilder());
-       truncateTextAndAnnotations(sb.toString(), cas);
+        truncateTextAndAnnotations(sb.toString(), cas);
     }
 
     private void truncateTextAndAnnotations(String documentText, JCas cas) {
@@ -69,8 +70,19 @@ public class CasPopulator {
         List<Annotation> toRemove = new ArrayList<>();
         if (text.length() < documentText.length()) {
             for (Annotation a : cas.getAnnotationIndex()) {
-                if (a.getEnd() > text.length())
-                    toRemove.add(a);
+                if (a.getEnd() > text.length()) {
+                    if (a instanceof Header) {
+                        // We don't want to remove the header. It is not really a text-anchored annotation anyway,
+                        // just shrink its span.
+                        a.removeFromIndexes();
+                        if (a.getBegin() > text.length())
+                            a.setBegin(0);
+                        a.setEnd(text.length());
+                        a.addToIndexes();
+                    } else {
+                        toRemove.add(a);
+                    }
+                }
             }
         }
         toRemove.forEach(Annotation::removeFromIndexes);
@@ -145,7 +157,7 @@ public class CasPopulator {
                 final String text = textParsingResult.getText();
                 // some special handling for documents that contain formatting tabs, newlines or no-break-spaces in the text
                 boolean textBeginsWithWhitespace = text.isBlank() ? false : Character.isWhitespace(text.charAt(0));
-                boolean sbEndsWithWhitespace = sb.length() == 0 ? false : Character.isWhitespace(sb.charAt(sb.length()-1));
+                boolean sbEndsWithWhitespace = sb.length() == 0 ? false : Character.isWhitespace(sb.charAt(sb.length() - 1));
                 if (textBeginsWithWhitespace && !sbEndsWithWhitespace)
                     sb.append(" ");
                 sb.append(StringUtils.normalizeSpace(text));
