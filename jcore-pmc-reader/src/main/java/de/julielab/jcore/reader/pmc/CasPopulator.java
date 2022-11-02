@@ -156,11 +156,14 @@ public class CasPopulator {
                 TextParsingResult textParsingResult = (TextParsingResult) result;
                 final String text = textParsingResult.getText();
                 // some special handling for documents that contain formatting tabs, newlines or no-break-spaces in the text
-                boolean textBeginsWithWhitespace = text.isBlank() ? false : Character.isWhitespace(text.charAt(0));
+                boolean textBeginsWithWhitespace = text.isEmpty() ? false : Character.isWhitespace(text.charAt(0));
+                boolean textEndsWithWhitespace = text.isEmpty() ? false : Character.isWhitespace(text.charAt(text.length()-1));
                 boolean sbEndsWithWhitespace = sb.length() == 0 ? false : Character.isWhitespace(sb.charAt(sb.length() - 1));
                 if (textBeginsWithWhitespace && !sbEndsWithWhitespace)
                     sb.append(" ");
                 sb.append(StringUtils.normalizeSpace(text));
+                if (textEndsWithWhitespace)
+                    sb.append(" ");
                 break;
             case NONE:
                 // do nothing

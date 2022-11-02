@@ -62,6 +62,10 @@ floats-group:
     omit-element: true
 array:
     omit-element: true
+inline-formula:
+    omit-element: true
+disp-formula:
+    omit-element: true
 xref:
     attributes:
         - name: ref-type

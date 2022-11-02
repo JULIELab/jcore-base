@@ -468,4 +468,21 @@ public class PMCReaderTest {
 		String docId = ((Header)cas.getAnnotationIndex(Header.type).iterator().next()).getDocId();
 		assertEquals(docId, "PMC2847692");
     }
+
+    @Test
+    public void testInlineXmlSpaceIssues() throws Exception {
+        // read a single file, parse it and right it to XMI for manual review
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-errorcauses/PMC2674676.xml.gz");
+        while (reader.hasNext()) {
+            reader.getNext(cas.getCas());
+            // looks like this in the XML:
+            // This preprocessing is performed on both <italic>s</italic> and <italic>r</italic>
+            // Thus, there should be whitespaces around s and r. In the error case, the text looked like this:
+            // This preprocessing is performed on boths andr
+            assertThat(cas.getDocumentText()).contains("This preprocessing is performed on both s and r");
+        }
+    }
 }

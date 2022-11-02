@@ -84,14 +84,6 @@ public class GNormPlusMultiplierLogic {
                     // skip document if it is unchanged and skipping is enabled
                     if (!(isDocumentHashUnchanged && skipUnchangedDocuments)) {
                         final BioCDocument bioCDocument = bioCDocumentPopulator.populate(jCas);
-//                        try {
-//                            log.info("Checking bioC Document ID: {}", bioCDocument.getID());
-//                        } catch (NullPointerException e) {
-//                            log.error("BioCDocument populated with CAS of document {} does not have an ID. All annotations of that CAS:", JCoReTools.getDocId(jCas));
-//                            for (var a : jCas.getAnnotationIndex()) {
-//                                log.error("{}", a);
-//                            }
-//                        }
                         gnormPlusInputCollection.addDocument(bioCDocument);
                     } else {
                         log.trace("Document with ID {} already exists in the XMI database table with unchanged text contents, skipping GNormPlus processing.", JCoReTools.getDocId(jCas));
