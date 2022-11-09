@@ -116,7 +116,7 @@ public class LikelihoodAssignmentAnnotator extends JCasAnnotator_ImplBase {
 			// in the sentence and create the corresponding likelihood indicator
 			LikelihoodIndicator assignedLikelihood = null;
 			if (sentHasLikelihood == true) {
-				if (multipleLikelihood = true) {
+				if (multipleLikelihood == true) {
 					// determine the lowest likelihood category in the sentence
 					NavigableMap<Integer, LikelihoodIndicator> likelihoodSubMap = likelihoodMap
 							.subMap(firstLikelihoodBegin, true,
