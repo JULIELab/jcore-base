@@ -164,6 +164,9 @@ public class LikelihoodAssignmentAnnotatorTest{
 
         EventMention interacts = new EventMention(jCas, 28, 37);
         interacts.addToIndexes();
+        // this is here to test that the assignment to same-offset annotations works
+        EventMention interacts2 = new EventMention(jCas, 28, 37);
+        interacts2.addToIndexes();
 
         EntityMention another = new EntityMention(jCas, 43, 50);
         another.addToIndexes();
@@ -176,6 +179,7 @@ public class LikelihoodAssignmentAnnotatorTest{
         // only the EventMentions should be assigned likelihoods.
         assertEquals(null, oneEntity.getLikelihood());
         assertEquals( suggest, interacts.getLikelihood());
+        assertEquals( suggest, interacts2.getLikelihood());
         assertEquals(null, another.getLikelihood());
         // due to the next-concept strategy, this mention should receive the default assertion likelihood
         assertEquals("assertion", phosphorylation.getLikelihood().getLikelihood());

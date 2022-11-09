@@ -124,6 +124,9 @@ public class LikelihoodAssignmentAnnotator extends JCasAnnotator_ImplBase {
                 throw new AnalysisEngineProcessException(e);
             }
             LikelihoodIndicator previousLikelihood = null;
+            boolean previousLikelihoodConsumed = false;
+            int lastAssignedCmBegin = 0;
+            int lastAssignedCmEnd = 0;
             while (merger.incrementAnnotation()) {
                 final Annotation annotation = (Annotation) merger.getAnnotation();
                 ConceptMention cm = null;
@@ -133,14 +136,20 @@ public class LikelihoodAssignmentAnnotator extends JCasAnnotator_ImplBase {
                     cm.setLikelihood(assertionIndicator);
                 }
                 // check if there is a likelihood anntotion preceeding the ConceptMention in this sentence without
-                // another ConceptMention in between
-                if (previousLikelihood != null && cm != null) {
+                // another ConceptMention in between - except when multiple ConceptMentions exist in the same offsets
+                // which is possible for EventMentions that exist on the EventTrigger annotation. The trigger may
+                // refer to multiple events.
+                if (cm != null && (previousLikelihood != null && (!previousLikelihoodConsumed || (lastAssignedCmBegin == cm.getBegin() && lastAssignedCmEnd == cm.getEnd())))) {
                     cm.setLikelihood(previousLikelihood);
                     // this likelihood indicator has been "consumed"
-                    previousLikelihood = null;
+                    previousLikelihoodConsumed = true;
+                    lastAssignedCmBegin = cm.getBegin();
+                    lastAssignedCmEnd = cm.getEnd();
                 }
-                if (annotation instanceof LikelihoodIndicator)
+                if (annotation instanceof LikelihoodIndicator) {
                     previousLikelihood = (LikelihoodIndicator) annotation;
+                    previousLikelihoodConsumed = false;
+                }
             }
         }
     }
