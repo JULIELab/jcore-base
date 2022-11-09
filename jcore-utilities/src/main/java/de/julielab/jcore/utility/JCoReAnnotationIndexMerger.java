@@ -120,7 +120,6 @@ public class JCoReAnnotationIndexMerger {
     }
 
     protected boolean moveIterator(boolean initialize) {
-        int minBegin = Integer.MAX_VALUE;
         if (!initialize) {
             annotationIterators.get(currentIndex).moveToNext();
             firstToken = false;
@@ -135,6 +134,9 @@ public class JCoReAnnotationIndexMerger {
                 return true;
             }
         }
+
+        // find the iterator with the lowest-begin-offset annotation and set currentIndex accordingly
+        int minBegin = Integer.MAX_VALUE;
         for (int i = 0; i < annotationIterators.size(); i++) {
             FSIterator<? extends TOP> it = annotationIterators.get(i);
             if (initialize)
