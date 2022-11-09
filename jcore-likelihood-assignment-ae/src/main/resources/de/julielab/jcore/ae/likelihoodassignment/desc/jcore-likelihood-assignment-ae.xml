@@ -7,7 +7,14 @@
         <name>JCoRe Likelihood Assignment AE</name>
         <description>Analysis Engine to assign likelihood indicators to their corresponding entities and events.</description>
         <version>2.6.0-SNAPSHOT</version>
-        <configurationParameters />
+        <configurationParameters>
+            <configurationParameter>
+                <name>AssignmentStrategy</name>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
         <configurationParameterSettings />
         <typeSystemDescription>
             <imports>

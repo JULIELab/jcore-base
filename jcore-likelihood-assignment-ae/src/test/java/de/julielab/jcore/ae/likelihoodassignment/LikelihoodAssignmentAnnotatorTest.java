@@ -9,9 +9,7 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,10 +69,7 @@ public class LikelihoodAssignmentAnnotatorTest{
     @Test
     @SuppressWarnings({ "rawtypes"})
     public void testProcess() throws ResourceInitializationException, IOException, InvalidXMLException {
-
-        XMLInputSource assignmentXML = null;
-        ResourceSpecifier assignmentSpec = null;
-        AnalysisEngine assignmentAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR);
+        AnalysisEngine assignmentAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR, LikelihoodAssignmentAnnotator.PARAM_ASSIGNMENT_STRATEGY, LikelihoodAssignmentAnnotator.STRATEGY_ALL);
 
         JCas aJCas = null;
         try {
@@ -118,5 +113,36 @@ public class LikelihoodAssignmentAnnotatorTest{
         }
 
         return conceptLikelihood;
+    }
+
+    @Test
+    public void testAssignNextStrategy() throws Exception {
+        AnalysisEngine assignmentAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR, LikelihoodAssignmentAnnotator.PARAM_ASSIGNMENT_STRATEGY, LikelihoodAssignmentAnnotator.STRATEGY_NEXT_CONCEPT);
+        final JCas jCas = assignmentAnnotator.newJCas();
+        jCas.setDocumentText("Our data suggest that it is highly probable that the interaction occurred, however not the other one.");
+        new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
+
+        LikelihoodIndicator suggest = new LikelihoodIndicator(jCas, 9, 16);
+        suggest.setLikelihood("moderate");
+        suggest.addToIndexes();
+
+        LikelihoodIndicator highly = new LikelihoodIndicator(jCas, 28, 43);
+        highly.setLikelihood("high");
+        highly.addToIndexes();
+
+        ConceptMention interaction = new ConceptMention(jCas, 53, 64);
+        interaction.addToIndexes();
+
+        LikelihoodIndicator not = new LikelihoodIndicator(jCas, 83, 86);
+        not.setLikelihood("negation");
+        not.addToIndexes();
+
+        ConceptMention theOtherOne = new ConceptMention(jCas, 87, 100);
+        theOtherOne.addToIndexes();
+
+        assignmentAnnotator.process(jCas);
+
+        assertEquals(highly, interaction.getLikelihood());
+        assertEquals( not, theOtherOne.getLikelihood());
     }
 }
