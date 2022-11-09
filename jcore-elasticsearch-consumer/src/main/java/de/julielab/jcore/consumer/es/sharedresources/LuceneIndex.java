@@ -158,7 +158,7 @@ public class LuceneIndex implements StringIndex {
     @Override
     public int size() {
         if (iw != null && iw.isOpen())
-            return iw.numDocs();
+            return iw.getDocStats().numDocs;
         else if (searcher != null)
             return searcher.getIndexReader().numDocs();
         return 0;
