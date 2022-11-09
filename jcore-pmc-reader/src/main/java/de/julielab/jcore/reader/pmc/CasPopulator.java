@@ -20,6 +20,8 @@ public class CasPopulator {
     private NxmlDocumentParser nxmlDocumentParser;
     private Iterator<URI> nxmlIterator;
     private int truncationSize;
+    private static final String LINESEP =System.getProperty("line.separator");
+
 
     public CasPopulator(Iterator<URI> nxmlIterator, Boolean omitBibReferences, int truncationSize) throws IOException {
         this.nxmlIterator = nxmlIterator;
@@ -156,8 +158,8 @@ public class CasPopulator {
                 TextParsingResult textParsingResult = (TextParsingResult) result;
                 final String text = textParsingResult.getText();
                 // some special handling for documents that contain formatting tabs, newlines or no-break-spaces in the text
-                boolean textBeginsWithWhitespace = text.isEmpty() ? false : Character.isWhitespace(text.charAt(0));
-                boolean textEndsWithWhitespace = text.isEmpty() ? false : Character.isWhitespace(text.charAt(text.length()-1));
+                boolean textBeginsWithWhitespace = text.isEmpty() ? false : Character.isWhitespace(text.charAt(0)) && !text.startsWith(LINESEP);
+                boolean textEndsWithWhitespace = text.isEmpty() ? false : Character.isWhitespace(text.charAt(text.length() - 1)) && !text.endsWith(LINESEP);
                 boolean sbEndsWithWhitespace = sb.length() == 0 ? false : Character.isWhitespace(sb.charAt(sb.length() - 1));
                 if (textBeginsWithWhitespace && !sbEndsWithWhitespace)
                     sb.append(" ");
