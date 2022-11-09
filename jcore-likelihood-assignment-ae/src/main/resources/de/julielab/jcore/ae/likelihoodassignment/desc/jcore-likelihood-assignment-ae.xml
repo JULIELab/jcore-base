@@ -10,6 +10,14 @@
         <configurationParameters>
             <configurationParameter>
                 <name>AssignmentStrategy</name>
+                <description>There are two available assignment strategies for likelihood indicators to ConceptMentions, 'all' and 'next-concept'. The first, 'all', assigns the lowest likelihood indicator in a sentence to all ConceptMention in this sentence. The second assigns a likelihood indicator only to the directly following ConceptMention in the same sentence. The latter strategy fares a bit better in evaluations carried out for the publication of this approach. Defaults to 'next-concept'."</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ConceptTypeName</name>
+                <description>The qualified UIMA type name for the concept annotation for which likelihood assignment should be performed. Must be a subclass of de.julielab.jcore.types.ConceptMention. Defaults to de.julielab.jcore.types.ConceptMention.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>

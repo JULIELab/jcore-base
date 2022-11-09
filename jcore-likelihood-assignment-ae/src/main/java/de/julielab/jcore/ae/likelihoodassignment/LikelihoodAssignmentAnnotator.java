@@ -4,6 +4,7 @@ import de.julielab.jcore.types.ConceptMention;
 import de.julielab.jcore.types.LikelihoodIndicator;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.utility.JCoReAnnotationIndexMerger;
+import de.julielab.jcore.utility.JCoReAnnotationTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -11,6 +12,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -24,12 +26,15 @@ import java.util.*;
 public class LikelihoodAssignmentAnnotator extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_ASSIGNMENT_STRATEGY = "AssignmentStrategy";
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(LikelihoodAssignmentAnnotator.class);
+    public static final String PARAM_CONCEPT_TYPE_NAME = "ConceptTypeName";
     public static final String STRATEGY_ALL = "all";
     public static final String STRATEGY_NEXT_CONCEPT = "next-concept";
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(LikelihoodAssignmentAnnotator.class);
     @ConfigurationParameter(name = PARAM_ASSIGNMENT_STRATEGY, mandatory = false, defaultValue = STRATEGY_NEXT_CONCEPT, description = "There are two available assignment strategies for likelihood indicators to ConceptMentions, '" + STRATEGY_ALL + "' and '" + STRATEGY_NEXT_CONCEPT + "'. The first, 'all', assigns the lowest likelihood indicator in a sentence to all ConceptMention in this sentence. The second assigns a likelihood indicator only to the directly following ConceptMention in the same sentence. The latter strategy fares a bit better in evaluations carried out for the publication of this approach. Defaults to '" + STRATEGY_NEXT_CONCEPT + "'.")
     private String assignmentStrategy;
+    @ConfigurationParameter(name = PARAM_CONCEPT_TYPE_NAME, mandatory = false, defaultValue = "de.julielab.jcore.types.ConceptMention", description = "The qualified UIMA type name for the concept annotation for which likelihood assignment should be performed. Must be a subclass of de.julielab.jcore.types.ConceptMention. Defaults to de.julielab.jcore.types.ConceptMention.")
+    private String conceptTypeName;
     /**
      * Maps sentence ends to sentence begins.
      */
@@ -47,12 +52,14 @@ public class LikelihoodAssignmentAnnotator extends JCasAnnotator_ImplBase {
      * Quantifies likelihood values.
      */
     private HashMap<String, Integer> likelihoodValueMap;
+    private ConceptMention conceptTypeTemplate;
 
     public void initialize(UimaContext aContext)
             throws ResourceInitializationException {
         super.initialize(aContext);
 
         assignmentStrategy = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ASSIGNMENT_STRATEGY)).orElse("next-concept");
+        conceptTypeName = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_CONCEPT_TYPE_NAME)).orElse(ConceptMention.class.getCanonicalName());
 
         // ordinal scale for likelihood indicators;
         // used when there are multiple occurrences (the lowest category is
@@ -67,6 +74,14 @@ public class LikelihoodAssignmentAnnotator extends JCasAnnotator_ImplBase {
 
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
+        if (conceptTypeTemplate == null) {
+            try {
+                conceptTypeTemplate = (ConceptMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, conceptTypeName);
+            } catch (Exception e) {
+                LOGGER.error("Could not obtain the specified concept UIMA type with name " + conceptTypeName + ".", e);
+                throw new AnalysisEngineProcessException(e);
+            }
+        }
         // We have two strategies available for the assignment of likelhood indicators to ConceptMentions.
         // Either the original one, implemented in 'assignLikelihood', where likelihood indicators in a sentences are
         // assigned to all ConceptMentions in the same sentence or a simplified one that, according to
@@ -103,27 +118,29 @@ public class LikelihoodAssignmentAnnotator extends JCasAnnotator_ImplBase {
             // Then, we must only assign for each concept the directly preceding likelihood annotation, if there is one.
             JCoReAnnotationIndexMerger merger;
             try {
-                merger = new JCoReAnnotationIndexMerger(Set.of(ConceptMention.type, LikelihoodIndicator.type), true, sentence, aJCas);
+                merger = new JCoReAnnotationIndexMerger(Set.of(JCasUtil.getAnnotationType(aJCas, conceptTypeTemplate.getClass()), JCasUtil.getAnnotationType(aJCas, LikelihoodIndicator.class)), true, sentence, aJCas);
             } catch (ClassNotFoundException e) {
                 LOGGER.error("Could not create JCoReAnnotationIndexMerger", e);
                 throw new AnalysisEngineProcessException(e);
             }
-            Annotation lastAnnotation = null;
+            LikelihoodIndicator previousLikelihood = null;
             while (merger.incrementAnnotation()) {
                 final Annotation annotation = (Annotation) merger.getAnnotation();
                 ConceptMention cm = null;
-                if (annotation instanceof ConceptMention) {
+                if (conceptTypeTemplate.getClass().isAssignableFrom(annotation.getClass())) {
                     cm = (ConceptMention) annotation;
                     // default likelihood is assertion
                     cm.setLikelihood(assertionIndicator);
                 }
                 // check if there is a likelihood anntotion preceeding the ConceptMention in this sentence without
                 // another ConceptMention in between
-                if (lastAnnotation != null && lastAnnotation instanceof LikelihoodIndicator && cm != null) {
-                    LikelihoodIndicator likelihood = (LikelihoodIndicator) lastAnnotation;
-                    cm.setLikelihood(likelihood);
+                if (previousLikelihood != null && cm != null) {
+                    cm.setLikelihood(previousLikelihood);
+                    // this likelihood indicator has been "consumed"
+                    previousLikelihood = null;
                 }
-                lastAnnotation = annotation;
+                if (annotation instanceof LikelihoodIndicator)
+                    previousLikelihood = (LikelihoodIndicator) annotation;
             }
         }
     }
@@ -231,7 +248,7 @@ public class LikelihoodAssignmentAnnotator extends JCasAnnotator_ImplBase {
     @SuppressWarnings("rawtypes")
     public void buildTreeMaps(JCas aJCas) {
         FSIterator sentIt = aJCas.getAnnotationIndex(Sentence.type).iterator();
-        FSIterator conceptIt = aJCas.getAnnotationIndex(ConceptMention.type)
+        FSIterator conceptIt = aJCas.getAnnotationIndex(conceptTypeTemplate.type)
                 .iterator();
         FSIterator likelihoodIt = aJCas.getAnnotationIndex(
                 LikelihoodIndicator.type).iterator();

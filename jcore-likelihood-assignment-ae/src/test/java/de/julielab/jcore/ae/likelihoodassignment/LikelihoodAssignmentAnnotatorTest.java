@@ -1,9 +1,7 @@
 
 package de.julielab.jcore.ae.likelihoodassignment;
 
-import de.julielab.jcore.types.ConceptMention;
-import de.julielab.jcore.types.LikelihoodIndicator;
-import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.*;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
@@ -144,5 +142,42 @@ public class LikelihoodAssignmentAnnotatorTest{
 
         assertEquals(highly, interaction.getLikelihood());
         assertEquals( not, theOtherOne.getLikelihood());
+    }
+
+    @Test
+    public void testAssignNextStrategySpecificConceptType() throws Exception {
+        // Here we test that the interaction type EventMention gets the likelihood assignment and not
+        // the entity argument because that is also a ConceptMention which gets assigned by default.
+        AnalysisEngine assignmentAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR,
+                LikelihoodAssignmentAnnotator.PARAM_ASSIGNMENT_STRATEGY, LikelihoodAssignmentAnnotator.STRATEGY_NEXT_CONCEPT,
+                LikelihoodAssignmentAnnotator.PARAM_CONCEPT_TYPE_NAME, EventMention.class.getCanonicalName());
+        final JCas jCas = assignmentAnnotator.newJCas();
+        jCas.setDocumentText("Our data suggest one entity interacts with another but there is phosphorylation.");
+        new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
+
+        LikelihoodIndicator suggest = new LikelihoodIndicator(jCas, 9, 16);
+        suggest.setLikelihood("moderate");
+        suggest.addToIndexes();
+
+        EntityMention oneEntity = new EntityMention(jCas, 17, 27);
+        oneEntity.addToIndexes();
+
+        EventMention interacts = new EventMention(jCas, 28, 37);
+        interacts.addToIndexes();
+
+        EntityMention another = new EntityMention(jCas, 43, 50);
+        another.addToIndexes();
+
+        EventMention phosphorylation = new EventMention(jCas, 64, 79);
+        phosphorylation.addToIndexes();
+
+        assignmentAnnotator.process(jCas);
+
+        // only the EventMentions should be assigned likelihoods.
+        assertEquals(null, oneEntity.getLikelihood());
+        assertEquals( suggest, interacts.getLikelihood());
+        assertEquals(null, another.getLikelihood());
+        // due to the next-concept strategy, this mention should receive the default assertion likelihood
+        assertEquals("assertion", phosphorylation.getLikelihood().getLikelihood());
     }
 }
