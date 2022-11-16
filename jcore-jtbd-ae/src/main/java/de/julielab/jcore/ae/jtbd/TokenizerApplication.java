@@ -435,9 +435,8 @@ public class TokenizerApplication {
 			}
 
 			// write predictions into file
-			final String fName = predictOrgFile.toString();
-			final String newfName = fName.substring(fName.lastIndexOf("/") + 1, fName.length());
-			final File fNew = new File(outDir.toString() + "/" + newfName);
+			final String newfName = predictOrgFile.getName();
+			final File fNew = new File(outDir.toString(), newfName);
 			writeFile(predictions, fNew);
 			// System.out.println("\ntokenized sentences written to: " +
 			// fNew.toString());
