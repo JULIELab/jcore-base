@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
@@ -6,7 +6,8 @@
   <analysisEngineMetaData>
     <name>JCoRe Annotation Removal AE</name>
     <description>Removes annotations from the CAS that belong to one of the types specified as a parameter value in the descriptor.</description>
-    <vendor>JULIE Lab Jena, Germany</vendor>
+    <version>2.6.0</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>AnnotationTypes</name>
@@ -16,14 +17,14 @@
         <mandatory>true</mandatory>
       </configurationParameter>
     </configurationParameters>
-    <configurationParameterSettings/>
+    <configurationParameterSettings />
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-all-types"/>
+        <import name="de.julielab.jcore.types.jcore-all-types" />
       </imports>
     </typeSystemDescription>
-    <fsIndexCollection/>
-    <capabilities/>
+    <fsIndexCollection />
+    <capabilities />
     <operationalProperties>
       <modifiesCas>true</modifiesCas>
       <multipleDeploymentAllowed>true</multipleDeploymentAllowed>

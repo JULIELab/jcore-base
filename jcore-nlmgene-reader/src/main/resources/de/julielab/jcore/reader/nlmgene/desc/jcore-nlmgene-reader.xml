@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.reader.nlmgene.NLMGeneReader</implementationName>
   <processingResourceMetaData>
     <name>JCoRe NLM-Gene Reader</name>
     <description>Collection reader for the BioC format of the NLM-Gene corpus.</description>
-    <vendor>JULIE Lab Jena, Germany</vendor>
+    <version>2.6.0</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>InputDirectory</name>
@@ -22,23 +23,23 @@
         <mandatory>false</mandatory>
       </configurationParameter>
     </configurationParameters>
-    <configurationParameterSettings/>
+    <configurationParameterSettings />
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
       </imports>
     </typeSystemDescription>
-    <fsIndexCollection/>
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
+        <inputs />
         <outputs>
           <type>de.julielab.jcore.types.Gene</type>
           <type>de.julielab.jcore.types.ResourceEntry</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>

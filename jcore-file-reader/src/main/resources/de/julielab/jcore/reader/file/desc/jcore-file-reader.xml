@@ -4,8 +4,8 @@
     <implementationName>de.julielab.jcore.reader.file.main.FileReader</implementationName>
     <processingResourceMetaData>
         <name>JCoRe File Reader</name>
-        <description/>
-        <version>2.6.0-SNAPSHOT</version>
+        <description />
+        <version>2.6.0</version>
         <vendor>JULIELab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
@@ -145,20 +145,20 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
-                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+                <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
             </imports>
         </typeSystemDescription>
-        <typePriorities/>
-        <fsIndexCollection/>
+        <typePriorities />
+        <fsIndexCollection />
         <capabilities>
             <capability>
-                <inputs/>
+                <inputs />
                 <outputs>
                     <type allAnnotatorFeatures="true">de.julielab.jcore.types.pubmed.Header</type>
                     <type allAnnotatorFeatures="true">de.julielab.jcore.types.Date</type>
                 </outputs>
-                <languagesSupported/>
+                <languagesSupported />
             </capability>
         </capabilities>
         <operationalProperties>
@@ -167,5 +167,5 @@
             <outputsNewCASes>true</outputsNewCASes>
         </operationalProperties>
     </processingResourceMetaData>
-    <resourceManagerConfiguration/>
+    <resourceManagerConfiguration />
 </collectionReaderDescription>

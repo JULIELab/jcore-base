@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -6,7 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe Neo4j Relations Consumer</name>
         <description>This component assumes that a Neo4j server with an installed julieliab-neo4j-plugins-concepts plugin installed. It then sends FlattenedRelation instances with more then one arguments to Neo4j. Note that this requires the event arguments to have a ResourceEntry list to obtain database concept IDs from.</description>
-        <version>2.6.0-SNAPSHOT</version>
+        <version>2.6.0</version>
         <vendor>JULIE Lab, Germany</vendor>
         <copyright>JULIE Lab</copyright>
         <configurationParameters>
@@ -63,20 +63,20 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
-                <import name="de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types"/>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+                <import name="de.julielab.jcore.types.extensions.jcore-semantics-mention-extension-types" />
                 <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types" />
-                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
+        <fsIndexCollection />
         <capabilities>
             <capability>
                 <inputs>
                     <type>de.julielab.jcore.types.EventMention</type>
                 </inputs>
-                <outputs/>
-                <languagesSupported/>
+                <outputs />
+                <languagesSupported />
             </capability>
         </capabilities>
         <operationalProperties>

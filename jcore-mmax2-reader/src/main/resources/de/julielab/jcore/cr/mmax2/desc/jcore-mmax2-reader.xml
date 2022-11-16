@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>de.julielab.jcore.cr.mmax2.MMAX2Reader</implementationName>
   <processingResourceMetaData>
     <name>JCoRe MMAX2 reader</name>
     <description>Collection reader for MMAX2 annotation projects.</description>
-    <vendor>JULIE Lab Jena, Germany</vendor>
+    <version>2.6.0</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>RemoveOverlappingShorterAnnotations</name>
@@ -53,12 +54,12 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+        <import name="de.julielab.jcore.types.jcore-morpho-syntax-types" />
+        <import name="de.julielab.jcore.types.jcore-document-meta-types" />
       </imports>
     </typeSystemDescription>
-    <fsIndexCollection/>
-    <capabilities/>
+    <fsIndexCollection />
+    <capabilities />
     <operationalProperties>
       <modifiesCas>true</modifiesCas>
       <multipleDeploymentAllowed>false</multipleDeploymentAllowed>

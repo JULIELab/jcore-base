@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>de.julielab.jcore.reader.GNormPlusFormatMultiplierReader</implementationName>
     <processingResourceMetaData>
         <name>JCoRe GNormPlus Format Multiplier Reader</name>
         <description>A reader for the BioC XML format used by GNormPlus. Requires the matching multiplier.</description>
+        <version>2.6.0</version>
         <configurationParameters>
             <configurationParameter>
                 <name>InputPath</name>
@@ -44,11 +45,11 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types"/>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
-        <capabilities/>
+        <fsIndexCollection />
+        <capabilities />
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>false</multipleDeploymentAllowed>

@@ -6,7 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe XMI Database Writer</name>
         <description>This component is capable of storing the standard UIMA serialization of documents in one or even multiple database tables. The UIMA serialization format is XMI, an XML format that expressed an annotation graph. This component either stores the whole annotation graph in XMI format in a database row, together with the document ID. Alternatively, it makes use of the jcore-xmi-splitter to segment the annotation graph with respect to a user specified list of annotation types. Then, the XMI data of each annotation type is extracted from the document XMI data and stored in a separate table. The tables are created automatically according to the primary key of the active table schema in the Corpus Storage System (CoStoSys) configuration file that is also given as a parameter. The jcore-xmi-db-reader is capable of reading this kind of distributed annotation graph and reassemble a valid XMI document which then cas be deserialized into a CAS. This consumer is UIMA DUCC compatible. It requires the collection reader to forward the work item CAS to the consumer. This is required so the consumer knows that a work item has been finished and that all cached data - in this case the XMI data - should be flushed. This is important! Without the forwarding of the work item CAS, the last batch of cached XMI data will not be written into the database. This component is part of the Jena Document Information System, JeDIS.</description>
-        <version>2.6.0-SNAPSHOT</version>
+        <version>2.6.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
@@ -190,7 +190,7 @@
         </configurationParameterSettings>
         <typeSystemDescription>
             <imports>
-                <import name="de.julielab.jcore.types.jcore-document-meta-types"/>
+                <import name="de.julielab.jcore.types.jcore-document-meta-types" />
                 <import name="de.julielab.jcore.types.jcore-xmi-splitter-types" />
                 <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types" />
                 <import name="org.apache.uima.ducc.FlowControllerTS" />

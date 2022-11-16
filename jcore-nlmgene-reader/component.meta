@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-nlmgene-reader",
         "groupId": "de.julielab",
-        "version": "2.6.0-SNAPSHOT"
+        "version": "2.6.0"
     },
     "name": "JCoRe NLM-Gene Reader"
 }

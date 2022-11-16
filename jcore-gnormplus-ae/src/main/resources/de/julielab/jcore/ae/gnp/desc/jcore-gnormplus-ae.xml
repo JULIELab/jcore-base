@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
@@ -6,7 +6,8 @@
   <analysisEngineMetaData>
     <name>JCoRe GNormPlus Annotator</name>
     <description>Wrapper for the JULIE Lab variant of the GNormPlus gene ID mapper.</description>
-    <vendor>JULIE Lab Jena, Germany</vendor>
+    <version>2.6.0</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>AddGenes</name>
@@ -60,20 +61,20 @@
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types"/>
-        <import name="de.julielab.jcore.types.jcore-semantics-biology-types"/>
-        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types"/>
+        <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+        <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+        <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
       </imports>
     </typeSystemDescription>
-    <fsIndexCollection/>
+    <fsIndexCollection />
     <capabilities>
       <capability>
-        <inputs/>
+        <inputs />
         <outputs>
           <type>de.julielab.jcore.types.ConceptMention</type>
           <type>de.julielab.jcore.types.Organism</type>
         </outputs>
-        <languagesSupported/>
+        <languagesSupported />
       </capability>
     </capabilities>
     <operationalProperties>

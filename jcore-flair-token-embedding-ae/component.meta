@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-flair-token-embedding-ae",
         "groupId": "de.julielab",
-        "version": "2.6.0-SNAPSHOT"
+        "version": "2.6.0"
     },
     "name": "JCoRe Flair Token Embedding Annotator"
 }

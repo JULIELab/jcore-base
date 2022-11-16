@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-neo4j-relations-consumer",
         "groupId": "de.julielab",
-        "version": "2.6.0-SNAPSHOT"
+        "version": "2.6.0"
     },
     "name": "JCoRe Neo4j Relations Consumer"
 }
