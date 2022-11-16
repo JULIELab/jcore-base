@@ -64,9 +64,10 @@ public class ElasticSearchConsumerIT {
         final AnalysisEngine consumer = AnalysisEngineFactory.createEngine(ElasticSearchConsumer.class,
                 ElasticSearchConsumer.PARAM_INDEX_NAME, TEST_INDEX,
                 ElasticSearchConsumer.PARAM_URLS, "http://localhost:" + es.getMappedPort(9200),
-                ElasticSearchConsumer.PARAM_FIELD_GENERATORS, new String[]{"de.julielab.jcore.consumer.es.ElasticSearchConsumerIT$TestFieldGenerator"});
+                ElasticSearchConsumer.PARAM_FIELD_GENERATORS, new String[]{"de.julielab.jcore.consumer.es.ElasticSearchConsumerIT$MinimalTestFieldGenerator"});
         consumer.process(jCas);
         consumer.collectionProcessComplete();
+        Thread.sleep(4000);
         final URL url = new URL("http://localhost:" + es.getMappedPort(9200) + "/" + TEST_INDEX + "/_doc/987");
         final ObjectMapper om = new ObjectMapper();
         final Map<?, ?> map = om.readValue(url.openStream(), Map.class);
@@ -149,6 +150,24 @@ public class ElasticSearchConsumerIT {
             doc.addField("docId", new RawToken(JCoReTools.getDocId(aJCas)));
             // some diverging index document ID; we use this to test if the delete-before-index function works
             doc.setId("divergingid" + internalTestIdCounter++);
+            return doc;
+        }
+    }
+
+    /**
+     * This class is passed by name as parameter to the test consumer AE.
+     */
+    public static class MinimalTestFieldGenerator extends FieldGenerator {
+        public MinimalTestFieldGenerator(FilterRegistry filterRegistry) {
+            super(filterRegistry);
+        }
+
+        @Override
+        public Document addFields(JCas aJCas, Document doc) {
+            final String docId = JCoReTools.getDocId(aJCas);
+            doc.setId(docId);
+            // we need any field or the document won't be indexed
+            doc.addField("text", "Some text.");
             return doc;
         }
     }
