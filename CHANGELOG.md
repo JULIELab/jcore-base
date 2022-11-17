@@ -1,36 +1,48 @@
 # Changelog
 
 ## v2.6.0 (17/11/2022)
-- [**enhancement**] Add an annotation remover. [#154](https://github.com/JULIELab/jcore-base/issues/154)
-- [**enhancement**] Add a truncation size parameter to PMC XML multipliers [#153](https://github.com/JULIELab/jcore-base/issues/153)
+
+#### New components
+
 - [**new component**] Add GNP Multiplier for PMC DB Reader [#152](https://github.com/JULIELab/jcore-base/issues/152)
 - [**new component**] Add GNP multipliers for XMI and XML DB multiplier readers [#150](https://github.com/JULIELab/jcore-base/issues/150)
 - [**new component**] Add a GNormPlus UIMA component [#147](https://github.com/JULIELab/jcore-base/issues/147)
-- [**enhancement**] Allow regular expression feature value filters for EntityConsumer [#146](https://github.com/JULIELab/jcore-base/issues/146)
 - [**new component**] Add reader for NLM-Gene [#145](https://github.com/JULIELab/jcore-base/issues/145)
-- [**bug**] Fix a bug where half of the DBMultiplierReader IDs were not actually processed [#144](https://github.com/JULIELab/jcore-base/issues/144)
-- [**enhancement**] Add H2-based annotation source for AnnotationAdder [#138](https://github.com/JULIELab/jcore-base/issues/138)
-- [**enhancement**] Add a feature-based format to the annotation adder [#137](https://github.com/JULIELab/jcore-base/issues/137)
 - [**new component**] Add an MMAX2 reader. [#136](https://github.com/JULIELab/jcore-base/issues/136)
-- [**enhancement**] Let GNP BioC writer add Gene annotations. [#134](https://github.com/JULIELab/jcore-base/issues/134)
-- [**enhancement**] Implement max XMI ID retrieval for the BioC GNormPlus Reader [#133](https://github.com/JULIELab/jcore-base/issues/133)
 - [**new component**] Add GNormPlus BioC XML reader [#131](https://github.com/JULIELab/jcore-base/issues/131)
-- [**enhancement**] Add a mechanism to avoid mirror subset reset for updated JeDIS document whose text hasn't changed [#130](https://github.com/JULIELab/jcore-base/issues/130)
 - [**new component**] Add a GNormPlus BioC Writer [#129](https://github.com/JULIELab/jcore-base/issues/129)
 - [**new component**] Add a PMC DB Reader [#128](https://github.com/JULIELab/jcore-base/issues/128)
-- [**enhancement**] PMCReader: Add option to omit bibliographical references [#127](https://github.com/JULIELab/jcore-base/issues/127)
-- [**bug**] ESConsumer: Fix bugs with cache index when resource file is updated [#126](https://github.com/JULIELab/jcore-base/issues/126)
-- [**bug**] Fix Bug in JSBD where Cut Away Types can still be included in the begin of a sentence. [#125](https://github.com/JULIELab/jcore-base/issues/125)
-- [**closed**] Map payloads to features for AnnotationAdder [#124](https://github.com/JULIELab/jcore-base/issues/124)
-- [**closed**] ES Consumer: Provide persistent Map and Addon terms providers [#123](https://github.com/JULIELab/jcore-base/issues/123)
-- [**bug**] JSBD: Fix bug that occurs when cut away types and sentence delimiter types are given [#121](https://github.com/JULIELab/jcore-base/issues/121)
-- [**closed**] Add a flow controller that creates a flow based on a CAS annotation [#120](https://github.com/JULIELab/jcore-base/issues/120)
-- [**closed**] JCoreOverlapIndex: Return the list instead of a stream [#117](https://github.com/JULIELab/jcore-base/issues/117)
-- [**closed**] lingpipe gazetteer: fix offset issues [#116](https://github.com/JULIELab/jcore-base/issues/116)
 - [**new component**] Add a consumer to write relations to Neo4j [#113](https://github.com/JULIELab/jcore-base/issues/113)
 - [**new component**] Add an embedding writer [#102](https://github.com/JULIELab/jcore-base/issues/102)
 - [**new component**] Add a Flair embedding adding component [#101](https://github.com/JULIELab/jcore-base/issues/101)
 - [**new component**] Add a FLAIR NER component [#100](https://github.com/JULIELab/jcore-base/issues/100)
+
+#### General Enhancements
+
+- [**enhancement**] Add an annotation remover. [#154](https://github.com/JULIELab/jcore-base/issues/154)
+- [**enhancement**] Add a truncation size parameter to PMC XML multipliers [#153](https://github.com/JULIELab/jcore-base/issues/153)
+- [**enhancement**] Allow regular expression feature value filters for EntityConsumer [#146](https://github.com/JULIELab/jcore-base/issues/146)
+- [**enhancement**] Add H2-based annotation source for AnnotationAdder [#138](https://github.com/JULIELab/jcore-base/issues/138)
+- [**enhancement**] Add a feature-based format to the annotation adder [#137](https://github.com/JULIELab/jcore-base/issues/137)
+- [**enhancement**] Let GNP BioC writer add Gene annotations. [#134](https://github.com/JULIELab/jcore-base/issues/134)
+- [**enhancement**] Implement max XMI ID retrieval for the BioC GNormPlus Reader [#133](https://github.com/JULIELab/jcore-base/issues/133)
+- [**enhancement**] Add a mechanism to avoid mirror subset reset for updated JeDIS document whose text hasn't changed [#130](https://github.com/JULIELab/jcore-base/issues/130)
+- [**enhancement**] PMCReader: Add option to omit bibliographical references [#127](https://github.com/JULIELab/jcore-base/issues/127)
+
+#### Bug Fixes
+
+- [**bug**] Fix a bug where half of the DBMultiplierReader IDs were not actually processed [#144](https://github.com/JULIELab/jcore-base/issues/144)
+- [**bug**] ESConsumer: Fix bugs with cache index when resource file is updated [#126](https://github.com/JULIELab/jcore-base/issues/126)
+- [**bug**] Fix Bug in JSBD where Cut Away Types can still be included in the begin of a sentence. [#125](https://github.com/JULIELab/jcore-base/issues/125)
+- [**bug**] JSBD: Fix bug that occurs when cut away types and sentence delimiter types are given [#121](https://github.com/JULIELab/jcore-base/issues/121)
+
+#### Miscellaneous Changes
+
+- [**closed**] Map payloads to features for AnnotationAdder [#124](https://github.com/JULIELab/jcore-base/issues/124)
+- [**closed**] ES Consumer: Provide persistent Map and Addon terms providers [#123](https://github.com/JULIELab/jcore-base/issues/123)
+- [**closed**] Add a flow controller that creates a flow based on a CAS annotation [#120](https://github.com/JULIELab/jcore-base/issues/120)
+- [**closed**] JCoreOverlapIndex: Return the list instead of a stream [#117](https://github.com/JULIELab/jcore-base/issues/117)
+- [**closed**] lingpipe gazetteer: fix offset issues [#116](https://github.com/JULIELab/jcore-base/issues/116)
 
 ---
 
