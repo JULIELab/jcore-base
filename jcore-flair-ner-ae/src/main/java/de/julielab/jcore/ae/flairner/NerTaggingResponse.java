@@ -1,7 +1,6 @@
 package de.julielab.jcore.ae.flairner;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * <p>A class to assemble the response from FLAIR for a tagging request. The found entities are returned as

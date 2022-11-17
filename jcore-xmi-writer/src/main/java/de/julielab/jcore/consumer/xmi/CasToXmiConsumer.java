@@ -295,7 +295,7 @@ public class CasToXmiConsumer extends JCasAnnotator_ImplBase {
 		String fileName = outFileName.toString();
 		try {
 			writeXmi(jcas.getCas(), fileName);
-			LOGGER.info(" Wrote file " + fileName);
+			LOGGER.debug(" Wrote file " + fileName);
 		} catch (IOException e) {
 			try {
 				throw new ResourceProcessException(e);

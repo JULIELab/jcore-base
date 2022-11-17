@@ -1,13 +1,18 @@
 package de.julielab.jcore.ae.annotationadder.annotationrepresentations;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static de.julielab.jcore.ae.annotationadder.annotationsources.TextAnnotationProvider.*;
 
 public class ExternalTextAnnotation implements TextAnnotation {
     private String documentId;
     private int start;
     private int end;
     private String uimaType;
+    private boolean payloadFeatureValues;
     private Map<String, Object> payload;
 
     public ExternalTextAnnotation(String documentId, int start, int end, String uimaType) {
@@ -56,7 +61,30 @@ public class ExternalTextAnnotation implements TextAnnotation {
         payload.put(key, value);
     }
 
+    public Map<String, Object> getAllFieldValuesAsMap() {
+        final Map<String, Object> values = new HashMap<>();
+        values.put(COL_BEGIN, start);
+        values.put(COL_END, end);
+        values.put(COL_UIMA_TYPE, uimaType);
+        values.put(COL_DOC_ID, documentId);
+        if (payload != null)
+            values.putAll(payload);
+        return values;
+    }
+
     public Object getPayload(String key) {
         return payload != null ? payload.get(key) : null;
+    }
+
+    public Collection<String> getPayloadKeys() {
+        return payload != null ? payload.keySet() : Collections.emptySet();
+    }
+
+    public boolean isPayloadFeatureValues() {
+        return payloadFeatureValues;
+    }
+
+    public void setPayloadFeatureValues(boolean payloadFeatureValues) {
+        this.payloadFeatureValues = payloadFeatureValues;
     }
 }

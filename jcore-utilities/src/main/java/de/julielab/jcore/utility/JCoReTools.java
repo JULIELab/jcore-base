@@ -259,7 +259,8 @@ public class JCoReTools {
 
     /**
      * Creates a new <tt>StringArray</tt> from the given string elements.
-     * @param jCas The jCas to associate the new StringArray with.
+     *
+     * @param jCas     The jCas to associate the new StringArray with.
      * @param elements The strings to put into the StringArray.
      * @return The new, filled StringArray.
      */
@@ -456,7 +457,11 @@ public class JCoReTools {
      * @throws IOException If reading the resource file fails.
      */
     public static InputStream resolveExternalResourceGzipInputStream(DataResource resource) throws IOException {
+        if (resource == null)
+            throw new IllegalArgumentException("The passed DataResource is null.");
         InputStream is = resource.getInputStream();
+        if (is == null)
+            throw new IllegalArgumentException("The resource at " + resource.getUrl() + " could not be read. It does not exist or is not on the ClassPath.");
         String lcUriString = resource.getUri().toString().toLowerCase();
         if (lcUriString.endsWith(".gz") || lcUriString.endsWith(".gzip"))
             is = new GZIPInputStream(is);

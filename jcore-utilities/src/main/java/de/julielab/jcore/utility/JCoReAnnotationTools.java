@@ -18,6 +18,7 @@
  **/
 package de.julielab.jcore.utility;
 
+import de.julielab.jcore.utility.index.JCoReOverlapAnnotationIndex;
 import org.apache.commons.lang3.Range;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
@@ -26,10 +27,9 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 // import de.julielab.jcore.types.Annotation;
 
@@ -586,6 +586,37 @@ public class JCoReAnnotationTools {
             cursor.moveToPrevious();
         }
         return null;
+    }
+
+    /**
+     * <p>Determines and returns the annotations in an annotation sequence (e.g. tokens) whose offsets are between the two input annotations (e.g. some entities we want to get their token distance of).</p>
+     * @param a1 An annotation.
+     * @param a2 Another annotation.
+     * @param underlyingAnnotationIndex An overlap index to efficiently find the border the underlying annotations of the sequence to return.
+     * @return The annotations from <tt>underlyingAnnotationSequence</tt> between a1 and a2, excluding annotations overlapping either.
+     */
+    public static <T extends Annotation> List<T> getAnnotationsBetween(Annotation a1, Annotation a2, JCoReOverlapAnnotationIndex<T> underlyingAnnotationIndex) {
+        List<T> tokensInBetween = Collections.emptyList();
+        List<T> underlyingAnnotationSequence = underlyingAnnotationIndex.getBeginIndex();
+        Annotation firstAnnotation = a1.getBegin() <= a2.getBegin() ? a1 : a2;
+        Annotation secondAnnotation = a1.getBegin() <= a2.getBegin() ? a2 : a1;
+        final Optional<T> firstSequenceAnnotation = underlyingAnnotationIndex.search(firstAnnotation).stream().findFirst();
+        final Optional<T> secondSequenceAnnotation = underlyingAnnotationIndex.search(secondAnnotation).stream().findFirst();
+        if (firstSequenceAnnotation.isPresent() && secondSequenceAnnotation.isPresent()) {
+             int firstSequenceAnnotationIndex = Collections.binarySearch(underlyingAnnotationSequence, firstSequenceAnnotation.get(), Comparator.comparingInt(Annotation::getBegin));
+             int secondSequenceAnnotationIndex = Collections.binarySearch(underlyingAnnotationSequence, secondSequenceAnnotation.get(), Comparator.comparingInt(Annotation::getBegin));
+            if (firstSequenceAnnotationIndex != -1 && secondSequenceAnnotationIndex != -1) {
+                // move the first and second token outside of the spans of the input annotations
+                while(firstSequenceAnnotationIndex < secondSequenceAnnotationIndex && underlyingAnnotationSequence.get(firstSequenceAnnotationIndex).getBegin() < firstAnnotation.getEnd())
+                    ++firstSequenceAnnotationIndex;
+                while(secondSequenceAnnotationIndex > firstSequenceAnnotationIndex && underlyingAnnotationSequence.get(secondSequenceAnnotationIndex).getEnd() > secondAnnotation.getBegin())
+                    --secondSequenceAnnotationIndex;
+                if (firstSequenceAnnotationIndex != secondSequenceAnnotationIndex) {
+                    tokensInBetween = IntStream.rangeClosed(firstSequenceAnnotationIndex, secondSequenceAnnotationIndex).mapToObj(underlyingAnnotationSequence::get).collect(Collectors.toList());
+                }
+            }
+        }
+        return tokensInBetween;
     }
 
 }

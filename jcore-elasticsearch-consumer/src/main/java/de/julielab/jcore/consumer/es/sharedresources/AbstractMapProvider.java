@@ -4,7 +4,6 @@ import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,11 +11,25 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * <p>Base class for resources that map one term to another. Uses a HashMap. The trivial instantiable subclass is {@link MapProvider}.</p>
+ * <p>This class is abstract because it is generic. To work with other data types than strings, the {@link #getKey(String)} and {@link #getValue(String)}
+ * methods are overridden by subclasses to deliver the correct data types from the string input.</p>
+ * <p>Subclasses deal with maps where the keys and/or values are not strings but numbers. Other subclasses deal with
+ * String but use a persistent data structure to deal with very large maps.</p>
+ *
+ * @param <K>
+ * @param <V>
+ */
 public abstract class AbstractMapProvider<K, V> implements IMapProvider<K, V> {
-    private final static Logger log = LoggerFactory.getLogger(AbstractMapProvider.class);
+    protected final Logger log;
     protected boolean reverse = false;
-    private HashMap<K, V> map;
+    protected Map<K, V> map;
+
+    public AbstractMapProvider(Logger log) {
+        this.log = log;
+        map = new HashMap<>();
+    }
 
     @Override
     public void load(DataResource aData) throws ResourceInitializationException {
@@ -29,12 +42,14 @@ public abstract class AbstractMapProvider<K, V> implements IMapProvider<K, V> {
                 throw new IOException("Resource " + aData.getUri() + " not found");
             }
             br = new BufferedReader(is);
-            map = new HashMap<>();
+//            map = new HashMap<>();
             String line;
             String splitExpression = "\t";
+            int numEntries = 0;
             while ((line = br.readLine()) != null) {
                 if (line.trim().length() == 0 || line.startsWith("#"))
                     continue;
+                ++numEntries;
                 String[] split = line.split(splitExpression);
                 if (split.length != 2) {
                     splitExpression = "\\s+";
@@ -44,16 +59,11 @@ public abstract class AbstractMapProvider<K, V> implements IMapProvider<K, V> {
                     throw new IllegalArgumentException("Format error in map file: Expected format is 'originalValue<tab>mappedValue' but the input line '" + line
                             + "' has " + split.length + " columns.");
                 if (reverse)
-                    map.put(getKey(split[1]), getValue(split[0]));
+                    put(getKey(split[1]), getValue(split[0]));
                 else
-                    map.put(getKey(split[0]), getValue(split[1]));
+                    put(getKey(split[0]), getValue(split[1]));
             }
-            log.info("Finished reading resource {}", aData.getUri());
-            log.info("Copying {} values into a fresh HashMap of the exactly correct size", map.size());
-            HashMap<K, V> tmp = new HashMap<>(map.size(), 1f);
-            tmp.putAll(map);
-            map = tmp;
-            log.info("Done.");
+            log.info("Finished reading resource {} and got {} entries.", aData.getUri(), numEntries);
         } catch (IOException e) {
             throw new ResourceInitializationException(e);
         } finally {
@@ -65,6 +75,8 @@ public abstract class AbstractMapProvider<K, V> implements IMapProvider<K, V> {
             }
         }
     }
+
+    protected abstract void put(K key, V value);
 
     protected abstract V getValue(String valueString);
 

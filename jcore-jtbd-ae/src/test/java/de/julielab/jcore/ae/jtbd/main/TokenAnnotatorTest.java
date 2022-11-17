@@ -18,7 +18,6 @@ package de.julielab.jcore.ae.jtbd.main;
 
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
@@ -26,13 +25,15 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
-public class TokenAnnotatorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TokenAnnotatorTest {
 
 	/**
 	 * Logger for this class

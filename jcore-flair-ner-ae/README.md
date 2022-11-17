@@ -12,6 +12,8 @@ The python executable lookup works as follows:
 2. Otherwise, if the environment variable `PYTHON` is set, this value is used.
 3. Otherwise, the `python` command is used.
 
+Tested with flair 0.6.1 and PyTorch 1.7.1.
+
 **1. Parameters**
 
 | Parameter Name | Parameter Type | Mandatory | Multivalued | Description |

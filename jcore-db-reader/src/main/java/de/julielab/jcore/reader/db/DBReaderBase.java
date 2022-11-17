@@ -95,6 +95,8 @@ public abstract class DBReaderBase extends JCasCollectionReader_ImplBase {
         } catch (FileNotFoundException e) {
             throw new ResourceInitializationException(e);
         }
+
+        numberFetchedDocIDs = 0;
     }
 
     private void checkTableExists() throws ResourceInitializationException {

@@ -2,7 +2,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Document Meta Types</name>
   <description>The types of this type system reflect meta data about documents for rather specific use cases.</description>
-  <version>2.5.1-SNAPSHOT</version>
+  <version>2.6.0</version>
         <vendor />
   <types>
     <typeDescription>
@@ -23,6 +23,11 @@
         <featureDescription>
           <name>doNotMarkAsProcessed</name>
           <description>This feature is used by the DBCheckpointAE. It allows components in the pipeline to prevent a document to be marked as being finished with processing. This can be used to indicate issues with specific documents which will require reprocessing.</description>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>isDocumentHashUnchanged</name>
+          <description>To be set by the XML DB reader/multiplier and to be used (among others) by the XMIDBWriter. Used to prohibit that mirror subsets reset to 'not processed' for this document when there was no change in the document text. That allows to update the base document without indicating that a reprocessing is required. This is useful when the document is updated by the distributor (e.g. PubMed) but the text contents have not changed.</description>
           <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
       </features>

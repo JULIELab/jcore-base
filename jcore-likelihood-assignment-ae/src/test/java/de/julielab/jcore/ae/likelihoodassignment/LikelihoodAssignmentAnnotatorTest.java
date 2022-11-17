@@ -1,25 +1,21 @@
 
 package de.julielab.jcore.ae.likelihoodassignment;
 
-import de.julielab.jcore.types.ConceptMention;
-import de.julielab.jcore.types.LikelihoodIndicator;
-import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.*;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
@@ -71,10 +67,7 @@ public class LikelihoodAssignmentAnnotatorTest{
     @Test
     @SuppressWarnings({ "rawtypes"})
     public void testProcess() throws ResourceInitializationException, IOException, InvalidXMLException {
-
-        XMLInputSource assignmentXML = null;
-        ResourceSpecifier assignmentSpec = null;
-        AnalysisEngine assignmentAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR);
+        AnalysisEngine assignmentAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR, LikelihoodAssignmentAnnotator.PARAM_ASSIGNMENT_STRATEGY, LikelihoodAssignmentAnnotator.STRATEGY_ALL);
 
         JCas aJCas = null;
         try {
@@ -118,5 +111,77 @@ public class LikelihoodAssignmentAnnotatorTest{
         }
 
         return conceptLikelihood;
+    }
+
+    @Test
+    public void testAssignNextStrategy() throws Exception {
+        AnalysisEngine assignmentAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR, LikelihoodAssignmentAnnotator.PARAM_ASSIGNMENT_STRATEGY, LikelihoodAssignmentAnnotator.STRATEGY_NEXT_CONCEPT);
+        final JCas jCas = assignmentAnnotator.newJCas();
+        jCas.setDocumentText("Our data suggest that it is highly probable that the interaction occurred, however not the other one.");
+        new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
+
+        LikelihoodIndicator suggest = new LikelihoodIndicator(jCas, 9, 16);
+        suggest.setLikelihood("moderate");
+        suggest.addToIndexes();
+
+        LikelihoodIndicator highly = new LikelihoodIndicator(jCas, 28, 43);
+        highly.setLikelihood("high");
+        highly.addToIndexes();
+
+        ConceptMention interaction = new ConceptMention(jCas, 53, 64);
+        interaction.addToIndexes();
+
+        LikelihoodIndicator not = new LikelihoodIndicator(jCas, 83, 86);
+        not.setLikelihood("negation");
+        not.addToIndexes();
+
+        ConceptMention theOtherOne = new ConceptMention(jCas, 87, 100);
+        theOtherOne.addToIndexes();
+
+        assignmentAnnotator.process(jCas);
+
+        assertEquals(highly, interaction.getLikelihood());
+        assertEquals( not, theOtherOne.getLikelihood());
+    }
+
+    @Test
+    public void testAssignNextStrategySpecificConceptType() throws Exception {
+        // Here we test that the interaction type EventMention gets the likelihood assignment and not
+        // the entity argument because that is also a ConceptMention which gets assigned by default.
+        AnalysisEngine assignmentAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR,
+                LikelihoodAssignmentAnnotator.PARAM_ASSIGNMENT_STRATEGY, LikelihoodAssignmentAnnotator.STRATEGY_NEXT_CONCEPT,
+                LikelihoodAssignmentAnnotator.PARAM_CONCEPT_TYPE_NAME, EventMention.class.getCanonicalName());
+        final JCas jCas = assignmentAnnotator.newJCas();
+        jCas.setDocumentText("Our data suggest one entity interacts with another but there is phosphorylation.");
+        new Sentence(jCas, 0, jCas.getDocumentText().length()).addToIndexes();
+
+        LikelihoodIndicator suggest = new LikelihoodIndicator(jCas, 9, 16);
+        suggest.setLikelihood("moderate");
+        suggest.addToIndexes();
+
+        EntityMention oneEntity = new EntityMention(jCas, 17, 27);
+        oneEntity.addToIndexes();
+
+        EventMention interacts = new EventMention(jCas, 28, 37);
+        interacts.addToIndexes();
+        // this is here to test that the assignment to same-offset annotations works
+        EventMention interacts2 = new EventMention(jCas, 28, 37);
+        interacts2.addToIndexes();
+
+        EntityMention another = new EntityMention(jCas, 43, 50);
+        another.addToIndexes();
+
+        EventMention phosphorylation = new EventMention(jCas, 64, 79);
+        phosphorylation.addToIndexes();
+
+        assignmentAnnotator.process(jCas);
+
+        // only the EventMentions should be assigned likelihoods.
+        assertEquals(null, oneEntity.getLikelihood());
+        assertEquals( suggest, interacts.getLikelihood());
+        assertEquals( suggest, interacts2.getLikelihood());
+        assertEquals(null, another.getLikelihood());
+        // due to the next-concept strategy, this mention should receive the default assertion likelihood
+        assertEquals("assertion", phosphorylation.getLikelihood().getLikelihood());
     }
 }

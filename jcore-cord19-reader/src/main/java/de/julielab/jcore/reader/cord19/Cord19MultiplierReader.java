@@ -73,7 +73,11 @@ public class Cord19MultiplierReader extends JCasCollectionReader_ImplBase {
                     Path p = currentFileBatch.get(currentBatchIndex);
                     if (p != Cord19FileVisitor.END) {
                         JCoReURI uri = new JCoReURI(jCas);
-                        uri.setUri(p.toUri().toString());
+                        try {
+                            uri.setUri(p.toUri().toString());
+                        } catch (NullPointerException e) {
+                            log.error("Could not retrieve URI string for path {}, resolved URI {}", p, p!= null ? p.toUri() : "<path is null>");
+                        }
                         uri.addToIndexes();
                         ++completed;
                     }

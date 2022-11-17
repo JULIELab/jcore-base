@@ -12,37 +12,36 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 
 import static de.julielab.jcore.reader.db.TableReaderConstants.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-
+@Testcontainers
 public class DBReaderTest {
-    @ClassRule
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    @Container
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws SQLException {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         dbc.reserveConnection();
         DBTestUtils.setupDatabase("src/test/resources/pubmedsample18n0001.xml.gz", "medline_2017", 20, postgres);
-        dbc.close();
     }
 
     @Test
     public void testDBReader() throws UIMAException, IOException, ConfigurationException {
-        String costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
+        String costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 2, postgres);
         CollectionReader reader = CollectionReaderFactory.createReader(DBReaderTestImpl.class,
                 PARAM_BATCH_SIZE, 5,
                 PARAM_TABLE, "testsubset",
@@ -72,7 +71,9 @@ public class DBReaderTest {
         int docCount = 0;
         JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
                 "de.julielab.jcore.types.jcore-document-structure-types");
+        int i = 0;
         while (reader.hasNext()) {
+            System.out.println(++i);
             reader.getNext(jCas.getCas());
             assertNotNull(JCoReTools.getDocId(jCas));
             ++docCount;
@@ -94,7 +95,7 @@ public class DBReaderTest {
             byte[][] artifactData = getNextArtifactData();
 
             log.trace("Getting next document from database");
-            XMLMapper xmlMapper = new XMLMapper(new FileInputStream(new File("src/test/resources/medline2016MappingFile.xml")));
+            XMLMapper xmlMapper = new XMLMapper(new FileInputStream("src/test/resources/medline2016MappingFile.xml"));
             xmlMapper.parse(artifactData[1], artifactData[0], jCas);
         }
     }

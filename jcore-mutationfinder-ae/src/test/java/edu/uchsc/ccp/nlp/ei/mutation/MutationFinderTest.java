@@ -1,24 +1,27 @@
 package edu.uchsc.ccp.nlp.ei.mutation;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /*
  * Copyright (c) 2007 Regents of the University of Colorado
  * Please refer to the licensing agreement at MUTATIONFINDER_HOME/doc/license.txt
  */
 
-public class MutationFinderTest extends TestCase {
+public class MutationFinderTest  {
 
-    private List<String> regularExpressions;
+    private static List<String> regularExpressions;
 
-    private MutationFinder mf;
+    private static MutationFinder mf;
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeAll
+    protected static void setUp() {
         /* The first four default regular expressions */
         regularExpressions = new ArrayList<String>();
         regularExpressions
@@ -32,8 +35,6 @@ public class MutationFinderTest extends TestCase {
                 .add("(^|[\\s\\(\\[\\'\"/,\\-])(?P<wt_res>(CYS|ILE|SER|GLN|MET|ASN|PRO|LYS|ASP|THR|PHE|ALA|GLY|HIS|LEU|ARG|TRP|VAL|GLU|TYR)|(GLUTAMINE|GLUTAMIC ACID|LEUCINE|VALINE|ISOLEUCINE|LYSINE|ALANINE|GLYCINE|ASPARTATE|METHIONINE|THREONINE|HISTIDINE|ASPARTIC ACID|ARGININE|ASPARAGINE|TRYPTOPHAN|PROLINE|PHENYLALANINE|CYSTEINE|SERINE|GLUTAMATE|TYROSINE))(?P<pos>[1-9][0-9]*) to (?P<mut_res>(CYS|ILE|SER|GLN|MET|ASN|PRO|LYS|ASP|THR|PHE|ALA|GLY|HIS|LEU|ARG|TRP|VAL|GLU|TYR)|(GLUTAMINE|GLUTAMIC ACID|LEUCINE|VALINE|ISOLEUCINE|LYSINE|ALANINE|GLYCINE|ASPARTATE|METHIONINE|THREONINE|HISTIDINE|ASPARTIC ACID|ARGININE|ASPARAGINE|TRYPTOPHAN|PROLINE|PHENYLALANINE|CYSTEINE|SERINE|GLUTAMATE|TYROSINE))(?=([.,\\s)\\]\\'\":;\\-?!/]|$))");
 
         mf = new MutationFinder(new HashSet<String>(regularExpressions));
-
-        super.setUp();
     }
 
     /**
@@ -41,6 +42,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testConstructor() throws Exception {
         mf = new MutationFinder(new HashSet<String>());
         mf = new MutationFinder(new HashSet<String>(regularExpressions));
@@ -62,6 +64,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testExtractMappingsFromPythonRegex() throws Exception {
         Map<String, Integer> groupMappings = MutationFinder.extractMappingsFromPythonRegex(regularExpressions.get(0));
         assertEquals(new Integer(2), groupMappings.get(MutationFinder.WT_RES));
@@ -80,6 +83,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testRemoveTagsFromPythonRegex() throws Exception {
         String regex0WithoutTags = "(^|[\\s\\(\\[\\'\"/,\\-])([CISQMNPKDTFAGHLRWVEY])([1-9][0-9]+)([CISQMNPKDTFAGHLRWVEY])(?=([.,\\s)\\]\\'\":;\\-?!/]|$))[CASE_SENSITIVE]";
         assertEquals(regex0WithoutTags, MutationFinder.removeTagsFromPythonRegex(regularExpressions.get(0)));
@@ -95,6 +99,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testExtractionNoMutations() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("");
         assertEquals(0, mutations.size());
@@ -117,6 +122,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testExtractSingleMutation() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("S42T");
         Set<Mutation> expectedPMs = new HashSet<Mutation>();
@@ -141,6 +147,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testExtractMultipleMutations() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("S42T and W36Y");
         Set<Mutation> expectedPMs = new HashSet<Mutation>();
@@ -173,6 +180,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testExtractMultipleMutationsWithPositiveLookahead() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("S42T W36Y");
         Set<Mutation> expectedPMs = new HashSet<Mutation>();
@@ -191,6 +199,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testExtractionSpanCalculations() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("S42T and W36Y");
         Mutation expectedPM = new PointMutation(42, "S", "T");
@@ -248,6 +257,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testExtractionOfVariousFormats() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("The A42G mutation was made.");
         Mutation expectedPM = new PointMutation(42, "A", "G");
@@ -296,6 +306,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testRegexCaseInsensitiveFlag() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("a64t");
         assertEquals(0, mutations.size());
@@ -323,6 +334,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testCaseInsensitiveCases() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("ala64gly");
         assertEquals(1, mutations.size());
@@ -346,6 +358,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testPostProcessing() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("A64G");
         assertEquals(1, mutations.size());
@@ -366,6 +379,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testVariedDigitLength() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("ala64gly");
         assertEquals(1, mutations.size());
@@ -388,6 +402,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testUnacceptableGeneralWordBoundaries() throws Exception {
         String startCharacters = "abcdefghijklmnopqrstuvwxyz0123456789~@#$%^&*_+=])";
         String endCharacters = "abcdefghijklmnopqrstuvwxyz0123456789~@#$%^&*_+=(['";
@@ -408,6 +423,7 @@ public class MutationFinderTest extends TestCase {
          * 
          * @throws Exception
          */
+     @Test
     public void testAcceptableGeneralWordBoundaries() throws Exception {
         char[] endCharacters = { '.', ',', ' ', '\t', '\n', ')', ']', '"', '\'', ':', ';', '?', '!', '/', '-' };
         char[] startCharacters = { ' ', '\t', '\n', '"', '\'', '(', '[', '/', ',', '-' };
@@ -429,6 +445,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testMixOneAndThreeLetterStrings() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("A64Gly");
         assertEquals(0, mutations.size());
@@ -442,6 +459,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testFullNameMethods() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("alanine64-->Gly");
         assertEquals(1, mutations.size());
@@ -455,6 +473,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testOneLetterAbbreviationFailsNon_wNmFormat() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("A64-->glycine");
         assertEquals(0, mutations.size());
@@ -471,6 +490,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testTextBasedMatches() throws Exception {
         String[] mutationTexts = { "Ala64 to Gly", "Alanine64 to Glycine", "Ala64 to Glycine", "alanine64 to Gly",
                 "The Ala64 to Gly substitution", "The Ala64 to glycine substitution", "The Ala64 to Gly substitution" };
@@ -490,6 +510,7 @@ public class MutationFinderTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testTextMatchSpacing() throws Exception {
         Map<Mutation, Set<int[]>> mutations = mf.extractMutations("TheAla40toGlymutation");
         assertEquals(0, mutations.size());

@@ -64,6 +64,8 @@ public class RawToken implements IToken, IFieldValue {
 				out.value((String) tokenValue);
 			else if (tokenValue instanceof Number)
 				out.value((Number) tokenValue);
+			else if (tokenValue instanceof Boolean)
+				out.value((boolean) tokenValue);
 			else if (tokenValue == null)
 				out.nullValue();
 			else

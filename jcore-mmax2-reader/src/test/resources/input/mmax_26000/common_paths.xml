@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE common_paths>
+<common_paths>
+<basedata_path>Basedata/</basedata_path>
+<markable_path>Markables/</markable_path>
+<scheme_path>Schemes/</scheme_path>
+<style_path>Styles/</style_path>
+<customization_path>Customizations/</customization_path>
+<views><stylesheet>default_style.xsl</stylesheet>
+</views>
+<annotations>
+<level name="proteins" schemefile="proteins.xml" customization_file="proteins.xml">proteins.xml</level>
+<level name="sentence" schemefile="sentence.xml" customization_file="sentence.xml" at_startup="visible">sentence.xml</level>
+</annotations>
+<user_switches>
+</user_switches>
+</common_paths>

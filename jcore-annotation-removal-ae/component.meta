@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "ae"
+    ],
+    "description": "Removes annotations from the CAS that belong to one of the types specified as a parameter value in the descriptor.",
+    "descriptors": [
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.annotationremoval.desc.jcore-annotation-removal-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-annotation-removal-ae",
+        "groupId": "de.julielab",
+        "version": "2.6.0"
+    },
+    "name": "JCoRe Annotation Removal AE"
+}

@@ -6,24 +6,37 @@ import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <p>Base class for addon terms (i.e. terms to be added to some key term, like synonyms or hypernyms) that uses a HashMap.</p>
+ * <p>Subclasses of this class use other data structures to store and retrieve the addon terms. Useful for large numbers of such terms.</p>
+ */
 public class AddonTermsProvider implements IAddonTermsProvider {
-    Logger log = LoggerFactory.getLogger(AddonTermsProvider.class);
+    protected final Logger log;
 
-    private Map<String, String[]> addonTerms;
+    protected Map<String, String[]> addonTerms;
+
+    public AddonTermsProvider(Logger log) {
+        this.log = log;
+        addonTerms = new HashMap<>();
+    }
+
+    protected void put(String term, String[] addonArray) {
+        addonTerms.put(term, addonArray);
+    }
 
     @Override
     public void load(DataResource aData) throws ResourceInitializationException {
         try {
-            addonTerms = new HashMap<>();
-            log.info("Loading addon terms from " + aData.getUri());
+            URI uri = aData.getUri();
+            log.info("Loading addon terms from " + uri);
             int addons = 0;
             InputStream inputStream;
             try {
@@ -56,7 +69,7 @@ public class AddonTermsProvider implements IAddonTermsProvider {
                     addonArray[i] = trimmedAddon.intern();
                     addons++;
                 }
-                addonTerms.put(term, addonArray);
+                put(term, addonArray);
             }
             log.info("Loaded {} addons for {} terms.", addons, addonTerms.size());
         } catch (IOException e) {

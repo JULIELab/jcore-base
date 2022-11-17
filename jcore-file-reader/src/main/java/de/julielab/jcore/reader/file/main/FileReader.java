@@ -20,12 +20,10 @@ package de.julielab.jcore.reader.file.main;
 import de.julielab.java.utilities.FileUtilities;
 import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.types.Date;
-import de.julielab.jcore.types.Sentence;
-import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.analysis_engine.annotator.AnnotatorConfigurationException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -33,15 +31,20 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class FileReader extends CollectionReader_ImplBase {
-
     /**
      *
      */
@@ -82,7 +85,9 @@ public class FileReader extends CollectionReader_ImplBase {
      *
      */
     public static final String ORIG_FILES_EXT = "OriginalFileExt";
-
+    public static final String TITLE_ABSTRACT_SPLIT = "MakeTitleAbstractSplit";
+    public static final String REMOVE_FILE_NAME_EXTENSION_FOR_DOC_ID = "RemoveFileNameExtensionForDocId";
+    private final static Logger log = LoggerFactory.getLogger(FileReader.class);
     private ArrayList<File> files;
 
     private int fileIndex;
@@ -107,6 +112,10 @@ public class FileReader extends CollectionReader_ImplBase {
     private File origFolder;
     @ConfigurationParameter(name = ORIG_FILES_EXT, mandatory = false)
     private String origFileExt;
+    @ConfigurationParameter(name = REMOVE_FILE_NAME_EXTENSION_FOR_DOC_ID, mandatory = false, defaultValue = "true")
+    private boolean removeFileNameExtensionForDocId;
+    @ConfigurationParameter(name = TITLE_ABSTRACT_SPLIT, mandatory = false, defaultValue = "false", description = "Use the first input line as the title with a Title annotation and mark the rest with the AbstractText annotation. Defaults to false.")
+    private boolean titleAbstractSplit;
 
     /**
      * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -146,6 +155,7 @@ public class FileReader extends CollectionReader_ImplBase {
         } else {
             useFilenameAsDocId = filenameAsDocId;
         }
+        removeFileNameExtensionForDocId = Optional.ofNullable((Boolean) getConfigParameterValue(REMOVE_FILE_NAME_EXTENSION_FOR_DOC_ID)).orElse(true);
 
         allowedExtensionsArray = (String[]) getConfigParameterValue(ALLOWED_FILE_EXTENSIONS);
         final Set<String> allowedExtensions = new HashSet<>();
@@ -183,6 +193,8 @@ public class FileReader extends CollectionReader_ImplBase {
         if (!inputDirectory.exists())
             throw new ResourceInitializationException(AnnotatorConfigurationException.RESOURCE_NOT_FOUND, new Object[]{inputDirectory.getAbsolutePath()});
 
+        titleAbstractSplit = (boolean) Optional.ofNullable(getConfigParameterValue(TITLE_ABSTRACT_SPLIT)).orElse(false);
+
         fileIndex = 0;
         files = new ArrayList<File>();
 
@@ -205,138 +217,159 @@ public class FileReader extends CollectionReader_ImplBase {
      * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
      */
     @Override
-    public void getNext(CAS aCAS) throws IOException, CollectionException {
-        JCas jcas;
+    public void getNext(CAS aCAS) throws CollectionException {
+        log.trace("Reading next file, if present");
+        File file = null;
         try {
-            jcas = aCAS.getJCas();
-        } catch (CASException e) {
-            throw new CollectionException(e);
-        }
+            JCas jcas = aCAS.getJCas();
 
-        // open input stream to file
-        File file = files.get(fileIndex++);
+            // open input stream to file
+            file = files.get(fileIndex++);
+            log.trace("Got next file: {}", file);
 
-        String text = IOStreamUtilities.getStringFromInputStream(FileUtilities.getInputStreamFromFile(file));
+            String text = IOStreamUtilities.getStringFromInputStream(FileUtilities.getInputStreamFromFile(file));
 
-        Pattern nws = Pattern.compile("[^\\s]+", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
+            Pattern nws = Pattern.compile("[^\\s]+", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
 
-        String origText = null;
-        if (origFolder != null) {
-            File origFile = new File(origFolder, getFileName(file) + "." + origFileExt);
-            origText = IOStreamUtilities.getStringFromInputStream(FileUtilities.getInputStreamFromFile(origFile));
-        }
-
-        // sentence per line mode
-        if (sentencePerLine) {
-            BufferedReader rdr = new BufferedReader(new StringReader(text));
-            List<String> lines = new ArrayList<String>();
-            List<Integer> start = new ArrayList<Integer>();
-            List<Integer> end = new ArrayList<Integer>();
-            Integer tmp = 0;
-            String line;
-            while ((line = rdr.readLine()) != null) {
-                if (!Pattern.matches("\\s*", line)) {
-                    lines.add(line);
-                    start.add(tmp);
-                    end.add(tmp + line.length());
-                }
-                tmp += (line.length() + 1);
+            String origText = null;
+            if (origFolder != null) {
+                File origFile = new File(origFolder, getFileName(file, true) + "." + origFileExt);
+                origText = IOStreamUtilities.getStringFromInputStream(FileUtilities.getInputStreamFromFile(origFile));
             }
-            rdr.close();
 
-            int index_tmp = 0;
-            Optional<String> newLine;
-            for (Integer i = 0; i < lines.size(); i++) {
-                boolean addSent2index = true;
-                Sentence sent = new Sentence(jcas);
-                if (origText != null) {
-                    newLine = Stream
-                            .of(lines.get(i).split("\\s+"))
-                            .map(x -> Pattern.quote(x))
-                            .reduce((x, y) -> x + "\\s*" + y);
-                    Pattern p = Pattern.compile(newLine.get(), Pattern.UNICODE_CHARACTER_CLASS);
-                    Matcher m = p.matcher(origText);
-                    if (m.find(index_tmp)) {
-                        int newStart = m.start();
-                        int newEnd = m.end();
-                        index_tmp = m.end() + 1;
-                        sent.setBegin(newStart);
-                        sent.setEnd(newEnd);
-                    } else {
-                        addSent2index = false;
+            // sentence per line mode
+            if (sentencePerLine) {
+                log.trace("Reading input file as one sentence per line.");
+                BufferedReader rdr = new BufferedReader(new StringReader(text));
+                List<String> lines = new ArrayList<String>();
+                List<Integer> start = new ArrayList<Integer>();
+                List<Integer> end = new ArrayList<Integer>();
+                Integer tmp = 0;
+                String line;
+                while ((line = rdr.readLine()) != null) {
+                    if (!Pattern.matches("\\s*", line)) {
+                        lines.add(line);
+                        start.add(tmp);
+                        end.add(tmp + line.length());
                     }
-                } else {
-                    sent.setBegin(start.get(i));
-                    sent.setEnd(end.get(i));
+                    tmp += (line.length() + 1);
                 }
-                sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
-                if (addSent2index) {
-                    sent.addToIndexes();
-                }
-            }
-        }
-        //token by token mode
-        if (tokenByToken) {
-            List<String> tokensList = new ArrayList<>();
-            List<Integer> tokStart = new ArrayList<>();
-            List<Integer> tokEnd = new ArrayList<>();
+                rdr.close();
 
-
-            Integer numberOfTokens = 0;
-            Matcher m = nws.matcher(text);
-            while (m.find()) {
-                String token = m.group();
-                int start = m.start();
-                int end = m.end();
-                tokensList.add(token);
-                tokStart.add(start);
-                tokEnd.add(end);
-                numberOfTokens++;
-            }
-
-
-            int index_tmp = 0;
-            for (Integer j = 0; j < tokensList.size(); j++) {
-                boolean addToken2index = true;
-                Token token = new Token(jcas);
-                if (origText != null) {
-                    String tok = tokensList.get(j);
-                    int newStart = origText.indexOf(tok, index_tmp);
-                    int newEnd = newStart + tok.length();
-                    index_tmp = newEnd;
-                    token.setBegin(newStart);
-                    token.setEnd(newEnd);
-                } else {
-                    token.setBegin(tokStart.get(j));
-                    token.setEnd(tokEnd.get(j));
-                }
-                token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
-                if (addToken2index) {
-                    token.addToIndexes();
+                int index_tmp = 0;
+                Optional<String> newLine;
+                for (Integer i = 0; i < lines.size(); i++) {
+                    boolean addSent2index = true;
+                    Sentence sent = new Sentence(jcas);
+                    if (origText != null) {
+                        newLine = Stream
+                                .of(lines.get(i).split("\\s+"))
+                                .map(x -> Pattern.quote(x))
+                                .reduce((x, y) -> x + "\\s*" + y);
+                        Pattern p = Pattern.compile(newLine.get(), Pattern.UNICODE_CHARACTER_CLASS);
+                        Matcher m = p.matcher(origText);
+                        if (m.find(index_tmp)) {
+                            int newStart = m.start();
+                            int newEnd = m.end();
+                            index_tmp = m.end() + 1;
+                            sent.setBegin(newStart);
+                            sent.setEnd(newEnd);
+                        } else {
+                            addSent2index = false;
+                        }
+                    } else {
+                        sent.setBegin(start.get(i));
+                        sent.setEnd(end.get(i));
+                    }
+                    sent.setComponentId(this.getClass().getName() + " : Sentence per Line Mode");
+                    if (addSent2index) {
+                        sent.addToIndexes();
+                    }
                 }
             }
-        }
+            //token by token mode
+            if (tokenByToken) {
+                log.trace("Reading input file as tokenized text with whitespace as token separator.");
+                List<String> tokensList = new ArrayList<>();
+                List<Integer> tokStart = new ArrayList<>();
+                List<Integer> tokEnd = new ArrayList<>();
 
-        // put document in CAS
-        if (origText != null) {
-            jcas.setDocumentText(origText);
-        } else {
-            jcas.setDocumentText(text);
-        }
 
-        if (useFilenameAsDocId) {
+                Integer numberOfTokens = 0;
+                Matcher m = nws.matcher(text);
+                while (m.find()) {
+                    String token = m.group();
+                    int start = m.start();
+                    int end = m.end();
+                    tokensList.add(token);
+                    tokStart.add(start);
+                    tokEnd.add(end);
+                    numberOfTokens++;
+                }
 
-            String filename = getFileName(file);
 
-            Header header = new Header(jcas);
+                int index_tmp = 0;
+                for (Integer j = 0; j < tokensList.size(); j++) {
+                    boolean addToken2index = true;
+                    Token token = new Token(jcas);
+                    if (origText != null) {
+                        String tok = tokensList.get(j);
+                        int newStart = origText.indexOf(tok, index_tmp);
+                        int newEnd = newStart + tok.length();
+                        index_tmp = newEnd;
+                        token.setBegin(newStart);
+                        token.setEnd(newEnd);
+                    } else {
+                        token.setBegin(tokStart.get(j));
+                        token.setEnd(tokEnd.get(j));
+                    }
+                    token.setComponentId(this.getClass().getName() + " : Tokenized Mode");
+                    if (addToken2index) {
+                        token.addToIndexes();
+                    }
+                }
+            }
 
-            // set ID
-            header.setDocId(filename);
+            // put document in CAS
+            if (origText != null) {
+                jcas.setDocumentText(origText);
+            } else {
+                jcas.setDocumentText(text);
+            }
 
-            // set publication date
-            addDateForID(header, jcas, filename);
+            if (titleAbstractSplit) {
+                String docText = jcas.getDocumentText();
+                final int firstNewlineIndex = docText.indexOf("\n");
+                if (firstNewlineIndex > 0) {
+                    final Title title = new Title(jcas, 0, firstNewlineIndex);
+                    title.setTitleType("document");
+                    title.setComponentId(getClass().getCanonicalName());
+                    title.addToIndexes();
+                }
+                if (firstNewlineIndex + 1 < docText.length()) {
+                    final AbstractText abstractText = new AbstractText(jcas, firstNewlineIndex + 1, docText.length());
+                    abstractText.setComponentId(getClass().getCanonicalName());
+                    abstractText.addToIndexes();
+                }
+            }
 
-            header.addToIndexes();
+            if (useFilenameAsDocId) {
+                String filename = getFileName(file, removeFileNameExtensionForDocId);
+                log.trace("Setting the file name {} as docId to a new Header annotation.", filename);
+
+                Header header = new Header(jcas);
+
+                // set ID
+                header.setDocId(filename);
+
+                // set publication date
+                addDateForID(header, jcas, filename);
+
+                header.addToIndexes();
+            }
+        } catch (Throwable t) {
+            log.error("Could not read file {}", file, t);
+            throw new CollectionException(t);
         }
     }
 
@@ -404,33 +437,25 @@ public class FileReader extends CollectionReader_ImplBase {
         return new Progress[]{new ProgressImpl(fileIndex, files.size(), Progress.ENTITIES)};
     }
 
-    private String[] createFileListByType(File inputDirectory, final Set<String> allowedExtensions) throws IOException {
-        String[] path = new File(inputDirectory.getPath()).list();
-
-        for (int i = 0; i < path.length; i++) {
-            File file = new File(inputDirectory.getAbsolutePath() + "/" + path[i]);
-
-            if (!useSubDirs && file.isDirectory())
-                continue;
-
-            String CurrentExtension = path[i].substring(path[i].lastIndexOf('.') + 1);
-            if (allowedExtensions.isEmpty() || allowedExtensions.contains(CurrentExtension)) {
-                files.add(file);
-            }
-
-            if (useSubDirs && file.isDirectory()) {
-                createFileListByType(file, allowedExtensions);
-            }
-        }
-
-        return path;
+    private void createFileListByType(File inputDirectory, final Set<String> allowedExtensions) throws IOException {
+        Files.walk(inputDirectory.toPath(), useSubDirs ? Integer.MAX_VALUE : 1, FileVisitOption.FOLLOW_LINKS)
+                .filter(p -> {
+                    if (allowedExtensions.isEmpty()) return true;
+                    for (String ext : allowedExtensions) if (p.toString().endsWith(ext)) return true;
+                    return false;
+                })
+                .map(Path::toFile)
+                .filter(File::isFile)
+                .forEach(files::add);
     }
 
-    private String getFileName(File fi) {
+    private String getFileName(File fi, boolean removeExtension) {
         String filename = fi.getName();
-        int extDotIndex = filename.lastIndexOf('.');
-        if (extDotIndex > 0) {
-            filename = filename.substring(0, extDotIndex);
+        if (removeExtension) {
+            int extDotIndex = filename.lastIndexOf('.');
+            if (extDotIndex > 0) {
+                filename = filename.substring(0, extDotIndex);
+            }
         }
         if (fileNameSplitUnderscore) {
             int extUnderScoreIndex = filename.lastIndexOf('_');

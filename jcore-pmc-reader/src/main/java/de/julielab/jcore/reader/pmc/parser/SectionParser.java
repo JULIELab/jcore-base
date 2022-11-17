@@ -66,15 +66,17 @@ public class SectionParser extends DefaultElementParser {
 				if (!secTitleAnnotations.isEmpty())
 					sectionHeading = secTitleAnnotations.get(0);
 				Section section = (Section) parsingResult.getAnnotation();
-				section.setComponentId(PMCReader.class.getName());
-				section.setSectionHeading(sectionHeading);
-				section.setDepth(depth);
-				section.setSectionId(sectionId);
-				List<ParsingResult> label = parsingResult.getSubResults("label");
-				if (!label.isEmpty()) {
-					// there is only one label element
-					ElementParsingResult labelParsingResult = (ElementParsingResult) label.get(0);
-					section.setLabel(labelParsingResult.getResultText());
+				if (section != null) {
+					section.setComponentId(PMCReader.class.getName());
+					section.setSectionHeading(sectionHeading);
+					section.setDepth(depth);
+					section.setSectionId(sectionId);
+					List<ParsingResult> label = parsingResult.getSubResults("label");
+					if (!label.isEmpty()) {
+						// there is only one label element
+						ElementParsingResult labelParsingResult = (ElementParsingResult) label.get(0);
+						section.setLabel(labelParsingResult.getResultText());
+					}
 				}
 			}
 		} catch (NavException e) {

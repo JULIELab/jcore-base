@@ -43,31 +43,37 @@ public class LemmaPOS extends Pipe {
     public void setLemmatiser(Lemmatiser lemmatiser) {
         initResourcesMap();
         getResources().lemmatiser = lemmatiser;
+        System.out.println("Setting lemmatiser to " + Thread.currentThread() + " in object " + this);
     }
 
     public void setPosTagger(Tagger posTagger) {
         initResourcesMap();
         getResources().posTagger = posTagger;
+        System.out.println("Setting PoS Tagger to " + Thread.currentThread() + " in object " + this);
     }
 
-    private void initResourcesMap() {
+    synchronized private void initResourcesMap() {
         if (resourcesByThread == null)
             resourcesByThread = new HashMap<>();
     }
 
     private Resources getResources() {
-        return resourcesByThread.compute(Thread.currentThread(), (t, r) -> {
-            Resources ret = r;
-            if (ret == null)
-                ret = new Resources();
-            return ret;
-        });
+        Thread currentThread = Thread.currentThread();
+        Resources resources = resourcesByThread.get(currentThread);
+        if (resources == null) {
+            resources = new Resources();
+            synchronized (resourcesByThread) {
+//                System.out.println("Creating resources for thread " + currentThread);
+                resourcesByThread.put(currentThread, resources);
+            }
+        }
+        return resources;
     }
 
     @Override
     public Instance pipe(Instance carrier) {
         if (expectLemmatiser != (getResources().lemmatiser != null))
-            throw new IllegalStateException("Model was trained with lemmatiser; not present in current config");
+            throw new IllegalStateException("Model was trained with lemmatiser; not present in current config; resource map: " + resourcesByThread + ", current thread: " + Thread.currentThread());
         if (expectPOSTagger != (getResources().posTagger != null))
             throw new IllegalStateException("Model was trained with POS tagger; not present in current config");
         // TODO Add prefix ability
@@ -112,5 +118,14 @@ public class LemmaPOS extends Pipe {
     private class Resources {
         public Lemmatiser lemmatiser;
         public Tagger posTagger;
+
+        @Override
+        public String toString() {
+            return "Resources{" +
+                    "lemmatiser=" + lemmatiser +
+                    ", posTagger=" + posTagger +
+                    ", idHashCode= " + System.identityHashCode(this) +
+                    '}';
+        }
     }
 }

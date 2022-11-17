@@ -24,15 +24,15 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test for class {@link CasToXmiConsumer}
@@ -91,7 +91,7 @@ public class CasToXmiConsumerTest {
 	 * Delete all files ending with "xmi" or "xmi.gzip" in the output directory, 
 	 * and do the same for all subdirectories of outputDir, recursively
 	 */
-	@Before	
+	@BeforeEach
 	public void clearDirectory() {
 		File outputDir = new File(OUTPUT_FOLDER_XMI);
 		removeXmiGzipAndZipFiles(outputDir);
@@ -121,7 +121,7 @@ public class CasToXmiConsumerTest {
 	/**
 	 * Create the CasConsumer under test
 	 */
-	@Before	
+	@BeforeEach
 	public void createConsumer() {
 //		XMLInputSource source;
 		try {

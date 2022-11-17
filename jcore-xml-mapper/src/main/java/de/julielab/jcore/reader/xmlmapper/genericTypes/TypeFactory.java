@@ -65,11 +65,11 @@ public class TypeFactory {
 	/**
 	 * creates a new instance of the TypeFactory
 	 * 
-	 * @param mappingFile
+	 * @param mappingFileData The mapping file contents.
 	 */
 	public TypeFactory(byte[] mappingFileData) {
 		this.mappingFileData = mappingFileData;
-		types = new ArrayList<TypeTemplate>();
+		types = new ArrayList<>();
 		this.documentTextParser = new DocumentTextHandler();
 	}
 
@@ -132,7 +132,7 @@ public class TypeFactory {
 					}
 				} else {
 					if (!nodeName.equals(ROOT)) {
-						LOGGER.warn("unknown tag in mapping file: " + nodeName + "!!");
+						LOGGER.warn("unknown tag in mapping file (note that element names are case sensitive): " + nodeName);
 					}
 				}
 			}
@@ -156,7 +156,8 @@ public class TypeFactory {
 							id = Integer.parseInt(next.getValue());
 							documentTextParser.addPartOfDocumentTextXPath(id);
 						}
-					} else {
+					}
+					else {
 						LOGGER.error("no id for " + PART_OF_DOCUMENT_TEXT);
 						throw new RuntimeException();
 					}
@@ -172,7 +173,7 @@ public class TypeFactory {
 					if (xpath.length() > 0 && id >= 0) {
 						documentTextParser.setXPathForPartOfDocumentText(id, xpath);
 					} else {
-						LOGGER.error("Unkown data in " + DOCUMENT_TEXT + "/" + VALUE_X_PATH + " tag ");
+						LOGGER.error("Unknown data in " + DOCUMENT_TEXT + "/" + VALUE_X_PATH + " tag ");
 					}
 				} else if (nodeName.equals(EXTERNAL_PARSER)){
 					event = reader.nextEvent();
@@ -183,7 +184,7 @@ public class TypeFactory {
 					if (externalParserClassName.length() > 0 && id >= 0) {
 						documentTextParser.setExternalParserForPartOfDocument(id, externalParserClassName);
 					} else {
-						LOGGER.error("Unkown data in " + DOCUMENT_TEXT + "/" + VALUE_X_PATH + " tag ");
+						LOGGER.error("Unknown data in " + DOCUMENT_TEXT + "/" + VALUE_X_PATH + " tag ");
 					}
 				}
 				else {
@@ -242,15 +243,11 @@ public class TypeFactory {
 						type.addAdditionalData(event.asCharacters().getData().trim(), index);
 					}
 				} else {
-					LOGGER.warn("unknown tag in mapping file: " + nodeName + "!!");
+					LOGGER.warn("unknown tag in mapping file (note that element names are case sensitive): " + nodeName);
 				}
 			}
 			event = reader.nextEvent();
 		}
-		// reflection type anlegen
-		// iteration über alle features
-		// if(feature.type==null)
-		// über getter bestimmen
 		return type;
 	}
 
@@ -273,7 +270,7 @@ public class TypeFactory {
 							}
 						}
 					} else {
-						LOGGER.error("Unknown element in mapping file: " + nodeName);
+						LOGGER.error("Unknown element in mapping file (note that element names are case sensitive): " + nodeName);
 					}
 				}
 			}
@@ -315,7 +312,7 @@ public class TypeFactory {
 					FeatureTemplate newFeature = parseFeature(reader);
 					feature.addFeature(newFeature);
 				} else {
-					LOGGER.warn("unknown tag in mapping file: " + nodeName + "!!");
+					LOGGER.warn("unknown tag in mapping file (note that element names are case sensitive): " + nodeName);
 				}
 			}
 			event = reader.nextEvent();

@@ -499,8 +499,8 @@ public abstract class AbstractFieldGenerator {
 	 * featurePaths and reset once per featurePath.
 	 * 
 	 * @param a
-	 * @param featurePath
-	 * @param f
+	 * @param featurePaths
+	 * @param filters
 	 * @return
 	 * @throws CASException
 	 */
@@ -730,10 +730,12 @@ public abstract class AbstractFieldGenerator {
 
 	/**
 	 * Applies the
-	 * {@link #createRawFieldValueForAnnotation(FeatureStructure, String[], Filter[])
+	 * {@link #createRawFieldValueForAnnotation(FeatureStructure, String[], Filter[])}
 	 * method to all feature structures in <tt>fss</tt>. Thus, the feature paths and
 	 * filters are expected to be <em>parallel</em>: Each feature path has its own
-	 * filter. If the filters array is shorter than the feature paths array, the
+	 * filter. But: The feature paths and filters are applied to all feature structures.
+	 * See {@link #createRawFieldValueForParallelAnnotations(FeatureStructure[], String[], Filter[], Filter)} to apply the ith feature path to the ith feature structure.
+	 * If the filters array is shorter than the feature paths array, the
 	 * missing filters will be treated as if they were null. Finally, after all
 	 * values have been created in this way, if the <tt>overallFilter</tt> is not
 	 * null, it will be applied to all resulting values. It will be reset once
@@ -753,6 +755,46 @@ public abstract class AbstractFieldGenerator {
 			FeatureStructure annotation = fss[i];
 			ArrayFieldValue fieldValueForAnnotation = createRawFieldValueForAnnotation(annotation, featurePaths,
 					filters);
+			arrayFieldValue.addFlattened(fieldValueForAnnotation);
+		}
+		if (null != overallFilter) {
+			overallFilter.reset();
+			ArrayFieldValue filteredArrayFieldValue = new ArrayFieldValue();
+			for (IFieldValue fieldValue : arrayFieldValue) {
+				RawToken token = (RawToken) fieldValue;
+				String tokenString = String.valueOf(token.token);
+				List<String> filteredTokens = overallFilter.filter(tokenString);
+				if (!filteredTokens.isEmpty()) {
+					for (String filteredToken : filteredTokens)
+						filteredArrayFieldValue.add(new RawToken(filteredToken));
+				}
+			}
+			arrayFieldValue = filteredArrayFieldValue;
+		}
+		return arrayFieldValue;
+	}
+
+	/**
+	 * Calls {@link #createRawFieldValueForAnnotation(FeatureStructure, String, Filter)} for all tuples
+	 * <pre>
+	 * (fss[i], featurePaths[i], filters[i]), i in {0,..,fss.length-1}
+	 * </pre>, thus handling feature structures, feature paths and filters separately for each index. <tt>fss</tt> and
+	 * <tt>featurePaths</tt> must be non-null and of equal length. <tt>filters</tt> may be null or shorter. The
+	 * <tt>overallFilter</tt> will be applied to all values resulting from the previous process.
+	 * @param fss
+	 * @param featurePaths
+	 * @param filters
+	 * @param overallFilter
+	 * @return
+	 * @throws CASException
+	 */
+	public ArrayFieldValue createRawFieldValueForParallelAnnotations(FeatureStructure[] fss, String[] featurePaths,
+															 Filter[] filters, Filter overallFilter) throws CASException {
+		ArrayFieldValue arrayFieldValue = new ArrayFieldValue();
+		for (int i = 0; i < fss.length; i++) {
+			FeatureStructure annotation = fss[i];
+			IFieldValue fieldValueForAnnotation = createRawFieldValueForAnnotation(annotation, featurePaths[i],
+					filters != null && i < filters.length ? filters[i] : null);
 			arrayFieldValue.addFlattened(fieldValueForAnnotation);
 		}
 		if (null != overallFilter) {

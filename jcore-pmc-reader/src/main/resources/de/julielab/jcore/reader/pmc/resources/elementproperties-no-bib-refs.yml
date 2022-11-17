@@ -1,0 +1,73 @@
+article-title:
+    block-element: true
+    type: de.julielab.jcore.types.Title
+title:
+    block-element: true
+    type: de.julielab.jcore.types.Title
+    default-feature-values:
+        titleType: other
+    paths:
+        - path: sec/title
+          type: de.julielab.jcore.types.SectionTitle
+          default-feature-values:
+            titleType: section
+        - path: abstract/sec/title
+          type: de.julielab.jcore.types.AbstractSectionHeading
+          default-feature-values:
+            titleType: abstractSection
+abstract:
+    block-element: true
+    type: de.julielab.jcore.types.AbstractText
+label:
+    block-element: true
+    type: de.julielab.jcore.types.Title
+    default-feature-values:
+      titleType: other
+    paths:
+        - path: list-item/label
+          omit-element: true
+sec:
+    block-element: true
+    type: de.julielab.jcore.types.Section
+    paths:
+        - path: abstract/sec
+          type: de.julielab.jcore.types.AbstractSection
+    attributes:
+      - name: sec-type
+        value: supplementary-material
+        omit-element: true
+p:
+    block-element: true
+    type: de.julielab.jcore.types.Paragraph
+list:
+    block-element: true
+    type: de.julielab.jcore.types.List
+list-item:
+    block-element: true
+    type: de.julielab.jcore.types.ListItem
+caption:
+    block-element: true
+    type: de.julielab.jcore.types.Caption
+    default-feature-values:
+        captionType: other
+fn-group:
+    block-element: true
+front:
+    omit-element: true
+back:
+    omit-element: true
+fig-group:
+    omit-element: true
+floats-group:
+    omit-element: true
+array:
+    omit-element: true
+inline-formula:
+    omit-element: true
+disp-formula:
+    omit-element: true
+xref:
+    attributes:
+        - name: ref-type
+          value: bibr
+          omit-element: true

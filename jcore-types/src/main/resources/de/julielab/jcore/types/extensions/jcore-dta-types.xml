@@ -2,7 +2,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 	<name>jcore-dta-types</name>
 	<description />
-	<version>2.5.1-SNAPSHOT</version>
+	<version>2.6.0</version>
         <vendor />
 	<types>
 			<typeDescription>

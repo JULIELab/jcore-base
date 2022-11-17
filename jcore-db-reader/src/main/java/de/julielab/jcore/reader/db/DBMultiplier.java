@@ -9,15 +9,20 @@ import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A multiplier retrieving feature structures of type of {@link RowBatch} in its {@link #process(JCas)} method.
@@ -34,8 +39,9 @@ import java.util.List;
         "populate CASes with them. This component is a part of the Jena Document Information System, JeDIS.",
         vendor = "JULIE Lab Jena, Germany", copyright = "JULIE Lab Jena, Germany")
 @OperationalProperties(outputsNewCases = true)
+@TypeCapability(inputs = {"de.julielab.jcore.types.casmultiplier.RowBatch"})
 public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
-
+private final static Logger log = LoggerFactory.getLogger(DBMultiplier.class);
     protected DataBaseConnector dbc;
     protected DBCIterator<byte[][]> documentDataIterator;
     protected String[] tables;
@@ -56,7 +62,7 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
         initialized = false;
     }
 
-    private DataBaseConnector getDataBaseConnector(String costosysConfig) throws AnalysisEngineProcessException {
+    protected DataBaseConnector getDataBaseConnector(String costosysConfig) throws AnalysisEngineProcessException {
         DataBaseConnector dbc;
         try {
             dbc = new DataBaseConnector(costosysConfig);
@@ -70,6 +76,10 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
         RowBatch rowbatch = JCasUtil.selectSingle(aJCas, RowBatch.class);
+        if (rowbatch.getIdentifiers() == null)
+            throw new AnalysisEngineProcessException(new IllegalArgumentException("The identifiers of the passed row batch are null."));
+        if (rowbatch.getIdentifiers().size() == 0)
+            throw new AnalysisEngineProcessException(new IllegalArgumentException("The identifiers of the passed row batch are empty."));
         tables = rowbatch.getTables().toStringArray();
         schemaNames = rowbatch.getTableSchemas().toStringArray();
         tableName = rowbatch.getTableName();
@@ -97,6 +107,9 @@ public abstract class DBMultiplier extends JCasMultiplier_ImplBase {
         for (int i = 0; i < identifiers.size(); i++) {
             StringArray primaryKey = (StringArray) identifiers.get(i);
             documentIdsForQuery.add(primaryKey.toArray());
+        }
+        if (log.isTraceEnabled()) {
+            log.trace("Received document IDs: {}", documentIdsForQuery.stream().map(o -> Arrays.stream(o).map(Object::toString).collect(Collectors.joining(","))).collect(Collectors.joining(" ; ")));
         }
         documentDataIterator = dbc.retrieveColumnsByTableSchema(documentIdsForQuery,
                 tables,

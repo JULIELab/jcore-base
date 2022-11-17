@@ -1,0 +1,37 @@
+{
+    "categories": [
+        "ae",
+        "multiplier"
+    ],
+    "description": "Wrapper for the JULIE Lab variant of the GNormPlus gene ID mapper.",
+    "descriptors": [
+        {
+            "category": "multiplier",
+            "location": "de.julielab.jcore.multiplier.gnp.desc.jcore-gnormplus-pmc-db-multiplier"
+        },
+        {
+            "category": "multiplier",
+            "location": "de.julielab.jcore.multiplier.gnp.desc.jcore-gnormplus-bioc-multiplier"
+        },
+        {
+            "category": "multiplier",
+            "location": "de.julielab.jcore.multiplier.gnp.desc.jcore-gnormplus-xmi-db-multiplier"
+        },
+        {
+            "category": "multiplier",
+            "location": "de.julielab.jcore.multiplier.gnp.desc.jcore-gnormplus-xml-db-multiplier"
+        },
+        {
+            "category": "ae",
+            "location": "de.julielab.jcore.ae.gnp.desc.jcore-gnormplus-ae"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-gnormplus-ae",
+        "groupId": "de.julielab",
+        "version": "2.6.0"
+    },
+    "name": "JCoRe GNormPlus Annotator"
+}

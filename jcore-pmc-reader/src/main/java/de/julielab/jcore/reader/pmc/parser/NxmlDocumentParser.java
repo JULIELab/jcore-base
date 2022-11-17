@@ -40,20 +40,26 @@ public class NxmlDocumentParser extends NxmlParser {
     private DefaultElementParser defaultElementParser;
     private Map<String, Map<String, Object>> tagProperties;
     private Tagset tagset;
-    private URI uri;
+    private Object currentSource;
 
     public void reset(File nxmlFile, JCas cas) throws DocumentParsingException {
         reset(nxmlFile.toURI(), cas);
+        currentSource = nxmlFile;
+    }
+
+    public Object getCurrentSource() {
+        return currentSource;
     }
 
     public void reset(URI uri, JCas cas) throws DocumentParsingException {
-        this.uri = uri;
-        boolean gzipped = uri.toString().endsWith(".gz") || this.uri.toString().endsWith(".gzip");
+        boolean gzipped = uri.toString().endsWith(".gz") || uri.toString().endsWith(".gzip");
         try {
+            log.debug("Reading from URL {}", uri.toURL());
             InputStream is = uri.toURL().openStream();
             if (gzipped)
                 is = new GZIPInputStream(is);
             reset(is, cas);
+            currentSource = uri;
         } catch (IOException e) {
             throw new DocumentParsingException(e);
         }
@@ -74,6 +80,7 @@ public class NxmlDocumentParser extends NxmlParser {
             vn = vg.getNav();
             setTagset();
             setupParserRegistry();
+            currentSource = "<input stream>";
         } catch (IOException | VTDException e) {
             throw new DocumentParsingException(e);
         }
@@ -87,7 +94,7 @@ public class NxmlDocumentParser extends NxmlParser {
      * @throws NavException
      * @throws DocTypeNotFoundException
      */
-    private void setTagset() throws NavException, DocTypeNotFoundException, DocTypeNotSupportedException {
+    private void setTagset() throws NavException, DocTypeNotFoundException {
         for (int i = 0; i < vn.getTokenCount(); i++) {
             if (vn.getTokenType(i) == VTDNav.TOKEN_DTD_VAL) {
                 String docType = StringUtils.normalizeSpace(vn.toString(i)).replaceAll("'", "\"");
@@ -95,16 +102,23 @@ public class NxmlDocumentParser extends NxmlParser {
                     tagset = Tagset.JATS_1_0;
                 else if (docType.contains("JATS-archivearticle1-mathml3.dtd"))
                     tagset = Tagset.JATS_1_2_MATH_ML_3;
+                else if (docType.contains("JATS-archivearticle1-3-mathml3.dtd"))
+                    tagset = Tagset.JATS_1_3;
                 else if (docType.contains("journalpublishing.dtd") || docType.contains("archivearticle.dtd"))
                     tagset = Tagset.NLM_2_3;
                 else if (docType.contains("journalpublishing3.dtd") || docType.contains("archivearticle3.dtd"))
                     tagset = Tagset.NLM_3_0;
-                else
-                    throw new DocTypeNotSupportedException("Unsupported document type: "  + docType);
+                else if (docType.contains("JATS")) {
+                    log.warn("Unknown document type: {}. Assigning the latest JATS tagset in assumption of backward compatibility.", docType);
+                    tagset = Tagset.JATS_1_3;
+                } else if (docType.contains("journalpublishing") || docType.contains("archivearticle")) {
+                    log.warn("Unknown document type: {}. Assigning the latest NLM tagset in assumption of backward compatibility.", docType);
+                    tagset = Tagset.NLM_3_0;
+                }
                 return;
             }
         }
-        throw new DocTypeNotFoundException("Could not find a doctype.");
+        throw new DocTypeNotFoundException("Could not find a known doctype.");
     }
 
     private void setupParserRegistry() {
@@ -146,9 +160,14 @@ public class NxmlDocumentParser extends NxmlParser {
     }
 
     public ElementParsingResult parse() throws ElementParsingException, DocumentParsingException {
-        String startingElement = moveToNextStartingTag();
-        assert startingElement.equals("article") : "Did not encounter an article element as first start element";
-        return getParser(startingElement).parse();
+        try {
+            String startingElement = moveToNextStartingTag();
+            assert startingElement.equals("article") : "Did not encounter an article element as first start element";
+            return getParser(startingElement).parse();
+        } catch (Exception e) {
+            log.error("Exception while parsing document from source {}", currentSource);
+            throw e;
+        }
     }
 
     public NxmlElementParser getParser(String tagName) {
@@ -211,6 +230,12 @@ public class NxmlDocumentParser extends NxmlParser {
          * @see <url>https://jats.nlm.nih.gov/publishing/tag-library/1.2/index.html</url>
          */
         JATS_1_2_MATH_ML_3,
+        /**
+         * NISO JATS Version 1.3 (ANSI/NISO Z39.96-2021)
+         *
+         * @see <url>https://jats.nlm.nih.gov/publishing/tag-library/1.3/index.html</url>
+         */
+        JATS_1_3,
         /**
          * NLM Journal Publishing DTD v. 2.3
          *

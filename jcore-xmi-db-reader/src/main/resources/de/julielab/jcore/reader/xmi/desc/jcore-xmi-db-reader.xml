@@ -5,7 +5,7 @@
     <processingResourceMetaData>
         <name>JCoRe XMI Database Reader</name>
         <description>A database readerthat expects serialized UIMA CAS objects in XMI format as input. The reader has the capability to read segmented annotation graphs that have been stored by the jcore-xmi-db-writer. This component is part of the Jena Document Information System, JeDIS.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
@@ -169,7 +169,7 @@
         <typeSystemDescription>
             <imports>
                 <import name="de.julielab.jcore.types.jcore-xmi-splitter-types" />
-                <import name="de.julielab.jcore.types.jcore-all-types" />
+
             </imports>
         </typeSystemDescription>
         <fsIndexCollection />

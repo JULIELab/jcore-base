@@ -4,6 +4,7 @@ import de.julielab.jcore.types.EmbeddingVector;
 import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.pubmed.InternalReference;
 import de.julielab.jcore.utility.index.Comparators;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
@@ -43,7 +44,7 @@ public class FlairNerAnnotatorTest {
 
     @Test
     public void testAnnotatorWithoutWordEmbeddings() throws Exception {
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
         String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
         jCas.setDocumentText(text);
@@ -70,9 +71,38 @@ public class FlairNerAnnotatorTest {
     }
 
     @Test
+    public void testAnnotatorWithoutWordEmbeddings2() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
+        String text = "Knockdown of SUB1 homolog2 by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
+        jCas.setDocumentText(text);
+        Sentence s = new Sentence(jCas, 0, text.length());
+        addTokens(jCas);
+        s.addToIndexes();
+        new InternalReference(jCas, 25, 26).addToIndexes();
+        engine.process(jCas);
+        List<String> foundGenes = new ArrayList<>();
+        JCoReTreeMapAnnotationIndex<Long, Token> tokenIndex = new JCoReTreeMapAnnotationIndex<>(TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), jCas, Token.type);
+        for (Annotation a : jCas.getAnnotationIndex(Gene.type)) {
+            Gene g = (Gene) a;
+            foundGenes.add(g.getCoveredText());
+            assertThat(g.getSpecificType().equals("Gene"));
+            final Iterator<Token> tokenIt = tokenIndex.searchFuzzy(g).iterator();
+            while (tokenIt.hasNext()) {
+                Token token = tokenIt.next();
+                assertThat(token.getEmbeddingVectors()).isNull();
+            }
+            assertThat(Double.parseDouble(g.getConfidence())).isGreaterThan(0.64);
+            assertThat(g.getComponentId().equals(FlairNerAnnotator.class.getSimpleName()));
+        }
+        assertThat(foundGenes).containsExactly("SUB1 homolog", "HIV-1", "VSV-G", "HIV-1");
+        engine.collectionProcessComplete();
+    }
+
+    @Test
     public void testAnnotatorWithEntityWordEmbeddings() throws Exception {
         embeddingsCache.clear();
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt", FlairNerAnnotator.PARAM_COMPONENT_ID, "ATotallyDifferentComponentId");
         String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
         jCas.setDocumentText(text);
@@ -111,7 +141,7 @@ public class FlairNerAnnotatorTest {
 
     @Test(dependsOnMethods = "testAnnotatorWithEntityWordEmbeddings")
     public void testAnnotatorWithEntitySubWordEmbeddings() throws Exception {
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, ENTITIES, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
         String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
         jCas.setDocumentText(text);
@@ -179,7 +209,7 @@ public class FlairNerAnnotatorTest {
 
     @Test
     public void testAnnotatorWithAllEmbeddings() throws Exception {
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, FlairNerAnnotator.StoreEmbeddings.ALL, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
         String text = "Knockdown of SUB1 homolog by siRNA inhibits the early stages of HIV-1 replication in 293T cells infected with VSV-G pseudotyped HIV-1 .";
         jCas.setDocumentText(text);
@@ -214,7 +244,7 @@ public class FlairNerAnnotatorTest {
 
     @Test
     public void testAnnotator2() throws Exception {
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
         // The sentence detection and tokenization was done by the jcore-j[st]bd-biomedical-english JCoRe project components, using the executable (java -jar) command line artifact created when building the components.
         String text = "Synergistic lethal effect between hydrogen peroxide and neocuproine ( 2,9-dimethyl 1,10-phenanthroline ) in Escherichia coli .\n" +
@@ -240,8 +270,8 @@ public class FlairNerAnnotatorTest {
     }
 
     @Test
-    public void testAnnotatorOnOffsetIsseDocument() throws Exception {
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types");
+    public void testAnnotatorOnOffsetIssueDocument() throws Exception {
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types", "de.julielab.jcore.types.extensions.jcore-document-meta-extension-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt");
 
         XmiCasDeserializer.deserialize(new FileInputStream(Path.of("src", "test", "resources", "1681975.xmi").toString()), jCas.getCas());
@@ -259,7 +289,7 @@ public class FlairNerAnnotatorTest {
 
     @Test
     public void testEmbeddings2() throws Exception {
-        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types");
+        final JCas jCas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
         final AnalysisEngine engine = AnalysisEngineFactory.createEngine(FlairNerAnnotator.class, FlairNerAnnotator.PARAM_ANNOTATION_TYPE, Gene.class.getCanonicalName(), FlairNerAnnotator.PARAM_FLAIR_MODEL, "src/test/resources/genes-small-model.pt", FlairNerAnnotator.PARAM_STORE_EMBEDDINGS, ENTITIES);
         // The sentence detection and tokenization was done by the jcore-j[st]bd-biomedical-english JCoRe project components, using the executable (java -jar) command line artifact created when building the components.
         String text = "We show that tal controls gene expression and tissue folding in Drosophila , thus acting as a link between patterning and morphogenesis .\n tal function is mediated by several 33-nucleotide-long open reading frames ( ORFs )";

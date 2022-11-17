@@ -6,7 +6,7 @@
   <analysisEngineMetaData>
     <name>JCoRe MST Parser Annotator</name>
     <description />
-    <version>2.5.1-SNAPSHOT</version>
+    <version>2.6.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters>
       <configurationParameter>

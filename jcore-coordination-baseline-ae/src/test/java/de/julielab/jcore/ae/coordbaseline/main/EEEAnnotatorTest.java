@@ -7,7 +7,6 @@
 package de.julielab.jcore.ae.coordbaseline.main;
 
 import de.julielab.jcore.types.*;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.FSIterator;
@@ -17,13 +16,16 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EEEAnnotatorTest extends TestCase
+
+public class EEEAnnotatorTest
 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EEEAnnotatorTest.class);
 	private static final String LOGGER_PROPERTIES = "src/test/java/log4j.properties";
@@ -33,12 +35,7 @@ public class EEEAnnotatorTest extends TestCase
 	private static final String EEE2 = "simple upstream and downstream sequence elements";
 	private static final String TEST_DESC = "src/test/resources/desc/EEEAnnotatorTest.xml";
 	
-/*--------------------------------------------------------------------------------*/
-	protected void setUp() throws Exception 
-	{
-		super.setUp();
-	} // of setUp	
-/*--------------------------------------------------------------------------------*/
+
 	public void initCas(JCas jcas) 
 	{
 		jcas.reset();
@@ -538,6 +535,8 @@ public class EEEAnnotatorTest extends TestCase
 		entity3.addToIndexes();
 	} // of initCas
 /*--------------------------------------------------------------------------------*/
+
+	@Test
 	public void testProcess() 
 	{
 		XMLInputSource descriptor = null; 
@@ -575,7 +574,7 @@ public class EEEAnnotatorTest extends TestCase
 		try
 		{
 			ae.process(jcas, null);			
-			assertTrue("Invalid JCas!", checkJCas(jcas));
+			assertTrue(checkJCas(jcas), "Invalid JCas!");
 			
 			
 		} // of try 

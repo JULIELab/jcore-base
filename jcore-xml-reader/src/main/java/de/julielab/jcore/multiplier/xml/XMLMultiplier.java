@@ -189,7 +189,7 @@ public class XMLMultiplier extends JCasMultiplier_ImplBase {
         try {
             rowIterator = JulieXMLTools.constructRowIterator(
                     JulieXMLTools.readStream(UriUtilities.getInputStreamFromUri(new java.net.URI(currentUri)), 1024),
-                    1024, forEach, fields, currentUri);
+                    1024, forEach, fields, currentUri, true);
         } catch (IOException | URISyntaxException e) {
             throw new AnalysisEngineProcessException(e);
         }

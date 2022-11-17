@@ -5,7 +5,7 @@
     <processingResourceMetaData>
         <name>JCoRe Pubmed Central Reader</name>
         <description>Reads Pubmed Central documents from the NXML format</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <configurationParameters>
             <configurationParameter>
                 <name>Input</name>
@@ -38,6 +38,13 @@
             <configurationParameter>
                 <name>ExtractIdFromFilename</name>
                 <description>Used for NXML documents that carry their ID in the file name but not in the document itself. Extracts the string after the last path separator and the first dot after the separator and sets it to the docId feature of the Header annotation.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OmitBibliographyReferences</name>
+                <description>If set to true, references to the bibliography are omitted from the CAS text.</description>
                 <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>

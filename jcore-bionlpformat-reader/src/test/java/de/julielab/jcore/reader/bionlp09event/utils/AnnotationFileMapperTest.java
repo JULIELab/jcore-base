@@ -28,8 +28,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.util.HashMap;
@@ -37,8 +37,8 @@ import java.util.Map;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 
@@ -68,7 +68,7 @@ public class AnnotationFileMapperTest {
 	private Gene t3;
 	private Map<String, Annotation> mappedProteins;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		CollectionReaderDescription readerDescription = (CollectionReaderDescription) UIMAFramework.getXMLParser().parseCollectionReaderDescription(new XMLInputSource(DESCRIPTOR_FILE));
 		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(readerDescription);

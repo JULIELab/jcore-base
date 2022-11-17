@@ -11,7 +11,6 @@ import de.julielab.jcore.types.muc7.Coref;
 import de.julielab.jcore.types.muc7.ENAMEX;
 import de.julielab.jcore.types.muc7.NUMEX;
 import de.julielab.jcore.types.muc7.TIMEX;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
@@ -24,6 +23,8 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,7 +32,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class MUC7ReaderTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class MUC7ReaderTest  {
 	/**
 	 * Path to the MedlineReader descriptor
 	 */
@@ -40,12 +43,11 @@ public class MUC7ReaderTest extends TestCase {
 	/**
 	 * Object to be tested
 	 */
-	private CollectionReader muc7Reader;
+	private static CollectionReader muc7Reader;
+	private static CAS cas;
 
-	
-	private CAS cas;
 
-	
+
 	/**
 	 * Test data
 	 */
@@ -87,12 +89,11 @@ public class MUC7ReaderTest extends TestCase {
 	/**
 	 *    * CAS array with CAS objects that where processed by the muc7Reader
 	 */
-	private ArrayList<JCas> cases = new ArrayList<JCas>();
+	private static ArrayList<JCas> cases = new ArrayList<JCas>();
 	
 	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeAll
+	protected static void setUp() throws Exception {
 		muc7Reader = produceCollectionReader(MUC7_READER_DESCRIPTOR);
 		processAllCases();
 	}
@@ -105,7 +106,7 @@ public class MUC7ReaderTest extends TestCase {
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 */
-	private void processAllCases() throws CASException, SAXException, ParserConfigurationException {
+	private static void processAllCases() throws CASException, SAXException, ParserConfigurationException {
 		try {
 		      while (muc7Reader.hasNext()) {
 		    	 cas = CasCreationUtils.createCas((AnalysisEngineMetaData) muc7Reader.getMetaData());
@@ -123,20 +124,21 @@ public class MUC7ReaderTest extends TestCase {
 	} 
 	/**
 	 * Test if method getNextCas() has done its job
-	 */	 
+	 */
+	@Test
 	public void testGetNextCas() {
  		
 		//check for a TIMEX entity
  		String[] timexData = getTimexData(DOC_ID);
- 		assertTrue("TIMEX", checkTimex(timexData));
+ 		assertTrue(checkTimex(timexData), "TIMEX");
 		
 		//check for a ENAMEX entity
  		String[] enamexData = getEnamexData(DOC_ID);
- 		assertTrue("ENAMEX", checkEnamex(enamexData));
+ 		assertTrue(checkEnamex(enamexData), "ENAMEX");
 		
 		//check for a NUMEX entity
  		String[] numexData = getNumexData(DOC_ID);
- 		assertTrue("NUMEX", checkNumex(numexData));
+ 		assertTrue(checkNumex(numexData), "NUMEX");
  		
  		//TODO coreference doesn't works as of now
 		//check for a coref chain
@@ -337,7 +339,7 @@ public class MUC7ReaderTest extends TestCase {
 	/**
 	   * Gets an Iterator over the the CAS for the specific type
 	   * 
-	   * @param cas (the CAS)
+	   * @param jcas (the CAS)
 	   * @param type (the type)
 	   * @return the iterator
 	   */
@@ -371,7 +373,7 @@ public class MUC7ReaderTest extends TestCase {
 	 * @throws InvalidXMLException 
 	 * @throws ResourceInitializationException 
 	  */
-	 private CollectionReader produceCollectionReader(String descriptor) throws InvalidXMLException, IOException, ResourceInitializationException {
+	 private static CollectionReader produceCollectionReader(String descriptor) throws InvalidXMLException, IOException, ResourceInitializationException {
 		 CollectionReader collectionReader;
 		 ResourceSpecifier spec;
 		 spec = UIMAFramework.getXMLParser().parseResourceSpecifier(new XMLInputSource(descriptor));

@@ -6,14 +6,25 @@
   <analysisEngineMetaData>
     <name>BioLemmatizer</name>
     <description />
-    <version>2.5.1-SNAPSHOT</version>
+    <version>2.6.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
     <configurationParameters />
     <configurationParameterSettings />
     <typeSystemDescription />
     <typePriorities />
     <fsIndexCollection />
-    <capabilities />
+    <capabilities>
+      <capability>
+        <inputs>
+          <type>de.julielab.jcore.types.Token</type>
+          <type>de.julielab.jcore.types.PennBioIEPOSTag</type>
+        </inputs>
+        <outputs>
+          <type>de.julielab.jcore.types.Lemma</type>
+        </outputs>
+        <languagesSupported />
+      </capability>
+    </capabilities>
     <operationalProperties>
       <modifiesCas>true</modifiesCas>
       <multipleDeploymentAllowed>true</multipleDeploymentAllowed>

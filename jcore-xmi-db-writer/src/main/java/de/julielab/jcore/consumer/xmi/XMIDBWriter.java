@@ -29,6 +29,7 @@ import de.julielab.jcore.ae.checkpoint.DocumentReleaseCheckpoint;
 import de.julielab.jcore.types.Header;
 import de.julielab.jcore.types.XmiMetaData;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
+import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.xml.*;
 import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import de.julielab.xml.binary.BinaryStorageAnalysisResult;
@@ -122,7 +123,6 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     private static Map<String, Map<String, Boolean>> binaryMappedFeatures = Collections.emptyMap();
     private static Map<String, Map<DocumentId, XmiBufferItem>> splitterResultMap;
     private static Map<String, Map<String, Pair<List<XmiBufferItem>, CountDownLatch>>> xmiBufferItemsToProcess;
-    private static ReentrantLock missingMappingsGatheringLock;
     private static CountDownLatch missingMappingsGatheringLatch = new CountDownLatch(0);
     private static ReentrantLock mappingUpdateLock;
     private DataBaseConnector dbc;
@@ -251,6 +251,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
     @ConfigurationParameter(name = PARAM_ADD_SHA_HASH, mandatory = false, description = "Possible values: document_text. If this parameter is set to a valid value, the SHA256 hash for the given value will be calculated, base64 encoded and added to each document as a new column in the document table. The column will be named after the parameter value, suffixed by '_sha256'.")
     private String documentItemToHash;
     private Map<DocumentId, String> shaMap;
+    private Set<DocumentId> mirrorResetIds;
+    private Set<DocumentId> unchangedDocuments;
     private String mappingCacheKey;
     private DocumentReleaseCheckpoint docReleaseCheckpoint;
     private List<DocumentId> currentDocumentIdBatch;
@@ -289,8 +291,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         // The deletion of obsolete annotations should only be active when the base document is stored because then, old annotations won't be valid any more.
         deleteObsolete &= storeBaseDocument;
         baseDocumentAnnotationTypes = Arrays.stream(
-                Optional.ofNullable((String[]) aContext.getConfigParameterValue(PARAM_BASE_DOCUMENT_ANNOTATION_TYPES))
-                        .orElse(new String[0]))
+                        Optional.ofNullable((String[]) aContext.getConfigParameterValue(PARAM_BASE_DOCUMENT_ANNOTATION_TYPES))
+                                .orElse(new String[0]))
                 .collect(Collectors.toSet());
         attributeSize = (Integer) aContext.getConfigParameterValue(PARAM_ATTRIBUTE_SIZE);
         writeBatchSize = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_WRITE_BATCH_SIZE)).orElse(50);
@@ -321,7 +323,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         }
 
         if (xmiMetaSchema.isBlank())
-            throw new ResourceInitializationException(new IllegalArgumentException("The XMI meta table Postgres schema must either be omitted at all or non-empty but was."));
+            throw new ResourceInitializationException(new IllegalArgumentException("The XMI meta table Postgres schema must either be omitted at all or non-empty but was '" + xmiMetaSchema + "'."));
 
         unqualifiedAnnotationNames = Collections.emptyList();
 
@@ -424,6 +426,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         if (useBinaryFormat) {
             this.binaryEncoder = new BinaryJeDISNodeEncoder();
         }
+        mirrorResetIds = new HashSet<>();
+        unchangedDocuments = new HashSet<>();
 
         log.info(XMIDBWriter.class.getName() + " initialized.");
         log.info("Effective document table name: {}", effectiveDocTableName);
@@ -510,7 +514,15 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             } catch (IllegalArgumentException e) {
                 // Do nothing; this is not the work item CAS
             }
-            DocumentId docId = getDocumentId(aJCas);
+            Collection<DBProcessingMetaData> metaDatas = JCasUtil.select(aJCas, DBProcessingMetaData.class);
+            if (metaDatas.size() > 1)
+                throw new AnalysisEngineProcessException(new IllegalArgumentException(
+                        "There is more than one type of DBProcessingMetaData in document " + JCoReTools.getDocId(aJCas)));
+            Optional<DBProcessingMetaData> metaData = metaDatas.stream().findAny();
+            DocumentId docId = getDocumentId(aJCas, metaData);
+            setMirrorResetStateForDocId(docId, metaData);
+            if (metaData.isPresent() && metaData.get().getIsDocumentHashUnchanged())
+                unchangedDocuments.add(docId);
             if (docId == null) {
                 log.warn("The current document does not have a document ID. It is omitted from database import.");
                 return;
@@ -519,12 +531,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             currentDocumentIdBatch.add(docId);
 
             if (subsetTable == null) {
-                Collection<DBProcessingMetaData> metaData = JCasUtil.select(aJCas, DBProcessingMetaData.class);
                 if (!metaData.isEmpty()) {
-                    if (metaData.size() > 1)
-                        throw new AnalysisEngineProcessException(new IllegalArgumentException(
-                                "There is more than one type of DBProcessingMetaData in document " + docId));
-                    subsetTable = metaData.stream().findAny().get().getSubsetTable();
+                    subsetTable = metaData.get().getSubsetTable();
 
                     if (subsetTable != null && storeBaseDocument) {
                         // Check if we are about to read from a mirror subset and to update the base document. This is not allowed
@@ -533,7 +541,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                         try (CoStoSysConnection costoConn = dbc.obtainOrReserveConnection()) {
                             Map<String, Boolean> mirrorSubsetNames = dbc.getMirrorSubsetNames(costoConn, effectiveDocTableName);
                             if (mirrorSubsetNames.keySet().contains(subsetTable.replace("^[^.]\\.", "")))
-                                throw new AnalysisEngineProcessException(new IllegalArgumentException("The read subset table " + subsetTable + " is a mirror subset its document table " + effectiveDocTableName + " and the base document should be stored. This base document storage would cause all its subset to reset the updated documents. Thus, the subset " + subsetTable + " would be partially reset while processing, reading the same documents over and over again. This is therefore illegal."));
+                                throw new AnalysisEngineProcessException(new IllegalArgumentException("The read subset table " + subsetTable + " is a mirror subset of the target document table " + effectiveDocTableName + " and the base document should be stored. This base document storage would cause all its subset to reset the updated documents. Thus, the subset " + subsetTable + " would be partially reset while processing, reading the same documents over and over again. This is therefore illegal."));
                         }
                     }
                 }
@@ -561,6 +569,21 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             }
             log.error("Error occurred at document {}: ", docid, throwable);
             throw throwable;
+        }
+    }
+
+    private void setMirrorResetStateForDocId(DocumentId docId, Optional<DBProcessingMetaData> metaData) {
+        if (metaData.isPresent()) {
+            // mirror subset reset is only necessary if we store the base document in any way;
+            // additionally, we check if the document text hash key is reported to be different to its already
+            // existing database entry. Only then the mirror subsets should be reset for this document because only
+            // then a re-processing of the document makes sense.
+            // The isDocumentHashUnchanged feature is set by the XMLDBMultiplier.
+            if (storeBaseDocument && !metaData.get().getIsDocumentHashUnchanged())
+                mirrorResetIds.add(docId);
+        } else {
+            // default: reset the mirror tables
+            mirrorResetIds.add(docId);
         }
     }
 
@@ -738,7 +761,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 // adapt the map keys to table names (currently, the keys are the
                 // Java type names)
                 splitXmiData = convertModuleLabelsToColumnNames(splitXmiData);
-
+                log.trace("The following columns have XMI data: {}", splitXmiData.keySet());
 
                 for (String columnName : splitXmiData.keySet()) {
                     boolean isBaseDocumentColumn = columnName.equals(XmiSplitConstants.BASE_DOC_COLUMN);
@@ -837,25 +860,28 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         return convertedMap;
     }
 
-    private DocumentId getDocumentId(JCas aJCas) {
+    private DocumentId getDocumentId(JCas aJCas, Optional<DBProcessingMetaData> metaData) {
         DocumentId docId = null;
-        try {
-            DBProcessingMetaData dbProcessingMetaData = JCasUtil.selectSingle(aJCas, DBProcessingMetaData.class);
-            docId = new DocumentId(dbProcessingMetaData);
-        } catch (IllegalArgumentException e) {
-            // it seems there is not DBProcessingMetaData we could get a complex primary key from. The document ID
+        if (metaData.isPresent()) {
+            docId = new DocumentId(metaData.get());
+        } else {
+            // it seems there is no DBProcessingMetaData we could get a complex primary key from. The document ID
             // will have to do.
-            log.trace("Could not find the primary key in the DBProcessingMetaData due to exception: {}. Using the document ID as primary key.", e.getMessage());
+            log.trace("Could not find the primary key in the DBProcessingMetaData because no meta data annotation is set. Using the document ID as primary key.");
         }
         if (docId == null) {
             AnnotationIndex<Annotation> headerIndex = aJCas.getAnnotationIndex(Header.type);
             FSIterator<Annotation> headerIt = headerIndex.iterator();
             if (!headerIt.hasNext()) {
-                int min = Math.min(100, aJCas.getDocumentText().length());
+                String docText = "<no text>";
+                if (aJCas.getDocumentText() != null) {
+                    int min = Math.min(100, aJCas.getDocumentText().length());
+                    docText = aJCas.getDocumentText().substring(0, min);
+                }
                 log.warn(
                         "Got document without a header and without DBProcessingMetaData; cannot obtain document ID." +
                                 " This document will not be written into the database. Document text begins with: {}",
-                        aJCas.getDocumentText().substring(0, min));
+                        docText);
                 ++headerlessDocuments;
                 return null;
             }
@@ -1002,7 +1028,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             final boolean readyToSendData = processXmiBuffer();
             if (readyToSendData) {
                 if (!(featuresToMapDryRun && useBinaryFormat))
-                    annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, storeBaseDocument, deleteObsolete, shaMap);
+                    annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, mirrorResetIds, unchangedDocuments, deleteObsolete, shaMap);
                 else
                     log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
                 log.trace("Clearing {} annotation modules", annotationModules.size());
@@ -1012,6 +1038,8 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
                 if (docReleaseCheckpoint != null)
                     docReleaseCheckpoint.release(jedisSyncKey, currentDocumentIdBatch.stream());
                 currentDocumentIdBatch.clear();
+                mirrorResetIds.clear();
+                unchangedDocuments.clear();
             }
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
@@ -1031,7 +1059,7 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
         try {
             processXmiBuffer();
             if (!(featuresToMapDryRun && useBinaryFormat))
-                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, storeBaseDocument, deleteObsolete, shaMap);
+                annotationInserter.sendXmiDataToDatabase(effectiveDocTableName, annotationModules, subsetTable, mirrorResetIds, unchangedDocuments, deleteObsolete, shaMap);
             else
                 log.info("The dry run to see details about features to be mapped in the binary format is activated. No contents are written into the database.");
             annotationModules.clear();
@@ -1040,11 +1068,14 @@ public class XMIDBWriter extends JCasAnnotator_ImplBase {
             if (docReleaseCheckpoint != null)
                 docReleaseCheckpoint.release(jedisSyncKey, currentDocumentIdBatch.stream());
             currentDocumentIdBatch.clear();
+            mirrorResetIds.clear();
+            unchangedDocuments.clear();
         } catch (XmiDataInsertionException e) {
             throw new AnalysisEngineProcessException(e);
         }
-        log.info("{} documents without a head occured overall. Those could not be written into the database.",
-                headerlessDocuments);
+        if (headerlessDocuments > 0)
+            log.info("{} documents without a head occured overall. Those could not be written into the database.",
+                    headerlessDocuments);
         dbc.close();
     }
 

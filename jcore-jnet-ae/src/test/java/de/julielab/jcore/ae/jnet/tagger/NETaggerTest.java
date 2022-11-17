@@ -2,7 +2,7 @@ package de.julielab.jcore.ae.jnet.tagger;
 
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.util.ArrayList;

@@ -1,31 +1,41 @@
 package de.julielab.jcore.ae.annotationadder;
 
+import de.julielab.jcore.ae.annotationadder.annotationrepresentations.ExternalTextAnnotation;
 import de.julielab.jcore.ae.annotationadder.annotationrepresentations.TextAnnotation;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Caches information for the current document.
  */
 public class AnnotationAdderHelper {
+    private final static Logger log = LoggerFactory.getLogger(AnnotationAdderHelper.class);
     // Required for token-offsets
     private List<Token> tokenList;
     private Map<Sentence, List<Token>> tokensBySentences;
     private Matcher wsFinder = Pattern.compile("\\s").matcher("");
     private Matcher nonWsMatcher = Pattern.compile("[^\\s]+").matcher("");
-
+    /**
+     * Caches methods for feature
+     */
+    private Map<String, Method> featureSetters;
 
     public void setAnnotationOffsetsRelativeToDocument(Annotation annotation, TextAnnotation a, AnnotationAdderConfiguration configuration) throws CASException, AnnotationOffsetException {
         if (configuration.getOffsetMode() == AnnotationAdderAnnotator.OffsetMode.CHARACTER) {
@@ -68,8 +78,10 @@ public class AnnotationAdderHelper {
             List<Token> tokenList = tokensBySentences.get(sentence);
             int startTokenNum = a.getStart();
             int endTokenNum = a.getEnd();
-            if (startTokenNum < 1 || startTokenNum > tokenList.size())
+            if (startTokenNum < 1 || startTokenNum > tokenList.size()) {
+                log.error("Cannot create entity because of a token offset mismatch. The entity should tart at token {} and end at {}. But there are only {} tokens available: {}", startTokenNum, endTokenNum, tokenList.size(), tokenList.stream().map(Annotation::getCoveredText).collect(Collectors.joining(" ")));
                 throw new AnnotationOffsetException("The current annotation to add to the CAS starts at token " + startTokenNum + " which does not fit to the range of tokens in the sentence with ID " + sentence.getId() + " which is 1 - " + tokenList.size());
+            }
             if (endTokenNum < 1 || endTokenNum > tokenList.size())
                 throw new AnnotationOffsetException("The current annotation to add to the CAS ends at token " + endTokenNum + " which does not fit to the range of tokens in the sentence with ID " + sentence.getId() + " which is 1 - " + tokenList.size());
             if (endTokenNum < startTokenNum)
@@ -133,5 +145,48 @@ public class AnnotationAdderHelper {
             }
         }
         return tokenList;
+    }
+
+    public void setAnnotationPayloadsToFeatures(Annotation annotation, ExternalTextAnnotation a) {
+        final TypeSystem ts = annotation.getCAS().getTypeSystem();
+        Collection<String> keys = a.getPayloadKeys();
+        if (!keys.isEmpty())
+            featureSetters = new HashMap<>();
+        try {
+            for (String key : keys) {
+                Object value = a.getPayload(key);
+                Method setter = featureSetters.get(key);
+                if (setter == null) {
+                    Class<?> valueClass = convertUimaTypeToJavaType(ts.getType(annotation.getClass().getCanonicalName()).getFeatureByBaseName(key).getRange());
+                    setter = annotation.getClass().getMethod("set" + StringUtils.capitalize(key), valueClass);
+                    featureSetters.put(key, setter);
+                }
+                // We do this because it is possible a string feature could have values there are actually numbers.
+                // The automatic type detection of some formats will read those as numbers so we might need to
+                // convert here.
+                if (setter.getParameterTypes()[0].equals(String.class))
+                    value = String.valueOf(value);
+                setter.invoke(annotation, value);
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Class<?> convertUimaTypeToJavaType(Type type) {
+        switch (type.getName()) {
+            case "uima.cas.String":
+                return String.class;
+            case "uima.cas.Integer":
+                return int.class;
+            case "uima.cas.Double":
+                return double.class;
+            case "uima.cas.Boolean":
+                return boolean.class;
+            case "uima.cas.Long":
+                return long.class;
+            default:
+                throw new IllegalArgumentException("Unsupported type for arbitrary feature-based input columns: " + type);
+        }
     }
 }

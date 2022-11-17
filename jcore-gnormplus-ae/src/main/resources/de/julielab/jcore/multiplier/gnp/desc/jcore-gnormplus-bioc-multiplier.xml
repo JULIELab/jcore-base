@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.multiplier.gnp.GNormPlusBioCMultiplier</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe GNormPlus BioC Multiplier</name>
+        <description>A CAS multiplier to be used with the GNormPlus BioC Format multiplier reader. It wraps the JULIE Lab variant of the GNormPlus gene ID mapper. It is a multiplier because this enables batch-processing of documents with GNormPlus which makes the processing more efficient.</description>
+        <version>2.6.0</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name>AddGenes</name>
+                <description>If set to true, all Gene annotations in the CAS will be added to the BioC documents. The default type used is de.julielab.jcore.types.Gene. This can be changed with the GeneTypeName parameter.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>GNormPlusSetupFile</name>
+                <description>File path or class path resource path to the setup.txt file for GNormPlus. If not specified, a default setup file is loaded that expects the Dictionary/ directory directly under the working directory, performs gene recognition with the CRF and thus expects the GNormPlus CRF directory directly under the working directory and maps the found genes to NCBI gene IDs for all organisms.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>GeneTypeName</name>
+                <description>The UIMA type denoting gene annotations that should be written into the BioC format when the AddGenes parameter is set to true.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OutputDirectory</name>
+                <description>Optional. If specified, the GNormPlus output files in BioC format will be saved to the given directory. In this way, this component can be used directly as a BioC XML writer through the GNormPlus algorithm.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>FocusSpecies</name>
+                <description>If given, all gene mentions are assigned to this NCBI taxonomy ID, i.e. species recognition is omitted.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>CostosysConfigFile</name>
+                <description>Path to the CoStoSys configuration file that is used by the XMI DB writer in the same pipeline, if any. The XMI DB writer requires information about the XMI documents that are already in the database and should be updated with new annotations. The current highest XMI ID must be known to avoid ID collisions. To obtain the ID, it must be received from the database beforehand. This allows to retrieve the information batch wise instead of one-by-one which would be much slower.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DocumentsTable</name>
+                <description>Required to retrieve the max XMI ID for use by the XMI DB writer. The schema-qualified name of the XMI document table that the XMI DB writer will write annotations into.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>AddGenes</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>GeneTypeName</name>
+                <value>
+                    <string>de.julielab.jcore.types.Gene</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection />
+        <capabilities>
+            <capability>
+                <inputs />
+                <outputs>
+                    <type>de.julielab.jcore.types.ConceptMention</type>
+                    <type>de.julielab.jcore.types.Organism</type>
+                </outputs>
+                <languagesSupported />
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

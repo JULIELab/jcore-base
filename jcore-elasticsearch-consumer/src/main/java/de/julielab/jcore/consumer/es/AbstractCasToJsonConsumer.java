@@ -124,25 +124,27 @@ public abstract class AbstractCasToJsonConsumer extends JCasAnnotator_ImplBase {
 			if (doc.isEmpty())
 				log.debug("Document for document with ID {} does not contain any non-empty fields.",
 						JCoReTools.getDocId(aJCas));
-			String docId = JCoReTools.getDocId(aJCas);
-			if (null != idField) {
-				IFieldValue idFieldValue = doc.get(idField);
-				if (idFieldValue instanceof RawToken) {
-					docId = String.valueOf(((RawToken) idFieldValue).token);
-				} else if (idFieldValue instanceof PreanalyzedFieldValue) {
-					PreanalyzedFieldValue preAnalyzedIdValue = (PreanalyzedFieldValue) idFieldValue;
-					docId = preAnalyzedIdValue.fieldString;
-				} else
-					throw new IllegalArgumentException("Class " + idFieldValue.getClass() + " for value of field "
-							+ idField + " is not supported as ID field value");
+			if (doc.getId() == null || doc.getId().isBlank()) {
+				String docId = JCoReTools.getDocId(aJCas);
+				if (null != idField) {
+					IFieldValue idFieldValue = doc.get(idField);
+					if (idFieldValue instanceof RawToken) {
+						docId = String.valueOf(((RawToken) idFieldValue).token);
+					} else if (idFieldValue instanceof PreanalyzedFieldValue) {
+						PreanalyzedFieldValue preAnalyzedIdValue = (PreanalyzedFieldValue) idFieldValue;
+						docId = preAnalyzedIdValue.fieldString;
+					} else
+						throw new IllegalArgumentException("Class " + idFieldValue.getClass() + " for value of field "
+								+ idField + " is not supported as ID field value");
+				}
+				if (null != idPrefix)
+					docId = idPrefix + docId;
+				if (docId == null)
+					throw new AnalysisEngineProcessException(new IllegalStateException(
+							"Could neither get a document ID from the generated document nor from the CAS directly. The generated document is: "
+									+ gson.toJson(doc)));
+				doc.setId(docId);
 			}
-			if (null != idPrefix)
-				docId = idPrefix + docId;
-			if (docId == null)
-				throw new AnalysisEngineProcessException(new IllegalStateException(
-						"Could neither get a document ID from the generated document nor from the CAS directly. The generated document is: "
-								+ gson.toJson(doc)));
-			doc.setId(docId);
 			return doc;
 		} catch (Exception e) {
 			log.error("Error with document ID {}.", JCoReTools.getDocId(aJCas));

@@ -69,6 +69,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      */
     @Override
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
+        super.initialize(aContext);
         componentDbName = (String) aContext.getConfigParameterValue(PARAM_CHECKPOINT_NAME);
         dbcConfigPath = (String) aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG);
         indicateFinished = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_INDICATE_FINISHED)).orElse(false);
@@ -108,7 +109,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     @Override
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
-        log.debug("BatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
+        log.debug("CollectionProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
         if (indicateFinished)
             docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
@@ -120,6 +121,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
     }
 
     private void customBatchProcessingComplete() throws AnalysisEngineProcessException {
+        log.debug("CustomBatchProcessComplete called, stashing {} documents to be ready for marked as being finished", docIds.size());
         if (indicateFinished)
             docReleaseCheckpoint.release(jedisSyncKey, docIds.stream());
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
@@ -134,6 +136,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
+        log.trace("Processing jCas instance " + aJCas);
         DocumentId documentId;
         try {
             final DBProcessingMetaData dbProcessingMetaData = JCasUtil.selectSingle(aJCas, DBProcessingMetaData.class);
@@ -198,12 +201,24 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
             sqlMarkIsProcessed = String.format("UPDATE %s SET %s='%s', %s=TRUE, %s=FALSE WHERE %s", subsetTableName, Constants.LAST_COMPONENT, componentDbName, Constants.IS_PROCESSED, Constants.IN_PROCESS, primaryKeyPsString);
 
         if (!documentIdsToSetLastComponent.isEmpty()) {
-            log.debug("Setting the last component to {} for {} documents", componentDbName, documentIdsToSetLastComponent.size());
+            log.debug("Setting the last component to '{}' for {} documents", componentDbName, documentIdsToSetLastComponent.size());
             updateSubsetTable(conn, documentIdsToSetLastComponent, sqlSetLastComponent);
         }
         if (markIsProcessed) {
-            log.debug("Marking {} documents to having been processed by component \"{}\".", documentIdsToSetLastComponent.size(), componentDbName);
+            log.debug("Marking {} documents to having been processed by component \"{}\".", processedDocumentIds.size(), componentDbName);
+            log.debug("SQL: {}", sqlMarkIsProcessed);
+            log.trace("Marking the following document IDS as having been processed: {}", processedDocumentIds);
             updateSubsetTable(conn, processedDocumentIds, sqlMarkIsProcessed);
+        }
+        try {
+            log.debug("Connection is auto commit: {}", conn.getAutoCommit());
+            if (!conn.getAutoCommit()) {
+                log.debug("Committing changes");
+                conn.commit();
+            }
+        } catch (SQLException e) {
+            log.error("Could not commit the document processing status changes.", e);
+            throw new AnalysisEngineProcessException(e);
         }
     }
 
@@ -221,6 +236,7 @@ public class DBCheckpointAE extends JCasAnnotator_ImplBase {
                     ps.addBatch();
                 }
                 try {
+                    log.debug("Executing SQL command batch for being processed.");
                     ps.executeBatch();
                 } catch (BatchUpdateException e) {
                     if (e.getMessage().contains("deadlock detected")) {

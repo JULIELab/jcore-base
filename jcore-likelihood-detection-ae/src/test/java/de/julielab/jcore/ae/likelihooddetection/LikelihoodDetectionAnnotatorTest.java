@@ -5,21 +5,21 @@ import de.julielab.jcore.types.LikelihoodIndicator;
 import de.julielab.jcore.types.Token;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
@@ -68,9 +68,6 @@ public class LikelihoodDetectionAnnotatorTest {
     @Test
     @SuppressWarnings("rawtypes")
     public void testProcess() throws ResourceInitializationException, IOException, InvalidXMLException {
-
-        XMLInputSource likelihoodXML = null;
-        ResourceSpecifier likelihoodSpec = null;
         AnalysisEngine likelihoodAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR);
         JCas aJCas = null;
         try {
@@ -126,5 +123,23 @@ public class LikelihoodDetectionAnnotatorTest {
         prediction.add(predictedIndicators);
         prediction.add(predictedCategories);
         return prediction;
+    }
+
+    @Test
+    public void test() throws Exception {
+        String text = "Genome-wide expression analyses indicate that TAZ/YAP, TEADs, and TGFβ-induced signals coordinate a specific pro-tumorigenic transcriptional program";
+        AnalysisEngine likelihoodAnnotator = AnalysisEngineFactory.createEngine(DESCRIPTOR);
+        JCas aJCas = null;
+        try {
+            aJCas = likelihoodAnnotator.newJCas();
+        } catch (ResourceInitializationException e) {
+            LOGGER.error("testProcess()", e);
+        }
+        likelihoodAnnotator.process(aJCas);
+
+        final Collection<LikelihoodIndicator> select = JCasUtil.select(aJCas, LikelihoodIndicator.class);
+        for (var s : select) {
+            System.out.println(s.getCoveredText());
+        }
     }
 }

@@ -9,15 +9,24 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+/**
+ * Searches over directories and, optionally, the contents of ZIP archives for files with an (n)xml extension.
+ * Returns URIs that either point to single files or to entries into ZIP archives. Both can equally be accessed via
+ * "uri.toURL().openStream()" which is done in the NxmlDocumentParser.
+ */
 public class NXMLURIIterator implements Iterator<URI> {
     private final static Logger log = LoggerFactory.getLogger(NXMLURIIterator.class);
     private final static Logger logFileSearch = LoggerFactory.getLogger(NXMLURIIterator.class.getCanonicalName() + ".FileSearch");
@@ -44,7 +53,7 @@ public class NXMLURIIterator implements Iterator<URI> {
             // The beginning: The currentDirectory is null and we start at
             // the given path (which actually might be a single file to
             // read).
-            log.debug("Starting background thread to search for PMC (.nxml) files at {}", basePath);
+            log.debug("Starting background thread to search for PMC (.xml) files at {}", basePath);
             CompletableFuture.runAsync(() -> setFilesAndSubDirectories(basePath, false));
             fileSearchRunning = true;
         }
@@ -74,7 +83,7 @@ public class NXMLURIIterator implements Iterator<URI> {
             if ((searchRecursively || directory.equals(basePath)) && !isZipFile(directory)) {
                 logFileSearch.debug("Identified {} as a directory, reading files and subdirectories", directory);
                 // set the files in the directory
-                for (File file : directory.listFiles(f -> f.isFile() && f.getName().contains(".nxml") && !isZipFile(f) && isInWhitelist(f))) {
+                for (File file : directory.listFiles(f -> f.isFile() && (f.getName().contains(".xml") || f.getName().contains(".nxml")) && !isZipFile(f) && isInWhitelist(f))) {
                     URI toURI = file.toURI();
                     try {
                         uris.put(toURI);
@@ -83,35 +92,45 @@ public class NXMLURIIterator implements Iterator<URI> {
                         throw new UncheckedPmcReaderException(e);
                     }
                 }
+                // Save the subdirectories and potentially ZIP files for a recursive reading call further below
                 Stream.of(directory.listFiles(f -> f.isDirectory())).forEach(pendingSubdirs::push);
                 if (searchZip)
                     Stream.of(directory.listFiles(f -> f.isFile() && isZipFile(f))).forEach(pendingSubdirs::push);
+                logFileSearch.trace("Added subdirectories and/or ZIP files to the list of pending directories and archives. There are now {} pending.", pendingSubdirs.size());
             } else if (searchZip && isZipFile(directory)) {
                 logFileSearch.debug("Identified {} as a ZIP archive, retrieving its inventory", directory);
                 logFileSearch.debug("Searching ZIP archive {} for eligible documents", directory);
                 try (ZipFile zf = new ZipFile(directory)) {
                     final Enumeration<? extends ZipEntry> entries = zf.entries();
+                    int numEntries = 0;
                     while (entries.hasMoreElements()) {
                         final ZipEntry e = entries.nextElement();
-                        if (!e.isDirectory() && e.getName().contains(".nxml") && isInWhitelist(new File(e.getName()))) {
-                            final String urlStr = "jar:" + directory.toURI().toString() + "!/" + e.getName();
-                            URL url = new URL(urlStr);
+                        if (!e.isDirectory() && (e.getName().contains(".xml") || e.getName().contains(".nxml")) && isInWhitelist(new File(e.getName()))) {
+                            final String urlStr = "jar:" + directory.toURI() + "!/" + e.getName();
+                            int exclamationIndex = urlStr.indexOf('!');
+                            final String urlEncodedStr = urlStr.substring(0, exclamationIndex + 2) + Stream.of(urlStr.substring(exclamationIndex + 2).split("/")).map(x -> URLEncoder.encode(x, UTF_8)).collect(Collectors.joining("/"));
+                            URL url = new URL(urlEncodedStr);
                             try {
                                 final URI uri = url.toURI();
                                 logFileSearch.trace("Waiting to put URI {} into queue", uri);
                                 uris.put(uri);
-                                logFileSearch.trace("Successfully put URI {} into queue", uri);
+                                ++numEntries;
+                                logFileSearch.trace("Successfully put URI {} into queue. Queue size: {}", uri, uris.size());
                             } catch (InterruptedException e1) {
                                 logFileSearch.error("Putting URI for URL {} into the queue was interrupted", url);
                                 throw new UncheckedPmcReaderException(e1);
                             } catch (URISyntaxException e1) {
                                 logFileSearch.error("Could not convert URL {} to URI.", url, e);
+                                throw new UncheckedPmcReaderException(e1);
                             }
                         }
                     }
+                    logFileSearch.trace("Finished retrieving files from ZIP archive {}. {} eligible documents were read.", directory, numEntries);
                 } catch (IOException e) {
                     logFileSearch.error("Could not read from {}", directory);
                     throw new UncheckedPmcReaderException(e);
+                } catch (Throwable t) {
+                    logFileSearch.error("Unexpected error:", t);
                 }
             } else {
                 logFileSearch.debug("Recursive search is deactivated, skipping subdirectory {}", directory);
@@ -164,7 +183,7 @@ public class NXMLURIIterator implements Iterator<URI> {
     private boolean isInWhitelist(String name) {
         boolean inWhitelist = whitelist.contains(name) || (whitelist.size() == 1 && whitelist.contains("all"));
         if (!inWhitelist)
-            log.trace("Skipping document with name/id {} because it is not contained in the white list.", name);
+            logFileSearch.trace("Skipping document with name/id {} because it is not contained in the white list.", name);
         return inWhitelist;
     }
 

@@ -1,0 +1,17 @@
+<mappings>
+    <documentText>
+        <partOfDocumentText id="0">
+            <xPath>/xml/text</xPath>
+        </partOfDocumentText>
+    </documentText>
+    <tsType>
+        <tsFullClassName>de.julielab.jcore.types.Header</tsFullClassName>
+        <tsFeature>
+            <tsFeatureName>
+                docId
+            </tsFeatureName>
+            <xPath>/xml/docid</xPath>
+            <tsFullClassName>java.lang.String</tsFullClassName>
+        </tsFeature>
+    </tsType>
+</mappings>

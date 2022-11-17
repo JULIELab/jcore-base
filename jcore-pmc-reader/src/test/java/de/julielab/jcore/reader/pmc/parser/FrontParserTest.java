@@ -16,11 +16,11 @@ import de.julielab.jcore.types.pubmed.Header;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FrontParserTest {
 	@Test
@@ -38,7 +38,7 @@ public class FrontParserTest {
 		Annotation annotation = frontResult.getAnnotation();
 		assertTrue(annotation instanceof Header);
 		Header header = (Header) annotation;
-		assertEquals("2847692", header.getDocId());
+		assertEquals("PMC2847692", header.getDocId());
 		assertEquals("10.1007/s13280-009-0005-8", header.getDoi());
 		assertNotNull(header.getOtherIDs());
 		assertTrue(header.getOtherIDs().size() > 0);

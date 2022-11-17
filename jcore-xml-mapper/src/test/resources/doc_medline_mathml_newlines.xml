@@ -1,0 +1,171 @@
+<MedlineCitation Status="MEDLINE" IndexingMethod="Curated" Owner="NLM">
+    <PMID Version="1">30712376</PMID>
+    <DateCompleted>
+        <Year>2019</Year>
+        <Month>07</Month>
+        <Day>01</Day>
+    </DateCompleted>
+    <DateRevised>
+        <Year>2020</Year>
+        <Month>12</Month>
+        <Day>15</Day>
+    </DateRevised>
+    <Article PubModel="Print-Electronic">
+        <Journal>
+            <ISSN IssnType="Electronic">1029-2454</ISSN>
+            <JournalIssue CitedMedium="Internet">
+                <Volume>35</Volume>
+                <Issue>1</Issue>
+                <PubDate>
+                    <Year>2019</Year>
+                    <Month>01</Month>
+                </PubDate>
+            </JournalIssue>
+            <Title>Biofouling</Title>
+            <ISOAbbreviation>Biofouling</ISOAbbreviation>
+        </Journal>
+        <ArticleTitle>An investigation into the effects of marine biofilm on the roughness and drag characteristics of surfaces coated with different sized cuprous oxide (Cu<sub>2</sub>O) particles.</ArticleTitle>
+        <Pagination>
+            <MedlinePgn>15-33</MedlinePgn>
+        </Pagination>
+        <ELocationID EIdType="doi" ValidYN="Y">10.1080/08927014.2018.1559305</ELocationID>
+        <Abstract>
+            <AbstractText>Biofilms typically increase surface roughness and consequently the drag penalties on marine vessels. However, there is a lack of data regarding the time-dependent influence of biofilms on antifouling surface characteristics and frictional drag, especially for surface coatings with different sizes of cuprous oxide (<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
+                <mml:msub>
+                    <mml:mrow>
+                        <mml:mtext>Cu</mml:mtext>
+                    </mml:mrow>
+                    <mml:mrow>
+                        <mml:mn>2</mml:mn>
+                    </mml:mrow>
+                </mml:msub>
+                <mml:mi mathvariant="normal">O</mml:mi>
+            </mml:math>). In this study, a series of pressure drop measurements was carried out using flat plates coated with different sizes of <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
+                <mml:msub>
+                    <mml:mrow>
+                        <mml:mtext>Cu</mml:mtext>
+                    </mml:mrow>
+                    <mml:mrow>
+                        <mml:mn>2</mml:mn>
+                    </mml:mrow>
+                </mml:msub>
+                <mml:mi mathvariant="normal">O</mml:mi>
+            </mml:math>. The cuprous oxide-containing surfaces were deployed at sea for a period of six months to allow biofilm to develop. Surface microstructure and roughness analyses were carried out every six weeks using scanning electron microscopy and laser roughness surface profilometry. From the data, the added frictional drag caused by biofilm on ships was predicted, based on roughness function using Granville extrapolations. The analyses indicated that biofilms had significant impacts by altering the surface microstructure, resulting in higher frictional drag. However, due to the interaction between the biofilm and the physico-chemical properties of the substratum for panels coated with larger <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
+                <mml:msub>
+                    <mml:mrow>
+                        <mml:mtext>Cu</mml:mtext>
+                    </mml:mrow>
+                    <mml:mrow>
+                        <mml:mn>2</mml:mn>
+                    </mml:mrow>
+                </mml:msub>
+                <mml:mi mathvariant="normal">O</mml:mi>
+            </mml:math>, the roughness and drag measurement results were both found to have fluctuating increments.</AbstractText>
+        </Abstract>
+        <AuthorList CompleteYN="Y">
+            <Author ValidYN="Y">
+                <LastName>Li</LastName>
+                <ForeName>Chang</ForeName>
+                <Initials>C</Initials>
+                <Identifier Source="ORCID">0000-0003-3514-7857</Identifier>
+                <AffiliationInfo>
+                    <Affiliation>Marine, Offshore and Subsea Technology group, School of Engineering, Newcastle University, Newcastle upon Tyne, UK.</Affiliation>
+                </AffiliationInfo>
+            </Author>
+            <Author ValidYN="Y">
+                <LastName>Atlar</LastName>
+                <ForeName>Mehmet</ForeName>
+                <Initials>M</Initials>
+                <AffiliationInfo>
+                    <Affiliation>Department of Naval Architecture Ocean and Marine Engineering, University of Strathclyde, Glasgow, UK.</Affiliation>
+                </AffiliationInfo>
+            </Author>
+            <Author ValidYN="Y">
+                <LastName>Haroutunian</LastName>
+                <ForeName>Maryam</ForeName>
+                <Initials>M</Initials>
+                <AffiliationInfo>
+                    <Affiliation>Marine, Offshore and Subsea Technology group, School of Engineering, Newcastle University, Newcastle upon Tyne, UK.</Affiliation>
+                </AffiliationInfo>
+            </Author>
+            <Author ValidYN="Y">
+                <LastName>Norman</LastName>
+                <ForeName>Rose</ForeName>
+                <Initials>R</Initials>
+                <AffiliationInfo>
+                    <Affiliation>Marine, Offshore and Subsea Technology group, School of Engineering, Newcastle University, Newcastle upon Tyne, UK.</Affiliation>
+                </AffiliationInfo>
+            </Author>
+            <Author ValidYN="Y">
+                <LastName>Anderson</LastName>
+                <ForeName>Colin</ForeName>
+                <Initials>C</Initials>
+                <AffiliationInfo>
+                    <Affiliation>Department of Research and Development, American Chemet Corporation, East Helena, Montana 59635, USA.</Affiliation>
+                </AffiliationInfo>
+            </Author>
+        </AuthorList>
+        <Language>eng</Language>
+        <PublicationTypeList>
+            <PublicationType UI="D016428">Journal Article</PublicationType>
+            <PublicationType UI="D013485">Research Support, Non-U.S. Gov't</PublicationType>
+        </PublicationTypeList>
+        <ArticleDate DateType="Electronic">
+            <Year>2019</Year>
+            <Month>02</Month>
+            <Day>04</Day>
+        </ArticleDate>
+    </Article>
+    <MedlineJournalInfo>
+        <Country>England</Country>
+        <MedlineTA>Biofouling</MedlineTA>
+        <NlmUniqueID>9200331</NlmUniqueID>
+        <ISSNLinking>0892-7014</ISSNLinking>
+    </MedlineJournalInfo>
+    <ChemicalList>
+        <Chemical>
+            <RegistryNumber>789U1901C5</RegistryNumber>
+            <NameOfSubstance UI="D003300">Copper</NameOfSubstance>
+        </Chemical>
+        <Chemical>
+            <RegistryNumber>T8BEA5064F</RegistryNumber>
+            <NameOfSubstance UI="C000520">cuprous oxide</NameOfSubstance>
+        </Chemical>
+    </ChemicalList>
+    <CitationSubset>IM</CitationSubset>
+    <MeshHeadingList>
+        <MeshHeading>
+            <DescriptorName UI="D018441" MajorTopicYN="Y">Biofilms</DescriptorName>
+        </MeshHeading>
+        <MeshHeading>
+            <DescriptorName UI="D003300" MajorTopicYN="N">Copper</DescriptorName>
+            <QualifierName UI="Q000737" MajorTopicYN="Y">chemistry</QualifierName>
+        </MeshHeading>
+        <MeshHeading>
+            <DescriptorName UI="D017276" MajorTopicYN="N">Friction</DescriptorName>
+        </MeshHeading>
+        <MeshHeading>
+            <DescriptorName UI="D008422" MajorTopicYN="N">Materials Testing</DescriptorName>
+        </MeshHeading>
+        <MeshHeading>
+            <DescriptorName UI="D008855" MajorTopicYN="N">Microscopy, Electron, Scanning</DescriptorName>
+        </MeshHeading>
+        <MeshHeading>
+            <DescriptorName UI="D012623" MajorTopicYN="N">Seawater</DescriptorName>
+        </MeshHeading>
+        <MeshHeading>
+            <DescriptorName UI="D013499" MajorTopicYN="Y">Surface Properties</DescriptorName>
+        </MeshHeading>
+    </MeshHeadingList>
+    <KeywordList Owner="NOTNLM">
+        <Keyword MajorTopicYN="Y">added resistance</Keyword>
+        <Keyword MajorTopicYN="Y">antifouling</Keyword>
+        <Keyword MajorTopicYN="Y">biofilm</Keyword>
+        <Keyword MajorTopicYN="Y">frictional drag</Keyword>
+        <Keyword MajorTopicYN="Y">particle size</Keyword>
+        <Keyword MajorTopicYN="Y">pressure drop measurement</Keyword>
+        <Keyword MajorTopicYN="Y">roughness characteristic</Keyword>
+        <Keyword MajorTopicYN="Y">roughness function</Keyword>
+        <Keyword MajorTopicYN="Y">Cuprous oxide (<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"> 						<mml:msub> 							<mml:mrow> 								<mml:mtext>Cu</mml:mtext> 		</mml:mrow> 							<mml:mrow> 								<mml:mn>2</mml:mn> 							</mml:mrow> 						</mml:msub> 						<mml:mi mathvariant="normal">O</mml:mi> 					</mml:math>)</Keyword>
+    </KeywordList>
+</MedlineCitation>

@@ -19,18 +19,21 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PMCReaderTest {
+
     @Test
     public void testPmcReader1() throws Exception {
         // read a single file, parse it and right it to XMI for manual review
@@ -83,7 +86,7 @@ public class PMCReaderTest {
 
             cas.reset();
         }
-        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
+        assertThat(foundDocuments).containsExactlyInAnyOrder("PMC2847692", "PMC3201365", "PMC4257438", "PMC2758189", "PMC2970367");
     }
 
     @Test
@@ -122,7 +125,7 @@ public class PMCReaderTest {
 
             cas.reset();
         }
-        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
+        assertThat(foundDocuments).containsExactlyInAnyOrder("PMC2847692", "PMC3201365", "PMC4257438", "PMC2758189", "PMC2970367");
     }
 
     @Test
@@ -146,7 +149,7 @@ public class PMCReaderTest {
             foundDocuments.add(header.getDocId());
             cas.reset();
         }
-        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "2758189");
+        assertThat(foundDocuments).containsExactlyInAnyOrder("PMC2847692", "PMC2758189");
     }
 
     @Test
@@ -176,7 +179,7 @@ public class PMCReaderTest {
         Header header = (Header) CasUtil.selectSingle(cas.getCas(),
                 CasUtil.getAnnotationType(cas.getCas(), Header.class));
         assertNotNull(header);
-        assertEquals("2847692", header.getDocId());
+        assertEquals("PMC2847692", header.getDocId());
         assertNotNull(header.getPubTypeList());
         assertTrue(header.getPubTypeList().size() > 0);
         assertEquals("Ambio", ((Journal) header.getPubTypeList(0)).getTitle());
@@ -229,7 +232,7 @@ public class PMCReaderTest {
             assertNotNull(table.getObjectTitle());
             Title tabelTitle = table.getObjectTitle();
             if (tablenum == 0) {
-                assertEquals("Table 1", tabelTitle.getCoveredText());
+                assertEquals("Table 1", tabelTitle.getCoveredText());
                 // the whitespace is actually a no-break space; note that the
                 // last '1' is actually the digit 1 and not a part of the
                 // codepoint
@@ -258,7 +261,7 @@ public class PMCReaderTest {
             assertNotNull(figure.getObjectTitle());
             Title tabelTitle = figure.getObjectTitle();
             if (tablenum == 0) {
-                assertEquals("Fig. 1", tabelTitle.getCoveredText());
+                assertEquals("Fig. 1", tabelTitle.getCoveredText());
                 // the whitespace is actually a no-break space; note that the
                 // last '1' is actually the digit 1 and not a part of the
                 // codepoint
@@ -288,8 +291,8 @@ public class PMCReaderTest {
         Set<String> expectedKeywords = new HashSet<>(Arrays.asList("Baltic Sea Action Plan (BSAP)", "Costs", "Review",
                 "Eutrophication", "Hazardous substances"));
         IntStream.range(0, md.getKeywordList().size())
-                .forEach(i -> assertTrue("The keyword \"" + md.getKeywordList(i).getName() + "\" was not expected",
-                        expectedKeywords.remove(md.getKeywordList(i).getName())));
+                .forEach(i -> assertTrue(expectedKeywords.remove(md.getKeywordList(i).getName()),
+                        "The keyword \"" + md.getKeywordList(i).getName() + "\" was not expected"));
         assertTrue(expectedKeywords.isEmpty());
     }
 
@@ -360,6 +363,53 @@ public class PMCReaderTest {
     }
 
     @Test
+    public void testBibliographyReferencesAnnotated() throws Exception {
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-recursive/PMC2847692.nxml.gz");
+        reader.getNext(cas.getCas());
+        Collection<InternalReference> refs = JCasUtil.select(cas, InternalReference.class);
+        // Without a filter on bibliographic references, there should 76 references to bibliography
+        List<InternalReference> bibliography = refs.stream().filter(r -> r.getReftype().equalsIgnoreCase("bibliography")).collect(Collectors.toList());
+        assertThat(bibliography).hasSize(76);
+
+        // RegEx for something like "2004a"
+        Matcher yearReferenceMatcher = Pattern.compile("[0-9]{4}[ab]?").matcher(cas.getDocumentText());
+        int numReferencePatternsInText = 0;
+        while (yearReferenceMatcher.find()) {
+            ++numReferencePatternsInText;
+        }
+        // Some found patterns are no references, thus the number is higher than that of the references.
+        assertThat(numReferencePatternsInText).isEqualTo(84);
+    }
+
+    @Test
+    public void testBibliographyReferencesOmitted() throws Exception {
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-recursive/PMC2847692.nxml.gz",
+                PMCMultiplierReader.PARAM_OMIT_BIB_REFERENCES, true);
+        reader.getNext(cas.getCas());
+        Collection<InternalReference> refs = JCasUtil.select(cas, InternalReference.class);
+        // Since we set the omission parameter to true, there should be no bibliographic references
+        List<InternalReference> bibliography = refs.stream().filter(r -> r.getReftype().equalsIgnoreCase("bibliography")).collect(Collectors.toList());
+        assertThat(bibliography).isEmpty();
+
+        // RegEx for something like "2004a"
+        Matcher yearReferenceMatcher = Pattern.compile("[0-9]{4}[ab]?").matcher(cas.getDocumentText());
+        int numReferencePatternsInText = 0;
+        while (yearReferenceMatcher.find()) {
+            ++numReferencePatternsInText;
+        }
+        // In the test above, where we have the same document but with bib. references, there were 84 occurrences
+        // of the pattern. 76 of those were actual references. Thus, after removing the references, 8 pattern
+        // occurrences should remain.
+        assertThat(numReferencePatternsInText).isEqualTo(8);
+    }
+
+    @Test
     public void testPmcReaderDescriptor() throws Exception {
         // read a whole directory with subdirectories
         JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
@@ -378,7 +428,7 @@ public class PMCReaderTest {
 
             cas.reset();
         }
-        assertThat(foundDocuments).containsExactlyInAnyOrder("2847692", "3201365", "4257438", "2758189", "2970367");
+        assertThat(foundDocuments).containsExactlyInAnyOrder("PMC2847692", "PMC3201365", "PMC4257438", "PMC2758189", "PMC2970367");
     }
 
     @Test
@@ -417,5 +467,22 @@ public class PMCReaderTest {
         reader.getNext(cas.getCas());
 		String docId = ((Header)cas.getAnnotationIndex(Header.type).iterator().next()).getDocId();
 		assertEquals(docId, "PMC2847692");
+    }
+
+    @Test
+    public void testInlineXmlSpaceIssues() throws Exception {
+        // read a single file, parse it and right it to XMI for manual review
+        JCas cas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-meta-pubmed-types",
+                "de.julielab.jcore.types.jcore-document-structure-pubmed-types");
+        CollectionReader reader = CollectionReaderFactory.createReader(PMCReader.class, PMCReader.PARAM_INPUT,
+                "src/test/resources/documents-errorcauses/PMC2674676.xml.gz");
+        while (reader.hasNext()) {
+            reader.getNext(cas.getCas());
+            // looks like this in the XML:
+            // This preprocessing is performed on both <italic>s</italic> and <italic>r</italic>
+            // Thus, there should be whitespaces around s and r. In the error case, the text looked like this:
+            // This preprocessing is performed on boths andr
+            assertThat(cas.getDocumentText()).contains("This preprocessing is performed on both s and r");
+        }
     }
 }

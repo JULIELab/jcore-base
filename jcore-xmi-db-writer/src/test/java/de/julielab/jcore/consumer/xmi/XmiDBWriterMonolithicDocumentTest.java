@@ -3,7 +3,9 @@ package de.julielab.jcore.consumer.xmi;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.db.test.DBTestUtils;
-import de.julielab.jcore.types.*;
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -12,39 +14,35 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Testcontainers
 public class XmiDBWriterMonolithicDocumentTest {
-    @ClassRule
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    @Container
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
     private static DataBaseConnector dbc;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws ConfigurationException {
         dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("medline_2017", 1, postgres);
         DBTestUtils.createAndSetHiddenConfig("src/test/resources/hiddenConfig.txt", postgres);
     }
 
-    @AfterClass
+    @AfterAll
     public static void shutDown() {
         dbc.close();
     }

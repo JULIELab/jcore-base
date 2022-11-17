@@ -2,7 +2,9 @@ package de.julielab.jcore.reader.xmi;
 
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.db.test.DBTestUtils;
-import de.julielab.jcore.types.*;
+import de.julielab.jcore.types.Header;
+import de.julielab.jcore.types.Sentence;
+import de.julielab.jcore.types.Token;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionReader;
@@ -20,11 +22,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XmiDBReaderBinaryFormatTest {
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
     private static String xmisubset;
 
@@ -36,7 +38,7 @@ public class XmiDBReaderBinaryFormatTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 2, postgres);
         XmiDBSetupHelper.processAndSplitData(costosysConfig, false, true,"public");
-        assertTrue("The data document table exists", dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")));
+        assertTrue(dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")), "The data document table exists");
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");
         dbc.reserveConnection();

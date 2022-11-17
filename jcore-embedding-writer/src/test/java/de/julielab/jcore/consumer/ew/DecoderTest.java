@@ -2,7 +2,7 @@ package de.julielab.jcore.consumer.ew;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.data.Offset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.ByteBuffer;

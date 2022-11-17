@@ -13,16 +13,16 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EventConsumerTest {
 	private static final String EVENT_E8 = "E8	Phosphorylation:T14 Theme:T17 Site:T13";
@@ -44,7 +44,7 @@ public class EventConsumerTest {
 	private AnalysisEngine consumer;
 	private FilenameFilter filter;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		cas = JCasFactory.createJCas("src/test/resources/types/jcore-all-types");
 		consumer = AnalysisEngineFactory.createEngine(BioEventConsumer.class,
@@ -113,7 +113,7 @@ public class EventConsumerTest {
 		};
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 
 		File dataDirectory = new File(TARGET_DIRECTORY);

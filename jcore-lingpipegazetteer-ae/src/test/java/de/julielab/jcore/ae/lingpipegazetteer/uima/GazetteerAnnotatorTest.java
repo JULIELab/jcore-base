@@ -18,9 +18,9 @@ package de.julielab.jcore.ae.lingpipegazetteer.uima;
 import com.aliasi.chunk.Chunk;
 import com.aliasi.chunk.ChunkFactory;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.ChunkerProviderImplAlt;
+import de.julielab.jcore.ae.lingpipegazetteer.chunking.ConfigurableChunkerProviderImplAlt;
 import de.julielab.jcore.ae.lingpipegazetteer.chunking.OverlappingChunk;
 import de.julielab.jcore.types.*;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -29,6 +29,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -38,18 +39,19 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class GazetteerAnnotatorTest extends TestCase {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class GazetteerAnnotatorTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GazetteerAnnotatorTest.class);
 
@@ -120,6 +122,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 	 * tests whether the expected number of entities is found for both exact and
 	 * approximate matching
 	 */
+	@Test
 	public void testProcess() throws AnalysisEngineProcessException, CASException, ResourceConfigurationException,
 			InvalidXMLException, ResourceInitializationException, IOException, SAXException {
 		AnalysisEngine gazetteerAnnotator = null;
@@ -238,7 +241,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine gazetteerAnnotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine gazetteerAnnotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_CHECK_ACRONYMS, false, GazetteerAnnotator.PARAM_OUTPUT_TYPE,
 				"de.julielab.jcore.types.OntClassMention", GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
@@ -282,7 +285,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 		JCas jCas = annotator.newJCas();
@@ -292,19 +295,19 @@ public class GazetteerAnnotatorTest extends TestCase {
 
 		FSIterator<org.apache.uima.jcas.tcas.Annotation> it = jCas.getAnnotationIndex(EntityMention.type).iterator();
 
-		assertTrue("There are no entity annotations in the CAS.", it.hasNext());
+		assertTrue(it.hasNext(), "There are no entity annotations in the CAS.");
 		EntityMention em = (EntityMention) it.next();
-		assertEquals("Start wrong: ", new Integer(0), new Integer(em.getBegin()));
-		assertEquals("End wrong: ", new Integer(5), new Integer(em.getEnd()));
-		assertEquals("Wrong type: ", "SHP-1", em.getSpecificType());
+		assertEquals( new Integer(0),  new Integer(em.getBegin()), "Start wrong: ");
+		assertEquals( new Integer(5),  new Integer(em.getEnd()), "End wrong: ");
+		assertEquals( "SHP-1",  em.getSpecificType(), "Wrong type: ");
 
-		assertTrue("The secnond entity annotations is missing.", it.hasNext());
+		assertTrue(it.hasNext(), "The secnond entity annotations is missing.");
 		em = (EntityMention) it.next();
-		assertEquals("Start wrong: ", new Integer(10), new Integer(em.getBegin()));
-		assertEquals("End wrong: ", new Integer(45), new Integer(em.getEnd()));
-		assertEquals("Wrong type: ", "KLRG2", em.getSpecificType());
+		assertEquals( new Integer(10),  new Integer(em.getBegin()), "Start wrong: ");
+		assertEquals( new Integer(45),  new Integer(em.getEnd()), "End wrong: ");
+		assertEquals( "KLRG2",  em.getSpecificType(), "Wrong type: ");
 
-		assertFalse("There are too many annotations.", it.hasNext());
+		assertFalse(it.hasNext(), "There are too many annotations.");
 
 		jCas.reset();
 		jCas.setDocumentText(
@@ -312,13 +315,13 @@ public class GazetteerAnnotatorTest extends TestCase {
 		annotator.process(jCas);
 		it = jCas.getAnnotationIndex(EntityMention.type).iterator();
 
-		assertTrue("There are no entity annotations in the CAS.", it.hasNext());
+		assertTrue(it.hasNext(), "There are no entity annotations in the CAS.");
 		em = (EntityMention) it.next();
-		assertEquals("Start wrong: ", new Integer(17), new Integer(em.getBegin()));
-		assertEquals("End wrong: ", new Integer(103), new Integer(em.getEnd()));
-		assertEquals("Wrong type: ", "CHEM", em.getSpecificType());
+		assertEquals( new Integer(17),  new Integer(em.getBegin()), "Start wrong: ");
+		assertEquals( new Integer(103),  new Integer(em.getEnd()), "End wrong: ");
+		assertEquals( "CHEM",  em.getSpecificType(), "Wrong type: ");
 
-		assertFalse("There are too many annotations.", it.hasNext());
+		assertFalse(it.hasNext(), "There are too many annotations.");
 
 		jCas.reset();
 		jCas.setDocumentText(
@@ -326,13 +329,13 @@ public class GazetteerAnnotatorTest extends TestCase {
 		annotator.process(jCas);
 		it = jCas.getAnnotationIndex(EntityMention.type).iterator();
 
-		assertTrue("There are no entity annotations in the CAS.", it.hasNext());
+		assertTrue(it.hasNext(), "There are no entity annotations in the CAS.");
 		em = (EntityMention) it.next();
-		assertEquals("Start wrong: ", new Integer(17), new Integer(em.getBegin()));
-		assertEquals("End wrong: ", new Integer(103), new Integer(em.getEnd()));
-		assertEquals("Wrong type: ", "CHEM", em.getSpecificType());
+		assertEquals( new Integer(17),  new Integer(em.getBegin()), "Start wrong: ");
+		assertEquals( new Integer(103),  new Integer(em.getEnd()), "End wrong: ");
+		assertEquals( "CHEM",  em.getSpecificType(), "Wrong type: ");
 
-		assertFalse("There are too many annotations.", it.hasNext());
+		assertFalse(it.hasNext(), "There are too many annotations.");
 
 		jCas.reset();
 		jCas.setDocumentText(
@@ -340,7 +343,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		annotator.process(jCas);
 		it = jCas.getAnnotationIndex(EntityMention.type).iterator();
 
-		assertFalse("There is an annotation in CAS although there shouldnt be.", it.hasNext());
+		assertFalse(it.hasNext(), "There is an annotation in CAS although there shouldnt be.");
 
 		jCas.reset();
 		jCas.setDocumentText("Test-dosing unit KLRg1 killer cell lectin like receptor G2 Parkinson's Disease");
@@ -352,8 +355,34 @@ public class GazetteerAnnotatorTest extends TestCase {
 			System.out.println(it.next().getCoveredText());
 			counter++;
 		}
-		assertEquals("Wrong entity count: ", new Integer(4), counter);
+		assertEquals( new Integer(4),  counter, "Wrong entity count: ");
 
+	}
+
+	@Test
+	public void testAnnotatorWithPluralNormalization()
+			throws ResourceInitializationException, AnalysisEngineProcessException {
+		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
+				ChunkerProviderImplAlt.class, new File("src/test/resources/normalizepluralgazetteer.properties"));
+		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
+				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
+
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
+				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
+				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
+		JCas jCas = annotator.newJCas();
+
+		jCas.setDocumentText("High-density lipoprotein (HDL) is one of the five major groups of lipoproteins.");
+		PennBioIEPOSTag tag = new PennBioIEPOSTag(jCas, 74, 86);
+		tag.setValue("NNS");
+		tag.addToIndexes();
+		annotator.process(jCas);
+
+		Collection<EntityMention> entityMentions = JCasUtil.select(jCas, EntityMention.class);
+		assertEquals( 2,  entityMentions.size(), "Expected a single entity");
+		Iterator<EntityMention> iterator = entityMentions.iterator();
+		assertEquals( "lipoprotein",  iterator.next().getCoveredText(), "Unexpected covered entity text");
+		assertEquals( "lipoproteins",  iterator.next().getCoveredText(), "Unexpected covered entity text");
 	}
 
 	@Test
@@ -363,7 +392,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 		JCas jCas = annotator.newJCas();
@@ -388,7 +417,7 @@ public class GazetteerAnnotatorTest extends TestCase {
 			it.next();
 			counter++;
 		}
-		assertEquals("Wrong entity count: ", new Integer(1), counter);
+		assertEquals( new Integer(1),  counter, "Wrong entity count: ");
 
 		jCas.reset();
 		jCas.setDocumentText(
@@ -426,40 +455,19 @@ public class GazetteerAnnotatorTest extends TestCase {
 			}
 			assertEquals("GENE", next.getSpecificType());
 		}
-		assertEquals("Wrong entity count: ", new Integer(1), counter);
+		assertEquals( Integer.valueOf(1),  counter, "Wrong entity count: ");
 	}
 
-	@Test
-	public void testAnnotatorWithTextNormalizationMuh()
-			throws ResourceInitializationException, AnalysisEngineProcessException {
-		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
-				ChunkerProviderImplAlt.class, new File("src/test/resources/normalizegazetteer.properties"));
-		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
-				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
-				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
-				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
-		JCas jCas = annotator.newJCas();
-
-		jCas.setDocumentText("We shall now describe our system setup followed by our proposed solution, which is a fully distributed and absolute localization solution specifically designed for both one-hop and multi-hop WSNs. Our considered WSN consists of Ns number of sensors randomly placed onto a map of predefined size with Nb number of beacons. Let 𝕊 and 𝔹 be the sets describing all sensors and beacons respectively, where each sensor is noted as Sensori, i ∈ 𝕊 and each beacon is noted as Beaconj, j ∈ 𝔹. Each node either a sensor or a beacon is noted as Nodep, p ∈ 𝕊 ∪ 𝔹, and vector V⃗p is used to represent the coordinate of Nodep. Beacons are placed onto the map with fixed coordinates V⃗j, where j ∈ 𝔹. We assume that each beacon is aware of its own absolute location. Whereas each sensor is unaware of its own location, and is configured with an initial guess of location unrelated to its actual deployed location. The two-dimensional (2-D) localization problem is the estimation of Ns unknown-location coordinates V⃗i, where i ∈ 𝕊.\n");
-		annotator.process(jCas);
-
-		FSIterator<org.apache.uima.jcas.tcas.Annotation> it = jCas.getAnnotationIndex(EntityMention.type).iterator();
-while (it.hasNext()) {
-	Annotation annotation = (Annotation) it.next();
-	System.out.println(annotation.getCoveredText());
-}
-	}
 
 	@Test
-	public void testSontesthalt() throws Exception {
+	public void testGeneRecognition() throws Exception {
 		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
 				ChunkerProviderImplAlt.class, new File("src/test/resources/normalizegazetteer.eg.testdict.properties"));
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
@@ -507,13 +515,45 @@ while (it.hasNext()) {
 	}
 
 	@Test
+	public void testStopwords() throws Exception {
+		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
+				ChunkerProviderImplAlt.class, new File("src/test/resources/normalizegazetteer.eg.testdict.teststopwords.properties"));
+		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
+				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
+
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
+				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
+				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
+
+		JCas jCas = annotator.newJCas();
+
+		// Warning: This text does not make sense ;-)
+		jCas.setDocumentText(
+				"Identification of cDNAs encoding two human alpha class microsomal glutathione and the heterologous expression of glutathione S-transferase alpha-4.");
+
+		annotator.process(jCas);
+
+		Set<String> extractedGenes = new HashSet<>();
+		for (var e : JCasUtil.select(jCas, EntityMention.class)) {
+			extractedGenes.add(e.getCoveredText());
+		}
+		// The stop word list contains the term "glutathione"
+		// The current algorithm in GazetteerAnnotator#filterStopwords(String) computes the fraction that the
+		// stop word has on the whole entity and only rejects it if it exceeds some threshold. For this reason,
+		// the shorter mention is excluded while the longer is retained.
+		assertThat(extractedGenes).doesNotContain("microsomal glutathione");
+		// The whole "glutathione S-transferase alpha-4" is on the stop word list.
+		assertThat(extractedGenes).contains("glutathione S-transferase alpha-4");
+	}
+
+	@Test
 	public void testApproximate() throws Exception {
 		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
 				ChunkerProviderImplAlt.class, new File("src/test/resources/testApproximate.properties"));
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
@@ -571,9 +611,9 @@ while (it.hasNext()) {
 			assertEquals(1, bestChunkList.size());
 			Chunk bestChunk = bestChunkList.get(0);
 			assertFalse(
+					bestChunks.contains(bestChunk),
 					"Duplicate best chunk: " + bestChunk + " (\""
-							+ chunkedText.subSequence(bestChunk.start(), bestChunk.end()) + "\")",
-					bestChunks.contains(bestChunk));
+							+ chunkedText.subSequence(bestChunk.start(), bestChunk.end()) + "\")");
 			bestChunks.add(bestChunk);
 		}
 	}
@@ -635,7 +675,7 @@ while (it.hasNext()) {
 		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
 				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
 
-		AnalysisEngine annotator = AnalysisEngineFactory.createPrimitive(GazetteerAnnotator.class, tsDesc,
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
 				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
 				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
 
@@ -654,4 +694,27 @@ while (it.hasNext()) {
 		assertEquals(1, counter);
 	}
 
+	@Test
+	public void testOffsetIssueWhenNoTransliteration() throws Exception {
+		ExternalResourceDescription extDesc = ExternalResourceFactory.createExternalResourceDescription(
+				ConfigurableChunkerProviderImplAlt.class, "file:src/test/resources/pehc.dict", ConfigurableChunkerProviderImplAlt.PARAM_CASE_SENSITIVE, false, ConfigurableChunkerProviderImplAlt.PARAM_NORMALIZE_TEXT, true, ConfigurableChunkerProviderImplAlt.PARAM_TRANSLITERATE_TEXT, false, ConfigurableChunkerProviderImplAlt.PARAM_STOPWORD_FILE, "de/julielab/jcore/ae/lingpipegazetteer/stopwords/general_english_words", ConfigurableChunkerProviderImplAlt.PARAM_USE_APPROXIMATE_MATCHING, true, ConfigurableChunkerProviderImplAlt.PARAM_MAKE_VARIANTS, false);
+		TypeSystemDescription tsDesc = TypeSystemDescriptionFactory
+				.createTypeSystemDescription("de.julielab.jcore.types.jcore-semantics-mention-types");
+
+		AnalysisEngine annotator = AnalysisEngineFactory.createEngine(GazetteerAnnotator.class, tsDesc,
+				GazetteerAnnotator.PARAM_OUTPUT_TYPE, "de.julielab.jcore.types.EntityMention",
+				GazetteerAnnotator.CHUNKER_RESOURCE_NAME, extDesc);
+
+		JCas jCas = annotator.newJCas();
+
+//		jCas.setDocumentText("Clinical Features and Course of Patients with Peripheral Exudative Hemorrhagic Chorioretinopathy.\nTo evaluate the clinical characteristics of patients who were followed in our clinic with the diagnosis of peripheral exudative hemorrhagic chorioretinopathy (PEHC).\nMedical records of 12 patients who were diagnosed with PEHC in İstanbul University İstanbul Faculty of Medicine, Department of Ophthalmology between July 2006 and June 2014 were reviewed retrospectively.\nThis study included 21 eyes of 12 patients. Four (33.3%) of the patients were male and 8 (66.7%) were female and ages ranged between 73 and 89 years. Eight (66.7%) of the patients were referred to us with the diagnosis of choroidal mass. Unilateral involvement was found in 3 and bilateral involvement in 9 patients. Temporal quadrants were involved in all eyes. Fifteen eyes (71.4%) had subretinal hemorrhage and hemorrhagic/serous retinal pigment epithelial detachment, 11 (52.4%) had lipid exudation, 5 (23.8%) had chronic retinal pigment epithelium alterations, 2 (9.5%) had subretinal fibrosis and 1 (4.8%) had vitreous hemorrhage. PEHC lesions were accompanied by drusen in 11 eyes (52.4%), geographic atrophy in 2 eyes (9.5%), and choroidal neovascularization scar in 2 eyes (9.5%).");
+		jCas.setDocumentText("[...] diagnosed with PEHC in İstanbul University İstanbul Faculty of Medicine, Department of Ophthalmology [...].\n[...] PEHC lesions were accompanied by drusen [...].");
+		annotator.process(jCas);
+
+		List<String> entityStrings = new ArrayList<>();
+		for (EntityMention g : jCas.<EntityMention>getAnnotationIndex(EntityMention.type)) {
+			entityStrings.add(g.getCoveredText());
+		}
+		assertThat(entityStrings).containsExactly("PEHC", "İstanbul", "İstanbul", "PEHC", "lesions");
+	}
 }

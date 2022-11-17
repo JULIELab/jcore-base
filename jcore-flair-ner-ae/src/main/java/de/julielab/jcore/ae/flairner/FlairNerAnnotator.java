@@ -1,5 +1,6 @@
 package de.julielab.jcore.ae.flairner;
 
+import de.julielab.java.utilities.IOStreamUtilities;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderAnnotator;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderConfiguration;
 import de.julielab.jcore.ae.annotationadder.AnnotationAdderHelper;
@@ -8,9 +9,11 @@ import de.julielab.jcore.types.EmbeddingVector;
 import de.julielab.jcore.types.EntityMention;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
+import de.julielab.jcore.types.pubmed.InternalReference;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.JCoReTools;
 import de.julielab.jcore.utility.index.Comparators;
+import de.julielab.jcore.utility.index.JCoReOverlapAnnotationIndex;
 import de.julielab.jcore.utility.index.JCoReTreeMapAnnotationIndex;
 import de.julielab.jcore.utility.index.TermGenerators;
 import org.apache.uima.UimaContext;
@@ -21,8 +24,10 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +35,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -57,9 +64,9 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
     private String pythonExecutable;
     @ConfigurationParameter(name = PARAM_STORE_EMBEDDINGS, mandatory = false, description = "Optional. Possible values: ALL, ENTITIES, NONE. The FLAIR SequenceTagger first computes the embeddings for each sentence and uses those as input for the actual NER algorithm. By default, the embeddings are not stored. By setting this parameter to ALL, the embeddings of all tokens of the sentence are retrieved from flair and stored in the embeddingVectors feature of each token. Setting the parameter to ENTITIES will restrict the embedding storage to those tokens which overlap with an entity recognized by FLAIR.")
     private StoreEmbeddings storeEmbeddings;
-    @ConfigurationParameter(name = PARAM_GPU_NUM, mandatory = false, defaultValue="0", description = "Specifies the GPU device number to be used for FLAIR. This setting can be overwritten by the Java system property 'flairner.device'.")
+    @ConfigurationParameter(name = PARAM_GPU_NUM, mandatory = false, defaultValue = "0", description = "Specifies the GPU device number to be used for FLAIR. This setting can be overwritten by the Java system property 'flairner.device'.")
     private int gpuNum;
-    @ConfigurationParameter(name=PARAM_COMPONENT_ID, mandatory = false, description = "Specifies the componentId feature value given to the created annotations. Defaults to 'FlairNerAnnotator'.")
+    @ConfigurationParameter(name = PARAM_COMPONENT_ID, mandatory = false, description = "Specifies the componentId feature value given to the created annotations. Defaults to 'FlairNerAnnotator'.")
     private String componentId;
     private AnnotationAdderConfiguration adderConfig;
 
@@ -72,7 +79,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         entityClass = (String) aContext.getConfigParameterValue(PARAM_ANNOTATION_TYPE);
         flairModel = (String) aContext.getConfigParameterValue(PARAM_FLAIR_MODEL);
         storeEmbeddings = StoreEmbeddings.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_STORE_EMBEDDINGS)).orElse(StoreEmbeddings.NONE.name()));
-        gpuNum = Optional.ofNullable((Integer)aContext.getConfigParameterValue(PARAM_GPU_NUM)).orElse(0);
+        gpuNum = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_GPU_NUM)).orElse(0);
         componentId = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COMPONENT_ID)).orElse(getClass().getSimpleName());
         if (System.getProperty(GPU_NUM_SYS_PROP) != null) {
             try {
@@ -95,9 +102,35 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             pythonExecutable = pythonExecutableOpt.get();
             log.info("Python executable: {} (from descriptor)", pythonExecutable);
         }
+        List<String> pythonCommands = List.of("python3", "python3.6", "python36", "python3.7", "python37", "python");
+        for (int i = 0; i < pythonCommands.size() && pythonExecutable == null; i++) {
+            String currentPythonExecutable = pythonCommands.get(i);
+            log.debug("Trying Python executable: {}", currentPythonExecutable);
+            try {
+                try {
+                    Process exec = new ProcessBuilder(List.of(currentPythonExecutable, "--version")).redirectErrorStream(true).start();
+                    List<String> pythonOutput = IOStreamUtilities.getLinesFromInputStream(exec.getInputStream());
+                    int exitCode = exec.waitFor();
+                    if (exitCode == 0 && !pythonOutput.isEmpty()) {
+                        String versionLine = pythonOutput.get(0);
+                        Matcher m = Pattern.compile("3\\..*$").matcher(versionLine);
+                        if (m.find()) {
+                            pythonExecutable = currentPythonExecutable;
+                            log.info("Found Python {} with command {}.", m.group(), pythonExecutable);
+                        }
+                    }
+                } catch (IOException e) {
+                    log.trace("Python command {} does not exist. Trying the next.", currentPythonExecutable);
+                }
+            } catch (InterruptedException e) {
+                log.error("Error why trying to call python.", e);
+                throw new ResourceInitializationException(e);
+            }
+        }
         if (pythonExecutable == null) {
-            pythonExecutable = "python";
-            log.info("Python executable: {} (default)", pythonExecutable);
+            String msg = String.format("Could not find Python 3.x installation. The following commands were tried: %s. Please make Python 3.x available under one of those commands or specify the Python executable explicitly in the component descriptor.", String.join(", ", pythonCommands));
+            log.error(msg);
+            throw new ResourceInitializationException(new IllegalArgumentException(msg));
         }
         try {
             connector = new StdioPythonConnector(flairModel, pythonExecutable, storeEmbeddings, gpuNum);
@@ -125,22 +158,37 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(final JCas aJCas) throws AnalysisEngineProcessException {
-        int i = 0;
-        final AnnotationIndex<Sentence> sentIndex = aJCas.getAnnotationIndex(Sentence.class);
-        Map<String, Sentence> sentenceMap = new HashMap<>();
-        for (Sentence sentence : sentIndex) {
-            if (sentence.getId() == null)
-                sentence.setId("s" + i++);
-            sentenceMap.put(sentence.getId(), sentence);
-        }
         try {
+            int i = 0;
+            final AnnotationIndex<Sentence> sentIndex = aJCas.getAnnotationIndex(Sentence.class);
+            Map<String, Sentence> sentenceMap = new HashMap<>();
+            for (Sentence sentence : sentIndex) {
+                if (sentence.getId() == null)
+                    sentence.setId("s" + i++);
+                sentenceMap.put(sentence.getId(), sentence);
+            }
+            if (log.isDebugEnabled()) {
+                if (sentenceMap.isEmpty())
+                    log.debug("Document {} does not have any sentences.", JCoReTools.getDocId(aJCas));
+                if (!aJCas.getAnnotationIndex(Token.class).iterator().hasNext())
+                    log.debug("Document {} does not have any tokens", JCoReTools.getDocId(aJCas));
+            }
+            JCoReOverlapAnnotationIndex<InternalReference> intRefIndex = new JCoReOverlapAnnotationIndex<>(aJCas, InternalReference.type);
             final AnnotationAdderHelper helper = new AnnotationAdderHelper();
+            if (log.isTraceEnabled())
+            log.trace("Sending document sentences to flair for entity tagging: {}", JCasUtil.select(aJCas, Sentence.class).stream().map(Sentence::getCoveredText).collect(Collectors.toList()));
             final NerTaggingResponse taggingResponse = connector.tagSentences(StreamSupport.stream(sentIndex.spliterator(), false));
             final List<TaggedEntity> taggedEntities = taggingResponse.getTaggedEntities();
             for (TaggedEntity entity : taggedEntities) {
+                log.trace("Adding flair-tagged entity to the CAS: {}", entity);
                 final Sentence sentence = sentenceMap.get(entity.getDocumentId());
                 EntityMention em = (EntityMention) JCoReAnnotationTools.getAnnotationByClassName(aJCas, entityClass);
                 helper.setAnnotationOffsetsRelativeToSentence(sentence, em, entity, adderConfig);
+                excludeReferenceAnnotationSpans(em, intRefIndex);
+                if (em.getEnd() <= em.getBegin() || em.getCoveredText().isBlank()) {
+                    // It seems there was nothing left of a gene mention outside the internal reference; skip
+                    continue;
+                }
                 em.setSpecificType(entity.getTag());
                 em.setConfidence(String.valueOf(entity.getLabelConfidence()));
                 em.setComponentId(componentId);
@@ -160,6 +208,9 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             final String docId = JCoReTools.getDocId(aJCas);
             log.error("Could not set the offsets of an annotation in document {}", docId);
             throw new AnalysisEngineProcessException(e);
+        } catch (Throwable t) {
+            log.error("Error in {}", this.getClass().getSimpleName(), t);
+            throw new AnalysisEngineProcessException(t);
         }
     }
 
@@ -167,7 +218,7 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
         final List<TokenEmbedding> tokenEmbeddings = taggingResponse.getTokenEmbeddings();
         JCoReTreeMapAnnotationIndex<Long, Token> tokenIndex = null;
         if (!tokenEmbeddings.isEmpty())
-            tokenIndex = new JCoReTreeMapAnnotationIndex<>(Comparators.longOverlapComparator(),TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), aJCas, Token.type);
+            tokenIndex = new JCoReTreeMapAnnotationIndex<>(Comparators.longOverlapComparator(), TermGenerators.longOffsetTermGenerator(), TermGenerators.longOffsetTermGenerator(), aJCas, Token.type);
         Map<Token, List<double[]>> originalTokenEmbeddings = new HashMap<>();
         for (TokenEmbedding tokenEmbedding : tokenEmbeddings) {
             final Sentence sentence = sentenceMap.get(tokenEmbedding.getSentenceId());
@@ -210,6 +261,32 @@ public class FlairNerAnnotator extends JCasAnnotator_ImplBase {
             embeddingVector.setSource(flairModel);
             embeddingVector.setComponentId(componentId);
             token.setEmbeddingVectors(JCoReTools.addToFSArray(token.getEmbeddingVectors(), embeddingVector));
+        }
+    }
+
+    /**
+     * Internal references can actually look like a part of a gene, e.g. "filament19" where "19" is a reference.
+     * Exclude those spans from the gene mentions.
+     *
+     * @param a           The gene annotation.
+     * @param intRefIndex The reference index.
+     */
+    private void excludeReferenceAnnotationSpans(Annotation a, JCoReOverlapAnnotationIndex<? extends Annotation> intRefIndex) {
+        List<? extends Annotation> annotationsInGene = intRefIndex.search(a);
+        for (Annotation overlappingAnnotation : annotationsInGene) {
+            if (overlappingAnnotation.getBegin() == a.getBegin()) {
+                a.setBegin(overlappingAnnotation.getEnd());
+            }
+            if (overlappingAnnotation.getEnd() == a.getEnd()) {
+                a.setEnd(overlappingAnnotation.getBegin());
+            }
+            // Set zero-character spans on genes that are completely enclosed by a reference. Those are cases
+            // like, for instance, "Supplementary Figs. S12 and S13, Tables S2 and S3" where S12, S13 and even
+            // Tables S2 are annotated as genes.
+            if (overlappingAnnotation.getBegin() <= a.getBegin() && overlappingAnnotation.getEnd() >= a.getEnd()) {
+                a.setBegin(0);
+                a.setEnd(0);
+            }
         }
     }
 

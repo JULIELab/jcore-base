@@ -1,9 +1,9 @@
 # JCoRe ElasticSearchConsumer
 
-**Descriptor Path**:
+**Descriptor Paths**:
 ```
-.jcore-elasticsearch-consumer.src.main.resources.de.julielab.jcore.consumer.es.desc.jcore-elasticsearch-consumer
-.jcore-elasticsearch-consumer.src.main.resources.de.julielab.jcore.consumer.es.desc.jcore-json-consumer
+de.julielab.jcore.consumer.es.desc.jcore-elasticsearch-consumer
+de.julielab.jcore.consumer.es.desc.jcore-json-consumer
 ```
 
 ### Objective

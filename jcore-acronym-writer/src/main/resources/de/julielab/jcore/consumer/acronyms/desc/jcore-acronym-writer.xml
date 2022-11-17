@@ -2,11 +2,11 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
-    <annotatorImplementationName>de.julielab.jcore.consumer.acronyms.AcronymWriter</annotatorImplementationName>
+    <annotatorImplementationName>de.julielab.jcore.consumer.coreference.AcronymWriter</annotatorImplementationName>
     <analysisEngineMetaData>
         <name>JCoRe Acronym Writer</name>
         <description>Writes acronym annotation to a text file.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <configurationParameters>
             <configurationParameter>
                 <name>OutputFile</name>

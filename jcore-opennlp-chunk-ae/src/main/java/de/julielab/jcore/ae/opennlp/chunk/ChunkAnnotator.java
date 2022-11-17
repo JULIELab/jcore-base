@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -210,23 +211,26 @@ public class ChunkAnnotator extends JCasAnnotator_ImplBase {
 			FSIterator tokenIterator = tokenIndex.subiterator(sentence);
 
 			//get number of Tokens contained in Sentence and move iterator back to beginning
-			int numTokens = 0;
-			while (tokenIterator.isValid()){	
-				numTokens++;
-				tokenIterator.moveToNext();
-			}
-			tokenIterator.moveToFirst();			
-			Token[] tokenArray = new Token[numTokens];
-			String[] tokenTextArray = new String[numTokens];
-			String[] tagArray = new String[numTokens];
+//			int numTokens = 0;
+//			while (tokenIterator.isValid()){
+//				numTokens++;
+//				tokenIterator.moveToNext();
+//			}
+//			tokenIterator.moveToFirst();
+//			Token[] tokenArray = new Token[numTokens];
+//			String[] tokenTextArray = new String[numTokens];
+//			String[] tagArray = new String[numTokens];
+			java.util.List<Token> tokensInSentence = new ArrayList<>();
+			java.util.List<String> tokenTags = new ArrayList<>();
 
 			int i = 0;
 
 			// iterate over Tokens in current sentence
 			while (tokenIterator.hasNext()) {
 				Token token = (Token) tokenIterator.next();
-				tokenArray[i] = token;
-				tokenTextArray[i] = token.getCoveredText();
+				tokensInSentence.add(token);
+//				tokenArray[i] = token;
+//				tokenTextArray[i] = token.getCoveredText();
 				POSTag postag = null;
 				// if a POS TagSet preference exists try to get a correspondent POSTag for the current token
 				if (posTagSetPreference != null) {
@@ -241,14 +245,15 @@ public class ChunkAnnotator extends JCasAnnotator_ImplBase {
 					LOGGER.error("Token has no POS tag annotation: " + token.getCoveredText());
 					throw new AnalysisEngineProcessException();
 				}
-				tagArray[i] = postag.getValue();
+//				tagArray[i] = postag.getValue();
+				tokenTags.add(postag.getValue());
 				i++;
 			}
 
 			// OpenNLP Chunker predicts chunks
-			String[] chunks = chunker.chunk(tokenTextArray, tagArray);
-
-			createChunkAnnotations(chunks, tokenArray, aJCas);
+//			String[] chunks = chunker.chunk(tokenTextArray, tagArray);
+			String[] chunks = chunker.chunk(tokensInSentence.stream().map(Token::getCoveredText).toArray(String[]::new), tokenTags.toArray(String[]::new));
+			createChunkAnnotations(chunks, tokensInSentence.toArray(Token[]::new), aJCas);
 
 		}
 	}

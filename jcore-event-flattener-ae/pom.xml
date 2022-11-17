@@ -1,48 +1,56 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>de.julielab</groupId>
-    <artifactId>jcore-base</artifactId>
-    <version>2.5.1-SNAPSHOT</version>
-  </parent>
-  <artifactId>jcore-event-flattener-ae</artifactId>
-  <name>JCoRe Event Flattener AE</name>
-  <description>This component reads de.julielab.jcore.types.EventMention annotations and converts event structures into de.julielab.jcore.types.ext.FlattenedRelation annotation. The purpose of FlattenedRelations is to represent complex event structures in a more simple manner. This can be helpful for visualization or further processing.</description>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.slf4j</groupId>
-  		<artifactId>slf4j-api</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.guava</groupId>
-  		<artifactId>guava</artifactId>
-  		<version>18.0</version>
-  		<scope>test</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>de.julielab</groupId>
-  		<artifactId>jcore-types</artifactId>
-  		<version>${jcore-types-version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>ch.qos.logback</groupId>
-  		<artifactId>logback-classic</artifactId>
-  		<scope>test</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>de.julielab</groupId>
-  		<artifactId>jcore-descriptor-creator</artifactId>
-  	</dependency>
-  <dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
-  <organization>
-  	<name>JULIE Lab Jena, Germany</name>
-  	<url>http://www.julielab.de</url>
-  </organization>
-  <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-event-flattener-ae</url>
-	<licenses>
-		<license>
-			<name>BSD-2-Clause</name>
-			<url>https://opensource.org/licenses/BSD-2-Clause</url>
-		</license>
-	</licenses>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.6.0</version>
+    </parent>
+    <artifactId>jcore-event-flattener-ae</artifactId>
+    <name>JCoRe Event Flattener AE</name>
+    <description>This component reads de.julielab.jcore.types.EventMention annotations and converts event structures
+        into de.julielab.jcore.types.ext.FlattenedRelation annotation. The purpose of FlattenedRelations is to represent
+        complex event structures in a more simple manner. This can be helpful for visualization or further processing.
+    </description>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-types</artifactId>
+            <version>${jcore-types-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+    </dependencies>
+    <organization>
+        <name>JULIE Lab Jena, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-event-flattener-ae</url>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
 </project>

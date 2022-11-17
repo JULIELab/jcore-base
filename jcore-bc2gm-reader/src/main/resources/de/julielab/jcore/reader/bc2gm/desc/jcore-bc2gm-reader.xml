@@ -5,7 +5,7 @@
     <processingResourceMetaData>
         <name>JCoRe BioCreative II Gene Mention reader</name>
         <description>This component reads gene annotated sentences in the BioCreative II Gene Mention challenge format. Each CAS will contain one annotated sentence.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <configurationParameters>
             <configurationParameter>
                 <name>SentencesFile</name>

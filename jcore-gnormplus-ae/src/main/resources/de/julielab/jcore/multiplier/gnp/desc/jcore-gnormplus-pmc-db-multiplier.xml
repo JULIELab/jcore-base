@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.multiplier.gnp.GNormPlusPMCDBMultiplier</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe GNormPlus PMC Database Multiplier</name>
+        <description>A CAS multiplier to be used with the DB PMC multiplier reader in place of the DB PMC multiplier. It wraps the JULIE Lab variant of the GNormPlus gene ID mapper. It is a multiplier because this enables batch-processing of documents with GNormPlus which makes the processing more efficient.</description>
+        <version>2.6.0</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name>AddGenes</name>
+                <description>If set to true, all Gene annotations in the CAS will be added to the BioC documents. The default type used is de.julielab.jcore.types.Gene. This can be changed with the GeneTypeName parameter.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>GNormPlusSetupFile</name>
+                <description>File path or class path resource path to the setup.txt file for GNormPlus. If not specified, a default setup file is loaded that expects the Dictionary/ directory directly under the working directory, performs gene recognition with the CRF and thus expects the GNormPlus CRF directory directly under the working directory and maps the found genes to NCBI gene IDs for all organisms.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>GeneTypeName</name>
+                <description>The UIMA type denoting gene annotations that should be written into the BioC format when the AddGenes parameter is set to true.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OutputDirectory</name>
+                <description>Optional. If specified, the GNormPlus output files in BioC format will be saved to the given directory. In this way, this component can be used directly as a BioC XML writer through the GNormPlus algorithm.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>FocusSpecies</name>
+                <description>If given, all gene mentions are assigned to this NCBI taxonomy ID, i.e. species recognition is omitted.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>SkipUnchangedDocuments</name>
+                <description>Whether to omit GNormPlus processing on documents that already exist in the XMI database table and whose document text has not changed.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OmitBibliographyReferences</name>
+                <description>If set to true, references to the bibliography are omitted from the CAS text.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AddShaHash</name>
+                <description>For use with AnnotationDefinedFlowController. Possible values: document_text, defaults to 'document_text' and thus doesn't need to be specified manually at the moment. This parameter needs to match the value for the same parameter given to the XMIDBWriter in this pipeline. Then, a comparison between the existing hash in the database and the new hash of the CAS read in this pipeline can be made. In case the hashes match, the CAS is directly routed to the components specified in the ToVisitKeys parameter, skipping all other components. Note that this only works with AAEs where the first component is an 'AnnotationControlledFlow'.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DocumentTable</name>
+                <description>For use with AnnotationDefinedFlowController. String parameter indicating the name of the table where the XMI data and, thus, the hash is stored. The name must be schema qualified. Note that in this component, only the ToVisit annotation is created that determines which components to apply to a CAS with matching (unchanged) hash. The logic to actually control the CAS flow is contained in the AnnotationDefinedFlowController.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DocumentTableSchema</name>
+                <description>For use with AnnotationDefinedFlowController. The name of the schema that the document table - given with the DocumentTable parameter - adheres to. Only the primary key part is required for hash value retrieval.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>ToVisitKeys</name>
+                <description>For use with AnnotationDefinedFlowController. The delegate AE keys of the AEs this CAS should still applied on although the hash has not changed. Can be null or empty indicating that no component should be applied to the CAS. This is, however, the task of the AnnotationDefinedFlowController.</description>
+                <type>String</type>
+                <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>TruncateAtSize</name>
+                <description>The maximum number of characters allowed in the document text. Characters exceeding this size are discarded. This can be necessary when large documents cannot be handled by subsequent components in the pipeline. Defaults to Integer.MAX_VALUE.</description>
+                <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>AddGenes</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>GeneTypeName</name>
+                <value>
+                    <string>de.julielab.jcore.types.Gene</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name>OmitBibliographyReferences</name>
+                <value>
+                    <boolean>false</boolean>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-dbtable-multiplier-types" />
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+                <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types" />
+                <import name="de.julielab.jcore.types.jcore-casflow-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection />
+        <capabilities>
+            <capability>
+                <inputs />
+                <outputs>
+                    <type>de.julielab.jcore.types.ConceptMention</type>
+                    <type>de.julielab.jcore.types.Organism</type>
+                </outputs>
+                <languagesSupported />
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

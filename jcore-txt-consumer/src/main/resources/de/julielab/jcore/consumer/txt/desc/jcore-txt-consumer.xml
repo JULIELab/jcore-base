@@ -6,7 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe Text Consumer</name>
         <description>Stores the CAS document text in files. Either in tokenized sentences plus optional PoS tags or just the original document text. The text files can also be stored in GZIP format or batch-wise in ZIP archives.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <vendor>de.julielab.jcore.consumer.txt</vendor>
         <configurationParameters>
             <configurationParameter>

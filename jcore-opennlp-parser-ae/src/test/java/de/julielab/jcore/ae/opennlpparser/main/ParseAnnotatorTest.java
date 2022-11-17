@@ -18,7 +18,6 @@
 package de.julielab.jcore.ae.opennlpparser.main;
 
 import de.julielab.jcore.types.*;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
@@ -26,22 +25,18 @@ import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
-public class ParseAnnotatorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class ParseAnnotatorTest  {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParseAnnotatorTest.class);
 
     private static final String LOGGER_PROPERTIES = "src/test/java/log4j.properties";
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        // set log4j properties file
-        // PropertyConfigurator.configure(LOGGER_PROPERTIES);
-    }
 
     String text = "A study on the Prethcamide hydroxylation system in rat hepatic microsomes .";
 
@@ -68,6 +63,7 @@ public class ParseAnnotatorTest extends TestCase {
         }
     }
 
+    @Test
     public void testProcess() {
 
         boolean annotationsOK = true;

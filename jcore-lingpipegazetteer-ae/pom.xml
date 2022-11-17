@@ -1,68 +1,76 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>jcore-lingpipe-gazetteer-ae</artifactId>
-	<packaging>jar</packaging>
-	<name>JCoRe Lingpipe Gazetteer AE</name>
-	<description>Basically used as NE tagger based on Lingpipe's dictionary-lookup tagger.</description>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jcore-lingpipe-gazetteer-ae</artifactId>
+    <packaging>jar</packaging>
+    <name>JCoRe Lingpipe Gazetteer AE</name>
+    <description>Basically used as NE tagger based on Lingpipe's dictionary-lookup tagger.</description>
 
-	<parent>
-		<groupId>de.julielab</groupId>
-		<artifactId>jcore-base</artifactId>
-		<version>2.5.1-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>de.julielab</groupId>
+        <artifactId>jcore-base</artifactId>
+        <version>2.6.0</version>
+    </parent>
 
 
-	<dependencies>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-descriptor-creator</artifactId>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-descriptor-creator</artifactId>
+        </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-types</artifactId>
             <version>${jcore-types-version}</version>
         </dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>jcore-utilities</artifactId>
-			<version>${jcore-utilities-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.icu</groupId>
-			<artifactId>icu4j</artifactId>
-			<version>4.8.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>de.julielab</groupId>
-			<artifactId>aliasi-lingpipe</artifactId>
-			<version>4.1.2-JL1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
-		</dependency>
-	<dependency><groupId>junit</groupId><artifactId>junit</artifactId></dependency></dependencies>
-	<organization>
-		<name>JULIE Lab, Germany</name>
-		<url>http://www.julielab.de</url>
-	</organization>
-	<licenses>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>jcore-utilities</artifactId>
+            <version>${jcore-utilities-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>4.8.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.julielab</groupId>
+            <artifactId>aliasi-lingpipe</artifactId>
+            <version>4.1.2-JL1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+    </dependencies>
+    <organization>
+        <name>JULIE Lab, Germany</name>
+        <url>http://www.julielab.de</url>
+    </organization>
+    <licenses>
         <license>
             <name>GNU Affero General Public License, Version 3.0</name>
             <url>http://www.gnu.org/licenses/agpl-3.0.en.html</url>
         </license>
     </licenses>
-	<url>https://github.com/JULIELab/jcore-base/tree/master/jcore-lingpipe-gazetteer-ae</url>
-	</project>
+    <url>https://github.com/JULIELab/jcore-base/tree/master/jcore-lingpipe-gazetteer-ae</url>
+</project>

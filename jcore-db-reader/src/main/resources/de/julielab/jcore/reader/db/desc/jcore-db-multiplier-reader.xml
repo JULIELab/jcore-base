@@ -10,7 +10,7 @@
             sent by this reader. The component leverages the corpus storage system (CoStoSys) for this purpose and is
             part of the Jena Document Information System, JeDIS.
         </description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <configurationParameters>
             <configurationParameter>
                 <name>ResetTable</name>
@@ -162,7 +162,7 @@
             <nameValuePair>
                 <name>BatchSize</name>
                 <value>
-                    <integer>50</integer>
+                    <integer>100</integer>
                 </value>
             </nameValuePair>
             <nameValuePair>

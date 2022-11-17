@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "reader"
+    ],
+    "description": "Collection reader for the BioC format of the NLM-Gene corpus.",
+    "descriptors": [
+        {
+            "category": "reader",
+            "location": "de.julielab.jcore.reader.nlmgene.desc.jcore-nlmgene-reader"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-nlmgene-reader",
+        "groupId": "de.julielab",
+        "version": "2.6.0"
+    },
+    "name": "JCoRe NLM-Gene Reader"
+}

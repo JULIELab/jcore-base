@@ -15,6 +15,7 @@ import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
 import de.julielab.jcore.utility.JCoReTools;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -22,7 +23,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,16 +35,14 @@ import java.util.TreeMap;
 import java.util.zip.GZIPInputStream;
 
 import static de.julielab.jcore.consumer.entityevaluator.EntityEvaluatorConsumer.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EntityEvaluatorConsumerTest {
 
 	@Test
 	public void testEntityEvaluatorConsumerSingleEntity() throws Exception {
-		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
-				"de.julielab.jcore.types.jcore-semantics-biology-types",
-				"de.julielab.jcore.types.jcore-document-meta-types");
+		JCas jcas = getjCas();
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId",
@@ -75,11 +74,49 @@ public class EntityEvaluatorConsumerTest {
 		assertEquals("document1	document1:0	23	gene", lines.get(0));
 	}
 
+	private JCas getjCas() throws UIMAException {
+		return JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
+				"de.julielab.jcore.types.jcore-semantics-biology-types",
+				"de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+	}
+
+	@Test
+	public void testEntityEvaluatorConsumerSingleEntity2() throws Exception {
+		// The same test as above but minus the DocumentId column
+		JCas jcas = getjCas();
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
+				PARAM_COLUMN_DEFINITIONS,
+				new String[] { "geneid:Gene=/resourceEntryList[0]/entryId", "name:/:coveredText()" },
+				// We here use the default SentenceId column, we did not provide a definition!
+				PARAM_OUTPUT_COLUMNS, new String[] { SENTENCE_ID_COLUMN, "geneid", "name" },
+				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv");
+
+		jcas.setDocumentText("One gene one sentence.");
+		Header h = new Header(jcas);
+		h.setDocId("document1");
+		h.addToIndexes();
+		Sentence s = new Sentence(jcas, 0, jcas.getDocumentText().length());
+		s.setId("sentence1");
+		s.addToIndexes();
+		Gene g = new Gene(jcas, 4, 8);
+		GeneResourceEntry re = new GeneResourceEntry(jcas);
+		re.setEntryId("23");
+		FSArray array = new FSArray(jcas, 1);
+		array.set(0, re);
+		g.setResourceEntryList(array);
+		g.addToIndexes();
+
+		consumer.process(jcas.getCas());
+		consumer.collectionProcessComplete();
+
+		List<String> lines = Files.readLines(new File("src/test/resources/outfile-test.tsv"), Charset.forName("UTF-8"));
+		assertEquals(1, lines.size());
+		assertEquals("document1:0	23	gene", lines.get(0));
+	}
+
 	@Test
 	public void testEntityEvaluatorConsumerNoEntities() throws Exception {
-		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
-				"de.julielab.jcore.types.jcore-semantics-biology-types",
-				"de.julielab.jcore.types.jcore-document-meta-types");
+		JCas jcas = getjCas();
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId",
@@ -107,9 +144,7 @@ public class EntityEvaluatorConsumerTest {
 
 	@Test
 	public void testEntityEvaluatorConsumerSingleEntityDocumentTextHash() throws Exception {
-		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
-				"de.julielab.jcore.types.jcore-semantics-biology-types",
-				"de.julielab.jcore.types.jcore-document-meta-types");
+		JCas jcas = getjCas();
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] {
@@ -143,9 +178,7 @@ public class EntityEvaluatorConsumerTest {
 
 	@Test
 	public void testEntityEvaluatorConsumerMultipleEntities() throws Exception {
-		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
-				"de.julielab.jcore.types.jcore-semantics-biology-types",
-				"de.julielab.jcore.types.jcore-document-meta-types");
+		JCas jcas = getjCas();
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] {  SENTENCE_ID_COLUMN + ": Sentence=/id",
@@ -180,9 +213,7 @@ public class EntityEvaluatorConsumerTest {
 
 	@Test
 	public void testEntityEvaluatorConsumerSingleEntityNoWSOffsets() throws Exception {
-		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
-				"de.julielab.jcore.types.jcore-semantics-biology-types",
-				"de.julielab.jcore.types.jcore-document-meta-types");
+		JCas jcas = getjCas();
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId", SENTENCE_ID_COLUMN + ": Sentence=/id",
@@ -219,9 +250,7 @@ public class EntityEvaluatorConsumerTest {
 		// other, e.g. EntityMention and Gene, then we don't want to traverse
 		// the subsumed types on their own. They are contained in the annotation
 		// index of their super type.
-		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
-				"de.julielab.jcore.types.jcore-semantics-biology-types",
-				"de.julielab.jcore.types.jcore-document-meta-types");
+		JCas jcas = getjCas();
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId", SENTENCE_ID_COLUMN + ": Sentence=/id",
@@ -261,23 +290,21 @@ public class EntityEvaluatorConsumerTest {
 		TreeMap<Integer, Integer> numWsMap = (TreeMap<Integer, Integer>) method.invoke(null, "one two three");
 		// first check the actual map entries (after each white space position
 		// there should be an entry)
-		assertEquals(new Integer(0), numWsMap.get(0));
-		assertEquals(new Integer(1), numWsMap.get(4));
-		assertEquals(new Integer(2), numWsMap.get(8));
+		assertEquals(Integer.valueOf(0), numWsMap.get(0));
+		assertEquals(Integer.valueOf(1), numWsMap.get(4));
+		assertEquals(Integer.valueOf(2), numWsMap.get(8));
 
 		// now check the intended use; using the floor element, we should be
 		// able to the correct value even for those positions we don't have an
 		// explicit mapping for
-		assertEquals(new Integer(0), numWsMap.floorEntry(2).getValue());
-		assertEquals(new Integer(1), numWsMap.floorEntry(5).getValue());
-		assertEquals(new Integer(2), numWsMap.floorEntry(11).getValue());
+		assertEquals(Integer.valueOf(0), numWsMap.floorEntry(2).getValue());
+		assertEquals(Integer.valueOf(1), numWsMap.floorEntry(5).getValue());
+		assertEquals(Integer.valueOf(2), numWsMap.floorEntry(11).getValue());
 	}
 
 	@Test
 	public void testEntityEvaluatorConsumerFeatureFilter() throws Exception {
-		JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
-				"de.julielab.jcore.types.jcore-semantics-biology-types",
-				"de.julielab.jcore.types.jcore-document-meta-types");
+		JCas jcas = getjCas();
 		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
 				PARAM_COLUMN_DEFINITIONS,
 				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId", SENTENCE_ID_COLUMN + ": Sentence=/id",
@@ -318,6 +345,53 @@ public class EntityEvaluatorConsumerTest {
 		List<String> lines = Files.readLines(new File("src/test/resources/outfile-test.tsv"), Charset.forName("UTF-8"));
 		assertEquals(1, lines.size());
 		assertEquals("document1	document1:0	42	One", lines.get(0));
+	}
+
+	@Test
+	public void testEntityEvaluatorConsumerFeatureFilterRegEx() throws Exception {
+		JCas jcas = getjCas();
+		AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
+				PARAM_COLUMN_DEFINITIONS,
+				new String[] { DOCUMENT_ID_COLUMN + ": Header = /docId", SENTENCE_ID_COLUMN + ": Sentence=/id",
+						"genetype:Gene=/specificType", "name:/:coveredText()" },
+				PARAM_OUTPUT_COLUMNS, new String[] { DOCUMENT_ID_COLUMN, SENTENCE_ID_COLUMN, "genetype", "name" },
+				PARAM_TYPE_PREFIX, "de.julielab.jcore.types", PARAM_OUTPUT_FILE, "src/test/resources/outfile-test.tsv",
+				PARAM_FEATURE_FILTERS, new String[] { "Gene:/specificType=Group[3-4]{2,3}s?" },
+				PARAM_ALLOW_REGEX_FOR_FILTERS, true);
+
+		jcas.setDocumentText("One gene one sentence.");
+		Header h = new Header(jcas);
+		h.setDocId("document1");
+		h.addToIndexes();
+		Sentence s = new Sentence(jcas, 0, jcas.getDocumentText().length());
+		s.setId("sentence1");
+		s.addToIndexes();
+		{
+			Gene g = new Gene(jcas, 4, 8);
+			// should not pass filter
+			g.setSpecificType("Group123");
+			g.addToIndexes();
+		}
+		{
+			Gene g = new Gene(jcas, 0, 3);
+			// should pass filter
+			g.setSpecificType("Group33s");
+			g.addToIndexes();
+		}
+		{
+			Gene g = new Gene(jcas, 0, 3);
+			// should pass filter
+			g.setSpecificType("Group344");
+			g.addToIndexes();
+		}
+
+		consumer.process(jcas.getCas());
+		consumer.collectionProcessComplete();
+
+		List<String> lines = Files.readLines(new File("src/test/resources/outfile-test.tsv"), Charset.forName("UTF-8"));
+		assertEquals(2, lines.size());
+		assertEquals("document1	document1:0	Group33s	One", lines.get(0));
+		assertEquals("document1	document1:0	Group344	One", lines.get(1));
 	}
 
 	@Test
@@ -367,9 +441,7 @@ public class EntityEvaluatorConsumerTest {
 
     @Test
     public void testCartesianMultiValues() throws Exception {
-        JCas jcas = JCasFactory.createJCas("de.julielab.jcore.types.jcore-semantics-mention-types",
-                "de.julielab.jcore.types.jcore-semantics-biology-types",
-                "de.julielab.jcore.types.jcore-document-meta-types", "de.julielab.jcore.types.jcore-document-meta-pubmed-types");
+		JCas jcas = getjCas();
         AnalysisEngine consumer = AnalysisEngineFactory.createEngine(EntityEvaluatorConsumer.class,
                 PARAM_COLUMN_DEFINITIONS,
                 new String[] {

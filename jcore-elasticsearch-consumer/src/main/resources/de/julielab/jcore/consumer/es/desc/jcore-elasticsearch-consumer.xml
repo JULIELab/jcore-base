@@ -1,11 +1,10 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
     <annotatorImplementationName>de.julielab.jcore.consumer.es.ElasticSearchConsumer</annotatorImplementationName>
     <analysisEngineMetaData>
         <name>JCore ElasticSearch Consumer</name>
-        <version>2.5.1-SNAPSHOT</version>
         <configurationParameters>
             <configurationParameter>
                 <name>urls</name>
@@ -23,7 +22,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>type</name>
-                <description>The index type the generated documents should have. The types are removed from ElasticSearch with version 7 so this parameter is set to have the same value for all documents.</description>
+                <description>The index type the generated documents should have. The types are removed from ElasticSearch with version 7 and should be omitted for ES &gt;= 7.</description>
                 <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
@@ -32,6 +31,20 @@
                 <name>batchSize</name>
                 <description>The number of documents to be sent to ElasticSearch in a single batch. Defaults to 50.</description>
                 <type>Integer</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>deleteDocumentsBeforeIndexing</name>
+                <description>Whether or not to delete documents with the docId of the UIMA CASes in ElasticSearch prior to indexing. This is useful when parts of the document are indexed whose IDs are not stable or that might change after document updates and would not just be overwritten when indexing anew. Defaults to false.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>documentIdField</name>
+                <description>Required when deleteDocumentsBeforeIndexing is set to true. This should be an existing index field that contains the document ID of each CAS. It is used to remove existing index documents related to the CAS document ID prior to indexing.</description>
+                <type>String</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
@@ -71,10 +84,10 @@
                 <mandatory>false</mandatory>
             </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings />
-        <typeSystemDescription />
-        <fsIndexCollection />
-        <capabilities />
+        <configurationParameterSettings/>
+        <typeSystemDescription/>
+        <fsIndexCollection/>
+        <capabilities/>
         <operationalProperties>
             <modifiesCas>true</modifiesCas>
             <multipleDeploymentAllowed>true</multipleDeploymentAllowed>

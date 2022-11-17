@@ -6,7 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe Annotation Adder</name>
         <description>This component helps to import annotations made on the exact CAS document text by an external process back into the CAS. To this end, the component is prepared to read several data formats. Currently, simple offset-based annotations are supported with configurable UIMA types. The component supports character and token based offsets.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <configurationParameters>
             <configurationParameter>
                 <name>OffsetMode</name>
@@ -77,6 +77,20 @@
                                 <description>The qualified class name of the annotation file format parser. Defaults to 'de.julielab.jcore.ae.annotationadder.annotationformat.SimpleTSVEntityAnnotationFormat'.</description>
                                 <type>String</type>
                                 <multiValued>false</multiValued>
+                                <mandatory>false</mandatory>
+                            </configurationParameter>
+                            <configurationParameter>
+                                <name>InputHasHeader</name>
+                                <description>Indicates whether the the input TSV file has a header line.</description>
+                                <type>Boolean</type>
+                                <multiValued>false</multiValued>
+                                <mandatory>false</mandatory>
+                            </configurationParameter>
+                            <configurationParameter>
+                                <name>ColumnNames</name>
+                                <description>For column formats without a header. Required when the columns should be mapped to annotation type features. Then, the headers must correspond to the feature names and are case sensitive. When specified, the number of elements for this parameter must equal the number of columns in the input file. Then, the i-th parameter value will be set as the name of the i-th column.</description>
+                                <type>String</type>
+                                <multiValued>true</multiValued>
                                 <mandatory>false</mandatory>
                             </configurationParameter>
                         </configurationParameters>

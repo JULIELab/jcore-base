@@ -16,9 +16,12 @@ import org.slf4j.LoggerFactory;
 import java.sql.BatchUpdateException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class XmiDataInserter {
 
@@ -32,6 +35,7 @@ public class XmiDataInserter {
     private Map<DocumentId, Integer> maxXmiIdMap;
     private String componentDbName;
     private String hashColumnName;
+    private DecimalFormat df = new DecimalFormat();
 
     private List<DocumentId> processedDocumentIds;
 
@@ -57,25 +61,36 @@ public class XmiDataInserter {
      * update. It will just be inserted otherwise (throwing an error if there
      * will be a primary key constraint violation, i.e. duplicates).
      *
-     * @param serializedCASes
-     * @param storeBaseDocument
+     * @param annotationModules
+     * @param mirrorResetIds
+     * @param unchangedDocuments
      * @param deleteObsolete
      * @param shaMap
      * @throws XmiDataInsertionException
      * @throws AnalysisEngineProcessException
      */
-    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> serializedCASes, String subsetTableName, Boolean storeBaseDocument, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
-        if (log.isTraceEnabled()) {
-            log.trace("Sending XMI data for {} tables to the database", serializedCASes.size());
-            log.trace("Sending {} XMI data items", serializedCASes.size());
-        }
-        final Map<DocumentId, List<XmiData>> dataByDoc = serializedCASes.stream().collect(Collectors.groupingBy(XmiData::getDocId));
-        final Set<DocumentId> documentIdsWithValues = shaMap != null ? Sets.union(dataByDoc.keySet(), shaMap.keySet()) : dataByDoc.keySet();
+    public void sendXmiDataToDatabase(String xmiTableName, List<XmiData> annotationModules, String subsetTableName, Set<DocumentId> mirrorResetIds, Set<DocumentId> unchangedDocuments, Boolean deleteObsolete, Map<DocumentId, String> shaMap) throws XmiDataInsertionException {
+        log.trace("Sending {} XMI data items", annotationModules.size());
+        final Map<DocumentId, List<XmiData>> dataByDoc = annotationModules.stream().collect(Collectors.groupingBy(XmiData::getDocId));
+        // Collect all document IDs we want to add something for into the database. This can be annotations or the hash.
+        final Set<DocumentId> documentIdsWithData = shaMap != null ? Sets.union(dataByDoc.keySet(), shaMap.keySet()) : dataByDoc.keySet();
+        log.trace("There are {} documents with values to be updated in the database.", documentIdsWithData.size());
         class RowIterator implements Iterator<Map<String, Object>> {
-
-            private Iterator<DocumentId> docIdIterator = documentIdsWithValues.iterator();
+            // Add documents that have been processed but no data. We need to do this to override potentially existing
+            // annotation values with null to remove them.
+            private Iterator<DocumentId> docIdIterator;
             private FieldConfig fieldConfig = dbc.getFieldConfiguration(schemaDocument);
             private List<Map<String, String>> fields = fieldConfig.getFields();
+            /**
+             * An iterator that always returns only rows for a subset of document IDs. Either the ones that need mirror subsets to be reset or those for which mirror subsets should not be reset.
+             * @param returnDocumentsWithMirrorReset
+             */
+            public RowIterator(boolean returnDocumentsWithMirrorReset) {
+                Predicate<DocumentId> mirrorResetFilterPredicate = docId -> !unchangedDocuments.contains(docId);
+                if (!returnDocumentsWithMirrorReset)
+                    mirrorResetFilterPredicate = Predicate.not(mirrorResetFilterPredicate);
+                docIdIterator = Stream.concat(documentIdsWithData.stream(), processedDocumentIds.stream()).filter(mirrorResetFilterPredicate).distinct().iterator();
+            }
 
             @Override
             public boolean hasNext() {
@@ -84,7 +99,7 @@ public class XmiDataInserter {
 
             @Override
             public Map<String, Object> next() {
-                Map<String, Object> row = new HashMap<String, Object>();
+                Map<String, Object> row = new HashMap<>();
                 final DocumentId docId = docIdIterator.next();
                 // There might actually be no data when we only write the SHA hashes
                 final List<XmiData> dataList = dataByDoc.getOrDefault(docId, Collections.emptyList());
@@ -138,9 +153,13 @@ public class XmiDataInserter {
                     missingColumns.forEach(c -> row.put(c, null));
                 }
                 // Set columns without a value to null to delete a potentially existing value.
-                if (updateMode) {
+                // But only if the document text had changed. Otherwise we would just delete all the annotations we
+                // actually want to keep.
+                if (updateMode && !unchangedDocuments.contains(docId)) {
                     Set<String> annotationColumnsWithValues = dataList.stream().map(XmiData::getColumnName).collect(Collectors.toSet());
+                    log.trace("Annotation columns with values: {}", annotationColumnsWithValues);
                     final Sets.SetView<String> columnsWithoutValues = Sets.difference(annotationModuleColumnNames, annotationColumnsWithValues);
+                    log.trace("Annotation columns without values: {}", columnsWithoutValues);
                     columnsWithoutValues.forEach(col -> {
                         row.put(col, null);
                         log.trace("{}=null", col);
@@ -160,18 +179,25 @@ public class XmiDataInserter {
             }
         }
 
+        long time = System.currentTimeMillis();
         try (CoStoSysConnection conn = dbc.obtainOrReserveConnection()) {
+            log.debug("Obtained connection after {}ms", System.currentTimeMillis() - time);
             conn.setAutoCommit(false);
 
-            RowIterator iterator = new RowIterator();
+            // This is the private in-line defined class from above. All values are already contained in the class
+            // definition.
+            RowIterator iterator = new RowIterator(true);
             try {
                 if (updateMode) {
-                    log.debug("Updating {} XMI CAS data in database table '{}'.",
-                            serializedCASes.size(), xmiTableName);
-                    dbc.updateFromRowIterator(iterator, xmiTableName, false, storeBaseDocument, schemaDocument);
+                    log.debug("Updating {} XMI CAS data in database table '{}' for documents with mirror subset resets.",
+                            processedDocumentIds.size() - unchangedDocuments.size(), xmiTableName);
+                    dbc.updateFromRowIterator(iterator, xmiTableName, false, true, schemaDocument);
+                    log.debug("Updating {} XMI CAS data in database table '{}' for documents without mirror subset resets.",
+                            unchangedDocuments.size(), xmiTableName);
+                    dbc.updateFromRowIterator(new RowIterator(false), xmiTableName, false, false, schemaDocument);
                 } else {
                     log.debug("Inserting {} XMI CAS data into database table '{}'.",
-                            serializedCASes.size(), xmiTableName);
+                            annotationModules.size(), xmiTableName);
                     dbc.importFromRowIterator(iterator, xmiTableName, false, schemaDocument);
                 }
             } catch (Exception e) {
@@ -179,6 +205,7 @@ public class XmiDataInserter {
                 throw new XmiDataInsertionException(e);
             }
             setLastComponent(conn, subsetTableName);
+            processedDocumentIds.clear();
             log.debug("Committing XMI data to database.");
             conn.commit();
             maxXmiIdMap.clear();
@@ -188,6 +215,10 @@ public class XmiDataInserter {
             SQLException ne = e.getNextException();
             if (null != ne)
                 ne.printStackTrace();
+        }
+        if (log.isDebugEnabled()) {
+            time = System.currentTimeMillis() - time;
+            log.debug("Database import of {} XMI documents took {}ms ({}ms per document)", documentIdsWithData.size(), time, df.format((double) time / documentIdsWithData.size()));
         }
     }
 
@@ -241,8 +272,6 @@ public class XmiDataInserter {
             else
                 nextException.printStackTrace();
             throw new XmiDataInsertionException(nextException);
-        } finally {
-            processedDocumentIds.clear();
         }
     }
 

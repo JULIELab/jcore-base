@@ -13,7 +13,6 @@ package de.julielab.jcore.ae.stanford.lemma;
 import de.julielab.jcore.types.PennBioIEPOSTag;
 import de.julielab.jcore.types.Sentence;
 import de.julielab.jcore.types.Token;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.jcas.JCas;
@@ -22,12 +21,15 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
-public class StanfordLemmatizerTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class StanfordLemmatizerTest  {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(StanfordLemmatizerTest.class);
@@ -66,6 +68,7 @@ public class StanfordLemmatizerTest extends TestCase {
 	}
 
 	@SuppressWarnings("rawtypes")
+	@Test
 	public void testProcess() {
 
 		XMLInputSource lemmaXML = null;

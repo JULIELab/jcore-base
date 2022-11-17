@@ -2,7 +2,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe MMAX Types</name>
   <description>The type system contains types for the import of MMAX2 annotations.</description>
-  <version>2.5.1-SNAPSHOT</version>
+  <version>2.6.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
   <types>
     <typeDescription>

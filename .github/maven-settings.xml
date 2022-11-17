@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<settings>
+    <profiles>
+        <profile>
+            <id>sonatype-snapshots</id>
+            <repositories>
+                <repository>
+                    <id>sonatype-nexus-snapshots</id>
+                    <name>Sonatype Nexus Snapshots</name>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>sonatype-snapshots</activeProfile>
+    </activeProfiles>
+</settings>

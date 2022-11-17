@@ -6,7 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe Database Checkpoint Writer</name>
         <description>This component can be used when using a JCoRe database reader that reads from a CoStoSys/JeDIS subset. Enters the configured component name in the 'last component' column. Can also mark documents as being completely processed.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <configurationParameters>
             <configurationParameter>
                 <name>CheckpointName</name>

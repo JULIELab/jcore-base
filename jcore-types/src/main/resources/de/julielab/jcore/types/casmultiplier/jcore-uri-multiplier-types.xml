@@ -4,7 +4,7 @@
   <description>This is a type system for usage with a CAS multiplier. It should not be included into the
   jcore-all-types type system. This particular type system holds a single URI that points to the resource that
   should be split into CASes by the multiplier.</description>
-  <version>2.5.1-SNAPSHOT</version>
+  <version>2.6.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
   <types>
     <typeDescription>
@@ -16,6 +16,19 @@
           <name>uri</name>
           <description>The actual URI to the resource to split by the CAS multiplier</description>
           <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>de.julielab.jcore.types.casmultiplier.MultiplierConfigParameters</name>
+      <description>A list of strings in properties format to specify parameters and their values. The format is &lt;key&gt;=&lt;value&gt;. May be used to transfer configuration properties from the multiplier reader to the multiplier.
+      Normally in UIMA, the multiplier would just have the configuration parameters itself. However, it can be confusing that the basic reader - without a successive multiplier - has some parameters that the multiplier reader does not exhibit because they must be set on the multiplier. Using this annotation, parameter settings can be sent to the multiplier which then does not need further configuration on its own.</description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>parameters</name>
+          <description>An array of string holding key - value pairs in the format &lt;key&gt;=&lt;value&gt;.</description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>

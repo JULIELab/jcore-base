@@ -1,0 +1,4 @@
+docId	begin	end	uimaType	specificType	componentId
+doc1	0	4	de.julielab.jcore.types.Gene	protein	GoldData
+doc1	5	10	de.julielab.jcore.types.Gene	dna	GoldData
+doc3	0	6	de.julielab.jcore.types.Gene	gene	GoldData

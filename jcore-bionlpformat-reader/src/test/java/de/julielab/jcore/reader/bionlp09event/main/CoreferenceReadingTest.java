@@ -16,8 +16,8 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import java.io.FileOutputStream;
@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 // Ignore because the data path does generally not exist; a fix should only contain some test data, not the whole dataset
-@Ignore
+@Disabled
 public class CoreferenceReadingTest {
 	@Test
 	public void testCoreferenceReading() throws UIMAException, IOException,

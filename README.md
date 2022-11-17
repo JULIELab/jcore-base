@@ -12,24 +12,29 @@ In order to automate the builds of complex NLP pipelines and properly represent 
 A description for each individual component can be found in their respective `README.md`.
 
 ### Requirements & Dependencies
-In order to use our components you need at least [JDK 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html) (Java SE Development Kit 11), [UIMA 2.10](https://uima.apache.org/index.html) & [Maven 3](https://maven.apache.org/). We develop with the [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/) and [IntelliJ IDEA](https://www.jetbrains.com/idea/) Java IDEs. If course you're free to try it with different versions or tools than those mentioned, but we can't make promises for a flawless functioning of our components in these cases.
+In order to use our components you need at least [JDK 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html) (Java SE Development Kit 11), [UIMA 2.x](https://uima.apache.org/index.html) & [Maven 3](https://maven.apache.org/). We develop with the [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/) and [IntelliJ IDEA](https://www.jetbrains.com/idea/) Java IDEs. If course you're free to try it with different versions or tools than those mentioned, but we can't make promises for a flawless functioning of our components in these cases.
 
 ### UIMA's Collection Processing Engine (CPE)
-UIMA features a relatively easy way to combine UIMA components together in order to analyze a collection of artifacts. If you're not firm or willing to deal with Java Code, the usage of a CPE might be the right choice.
+UIMA offers a relatively easy way to combine UIMA components together in order to analyze a collection of artifacts. If you're not firm or willing to deal with Java Code, the usage of a CPE might be the right choice.
 For more detailed information see [UIMA's CPE Documentation](https://uima.apache.org/downloads/releaseDocs/2.1.0-incubating/docs/html/tutorials_and_users_guides/tutorials_and_users_guides.html#ugr.tug.cpe).
 
-We're also working on a simple [Python script](https://github.com/JULIELab/jcore-misc/tree/master/jcore-cpe-builder) that builds rudimentary and preconfigured CPEs of your choice. It's working but still work in progress so please bear with us and post issues.
+A newer alternative is [UIMA AS](https://uima.apache.org/doc-uimaas-what.html). It is today's officially recommended way to use and scale UIMA pipelines. Our existing CPE infrastructure serves us well, however, so we mostly stick to those for the time being.
+
+### JCoRe UIMA Pipeline Builder
+
+Most CPE configurations consisting of JCoRe components can be easily built using the [JCoRe UIMA Pipeline Builder](https://github.com/JULIELab/jcore-pipeline-modules).
+This is a Java program that offers a simple command line interface for the creation of CPEs. There is also support for UIMA AS.
 
 ### Maven Artifacts
 If not stated otherwise, all the components found in this project are at least in their latest release version also available as Maven artifacts:
 ```
 <dependency>
     <groupId>de.julielab</groupId>
-    <artifactId>#COMPONENT-NAME</artifactId>
+    <artifactId>COMPONENT-NAME</artifactId>
     <version>${jcore-version}</version>
 </dependency>
 ```
-Where `#COMPONENT-NAME` is exactly the same as the name on GitHub.
+Where `COMPONENT-NAME` is exactly the same as the name on GitHub.
 For instance, to get the Acronym Resolver, include this in your Maven dependencies:
 ```
 <dependency>

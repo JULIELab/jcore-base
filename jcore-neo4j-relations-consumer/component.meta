@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "consumer"
+    ],
+    "description": "Writes EventMentions to Neo4j.",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.consumer.neo4jrelations.desc.jcore-neo4j-relations-consumer"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-neo4j-relations-consumer",
+        "groupId": "de.julielab",
+        "version": "2.6.0"
+    },
+    "name": "JCoRe Neo4j Relations Consumer"
+}

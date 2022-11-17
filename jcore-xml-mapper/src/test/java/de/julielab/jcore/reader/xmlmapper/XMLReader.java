@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Generic XML {@link CollectionReader}. Uses a mapping file to map elements of the XML document to
@@ -44,6 +45,7 @@ public class XMLReader extends CollectionReader_ImplBase {
 	private static final Logger LOGGER = LoggerFactory.getLogger(XMLReader.class);
 	public static final String PARAM_INPUT_DIR = "InputDirectory";
 	public static final String PARAM_INPUT_FILE = "InputFile";
+	public static final String PARAM_IGNORE_TRIVIAL_WS = "IgnoreTrivialWS";
 	public static final String RESOURCE_MAPPING_FILE = "MappingFile";
 	private List<File> files = null;
 	private int currentIndex = 0;
@@ -59,6 +61,7 @@ public class XMLReader extends CollectionReader_ImplBase {
 		
 		String inputDir = (String) getUimaContext().getConfigParameterValue(PARAM_INPUT_DIR);
 		String inputFile = (String) getUimaContext().getConfigParameterValue(PARAM_INPUT_FILE);
+		boolean ignoreTrivialWs = (boolean) Optional.ofNullable(getUimaContext().getConfigParameterValue(PARAM_IGNORE_TRIVIAL_WS)).orElse(true);
 		InputStream is = null;
 		try {
 			is = getUimaContext().getResourceAsStream(RESOURCE_MAPPING_FILE);
@@ -101,6 +104,7 @@ public class XMLReader extends CollectionReader_ImplBase {
 		
 		try {
 			xmlMapper = new XMLMapper(JulieXMLTools.readStream(is, 1000));
+			xmlMapper.setIgnoreTrivialWhitespaces(ignoreTrivialWs);
 		} catch (FileNotFoundException e) {
 			throw new ResourceInitializationException(e);
 		} catch (IOException e) {

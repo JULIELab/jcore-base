@@ -1,35 +1,34 @@
 package de.julielab.jcore.misc;
 
-import static java.util.stream.Collectors.joining;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.julielab.java.utilities.IOStreamUtilities;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.julielab.java.utilities.IOStreamUtilities;
-import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static java.util.stream.Collectors.joining;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DescriptorCreatorTest {
 	
-	@BeforeClass
-	@AfterClass
+	@BeforeAll
+	@AfterAll
 	public static void shutdown() throws IOException {
-		//FileUtils.deleteDirectory(new File(Arrays.asList("src", "test", "resources", "de").stream().collect(joining(File.separator))));
+		FileUtils.deleteDirectory(new File(Arrays.asList("src", "test", "resources", "de").stream().collect(joining(File.separator))));
 	}
 	@Test
 	public void testRun() throws Exception {
 		DescriptorCreator creator = new DescriptorCreator();
 		String outputRoot = "src" + File.separator + "test" + File.separator + "resources" + File.separator;
-		creator.run(outputRoot);	
+		creator.run("de.julielab.jcore", outputRoot);
 		File crDir = new File(outputRoot + Stream.of("de", "julielab", "jcore", "reader", "testreader", "desc").collect(joining(File.separator)));
 		File aeDir = new File(outputRoot + Stream.of("de", "julielab", "jcore", "ae", "testae", "desc").collect(joining(File.separator)));
 		File consumerDir = new File(outputRoot + Stream.of("de", "julielab", "jcore", "consumer", "testconsumer", "desc").collect(joining(File.separator)));

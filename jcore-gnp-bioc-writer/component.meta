@@ -1,0 +1,20 @@
+{
+    "categories": [
+        "consumer"
+    ],
+    "description": "Writes CAS documents into the BioC XML format used by the gene tagger and normalizer GNormPlus.",
+    "descriptors": [
+        {
+            "category": "consumer",
+            "location": "de.julielab.jcore.consumer.gnp.desc.jcore-gnp-bioc-writer"
+        }
+    ],
+    "exposable": true,
+    "group": "general",
+    "maven-artifact": {
+        "artifactId": "jcore-gnp-bioc-writer",
+        "groupId": "de.julielab",
+        "version": "2.6.0"
+    },
+    "name": "JCoRe GNormPlus BioC Writer"
+}

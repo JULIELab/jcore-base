@@ -18,15 +18,15 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AbstractFileMapperTest {
 
@@ -34,7 +34,7 @@ public class AbstractFileMapperTest {
     private JCas cas;
     private TextFileMapper abstractFileMapper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         CollectionReaderDescription readerDescription = UIMAFramework.getXMLParser()
                 .parseCollectionReaderDescription(new XMLInputSource(DESCRIPTOR_FILE));

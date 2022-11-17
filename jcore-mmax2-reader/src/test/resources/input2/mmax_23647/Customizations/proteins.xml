@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customization>
+
+<rule pattern="proteins={protein_familiy_or_group}" style="background=d:212212212"/>
+<rule pattern="proteins={protein_complex}" style="background=green"/>
+<rule pattern="proteins={protein_enum}" style="background=red"/>
+<rule pattern="proteins={protein}" style="background=orange"/>
+<rule pattern="proteins={protein_variant}" style="background=d:064224208"/>
+
+
+
+
+<!--
+
+<rule pattern="t_cells={memory_t_cell}" style="background=black"/>
+<rule pattern="t_cells={memory_t_cell}" style="foreground=white"/>
+<rule pattern="t_cells={regulatory_t_cell}" style="background=d:072061139"/>
+<rule pattern="t_cells={regulatory_t_cell}" style="foreground=white"/>
+<rule pattern="t_cells={cytotoxic_t_cell}" style="background=d:064224208"/>
+<rule pattern="t_cells={naive_t_cell}" style="background=d:255140000"/>
+<rule pattern="t_cells={naive_t_cell}" style="foreground=blue"/>
+<rule pattern="t_cells={nk_t_cell}" style="background=d:255140000"/>
+<rule pattern="t_cells={nk_t_cell}" style="foreground=green"/>
+
+
+<rule pattern="thymocytes={thymocyte}" style="background=d:255140000"/>
+<rule pattern="thymocytes={pro_t_cell}" style="background=green"/>
+<rule pattern="thymocytes={dn2_immature_t_cell}" style="background=green"/>
+<rule pattern="thymocytes={dn2_immature_t_cell}" style="foreground=blue"/>
+<rule pattern="thymocytes={dn3_immature_t_cell}" style="background=green"/>
+<rule pattern="thymocytes={dn3_immature_t_cell}" style="foreground=white"/>
+<rule pattern="thymocytes={dn4_alpha_beta_immature_t_cell}" style="background=green"/>
+<rule pattern="thymocytes={dn4_alpha_beta_immature_t_cell}" style="foreground=red"/>
+
+
+<rule pattern="t_helper_cells={t_helper_cell}" style="background=d:034139034"/>
+<rule pattern="t_helper_cells={t_helper_1_cell}" style="background=d:034139034"/>
+<rule pattern="t_helper_cells={t_helper_1_cell}" style="foreground=blue"/>
+<rule pattern="t_helper_cells={t_helper_2_cell}" style="background=d:034139034"/>
+<rule pattern="t_helper_cells={t_helper_2_cell}" style="foreground=red"/>
+
+
+<rule pattern="transplant_status={donor}" style="background=d:128000128"/>
+<rule pattern="transplant_status={donor}" style="foreground=blue"/>
+<rule pattern="transplant_status={recipient}" style="background=d:128000128"/>
+<rule pattern="transplant_status={recipient}" style="foreground=red"/>
+<rule pattern="age={embryonic}" style="background=green"/>
+<rule pattern="age={fetal}" style="background=green"/>
+<rule pattern="age={fetal}" style="foreground=blue"/>
+<rule pattern="age={infant}" style="background=green"/>
+<rule pattern="age={infant}" style="foreground=white"/>
+<rule pattern="age={adult}" style="background=green"/>
+<rule pattern="age={adult}" style="foreground=red"/>
+<rule pattern="organism={human}" style="background=d:255215000"/>
+<rule pattern="organism={mouse}" style="background=blue"/>
+<rule pattern="organism={mouse}" style="foreground=white"/>
+<rule pattern="organism={rat}" style="background=red"/>
+<rule pattern="organism={dog}" style="background=black"/>
+<rule pattern="organism={dog}" style="foreground=white"/>
+<rule pattern="organism={animal}" style="background=d:072061139"/>
+<rule pattern="organism={animal}" style="foreground=white"/>
+<rule pattern="organism={bacterium}" style="background=d:064224208"/>
+<rule pattern="organism={ebv_virus}" style="background=d:255140000"/>
+<rule pattern="organism={ebv_virus}" style="foreground=blue"/>
+<rule pattern="organism={cmv_virus}" style="background=d:255140000"/>
+<rule pattern="organism={cmv_virus}" style="foreground=green"/>
+<rule pattern="organism={virus}" style="background=d:255140000"/>
+-->
+
+</customization>
+
+

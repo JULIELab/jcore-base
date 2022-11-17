@@ -2,10 +2,12 @@ package de.julielab.jcore.reader.xml;
 
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.reader.xmlmapper.mapper.XMLMapper;
+import de.julielab.jcore.types.Header;
 import org.apache.uima.jcas.JCas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,13 +20,18 @@ private final static Logger LOGGER = LoggerFactory.getLogger(CasPopulator.class)
     private final XMLMapper xmlMapper;
     private Row2CasMapper row2CasMapper;
     private String[] rowMappingArray;
-    private BiConsumer<byte[][], JCas> dbProcessingMetaDataSetter;
+    private int truncationSize;
 
-    public CasPopulator(DataBaseConnector dbc, XMLMapper xmlMapper, Row2CasMapper row2CasMapper, String[] rowMappingArray) {
+    public CasPopulator(DataBaseConnector dbc, XMLMapper xmlMapper, Row2CasMapper row2CasMapper, String[] rowMappingArray, int truncationSize) {
         this.dbc = dbc;
         this.xmlMapper = xmlMapper;
         this.row2CasMapper = row2CasMapper;
         this.rowMappingArray = rowMappingArray;
+        this.truncationSize = truncationSize;
+    }
+
+    public CasPopulator(DataBaseConnector dbc, XMLMapper xmlMapper, Row2CasMapper row2CasMapper, String[] rowMappingArray) {
+        this(dbc, xmlMapper, row2CasMapper, rowMappingArray, Integer.MAX_VALUE);
     }
 
     public void populateCas(JCas jcas, byte[][] arrayArray, BiConsumer<byte[][], JCas> dbProcessingMetaDataSetter) throws CasPopulationException {
@@ -68,7 +75,15 @@ private final static Logger LOGGER = LoggerFactory.getLogger(CasPopulator.class)
         if (LOGGER.isDebugEnabled())
             LOGGER.debug("getNext(CAS), primaryKeyValue = {}", new String(identifier));
         try {
-            xmlMapper.parse(arrayArray[xmlIndex], identifier, jcas);
+            // Populate the XML or truncate it due too exceeding size
+            if (arrayArray[xmlIndex].length <= truncationSize) {
+                xmlMapper.parse(arrayArray[xmlIndex], identifier, jcas);
+            }
+            else {
+                jcas.setDocumentText("This document was truncated in " + getClass().getCanonicalName() + " as part of "+XMLDBMultiplier.class.getCanonicalName() + " because its original size exceeded " + truncationSize + "bytes");
+                final Header header = new Header(jcas);
+                header.setDocId(new String(identifier, StandardCharsets.UTF_8));
+            }
             // Are there additional rows besides the primary key columns and the
             // document XML?
             if (arrayArray.length > (pkIndices.size() + 1)) {

@@ -6,7 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe Entity Evaluator and TSV Consumer</name>
         <description>This component was originally created to output the tab separated format used the JULIE Entity Evaluator. However, this component can be used to create a TSV file from any annotation or annotation set. The component allows to define columns by specifying the annotation type to draw feature values from and a feature path that specifies the location of the desired feature. All feature paths will be applied to each configured annotation, returning null values if an annotation does not exhibit a value for a column's feature path.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
@@ -56,6 +56,13 @@
                 <description>Optional. Only lets those entities contribute to the output file that fulfill the given feature value(s). The syntax is &lt;type&gt;:&lt;feature path&gt;=&lt;value&gt;. The '&lt;type&gt;:' prefix is optional. If omitted, the filters will be applied to all entities given in the EntityTypes parameter. An arbitrary number of filter expressions may be specified. In such cases, it is important to understand the boolean structure after which the expressions are evaluated in order to omit an annotation or take it into account for the output. The filter expressions are first grouped by feature path. Within such a group, the filter values form a disjunction. Thus, if any filter in a group is satisfied, the whole group is satisfied. The different groups form a conjunction. Thus, if any group is not satisfied, the whole conjunction is unsatisfied and the respective annotation will be omitted from output.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>AllowRegexForFilters</name>
+                <description>Optional. If set to true, the filter values specified with the FeatureFilters parameter are interpreted as regular expressions. The actual feature values are than matched by regular expression resolution instead of testing string equality.</description>
+                <type>Boolean</type>
+                <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
             <configurationParameter>

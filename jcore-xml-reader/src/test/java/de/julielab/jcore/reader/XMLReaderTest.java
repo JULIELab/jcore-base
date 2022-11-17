@@ -18,11 +18,10 @@
 package de.julielab.jcore.reader;
 
 import de.julielab.jcore.reader.xml.XMLReader;
-import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.Date;
+import de.julielab.jcore.types.*;
 import de.julielab.jcore.types.pubmed.Header;
 import de.julielab.jcore.types.pubmed.ManualDescriptor;
-import junit.framework.TestCase;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
@@ -49,13 +48,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
+
+import static org.assertj.core.api.Fail.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for class XML Reader
  */
-public class XMLReaderTest extends TestCase {
+public class XMLReaderTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLReaderTest.class);
 
@@ -228,7 +230,7 @@ public class XMLReaderTest extends TestCase {
             LOGGER.error(e.getMessage(), e);
             e.printStackTrace();
         }
-        assertEquals("reading single file", EXPECTED_DOCUMENT_TEXT, cas.getDocumentText());
+        assertEquals( EXPECTED_DOCUMENT_TEXT,  cas.getDocumentText(), "reading single file");
     }
 
     /**
@@ -239,8 +241,8 @@ public class XMLReaderTest extends TestCase {
             medlineReader = getCollectionReader(DESC_MEDLINE_READER_MISSING_INPUT_DIR);
             fail("Expected exception was not thrown");
         } catch (Exception e) {
-            assertTrue("Exception should be an instance of ResourceInitializationException , but was "
-                    + e.getClass().getName(), e instanceof ResourceInitializationException);
+            assertTrue(e instanceof ResourceInitializationException, "Exception should be an instance of ResourceInitializationException , but was "
+                    + e.getClass().getName());
         }
     }
 
@@ -332,25 +334,25 @@ public class XMLReaderTest extends TestCase {
             // check medline XML with all items
             if (getPMID(cas).equals("11119751")) {
                 checkCount++;
-                assertTrue("Invalid keyWordList", checkKeywords(cas, EXPECTED_KEYWORDS));
-                assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
-                assertTrue("Invalid DBInfoList", ckeckDBInfos(cas, EXPECTED_DB_INFO));
-                assertTrue("Invalid MeshHeading", checkMeshHeadings(cas, EXPECTED_MESH_HEADINGS));
-                assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-                assertTrue("Invalid Chemical", checkChemicals(cas, EXPECTED_CHEMICALS));
-                assertTrue("Invalid Header in document " + getPMID(cas), checkHeader(cas, EXPECTED_HEADER));
-                assertTrue("Invalid ManualDescriptor", checkManualDescriptor(cas));
-                assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
-                assertTrue("Invalid DocumentText in document " + getPMID(cas),
-                        checkDocumentText(cas, EXPECTED_DOCUMENT_TEXT));
-                assertTrue("Invalid AbstractText", checkAbstractText(cas, EXPECTED_ABSTRACT_TEXT));
-                assertTrue("Invalid Title", checkTitle(cas, EXPECTED_TITLE));
+                assertTrue(checkKeywords(cas, EXPECTED_KEYWORDS), "Invalid keyWordList");
+                assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
+                assertTrue(ckeckDBInfos(cas, EXPECTED_DB_INFO), "Invalid DBInfoList");
+                assertTrue(checkMeshHeadings(cas, EXPECTED_MESH_HEADINGS), "Invalid MeshHeading");
+                assertTrue(checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS), "Invalid GeneSymbol");
+                assertTrue(checkChemicals(cas, EXPECTED_CHEMICALS), "Invalid Chemical");
+                assertTrue(checkHeader(cas, EXPECTED_HEADER), "Invalid Header in document " + getPMID(cas));
+                assertTrue(checkManualDescriptor(cas), "Invalid ManualDescriptor");
+                assertTrue(ckeckJournal(cas, EXPECTED_JOURNAL), "Invalid Journal");
+                assertTrue(checkDocumentText(cas, EXPECTED_DOCUMENT_TEXT),
+                        "Invalid DocumentText in document " + getPMID(cas));
+                assertTrue(checkAbstractText(cas, EXPECTED_ABSTRACT_TEXT), "Invalid AbstractText");
+                assertTrue(checkTitle(cas, EXPECTED_TITLE), "Invalid Title");
             }
 
             // check medline XML without most lists (gene, keywords,...)
             if (getPMID(cas).equals("11119751-a")) {
                 checkCount++;
-                assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
+                assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
 
             }
 
@@ -358,30 +360,30 @@ public class XMLReaderTest extends TestCase {
             // Spring-Summer</MedlineDate>
             if (getPMID(cas).equals("11119751-b")) {
                 checkCount++;
-                assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
-                assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-                assertTrue("Invalid Journal in document " + getPMID(cas), ckeckJournal(cas, EXPECTED_JOURNAL));
-                assertTrue("Invalid PubDate", checkPubDate(cas, EXPECTED_DATE_1));
+                assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
+                assertTrue(checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS), "Invalid GeneSymbol");
+                assertTrue(ckeckJournal(cas, EXPECTED_JOURNAL), "Invalid Journal in document " + getPMID(cas));
+                assertTrue(checkPubDate(cas, EXPECTED_DATE_1), "Invalid PubDate");
             }
 
             // check medline XML with pub date: <MedlineDate>2000 Dec
             // 23-30</MedlineDate>
             if (getPMID(cas).equals("11119751-c")) {
                 checkCount++;
-                assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
-                assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-                assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
-                assertTrue("Invalid PubDate", checkPubDate(cas, EXPECTED_DATE_2));
+                assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
+                assertTrue(checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS), "Invalid GeneSymbol");
+                assertTrue(ckeckJournal(cas, EXPECTED_JOURNAL), "Invalid Journal");
+                assertTrue(checkPubDate(cas, EXPECTED_DATE_2), "Invalid PubDate");
             }
 
             // check medline XML pub date: <MedlineDate>2000 Oct-2001
             // Mar</MedlineDate>
             if (getPMID(cas).equals("11119751-d")) {
                 checkCount++;
-                assertTrue("Invalid Authors", checkAuthors(cas, EXPECTED_AUTHORS));
-                assertTrue("Invalid GeneSymbol", checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS));
-                assertTrue("Invalid Journal", ckeckJournal(cas, EXPECTED_JOURNAL));
-                assertTrue("Invalid PubDate", checkPubDate(cas, EXPECTED_DATE_3));
+                assertTrue(checkAuthors(cas, EXPECTED_AUTHORS), "Invalid Authors");
+                assertTrue(checkGeneSymbols(cas, EXPECTED_GENE_SYMBOLS), "Invalid GeneSymbol");
+                assertTrue(ckeckJournal(cas, EXPECTED_JOURNAL), "Invalid Journal");
+                assertTrue(checkPubDate(cas, EXPECTED_DATE_3), "Invalid PubDate");
             }
 
             if (getPMID(cas).equals("11119751-e")) {
@@ -394,22 +396,22 @@ public class XMLReaderTest extends TestCase {
             // (documentText should be equal to title in this case)
             if (getPMID(cas).equals("17276851")) {
                 checkCount++;
-                assertTrue("Invalid Document Title", checkTitle(cas, EXPECTED_TITLE_2));
-                assertTrue("Invalid Document Text", checkDocumentText(cas, EXPECTED_TITLE_2));
+                assertTrue(checkTitle(cas, EXPECTED_TITLE_2), "Invalid Document Title");
+                assertTrue(checkDocumentText(cas, EXPECTED_TITLE_2), "Invalid Document Text");
             }
 
             // PubMed has changed the XML element ForeName to FirstName, but
             // foreName should still be supported
             if (getPMID(cas).equals("18439884")) {
                 checkCount++;
-                assertTrue("Invalid foreName", checkForeNames(cas, EXPECTED_FORE_NAMES));
+                assertTrue(checkForeNames(cas, EXPECTED_FORE_NAMES), "Invalid foreName");
                 checkJournalTitle(cas, EXPECTED_JOURNAL_TITLE);
             }
 
             if (getPMID(cas).equals("17306504")) {
                 checkCount++;
-                assertTrue("Invalid pubTypeList", checkPubTypeList(cas, EXPECTED_PUBTYPES));
-                assertTrue("Invalid DOI in document " + getPMID(cas), checkDoi(cas, EXPECTED_DOI));
+                assertTrue(checkPubTypeList(cas, EXPECTED_PUBTYPES), "Invalid pubTypeList");
+                assertTrue(checkDoi(cas, EXPECTED_DOI), "Invalid DOI in document " + getPMID(cas));
             }
         }
         assertEquals(9, checkCount);
@@ -491,7 +493,7 @@ public class XMLReaderTest extends TestCase {
      *
      * @param cas
      *            The CAS
-     * @param title
+     * @param expectedTitle
      *            The correct title
      * @return true if the correct title is contained in the CAS
      */
@@ -896,7 +898,7 @@ public class XMLReaderTest extends TestCase {
      * Check if foreName was correctly parsed (PubMed changed firstName to foreName, but both should be supported)
      *
      * @param cas
-     * @param foreName
+     * @param foreNames
      * @return
      */
     private boolean checkForeNames(CAS cas, String[] foreNames) {

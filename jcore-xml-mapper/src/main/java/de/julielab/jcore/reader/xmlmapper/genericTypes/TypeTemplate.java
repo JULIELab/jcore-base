@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static org.fest.reflect.core.Reflection.constructor;
 
 /**
  * Represents a Template for a type which Contains a List of Feature Templates
@@ -119,14 +118,17 @@ public class TypeTemplate {
 	public void setParser(String trim) throws CollectionException {
 		if (trim != null) {
 			externalParser = true;
-			Class<?> externalParserClass;
+			Class<?> externalParserClass = null;
 			try {
 				externalParserClass = Class.forName(trim);
+			this.parser = (TypeParser) externalParserClass.getConstructor().newInstance();
 			} catch (ClassNotFoundException e) {
 				LOGGER.error("ExternalParser " + trim + " for type or feature " + fullClassName + " returns a ClassNotFoundException", e);
 				throw new CollectionException(e);
+			} catch (Exception e) {
+				LOGGER.error("Could not create instance of class {}: ", externalParserClass, e);
+				throw new CollectionException(e);
 			}
-			this.parser = (TypeParser) constructor().in(externalParserClass).newInstance();
 		}else{
 			this.parser = null;
 		}

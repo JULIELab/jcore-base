@@ -10,8 +10,8 @@ import de.julielab.jcore.types.*;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class EventWriterTest {
 	private Gene proteinT17;
 	private EntityMention entityT13;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception{
 		cas = JCasFactory.createJCas("src/test/resources/types/jcore-semantics-biology-types");
 		

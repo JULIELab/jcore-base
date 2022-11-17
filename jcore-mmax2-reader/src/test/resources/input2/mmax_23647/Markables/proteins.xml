@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE markables SYSTEM "markables.dtd">
+<markables xmlns="www.eml.org/NameSpaces/proteins">
+<markable id="markable_8" span="word_11..word_12" proteins="protein" />
+<markable id="markable_9" span="word_19..word_20" proteins="protein_familiy_or_group" />
+<markable id="markable_16" span="word_104" proteins="protein" />
+<markable id="markable_15" span="word_90" proteins="protein" />
+<markable id="markable_18" span="word_121" proteins="protein" />
+<markable id="markable_17" span="word_106..word_107" proteins="protein" />
+<markable id="markable_12" span="word_30" proteins="protein_familiy_or_group" />
+<markable id="markable_11" span="word_28" proteins="protein" />
+<markable id="markable_14" span="word_52..word_53" proteins="protein_familiy_or_group" />
+<markable id="markable_13" span="word_41..word_41.5" proteins="protein" />
+<markable id="markable_10" span="word_26" proteins="protein" />
+<markable id="markable_30" span="word_17" proteins="protein_familiy_or_group" />
+<markable id="markable_32" span="word_15" proteins="protein" />
+<markable id="markable_31" span="word_17" proteins="protein" />
+<markable id="markable_19" span="word_125..word_126" proteins="protein" />
+<markable id="markable_25" span="word_211" proteins="protein" />
+<markable id="markable_24" span="word_207" proteins="protein" />
+<markable id="markable_23" span="word_186..word_187" proteins="protein" />
+<markable id="markable_22" span="word_184" proteins="protein" />
+<markable id="markable_29" span="word_272..word_273" proteins="protein" />
+<markable id="markable_28" span="word_263" proteins="protein" />
+<markable id="markable_27" span="word_232..word_234" proteins="protein_enum" />
+<markable id="markable_26" span="word_230..word_230.5" proteins="protein" />
+<markable id="markable_21" span="word_141" proteins="protein" />
+<markable id="markable_20" span="word_135..word_136" proteins="protein" />
+</markables>

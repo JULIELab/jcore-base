@@ -29,16 +29,16 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileReaderTest {
 
@@ -107,7 +107,7 @@ public class FileReaderTest {
 	 private static final String FILE_ARTIFACT_4 = "data/onlyToken/8563171.txt";
 
 
-	@BeforeClass
+	@BeforeAll
 
 	public static void setUp() throws Exception {
 		writeArtifact(ARTIFACT_1, FILE_ARTIFACT_1);

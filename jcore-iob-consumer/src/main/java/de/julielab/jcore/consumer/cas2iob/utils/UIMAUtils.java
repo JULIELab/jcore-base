@@ -9,6 +9,7 @@
 package de.julielab.jcore.consumer.cas2iob.utils;
 
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE markables SYSTEM "markables.dtd">
+<markables xmlns="www.eml.org/NameSpaces/proteins">
+<markable id="markable_19" span="word_70" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_25" span="word_159" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_16" span="word_36" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_24" span="word_149" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_15" span="word_30" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_18" span="word_68" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_23" span="word_133" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_17" span="word_46" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_22" span="word_117" mmax_level="proteins"  proteins="protein_familiy_or_group" />
+<markable id="markable_12" span="word_15..word_18" mmax_level="proteins"  proteins="protein_complex" />
+<markable id="markable_11" span="word_4" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_14" span="word_28" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_26" span="word_215" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_13" span="word_20" mmax_level="proteins"  proteins="protein_complex" />
+<markable id="markable_21" span="word_109" mmax_level="proteins"  proteins="protein" />
+<markable id="markable_20" span="word_83" mmax_level="proteins"  proteins="protein" />
+</markables>

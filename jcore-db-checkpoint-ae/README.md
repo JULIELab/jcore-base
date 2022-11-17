@@ -2,7 +2,8 @@
 
 **Descriptor Path**:
 ```
-de.julielab.desc.jcore-db-checkpoint-ae
+de.julielab.jcore.ae.checkpoint.desc.jcore-db-checkpoint-ae
+de.julielab.jcore.ae.checkpoint.desc.jcore-db-checkpoint-consumer
 ```
 
 This is a JeDiS[1] component. It can be used to set the 'last component' column in a subset table. This help to keep track of the pipeline status.

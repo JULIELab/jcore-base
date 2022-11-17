@@ -11,7 +11,7 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -47,8 +47,8 @@ public class PMCMultiplierTest {
             }
             ++numBatches;
         }
-        assertThat(receivedDocIds).containsExactlyInAnyOrder("2847692", "2758189",
-                "2970367", "3201365", "4257438");
+        assertThat(receivedDocIds).containsExactlyInAnyOrder("PMC2847692", "PMC2758189",
+                "PMC2970367", "PMC3201365", "PMC4257438");
         assertThat(numBatches).isEqualTo(3);
     }
 
@@ -78,8 +78,8 @@ public class PMCMultiplierTest {
             }
             ++numBatches;
         }
-        assertThat(receivedDocIds).containsExactlyInAnyOrder("2847692", "2758189",
-                "2970367", "3201365", "4257438");
+        assertThat(receivedDocIds).containsExactlyInAnyOrder("PMC2847692", "PMC2758189",
+                "PMC2970367", "PMC3201365", "PMC4257438");
         assertThat(numBatches).isEqualTo(3);
     }
 }

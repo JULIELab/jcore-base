@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.reader.GNormPlusFormatMultiplier</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe GNormPlus BioC Format Multiplier</name>
+        <description>Multiplier for GNormPlusFormatMultiplierReader. Takes URIs pointing to BioC collection files that contain annotations created by GNormPlus. For each such file, reads all documents and returns CASes for them until all documents in all collections have been read into a CAS.</description>
+        <version>2.6.0</version>
+        <configurationParameters>
+            <configurationParameter>
+                <name>CostosysConfigFile</name>
+                <description>Path to the CoStoSys configuration file that is used by the XMI DB writer in the same pipeline, if any. The XMI DB writer requires information about the XMI documents that are already in the database and should be updated with new annotations. The current highest XMI ID must be known to avoid ID collisions. To obtain the ID, it must be received from the database beforehand. This allows to retrieve the information batch wise instead of one-by-one which would be much slower.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>DocumentsTable</name>
+                <description>Required to retrieve the max XMI ID for use by the XMI DB writer. The schema-qualified name of the XMI document table that the XMI DB writer will write annotations into.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings />
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-document-structure-pubmed-types" />
+                <import name="de.julielab.jcore.types.casmultiplier.jcore-uri-multiplier-types" />
+                <import name="de.julielab.jcore.types.jcore-document-meta-pubmed-types" />
+                <import name="de.julielab.jcore.types.jcore-xmi-splitter-types" />
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection />
+        <capabilities>
+            <capability>
+                <inputs />
+                <outputs>
+                    <type>de.julielab.jcore.types.Gene</type>
+                    <type>de.julielab.jcore.types.Organism</type>
+                </outputs>
+                <languagesSupported />
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

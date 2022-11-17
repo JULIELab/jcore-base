@@ -33,6 +33,7 @@ public class PMCReader extends PMCReaderBase {
     public static final String PARAM_SEARCH_ZIP = PMCReaderBase.PARAM_SEARCH_ZIP;
     public static final String PARAM_WHITELIST = PMCReaderBase.PARAM_WHITELIST;
     public static final String PARAM_EXTRACT_ID_FROM_FILENAME = PMCReaderBase.PARAM_EXTRACT_ID_FROM_FILENAME;
+    public static final String PARAM_OMIT_BIB_REFERENCES = PMCReaderBase.PARAM_OMIT_BIB_REFERENCES;
     private static final Logger log = LoggerFactory.getLogger(PMCReader.class);
     private CasPopulator casPopulator;
 
@@ -40,7 +41,7 @@ public class PMCReader extends PMCReaderBase {
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
         try {
-            casPopulator = new CasPopulator(pmcFiles);
+            casPopulator = new CasPopulator(pmcFiles, omitBibReferences);
         } catch (IOException e) {
             log.error("Exception occurred when trying to initialize NXML parser", e);
             throw new ResourceInitializationException(e);
@@ -54,10 +55,12 @@ public class PMCReader extends PMCReaderBase {
             next = pmcFiles.next();
             casPopulator.populateCas(next, cas);
             if (extractIdFromFilename)
-                ((Header)cas.getAnnotationIndex(Header.type).iterator().next()).setDocId(getIdFromFilename(next));
+                ((Header) cas.getAnnotationIndex(Header.type).iterator().next()).setDocId(getIdFromFilename(next));
         } catch (ElementParsingException e) {
             log.error("Exception occurred when trying to parse {}", next, e);
             throw new CollectionException(e);
+        } catch (NoDataAvailableException e) {
+            log.error("Could not populate CAS due to preceding error.");
         }
         completed++;
     }

@@ -35,7 +35,7 @@ import java.util.List;
  *
  */
 @ResourceMetaData(name="JCore LINNAEUS Species AE")
-@TypeCapability(inputs = {"de.julielab.jcore.types.Organism", "de.julielab.jcore.types.ResourceEntry"})
+@TypeCapability(outputs = {"de.julielab.jcore.types.Organism", "de.julielab.jcore.types.ResourceEntry"})
 public class LinnaeusSpeciesAnnotator extends JCasAnnotator_ImplBase {
     public static final String RES_KEY_LINNAEUS_MATCHER = "LinnaeusMatcher";
     public static final String PARAM_CONFIG_FILE = "ConfigFile";

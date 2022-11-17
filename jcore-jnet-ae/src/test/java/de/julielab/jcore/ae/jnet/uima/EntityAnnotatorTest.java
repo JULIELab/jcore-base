@@ -20,7 +20,6 @@ package de.julielab.jcore.ae.jnet.uima;
 import de.julielab.jcore.types.*;
 import de.julielab.jcore.utility.index.JCoReCoverIndex;
 import de.julielab.jnet.tagger.Unit;
-import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -37,6 +36,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -52,7 +52,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class EntityAnnotatorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class EntityAnnotatorTest  {
 
 	/**
 	 * Logger for this class
@@ -66,12 +68,8 @@ public class EntityAnnotatorTest extends TestCase {
 	private static final String ENTITY_ANNOTATOR_DESC = PREFIX+"EntityAnnotatorTest.xml";
 	private static final String NEGATIVE_LIST = PREFIX+"negativeList";
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		// PropertyConfigurator.configure("src/test/java/log4j.properties");
-	}
 
+	@Test
 	public void testIgnoreLabel() throws ResourceInitializationException {
 
 		// load AE
@@ -124,6 +122,7 @@ public class EntityAnnotatorTest extends TestCase {
 	/**
 	 * test whether Annotator can be initialized properly from given descriptor
 	 */
+	@Test
 	public void testInitialize() {
 		LOGGER.debug("testInitialize()");
 		AnalysisEngine entityAnnotator = null;
@@ -150,6 +149,7 @@ public class EntityAnnotatorTest extends TestCase {
 	 * test whether process method runs successfully. Output must be checked by
 	 * a human manually
 	 */
+	@Test
 	public void testProcess() throws InvalidXMLException, ResourceInitializationException, IOException, SAXException,
 			CASException, AnalysisEngineProcessException {
 		LOGGER.debug("testProcess()");
@@ -176,6 +176,7 @@ public class EntityAnnotatorTest extends TestCase {
 	 * unit sentence and removing duplicates. Prediction is "simulated" (labels
 	 * are set).
 	 */
+	@Test
 	public void testSimulatedProcess() throws IllegalAccessException, NoSuchFieldException,
 			ResourceInitializationException, InvalidXMLException, IOException, CASException, SAXException {
 		LOGGER.debug("testCreateUnitSentence() - starting");
@@ -280,6 +281,7 @@ public class EntityAnnotatorTest extends TestCase {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
+	@Test
 	public void testWriteToCAS() throws SecurityException, NoSuchFieldException, ResourceInitializationException,
 			InvalidXMLException, IOException, CASException, IllegalArgumentException, IllegalAccessException {
 		LOGGER.debug("testWriteToCAS()");

@@ -1,0 +1,4 @@
+The actual descriptor must be created by UIMA fit.
+For this purpose, use UIMAfit annotations to annotate the reader component class.
+Then employ the jcore-descriptor-creator's main method to build the descriptor from the reader class.
+The jcore-descriptor-creator is already on the classpath as a Maven dependency.

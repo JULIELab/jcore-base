@@ -19,7 +19,7 @@
     "maven-artifact": {
         "artifactId": "jcore-cord19-reader",
         "groupId": "de.julielab",
-        "version": "2.5.1-SNAPSHOT"
+        "version": "2.6.0"
     },
     "name": "JCoRe CORD-19 Reader"
 }

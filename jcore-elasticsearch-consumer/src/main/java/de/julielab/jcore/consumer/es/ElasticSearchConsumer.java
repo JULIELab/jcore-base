@@ -35,18 +35,26 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
      */
     public static final String PARAM_TYPE = "type";
     public static final String PARAM_BATCH_SIZE = "batchSize";
+    public static final String PARAM_DELETE_DOCS_BEFORE_INDEXING = "deleteDocumentsBeforeIndexing";
+    public static final String PARAM_DOC_ID_FIELD = "documentIdField";
     final Logger log = LoggerFactory.getLogger(ElasticSearchConsumer.class);
     @ConfigurationParameter(name = PARAM_URLS, description = "A list of URLs pointing to different nodes of the ElasticSearch cluster, e.g. http://localhost:9300/. Documents will be sent bulk-wise to the nodes in a round-robin fashion.")
     private String[] urls;
     @ConfigurationParameter(name = PARAM_INDEX_NAME, description = "The ElasticSearch index name to send the created documents to.")
     private String indexName;
-    @ConfigurationParameter(name = PARAM_TYPE, mandatory = false, description = "The index type the generated documents should have. The types are removed from ElasticSearch with version 7 and should omitted for ES >= 7.")
+    @ConfigurationParameter(name = PARAM_TYPE, mandatory = false, description = "The index type the generated documents should have. The types are removed from ElasticSearch with version 7 and should be omitted for ES >= 7.")
     private String type;
     @ConfigurationParameter(name = PARAM_BATCH_SIZE, mandatory = false, description = "The number of documents to be sent to ElasticSearch in a single batch. Defaults to 50.")
     private int batchSize;
+    @ConfigurationParameter(name = PARAM_DELETE_DOCS_BEFORE_INDEXING, mandatory = false, description = "Whether or not to delete documents with the docId of the UIMA CASes in ElasticSearch prior to indexing. This is useful when parts of the document are indexed whose IDs are not stable or that might change after document updates and would not just be overwritten when indexing anew. Defaults to false.")
+    private boolean deleteDocsBeforeIndexing;
+    @ConfigurationParameter(name = PARAM_DOC_ID_FIELD, mandatory = false, description = "Required when " + PARAM_DELETE_DOCS_BEFORE_INDEXING + " is set to true. This should be an existing index field that contains the document ID of each CAS. It is used to remove existing index documents related to the CAS document ID prior to indexing.")
+    private String docIdField;
 
     private List<String> bulkCommand;
+    private List<String> docIdsToDelete;
     private HttpPost[] indexPosts;
+    private HttpPost[] indexDeletes;
 
     private int urlIndex = 0;
 
@@ -62,6 +70,11 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
         type = (String) getContext().getConfigParameterValue(PARAM_TYPE);
         batchSize = Optional.ofNullable((Integer) getContext().getConfigParameterValue(PARAM_BATCH_SIZE)).orElse(50);
         bulkCommand = new ArrayList<>(4000);
+        deleteDocsBeforeIndexing = (boolean) Optional.ofNullable(getContext().getConfigParameterValue(PARAM_DELETE_DOCS_BEFORE_INDEXING)).orElse(false);
+        docIdField = (String) getContext().getConfigParameterValue(PARAM_DOC_ID_FIELD);
+
+        if (deleteDocsBeforeIndexing && docIdField == null)
+            throw new ResourceInitializationException(new IllegalArgumentException(PARAM_DELETE_DOCS_BEFORE_INDEXING + " is true but no " + PARAM_DOC_ID_FIELD + " was specified."));
 
         httpclient = HttpClientBuilder.create().build();
         if (urls != null) {
@@ -75,10 +88,26 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
             }
         }
 
+        if (deleteDocsBeforeIndexing) {
+            indexDeletes = new HttpPost[urls.length];
+            for (int i = 0; i < urls.length; i++) {
+                String url = urls[i];
+                if (null != url && url.endsWith("/_bulk"))
+                    url = url.replace("/_bulk/?", "");
+                url += "/" + indexName + "/" + "_delete_by_query";
+                indexDeletes[i] = new HttpPost(url);
+                indexDeletes[i].addHeader("Content-Type", "application/x-ndjson");
+
+            }
+            docIdsToDelete = new ArrayList<>();
+        }
+
         if (log.isInfoEnabled()) {
             log.info("{}: {}", PARAM_URLS, Arrays.toString(urls));
             log.info("{}: {}", PARAM_INDEX_NAME, indexName);
             log.info("{}: {}", PARAM_TYPE, type);
+            log.info("{}: {}", PARAM_DELETE_DOCS_BEFORE_INDEXING, deleteDocsBeforeIndexing);
+            log.info("{}: {}", PARAM_DOC_ID_FIELD, docIdField);
         }
     }
 
@@ -88,6 +117,10 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
             StopWatch w = new StopWatch();
             w.start();
             Gson gson = new Gson();
+
+            if (deleteDocsBeforeIndexing) {
+                docIdsToDelete.add(JCoReTools.getDocId(aJCas));
+            }
 
             // This is the default case: For each CAS, create one document. This
             // document is populated with fields by field generators. The field
@@ -157,6 +190,7 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
         super.batchProcessComplete();
         log.debug("Batch of {} documents is sent to ElasticSearch.", docNum);
         docNum = 0;
+        deleteDocuments();
         postBulkIndexAction();
     }
 
@@ -164,7 +198,57 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
     public void collectionProcessComplete() throws AnalysisEngineProcessException {
         super.collectionProcessComplete();
         log.info("Collection complete.");
+        deleteDocuments();
         postBulkIndexAction();
+    }
+
+    private void deleteDocuments() throws AnalysisEngineProcessException {
+        if (deleteDocsBeforeIndexing) {
+            // Post to all the ElasticSearch nodes in a round-robin fashion.
+            HttpPost indexDelete = indexDeletes[urlIndex];
+            urlIndex = (urlIndex + 1) % indexDeletes.length;
+            try {
+                int lastIndex = 0;
+                List<String> subList;
+                do {
+                    subList = docIdsToDelete.subList(lastIndex, Math.min(docIdsToDelete.size(), lastIndex + 1000));
+                    if (subList.isEmpty())
+                        continue;
+                    lastIndex += subList.size();
+                    log.debug("Delete {} documents in index {}.", subList.size(), indexName);
+                    long time = System.currentTimeMillis();
+                    StringBuilder deleteQuery = new StringBuilder();
+                    deleteQuery.append("{\"query\":{\"terms\":{\"").append(docIdField).append("\":[");
+                    for (int i = 0; i < subList.size(); i++) {
+                        String docId = subList.get(i);
+                        deleteQuery.append("\"").append(docId).append("\"");
+                        if (i < subList.size() - 1)
+                            deleteQuery.append(",");
+                    }
+                    deleteQuery.append("]}}}");
+                    StringEntity deleteByQueryEntity = new StringEntity(deleteQuery.toString(), "UTF-8");
+                    indexDelete.setEntity(deleteByQueryEntity);
+                    HttpResponse response = httpclient.execute(indexDelete);
+                    int statusCode = response.getStatusLine().getStatusCode();
+                    HttpEntity responseEntity = response.getEntity();
+                    if (statusCode > 200) {
+                        log.error("The server responded with a non-OK status code: {}", statusCode);
+                        log.error("Response status line: {}", response.getStatusLine());
+                        log.error("Response body: {}", EntityUtils.toString(responseEntity));
+                        log.error("Delete-by-query command was: {}", deleteQuery);
+                    }
+                    EntityUtils.consume(responseEntity);
+                    time = System.currentTimeMillis() - time;
+                    log.debug("Sending took {}ms ({}s) and returned status code {}", time, time / 1000, statusCode);
+                } while (null != subList && !subList.isEmpty());
+            } catch (IOException e) {
+                log.error("Error when sending data to ElasticSearch:", e);
+                throw new AnalysisEngineProcessException(e);
+            } finally {
+                indexDelete.reset();
+                docIdsToDelete.clear();
+            }
+        }
     }
 
     private void postBulkIndexAction() throws AnalysisEngineProcessException {
@@ -175,13 +259,13 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
         urlIndex = (urlIndex + 1) % indexPosts.length;
         try {
             int lastIndex = 0;
-            List<String> subList = null;
+            List<String> subList;
             do {
                 subList = bulkCommand.subList(lastIndex, Math.min(bulkCommand.size(), lastIndex + 1000));
                 if (subList.isEmpty())
                     continue;
                 lastIndex += subList.size();
-                log.debug("Sending {} documents to index {}.", subList.size() / 2, indexName);
+                log.debug("Sending {} documents to index {}.", subList.size(), indexName);
                 long time = System.currentTimeMillis();
                 // The bulk format requires us to have a newline also after the
                 // last

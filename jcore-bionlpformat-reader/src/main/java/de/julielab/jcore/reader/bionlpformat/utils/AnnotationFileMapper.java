@@ -17,8 +17,8 @@ package de.julielab.jcore.reader.bionlpformat.utils;
 
  import java.io.BufferedReader;
  import java.io.IOException;
- import java.util.*;
  import java.util.List;
+ import java.util.*;
  import java.util.regex.Matcher;
  import java.util.regex.Pattern;
 

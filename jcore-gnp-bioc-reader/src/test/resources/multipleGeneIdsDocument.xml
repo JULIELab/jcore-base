@@ -1,0 +1,136 @@
+<?xml version="1.0" ?>
+<!DOCTYPE collection
+        SYSTEM 'BioC.dtd'>
+<collection>
+    <source>JCoRe GNormPlus BioC Writer</source>
+    <date>Wed Mar 02 14:58:28 CET 2022</date>
+    <key>PubTator.key</key>
+    <document>
+        <id>16177354</id>
+        <passage>
+            <infon key="type">title</infon>
+            <offset>0</offset>
+            <text>Cellular mechanisms of the adjuvant activity of the flagellin component FljB of Salmonella enterica
+                Serovar Typhimurium to potentiate mucosal and systemic responses.
+            </text>
+            <annotation id="0">
+                <infon key="FocusSpecies">NCBITaxonomyID:90371</infon>
+                <infon key="type">FamilyName</infon>
+                <location offset="52" length="9"/>
+                <text>flagellin</text>
+            </annotation>
+            <annotation id="2">
+                <infon key="NCBI Taxonomy">90371</infon>
+                <infon key="type">Species</infon>
+                <location offset="80" length="39"/>
+                <text>Salmonella enterica Serovar Typhimurium</text>
+            </annotation>
+        </passage>
+        <passage>
+            <infon key="type">abstract</infon>
+            <offset>166</offset>
+            <text>An expanding area of interest is the utilization of microbe-based components to augment mucosal and
+                systemic immune responses to target antigens. Thus, the aim of the present study was to assess if the
+                flagellin component FljB from Salmonella enterica serovar Typhimurium could act as a mucosal adjuvant
+                and then to determine the cellular mechanism(s) by which FljB mediates its adjuvant properties. To
+                determine if FljB could act as a mucosal adjuvant, mice were immunized by the intranasal (i.n.) route
+                with antigen alone or in conjunction with FljB. Additionally, we assessed how FljB affected the levels
+                of the costimulatory molecules B7-1 and B7-2 on dendritic cells by flow cytometry and determined the
+                functional role these costimulatory molecules played in the adjuvant properties of FljB in vivo. Mice
+                immunized by the i.n. route with antigen and FljB exhibited significantly elevated levels of mucosal and
+                systemic antibody and CD4(+)-T-cell responses compared to mice given antigen only. Stimulation of
+                dendritic cells in vitro with FljB resulted in a pronounced increase in the surface expression of B7-1
+                and B7-2. The percentage of dendritic cells expressing B7-2 but not B7-1 increased significantly when
+                stimulated with FljB over a concentration range of 10 to 10,000 ng/ml. Immunization of wild-type and
+                B7-1, B7-2, and B7-1/2 knockout mice by the i.n. route revealed that the ability of FljB to increase
+                B7-2 expression is largely responsible for its adjuvant effect in vivo. These findings demonstrate that
+                FljB can act as an effective mucosal adjuvant and that its ability to enhance the level of B7-2
+                expression is predominantly responsible for its adjuvant properties.
+            </text>
+            <annotation id="4">
+                <infon key="NCBI Gene">12519;12524</infon>
+                <infon key="type">Gene</infon>
+                <location offset="805" length="13"/>
+                <text>B7-1 and B7-2</text>
+            </annotation>
+            <annotation id="8">
+                <infon key="NCBI Gene">12519;12524</infon>
+                <infon key="type">Gene</infon>
+                <location offset="1278" length="13"/>
+                <text>B7-1 and B7-2</text>
+            </annotation>
+            <annotation id="9">
+                <infon key="NCBI Gene">12519;12524</infon>
+                <infon key="type">Gene</infon>
+                <location offset="1502" length="6"/>
+                <text>B7-1/2</text>
+            </annotation>
+            <annotation id="11">
+                <infon key="NCBI Gene">12524</infon>
+                <infon key="type">Gene</infon>
+                <location offset="1782" length="4"/>
+                <text>B7-2</text>
+            </annotation>
+            <annotation id="12">
+                <infon key="NCBI Gene">12524</infon>
+                <infon key="type">Gene</infon>
+                <location offset="1587" length="4"/>
+                <text>B7-2</text>
+            </annotation>
+            <annotation id="13">
+                <infon key="NCBI Gene">12524</infon>
+                <infon key="type">Gene</infon>
+                <location offset="1492" length="4"/>
+                <text>B7-2</text>
+            </annotation>
+            <annotation id="14">
+                <infon key="NCBI Gene">12519</infon>
+                <infon key="type">Gene</infon>
+                <location offset="1486" length="4"/>
+                <text>B7-1</text>
+            </annotation>
+            <annotation id="15">
+                <infon key="NCBI Gene">12519</infon>
+                <infon key="type">Gene</infon>
+                <location offset="1351" length="4"/>
+                <text>B7-1</text>
+            </annotation>
+            <annotation id="16">
+                <infon key="NCBI Gene">12524</infon>
+                <infon key="type">Gene</infon>
+                <location offset="1338" length="4"/>
+                <text>B7-2</text>
+            </annotation>
+            <annotation id="23">
+                <infon key="FocusSpecies">NCBITaxonomyID:90371</infon>
+                <infon key="type">FamilyName</infon>
+                <location offset="368" length="9"/>
+                <text>flagellin</text>
+            </annotation>
+            <annotation id="24">
+                <infon key="NCBI Taxonomy">90371</infon>
+                <infon key="type">Species</infon>
+                <location offset="398" length="39"/>
+                <text>Salmonella enterica serovar Typhimurium</text>
+            </annotation>
+            <annotation id="25">
+                <infon key="NCBI Taxonomy">10090</infon>
+                <infon key="type">Species</infon>
+                <location offset="620" length="4"/>
+                <text>mice</text>
+            </annotation>
+            <annotation id="26">
+                <infon key="NCBI Taxonomy">10090</infon>
+                <infon key="type">Species</infon>
+                <location offset="972" length="4"/>
+                <text>Mice</text>
+            </annotation>
+            <annotation id="27">
+                <infon key="NCBI Taxonomy">10090</infon>
+                <infon key="type">Species</infon>
+                <location offset="1518" length="4"/>
+                <text>mice</text>
+            </annotation>
+        </passage>
+    </document>
+</collection>

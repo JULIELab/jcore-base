@@ -5,8 +5,8 @@ import de.julielab.ipc.javabridge.Options;
 import de.julielab.ipc.javabridge.ResultDecoders;
 import de.julielab.ipc.javabridge.StdioBridge;
 import org.assertj.core.data.Offset;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,11 +20,11 @@ public class EmbeddingScriptTest {
     private static final String SCRIPT_PATH = "src/main/resources/de/julielab/jcore/ae/fte/python/getEmbeddingScript.py";
     private static String pythonCommand;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         pythonCommand = System.getenv("PYTHON");
         if (pythonCommand == null)
-            pythonCommand = "python3.6";
+            pythonCommand = "python";
     }
 
     @Test
@@ -49,11 +49,7 @@ public class EmbeddingScriptTest {
         final double[][] vectors = response.map(ResultDecoders.decodeVectors).findAny().get();
         bridge.stop();
 
-        assertThat(vectors).hasSize(10);
-        for (double[] vector : vectors) {
-            // The vectors should all have a dimensionality of 1024
-            assertThat(vector.length).isEqualTo(1024);
-        }
+        assertThat(vectors).hasDimensions(10, 1024);
 
         // Those values were output using print(token.embedding.numpy(), file=sys.stderr) in the script
         assertThat(vectors[0][0]).isCloseTo(1.8812446e-01, Offset.offset(0.000001));
@@ -86,11 +82,7 @@ public class EmbeddingScriptTest {
         final double[][] vectors = response.map(ResultDecoders.decodeVectors).findAny().get();
         bridge.stop();
 
-        assertThat(vectors).hasSize(2);
-        for (int i = 0; i < vectors.length; i++) {
-            // The vectors should all have a dimensionality of 1024
-            assertThat(vectors[i].length).isEqualTo(1024);
-        }
+        assertThat(vectors).hasDimensions(2, 1024);
 
         // Those values were output using print(token.embedding.numpy(), file=sys.stderr) in the script
         assertThat(vectors[0][0]).isCloseTo(-0.16511102, Offset.offset(0.000001));
@@ -128,7 +120,7 @@ public class EmbeddingScriptTest {
         final double[][] vectors = response.map(ResultDecoders.decodeVectors).findAny().get();
         bridge.stop();
 
-        assertThat(vectors).hasSize(12);
+        assertThat(vectors.length).isEqualTo(12);
 
     }
 }

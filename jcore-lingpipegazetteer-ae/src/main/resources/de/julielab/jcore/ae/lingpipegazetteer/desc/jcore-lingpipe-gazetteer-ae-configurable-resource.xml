@@ -16,7 +16,7 @@
             embedded into the descriptor. The current parameter settings will work but may be changed. Refer to
             https://github.com/JULIELab/jcore-base/tree/master/jcore-lingpipegazetteer-ae for more information.
         </description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <vendor>julielab</vendor>
         <configurationParameters>
             <configurationParameter>
@@ -50,6 +50,9 @@
             </nameValuePair>
         </configurationParameterSettings>
         <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-semantics-mention-types" />
+            </imports>
         </typeSystemDescription>
         <typePriorities />
         <fsIndexCollection />
@@ -106,6 +109,12 @@
                                 <mandatory>true</mandatory>
                             </configurationParameter>
                             <configurationParameter>
+                                <name>NormalizePlural</name>
+                                <type>Boolean</type>
+                                <multiValued>false</multiValued>
+                                <mandatory>true</mandatory>
+                            </configurationParameter>
+                            <configurationParameter>
                                 <name>TransliterateText</name>
                                 <type>Boolean</type>
                                 <multiValued>false</multiValued>
@@ -147,6 +156,12 @@
                                 <name>NormalizeText</name>
                                 <value>
                                     <boolean>true</boolean>
+                                </value>
+                            </nameValuePair>
+                            <nameValuePair>
+                                <name>NormalizePlural</name>
+                                <value>
+                                    <boolean>false</boolean>
                                 </value>
                             </nameValuePair>
                             <nameValuePair>

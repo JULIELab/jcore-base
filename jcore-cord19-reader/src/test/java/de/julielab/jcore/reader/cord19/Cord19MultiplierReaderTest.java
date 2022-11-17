@@ -15,7 +15,7 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -63,9 +63,8 @@ public class Cord19MultiplierReaderTest {
         assertThat(documentTitles.get(0)).extracting(Annotation::getCoveredText).isEqualTo("Recombinant M protein-based ELISA test for detection of antibodies to canine coronavirus");
 
         AbstractText abstractText = JCasUtil.selectSingle(cas, AbstractText.class);
-        assertThat(abstractText.getCoveredText()).startsWith("The membrane (M) protein of canine");
-        assertThat(abstractText.getCoveredText()).endsWith("antibodies to CCoV in dog sera. #");
-        assertThat(abstractText.getStructuredAbstractParts()).hasSize(1);
+        assertThat(abstractText.getCoveredText()).startsWith("Abstract The membrane (M) protein of canine");
+        assertThat(abstractText.getCoveredText()).endsWith("antibodies to CCoV in dog sera.");
 
         Collection<Paragraph> paragraphs = JCasUtil.select(cas, Paragraph.class);
         assertThat(paragraphs).hasSize(19);

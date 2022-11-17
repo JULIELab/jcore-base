@@ -9,8 +9,10 @@ import banner.types.EntityType;
 import banner.types.Mention;
 import banner.types.Sentence;
 import de.julielab.jcore.types.EntityMention;
+import de.julielab.jcore.types.pubmed.InternalReference;
 import de.julielab.jcore.utility.JCoReAnnotationTools;
 import de.julielab.jcore.utility.JCoReTools;
+import de.julielab.jcore.utility.index.JCoReOverlapAnnotationIndex;
 import dragon.nlp.tool.Tagger;
 import dragon.nlp.tool.lemmatiser.EngLemmatiser;
 import org.apache.commons.configuration.ConfigurationException;
@@ -34,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,6 +50,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_CONFIG_FILE = "ConfigFile";
     public static final String PARAM_TYPE_MAPPING = "TypeMapping";
+    public static final String PARAM_COMPONENT_ID = "ComponentId";
     private final static Logger log = LoggerFactory.getLogger(BANNERAnnotator.class);
     private Tokenizer tokenizer;
     private DictionaryTagger dictionary;
@@ -61,6 +65,8 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
     private String configFilePath;
     @ConfigurationParameter(name = PARAM_TYPE_MAPPING, mandatory = false, description = "A list of mappings from entity labels to UIMA types in the form <label>=<fully qualified type name>. If not given, all entities will be realized as EntityMention instances.")
     private String[] typeMappings;
+    @ConfigurationParameter(name = PARAM_COMPONENT_ID, mandatory = false, description = "Specifies the value of the 'componentId' feature for created entity annotations. Defaults to the fully qualified name of this class.")
+    private String componentId;
 
     private Map<String, String> typeMap;
     private InputStream modelIs;
@@ -74,6 +80,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
             configFilePath = (String) aContext.getConfigParameterValue(PARAM_CONFIG_FILE);
             typeMappings = (String[]) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_TYPE_MAPPING))
                     .orElse(new String[0]);
+            componentId = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_COMPONENT_ID)).orElse(BANNERAnnotator.class.getCanonicalName());
             File configFile = new File(configFilePath);
             if (configFile.exists()) {
                 log.debug("Found configuration file {}", configFile);
@@ -136,7 +143,10 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
                 // model is deserialized multiple times, the FeatureSet#pipe field seems to be always the
                 // exact same instance, containing a single instance of LemmaPOS (again, despite reading the model
                 // file and deserializing it multiple times). This is why the Thread -> resources map was added.
-                tagger = CRFTagger.load(modelIs, lemmatiser, posTagger, dictionary);
+                System.out.println("Initializing BANNER: " + Thread.currentThread() + " with lemmatiser " + lemmatiser + " and POS tagger " + posTagger);
+                synchronized (BANNERAnnotator.class) {
+                    tagger = CRFTagger.load(modelIs, lemmatiser, posTagger, dictionary);
+                }
             } catch (IOException e) {
                 log.error("Could not load the BANNER model at {}", modelFilename, e);
                 throw new AnalysisEngineProcessException(e);
@@ -145,6 +155,7 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
         String docId = "<unknown>";
         try {
             docId = JCoReTools.getDocId(jcas);
+            JCoReOverlapAnnotationIndex<InternalReference> intRefIndex = new JCoReOverlapAnnotationIndex<>(jcas, InternalReference.type);
             FSIterator<Annotation> sentIt = jcas.getAnnotationIndex(de.julielab.jcore.types.Sentence.type).iterator();
             int geneCount = 0;
             int sentCount = 0;
@@ -164,12 +175,19 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
                     String typeName = typeMap.getOrDefault(entityType.getText(),
                             EntityMention.class.getCanonicalName());
                     Annotation a = JCoReAnnotationTools.getAnnotationByClassName(jcas, typeName);
-                    a.setBegin(sentenceBegin + mention.getStartChar());
-                    a.setEnd(sentenceBegin + mention.getEndChar());
+                    int originalBegin = sentenceBegin + mention.getStartChar();
+                    int originalEnd = sentenceBegin + mention.getEndChar();
+                    a.setBegin(originalBegin);
+                    a.setEnd(originalEnd);
+                    excludeReferenceAnnotationSpans(a, intRefIndex);
+                    if (a.getEnd() <= a.getBegin() || a.getCoveredText().isBlank()) {
+                        // It seems there was nothing left of a gene mention outside the internal reference; skip
+                        continue;
+                    }
                     if (a instanceof de.julielab.jcore.types.Annotation) {
                         de.julielab.jcore.types.Annotation jcoreA = (de.julielab.jcore.types.Annotation) a;
                         jcoreA.setId("BANNER, " + docId + ": " + geneCount++);
-                        jcoreA.setComponentId(BANNERAnnotator.class.getCanonicalName());
+                        jcoreA.setComponentId(componentId);
                         jcoreA.setConfidence(String.valueOf(mention.getProbability()));
                     }
                     if (a instanceof EntityMention) {
@@ -182,6 +200,31 @@ public class BANNERAnnotator extends JCasAnnotator_ImplBase {
         } catch (Exception e) {
             log.error("Exception occurred while running the BANNER annotator on document {}.", docId, e);
             throw new AnalysisEngineProcessException(e);
+        }
+    }
+
+    /**
+     * Internal references can actually look like a part of a gene, e.g. "filament19" where "19" is a reference.
+     * Exclude those spans from the gene mentions.
+     * @param a The gene annotation.
+     * @param intRefIndex The reference index.
+     */
+    private void excludeReferenceAnnotationSpans(Annotation a, JCoReOverlapAnnotationIndex<? extends Annotation> intRefIndex) {
+        List<? extends Annotation> annotationsInGene = intRefIndex.search(a);
+        for (Annotation overlappingAnnotation : annotationsInGene) {
+            if (overlappingAnnotation.getBegin() == a.getBegin()) {
+                a.setBegin(overlappingAnnotation.getEnd());
+            }
+            if (overlappingAnnotation.getEnd() == a.getEnd()) {
+                a.setEnd(overlappingAnnotation.getBegin());
+            }
+            // Set zero-character spans on genes that are completely enclosed by a reference. Those are cases
+            // like, for instance, "Supplementary Figs. S12 and S13, Tables S2 and S3" where S12, S13 and even
+            // Tables S2 are annotated as genes.
+            if (overlappingAnnotation.getBegin() <= a.getBegin() && overlappingAnnotation.getEnd() >= a.getEnd()) {
+                a.setBegin(0);
+                a.setEnd(0);
+            }
         }
     }
 }

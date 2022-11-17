@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -48,6 +49,23 @@ public class XMLMapper {
 	private List<TypeTemplate> genericTemplates;
 
 	private DocumentTextHandler documentTextHandler;
+
+	private boolean ignoreTrivialWhitespaces = true;
+
+	/**
+	 * <p>
+	 * Whether or not to ignore trivial XML whitespaces and newlines according to {@link VTDGen#enableIgnoredWhiteSpace(boolean)}.
+	 * </p>
+	 * <p>
+	 * Activating this will ignore whitespaces that exist between XML tags and have no other character data.
+	 * This is not always desired behavior. Inline-annotated text may contain whitespaces between two tags that
+	 * should actually retained in the document text.
+	 * </p>
+	 * @param ignoreTrivialWhitespaces
+	 */
+	public void setIgnoreTrivialWhitespaces(boolean ignoreTrivialWhitespaces) {
+		this.ignoreTrivialWhitespaces = ignoreTrivialWhitespaces;
+	}
 
 	/**
 	 * Creates an new instacne of the XMLMapper
@@ -80,7 +98,7 @@ public class XMLMapper {
 			// needed for extraction of mixed-content-XML
 			// when there is a whitespace only between two
 			// tags, e.g. ...</s> <s id=".">...
-			vg.enableIgnoredWhiteSpace(true);
+			vg.enableIgnoredWhiteSpace(!ignoreTrivialWhitespaces);
 			vg.setDoc(data);
 			vg.parse(true);
 			VTDNav vn = vg.getNav();
@@ -140,7 +158,7 @@ public class XMLMapper {
 				builder.buildType(concreteType, jcas);
 			}
 		} catch (Exception e) {
-			LOG.error("", e);
+			LOG.error("Exception occurred in document ID {}", new String(identifier, StandardCharsets.UTF_8), e);
 		}
 	}
 }

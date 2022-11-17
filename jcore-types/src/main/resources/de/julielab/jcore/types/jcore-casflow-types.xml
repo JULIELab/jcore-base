@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>JCoRe CAS Flow Types</name>
+    <description>This is a type system to facilitate the routing of CASes through AggregateAnalysisEngines via
+        FlowControllers. The types herein serve to indicate which components should be visited for the CAS
+        carrying annotations of this type.
+    </description>
+    <version>2.6.0</version>
+        <vendor>JULIE Lab Jena, Germany</vendor>
+    <types>
+        <typeDescription>
+            <name>de.julielab.jcore.types.casflow.ToVisit</name>
+            <description>Contains a list of delegate analysis engine names that the CAS, having this annotation, should
+                visit. Other components will be skipped. The names must the delegate keys specified in the aggregate
+                descriptor.
+            </description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>delegateKeys</name>
+                    <description>The keys of the delegates to visit. The keys are the names given to the delegate analysis engines in the aggregate. An empty or null array indicates that no component should be visited.</description>
+                    <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+                    <elementType>uima.cas.String</elementType>
+                </featureDescription>
+            </features>
+        </typeDescription>
+    </types>
+</typeSystemDescription>

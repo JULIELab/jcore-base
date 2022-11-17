@@ -16,13 +16,13 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JCoReToolsTest {
 	@Test
@@ -36,7 +36,7 @@ public class JCoReToolsTest {
 		Annotation newElement = new Annotation(jCas);
 		Collection<Annotation> newElements = Lists.newArrayList(newElement);
 		FSArray joinedArray = JCoReTools.addToFSArray(fsArray, newElements);
-		assertEquals("A new FSArray was instantiated although the old one should have been kept", fsArray, joinedArray);
+		assertEquals( fsArray,  joinedArray, "A new FSArray was instantiated although the old one should have been kept");
 		assertEquals(newElement, joinedArray.get(1));
 	}
 
@@ -54,7 +54,7 @@ public class JCoReToolsTest {
 		Annotation newElement4 = new Annotation(jCas, 4, 4);
 		Collection<Annotation> newElements = Lists.newArrayList(newElement1, newElement2, newElement3, newElement4);
 		FSArray joinedArray = JCoReTools.addToFSArray(fsArray, newElements);
-		assertNotSame("The old FSArray was returned although a new one should have been created", fsArray, joinedArray);
+		assertNotSame( fsArray,  joinedArray, "The old FSArray was returned although a new one should have been created");
 		assertEquals(newElement1, joinedArray.get(1));
 		assertEquals(newElement2, joinedArray.get(2));
 		assertEquals(newElement3, joinedArray.get(3));
@@ -68,7 +68,7 @@ public class JCoReToolsTest {
 		Annotation newElement = new Annotation(jCas);
 		Collection<Annotation> newElements = Lists.newArrayList(newElement);
 		FSArray joinedArray = JCoReTools.addToFSArray(fsArray, newElements);
-		assertNotSame("The old FSArray was returned although a new one should have been created", fsArray, joinedArray);
+		assertNotSame( fsArray,  joinedArray, "The old FSArray was returned although a new one should have been created");
 		assertEquals(newElement, joinedArray.get(0));
 	}
 
@@ -79,7 +79,7 @@ public class JCoReToolsTest {
 		Annotation newElement = new Annotation(jCas);
 		Collection<Annotation> newElements = Lists.newArrayList(newElement);
 		FSArray joinedArray = JCoReTools.addToFSArray(fsArray, newElements);
-		assertEquals("A new FSArray was instantiated although the old one should have been kept", fsArray, joinedArray);
+		assertEquals( fsArray,  joinedArray, "A new FSArray was instantiated although the old one should have been kept");
 		assertEquals(newElement, joinedArray.get(0));
 	}
 
@@ -93,7 +93,7 @@ public class JCoReToolsTest {
 		assertNull(fsArray.get(1));
 		Annotation newElement = new Annotation(jCas);
 		FSArray joinedArray = JCoReTools.addToFSArray(fsArray, newElement);
-		assertEquals("A new FSArray was instantiated although the old one should have been kept", fsArray, joinedArray);
+		assertEquals( fsArray,  joinedArray, "A new FSArray was instantiated although the old one should have been kept");
 		assertEquals(newElement, joinedArray.get(1));
 	}
 
@@ -112,23 +112,23 @@ public class JCoReToolsTest {
 		List<Annotation> newElements = Lists.newArrayList(newElement1, newElement2, newElement3, newElement4);
 
 		FSArray joinedArray = JCoReTools.addToFSArray(fsArray, newElements.get(0));
-		assertEquals("A new FSArray was instantiated although the old one should have been kept", fsArray, joinedArray);
+		assertEquals( fsArray,  joinedArray, "A new FSArray was instantiated although the old one should have been kept");
 		assertEquals(2, joinedArray.size());
 		assertEquals(newElement1, joinedArray.get(1));
 		fsArray = joinedArray;
 
 		joinedArray = JCoReTools.addToFSArray(fsArray, newElements.get(1));
-		assertNotSame("The old FSArray was returned although a new one should have been created", fsArray, joinedArray);
+		assertNotSame( fsArray,  joinedArray, "The old FSArray was returned although a new one should have been created");
 		assertEquals(newElement2, joinedArray.get(2));
 		fsArray = joinedArray;
 
 		joinedArray = JCoReTools.addToFSArray(fsArray, newElements.get(2));
-		assertEquals("A new FSArray was instantiated although the old one should have been kept", fsArray, joinedArray);
+		assertEquals( fsArray,  joinedArray, "A new FSArray was instantiated although the old one should have been kept");
 		assertEquals(newElement3, joinedArray.get(3));
 		fsArray = joinedArray;
 
 		joinedArray = JCoReTools.addToFSArray(fsArray, newElements.get(3));
-		assertEquals("A new FSArray was instantiated although the old one should have been kept", fsArray, joinedArray);
+		assertEquals( fsArray,  joinedArray, "A new FSArray was instantiated although the old one should have been kept");
 		assertEquals(newElement4, joinedArray.get(4));
 
 	}

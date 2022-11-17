@@ -6,12 +6,11 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
+import static org.assertj.core.api.Assertions.assertThat;
 public class MutationAnnotatorTest {
 
     @Test
@@ -21,8 +20,8 @@ public class MutationAnnotatorTest {
         jCas.setDocumentText("A covalently bound catalytic intermediate in Escherichia coli asparaginase: crystal structure of a Thr-89-Val mutant.");
         annotator.process(jCas);
         final Collection<PointMutation> mutations = JCasUtil.select(jCas, PointMutation.class);
-        Assert.assertThat(mutations.size(), CoreMatchers.is(1));
-        Assert.assertThat(mutations.stream().findAny().get().getCoveredText(), CoreMatchers.equalTo("Thr-89-Val"));
-        Assert.assertThat(mutations.stream().findAny().get().getSpecificType(), CoreMatchers.equalTo("T89V"));
+        assertThat(mutations).hasSize(1);
+        assertThat(mutations.stream().findAny().get().getCoveredText()).isEqualTo("Thr-89-Val");
+        assertThat(mutations.stream().findAny().get().getSpecificType()).isEqualTo("T89V");
     }
 }

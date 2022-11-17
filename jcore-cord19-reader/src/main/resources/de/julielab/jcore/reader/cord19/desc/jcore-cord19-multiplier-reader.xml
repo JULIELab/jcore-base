@@ -5,7 +5,7 @@
     <processingResourceMetaData>
         <name>JCoRe CORD-19 Multiplier Reader</name>
         <description>This component reads file paths to JSON files and the CORD-19 (https://pages.semanticscholar.org/coronavirus-research) meta data file to send them to CAS multipliers.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>

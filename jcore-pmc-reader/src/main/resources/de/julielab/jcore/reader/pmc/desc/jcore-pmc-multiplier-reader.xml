@@ -5,7 +5,7 @@
     <processingResourceMetaData>
         <name>JCoRe Pubmed Central Multiplier Reader</name>
         <description>Reads a directory of NXML files, possibly assembled into ZIP archives. Requires the Pubmed Central Multiplier to follow in the pipeline. This reader only sends URIs referencing the NXML files to the multiplier that then does the parsing.</description>
-        <version>2.5.1-SNAPSHOT</version>
+        <version>2.6.0</version>
         <configurationParameters>
             <configurationParameter>
                 <name>SendCasToLast</name>
@@ -46,6 +46,13 @@
                 <name>WhitelistFile</name>
                 <description>A file listing the file names that should be read. All other files will be discarded. The file name must be given without any extensions. For example, the file "PMC2847692.nxml.gz" would be represented as "PMC2847692" in the whitelist file. Each file name must appear on a line of its own. An empty file will cause nothing to be read. A file containing only the keyword "all" will behave as if no file was given at all.</description>
                 <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name>OmitBibliographyReferences</name>
+                <description>If set to true, references to the bibliography are omitted from the CAS text.</description>
+                <type>Boolean</type>
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>

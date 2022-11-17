@@ -9,15 +9,15 @@ package de.julielab.jcore.consumer.bionlpformat.utils;
 import de.julielab.jcore.types.EntityMention;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Writer;
 
 import static org.easymock.classextension.EasyMock.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EntityWriterTest {
 	private static final String ENTITY_T13 = "T13	Entity 322 330	tyrosine\n";
@@ -30,7 +30,7 @@ public class EntityWriterTest {
 	private Writer writer;
 	private EntityMention entityT13;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception{
 		cas = JCasFactory.createJCas("src/test/resources/types/jcore-semantics-biology-types");
 		

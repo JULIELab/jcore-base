@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flowControllerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>de.julielab.jcore.flow.annotationdefined.AnnotationDefinedFlowController</implementationName>
+    <processingResourceMetaData>
+        <name>JCoRe Annotation Defined Flow Controller</name>
+        <description>This flow controller relies on an annotation of type ToVisit to be present in the CAS. If there is no such annotation, the default fixed flow of the aggregate engine using this flow controller is used. Otherwise, the names of the components to pass the CAS to are taken from the annotation. If the annotation exists but defines to components to be visited by the CAS, no components are visited at all.</description>
+        <version>placeholder</version>
+        <vendor>JULIE Lab, Germany</vendor>
+        <configurationParameters/>
+        <configurationParameterSettings/>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-casflow-types" />
+            </imports>
+        </typeSystemDescription>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>false</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </processingResourceMetaData>
+</flowControllerDescription>

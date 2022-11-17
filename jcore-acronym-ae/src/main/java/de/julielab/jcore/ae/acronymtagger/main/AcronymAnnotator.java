@@ -158,12 +158,9 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 
 			LOGGER.info(" done");
 
-		} catch (AnnotatorContextException e) {
-			throw new ResourceInitializationException();
-		} catch (AnnotatorConfigurationException e) {
-			throw new ResourceInitializationException();
-		} catch (ResourceProcessException e) {
-			throw new ResourceInitializationException();
+		} catch (AnnotatorContextException | AnnotatorConfigurationException| ResourceProcessException e) {
+			LOGGER.error("Could not initialize acronym annotator", e);
+			throw new ResourceInitializationException(e);
 		}
 
 	}
@@ -237,19 +234,21 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 				annotate(sentenceText, aJCas, sentence.getBegin());
 			}
 
-			// if extra annotation is whished, do so :-)
+			// if extra annotation is wished, do so :-)
 			if (consistencyAnno) {
 				ConsistencyAnnotator ca = new ConsistencyAnnotator();
 				ca.consistencyAnnotate(aJCas);
 			}
-			
+
 			if (postprocessing) {
 				Postprocessing.doPostprocessing(aJCas);
 			}
-			
+
 
 		} catch (StringIndexOutOfBoundsException e) {
 			LOGGER.error("typical Error in AcronymAnnotator.process() : StringIndexOutOfBounds");
+		} catch (Throwable t) {
+			LOGGER.error("Acronym resolution error: ", t);
 		}
 	}
 
@@ -557,10 +556,6 @@ public class AcronymAnnotator extends JCasAnnotator_ImplBase {
 	/**
 	 * looks for the 'best' position in the sentence to start looking for a fullform
 	 * 
-	 * @param sentence
-	 * @param acroStart
-	 * @param maxTokens
-	 * @return
 	 */
 	private int getPotFullformStart(String sentence, int acroStart, int acroLength) {
 

@@ -75,7 +75,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
     private final String PARAGRAPH_END_MARK = "PARAGRAPH_END_MARKER"; // there will be 2 empty lines for each sentence marker
     @ConfigurationParameter(name = PARAM_OUTFOLDER, description = "Path to folder where IOB-files should be written to.")
     String outFolder = null;
-    @ConfigurationParameter(name = PARAM_TYPE_PATH, mandatory = false, description = "The path of the UIMA types, e.g. \"de.julielab.jcore.\" (with terminating \".\"!). It is prepended to the class names in labelNameMethods. This parameter may be null which is equivalent to the empty String \"\".")
+    @ConfigurationParameter(name = PARAM_TYPE_PATH, mandatory = false, description = "The path of the UIMA types, e.g. \"de.julielab.jcore.types.\" (with terminating \".\"!). It is prepended to the class names in labelNameMethods. This parameter may be null which is equivalent to the empty String \"\".")
     String typePath = null;
     @ConfigurationParameter(name = PARAM_LABELS, mandatory = false, description = "The labels NOT to be exported into IOB format. Label does here not refer to an UIMA type but to the specific label aquired by the labelNameMethod.")
     String[] labels = null;
@@ -84,9 +84,9 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
     int id = 1;
     @ConfigurationParameter(name = PARAM_MODE, mandatory = false, description = "This parameter determines whether the IOB or IO annotation schema should be used. The parameter defaults to IOB, the value is not case sensitive.", defaultValue = "IOB")
     private String mode = null;
-    @ConfigurationParameter(name = PARAM_LABEL_METHODS, description = "This is the primary parameter to define from which types IOB labels should be derived. The parameter expects pairs of UIMA-annotation-type-names and their corresponding method for extracting the annotation label. Format: &lt;annotationName&gt;[\\s=/\\\\|]&lt;method Name&gt;. The annotation name is fully qualified name of the UIMA type. For abbreviation purposes, the \"" + PARAM_TYPE_PATH + "\" parameter can be used to define a type prefix that will then be prepended to all UIMA type names given in this parameter. So, for example, the prefix \"de.julielab.jcore.types.\" will allow to use the \"specificType\" feature of the \"de.julielab.jcore.types.Gene\" type by providing \"Gene=getSpecificType\".  If the name of the annotation class itself is to be being used as label, only the class name is expected: &lt;annotationName&gt; (here, again, applies the use of the \"" + PARAM_TYPE_PATH + "\" parameter). You also may specify a mix of pairs and single class names. If you give the name extracting method for a class and have also specified its superclass as a single class name, the given method is used rather than the superclass name.")
+    @ConfigurationParameter(name = PARAM_LABEL_METHODS, description = "This is the primary parameter to define from which types IOB labels should be derived. The parameter expects pairs of UIMA-annotation-type-names and their corresponding method for extracting the annotation label. Format: <annotationName>[\\s=/\\\\|]<method Name>. The annotation name is fully qualified name of the UIMA type. For abbreviation purposes, the \"" + PARAM_TYPE_PATH + "\" parameter can be used to define a type prefix that will then be prepended to all UIMA type names given in this parameter. So, for example, the prefix \"de.julielab.jcore.types.\" will allow to use the \"specificType\" feature of the \"de.julielab.jcore.types.Gene\" type by providing \"Gene=getSpecificType\".  If the name of the annotation class itself is to be being used as label, only the class name is expected: <annotationName> (here, again, applies the use of the \"" + PARAM_TYPE_PATH + "\" parameter). You also may specify a mix of pairs and single class names. If you give the name extracting method for a class and have also specified its superclass as a single class name, the given method is used rather than the superclass name.")
     private String[] labelNameMethods;
-    @ConfigurationParameter(name = PARAM_IOB_LABEL_NAMES, mandatory = false, description = "Pairs of label names in UIMA (aquired by the methods given in labelNameMethods) and the name the label is supposed to get in the outcoming IOB file. Format: &lt;UIMA label name&gt;[\\s=/\\\\|]&lt;IOB label name&gt;")
+    @ConfigurationParameter(name = PARAM_IOB_LABEL_NAMES, mandatory = false, description = "Pairs of label names in UIMA (aquired by the methods given in labelNameMethods) and the name the label is supposed to get in the outcoming IOB file. Format: <UIMA label name>[\\s=/\\\\|]&lt;IOB label name&gt;")
     private String[] iobLabelNames;
     @ConfigurationParameter(name = PARAM_ADD_POS, mandatory = false, description = "If set to true and if annotations of (sub-)type de.julielab.jcore.types.POSTag are present in the CAS, the PoS tags will be added to the output file as the second column. Defaults to false.")
     private Boolean addPos;
@@ -117,7 +117,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         addPos = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_ADD_POS)).orElse(false);
 
         separator = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_COLUMN_SEPARATOR)).orElse("\t");
-        separator = separator.replaceAll("\\\\t", 	"\t");
+        separator = separator.replaceAll("\\\\t", "\t");
 
         iobMarkSeparator = Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_IOB_MARK_SEPARATOR)).orElse("_");
 
@@ -181,7 +181,6 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                     bw.newLine();
                 } else if (token.getText().equals("") || token.getText().equals(PARAGRAPH_END_MARK)) {
                     bw.newLine();
-                    bw.newLine();
                 } else {
                     final Stream.Builder<String> sb = Stream.builder();
                     sb.accept(token.getText());
@@ -192,7 +191,8 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                     bw.newLine();
                 }
             }
-
+            // newline at the very end; this makes it easy to concatenate multiple output IOB files into one larger file
+            bw.newLine();
             if (bw != null) {
                 bw.close();
             }
@@ -236,8 +236,8 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         while (paragraphIter.hasNext()) {
             paragraphs.add((Paragraph) paragraphIter.next());
         }
+        Paragraph dParagraph = null;
         if (paragraphs.isEmpty()) {
-            Paragraph dParagraph = null;
             try {
                 dParagraph = (Paragraph) JCoReAnnotationTools.getAnnotationByClassName(jcas, Paragraph.class.getName());
             } catch (ClassNotFoundException | SecurityException
@@ -249,6 +249,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
             }
             dParagraph.setBegin(0);
             dParagraph.setEnd(jcas.getDocumentText().length());
+            dParagraph.setComponentId(ToIOBConsumer.class.getCanonicalName());
             dParagraph.addToIndexes(jcas);
 
             paragraphs.add(dParagraph);
@@ -284,7 +285,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                     // if we are at the first token, we need to add a sentence break mark which is
                     // later replaced by an empty line
                     if (i == 0 && overallSentCount > 0) {
-                        IOToken ioToken = null;
+                        IOToken ioToken;
                         //if (sentCount == 0) {
                         if (currentParagraph != lastPara) {
                             // add paragraph end before this sentence
@@ -330,6 +331,10 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
                 ret[i] = iobToken.toXIoToken();
             }
         }
+
+        // remove helper paragraph annotation
+        if (dParagraph != null)
+            dParagraph.removeFromIndexes();
 
         return ret;
     }
@@ -384,6 +389,7 @@ public class ToIOBConsumer extends JCasAnnotator_ImplBase {
         }
 
     }
+
 
     /**
      * @param ioTokenMap

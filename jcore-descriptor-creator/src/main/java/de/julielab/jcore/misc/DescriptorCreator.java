@@ -1,17 +1,6 @@
 package de.julielab.jcore.misc;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-
-import java.io.*;
-import java.lang.reflect.Modifier;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
+import de.julielab.java.utilities.FileUtilities;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import org.apache.commons.lang.StringUtils;
@@ -21,14 +10,26 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.FlowControllerFactory;
 import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
+import org.apache.uima.flow.FlowController;
+import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import de.julielab.java.utilities.FileUtilities;
+import java.io.*;
+import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class DescriptorCreator {
 
@@ -38,35 +39,45 @@ public class DescriptorCreator {
     private static final String DESC = "desc";
 
     public static void main(String[] args) throws Exception {
+        String basePackage = "de.julielab.jcore";
+        if (args.length > 0)
+            basePackage = args[0];
         DescriptorCreator creator = new DescriptorCreator();
-        creator.run();
+        creator.run(basePackage);
     }
 
     public static String getComponentName() {
         return new File(".").getAbsoluteFile().getParentFile().getName();
     }
 
-    public void run() throws Exception {
-        run(DEFAULT_OUTPUT_ROOT);
+    public void run(String basePackage) throws Exception {
+        run(basePackage, DEFAULT_OUTPUT_ROOT);
     }
 
-    public void run(String outputRoot) throws Exception {
-        List<Class<? extends CollectionReader>> readers;
-        List<Class<? extends AnalysisComponent>> aes;
-        readers = findSubclasses(CollectionReader.class.getCanonicalName());
-        aes = findSubclasses(AnalysisComponent.class.getCanonicalName());
+    public void run(String basePackage, String outputRoot) throws Exception {
+        List<Class<? extends CollectionReader>> readers = findSubclasses(CollectionReader.class.getCanonicalName());
+        List<Class<? extends AnalysisComponent>> aes = findSubclasses(AnalysisComponent.class.getCanonicalName());
+        List<Class<? extends FlowController>> flowControllers = findSubclasses(FlowController.class.getCanonicalName());
 
-        readers = readers.stream().filter(c -> c.getPackage().getName().contains("de.julielab.jcore.reader"))
+        // Now filter all found classes for being in the target package and adhering to the naming conventions.
+        readers = readers.stream().filter(c -> c.getPackage().getName().startsWith(basePackage) && (c.getPackage().getName().contains("reader") || c.getName().toLowerCase().contains("reader")))
                 .collect(toList());
-        // Since consumers and also multipliers can be or are AnalysisComponents, were may list all component categories here.
+        // Since consumers and also multipliers can be or are AnalysisComponents, we may list all component categories here.
         // Also, remove abstract classes
         aes = aes.stream().filter(c -> !Modifier.isAbstract(c.getModifiers())).
-                filter(c -> c.getPackage().getName().contains("de.julielab.jcore.ae")
-                        || c.getPackage().getName().contains("de.julielab.jcore.consumer")
-                        || c.getPackage().getName().contains("de.julielab.jcore.multiplier")
-                        || c.getPackage().getName().contains("de.julielab.jcore.reader")).collect(toList());
+                filter(c -> c.getPackage().getName().startsWith(basePackage) &&
+                          (c.getPackage().getName().contains("ae") || c.getName().toLowerCase().contains("ae") || c.getName().toLowerCase().contains("annotator")
+                        || c.getPackage().getName().contains("consumer") || c.getName().toLowerCase().contains("consumer") || c.getName().toLowerCase().contains("writer")
+                        || c.getPackage().getName().contains("multiplier") || c.getName().toLowerCase().contains("multiplier"))
+                ).collect(toList());
 
-        if (readers.isEmpty() && aes.isEmpty()) {
+        flowControllers = flowControllers.stream().filter(c -> !Modifier.isAbstract((c.getModifiers()))).
+                filter(c -> c.getPackage().getName().startsWith(basePackage) &&
+                        (c.getPackage().getName().contains("flow") || c.getPackage().getName().toLowerCase().contains("flow")))
+                .collect(toList());
+
+
+        if (readers.isEmpty() && aes.isEmpty() && flowControllers.isEmpty()) {
             log.warn("No JCoRe UIMA component classes were found.");
         } else {
             Stream<String> typeDescNamesStream = Stream.of(TypeSystemDescriptionFactory.scanTypeDescriptors()).
@@ -85,6 +96,10 @@ public class DescriptorCreator {
             for (Class<? extends AnalysisComponent> cls : aes) {
                 AnalysisEngineDescription d = AnalysisEngineFactory.createEngineDescription(cls, tsd);
                 writeComponentDescriptor(outputRoot, cls, d, "analysis engine / consumer");
+            }
+            for (Class<? extends FlowController> cls : flowControllers) {
+                FlowControllerDescription d = FlowControllerFactory.createFlowControllerDescription(cls);
+                writeComponentDescriptor(outputRoot, cls, d, "flow controller");
             }
         }
     }

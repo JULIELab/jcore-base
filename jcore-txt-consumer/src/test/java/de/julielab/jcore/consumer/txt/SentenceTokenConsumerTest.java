@@ -20,7 +20,7 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 
 import static de.julielab.jcore.consumer.txt.SentenceTokenConsumer.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 public class SentenceTokenConsumerTest {
 	/**
 	 * just tests if there is an error with an empty CAS

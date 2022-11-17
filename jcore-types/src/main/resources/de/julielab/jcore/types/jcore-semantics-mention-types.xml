@@ -2,7 +2,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Semantics Mention Types</name>
   <description>The type system contains core semantic types definitions such as entity, relation and event. The types in this type system refer to actual text occurrences.</description>
-  <version>2.5.1-SNAPSHOT</version>
+  <version>2.6.0</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
     <import location="jcore-basic-types.xml" />

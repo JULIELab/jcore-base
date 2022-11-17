@@ -24,11 +24,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XmiDBReaderTest {
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer();
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:"+DataBaseConnector.POSTGRES_VERSION);
     private static String costosysConfig;
     private static String xmisubset;
 
@@ -40,7 +40,7 @@ public class XmiDBReaderTest {
         DataBaseConnector dbc = DBTestUtils.getDataBaseConnector(postgres);
         costosysConfig = DBTestUtils.createTestCostosysConfig("xmi_text", 2, postgres);
         XmiDBSetupHelper.processAndSplitData(costosysConfig, false, false,"public");
-        assertTrue("The data document table exists", dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")));
+        assertTrue(dbc.withConnectionQueryBoolean(c -> c.tableExists("_data.documents")), "The data document table exists");
         xmisubset = "xmisubset";
         dbc.setActiveTableSchema("xmi_text");
         dbc.reserveConnection();

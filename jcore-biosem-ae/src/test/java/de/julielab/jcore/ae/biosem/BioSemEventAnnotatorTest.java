@@ -22,15 +22,15 @@ import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BioSemEventAnnotatorTest {
 	@Test
@@ -53,7 +53,7 @@ public class BioSemEventAnnotatorTest {
 		if (testOutputFile.exists())
 			testOutputFile.delete();
 
-		assertTrue("Test document was not found by the BioNLP ST reader.", bioNlpSTReader.hasNext());
+		assertTrue(bioNlpSTReader.hasNext(), "Test document was not found by the BioNLP ST reader.");
 		bioNlpSTReader.getNext(jCas.getCas());
 		engine.process(jCas);
 		bioNlpSTWriter.process(jCas);

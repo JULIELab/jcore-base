@@ -1,8 +1,10 @@
 # JCoRe XMI Database Reader
 
-**Descriptor Path**:
+**Descriptor Paths**:
 ```
 de.julielab.jcore.reader.xmi.desc.jcore-xmi-db-reader
+de.julielab.jcore.reader.xmi.desc.jcore-xmi-db-multiplier-reader
+de.julielab.jcore.reader.xmi.desc.jcore-xmi-db-multiplier
 ```
 
 ### Objective

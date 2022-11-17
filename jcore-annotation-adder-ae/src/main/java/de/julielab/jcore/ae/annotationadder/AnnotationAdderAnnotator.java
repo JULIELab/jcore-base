@@ -6,6 +6,7 @@ import de.julielab.jcore.ae.annotationadder.annotationsources.AnnotationProvider
 import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
@@ -39,6 +40,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	@ConfigurationParameter(name = PARAM_PREVENT_PROCESSED_MARK, mandatory = false, description = "This setting is only in effect if an input format is used that contains document text SHA256 digests while also writing the annotation results into a JeDIS database. If then a CAS document text, to which annotations should be added, does not match the digest given by an annotation, this CAS will not marked as being finished processing by DBCheckpointAE that may follow in the pipeline. The idea is that the mismatched documents require a reprocessing of the original annotation creation algorithm because their text has been changed relative to the annotation on file. By not setting the document as being finished processed, it is straightforward to process only those documents again that failed to add one or multiple annotations.")
     private boolean preventProcessedOnDigestMismatch;
 
+
     private List<AnnotationAdder> annotationAdders = Arrays.asList(new TextAnnotationListAdder(), new DocumentClassAnnotationAdder());
 
     /**
@@ -49,6 +51,7 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	public void initialize(final UimaContext aContext) throws ResourceInitializationException {
         offsetMode = OffsetMode.valueOf(Optional.ofNullable((String) aContext.getConfigParameterValue(PARAM_OFFSET_MODE)).orElse(OffsetMode.CHARACTER.name()));
         defaultUimaType = (String) aContext.getConfigParameterValue(PARAM_DEFAULT_UIMA_TYPE);
+        preventProcessedOnDigestMismatch = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_PREVENT_PROCESSED_MARK)).orElse(false);
         try {
             annotationProvider = (AnnotationProvider<? extends AnnotationData>) aContext.getResourceObject(KEY_ANNOTATION_SOURCE);
         } catch (ResourceAccessException e) {
@@ -65,23 +68,29 @@ public class AnnotationAdderAnnotator extends JCasAnnotator_ImplBase {
 	 * is where the actual work happens.
 	 */
 	@Override
-	public void process(final JCas aJCas) {
-        final String docId = JCoReTools.getDocId(aJCas);
-        if (docId == null)
-            log.error("The current document does not have a header. Cannot add external annotations.");
-        final AnnotationData annotations = annotationProvider.getAnnotations(docId);
-        final AnnotationAdderHelper helper = new AnnotationAdderHelper();
-        if (annotations != null) {
-            boolean success = false;
-            int adderNum = 0;
-            // We are now iterating through the available annotation adders for the one that handles the obtained annotation data
-            while (adderNum < annotationAdders.size() && !(success = annotationAdders.get(adderNum).addAnnotations(annotations, helper, adderConfiguration, aJCas, preventProcessedOnDigestMismatch))) {
-                ++adderNum;
+	public void process(final JCas aJCas) throws AnalysisEngineProcessException {
+        try {
+            final String docId = JCoReTools.getDocId(aJCas);
+            if (docId == null)
+                log.error("The current document does not have a header. Cannot add external annotations.");
+            final AnnotationData annotations = annotationProvider.getAnnotations(docId);
+            final AnnotationAdderHelper helper = new AnnotationAdderHelper();
+            if (annotations != null) {
+                log.trace("Found annotations for document ID {}.", docId);
+                boolean success = false;
+                int adderNum = 0;
+                // We are now iterating through the available annotation adders for the one that handles the obtained annotation data
+                while (adderNum < annotationAdders.size() && !(success = annotationAdders.get(adderNum).addAnnotations(annotations, helper, adderConfiguration, aJCas, preventProcessedOnDigestMismatch))) {
+                    ++adderNum;
+                }
+                if (!success)
+                    throw new IllegalArgumentException("There was no annotation adder to handle the annotation data of class " + annotations.getClass().getCanonicalName());
+            } else {
+                log.debug("No external annotations were delivered for document ID {}", docId);
             }
-            if (!success)
-                throw new IllegalArgumentException("There was no annotation adder to handle the annotation data of class " + annotations.getClass().getCanonicalName());
-        } else {
-            log.debug("No external annotations were delivered for document ID {}", docId);
+        } catch (Throwable t) {
+            log.error("Could not add annotations due to exception.", t);
+            throw new AnalysisEngineProcessException(t);
         }
     }
 
