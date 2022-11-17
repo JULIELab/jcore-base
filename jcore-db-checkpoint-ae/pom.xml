@@ -12,7 +12,6 @@
         <version>2.6.0</version>
         <relativePath>../jedis-parent</relativePath>
     </parent>
-    
     <dependencies>
         <dependency>
             <groupId>ch.qos.logback</groupId>

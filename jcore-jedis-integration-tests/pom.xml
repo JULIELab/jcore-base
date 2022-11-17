@@ -16,17 +16,17 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xml-db-reader</artifactId>
-            <version>2.6.0</version>
+            <version>2.6.1</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xmi-db-writer</artifactId>
-            <version>2.6.0</version>
+            <version>2.6.1</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-db-checkpoint-ae</artifactId>
-            <version>2.6.0</version>
+            <version>2.6.1</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
