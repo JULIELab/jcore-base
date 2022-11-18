@@ -76,6 +76,8 @@ public abstract class PMCReaderBase extends JCasCollectionReader_ImplBase {
     }
 
     private Set<String> readWhitelist(File whitelistFile) throws IOException {
+        if (!whitelistFile.exists())
+            log.warn("White list file {} does not exist. No filter is applied.");
         Set<String> whitelist = new HashSet<>();
         if (whitelistFile == null || !whitelistFile.exists()) {
             whitelist.add("all");
