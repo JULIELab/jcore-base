@@ -80,7 +80,12 @@ public class GNormPlusMultiplierLogic {
                 cachedCasData.clear();
                 while (baseMultiplierHasNext.get()) {
                     final JCas jCas = baseMultiplierNext.get();
-                    final boolean isDocumentHashUnchanged = JCasUtil.selectSingle(jCas, DBProcessingMetaData.class).getIsDocumentHashUnchanged();
+                     boolean isDocumentHashUnchanged = false;
+                    try {
+                        isDocumentHashUnchanged = JCasUtil.selectSingle(jCas, DBProcessingMetaData.class).getIsDocumentHashUnchanged();
+                    } catch (IllegalArgumentException e) {
+                        // nothing, there is just no DBProcessingMeta annotation present.
+                    }
                     // skip document if it is unchanged and skipping is enabled
                     if (!(isDocumentHashUnchanged && skipUnchangedDocuments)) {
                         final BioCDocument bioCDocument = bioCDocumentPopulator.populate(jCas);
