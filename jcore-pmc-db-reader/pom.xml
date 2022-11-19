@@ -10,10 +10,10 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jedis-parent</artifactId>
-        <version>2.6.1</version>
+        <version>2.6.2-SNAPSHOT</version>
         <relativePath>../jedis-parent</relativePath>
     </parent>
-    <version>2.6.1</version>
+    <version>2.6.2-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-db-reader</artifactId>
-            <version>2.6.1</version>
+            <version>2.6.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
