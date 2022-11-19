@@ -130,7 +130,12 @@ public class GNormPlusMultiplierLogic {
                 log.error("Could not deserialize cached CAS data");
                 throw new AnalysisEngineProcessException(e);
             }
-            final boolean isDocumentHashUnchanged = JCasUtil.selectSingle(jCas, DBProcessingMetaData.class).getIsDocumentHashUnchanged();
+            boolean isDocumentHashUnchanged = false;
+            try {
+                isDocumentHashUnchanged = JCasUtil.selectSingle(jCas, DBProcessingMetaData.class).getIsDocumentHashUnchanged();
+            } catch (IllegalArgumentException e) {
+                // nothing, there is just no DBProcessingMeta annotation present.
+            }
             // If the document is unchanged and we skip unchanged documents, we do not have a GNormPlus result for this
             // document, skip.
             if (!(isDocumentHashUnchanged && skipUnchangedDocuments)) {
