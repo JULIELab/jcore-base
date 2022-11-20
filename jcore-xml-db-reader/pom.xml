@@ -15,15 +15,15 @@
     <parent>
         <groupId>de.julielab</groupId>
         <artifactId>jedis-parent</artifactId>
-        <version>2.6.2-SNAPSHOT</version>
+        <version>2.6.2</version>
         <relativePath>../jedis-parent</relativePath>
     </parent>
-    <version>2.6.2-SNAPSHOT</version>
+    <version>2.6.2</version>
     <dependencies>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-db-reader</artifactId>
-            <version>2.6.2-SNAPSHOT</version>
+            <version>2.6.2</version>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
