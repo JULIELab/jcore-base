@@ -5,6 +5,7 @@ import com.pengyifan.bioc.BioCDocument;
 import de.julielab.jcore.ae.gnp.GNormPlusProcessing;
 import de.julielab.jcore.consumer.gnp.BioCDocumentPopulator;
 import de.julielab.jcore.reader.BioCCasPopulator;
+import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.ext.DBProcessingMetaData;
 import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.UimaContext;
@@ -46,11 +47,13 @@ public class GNormPlusMultiplierLogic {
     private int currentBiocResultCollectionIndex;
     private List<byte[]> cachedCasData;
     private boolean skipUnchangedDocuments;
+    private String outputGeneTypeName;
 
     public GNormPlusMultiplierLogic(UimaContext aContext, BioCDocumentPopulator bioCDocumentPopulator, Supplier<Boolean> baseMultiplierHasNext, Supplier<JCas> baseMultiplierNext, Supplier<JCas> multiplierGetEmptyCas, boolean skipUnchangedDocuments) throws IOException {
         this.skipUnchangedDocuments = skipUnchangedDocuments;
         String setupFile = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_GNP_SETUP_FILE)).orElse("/de/julielab/jcore/ae/gnp/config/setup_do_ner.txt");
         String focusSpecies = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_FOCUS_SPECIES)).orElse("");
+        outputGeneTypeName = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_OUTPUT_GENE_TYPE_NAME)).orElse(Gene.class.getCanonicalName());
         outputDirectory = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_OUTPUT_DIR)).orElse("");
         this.bioCDocumentPopulator = bioCDocumentPopulator;
         this.baseMultiplierHasNext = baseMultiplierHasNext;
@@ -109,13 +112,16 @@ public class GNormPlusMultiplierLogic {
                     log.trace("Processing {} documents with GNormPlus.", gnormPlusInputCollection.getDocmentCount());
                     final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(gnormPlusInputCollection, outputDirectory);
                     try {
-                        bioCCasPopulator = new BioCCasPopulator(outputFilePath);
+                        bioCCasPopulator = new BioCCasPopulator(outputFilePath, Class.forName(outputGeneTypeName).getConstructor(JCas.class));
                         // delete the GNP output if we don't want to keep it
                         if (outputDirectory.isBlank()) {
                             Files.delete(outputFilePath);
                         }
                     } catch (XMLStreamException | IOException e) {
                         log.error("Could not read GNormPlus output from {}", outputFilePath);
+                        throw new AnalysisEngineProcessException(e);
+                    } catch (ClassNotFoundException| NoSuchMethodException e) {
+                        log.error("Could not obtain UIMA gene annotation type constructor for class {}", outputGeneTypeName);
                         throw new AnalysisEngineProcessException(e);
                     }
                 }

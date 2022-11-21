@@ -12,7 +12,7 @@
         <artifactId>jcore-base</artifactId>
         <version>2.6.0</version>
     </parent>
-
+<version>2.6.1-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -49,7 +49,6 @@
             <groupId>de.julielab</groupId>
             <artifactId>jcore-utilities</artifactId>
             <version>${jcore-utilities-version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>

@@ -8,6 +8,7 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -15,13 +16,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class BioCCasPopulatorTest {
 
+    private Constructor<?> geneConstructor = Gene.class.getConstructor(JCas.class);
+
+    BioCCasPopulatorTest() throws NoSuchMethodException {
+    }
+
     private JCas getJCas() throws Exception {
         return JCasFactory.createJCas("de.julielab.jcore.types.jcore-document-structure-pubmed-types", "de.julielab.jcore.types.jcore-semantics-biology-types", "de.julielab.jcore.types.jcore-document-meta-types");
     }
 
     @Test
     public void populateWithNextDocument() throws Exception {
-        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "test-input-path", "bioc_collection_3.xml"), null, null);
+        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "test-input-path", "bioc_collection_3.xml"), null, null, geneConstructor);
         assertThat(bioCCasPopulator.documentsLeftInCollection()).isEqualTo(2);
         JCas jCas = getJCas();
         bioCCasPopulator.populateWithNextDocument(jCas);
@@ -63,7 +69,7 @@ class BioCCasPopulatorTest {
 
     @Test
     public void addFamilyNames() throws Exception {
-        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "bioc_collection_0_0.xml"), null, null);
+        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "bioc_collection_0_0.xml"), null, null, geneConstructor);
         JCas jCas = getJCas();
         bioCCasPopulator.populateWithNextDocument(jCas);
 
@@ -78,9 +84,19 @@ class BioCCasPopulatorTest {
     }
 
     @Test
+    public void specifyAnnotationType() throws Exception {
+        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "bioc_collection_0_0.xml"), null, null, Protein.class.getConstructor(JCas.class));
+        JCas jCas = getJCas();
+        bioCCasPopulator.populateWithNextDocument(jCas);
+
+        Collection<Protein> proteins = JCasUtil.select(jCas, Protein.class);
+        assertThat(proteins).hasSize(23);
+    }
+
+    @Test
     public void multipleGeneIds() throws Exception {
         // Check that gene mentions with multiple IDs (enumerations, alternatives, ranges...) result in multiple ResourceEntries in a Gene annotation
-        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "multipleGeneIdsDocument.xml"), null, null);
+        BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(Path.of("src", "test", "resources", "multipleGeneIdsDocument.xml"), null, null, geneConstructor);
         JCas jCas = getJCas();
         bioCCasPopulator.populateWithNextDocument(jCas);
 

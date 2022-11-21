@@ -5,6 +5,7 @@ import com.pengyifan.bioc.io.BioCCollectionReader;
 import de.julielab.costosys.dbconnection.CoStoSysConnection;
 import de.julielab.costosys.dbconnection.DataBaseConnector;
 import de.julielab.jcore.types.*;
+import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.StringArray;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,20 +34,22 @@ public class BioCCasPopulator {
     private Map<String, Integer> maxXmiIdMap;
     private Map<String, String> sofaMaps;
     private int pos;
+    private Constructor<?> outputTypeConstructor;
 
     /**
      * This constructor is used when the GNormPlusMultiplier/Reader is used to read files that directly correspond to
      * JeDIS database documents and should be written back into the database. Then we need some information about
      * the database and the state of the document.
-     * @param biocCollectionPath The BioC documents to read that have equivalents in the JeDIS database.
+     *
+     * @param biocCollectionPath    The BioC documents to read that have equivalents in the JeDIS database.
      * @param costosysConfiguration The CoStoSys configuration to connect to the JeDIS database.
-     * @param documentsTable The name of the database table that stores the documents.
+     * @param documentsTable        The name of the database table that stores the documents.
      * @throws XMLStreamException
      * @throws IOException
      * @throws SQLException
      */
-    public BioCCasPopulator(Path biocCollectionPath, Path costosysConfiguration, String documentsTable) throws XMLStreamException, IOException, SQLException {
-        this(biocCollectionPath);
+    public BioCCasPopulator(Path biocCollectionPath, Path costosysConfiguration, String documentsTable, Constructor<?> outputTypeConstructor) throws XMLStreamException, IOException, SQLException {
+        this(biocCollectionPath, outputTypeConstructor);
         if (costosysConfiguration != null) {
             maxXmiIdMap = new HashMap<>();
             sofaMaps = new HashMap<>();
@@ -58,11 +63,14 @@ public class BioCCasPopulator {
 
     /**
      * This constructor is used when GNormPlus BioC files - or only the contained annotatoins - should be read into a CAS without the need to synchronize to a JeDIS database.
-     * @param biocCollectionPath The BioC documents to read that have equivalents in the JeDIS database.
+     *
+     * @param biocCollectionPath    The BioC documents to read that have equivalents in the JeDIS database.
+     * @param outputTypeConstructor
      * @throws XMLStreamException
      * @throws IOException
      */
-    public BioCCasPopulator(Path biocCollectionPath) throws XMLStreamException, IOException {
+    public BioCCasPopulator(Path biocCollectionPath, Constructor<?> outputTypeConstructor) throws XMLStreamException, IOException {
+        this.outputTypeConstructor = outputTypeConstructor;
         try (BioCCollectionReader bioCCollectionReader = new BioCCollectionReader(biocCollectionPath)) {
             bioCCollection = bioCCollectionReader.readCollection();
         }
@@ -102,7 +110,8 @@ public class BioCCasPopulator {
 
     /**
      * Populate the given CAS either with the complete contents of the next BioC document or only with its annotations.
-     * @param jCas The CAS to add data to. Can be empty when it should be populated with the BioC document text or it already may have a text when it only should be filled with the annotations of the BioC document.
+     *
+     * @param jCas               The CAS to add data to. Can be empty when it should be populated with the BioC document text or it already may have a text when it only should be filled with the annotations of the BioC document.
      * @param onlyAddAnnotations Whether to add only annotations from the next BioC document instead of its whole textual contents.
      */
     public void populateWithNextDocument(JCas jCas, boolean onlyAddAnnotations) {
@@ -129,8 +138,10 @@ public class BioCCasPopulator {
                         addSpeciesAnnotation(annotation, jCas);
                         break;
                 }
-            } catch (MissingInfonException | IllegalArgumentException e) {
+            } catch (MissingInfonException e) {
                 throw new IllegalArgumentException("BioCDocument " + document.getID() + " has an annotation issue; see cause exception.", e);
+            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                throw new IllegalArgumentException("Could not obtain UIMA gene annotation type from constructor " + outputTypeConstructor, e);
             }
         }
     }
@@ -247,14 +258,14 @@ public class BioCCasPopulator {
         organism.addToIndexes();
     }
 
-    private void addGeneAnnotation(BioCAnnotation annotation, JCas jCas) throws MissingInfonException {
+    private void addGeneAnnotation(BioCAnnotation annotation, JCas jCas) throws MissingInfonException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Optional<String> geneId = annotation.getInfon("NCBI Gene");
-//        if (!geneId.isPresent())
-//            throw new MissingInfonException("Gene annotation does not specify its gene ID: " + annotation);
         // the "total location" is the span from the minimum location value to the maximum location value;
         // for GNormPlus, there are no discontinuing annotations anyway
         BioCLocation location = annotation.getTotalLocation();
-        Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
+        ConceptMention gene = (ConceptMention) outputTypeConstructor.newInstance(jCas);
+        gene.setBegin(location.getOffset());
+        gene.setEnd(location.getOffset() + location.getLength());
         gene.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
         gene.setSpecificType("Gene");
         if (geneId.isPresent()) { // one gene mention might have multiple IDs when there are ranges or enumerations, e.g. "IL2-5", "B7-1 and B7-2" or "B7-1/2"
@@ -275,7 +286,7 @@ public class BioCCasPopulator {
         gene.addToIndexes();
     }
 
-    private void addFamilyAnnotation(BioCAnnotation annotation, JCas jCas) {
+    private void addFamilyAnnotation(BioCAnnotation annotation, JCas jCas) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         // the "total location" is the span from the minimum location value to the maximum location value;
         // for GNormPlus, there are no discontinuing annotations anyway
         BioCLocation location;
@@ -287,15 +298,20 @@ public class BioCCasPopulator {
             // cause an error at this point. Thus, when the offsets are invalid, skip the annotation.
             return;
         }
-        Gene gene = new Gene(jCas, location.getOffset(), location.getOffset() + location.getLength());
+        ConceptMention gene = (ConceptMention) outputTypeConstructor.newInstance(jCas);
+        gene.setBegin(location.getOffset());
+        gene.setEnd(location.getOffset() + location.getLength());
         gene.setSpecificType("FamilyName");
         // e.g.  <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
         Optional<String> focusSpecies = annotation.getInfon("FocusSpecies");
         if (focusSpecies.isPresent()) {
-            String taxId = focusSpecies.get().substring(15);
-            StringArray speciesArray = new StringArray(jCas, 1);
-            speciesArray.set(0, taxId);
-            gene.setSpecies(speciesArray);
+            final Feature speciesFeature = gene.getType().getFeatureByBaseName("species");
+            if (speciesFeature != null) {
+                String taxId = focusSpecies.get().substring(15);
+                StringArray speciesArray = new StringArray(jCas, 1);
+                speciesArray.set(0, taxId);
+                gene.setFeatureValue(speciesFeature, speciesArray);
+            }
         }
         gene.addToIndexes();
     }

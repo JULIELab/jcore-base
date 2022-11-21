@@ -16,7 +16,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,10 +25,12 @@ import java.util.Optional;
 @TypeCapability(inputs = {}, outputs = {"de.julielab.jcore.types.ConceptMention", "de.julielab.jcore.types.Organism"})
 public class GNormPlusAnnotator extends JCasAnnotator_ImplBase {
 
-    public static final String PARAM_ADD_GENES = "AddGenes";
-    public static final String DESC_GENE_TYPE_NAME = "The UIMA type denoting gene annotations that should be written into the BioC format when the " + PARAM_ADD_GENES + " parameter is set to true.";
-    public static final String PARAM_GENE_TYPE_NAME = "GeneTypeName";
-    public static final String DESC_ADD_GENES = "If set to true, all Gene annotations in the CAS will be added to the BioC documents. The default type used is de.julielab.jcore.types.Gene. This can be changed with the " + PARAM_GENE_TYPE_NAME + " parameter.";
+    public static final String PARAM_USE_EXISTING_GENE_ANNOTATIONS = "UseExistingGeneAnnotations";
+    public static final String DESC_INPUT_GENE_TYPE_NAME = "The UIMA type denoting gene annotations that should be taken from the CAS and written into the BioC format for GNormPlus to use instead of running its own gene recognition when the " + PARAM_USE_EXISTING_GENE_ANNOTATIONS + " parameter is set to true.";
+    public static final String DESC_OUTPUT_GENE_TYPE_NAME = "The UIMA type denoting gene annotations that should be created by this component. Must by a sub type of de.julielab.jcore.types.ConceptMention. Defaults to de.julielab.jcore.types.Gene.";
+    public static final String PARAM_INPUT_GENE_TYPE_NAME = "InputGeneTypeName";
+    public static final String PARAM_OUTPUT_GENE_TYPE_NAME = "OutputGeneTypeName";
+    public static final String DESC_USE_EXISTING_GENES = "If set to true, all Gene annotations in the CAS will be added to the BioC documents. The default type used is de.julielab.jcore.types.Gene. This can be changed with the " + PARAM_INPUT_GENE_TYPE_NAME + " parameter.";
     public static final String PARAM_GNP_SETUP_FILE = "GNormPlusSetupFile";
     public static final String PARAM_FOCUS_SPECIES = "FocusSpecies";
     public static final String PARAM_OUTPUT_DIR = "OutputDirectory";
@@ -37,10 +38,12 @@ public class GNormPlusAnnotator extends JCasAnnotator_ImplBase {
     public static final String DESC_FOCUS_SPECIES = "If given, all gene mentions are assigned to this NCBI taxonomy ID, i.e. species recognition is omitted.";
     public static final String DESC_OUTPUT_DIR = "Optional. If specified, the GNormPlus output files in BioC format will be saved to the given directory. In this way, this component can be used directly as a BioC XML writer through the GNormPlus algorithm.";
     private final static Logger log = LoggerFactory.getLogger(GNormPlusAnnotator.class);
-    @ConfigurationParameter(name = PARAM_ADD_GENES, mandatory = false, defaultValue = "false", description = DESC_ADD_GENES)
-    private boolean addGenes;
-    @ConfigurationParameter(name = PARAM_GENE_TYPE_NAME, mandatory = false, defaultValue = "de.julielab.jcore.types.Gene", description = DESC_GENE_TYPE_NAME)
-    private String geneTypeName;
+    @ConfigurationParameter(name = PARAM_USE_EXISTING_GENE_ANNOTATIONS, mandatory = false, defaultValue = "false", description = DESC_USE_EXISTING_GENES)
+    private boolean useExistingGeneAnnotations;
+    @ConfigurationParameter(name = PARAM_INPUT_GENE_TYPE_NAME, mandatory = false, defaultValue = "de.julielab.jcore.types.Gene", description = DESC_INPUT_GENE_TYPE_NAME)
+    private String inputGeneTypeName;
+    @ConfigurationParameter(name = PARAM_OUTPUT_GENE_TYPE_NAME, mandatory = false, defaultValue = "de.julielab.jcore.types.Gene", description = DESC_OUTPUT_GENE_TYPE_NAME)
+    private String outputGeneTypeName;
     @ConfigurationParameter(name = PARAM_GNP_SETUP_FILE, mandatory = false, description = DESC_GNP_SETUP_FILE)
     private String setupFile;
     @ConfigurationParameter(name = PARAM_FOCUS_SPECIES, mandatory = false, description = DESC_FOCUS_SPECIES)
@@ -56,9 +59,12 @@ public class GNormPlusAnnotator extends JCasAnnotator_ImplBase {
      */
     @Override
     public void initialize(final UimaContext aContext) throws ResourceInitializationException {
-        addGenes = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_ADD_GENES)).orElse(false);
-        geneTypeName = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_GENE_TYPE_NAME)).orElse(Gene.class.getCanonicalName());
+        useExistingGeneAnnotations = (boolean) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_USE_EXISTING_GENE_ANNOTATIONS)).orElse(false);
+        inputGeneTypeName = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_INPUT_GENE_TYPE_NAME)).orElse(Gene.class.getCanonicalName());
+        outputGeneTypeName = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_OUTPUT_GENE_TYPE_NAME)).orElse(Gene.class.getCanonicalName());
         setupFile = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_GNP_SETUP_FILE)).orElse("/de/julielab/jcore/ae/gnp/config/setup_do_ner.txt");
+        if (aContext.getConfigParameterValue(PARAM_GNP_SETUP_FILE) == null && useExistingGeneAnnotations)
+            setupFile = "/de/julielab/jcore/ae/gnp/config/setup_omit_ner.txt";
         focusSpecies = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_FOCUS_SPECIES)).orElse("");
         outputDirectory = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_OUTPUT_DIR)).orElse("");
 
@@ -69,9 +75,9 @@ public class GNormPlusAnnotator extends JCasAnnotator_ImplBase {
             throw new ResourceInitializationException(e);
         }
         try {
-            bioCDocumentPopulator = new BioCDocumentPopulator(addGenes, geneTypeName);
+            bioCDocumentPopulator = new BioCDocumentPopulator(useExistingGeneAnnotations, inputGeneTypeName);
         } catch (ClassNotFoundException e) {
-            log.error("Gene annotation class {} could not be found.", geneTypeName, e);
+            log.error("Gene annotation class {} could not be found.", inputGeneTypeName, e);
             throw new ResourceInitializationException(e);
         }
 
@@ -97,18 +103,12 @@ public class GNormPlusAnnotator extends JCasAnnotator_ImplBase {
         final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(bioCCollection, outputDirectory);
 
         try {
-            final BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(outputFilePath);
+            final BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(outputFilePath, Class.forName(outputGeneTypeName).getConstructor(JCas.class));
             bioCCasPopulator.populateWithNextDocument(aJCas, true);
-        } catch (XMLStreamException | IOException e) {
+        } catch (Exception e) {
             log.error("Could not read GNormPlus output file {}");
             throw new AnalysisEngineProcessException(e);
         }
-//        try {
-//            Files.delete(filePath);
-//        } catch (IOException e) {
-//            log.error("Could not delete temporary file {}", filePath);
-//            throw new AnalysisEngineProcessException(e);
-//        }
         try {
             if (outputDirectory.isBlank() && Files.exists(outputFilePath))
                 Files.delete(outputFilePath);
