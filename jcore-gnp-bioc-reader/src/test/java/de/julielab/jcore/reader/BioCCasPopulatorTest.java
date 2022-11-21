@@ -44,7 +44,7 @@ class BioCCasPopulatorTest {
         for (Gene o : genes) {
             assertThat(o.getResourceEntryList()).isNotNull();
             assertThat(o.getResourceEntryList()).hasSize(1);
-            assertThat(o.getResourceEntryList(0)).extracting(ResourceEntry::getComponentId).isEqualTo(GNormPlusFormatMultiplierReader.class.getCanonicalName());
+            assertThat(o.getResourceEntryList(0)).extracting(ResourceEntry::getComponentId).isEqualTo(GNormPlusFormatMultiplierReader.class.getSimpleName());
             assertThat(o.getResourceEntryList(0)).extracting(ResourceEntry::getSource).isEqualTo("NCBI Gene");
             assertThat(o.getResourceEntryList(0)).extracting(ResourceEntry::getEntryId).isNotNull();
         }
@@ -60,7 +60,7 @@ class BioCCasPopulatorTest {
         for (Organism o : organisms) {
             assertThat(o.getResourceEntryList()).isNotNull();
             assertThat(o.getResourceEntryList()).hasSize(1);
-            assertThat(o.getResourceEntryList(0)).extracting(ResourceEntry::getComponentId).isEqualTo(GNormPlusFormatMultiplierReader.class.getCanonicalName());
+            assertThat(o.getResourceEntryList(0)).extracting(ResourceEntry::getComponentId).isEqualTo(GNormPlusFormatMultiplierReader.class.getSimpleName());
             assertThat(o.getResourceEntryList(0)).extracting(ResourceEntry::getSource).isEqualTo("NCBI Taxonomy");
             assertThat(o.getResourceEntryList(0)).extracting(ResourceEntry::getEntryId).isNotNull();
         }

@@ -230,7 +230,7 @@ public class BioCCasPopulator {
                             passageAnnotation = new Zone(jCas, offset, passageEnd);
                             break;
                     }
-                    passageAnnotation.setComponentId(GNormPlusFormatMultiplier.class.getCanonicalName());
+                    passageAnnotation.setComponentId(GNormPlusFormatMultiplier.class.getSimpleName());
                     passageAnnotation.addToIndexes();
                 }
             }
@@ -249,7 +249,7 @@ public class BioCCasPopulator {
         if (taxId.isPresent()) {
             ResourceEntry resourceEntry = new ResourceEntry(jCas, organism.getBegin(), organism.getEnd());
             resourceEntry.setSource("NCBI Taxonomy");
-            resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
+            resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getSimpleName());
             resourceEntry.setEntryId(taxId.get());
             FSArray resourceEntryList = new FSArray(jCas, 1);
             resourceEntryList.set(0, resourceEntry);
@@ -266,7 +266,7 @@ public class BioCCasPopulator {
         ConceptMention gene = (ConceptMention) outputTypeConstructor.newInstance(jCas);
         gene.setBegin(location.getOffset());
         gene.setEnd(location.getOffset() + location.getLength());
-        gene.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
+        gene.setComponentId(GNormPlusFormatMultiplierReader.class.getSimpleName());
         gene.setSpecificType("Gene");
         if (geneId.isPresent()) { // one gene mention might have multiple IDs when there are ranges or enumerations, e.g. "IL2-5", "B7-1 and B7-2" or "B7-1/2"
             String[] geneIds = geneId.get().split(";");
@@ -277,7 +277,7 @@ public class BioCCasPopulator {
                 // their IDs to other forms under certain circumstances (abbreviations, for example)
                 resourceEntry.setConfidence("9999");
                 resourceEntry.setSource("NCBI Gene");
-                resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getCanonicalName());
+                resourceEntry.setComponentId(GNormPlusFormatMultiplierReader.class.getSimpleName());
                 resourceEntry.setEntryId(geneIds[i]);
                 resourceEntryList.set(i, resourceEntry);
             }
@@ -301,6 +301,7 @@ public class BioCCasPopulator {
         ConceptMention gene = (ConceptMention) outputTypeConstructor.newInstance(jCas);
         gene.setBegin(location.getOffset());
         gene.setEnd(location.getOffset() + location.getLength());
+        gene.setComponentId(GNormPlusFormatMultiplierReader.class.getSimpleName());
         gene.setSpecificType("FamilyName");
         // e.g.  <infon key="FocusSpecies">NCBITaxonomyID:9606</infon>
         Optional<String> focusSpecies = annotation.getInfon("FocusSpecies");
