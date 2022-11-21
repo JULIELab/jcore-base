@@ -63,6 +63,7 @@ public class BioCDocumentPopulator {
                         break;
                     case "other":
                         titleType = "other_title";
+                        break;
                     default:
                         log.debug("Unhandled title type {}", titleTypeString);
                         titleType = "other_title";
