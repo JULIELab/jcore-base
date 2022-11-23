@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -69,7 +70,7 @@ public class BioSemEventAnnotatorTest {
 		// results are internally stored in a set
 		Collections.sort(expectedLines);
 		Collections.sort(actualLines);
-
+		System.out.println(actualLines.stream().collect(Collectors.joining("\n")));
 		assertEquals(expectedLines, actualLines);
 	}
 

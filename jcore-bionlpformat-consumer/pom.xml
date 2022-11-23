@@ -8,6 +8,7 @@
         <groupId>de.julielab</groupId>
         <version>2.6.0</version>
     </parent>
+    <version>2.6.1</version>
     <dependencies>
         <dependency>
             <groupId>org.easymock</groupId>
