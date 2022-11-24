@@ -1,27 +1,27 @@
-E1	Transcription:T14 Theme:T1
-E10	Regulation:T18 Theme:E8
-E11	Gene_expression:T19 Theme:T5
-E12	Positive_regulation:T20 Theme:E11
-E13	Gene_expression:T21 Theme:T6
-E14	Transcription:T22 Theme:T12
-E15	Transcription:T22 Theme:T13
-E16	Positive_regulation:T23 Theme:E14
-E17	Positive_regulation:T23 Theme:E15
-E2	Transcription:T14 Theme:T2
-E3	Binding:T15 Theme:T1
-E4	Binding:T15 Theme:T2
-E5	Positive_regulation:T16 Theme:E1
-E6	Positive_regulation:T16 Theme:E2
-E7	Gene_expression:T17 Theme:T3
-E8	Gene_expression:T17 Theme:T4
-E9	Regulation:T18 Theme:E7
-T14	Transcription 47 60	transcription
-T15	Binding 70 77	binding
-T16	Positive_regulation 15 25	stimulates
-T17	Gene_expression 210 220	expression
-T18	Regulation 129 135	effect
-T19	Gene_expression 405 415	expression
-T20	Positive_regulation 391 400	increased
-T21	Gene_expression 521 530	expressed
-T22	Transcription 1050 1063	transcription
-T23	Positive_regulation 1036 1045	increased
+E1	Transcription:T15 Theme:T1
+E10	Regulation:T19 Theme:E8
+E11	Gene_expression:T20 Theme:T5
+E12	Positive_regulation:T21 Theme:E11
+E13	Gene_expression:T22 Theme:T6
+E14	Transcription:T23 Theme:T12
+E15	Transcription:T23 Theme:T13
+E16	Positive_regulation:T24 Theme:E14
+E17	Positive_regulation:T24 Theme:E15
+E2	Transcription:T15 Theme:T2
+E3	Binding:T16 Theme:T1
+E4	Binding:T16 Theme:T2
+E5	Positive_regulation:T17 Theme:E1
+E6	Positive_regulation:T17 Theme:E2
+E7	Gene_expression:T18 Theme:T3
+E8	Gene_expression:T18 Theme:T4
+E9	Regulation:T19 Theme:E7
+T15	Transcription 47 60	transcription
+T16	Binding 70 77	binding
+T17	Positive_regulation 15 25	stimulates
+T18	Gene_expression 210 220	expression
+T19	Regulation 129 135	effect
+T20	Gene_expression 405 415	expression
+T21	Positive_regulation 391 400	increased
+T22	Gene_expression 521 530	expressed
+T23	Transcription 1050 1063	transcription
+T24	Positive_regulation 1036 1045	increased
