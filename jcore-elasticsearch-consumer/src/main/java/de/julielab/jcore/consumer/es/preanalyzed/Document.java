@@ -77,6 +77,24 @@ public class Document extends HashMap<String, IFieldValue> implements
 	}
 
 	/**
+	 * Calls the underlying <tt>put()</tt> method to add the field data to the
+	 * document map. Does not create a field for <tt>null</tt> values or emtpy
+	 * array values.
+	 * <p>
+	 * If <tt>value</tt> is not an <tt>IFieldValue</tt>, the new field will be
+	 * created using a single {@link RawToken} for <tt>value</tt>. Delegates to
+	 * {@link #addField(String, IFieldValue)} if <tt>value</tt> is an
+	 * <tt>IFieldValue</tt>.
+	 * </p>
+	 *
+	 * @param fieldname
+	 * @param values
+	 */
+	public void addField(String fieldname, Object... values) {
+		addField(fieldname, (Object)values);
+	}
+
+	/**
 	 * The index ID of this document. May be null. Is required for root-level documents for the indexing.
 	 * @return
 	 */
@@ -102,5 +120,26 @@ public class Document extends HashMap<String, IFieldValue> implements
 
 	public void setIndex(String type) {
 		this.index = type;
+	}
+
+	public ArrayFieldValue getAsArrayFieldValue(String field) {
+		final IFieldValue value = get(field);
+		if (value instanceof RawToken)
+			return new ArrayFieldValue(value);
+		return (ArrayFieldValue) value;
+	}
+
+	public RawToken getAsRawToken(String field) {
+		final IFieldValue value = get(field);
+		if (value instanceof ArrayFieldValue) {
+			ArrayFieldValue afv = (ArrayFieldValue) value;
+			final ArrayFieldValue flattenedArrayFieldValue = afv.flatten();
+			if (flattenedArrayFieldValue.size() > 1)
+				throw new IllegalArgumentException("The content of field '" + field + "' is an array with more than one value.");
+			else if (flattenedArrayFieldValue.isEmpty())
+				return null;
+			return (RawToken) flattenedArrayFieldValue.get(0);
+		}
+		return (RawToken) value;
 	}
 }

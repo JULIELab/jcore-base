@@ -93,7 +93,7 @@ public class BioCDocumentPopulator {
                 doc.addPassage(p);
             }
             if (addGenes) {
-                annotationId = addGenesToPassage(jCas, z, p, annotationId);
+                annotationId = addGenesToPassage(jCas, z, p, annotationId++);
             }
         }
         return doc;
@@ -103,7 +103,7 @@ public class BioCDocumentPopulator {
         if (p != null) {
             Iterable<? extends ConceptMention> geneIt = JCasUtil.subiterate(jCas, geneTypeClass, z, false, true);
             for (ConceptMention g : geneIt) {
-                BioCAnnotation annotation = new BioCAnnotation(String.valueOf(annotationId++));
+                BioCAnnotation annotation = new BioCAnnotation(String.valueOf(annotationId));
                 annotation.setText(g.getCoveredText());
                 String type = "Gene";
                 String specificType = g.getSpecificType() != null ? g.getSpecificType().toLowerCase() : null;

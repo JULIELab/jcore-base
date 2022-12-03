@@ -20,7 +20,7 @@ public class ArrayFieldValue extends ArrayList<IFieldValue> implements
             add(fieldValue);
     }
 
-    public ArrayFieldValue(Object[] values) {
+    public ArrayFieldValue(Object... values) {
         for (Object v : values) {
             if (v instanceof IFieldValue) {
                 add((IFieldValue) v);
@@ -29,6 +29,10 @@ public class ArrayFieldValue extends ArrayList<IFieldValue> implements
                 add(new RawToken(v));
             }
         }
+    }
+
+    public static ArrayFieldValue of(Object... values) {
+        return new ArrayFieldValue(values);
     }
 
     public ArrayFieldValue() {
@@ -59,6 +63,28 @@ public class ArrayFieldValue extends ArrayList<IFieldValue> implements
             throw new IllegalArgumentException("FieldValue class "
                     + fieldValue.getClass() + " is currently not supported.");
 
+    }
+
+    public ArrayFieldValue flatten() {
+        List<RawToken> rawTokens = new ArrayList<>();
+        collectRawTokens(this, rawTokens);
+        return new ArrayFieldValue(rawTokens);
+    }
+
+    /**
+     * <p>Traverses the input array recursively, adding all the values of the RawTokens in the input array.</p>
+     * @param input
+     * @param values
+     */
+    private void collectRawTokens(ArrayFieldValue input, List<RawToken> values) {
+        for (IFieldValue fv : input) {
+            if (fv instanceof ArrayFieldValue)
+                collectRawTokens((ArrayFieldValue) fv, values);
+            else if (fv instanceof  RawToken)
+                values.add((RawToken) fv);
+            else
+                throw new IllegalArgumentException("Unsupported field value type " + fv.getClass());
+        }
     }
 
 }
