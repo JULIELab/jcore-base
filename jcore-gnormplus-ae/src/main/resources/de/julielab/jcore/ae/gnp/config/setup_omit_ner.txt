@@ -29,4 +29,4 @@
 	HomologeneID = False
 	Normalization2Protein = False
 	ShowUnNormalizedMention = False
-	DeleteTmp = True
+	DeleteTmp = False

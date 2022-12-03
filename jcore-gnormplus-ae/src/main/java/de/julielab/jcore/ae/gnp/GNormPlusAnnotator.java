@@ -8,10 +8,12 @@ import de.julielab.jcore.types.Gene;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.Type;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @ResourceMetaData(name = "JCoRe GNormPlus Annotator", description = "Wrapper for the JULIE Lab variant of the GNormPlus gene ID mapper.", vendor = "JULIE Lab Jena, Germany")
@@ -101,8 +105,15 @@ public class GNormPlusAnnotator extends JCasAnnotator_ImplBase {
         bioCCollection.addDocument(bioCDocument);
         String outputDirectory = this.outputDirectory;
         final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(bioCCollection, outputDirectory);
-
+        if (useExistingGeneAnnotations) {
+            final Type inputType = aJCas.getTypeSystem().getType(inputGeneTypeName);
+            List<Annotation> toRemove = new ArrayList<>();
+            for (Annotation a : aJCas.getAnnotationIndex(inputType))
+                toRemove.add(a);
+            toRemove.forEach(Annotation::removeFromIndexes);
+        }
         try {
+            log.debug("Reading GNP-processed file {}", outputFilePath);
             final BioCCasPopulator bioCCasPopulator = new BioCCasPopulator(outputFilePath, Class.forName(outputGeneTypeName).getConstructor(JCas.class));
             bioCCasPopulator.populateWithNextDocument(aJCas, true);
         } catch (Exception e) {
@@ -116,7 +127,6 @@ public class GNormPlusAnnotator extends JCasAnnotator_ImplBase {
             log.error("Could not delete temporary file {}", outputFilePath);
             throw new AnalysisEngineProcessException(e);
         }
-
     }
 
 
