@@ -9,15 +9,22 @@
 # 3b. It identifies all dependencies of all modules that refer to another module.
 # 3c. It sets the dependency version to the given version or to the property associated with the dependency artifact following the convention mentioned in 3a.
 
+set -eu
+
 if [ -z "$1" ] || [ -z "$2" ]; then
   echo "Usage: setProjectVersion <new version> <snapshot dependencies allowed (true/false)>"
   exit 1
 fi
 
 if [ ! -f jcore-version-normalizer.jar ]; then
-	wget https://oss.sonatype.org/content/repositories/releases/de/julielab/jcore-version-normalizer/1.1.0/jcore-version-normalizer-1.1.0-jar-with-dependencies.jar -O jcore-version-normalizer.jar
+	wget https://oss.sonatype.org/content/repositories/releases/de/julielab/jcore-version-normalizer/1.2.0/jcore-version-normalizer-1.2.0-jar-with-dependencies.jar -O jcore-version-normalizer.jar
 fi
 
+echo "Normalizing versions"
 java -jar jcore-version-normalizer.jar pom.xml $1 $2
+# remove newlines added by the version normalizer
+sed -i "" '/^ *$/d' pom.xml
+echo "Updating UIMA descriptor versions"
 python scripts/updateUIMAVersions.py $1 .
+echo "Updating meta descriptors"
 scripts/updateMetaDescriptors.sh

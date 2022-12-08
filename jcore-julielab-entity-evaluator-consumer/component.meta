@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-julielab-entity-evaluator-consumer",
         "groupId": "de.julielab",
-        "version": "2.6.0"
+        "version": "2.6.1"
     },
     "name": "JCoRe JULIE Lab Entity Evaluator Converter"
 }

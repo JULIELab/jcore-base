@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -6,6 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe GNormPlus BioC Multiplier</name>
         <description>A CAS multiplier to be used with the GNormPlus BioC Format multiplier reader. It wraps the JULIE Lab variant of the GNormPlus gene ID mapper. It is a multiplier because this enables batch-processing of documents with GNormPlus which makes the processing more efficient.</description>
+        <version>2.6.1</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
         <configurationParameters>
             <configurationParameter>
@@ -93,15 +94,15 @@
                 <import name="de.julielab.jcore.types.extensions.jcore-document-meta-extension-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
+        <fsIndexCollection />
         <capabilities>
             <capability>
-                <inputs/>
+                <inputs />
                 <outputs>
                     <type>de.julielab.jcore.types.ConceptMention</type>
                     <type>de.julielab.jcore.types.Organism</type>
                 </outputs>
-                <languagesSupported/>
+                <languagesSupported />
             </capability>
         </capabilities>
         <operationalProperties>

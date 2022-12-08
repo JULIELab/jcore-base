@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
@@ -6,6 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe BioSem Event Annotator</name>
         <description>Adds annotations for event triggers and events according to the BioNLP Shared Task event definition.</description>
+        <version>2.6.1</version>
         <configurationParameters>
             <configurationParameter>
                 <name>ComponentId</name>
@@ -28,7 +29,7 @@
                 <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
             </imports>
         </typeSystemDescription>
-        <fsIndexCollection/>
+        <fsIndexCollection />
         <capabilities>
             <capability>
                 <inputs>
@@ -38,7 +39,7 @@
                     <type>de.julielab.jcore.types.EventTrigger</type>
                     <type>de.julielab.jcore.types.EventMention</type>
                 </outputs>
-                <languagesSupported/>
+                <languagesSupported />
             </capability>
         </capabilities>
         <operationalProperties>
@@ -61,7 +62,7 @@
                 <name>TrainedDB</name>
                 <description />
                 <fileResourceSpecifier>
-                    <fileUrl/>
+                    <fileUrl />
                 </fileResourceSpecifier>
                 <implementationName>de.julielab.jcore.ae.biosem.DBUtilsProviderImpl</implementationName>
             </externalResource>

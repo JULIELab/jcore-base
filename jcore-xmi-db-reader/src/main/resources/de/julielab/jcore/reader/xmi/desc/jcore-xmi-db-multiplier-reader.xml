@@ -5,7 +5,7 @@
     <processingResourceMetaData>
         <name>JCoRe XMI Database Multiplier Reader</name>
         <description>This is an extension of the DBMultiplierReader to handle JeDIS XMI annotation module data.</description>
-        <version>2.6.0</version>
+        <version>2.6.1</version>
         <configurationParameters>
             <configurationParameter>
                 <name>ReadsBaseDocument</name>
