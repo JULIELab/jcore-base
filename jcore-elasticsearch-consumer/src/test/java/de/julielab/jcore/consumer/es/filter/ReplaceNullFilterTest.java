@@ -10,4 +10,11 @@ class ReplaceNullFilterTest {
         assertThat(filter.filter("somevalue")).containsExactly("somevalue");
         assertThat(filter.filter(null)).containsExactly("null-replacement-value");
     }
+
+    @Test
+    public void filterBlank() {
+        final ReplaceNullFilter filter = new ReplaceNullFilter("null-replacement-value", true);
+        assertThat(filter.filter("somevalue")).containsExactly("somevalue");
+        assertThat(filter.filter("")).containsExactly("null-replacement-value");
+    }
 }

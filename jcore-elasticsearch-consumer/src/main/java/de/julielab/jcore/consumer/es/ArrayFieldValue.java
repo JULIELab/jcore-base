@@ -17,25 +17,27 @@ public class ArrayFieldValue extends ArrayList<IFieldValue> implements
 
     public <T extends IFieldValue> ArrayFieldValue(List<T> fieldValues) {
         for (T fieldValue : fieldValues)
-            add(fieldValue);
+            if (fieldValue != null)
+                add(fieldValue);
     }
 
     public ArrayFieldValue(Object... values) {
         for (Object v : values) {
-            if (v instanceof IFieldValue) {
-                add((IFieldValue) v);
-            }
-            else {
-                add(new RawToken(v));
+            if (v != null) {
+                if (v instanceof IFieldValue) {
+                    add((IFieldValue) v);
+                } else {
+                    add(new RawToken(v));
+                }
             }
         }
     }
 
-    public static ArrayFieldValue of(Object... values) {
-        return new ArrayFieldValue(values);
+    public ArrayFieldValue() {
     }
 
-    public ArrayFieldValue() {
+    public static ArrayFieldValue of(Object... values) {
+        return new ArrayFieldValue(values);
     }
 
     @Override
@@ -73,6 +75,7 @@ public class ArrayFieldValue extends ArrayList<IFieldValue> implements
 
     /**
      * <p>Traverses the input array recursively, adding all the values of the RawTokens in the input array.</p>
+     *
      * @param input
      * @param values
      */
@@ -80,7 +83,7 @@ public class ArrayFieldValue extends ArrayList<IFieldValue> implements
         for (IFieldValue fv : input) {
             if (fv instanceof ArrayFieldValue)
                 collectRawTokens((ArrayFieldValue) fv, values);
-            else if (fv instanceof  RawToken)
+            else if (fv instanceof RawToken)
                 values.add((RawToken) fv);
             else
                 throw new IllegalArgumentException("Unsupported field value type " + fv.getClass());
