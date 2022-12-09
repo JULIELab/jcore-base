@@ -5,6 +5,10 @@
 # If, however, all versions are newly deployed, just use a mvn deploy command on the project root,
 # this is much quicker and also results in a single staging repository in Nexus instead of one project
 # for each module.
+# An alternative is to do the deployment of the root in any case - even with already deployed modules - and
+# remove those modules manually in the Nexus UI from the staging repository. One can open the contents of
+# a repository and browse it. With a right click on an item one can select to delete it.
+
 
 echo "Executing deploy"
 if [ ! -f julie-xml-tools.jar ]; then
