@@ -1,0 +1,16 @@
+---
+  dataSource: "issues"
+  prefix: ""
+  ignoreLabels: []
+  ignoreIssuesWith: []
+  onlyMilestones: false 
+  groupBy:
+    New components: ["new component"]
+    Hot fixes: ["urgent"]
+    Speed Improvements: ["performance"]
+    General Enhancements: ["enhancement"]
+    Bug Fixes: ["bug"]
+    Dependency Updates: ["dependencies"]
+    Discussion: ["questions"]
+    Miscellaneous Changes: ["closed"]  
+  changelogFilename: "CHANGELOG.md"

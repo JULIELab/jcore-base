@@ -14,7 +14,7 @@
     "maven-artifact": {
         "artifactId": "jcore-xmi-reader",
         "groupId": "de.julielab",
-        "version": "2.6.0"
+        "version": "2.6.1"
     },
     "name": "JCoRe XMI Collection Reader"
 }

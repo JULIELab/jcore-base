@@ -5,7 +5,7 @@
     <processingResourceMetaData>
         <name>JCoRe GNormPlus Format Multiplier Reader</name>
         <description>A reader for the BioC XML format used by GNormPlus. Requires the matching multiplier.</description>
-        <version>2.6.0</version>
+        <version>2.6.1</version>
         <configurationParameters>
             <configurationParameter>
                 <name>InputPath</name>

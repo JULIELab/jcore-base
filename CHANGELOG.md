@@ -1,5 +1,23 @@
 # Changelog
 
+## v2.6.1 (09/12/2022)
+
+#### Bug Fixes
+
+- [**bug**] Fix a bug in XML mapper where empty elements are skipped over [#171](https://github.com/JULIELab/jcore-base/issues/171)
+- [**bug**] jcore-lingpipe-gazetteer-ae: Repair tests [#110](https://github.com/JULIELab/jcore-base/issues/110)
+
+#### Miscellaneous Changes
+
+- [**closed**] Switch from Travis to GitHub Actions [#122](https://github.com/JULIELab/jcore-base/issues/122)
+- [**closed**] XMLDBReader: Add check for documents unchanged in the XMI table [#119](https://github.com/JULIELab/jcore-base/issues/119)
+- [**closed**] Update all test to JUnit 5 [#118](https://github.com/JULIELab/jcore-base/issues/118)
+- [**closed**] XMI DB Reader & DB Writer: Take care of XmiMetaData [#89](https://github.com/JULIELab/jcore-base/issues/89)
+- [**closed**] PMC reader check section offset [#57](https://github.com/JULIELab/jcore-base/issues/57)
+- [**closed**] JSBD: Set document structure borders [#37](https://github.com/JULIELab/jcore-base/issues/37)
+
+---
+
 ## v2.6.0 (17/11/2022)
 
 #### New components

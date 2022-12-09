@@ -1,5 +1,6 @@
 package de.julielab.jcore.reader;
 
+import de.julielab.jcore.types.Gene;
 import de.julielab.jcore.types.casmultiplier.JCoReURI;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
@@ -14,17 +15,22 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Optional;
 
 @ResourceMetaData(name = "JCoRe GNormPlus BioC Format Multiplier", description = "Multiplier for GNormPlusFormatMultiplierReader. Takes URIs pointing to BioC collection files that contain annotations created by GNormPlus. For each such file, reads all documents and returns CASes for them until all documents in all collections have been read into a CAS.")
 @TypeCapability(outputs = {"de.julielab.jcore.types.Gene", "de.julielab.jcore.types.Organism"})
 public class GNormPlusFormatMultiplier extends JCasMultiplier_ImplBase {
     public static final String PARAM_COSTOSYS_CONFIG = "CostosysConfigFile";
     public static final String PARAM_XMI_DOCUMENTS_TABLE = "DocumentsTable";
+    public static final String PARAM_OUTPUT_GENE_TYPE_NAME = "OutputGeneTypeName";
     private final static Logger log = LoggerFactory.getLogger(GNormPlusFormatMultiplier.class);
     private Iterator<URI> currentUriBatch;
     private BioCCasPopulator casPopulator;
@@ -34,6 +40,8 @@ public class GNormPlusFormatMultiplier extends JCasMultiplier_ImplBase {
     private String costosysConfiguration;
     @ConfigurationParameter(name = PARAM_XMI_DOCUMENTS_TABLE, mandatory = false, description = "Required to retrieve the max XMI ID for use by the XMI DB writer. The schema-qualified name of the XMI document table that the XMI DB writer will write annotations into.")
     private String documentsTable;
+    @ConfigurationParameter(name = PARAM_OUTPUT_GENE_TYPE_NAME, mandatory = false, defaultValue = "de.julielab.jcore.types.Gene", description = "The UIMA type denoting gene annotations that should be created by this component. Defaults to de.julielab.jcore.types.Gene.")
+    private String outputGeneTypeName;
 
     private long lastTimeStamp;
 
@@ -42,6 +50,7 @@ public class GNormPlusFormatMultiplier extends JCasMultiplier_ImplBase {
         super.initialize(aContext);
         costosysConfiguration = (String) aContext.getConfigParameterValue(PARAM_COSTOSYS_CONFIG);
         documentsTable = (String) aContext.getConfigParameterValue(PARAM_XMI_DOCUMENTS_TABLE);
+        outputGeneTypeName = (String) Optional.ofNullable(aContext.getConfigParameterValue(PARAM_OUTPUT_GENE_TYPE_NAME)).orElse(Gene.class.getCanonicalName());
         if (costosysConfiguration == null ^ documentsTable == null)
             throw new ResourceInitializationException(new IllegalArgumentException("Either both or none parameters must be defined: " + PARAM_COSTOSYS_CONFIG + ", " + PARAM_XMI_DOCUMENTS_TABLE));
         lastTimeStamp = 0;
@@ -71,9 +80,12 @@ public class GNormPlusFormatMultiplier extends JCasMultiplier_ImplBase {
                     log.debug("Last document batch of size {} processing time: {}s for text length of {} characters; that is {}ms per character.", casPopulator.getNumDocumentsInCollection(), passedMillis / 1000, collectionTextLength, df.format((double)passedMillis/collectionTextLength));
                 }
                 lastTimeStamp = System.currentTimeMillis();
-                casPopulator = new BioCCasPopulator(Path.of(nextUri), costosysConfiguration != null ? Path.of(costosysConfiguration) : null, documentsTable);
-            } catch (Exception e) {
+                casPopulator = new BioCCasPopulator(Path.of(nextUri), costosysConfiguration != null ? Path.of(costosysConfiguration) : null, documentsTable, Class.forName(outputGeneTypeName).getConstructor(JCas.class));
+            } catch (SQLException | IOException | XMLStreamException e) {
                 log.error("Could not read from {}", nextUri, e);
+                throw new AnalysisEngineProcessException(e);
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
+                log.error("Could not obtain UIMA gene annotation type constructor for class {}", outputGeneTypeName);
                 throw new AnalysisEngineProcessException(e);
             }
         }

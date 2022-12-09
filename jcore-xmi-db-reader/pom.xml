@@ -5,9 +5,10 @@
     <parent>
         <artifactId>jedis-parent</artifactId>
         <groupId>de.julielab</groupId>
-        <version>2.6.0</version>
+        <version>2.6.1</version>
         <relativePath>../jedis-parent</relativePath>
     </parent>
+    <version>2.6.2</version>
     <artifactId>jcore-xmi-db-reader</artifactId>
     <name>JCoRe XMI Database Reader</name>
     <description>Reads CAS XMI data from a relational database (Postgres). Thus, the stored CASes may then be processed
@@ -18,7 +19,7 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-db-reader</artifactId>
-            <version>2.6.0</version>
+            <version>2.6.2</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -59,13 +60,13 @@
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xml-db-reader</artifactId>
-            <version>2.6.0</version>
+            <version>2.6.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.julielab</groupId>
             <artifactId>jcore-xmi-db-writer</artifactId>
-            <version>2.6.0</version>
+            <version>2.6.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -6,7 +6,7 @@
     <analysisEngineMetaData>
         <name>JCoRe Topic Indexer</name>
         <description>This component assigns topics relative to a given topic model to the encoutered documents. The topic model is one trained by the julielab-topic-modeling project.</description>
-        <version>2.6.0</version>
+        <version>2.6.1</version>
         <configurationParameters>
             <configurationParameter>
                 <name>TopicModelConfig</name>

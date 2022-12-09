@@ -9,8 +9,12 @@ import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Extracts text passages from the CAS and adds them to a new BioCDocument.
@@ -59,6 +63,7 @@ public class BioCDocumentPopulator {
                         break;
                     case "other":
                         titleType = "other_title";
+                        break;
                     default:
                         log.debug("Unhandled title type {}", titleTypeString);
                         titleType = "other_title";
@@ -109,6 +114,12 @@ public class BioCDocumentPopulator {
                     type = "DomainMotif";
                 annotation.putInfon("type", type);
                 annotation.addLocation(new BioCLocation(g.getBegin(), g.getEnd() - g.getBegin()));
+                if (g.getResourceEntryList() != null) {
+                    List<String> ids = new ArrayList<>();
+                    for (int i = 0; i < g.getResourceEntryList().size(); i++)
+                        ids.add(g.getResourceEntryList(i).getEntryId());
+                    annotation.putInfon("NCBI Gene", String.join(",",ids));
+                }
                 p.addAnnotation(annotation);
             }
         }

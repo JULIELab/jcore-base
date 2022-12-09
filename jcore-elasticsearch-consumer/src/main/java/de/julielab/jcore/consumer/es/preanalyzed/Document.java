@@ -6,101 +6,154 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Document extends HashMap<String, IFieldValue> implements
-		IFieldValue {
+        IFieldValue {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6036140833025381237L;
-	private String id;
-	private String parentId;
-	private String index;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6036140833025381237L;
+    private String id;
+    private String parentId;
+    private String index;
 
-	public Document() {}
-	
-	public Document(String id) {
-		this.id = id;
-	}
+    public Document() {
+    }
 
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.OBJECT;
-	}
+    public Document(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * Calls the underlying <tt>put()</tt> method to add the field data to the
-	 * document map. Does not create a field for <tt>null</tt> values or empty
-	 * array values.
-	 * 
-	 * @param fieldname
-	 * @param value
-	 */
-	public void addField(String fieldname, IFieldValue value) {
-		if (null == value)
-			return;
-		if (value instanceof ArrayFieldValue) {
-			ArrayFieldValue array = (ArrayFieldValue) value;
-			if (array.isEmpty())
-				return;
-		}
-		put(fieldname, value);
-	}
+    @Override
+    public FieldType getFieldType() {
+        return FieldType.OBJECT;
+    }
 
-	/**
-	 * Calls the underlying <tt>put()</tt> method to add the field data to the
-	 * document map. Does not create a field for <tt>null</tt> values or emtpy
-	 * array values.
-	 * <p>
-	 * If <tt>value</tt> is not an <tt>IFieldValue</tt>, the new field will be
-	 * created using a single {@link RawToken} for <tt>value</tt>. Delegates to
-	 * {@link #addField(String, IFieldValue)} if <tt>value</tt> is an
-	 * <tt>IFieldValue</tt>.
-	 * </p>
-	 * 
-	 * @param fieldname
-	 * @param value
-	 */
-	public void addField(String fieldname, Object value) {
-		if (null == value)
-			return;
-		if (IFieldValue.class.isAssignableFrom(value.getClass())) {
-			addField(fieldname, (IFieldValue) value);
-			return;
-		} else if (value.getClass().isArray()) {
-			addField(fieldname, new ArrayFieldValue((Object[]) value));
-			return;
+    /**
+     * Calls the underlying <tt>put()</tt> method to add the field data to the
+     * document map. Does not create a field for <tt>null</tt> values or empty
+     * array values.
+     *
+     * @param fieldname
+     * @param value
+     */
+    public void addField(String fieldname, IFieldValue value) {
+        if (null == value)
+            return;
+        if (value instanceof ArrayFieldValue) {
+            ArrayFieldValue array = (ArrayFieldValue) value;
+            if (array.isEmpty())
+                return;
+        }
+        put(fieldname, value);
+    }
+
+    /**
+     * Calls the underlying <tt>put()</tt> method to add the field data to the
+     * document map. Does not create a field for <tt>null</tt> values or emtpy
+     * array values.
+     * <p>
+     * If <tt>value</tt> is not an <tt>IFieldValue</tt>, the new field will be
+     * created using a single {@link RawToken} for <tt>value</tt>. Delegates to
+     * {@link #addField(String, IFieldValue)} if <tt>value</tt> is an
+     * <tt>IFieldValue</tt>.
+     * </p>
+     *
+     * @param fieldname
+     * @param value
+     */
+    public void addField(String fieldname, Object value) {
+        if (null == value)
+            return;
+        if (IFieldValue.class.isAssignableFrom(value.getClass())) {
+            addField(fieldname, (IFieldValue) value);
+            return;
+        } else if (value.getClass().isArray()) {
+            addField(fieldname, new ArrayFieldValue((Object[]) value));
+            return;
         } else if (value instanceof List) {
             addField(fieldname, new ArrayFieldValue(((List<?>) value).toArray()));
             return;
         }
-		put(fieldname, new RawToken(value));
-	}
+        put(fieldname, new RawToken(value));
+    }
 
-	/**
-	 * The index ID of this document. May be null. Is required for root-level documents for the indexing.
-	 * @return
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * Calls the underlying <tt>put()</tt> method to add the field data to the
+     * document map. Does not create a field for <tt>null</tt> values or emtpy
+     * array values.
+     * <p>
+     * If <tt>value</tt> is not an <tt>IFieldValue</tt>, the new field will be
+     * created using a single {@link RawToken} for <tt>value</tt>. Delegates to
+     * {@link #addField(String, IFieldValue)} if <tt>value</tt> is an
+     * <tt>IFieldValue</tt>.
+     * </p>
+     *
+     * @param fieldname
+     * @param values
+     */
+    public void addField(String fieldname, Object... values) {
+        addField(fieldname, (Object) values);
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * The index ID of this document. May be null. Is required for root-level documents for the indexing.
+     *
+     * @return
+     */
+    public String getId() {
+        return id;
+    }
 
-	public String getParentId() {
-		return parentId;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
-	}
+    public String getParentId() {
+        return parentId;
+    }
 
-	public String getIndex() {
-		return index;
-	}
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
 
-	public void setIndex(String type) {
-		this.index = type;
-	}
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String type) {
+        this.index = type;
+    }
+
+    public ArrayFieldValue getAsArrayFieldValue(String field) {
+        return getAsArrayFieldValue(field, null);
+    }
+
+    public ArrayFieldValue getAsArrayFieldValue(String field, ArrayFieldValue defaultValue) {
+        final IFieldValue value = get(field);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof RawToken)
+            return new ArrayFieldValue(value);
+        return (ArrayFieldValue) value;
+    }
+
+    public RawToken getAsRawToken(String field) {
+        return getAsRawToken(field, null);
+    }
+
+    public RawToken getAsRawToken(String field, RawToken defaultValue) {
+        final IFieldValue value = get(field);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof ArrayFieldValue) {
+            ArrayFieldValue afv = (ArrayFieldValue) value;
+            final ArrayFieldValue flattenedArrayFieldValue = afv.flatten();
+            if (flattenedArrayFieldValue.size() > 1)
+                throw new IllegalArgumentException("The content of field '" + field + "' is an array with more than one value.");
+            else if (flattenedArrayFieldValue.isEmpty())
+                return null;
+            return (RawToken) flattenedArrayFieldValue.get(0);
+        }
+        return (RawToken) value;
+    }
 }

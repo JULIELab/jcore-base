@@ -45,6 +45,7 @@ public class NXMLURIIterator implements Iterator<URI> {
         this.basePath = basePath;
         this.searchRecursively = searchRecursively;
         this.searchZip = searchZip;
+        log.trace("White list: {}", whitelist);
     }
 
     @Override
@@ -184,6 +185,8 @@ public class NXMLURIIterator implements Iterator<URI> {
         boolean inWhitelist = whitelist.contains(name) || (whitelist.size() == 1 && whitelist.contains("all"));
         if (!inWhitelist)
             logFileSearch.trace("Skipping document with name/id {} because it is not contained in the white list.", name);
+        else
+            logFileSearch.trace("File name {} was found in white list.", name);
         return inWhitelist;
     }
 

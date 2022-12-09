@@ -273,6 +273,7 @@ public class AnnotationFileMapper {
 		annotation.setEnd(new Integer(tokens[tokens.length-1]));
 		annotation.addToIndexes();
 		mappedEntities.put(id, annotation);
+		LOGGER.debug("{} {} {}-{}", id, annotation.getCoveredText(), annotation.getBegin(), annotation.getEnd());
 	}
 
 	/**

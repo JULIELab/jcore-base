@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>de.julielab.jcore.ae.biosem.BioSemEventAnnotator</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>JCoRe BioSem Event Annotator</name>
+        <description>Adds annotations for event triggers and events according to the BioNLP Shared Task event definition.</description>
+        <version>2.6.1</version>
+        <configurationParameters>
+            <configurationParameter>
+                <name>ComponentId</name>
+                <description>Optional. If set, the 'componentId' feature of the created annotations will be set to the value of this parameter.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>ComponentId</name>
+                <value>
+                    <string>BioSemEventAnnotator</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import name="de.julielab.jcore.types.jcore-semantics-biology-types" />
+            </imports>
+        </typeSystemDescription>
+        <fsIndexCollection />
+        <capabilities>
+            <capability>
+                <inputs>
+                    <type>de.julielab.jcore.types.Gene</type>
+                </inputs>
+                <outputs>
+                    <type>de.julielab.jcore.types.EventTrigger</type>
+                    <type>de.julielab.jcore.types.EventMention</type>
+                </outputs>
+                <languagesSupported />
+            </capability>
+        </capabilities>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+    <externalResourceDependencies>
+        <externalResourceDependency>
+            <key>TrainedDB</key>
+            <description>The BioSem database in which triggers and event rules have been learned. New predictions are made based on the rules in this database.</description>
+            <interfaceName>de.julielab.jcore.ae.biosem.DBUtilsProvider</interfaceName>
+            <optional>false</optional>
+        </externalResourceDependency>
+    </externalResourceDependencies>
+    <resourceManagerConfiguration>
+        <externalResources>
+            <externalResource>
+                <name>TrainedDB</name>
+                <description />
+                <fileResourceSpecifier>
+                    <fileUrl />
+                </fileResourceSpecifier>
+                <implementationName>de.julielab.jcore.ae.biosem.DBUtilsProviderImpl</implementationName>
+            </externalResource>
+        </externalResources>
+        <externalResourceBindings>
+            <externalResourceBinding>
+                <key>TrainedDB</key>
+                <resourceName>TrainedDB</resourceName>
+            </externalResourceBinding>
+        </externalResourceBindings>
+    </resourceManagerConfiguration>
+</analysisEngineDescription>

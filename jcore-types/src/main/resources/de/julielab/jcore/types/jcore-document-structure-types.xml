@@ -2,7 +2,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>JCoRe Document Structure Types</name>
   <description>The type system contains the types for the annotation of document sutructure, e.g. titles, abstract text, captions etc.</description>
-  <version>2.6.0</version>
+  <version>2.6.1</version>
         <vendor>JULIE Lab Jena, Germany</vendor>
   <imports>
     <import location="jcore-basic-types.xml" />

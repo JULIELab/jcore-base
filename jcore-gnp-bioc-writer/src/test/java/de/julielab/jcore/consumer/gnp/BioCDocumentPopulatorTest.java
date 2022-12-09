@@ -4,6 +4,8 @@ import com.pengyifan.bioc.BioCCollection;
 import com.pengyifan.bioc.BioCDocument;
 import com.pengyifan.bioc.io.BioCCollectionWriter;
 import de.julielab.jcore.types.Gene;
+import de.julielab.jcore.types.ResourceEntry;
+import de.julielab.jcore.utility.JCoReTools;
 import org.apache.uima.jcas.JCas;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +46,11 @@ class BioCDocumentPopulatorTest {
     public void populateWithGenes() throws Exception {
         BioCDocumentPopulator populator = new BioCDocumentPopulator(true, Gene.class.getCanonicalName());
         JCas jCas = TestDocumentGenerator.prepareCas(1);
-        new Gene(jCas, 0, 4).addToIndexes();
+        Gene g1 = new Gene(jCas, 0, 4);
+        final ResourceEntry re = new ResourceEntry(jCas);
+        re.setEntryId("geneid1");
+        g1.setResourceEntryList(JCoReTools.addToFSArray(null, re));
+        g1.addToIndexes();
         new Gene(jCas, 87, 96).addToIndexes();
         BioCDocument biocDoc = populator.populate(jCas);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -55,6 +61,7 @@ class BioCDocumentPopulatorTest {
         String resultXml = baos.toString(StandardCharsets.UTF_8);
         assertThat(resultXml).containsOnlyOnce("<annotation id=\"0\">");
         assertThat(resultXml).contains("<infon key=\"type\">Gene</infon>");
+        assertThat(resultXml).containsOnlyOnce("<infon key=\"NCBI Gene\">geneid1</infon>");
         assertThat(resultXml).containsOnlyOnce("<location offset=\"0\" length=\"4\"/>");
         assertThat(resultXml).containsOnlyOnce("<text>This</text>");
 

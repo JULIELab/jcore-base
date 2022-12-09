@@ -570,7 +570,9 @@ public abstract class AbstractFieldGenerator {
 	public <T extends IFieldValue> T createRawFieldValueForString(String input, Filter f) {
 		if (null != f)
 			f.reset();
-		List<String> filteredValues = f.filter((String) input);
+		else
+			return (T) new RawToken(input);
+		List<String> filteredValues = f.filter(input);
 		if (filteredValues.isEmpty())
 			return (T) new ArrayFieldValue();
 		else if (filteredValues.size() == 1 && null != filteredValues.get(0))
@@ -578,6 +580,49 @@ public abstract class AbstractFieldGenerator {
 		else
 			return (T) createRawArrayFieldValue(filteredValues);
 
+	}
+
+	public <T extends IFieldValue> T createRawFieldValueForFieldValue(IFieldValue input, Filter f) {
+		if (null != f)
+			f.reset();
+		else
+			return (T) input;
+		List<String> filteredValues;
+		if (input instanceof RawToken) {
+			filteredValues = f.filter(input.toString());
+		}
+		else if (input instanceof  ArrayFieldValue) {
+			List<String> arrayValues = new ArrayList<>();
+			collectArrayFieldValues((ArrayFieldValue) input, arrayValues);
+			filteredValues = new ArrayList<>();
+			for (int i = 0; i < arrayValues.size(); i++) {
+				String value = arrayValues.get(i);
+				filteredValues.addAll(f.filter(value));
+			}
+		} else
+			throw new IllegalArgumentException("Unsupported field value type " + input.getClass());
+		if (filteredValues.isEmpty())
+			return (T) new ArrayFieldValue();
+		else if (filteredValues.size() == 1 && null != filteredValues.get(0))
+			return (T) new RawToken(filteredValues.get(0));
+		else
+			return (T) createRawArrayFieldValue(filteredValues);
+	}
+
+	/**
+	 * <p>Traverses the input array recursively, adding all the values of the RawTokens in the input array.</p>
+	 * @param input
+	 * @param values
+	 */
+	private void collectArrayFieldValues(ArrayFieldValue input, List<String> values) {
+		for (IFieldValue fv : input) {
+			if (fv instanceof ArrayFieldValue)
+				collectArrayFieldValues((ArrayFieldValue) fv, values);
+			else if (fv instanceof  RawToken)
+				values.add(fv.toString());
+			else
+				throw new IllegalArgumentException("Unsupported field value type " + fv.getClass());
+		}
 	}
 
 	/**
@@ -773,6 +818,8 @@ public abstract class AbstractFieldGenerator {
 		}
 		return arrayFieldValue;
 	}
+
+
 
 	/**
 	 * Calls {@link #createRawFieldValueForAnnotation(FeatureStructure, String, Filter)} for all tuples
@@ -979,8 +1026,6 @@ public abstract class AbstractFieldGenerator {
 	/**
 	 * Creates a {@link PreanalyzedToken} with the given attributes.
 	 * 
-	 * @param fieldValueList
-	 *            The list the token will be appended to
 	 * @param term
 	 *            The term string of this token
 	 * @param start

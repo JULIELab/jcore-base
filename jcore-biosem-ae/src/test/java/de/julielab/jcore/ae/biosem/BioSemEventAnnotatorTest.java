@@ -69,7 +69,6 @@ public class BioSemEventAnnotatorTest {
 		// results are internally stored in a set
 		Collections.sort(expectedLines);
 		Collections.sort(actualLines);
-
 		assertEquals(expectedLines, actualLines);
 	}
 

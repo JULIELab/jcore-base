@@ -39,7 +39,7 @@ public class DBUtilsProviderImpl implements DBUtilsProvider {
 						new IllegalArgumentException(
 								"The passed configuration file at "
 										+ aData.getUri()
-										+ " does define the property \""
+										+ " does not define the property \""
 										+ CONFIG_TRAINED_DB
 										+ "\" for the trained BioSem database"));
 			// per default, assume a file path

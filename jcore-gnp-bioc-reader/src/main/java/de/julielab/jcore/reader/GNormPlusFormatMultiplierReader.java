@@ -48,6 +48,7 @@ public class GNormPlusFormatMultiplierReader extends JCasCollectionReader_ImplBa
         super.initialize(context);
         inputPathString = (String) context.getConfigParameterValue(PARAM_INPUT_PATH);
         recursive = Optional.of((boolean) context.getConfigParameterValue(PARAM_RECURSIVE)).orElse(true);
+        batchSize = Optional.of((Integer) context.getConfigParameterValue((PARAM_BATCH_SIZE))).orElse(20);
         try {
             Path inputPath = Path.of(inputPathString);
             Stream<Path> pathStream;

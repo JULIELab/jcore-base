@@ -7,7 +7,7 @@
         <name>JCoRe Mutation Annotator</name>
         <description>An analysis engine to recognize mentions of gene point mutations in document text. This is a wrapper around the original MutationFinder (http://mutationfinder.sourceforge.net/), published in the following paper: MutationFinder: A high-performance system for extracting point mutation mentions from text
 J. Gregory Caporaso, William A. Baumgartner Jr., David A. Randolph, K. Bretonnel Cohen, and Lawrence Hunter; Bioinformatics, 2007 23(14):1862-1865; doi:10.1093/bioinformatics/btm235;</description>
-        <version>2.6.0</version>
+        <version>2.6.1</version>
         <vendor>JULIE Lab, Germany</vendor>
         <configurationParameters />
         <configurationParameterSettings />
