@@ -17,7 +17,7 @@ else
     echo "julie-xml-tools.jar already exists and is not downloaded."
 fi
 if [ ! -f julielab-maven-aether-utilities.jar ]; then
-  	    wget https://oss.sonatype.org/content/repositories/releases/de/julielab/julielab-maven-aether-utilities/1.0.0/julielab-maven-aether-utilities-1.0.0-cli-assembly.jar --output-document julielab-maven-aether-utilities.jar
+  	    wget https://oss.sonatype.org/content/repositories/releases/de/julielab/julielab-maven-aether-utilities/1.1.4/julielab-maven-aether-utilities-1.1.4-cli-assembly.jar --output-document julielab-maven-aether-utilities.jar
   else
       echo "julielab-maven-aether-utilities.jar already exists and is not downloaded."
   fi
@@ -69,10 +69,15 @@ for i in . `java -jar julie-xml-tools.jar pom.xml //module`; do
               modulestodeploy=$modulestodeploy,$path
   	    fi
   done
-  echo "Deploying $modulestodeploy"
-  if [ ! -z "$modulestodeploy" ]; then
-      echo "Deploying the following projects: $modulestodeploy"
-      mvn deploy -B -P sonatype-nexus-deployment -DskipTests=true -pl $modulestodeploy
-  else
-      echo "All modules up to date, skipping deployment."
-  fi
+   if [ ! -z "$modulestodeploy" ]; then
+        echo "Deploying the following projects: $modulestodeploy"
+        if [[ "${modulestodeploy}" =~ ".," ]]; then
+          echo "Deploying parent POM"
+          mvn clean deploy -P sonatype-nexus-deployment -N
+           modulestodeploy=$(printf '%s\n' "${modulestodeploy//.,/}")
+           echo "Modules to deploy after removal of parent POM: $modulestodeploy"
+        fi
+        mvn clean deploy -B -P sonatype-nexus-deployment -DskipTests=true -pl $modulestodeploy
+    else
+        echo "All modules up to date, skipping deployment."
+    fi
