@@ -2,6 +2,7 @@ package de.julielab.jcore.consumer.es.filter;
 
 import org.tartarus.snowball.SnowballProgram;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class SnowballFilter extends AbstractFilter {
@@ -9,12 +10,16 @@ public class SnowballFilter extends AbstractFilter {
 	private SnowballProgram stemmer;
 
 	public SnowballFilter() {
+		this("org.tartarus.snowball.ext.EnglishStemmer");
+	}
+
+	public SnowballFilter(String snowballProgram) {
 		super();
 		Class<? extends SnowballProgram> stemClass;
 		try {
-			stemClass = Class.forName("org.tartarus.snowball.ext.EnglishStemmer").asSubclass(SnowballProgram.class);
-			stemmer = stemClass.newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			stemClass = Class.forName(snowballProgram).asSubclass(SnowballProgram.class);
+			stemmer = stemClass.getDeclaredConstructor().newInstance();
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
 	}

@@ -69,7 +69,7 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
         indexName = (String) getContext().getConfigParameterValue(PARAM_INDEX_NAME);
         type = (String) getContext().getConfigParameterValue(PARAM_TYPE);
         batchSize = Optional.ofNullable((Integer) getContext().getConfigParameterValue(PARAM_BATCH_SIZE)).orElse(50);
-        bulkCommand = new ArrayList<>(4000);
+        bulkCommand = new ArrayList<>(batchSize*2);
         deleteDocsBeforeIndexing = (boolean) Optional.ofNullable(getContext().getConfigParameterValue(PARAM_DELETE_DOCS_BEFORE_INDEXING)).orElse(false);
         docIdField = (String) getContext().getConfigParameterValue(PARAM_DOC_ID_FIELD);
 
@@ -265,12 +265,13 @@ public class ElasticSearchConsumer extends AbstractCasToJsonConsumer {
                 if (subList.isEmpty())
                     continue;
                 lastIndex += subList.size();
-                log.debug("Sending {} documents to index {}.", subList.size(), indexName);
+                log.debug("Sending {} documents to index {}.", subList.size()/2, indexName);
                 long time = System.currentTimeMillis();
                 // The bulk format requires us to have a newline also after the
                 // last
                 // line; it will be ignored otherwise!
                 String bulkCommandString = StringUtils.join(subList, "\n") + "\n";
+                log.trace(bulkCommandString);
                 StringEntity bulkIndexEntity = new StringEntity(bulkCommandString, "UTF-8");
                 indexPost.setEntity(bulkIndexEntity);
                 HttpResponse response = httpclient.execute(indexPost);
