@@ -71,7 +71,7 @@ public class GNormPlusMultiplierLogic {
             // Process the incoming documents batch-wise (this is why we use a multiplier here so we have access
             // to whole batches). This checks if we still have processed documents or if we need to process the next
             // batch.
-            if (bioCCasPopulator == null || bioCCasPopulator.documentsLeftInCollection() == 0) {
+            if (currentCollectionIndex == cachedCasData.size()) {
                 currentCollectionIndex = 0;
                 currentBiocResultCollectionIndex = 0;
                 final BioCCollection gnormPlusInputCollection = GNormPlusProcessing.createEmptyJulieLabBioCCollection();
@@ -83,7 +83,7 @@ public class GNormPlusMultiplierLogic {
                 cachedCasData.clear();
                 while (baseMultiplierHasNext.get()) {
                     final JCas jCas = baseMultiplierNext.get();
-                     boolean isDocumentHashUnchanged = false;
+                    boolean isDocumentHashUnchanged = false;
                     try {
                         isDocumentHashUnchanged = JCasUtil.selectSingle(jCas, DBProcessingMetaData.class).getIsDocumentHashUnchanged();
                     } catch (IllegalArgumentException e) {
@@ -120,7 +120,7 @@ public class GNormPlusMultiplierLogic {
                     } catch (XMLStreamException | IOException e) {
                         log.error("Could not read GNormPlus output from {}", outputFilePath);
                         throw new AnalysisEngineProcessException(e);
-                    } catch (ClassNotFoundException| NoSuchMethodException e) {
+                    } catch (ClassNotFoundException | NoSuchMethodException e) {
                         log.error("Could not obtain UIMA gene annotation type constructor for class {}", outputGeneTypeName);
                         throw new AnalysisEngineProcessException(e);
                     }
@@ -151,6 +151,9 @@ public class GNormPlusMultiplierLogic {
             cachedCasData.set(currentCollectionIndex, null);
             ++currentCollectionIndex;
 
+            if (log.isTraceEnabled())
+                log.trace("Created multiplier-CAS for document with ID {}", JCoReTools.getDocId(jCas));
+
             return jCas;
         } catch (AnalysisEngineProcessException e) {
             log.error("Error while retrieving or processing data for/with GNormPlus", e);
@@ -160,7 +163,7 @@ public class GNormPlusMultiplierLogic {
 
     public boolean hasNext() {
         try {
-            return bioCCasPopulator != null && bioCCasPopulator.documentsLeftInCollection() > 0 || baseMultiplierHasNext.get();
+            return currentCollectionIndex < cachedCasData.size() || baseMultiplierHasNext.get();
         } catch (Throwable t) {
             log.error("Could not determine hasNext()", t);
             throw t;
