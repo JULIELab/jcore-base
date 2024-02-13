@@ -34,66 +34,71 @@ public class BioCDocumentPopulator {
         AnnotationIndex<Zone> zoneIndex = jCas.getAnnotationIndex(Zone.type);
         int annotationId = 0;
         for (Zone z : zoneIndex) {
-            // skip empty zones
-            if (z.getCoveredText().isBlank())
-                continue;
-            BioCPassage p = null;
-            if (z instanceof Title) {
-                Title t = (Title) z;
-                String titleType;
-                String titleTypeString = t.getTitleType();
-                if (titleTypeString == null)
-                    titleTypeString = "other";
-                switch (titleTypeString) {
-                    case "document":
-                        titleType = "title";
-                        break;
-                    case "section":
-                        titleType = "section_title";
-                        break;
-                    case "figure":
-                        titleType = "figure_title";
-                        break;
-                    case "table":
-                        titleType = "table_title";
-                        break;
-                    case "abstractSection":
-                        // abstract sections are part of the AbstractText which is handled below
-                        titleType = "null";
-                        break;
-                    case "other":
-                        titleType = "other_title";
-                        break;
-                    default:
-                        log.debug("Unhandled title type {}", titleTypeString);
-                        titleType = "other_title";
-                        break;
-                }
-                if (titleType != null) {
-                    p = getPassageForAnnotation(t);
-                    p.putInfon("type", titleType);
+            try {
+                // skip empty zones
+                if (z.getEnd() - z.getBegin() <= 0 || z.getCoveredText().isBlank())
+                    continue;
+                BioCPassage p = null;
+                if (z instanceof Title) {
+                    Title t = (Title) z;
+                    String titleType;
+                    String titleTypeString = t.getTitleType();
+                    if (titleTypeString == null)
+                        titleTypeString = "other";
+                    switch (titleTypeString) {
+                        case "document":
+                            titleType = "title";
+                            break;
+                        case "section":
+                            titleType = "section_title";
+                            break;
+                        case "figure":
+                            titleType = "figure_title";
+                            break;
+                        case "table":
+                            titleType = "table_title";
+                            break;
+                        case "abstractSection":
+                            // abstract sections are part of the AbstractText which is handled below
+                            titleType = "null";
+                            break;
+                        case "other":
+                            titleType = "other_title";
+                            break;
+                        default:
+                            log.debug("Unhandled title type {}", titleTypeString);
+                            titleType = "other_title";
+                            break;
+                    }
+                    if (titleType != null) {
+                        p = getPassageForAnnotation(t);
+                        p.putInfon("type", titleType);
+                        doc.addPassage(p);
+                    }
+                } else if (z instanceof AbstractText) {
+                    AbstractText at = (AbstractText) z;
+                    p = getPassageForAnnotation(at);
+                    p.putInfon("type", "abstract");
+                    doc.addPassage(p);
+                } else if (z instanceof Paragraph) {
+                    Paragraph pa = (Paragraph) z;
+                    p = getPassageForAnnotation(pa);
+                    p.putInfon("type", "paragraph");
+                    doc.addPassage(p);
+                } else if (z instanceof Caption) {
+                    Caption c = (Caption) z;
+                    p = getPassageForAnnotation(c);
+                    if (c.getCaptionType() == null)
+                        throw new IllegalArgumentException("The captionType feature is null for " + c);
+                    p.putInfon("type", c.getCaptionType());
                     doc.addPassage(p);
                 }
-            } else if (z instanceof AbstractText) {
-                AbstractText at = (AbstractText) z;
-                p = getPassageForAnnotation(at);
-                p.putInfon("type", "abstract");
-                doc.addPassage(p);
-            } else if (z instanceof Paragraph) {
-                Paragraph pa = (Paragraph) z;
-                p = getPassageForAnnotation(pa);
-                p.putInfon("type", "paragraph");
-                doc.addPassage(p);
-            } else if (z instanceof Caption) {
-                Caption c = (Caption) z;
-                p = getPassageForAnnotation(c);
-                if (c.getCaptionType() == null)
-                    throw new IllegalArgumentException("The captionType feature is null for " + c);
-                p.putInfon("type", c.getCaptionType());
-                doc.addPassage(p);
-            }
-            if (addGenes) {
-                annotationId = addGenesToPassage(jCas, z, p, annotationId);
+                if (addGenes) {
+                    annotationId = addGenesToPassage(jCas, z, p, annotationId);
+                }
+            } catch (Exception e) {
+                log.error("Exception occurred with Zone annotation {}", z);
+                throw e;
             }
         }
         return doc;

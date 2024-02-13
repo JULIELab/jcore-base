@@ -19,7 +19,7 @@
     "maven-artifact": {
         "artifactId": "jcore-gnp-bioc-reader",
         "groupId": "de.julielab",
-        "version": "2.6.1"
+        "version": "2.6.3"
     },
     "name": "JCoRe GNormPlus BioC Reader"
 }
