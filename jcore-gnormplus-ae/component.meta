@@ -31,7 +31,7 @@
     "maven-artifact": {
         "artifactId": "jcore-gnormplus-ae",
         "groupId": "de.julielab",
-        "version": "2.6.8-SNAPSHOT"
+        "version": "2.6.8"
     },
     "name": "JCoRe GNormPlus Annotator"
 }
