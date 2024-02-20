@@ -202,10 +202,16 @@ public class SentenceAnnotator extends JCasAnnotator_ImplBase {
                         while (start < end && (Character.isWhitespace(documentText.getCodensedText().charAt(start))))
                             ++start;
 
-                        // get the string between the current annotation borders and recognized sentences
-                        String textSpan = documentText.getCodensedText().substring(start, end);
-                        if (!StringUtils.isBlank(textSpan))
-                            doSegmentation(documentText, textSpan, start);
+                            String textSpan;
+                        try {
+                            // get the string between the current annotation borders and recognized sentences
+                            textSpan = documentText.getCodensedText().substring(start, end);
+                        } catch (Exception e) {
+                            LOGGER.error("Document text boundary error. Tried to get substring from {} to {} for text \"{}\". Text condensation is {}", start, end, documentText.getCodensedText(), cutAwayTypes != null && !cutAwayTypes.isEmpty());
+                            throw e;
+                        }
+                            if (!StringUtils.isBlank(textSpan))
+                                doSegmentation(documentText, textSpan, start);
                     }
 
                 } catch (ClassNotFoundException e) {
