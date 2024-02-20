@@ -90,6 +90,12 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
                 abstractPart.setAbstractSectionHeading(abstractPartHeading);
                 abstractPart.addToIndexes();
 
+                if (abstractPart.getBegin() < 0)
+                    throw new IllegalStateException("Trying to create abstract section with negative begin for document " + new String(identifier) +": " + abstractPart);
+
+                if (abstractPart.getEnd() < abstractPart.getBegin())
+                    throw new IllegalStateException("Trying to create abstract section with lower end than begin offset for document " + new String(identifier) + ": " + abstractPart);
+
                 abstractParts.add(abstractPart);
             } else {
                 sectionOffset += abstractSectionText.length();
@@ -104,7 +110,7 @@ public class StructuredAbstractParser implements DocumentTextPartParser {
 
         // only create an abstract annotation if there actually is an abstract
         if (!abstractParts.isEmpty() || sectionOffset > offset) {
-            if (sectionOffset == offset) {
+            if (sectionOffset == offset && sectionOffset > 0) {
                 // there was no abstract but just empty abstract sections; decrement the offsets so we stay with existing document text
                 --offset;
                 --sectionOffset;

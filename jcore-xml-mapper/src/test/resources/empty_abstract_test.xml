@@ -1,0 +1,71 @@
+<MedlineCitation Status="MEDLINE" IndexingMethod="Automated" Owner="NLM">
+    <PMID Version="1">38095249</PMID>
+    <DateCompleted>
+        <Year>2023</Year>
+        <Month>12</Month>
+        <Day>16</Day>
+    </DateCompleted>
+    <DateRevised>
+        <Year>2023</Year>
+        <Month>12</Month>
+        <Day>16</Day>
+    </DateRevised>
+    <Article PubModel="Print">
+        <Journal>
+            <ISSN IssnType="Print">0040-5930</ISSN>
+            <JournalIssue CitedMedium="Print">
+                <Volume>80</Volume>
+                <Issue>9</Issue>
+                <PubDate>
+                    <Year>2023</Year>
+                    <Month>Dec</Month>
+                </PubDate>
+            </JournalIssue>
+            <Title>Therapeutische Umschau. Revue therapeutique</Title>
+            <ISOAbbreviation>Ther Umsch</ISOAbbreviation>
+        </Journal>
+        <ArticleTitle/>
+        <Pagination>
+            <MedlinePgn>377</MedlinePgn>
+        </Pagination>
+        <Abstract>
+            <AbstractText Label="INTRODUCTION" NlmCategory="BACKGROUND"/>
+            <CopyrightInformation>© 2023 Aerzteverlag medinfo AG.</CopyrightInformation>
+        </Abstract>
+        <AuthorList CompleteYN="Y">
+            <Author ValidYN="Y">
+                <LastName>Burri</LastName>
+                <ForeName>Emanuel</ForeName>
+                <Initials>E</Initials>
+                <AffiliationInfo>
+                    <Affiliation>Kantonsspital Baselland, Liestal.</Affiliation>
+                </AffiliationInfo>
+            </Author>
+        </AuthorList>
+        <Language>ger</Language>
+        <PublicationTypeList>
+            <PublicationType UI="D016421">Editorial</PublicationType>
+            <PublicationType UI="D004740">English Abstract</PublicationType>
+        </PublicationTypeList>
+        <VernacularTitle>Chronisch entzündliche Darmerkrankungen: eine Einführung.</VernacularTitle>
+    </Article>
+    <MedlineJournalInfo>
+        <Country>Switzerland</Country>
+        <MedlineTA>Ther Umsch</MedlineTA>
+        <NlmUniqueID>0407224</NlmUniqueID>
+        <ISSNLinking>0040-5930</ISSNLinking>
+    </MedlineJournalInfo>
+    <CitationSubset>IM</CitationSubset>
+    <MeshHeadingList>
+        <MeshHeading>
+            <DescriptorName UI="D006801" MajorTopicYN="N">Humans</DescriptorName>
+        </MeshHeading>
+        <MeshHeading>
+            <DescriptorName UI="D015212" MajorTopicYN="Y">Inflammatory Bowel Diseases</DescriptorName>
+        </MeshHeading>
+    </MeshHeadingList>
+    <OtherAbstract Type="Publisher" Language="ger">
+        <AbstractText Label="TITEL" NlmCategory="UNASSIGNED">Chronisch entzündliche Darmerkrankungen: eine Einführung.</AbstractText>
+        <AbstractText Label="EINLEITUNG" NlmCategory="UNASSIGNED"/>
+    </OtherAbstract>
+</MedlineCitation>

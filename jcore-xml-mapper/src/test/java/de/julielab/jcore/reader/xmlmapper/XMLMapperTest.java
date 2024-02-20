@@ -25,6 +25,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -67,8 +68,29 @@ public class XMLMapperTest {
 		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlReader.getMetaData());
 		assertTrue(xmlReader.hasNext());
 		xmlReader.getNext(cas);
+	}
 
-		System.out.println(cas.getDocumentText());
+	@Test
+	public void emptyAbstractSection() throws Exception {
+		// The document has an empty abstract section. That caused earlier
+		// versions of the StructuredAbstractParser to put out an AbstractSection
+		// with begin and end set to -1 which caused error in downstream pipeline
+		// components.
+		Map<String, String> readerConfig = new HashMap<String, String>();
+		readerConfig.put(XMLReader.PARAM_INPUT_FILE, "src/test/resources/empty_abstract_test.xml");
+		Map<String, String> readerExtRes = new HashMap<String, String>();
+		readerExtRes.put(EXT_RES_KEY, XMLReader.RESOURCE_MAPPING_FILE);
+		readerExtRes.put(EXT_RES_NAME, "newMappingFile");
+		readerExtRes.put(EXT_RES_URL, "file:medlineMappingFileStructuredAbstract.xml");
+
+		CollectionReader xmlReader = createCollectionReaderWithDescriptor(TEST_DESC_PATH, readerConfig, readerExtRes);
+		CAS cas = CasCreationUtils.createCas((AnalysisEngineMetaData) xmlReader.getMetaData());
+		assertTrue(xmlReader.hasNext());
+		xmlReader.getNext(cas);
+
+		final AbstractSection abstractSection = JCasUtil.selectSingle(cas.getJCas(), AbstractSection.class);
+		assertEquals(0, abstractSection.getBegin());
+		assertEquals(0, abstractSection.getEnd());
 	}
 
 	@Test
