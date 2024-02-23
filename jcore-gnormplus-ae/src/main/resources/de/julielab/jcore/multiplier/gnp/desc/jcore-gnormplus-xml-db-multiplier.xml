@@ -95,7 +95,7 @@
             </configurationParameter>
             <configurationParameter>
                 <name>ToVisitKeys</name>
-                <description>For use with AnnotationDefinedFlowController. Specifies the delegate AE keys of the AEs this CAS should still applied on although the hash has not changed. Can be null or empty indicating that no component should be applied to the CAS. The task of the AnnotationDefinedFlowController is then to read those annotations and route the CAS accordingly.</description>
+                <description>For use with AnnotationDefinedFlowController. Specifies the delegate AE keys of the AEs this CAS should still applied on although the hash has not changed. Can be null or empty indicating that no component should be applied to the CAS. The task of the AnnotationDefinedFlowController is then to read those annotations and route the CAS accordingly. The parameter values will only be added to the CAS if AddToVisitKeys is set to true, the document text hash is available in the database (see the AddShaHash parameter) and the hash in the database equals to the hash of the current document in the pipeline.</description>
                 <type>String</type>
                 <multiValued>true</multiValued>
                 <mandatory>false</mandatory>
