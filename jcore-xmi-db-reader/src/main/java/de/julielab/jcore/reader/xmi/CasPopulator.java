@@ -162,11 +162,11 @@ public class CasPopulator {
                     JCoReTools.deserializeXmi(jCas.getCas(), new ByteArrayInputStream(xmiByteData), xercesAttributeBufferSize);
                 } catch (SAXException e) {
                     String docData = new String(xmiByteData, StandardCharsets.UTF_8);
-                    if (!docData.contains("xmi:XMI xmlns:xmi=\"http://www.omg.org/XMI\""))
+                    if (!docData.contains("xmi:XMI") || !docData.contains("xmlns:xmi=\"http://www.omg.org/XMI\""))
                         throw new CollectionException(new IllegalArgumentException("The document that has been received from the database does not " +
                                 "appear to contain XMI data. The beginning of the document data is: " +
                                 StringUtils.abbreviate(docData, 200), e));
-                    log.error("SAXException while deserializing CAS XMI data from a segmented and re-assemblied XMI " +
+                    log.error("SAXException while deserializing CAS XMI data from a segmented and re-assembled XMI " +
                             "document. Beginning of data was: {}", StringUtils.abbreviate(docData, 200));
                     throw new CollectionException(e);
                 }

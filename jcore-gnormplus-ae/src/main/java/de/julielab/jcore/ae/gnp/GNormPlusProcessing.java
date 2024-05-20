@@ -61,10 +61,17 @@ public class GNormPlusProcessing {
                 w.writeCollection(bioCCollection);
             }
             GNormPlus.processFile(filePath.toString(), filePath.getFileName().toString(), outputFilePath.toString(), System.currentTimeMillis(), "Test");
-            Files.delete(filePath);
         } catch (IOException | XMLStreamException e) {
             log.error("Could not process document {}", collectionId);
             throw new AnalysisEngineProcessException(e);
+        }  finally {
+            try {
+                if (Files.exists(filePath))
+                    Files.delete(filePath);
+            } catch (IOException e) {
+                log.error("Could not delete temporary GNormPlus File {}", filePath);
+                throw new AnalysisEngineProcessException(e);
+            }
         }
         return outputFilePath;
     }

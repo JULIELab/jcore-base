@@ -14,6 +14,7 @@ import de.julielab.xml.binary.BinaryJeDISNodeEncoder;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
+import org.apache.uima.cas.impl.XCASParsingException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -49,7 +50,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
         super.initialize(aContext);
         logFinalXmi = Optional.ofNullable((Boolean) aContext.getConfigParameterValue(PARAM_LOG_FINAL_XMI)).orElse(false);
-        truncationSize = Optional.ofNullable((Integer)aContext.getConfigParameterValue(PARAM_TRUNCATE_AT_SIZE)).orElse(0);
+        truncationSize = Optional.ofNullable((Integer) aContext.getConfigParameterValue(PARAM_TRUNCATE_AT_SIZE)).orElse(0);
     }
 
     @Override
@@ -87,9 +88,12 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
 
     @Override
     public AbstractCas next() throws AnalysisEngineProcessException {
-        JCas jCas = getEmptyJCas();
-        try {
-            if (documentDataIterator.hasNext()) {
+        JCas jCas = null;
+        // we use a loop here because further down we catch a particular exception that should cause the current
+        // document to be skipped over
+        while (jCas == null && documentDataIterator.hasNext()) {
+            try {
+                jCas = getEmptyJCas();
                 log.trace("Returning next CAS");
                 try {
                     initializer.initializeAnnotationTableNames(jCas);
@@ -97,16 +101,35 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
                     throw new AnalysisEngineProcessException(e);
                 }
                 populateCas(jCas);
+                if (log.isTraceEnabled()) {
+                    log.trace("Outgoing multiplier jCas instance: {}", jCas);
+                    log.trace("Returning CAS containing document {}", JCoReTools.getDocId(jCas));
+                }
+            } catch (Throwable throwable) {
+                jCas.release();
+                // We want to skip XMI exception with the assumption that they stem from a corrupted JeDIS XMI
+                // annotation store. Because we can't know which documents in the complete dataset are corrupted.
+                // We just skip the corrupted ones, so they are stuck with in_process state, and we can collect
+                // them after processing.
+                Throwable cause = throwable.getCause();
+                while (cause != null && cause.getCause() != null)
+                    cause = cause.getCause();
+                if (cause != null && cause instanceof XCASParsingException) {
+                    log.warn("XCASParsingException occurred. That means that the JeDIS XMI modules could not be assembled into a complete, valid XMI document. The CAS is skipped and the next document is read. After processing, the skipped documents will still have 'in_process' state in the CoStoSys subset. This information can be used to repair/redo the preprocessing for the corrupted documents.");
+                    // setting jCas to null, so we repeat the loop at the top and continue to the next document
+                    jCas = null;
+                } else if (cause != null && cause instanceof IllegalArgumentException && cause.getMessage() != null && cause.getMessage().startsWith("Detected XMI ID clash")){
+                    log.warn("XMI ID clash in assembled XMI detected. The XMI elements in the CoStoSys storage have non-unique XMI IDs, the data is corrupt. The CAS is skipped and the next document is read. After processing, the skipped documents will still have 'in_process' state in the CoStoSys subset. This information can be used to repair/redo the preprocessing for the corrupted documents.");
+                    // setting jCas to null, so we repeat the loop at the top and continue to the next document
+                    jCas =  null;
+                }
+                else {
+                    log.error("Error while reading document from the database. Releasing the CAS. ", throwable);
+                    throw new AnalysisEngineProcessException(throwable);
+                }
             }
-        } catch (Throwable throwable) {
-            log.error("Error while reading document from the database. Releasing the CAS. ", throwable);
-            jCas.release();
-            throw new AnalysisEngineProcessException(throwable);
         }
-        if (log.isTraceEnabled()) {
-            log.trace("Outgoing multiplier jCas instance: {}", jCas);
-            log.trace("Returning CAS containing document {}", JCoReTools.getDocId(jCas));
-        }
+
         return jCas;
     }
 
@@ -129,7 +152,7 @@ public class XmiDBMultiplier extends DBMultiplier implements Initializable {
             }
             boolean truncate = false;
             if (truncationSize > 0) {
-                if(data[pkSize].length > truncationSize)
+                if (data[pkSize].length > truncationSize)
                     truncate = true;
             }
             if (data != null && !truncate)

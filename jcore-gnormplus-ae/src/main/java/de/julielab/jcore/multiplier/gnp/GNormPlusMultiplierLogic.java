@@ -1,5 +1,6 @@
 package de.julielab.jcore.multiplier.gnp;
 
+import GNormPluslib.InconsistentDataException;
 import com.pengyifan.bioc.BioCCollection;
 import com.pengyifan.bioc.BioCDocument;
 import de.julielab.jcore.ae.gnp.GNormPlusProcessing;
@@ -81,6 +82,7 @@ public class GNormPlusMultiplierLogic {
                 // This allows batch-processing within GNP which reduces file writes and reads (GNP internally
                 // writes a lot of temporary files that contain all the documents given to it in one single batch file).
                 cachedCasData.clear();
+
                 while (baseMultiplierHasNext.get()) {
                     final JCas jCas = baseMultiplierNext.get();
                     boolean isDocumentHashUnchanged = false;
@@ -110,8 +112,9 @@ public class GNormPlusMultiplierLogic {
                 // now process the whole batch with GNP
                 if (gnormPlusInputCollection.getDocmentCount() > 0) {
                     log.trace("Processing {} documents with GNormPlus.", gnormPlusInputCollection.getDocmentCount());
-                    final Path outputFilePath = GNormPlusProcessing.processWithGNormPlus(gnormPlusInputCollection, outputDirectory);
+                    Path outputFilePath = null;
                     try {
+                        outputFilePath = GNormPlusProcessing.processWithGNormPlus(gnormPlusInputCollection, outputDirectory);
                         bioCCasPopulator = new BioCCasPopulator(outputFilePath, Class.forName(outputGeneTypeName).getConstructor(JCas.class));
                         // delete the GNP output if we don't want to keep it
                         if (outputDirectory.isBlank()) {
@@ -123,6 +126,11 @@ public class GNormPlusMultiplierLogic {
                     } catch (ClassNotFoundException | NoSuchMethodException e) {
                         log.error("Could not obtain UIMA gene annotation type constructor for class {}", outputGeneTypeName);
                         throw new AnalysisEngineProcessException(e);
+                    } catch (InconsistentDataException e) {
+                        log.warn("GNormPlus encountered a data issue it cannot recover from: {} - no gene annotations will be created for this document batch.", e.getMessage());
+                        // We set the populator to null as a signal that there are no annotations to be read. This is
+                        // used further down to skip entity population of cached CASes before returning the CASes.
+                        bioCCasPopulator = null;
                     }
                 }
             }
@@ -144,7 +152,8 @@ public class GNormPlusMultiplierLogic {
             }
             // If the document is unchanged and we skip unchanged documents, we do not have a GNormPlus result for this
             // document, skip.
-            if (!(isDocumentHashUnchanged && skipUnchangedDocuments)) {
+            // Also skip if the casPopulator is null. This can happen above when there is an error in GNormPlus.
+            if (!(isDocumentHashUnchanged && skipUnchangedDocuments) && bioCCasPopulator != null) {
                 bioCCasPopulator.populateWithNextDocument(jCas, true);
                 bioCCasPopulator.clearDocument(currentBiocResultCollectionIndex++);
             }
